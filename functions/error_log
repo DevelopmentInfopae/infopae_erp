@@ -1,0 +1,47 @@
+[04-Dec-2017 08:20:24 America/Chicago] PHP Warning:  mysqli::mysqli(): (42000/1044): Access denied for user 'e6y1o9y1_ricardo'@'localhost' to database 'infopae2018' in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 9
+[04-Dec-2017 08:20:24 America/Chicago] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 13
+[04-Dec-2017 08:20:24 America/Chicago] PHP Warning:  mysqli_real_escape_string(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 15
+[04-Dec-2017 08:20:24 America/Chicago] PHP Warning:  mysqli_real_escape_string(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 16
+[04-Dec-2017 08:20:24 America/Chicago] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 28
+[04-Dec-2017 08:20:24 America/Chicago] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 113
+[04-Dec-2017 08:39:13 America/Chicago] PHP Warning:  mysqli::mysqli(): (42000/1044): Access denied for user 'e6y1o9y1_ricardo'@'localhost' to database 'infopae2018' in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 9
+[04-Dec-2017 08:39:13 America/Chicago] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 13
+[04-Dec-2017 08:39:13 America/Chicago] PHP Warning:  mysqli_real_escape_string(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 15
+[04-Dec-2017 08:39:13 America/Chicago] PHP Warning:  mysqli_real_escape_string(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 16
+[04-Dec-2017 08:39:13 America/Chicago] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 28
+[04-Dec-2017 08:39:13 America/Chicago] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 113
+[02-Feb-2018 10:15:43 America/Chicago] PHP Warning:  mysqli::mysqli(): (28000/1045): Access denied for user 'e6y1o9y1_ricardo'@'108.167.156.174' (using password: YES) in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 9
+[02-Feb-2018 10:15:43 America/Chicago] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 13
+[02-Feb-2018 10:15:43 America/Chicago] PHP Warning:  mysqli_real_escape_string(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 15
+[02-Feb-2018 10:15:43 America/Chicago] PHP Warning:  mysqli_real_escape_string(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 16
+[02-Feb-2018 10:15:43 America/Chicago] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 28
+[02-Feb-2018 10:15:43 America/Chicago] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_login.php on line 115
+[16-Feb-2018 08:14:28 America/Chicago] PHP Deprecated:  Automatically populating $HTTP_RAW_POST_DATA is deprecated and will be removed in a future version. To avoid this warning set 'always_populate_raw_post_data' to '-1' in php.ini and use the php://input stream instead. in Unknown on line 0
+[16-Feb-2018 08:16:09 America/Chicago] PHP Deprecated:  Automatically populating $HTTP_RAW_POST_DATA is deprecated and will be removed in a future version. To avoid this warning set 'always_populate_raw_post_data' to '-1' in php.ini and use the php://input stream instead. in Unknown on line 0
+[16-Feb-2018 08:17:59 America/Chicago] PHP Deprecated:  Automatically populating $HTTP_RAW_POST_DATA is deprecated and will be removed in a future version. To avoid this warning set 'always_populate_raw_post_data' to '-1' in php.ini and use the php://input stream instead. in Unknown on line 0
+[16-Feb-2018 11:16:56 America/Chicago] PHP Notice:  Undefined index: timeOption in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index.php on line 7
+[16-Feb-2018 11:17:03 America/Chicago] PHP Notice:  Undefined index: timeOption in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index.php on line 7
+[16-Feb-2018 11:19:02 America/Chicago] PHP Notice:  Undefined index: timeOption in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index.php on line 7
+[01-Mar-2018 15:08:29 America/Chicago] PHP Notice:  Undefined index: CAJMRI in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index_rector.php on line 379
+[01-Mar-2018 17:03:19 America/Chicago] PHP Notice:  Array to string conversion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index_rector.php on line 211
+[01-Mar-2018 17:03:23 America/Chicago] PHP Notice:  Array to string conversion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index_rector.php on line 211
+[01-Mar-2018 17:25:46 America/Chicago] PHP Notice:  Array to string conversion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index.php on line 205
+[01-Mar-2018 17:25:49 America/Chicago] PHP Notice:  Array to string conversion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index.php on line 205
+[01-Mar-2018 17:25:56 America/Chicago] PHP Notice:  Array to string conversion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index.php on line 205
+[01-Mar-2018 17:28:12 America/Chicago] PHP Notice:  Array to string conversion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index.php on line 205
+[01-Mar-2018 17:35:25 America/Chicago] PHP Notice:  Array to string conversion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/functions/fn_datos_graficos_index.php on line 205
+[02-Jan-2019 13:14:22 UTC] PHP Notice:  Undefined index: APS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 336
+[02-Jan-2019 13:14:22 UTC] PHP Notice:  Undefined index: CAJMPS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 348
+[02-Jan-2019 13:14:22 UTC] PHP Notice:  Undefined index: CAJMRI in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 361
+[02-Jan-2019 13:14:26 UTC] PHP Notice:  Undefined index: APS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 336
+[02-Jan-2019 13:14:26 UTC] PHP Notice:  Undefined index: CAJMPS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 348
+[02-Jan-2019 13:14:26 UTC] PHP Notice:  Undefined index: CAJMRI in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 361
+[02-Jan-2019 13:18:52 UTC] PHP Notice:  Undefined index: APS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 336
+[02-Jan-2019 13:18:52 UTC] PHP Notice:  Undefined index: CAJMPS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 348
+[02-Jan-2019 13:18:52 UTC] PHP Notice:  Undefined index: CAJMRI in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 361
+[02-Jan-2019 13:18:54 UTC] PHP Notice:  Undefined index: APS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 336
+[02-Jan-2019 13:18:54 UTC] PHP Notice:  Undefined index: CAJMPS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 348
+[02-Jan-2019 13:18:54 UTC] PHP Notice:  Undefined index: CAJMRI in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 361
+[02-Jan-2019 13:27:18 UTC] PHP Notice:  Undefined index: APS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 336
+[02-Jan-2019 13:27:18 UTC] PHP Notice:  Undefined index: CAJMPS in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 348
+[02-Jan-2019 13:27:18 UTC] PHP Notice:  Undefined index: CAJMRI in /home/infopae/public_html/infopae2019/functions/fn_datos_graficos_index.php on line 361

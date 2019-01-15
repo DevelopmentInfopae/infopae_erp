@@ -1,0 +1,76 @@
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: componente in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 562
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 563
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 564
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: componente in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 562
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 563
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 564
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: componente in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 640
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 648
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 657
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 665
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 672
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 676
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: componente in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 640
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 648
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 657
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 665
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 672
+[01-Feb-2018 16:58:26 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php on line 676
+[01-Feb-2018 16:58:26 America/Bogota] PHP Fatal error:  Uncaught exception 'Exception' with message 'FPDF error: Some data has already been output, can't send PDF file (output started at /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php:562)' in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/fpdf181/fpdf.php:271
+Stack trace:
+#0 /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/fpdf181/fpdf.php(1052): FPDF->Error('Some data has a...')
+#1 /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/fpdf181/fpdf.php(999): FPDF->_checkoutput()
+#2 /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_agrupado.php(951): FPDF->Output()
+#3 {main}
+  thrown in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/fpdf181/fpdf.php on line 271
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: componente in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 574
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 575
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 576
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: componente in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 574
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 575
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 576
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 664
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: componente in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 784
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 792
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 801
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 809
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 819
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 824
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: grupo_alim in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 664
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: componente in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 784
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 792
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 801
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 809
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 819
+[01-Feb-2018 16:58:47 America/Bogota] PHP Notice:  Undefined index: presentacion in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 824
+[01-Feb-2018 16:58:47 America/Bogota] PHP Warning:  array_count_values(): Can only count STRING and INTEGER values! in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 667
+[01-Feb-2018 16:58:47 America/Bogota] PHP Warning:  array_count_values(): Can only count STRING and INTEGER values! in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 667
+[01-Feb-2018 16:58:47 America/Bogota] PHP Warning:  array_count_values(): Can only count STRING and INTEGER values! in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 667
+[01-Feb-2018 16:58:47 America/Bogota] PHP Warning:  array_count_values(): Can only count STRING and INTEGER values! in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 667
+[01-Feb-2018 16:58:47 America/Bogota] PHP Warning:  array_count_values(): Can only count STRING and INTEGER values! in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 667
+[01-Feb-2018 16:58:47 America/Bogota] PHP Warning:  array_count_values(): Can only count STRING and INTEGER values! in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 667
+[01-Feb-2018 16:58:47 America/Bogota] PHP Warning:  array_count_values(): Can only count STRING and INTEGER values! in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 667
+[01-Feb-2018 16:58:47 America/Bogota] PHP Warning:  array_count_values(): Can only count STRING and INTEGER values! in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php on line 667
+[01-Feb-2018 16:58:47 America/Bogota] PHP Fatal error:  Uncaught exception 'Exception' with message 'FPDF error: Some data has already been output, can't send PDF file (output started at /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php:574)' in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/fpdf181/fpdf.php:271
+Stack trace:
+#0 /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/fpdf181/fpdf.php(1052): FPDF->Error('Some data has a...')
+#1 /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/fpdf181/fpdf.php(999): FPDF->_checkoutput()
+#2 /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despacho_consolidado.php(1099): FPDF->Output()
+#3 {main}
+  thrown in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/fpdf181/fpdf.php on line 271
+[02-Feb-2018 10:16:10 America/Chicago] PHP Warning:  mysqli::mysqli(): (28000/1045): Access denied for user 'e6y1o9y1_ricardo'@'108.167.156.174' (using password: YES) in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 7
+[02-Feb-2018 10:16:10 America/Chicago] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 11
+[02-Feb-2018 10:16:10 America/Chicago] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 320
+[02-Feb-2018 10:16:10 America/Chicago] PHP Warning:  mysqli_error(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 320
+[02-Feb-2018 10:16:21 America/Chicago] PHP Warning:  mysqli::mysqli(): (28000/1045): Access denied for user 'e6y1o9y1_ricardo'@'108.167.156.174' (using password: YES) in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 7
+[02-Feb-2018 10:16:21 America/Chicago] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 11
+[02-Feb-2018 10:16:21 America/Chicago] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 320
+[02-Feb-2018 10:16:21 America/Chicago] PHP Warning:  mysqli_error(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 320
+[02-Feb-2018 10:16:41 America/Chicago] PHP Warning:  mysqli::mysqli(): (28000/1045): Access denied for user 'e6y1o9y1_ricardo'@'108.167.156.174' (using password: YES) in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 7
+[02-Feb-2018 10:16:41 America/Chicago] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 11
+[02-Feb-2018 10:16:41 America/Chicago] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 320
+[02-Feb-2018 10:16:41 America/Chicago] PHP Warning:  mysqli_error(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 320
+[02-Feb-2018 10:16:47 America/Chicago] PHP Warning:  mysqli::mysqli(): (28000/1045): Access denied for user 'e6y1o9y1_ricardo'@'108.167.156.174' (using password: YES) in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 7
+[02-Feb-2018 10:16:47 America/Chicago] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 11
+[02-Feb-2018 10:16:47 America/Chicago] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 320
+[02-Feb-2018 10:16:47 America/Chicago] PHP Warning:  mysqli_error(): Couldn't fetch mysqli in /home1/e6y1o9y1/pruebas.wappsi.com/infopae2018/modules/despachos/despachos.php on line 320
