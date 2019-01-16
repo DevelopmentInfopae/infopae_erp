@@ -1,6 +1,12 @@
 <?php
 	include '../../header.php';
 	$titulo = "Asignar bodegas";
+
+  $con_cod_muni = "SELECT CodMunicipio FROM parametros;";
+  $res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
+  if ($res_minicipio->num_rows > 0) {
+    $codigoDANE = $res_minicipio->fetch_array();
+  }
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -90,7 +96,7 @@
                         $resultado = $Link->query($consulta);
                         if($resultado->num_rows > 0){
                           while($row = $resultado->fetch_assoc()) {
-                            $selected = (isset($registrosIntitucion["cod_mun"]) && $registrosIntitucion["cod_mun"] == $row["codigoDANE"] ) ? " selected " : "";
+                            $selected = (isset($codigoDANE["CodMunicipio"]) && $codigoDANE["CodMunicipio"] == $row["codigoDANE"] ) ? " selected " : "";
                             echo '<option value="' . $row["codigoDANE"] . '" ' . $selected . '>
                                     ' . $row["ciudad"] .
                                   '</option>';
