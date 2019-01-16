@@ -143,6 +143,15 @@ $( "#tipoProducto" ).change(function() {
     $('#divTipoComplemento').css('display', 'none');
     $('#variacionMenu').removeAttr('required');
     $('#subtipoProducto').attr('required', true);
+
+    if (tipoProducto == "04") {
+      $('#divCantPreparacion').css('display', '');
+      $('#cantidad_preparacion').attr('required', true);
+    } else if (tipoProducto == "03") {
+      $('#divCantPreparacion').css('display', 'none');
+      $('#cantidad_preparacion').attr('required', false);
+    }
+
   } 
 
   if (tipoProducto == "01" ) {
@@ -241,6 +250,10 @@ function anadirProducto(){
     } else if (tipoProducto == "01") {
       tbody = '<tr id="filaProductoFichaTecnicaDet'+numProducto+'" class="productoFichaTecnicaDet"><td><select name="productoFichaTecnicaDet['+numProducto+']" id="productoFichaTecnicaDet'+numProducto+'" class="form-control" required>'+productos+'</select></td></tr>';
     }
+
+    if (numProducto == 1) {
+      obtenerProductos(1);
+    }
     console.log(numProducto);
   $('#tbodyProductos').append(tbody);
 }
@@ -338,6 +351,7 @@ $('#unidadMedidaPresentacion').change(function(){
 /*Submit de formularios*/
 $('#formProducto').submit(function(event){
  var datos = $('#formProducto').serialize();
+      tipoproducto = $('#tipoProducto').val();
   $.ajax({
     type: "POST",
     url: "functions/fn_menus_ingresar_producto.php",
@@ -356,6 +370,10 @@ $('#formProducto').submit(function(event){
           $('#idProducto').val(data.respuesta[0].nuevoCodigo);
           $('#idProductoCalyNut').val(data.respuesta[0].nuevoCodigo);
         }
+
+        $('#tipoProductoCalyNut').val(tipoproducto);
+        $('#TipoProductoFT').val(tipoproducto);
+        $('#'+FormSubmit).submit();
       } else {
         //console.log(data.respuesta[0].respuesta);
         Command: toastr.error("Hubo un error al crear producto.", "Error", {onHidden : function(){console.log(data);}})
@@ -366,8 +384,7 @@ $('#formProducto').submit(function(event){
 });
 
 $('#formFichaTecnica').submit(function(event){
-  $('#tipoProductoCalyNut').val($('#tipoProducto').val());
-var datos = $('#formFichaTecnica').serialize();
+    var datos = $('#formFichaTecnica').serialize();
     console.log(datos);
 $.ajax({
     type: "POST",
@@ -538,13 +555,22 @@ function loadSubTipoProducto(valor){
 
 /*Editar producto*/
 
+var FormSubmit = "";
 
 function submitForm(form){
 
   if ($('#'+form).valid()) {
     $('#loader').fadeIn();
-    $('#formProducto').submit();
-    setTimeout(function() { $('#'+form).submit(); }, 2000);
+
+    if (form != 'formEditarProducto') {
+      $('#formProducto').submit();
+      FormSubmit = form;
+    } else if (form == 'formEditarProducto') {
+      $('#formEditarProducto').submit();
+    }
+
+    
+    // setTimeout(function() { $('#'+form).submit(); }, 2000);
   } else {
     console.log('Campos vacíos');
   }

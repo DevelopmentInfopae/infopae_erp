@@ -1,7 +1,7 @@
 <?php 
 $titulo = 'Editar';
 require_once '../../header.php'; 
-
+if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<script>location.href='index.php';</script>"; } 
 $periodoActual = $_SESSION['periodoActual'];
 
 $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Libra', 'g' => 'Gramos'), 'cc' => array('u' => 'Unidad', 'lt' => 'Litro', 'cc' => 'Centímetros cúbicos'), 'u' => array('u' => 'Unidad'));
@@ -35,7 +35,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="<?php echo $baseUrl.'/modules/menus2/'.$link; ?>">Ver <?php echo $breadCumb; ?></a>
+        <a href="<?php echo $baseUrl.'/modules/menus/'.$link; ?>">Ver <?php echo $breadCumb; ?></a>
       </li>
       <li class="active">
         <strong> Editar <?php echo $title; ?></strong>
@@ -218,16 +218,40 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
               <?php 
               if ($Producto['NombreUnidad1'] == "g" && $Producto['NombreUnidad3'] != "") {
                 $UnidadMedida1 = "g";
+                $CantUnd1 = round(1/$Producto['CantidadUnd1']);
                 $style = "";
               } else if ($Producto['NombreUnidad1'] == "g" && $Producto['NombreUnidad3'] == ""){
                 $UnidadMedida1 = "u";
                 $style = "display:none;";
+                if ($Producto['NombreUnidad1'] == "g" && $Producto['NombreUnidad2'] != "") {
+
+                  if (!isset($options['g'][$Producto['NombreUnidad2']])) {
+                    $UnidadMedida1 = $Producto['NombreUnidad1'];
+                    $CantUnd1 = round(1/$Producto['CantidadUnd1']);
+                    $style = "";
+                  } else {
+                    $UnidadMedida1 = $Producto['NombreUnidad2'];
+                    $CantUnd1 = $Producto['CantidadUnd2'];
+                  }
+                  
+                }
               } else if ($Producto['NombreUnidad1'] == "cc" && $Producto['NombreUnidad3'] != "") {
                 $UnidadMedida1 = "cc";
+                $CantUnd1 = round(1/$Producto['CantidadUnd1']);
                 $style = "";
               } else if ($Producto['NombreUnidad1'] == "cc" && $Producto['NombreUnidad3'] == ""){
                 $UnidadMedida1 = "u";
                 $style = "display:none;";
+                if ($Producto['NombreUnidad1'] == "cc" && $Producto['NombreUnidad2'] != "") {
+                  if (!isset($options['cc'][$Producto['NombreUnidad2']])) {
+                    $UnidadMedida1 = $Producto['NombreUnidad1'];
+                    $CantUnd1 = round(1/$Producto['CantidadUnd1']);
+                    $style = "";
+                  } else {
+                    $UnidadMedida1 = $Producto['NombreUnidad2'];
+                    $CantUnd1 = $Producto['CantidadUnd2'];
+                  }
+                }
               } else if ($Producto['NombreUnidad1'] == "u"){
                 $UnidadMedida1 = "u";
                 $style = "display:none;";
@@ -264,7 +288,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
                 </div>
               <?php endif ?>
               <div  id="medidasPresentacion">
-              <?php if ($Producto['NombreUnidad3'] == "gr" ||  $Producto['NombreUnidad3'] == "cc"): ?>
+              <?php if ($Producto['NombreUnidad3'] == "gr" ||  $Producto['NombreUnidad3'] == "cc" || $Producto['NombreUnidad2'] != ""): ?>
                 <div>
                   <div class="form-group col-sm-3">
                     <label>Unidad de medida 1</label>
@@ -282,7 +306,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
                   </div>
                   <div class="form-group col-sm-3">
                     <label>Cantidad de medida 1</label>
-                    <input type="number" name="cantPresentacion[1]"  id="cantPresentacion" class="form-control" value="<?php echo $Producto['CantidadUnd2']*1000 ?>" min="0">
+                    <input type="number" name="cantPresentacion[1]"  id="cantPresentacion" class="form-control" value="<?php echo $CantUnd1 ?>" min="0">
                   </div>
                 </div>
               <?php elseif(($Producto['NombreUnidad1'] == "gr" || $Producto['NombreUnidad1'] == "cc") && $Producto['NombreUnidad2'] == "u"): ?>

@@ -34,16 +34,16 @@ if (isset($_POST['tipo_despacho'])) {
   $TipoDespacho = "";
 }
 
-if (isset($_POST['Cod_Grupo_Etario'])) {
+if (isset($_POST['Cod_Grupo_Etario']) && $_POST['Cod_Grupo_Etario'] != "") {
   $Cod_Grupo_Etario = mysqli_real_escape_string($Link, $_POST['Cod_Grupo_Etario']);
 } else {
-  $Cod_Grupo_Etario = "";
+  $Cod_Grupo_Etario = 0;
 }
 
-if (isset($_POST['ordenCiclo'])) {
+if (isset($_POST['ordenCiclo']) && $_POST['ordenCiclo'] != "") {
   $ordenCiclo = mysqli_real_escape_string($Link, $_POST['ordenCiclo']);
 } else {
-  $ordenCiclo = "";
+  $ordenCiclo = 0;
 }
 
 if (isset($_POST['unidadMedida'])) {
@@ -64,10 +64,16 @@ if (isset($_POST['cantPresentacion'])) {
   $cantPresentacion = "";
 }
 
-if (isset($_POST['variacionMenu'])) {
+if (isset($_POST['variacionMenu']) && $_POST['variacionMenu'] != '') {
   $variacionMenu = $_POST['variacionMenu'];
 } else {
-  $variacionMenu = "";
+  $variacionMenu = 0;
+}
+
+if (isset($_POST['cantidad_preparacion']) && $_POST['cantidad_preparacion'] != '') {
+  $cantidad_preparacion = $_POST['cantidad_preparacion'];
+} else {
+  $cantidad_preparacion = 0;
 }
 
 $consultaTipoProducto = "select Descripcion from productos".$_SESSION['periodoActual']." where Codigo like '".$tipoProducto."%' AND nivel = 1";
@@ -165,26 +171,26 @@ print_r($CantidadUnd);
 echo "<br>".sizeof($unidadMedidaPresentacion);*/
 for ($i=sizeof($NombreUnidad)+1; $i <=5 ; $i++) { 
   $NombreUnidad[$i] = "";
-  $CantidadUnd[$i] = "";
+  $CantidadUnd[$i] = "0";
 }
 
 if ($tipoProducto != "04") {
-  $sqlProducto = "insert into productos".$_SESSION['periodoActual']." (Id, Codigo, Descripcion, Nivel, Tipo, Inactivo, NombreUnidad1, NombreUnidad2, NombreUnidad3, NombreUnidad4, NombreUnidad5, CantidadUnd1, CantidadUnd2, CantidadUnd3, CantidadUnd4, CantidadUnd5, TipodeProducto, FecExpDesc, Cod_Tipo_complemento, Cod_Grupo_Etario, Orden_Ciclo, TipoDespacho, cod_variacion_menu) values ('', '".$nuevoCodigo."', '".$descripcion."', '3', 'P', '0','".$NombreUnidad[1]."', '".$NombreUnidad[2]."', '".$NombreUnidad[3]."', '".$NombreUnidad[4]."', '".$NombreUnidad[5]."', '".$CantidadUnd[1]."', '".$CantidadUnd[2]."', '".$CantidadUnd[3]."', '".$CantidadUnd[4]."', '".$CantidadUnd[5]."', '".$tipoProducto2."', '".date('d/m/Y')."', '".$tipo_complemento."', '".$Cod_Grupo_Etario."', '".$ordenCiclo."', '".$TipoDespacho."', '".$variacionMenu."')";
+  $sqlProducto = "insert into productos".$_SESSION['periodoActual']." (Id, Codigo, Descripcion, Nivel, Tipo, Inactivo, NombreUnidad1, NombreUnidad2, NombreUnidad3, NombreUnidad4, NombreUnidad5, CantidadUnd1, CantidadUnd2, CantidadUnd3, CantidadUnd4, CantidadUnd5, TipodeProducto, FecExpDesc, Cod_Tipo_complemento, Cod_Grupo_Etario, Orden_Ciclo, TipoDespacho, cod_variacion_menu) values (NULL, '".$nuevoCodigo."', '".$descripcion."', '3', 'P', '0','".$NombreUnidad[1]."', '".$NombreUnidad[2]."', '".$NombreUnidad[3]."', '".$NombreUnidad[4]."', '".$NombreUnidad[5]."', '".$CantidadUnd[1]."', '".$CantidadUnd[2]."', '".$CantidadUnd[3]."', '".$CantidadUnd[4]."', '".$CantidadUnd[5]."', '".$tipoProducto2."', '".date('d/m/Y')."', '".$tipo_complemento."', '".$Cod_Grupo_Etario."', '".$ordenCiclo."', '".$TipoDespacho."', '".$variacionMenu."')";
   //echo $sqlProducto;
 
   if ($Link->query($sqlProducto) === true) {
     $idProducto = $Link->insert_id;
 
     if ($tipoProducto != "03") {
-      $sqlFichaTecnica = "insert into fichatecnica (Id, Nombre, Codigo, NumeroUnidades, Instrucciones, CostoIngredientes, MargenSeguridad, CostoXUnidades, CostoUnidad, UltimoCosto, FactorVenta, FechaCosto, IdFT, UM) values ('', '".$descripcion."', '".$nuevoCodigo."', '1', '', '', '', '', '', '', '', '".date('Y/m/d')."', '', '')";
+      $sqlFichaTecnica = "insert into fichatecnica (Id, Nombre, Codigo, NumeroUnidades, Instrucciones, CostoIngredientes, MargenSeguridad, CostoXUnidades, CostoUnidad, UltimoCosto, FactorVenta, FechaCosto, IdFT, UM) values (NULL, '".$descripcion."', '".$nuevoCodigo."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".date('Y/m/d')."', NULL, '')";
 
       if ($Link->query($sqlFichaTecnica) === true) {
         $IdFT = $Link->insert_id;
 
         if ($tipoProducto == "01") {
-          $sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values ('', '".date('Y-m-d h:i:s')."', '".$usuario."', '12', 'Registró el menú <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigo."</strong>') ";
+          $sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values (NULL, '".date('Y-m-d h:i:s')."', '".$usuario."', '12', 'Registró el menú <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigo."</strong>') ";
         } else if ($tipoProducto == "02") {
-          $sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values ('', '".date('Y-m-d h:i:s')."', '".$usuario."', '29', 'Registró la preparación <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigo."</strong>') ";
+          $sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values (NULL, '".date('Y-m-d h:i:s')."', '".$usuario."', '29', 'Registró la preparación <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigo."</strong>') ";
         }
         if ($Link->query($sqlBitacora)===true) {
           echo '{"respuesta" : [{"exitoso" : "1", "idProducto" : "'.$idProducto.'", "IdFT" : "'.$IdFT.'", "nuevoCodigo" : "'.$nuevoCodigo.'"}]}';
@@ -195,7 +201,7 @@ if ($tipoProducto != "04") {
         echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error : '.$sqlFichaTecnica.'"}]}';
       }
     } else {
-      $sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values ('', '".date('Y-m-d h:i:s')."', '".$usuario."', '13', 'Registró el alimento <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigo."</strong>') ";
+      $sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values (NULL, '".date('Y-m-d h:i:s')."', '".$usuario."', '13', 'Registró el alimento <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigo."</strong>') ";
       if ($Link->query($sqlBitacora)===true) {
         echo '{"respuesta" : [{"exitoso" : "1", "idProducto" : "'.$idProducto.'", "IdFT" : "0", "nuevoCodigo" : "'.$nuevoCodigo.'"}]}';
       } else {
@@ -207,6 +213,10 @@ if ($tipoProducto != "04") {
   }
 } else if ($tipoProducto == "04") { //SI ES INDUSTRIALIZADO, CREA PRODUCTO tipo Alimento, luego PRODUCTO tipo Industrializado, al último se le crea ficha técnica y fichatecnicadet relacionando el primer producto creado como Alimento.
 
+  $neto = $cantidad_preparacion;
+  $bruto = $cantidad_preparacion;
+  $umedidadet = $NombreUnidad[1];
+
   if ($subtipoProducto == "0401") {
     $sufijo = "01";
   } else if ($subtipoProducto == "0402") {
@@ -215,23 +225,25 @@ if ($tipoProducto != "04") {
     $sufijo = "05";
   } else if ($subtipoProducto == "0404") {
     $sufijo = "04";
+    $neto = 1 / $CantidadUnd[1];
   }
 
   $nuevoCodigoIndus = obtenerUltimoCodigo("03".$sufijo);
 
-  $sqlProducto = "insert into productos".$_SESSION['periodoActual']." (Id, Codigo, Descripcion, Nivel, Tipo, Inactivo, NombreUnidad1, NombreUnidad2, NombreUnidad3, NombreUnidad4, NombreUnidad5, CantidadUnd1, CantidadUnd2, CantidadUnd3, CantidadUnd4, CantidadUnd5, TipodeProducto, FecExpDesc, Cod_Tipo_complemento, Cod_Grupo_Etario, Orden_Ciclo, TipoDespacho, cod_variacion_menu) values ('', '".$nuevoCodigoIndus."', '".$descripcion."', '3', 'P', '0','".$NombreUnidad[1]."', '".$NombreUnidad[2]."', '".$NombreUnidad[3]."', '".$NombreUnidad[4]."', '".$NombreUnidad[5]."', '".$CantidadUnd[1]."', '".$CantidadUnd[2]."', '".$CantidadUnd[3]."', '".$CantidadUnd[4]."', '".$CantidadUnd[5]."', 'Alimento', '".date('d/m/Y')."', '".$tipo_complemento."', '".$Cod_Grupo_Etario."', '".$ordenCiclo."', '".$TipoDespacho."', '".$variacionMenu."')";
-    $undMed = 1/$CantidadUnd[1];
-    $descRI = $descripcion." x ".$undMed." ".$NombreUnidad[1]." RI";
+  $sqlProducto = "insert into productos".$_SESSION['periodoActual']." (Id, Codigo, Descripcion, Nivel, Tipo, Inactivo, NombreUnidad1, NombreUnidad2, NombreUnidad3, NombreUnidad4, NombreUnidad5, CantidadUnd1, CantidadUnd2, CantidadUnd3, CantidadUnd4, CantidadUnd5, TipodeProducto, FecExpDesc, Cod_Tipo_complemento, Cod_Grupo_Etario, Orden_Ciclo, TipoDespacho, cod_variacion_menu) values (NULL, '".$nuevoCodigoIndus."', '".$descripcion."', '3', 'P', '0','".$NombreUnidad[1]."', '".$NombreUnidad[2]."', '".$NombreUnidad[3]."', '".$NombreUnidad[4]."', '".$NombreUnidad[5]."', '".$CantidadUnd[1]."', '".$CantidadUnd[2]."', '".$CantidadUnd[3]."', '".$CantidadUnd[4]."', '".$CantidadUnd[5]."', 'Alimento', '".date('d/m/Y')."', '".$tipo_complemento."', '".$Cod_Grupo_Etario."', '".$ordenCiclo."', '".$TipoDespacho."', '".$variacionMenu."')";
+    // $undMed = 1/$CantidadUnd[1];
+    // $descRI = $descripcion." x ".$undMed." ".$NombreUnidad[1]." RI"; 
+    $descRI = $descripcion." RI";
     if ($Link->query($sqlProducto)===true) {
           $idProducto= $Link->insert_id;
-        $sqlProducto2 = "insert into productos".$_SESSION['periodoActual']." (Id, Codigo, Descripcion, Nivel, Tipo, Inactivo, NombreUnidad1, NombreUnidad2, NombreUnidad3, NombreUnidad4, NombreUnidad5, CantidadUnd1, CantidadUnd2, CantidadUnd3, CantidadUnd4, CantidadUnd5, TipodeProducto, FecExpDesc, Cod_Tipo_complemento, Cod_Grupo_Etario, Orden_Ciclo, TipoDespacho, cod_variacion_menu) values ('', '".$nuevoCodigo."', '".$descRI."', '3', 'P', '0','u', '', '', '', '', '1', '', '', '', '', '".$tipoProducto2."', '".date('d/m/Y')."', '".$tipo_complemento."', '".$Cod_Grupo_Etario."', '".$ordenCiclo."', '0', '".$variacionMenu."')";
+        $sqlProducto2 = "insert into productos".$_SESSION['periodoActual']." (Id, Codigo, Descripcion, Nivel, Tipo, Inactivo, NombreUnidad1, NombreUnidad2, NombreUnidad3, NombreUnidad4, NombreUnidad5, CantidadUnd1, CantidadUnd2, CantidadUnd3, CantidadUnd4, CantidadUnd5, TipodeProducto, FecExpDesc, Cod_Tipo_complemento, Cod_Grupo_Etario, Orden_Ciclo, TipoDespacho, cod_variacion_menu) values (NULL, '".$nuevoCodigo."', '".$descRI."', '3', 'P', '0','u', NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, NULL, '".$tipoProducto2."', '".date('d/m/Y')."', '".$tipo_complemento."', '".$Cod_Grupo_Etario."', '".$ordenCiclo."', '0', '".$variacionMenu."')";
           if ($Link->query($sqlProducto2)===true) {
-              $sqlFichaTecnica = "insert into fichatecnica (Id, Nombre, Codigo, NumeroUnidades, Instrucciones, CostoIngredientes, MargenSeguridad, CostoXUnidades, CostoUnidad, UltimoCosto, FactorVenta, FechaCosto, IdFT, UM) values ('', '".$descripcion."', '".$nuevoCodigo."', '1', '', '', '', '', '', '', '', '".date('Y/m/d')."', '', '')";
+              $sqlFichaTecnica = "insert into fichatecnica (Id, Nombre, Codigo, NumeroUnidades, Instrucciones, CostoIngredientes, MargenSeguridad, CostoXUnidades, CostoUnidad, UltimoCosto, FactorVenta, FechaCosto, IdFT, UM) values (NULL, '".$descripcion."', '".$nuevoCodigo."', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '".date('Y/m/d')."', NULL, '')";
               if ($Link->query($sqlFichaTecnica)===true) {
                   $IdFT= $Link->insert_id;
-                  $sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values ('', '".$nuevoCodigoIndus."', '".$descripcion."', '0', 'u', '0', '".$IdFT."', '0', '', '0', 'Industrializados', 'Industrializados', '0', '0')";
+                  $sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values (NULL, '".$nuevoCodigoIndus."', '".$descripcion."', '".$cantidad_preparacion."', '".$umedidadet."', '0', '".$IdFT."', '0', '".$CantidadUnd[1]."', '0', 'Industrializados', 'Industrializados', '".$bruto."', '".$neto."')";
                   if ($Link->query($sqlFichaTecnicaDet)===true) {
-                    $sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values ('', '".date('Y-m-d h:i:s')."', '".$usuario."', '13', 'Registró el alimento industrializado <strong>".$descRI." </strong> con código <strong>".$nuevoCodigo."</strong>, sobre el cual se le creó el alimento <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigoIndus."</strong>') ";
+                    $sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values (NULL, '".date('Y-m-d h:i:s')."', '".$usuario."', '13', 'Registró el alimento industrializado <strong>".$descRI." </strong> con código <strong>".$nuevoCodigo."</strong>, sobre el cual se le creó el alimento <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigoIndus."</strong>') ";
                     if ($Link->query($sqlBitacora)===true) {
                       echo '{"respuesta" : [{"exitoso" : "1", "idProducto" : "'.$idProducto.'", "IdFT" : "'.$IdFT.'", "nuevoCodigo" : "'.$nuevoCodigoIndus.'"}]}';
                     } else {
