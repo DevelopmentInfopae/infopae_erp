@@ -3,7 +3,7 @@
   include '../../header.php';
 
   $periodoActual = $_SESSION['periodoActual'];
-  $consulta1 = " SELECT * FROM parametros; ";
+  $consulta1 = "SELECT * FROM parametros;";
   $resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". mysql_error($Link));
   if ($resultado1->num_rows > 0){
     $datos = $resultado1->fetch_assoc();
@@ -95,20 +95,39 @@
 
                 <div class="row">
                   <div class="form-group col-sm-6">
+                    <label for="municipio">Municipio</label>
+                    <select class="form-control" name="municipio" id="municipio">
+                      <option value="">Seleccione uno</option>
+                      <?php
+                        $municipios= "SELECT * FROM `ubicacion` WHERE CodigoDANE LIKE '%".$datos["CodDepartamento"]."%'";
+                        $datos_municipios = $Link->query($municipios) or die ('Unable to execute query. '. mysqli_error($Link));
+                        if($datos_municipios->num_rows > 0){
+                          while($municipio = $datos_municipios->fetch_assoc()){ ?>
+                            <option value="<?php echo $municipio['CodigoDANE']; ?>"
+                            <?php if(isset($datos['CodMunicipio']) && $datos['CodMunicipio'] == $municipio['CodigoDANE']){ echo ' selected '; } ?>
+                            ><?php echo $municipio['Ciudad']; ?></option><?php
+                          }
+                        }
+                      ?>
+                    </select>
+                  </div><!-- /.col -->
+
+                  <div class="form-group col-sm-6">
                     <label for="nombreEtc">ETC</label>
                     <input type="text" class="form-control" name="nombreEtc" id="nombreEtc" value="<?php if(isset($datos['NombreETC']) && $datos['NombreETC'] != '') { echo $datos['NombreETC']; }?>" placeholder="Ente territorial certificado" required>
                     <input type="hidden" name="id" id="id" value="<?php if(isset($datos['id']) && $datos['id']) { echo $datos['id']; } ?>">
                   </div><!-- /.col -->
 
-                  <div class="row">
-                    <div class="form-group col-sm-6">
-                      <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumios."></i></label>
-                      <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
-                    </div><!-- /.col -->
-                  </div>
+                  <!-- <div class="row"> -->
+                  <!-- </div> -->
                 </div>
 
                 <div class="row">
+                  <div class="form-group col-sm-6">
+                    <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumios."></i></label>
+                    <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
+                  </div><!-- /.col -->
+
                   <div class="col-sm-6">
                     <div class="form-group">
                       <label for="mesContrato">Mes de contrato</label>

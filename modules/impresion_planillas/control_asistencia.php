@@ -1,12 +1,17 @@
 <?php
-include '../../config.php';
-include '../../header.php';
-require_once '../../db/conexion.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
-//var_dump($_SESSION);
-$periodoActual = $_SESSION['periodoActual'];
-$DepartamentoOperador = $_SESSION['p_CodDepartamento'];
+  include '../../header.php';
+  require_once '../../db/conexion.php';
+  set_time_limit (0);
+  ini_set('memory_limit','6000M');
+
+  $periodoActual = $_SESSION['periodoActual'];
+  $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
+
+  $con_cod_muni = "SELECT CodMunicipio FROM parametros;";
+  $res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
+  if ($res_minicipio->num_rows > 0) {
+    $codigoDANE = $res_minicipio->fetch_array();
+  }
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -32,15 +37,6 @@ $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
 	</div>
 </div>
 </div>
-
-
-
-
-
-
-
-
-
 
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
@@ -188,24 +184,23 @@ $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
 
 
   </div><!-- /col -->
-
   <div class="col-sm-6 form-group">
     <label for="fechaInicial">Municipio</label>
     <select class="form-control" name="municipio" id="municipio">
       <option value="">Seleccione uno</option>
       <?php
-      $consulta = " select DISTINCT codigoDANE, ciudad from ubicacion where 1=1 and ETC = 0 ";
+      $consulta = "SELECT DISTINCT codigoDANE, ciudad FROM ubicacion WHERE ETC = 0";
 
 
       if($DepartamentoOperador != ''){
         $consulta = $consulta." and CodigoDANE like '$DepartamentoOperador%' ";
       }
       $consulta = $consulta." order by ciudad asc ";
-      echo $consulta;
       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-      if($resultado->num_rows >= 1){
+      if($resultado->num_rows > 0){
         while($row = $resultado->fetch_assoc()) { ?>
-          <option value="<?php echo $row["codigoDANE"]; ?>"  <?php  if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"] ){ echo " selected "; } ?> ><?php echo $row["ciudad"]; ?></option>
+          <?= $row["ciudad"]; ?>
+          <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($codigoDANE["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; } ?> ><?= $row["ciudad"]; ?></option>
         <?php
         }// Termina el while
       }//Termina el if que valida que si existan resultados

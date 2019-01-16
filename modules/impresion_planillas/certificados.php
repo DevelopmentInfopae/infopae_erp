@@ -1,14 +1,20 @@
 <?php
-include '../../header.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
-$periodoActual = $_SESSION['periodoActual'];
-require_once '../../db/conexion.php';
-$Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-    echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}
-$Link->set_charset("utf8");
+  include '../../header.php';
+  set_time_limit (0);
+  ini_set('memory_limit','6000M');
+  $periodoActual = $_SESSION['periodoActual'];
+  require_once '../../db/conexion.php';
+  $Link = new mysqli($Hostname, $Username, $Password, $Database);
+  if ($Link->connect_errno) {
+      echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+  }
+  $Link->set_charset("utf8");
+
+  $con_cod_muni = "SELECT CodMunicipio FROM parametros;";
+  $res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
+  if ($res_minicipio->num_rows > 0) {
+    $codigoDANE = $res_minicipio->fetch_array();
+  }
 ?>
 
 
@@ -98,7 +104,7 @@ $Link->set_charset("utf8");
 		<select class="form-control" name="municipio" id="municipio" required>
 			<option value="">Seleccione uno</option>
 			<?php
-			$consulta = " select DISTINCT codigoDANE, ciudad from ubicacion where 1=1 and ETC = 0 ";
+			$consulta = "SELECT DISTINCT codigoDANE, ciudad FROM ubicacion WHERE ETC = 0 ";
 
 			$DepartamentoOperador = $_SESSION['p_CodDepartamento'];
 			if($DepartamentoOperador != ''){
@@ -109,7 +115,7 @@ $Link->set_charset("utf8");
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 			if($resultado->num_rows >= 1){
 				while($row = $resultado->fetch_assoc()) { ?>
-					<option value="<?php echo $row["codigoDANE"]; ?>"  <?php  if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"] ){ echo " selected "; } ?> ><?php echo $row["ciudad"]; ?></option>
+					<option value="<?php echo $row["codigoDANE"]; ?>"  <?php  if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($codigoDANE["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; } ?> ><?php echo $row["ciudad"]; ?></option>
 					<?php
 				}// Termina el while
 			}//Termina el if que valida que si existan resultados
