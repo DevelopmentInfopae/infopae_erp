@@ -83,16 +83,16 @@ if (isset($_POST['TipoDespacho'])) {
   $TipoDespacho = "";
 }
 
-if (isset($_POST['Cod_Grupo_Etario'])) {
+if (isset($_POST['Cod_Grupo_Etario']) && $_POST['Cod_Grupo_Etario'] != "") {
   $Cod_Grupo_Etario = $_POST['Cod_Grupo_Etario'];
 } else {
-  $Cod_Grupo_Etario = "";
+  $Cod_Grupo_Etario = 0;
 }
 
-if (isset($_POST['ordenCiclo'])) {
+if (isset($_POST['ordenCiclo']) && $_POST['ordenCiclo'] != "") {
   $ordenCiclo = $_POST['ordenCiclo'];
 } else {
-  $ordenCiclo = "";
+  $ordenCiclo = 0;
 }
 
 if (isset($_POST['unidadMedida'])) {
@@ -113,10 +113,10 @@ if (isset($_POST['cantPresentacion'])) {
   $cantPresentacion = "";
 }
 
-if (isset($_POST['variacionMenu'])) {
+if (isset($_POST['variacionMenu']) && $_POST['variacionMenu'] != "") {
   $variacionMenu = $_POST['variacionMenu'];
 } else {
-  $variacionMenu = "";
+  $variacionMenu = 0;
 }
 
 $consultaTipoProducto = "select Descripcion from productos".$_SESSION['periodoActual']." where Codigo like '".$tipoProducto."%' AND nivel = 1";
@@ -216,7 +216,7 @@ print_r($CantidadUnd);
 echo "<br>".sizeof($unidadMedidaPresentacion);*/
 for ($i=sizeof($NombreUnidad)+1; $i <=5 ; $i++) { 
   $NombreUnidad[$i] = "";
-  $CantidadUnd[$i] = "";
+  $CantidadUnd[$i] = "0";
 }
 
 $sqlProducto = "update productos".$_SESSION['periodoActual']." set Codigo = '".$nuevoCodigo."', Descripcion = '".$descripcion."', Nivel = '3', Tipo = 'P', Inactivo = '0', NombreUnidad1 = '".$NombreUnidad[1]."', NombreUnidad2 = '".$NombreUnidad[2]."', NombreUnidad3 = '".$NombreUnidad[3]."', NombreUnidad4 = '".$NombreUnidad[4]."', NombreUnidad5 = '".$NombreUnidad[5]."', CantidadUnd1 = '".$CantidadUnd[1]."', CantidadUnd2 = '".$CantidadUnd[2]."', CantidadUnd3 = '".$CantidadUnd[3]."', CantidadUnd4 = '".$CantidadUnd[4]."', CantidadUnd5 = '".$CantidadUnd[5]."', TipodeProducto = '".$tipoProducto2."', FecExpDesc = '".date('d/m/Y')."', Cod_Tipo_complemento = '".$tipo_complemento."', Cod_Grupo_Etario = '".$Cod_Grupo_Etario."', Orden_Ciclo = '".$ordenCiclo."', TipoDespacho = '".$TipoDespacho."', cod_variacion_menu ='".$variacionMenu."' where Id = '".$IdProducto."'";
@@ -298,11 +298,21 @@ if ($Link->query($sqlProducto) === true) {
 			          $descProductoFichaTecnicaDet = $row['Descripcion'];
 			        }
 			      }
+
+			      $subtipo = substr($productoFichaTecnicaDet[$i], 0, 2);
+
+			      if ($subtipo == "04") {
+			        $tipoalimento = "Industrializados";
+			      } else if ($subtipo == "03") {
+			        $tipoalimento = "Alimento";
+			      } else if ($subtipo == "02") {
+			        $tipoalimento = "Preparación";
+			      }
 			      
 			      if (isset($IdFTDet[$i])) {
-			      	$sqlFichaTecnicaDet = "update fichatecnicadet set codigo = '".$productoFichaTecnicaDet[$i]."', Componente = '".$descProductoFichaTecnicaDet."', Cantidad = '1', UnidadMedida = 'u', Factor = '0', Estado = '0', Tipo = 'Preparación', TipoProducto = 'Preparación', PesoBruto = '0', PesoNeto = '0' WHERE Id = '".$IdFTDet[$i]."'";
+			      	$sqlFichaTecnicaDet = "update fichatecnicadet set codigo = '".$productoFichaTecnicaDet[$i]."', Componente = '".$descProductoFichaTecnicaDet."', Cantidad = '1', UnidadMedida = 'u', Factor = '0', Estado = '0', Tipo = '".$tipoalimento."', TipoProducto = '".$tipoalimento."', PesoBruto = '0', PesoNeto = '0' WHERE Id = '".$IdFTDet[$i]."'";
 			      } else {
-			      	$sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values ('', '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '1', 'u', '0', '".$IdFT."', '0', '0', '0', 'Alimento', 'Alimento', '0', '0')";
+			      	$sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values (NULL, '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '1', 'u', '0', '".$IdFT."', '0', '0', '0', '".$tipoalimento."', '".$tipoalimento."', '0', '0')";
 			      }
 			      if ($Link->query($sqlFichaTecnicaDet) === true) {
 			        $validaRegistro++;
@@ -341,7 +351,7 @@ if ($Link->query($sqlProducto) === true) {
 			      if (isset($IdFTDet[$i])) {
 			      	$sqlFichaTecnicaDet = "update fichatecnicadet set codigo = '".$productoFichaTecnicaDet[$i]."', Componente = '".$descProductoFichaTecnicaDet."', Cantidad = '".$cantidadProducto[$i]."', UnidadMedida = '".$unidadMedidaProducto[$i]."', Factor = '".$factorProducto."', Estado = '0', Tipo = 'Alimento', TipoProducto = 'Alimento', PesoBruto = '".$pesoBrutoProducto[$i]."', PesoNeto = '".$pesoNetoProducto[$i]."'  WHERE Id = '".$IdFTDet[$i]."'";
 			      } else {
-			      	$sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values ('', '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '".$cantidadProducto[$i]."', '".$unidadMedidaProducto[$i]."', '0', '".$IdFT."', '0', '".$factorProducto."', '0', 'Alimento', 'Alimento', '".$pesoBrutoProducto[$i]."', '".$pesoNetoProducto[$i]."')";
+			      	$sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values (NULL, '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '".$cantidadProducto[$i]."', '".$unidadMedidaProducto[$i]."', '0', '".$IdFT."', '0', '".$factorProducto."', '0', 'Alimento', 'Alimento', '".$pesoBrutoProducto[$i]."', '".$pesoNetoProducto[$i]."')";
 			      }
 			     	if ($Link->query($sqlFichaTecnicaDet) === true) {
 			        $validaRegistro++;
@@ -354,7 +364,7 @@ if ($Link->query($sqlProducto) === true) {
 			  }
 
 			  if ($validaRegistro == sizeof($productoFichaTecnicaDet)) {
-			  	$sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values ('', '".date('Y-m-d h:i:s')."', '".$usuario."', '".$tipo_accion."', '".$accion."') ";
+			  	$sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values (NULL, '".date('Y-m-d h:i:s')."', '".$usuario."', '".$tipo_accion."', '".$accion."') ";
 			  	if ($Link->query($sqlBitacora)===true) {
 			  		echo "1";
 			  	} else {
@@ -515,7 +525,7 @@ if ($Link->query($sqlProducto) === true) {
 		}
 		$sqlCalyNut = "update menu_aportes_calynut set cod_prod = '".$nuevoCodigo."', nom_prod = '".$descripcion."', grupo_alim = '".$grupo_alim."', kcalxg = '".$kcalxg."', kcaldgrasa = '".$kcaldgrasa."', Grasa_Sat = '".$Grasa_Sat."', Grasa_poliins = '".$Grasa_poliins."', Grasa_Monoins = '".$Grasa_monoins."', Grasa_Trans = '".$Grasa_Trans."', Fibra_dietaria = '".$Fibra_dietaria."', Azucares = '".$Azucares."', Proteinas = '".$Proteinas."', Colesterol = '".$Colesterol."', Sodio = '".$Sodio."', Zinc = '".$Zinc."', Calcio = '".$Calcio."', Hierro = '".$Hierro."', Vit_A = '".$Vit_A."', Vit_C = '".$Vit_C."', Vit_B1 = '".$Vit_B1."', Vit_B2 = '".$Vit_B2."', Vit_B3 = '".$Vit_B3."', Acido_Fol = '".$Acido_Fol."', Referencia = '".$Referencia."', cod_Referencia = '".$cod_Referencia."' where id = '".$IdCalyNut."'";
 		if ($Link->query($sqlCalyNut) === true) {
-			$sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values ('', '".date('Y-m-d h:i:s')."', '".$usuario."', '".$tipo_accion."', '".$accion."') ";
+			$sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values (NULL, '".date('Y-m-d h:i:s')."', '".$usuario."', '".$tipo_accion."', '".$accion."') ";
 		  	if ($Link->query($sqlBitacora)===true) {
 		  		echo "1";
 		  	} else {

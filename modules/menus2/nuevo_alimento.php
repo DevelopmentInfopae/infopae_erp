@@ -144,6 +144,10 @@ $periodoActual = $_SESSION['periodoActual'];
                         <em id="msgcp1" style="display: none;">Ordenar de mayor a menor.</em>
                       </div>
                     </div>
+                    <div class="form-group col-sm-3" id="divCantPreparacion" style="display: none;">
+                      <label>Cantidad preparación</label>
+                      <input type="number" min="0" name="cantidad_preparacion" id="cantidad_preparacion" class="form-control" required>
+                    </div>
                   </form>
                   <div class="form-group col-sm-12">
                       <button class="btn btn-primary" onclick="validarForm('formProducto', 'producto', 'aportesCalyNut');" id="botonSiguiente">Siguiente</button>
@@ -163,6 +167,7 @@ $periodoActual = $_SESSION['periodoActual'];
                   <form class="form" id="formFichaTecnica" method="post">
                     <input type="number" name="idProducto" id="idProducto" style="display: none;">
                     <input type="number" name="IdFT" id="IdFT" style="display: none;">
+                    <input type="number" name="TipoProductoFT" id="TipoProductoFT" style="display: none;">
                     <div class="form-group col-sm-12">
                       <label>Seleccione productos</label>
                       <table class="table" id="tablaProductosFichaTecnicaDet">

@@ -3,8 +3,8 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
-if (isset($_POST['tipoProducto'])) {
-	$tipoProducto = $_POST['tipoProducto'];
+if (isset($_POST['TipoProductoFT'])) {
+	$tipoProducto = $_POST['TipoProductoFT'];
 } else {
 	$tipoProducto = "";
 }
@@ -64,7 +64,18 @@ if (($tipoProducto == "01" || $tipoProducto == "02" || $tipoProducto == "04") &&
           $descProductoFichaTecnicaDet = $row['Descripcion'];
         }
       }
-      $sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values ('', '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '0', 'u', '0', '".$IdFT."', '0', '0', '0', 'Preparación', 'Preparación', '0', '0')";
+
+      $subtipo = substr($productoFichaTecnicaDet[$i], 0, 2);
+
+      if ($subtipo == "04") {
+        $tipoalimento = "Industrializados";
+      } else if ($subtipo == "03") {
+        $tipoalimento = "Alimento";
+      } else if ($subtipo == "02") {
+        $tipoalimento = "Preparación";
+      }
+
+      $sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values (NULL, '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '1', 'u', '0', '".$IdFT."', '0', '0', '0', '".$tipoalimento."', '".$tipoalimento."', '0', '0')";
       if ($Link->query($sqlFichaTecnicaDet) === true) {
         $validaRegistro++;
       } else {
@@ -95,7 +106,7 @@ if (($tipoProducto == "01" || $tipoProducto == "02" || $tipoProducto == "04") &&
         $factorProducto = 0;
       }
 
-      $sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values ('', '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '".$cantidadProducto[$i]."', '".$unidadMedidaProducto[$i]."', '0', '".$IdFT."', '0', '".$factorProducto."', '0', 'Alimento', 'Alimento', '".$pesoBrutoProducto[$i]."', '".$pesoNetoProducto[$i]."')";
+      $sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values (NULL, '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '".$cantidadProducto[$i]."', '".$unidadMedidaProducto[$i]."', '0', '".$IdFT."', '0', '".$factorProducto."', '0', 'Alimento', 'Alimento', '".$pesoBrutoProducto[$i]."', '".$pesoNetoProducto[$i]."')";
 
       if ($Link->query($sqlFichaTecnicaDet) === true) {
         $validaRegistro++;
