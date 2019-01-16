@@ -300,7 +300,7 @@ if ($Link->query($sqlProducto) === true) {
 			      }
 			      
 			      if (isset($IdFTDet[$i])) {
-			      	$sqlFichaTecnicaDet = "update fichatecnicadet set codigo = '".$productoFichaTecnicaDet[$i]."', Componente = '".$descProductoFichaTecnicaDet."', Cantidad = '0', UnidadMedida = 'u', Factor = '0', Estado = '0', Tipo = 'Preparación', TipoProducto = 'Preparación', PesoBruto = '0', PesoNeto = '0' WHERE Id = '".$IdFTDet[$i]."'";
+			      	$sqlFichaTecnicaDet = "update fichatecnicadet set codigo = '".$productoFichaTecnicaDet[$i]."', Componente = '".$descProductoFichaTecnicaDet."', Cantidad = '1', UnidadMedida = 'u', Factor = '0', Estado = '0', Tipo = 'Preparación', TipoProducto = 'Preparación', PesoBruto = '0', PesoNeto = '0' WHERE Id = '".$IdFTDet[$i]."'";
 			      } else {
 			      	$sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values ('', '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '1', 'u', '0', '".$IdFT."', '0', '0', '0', 'Alimento', 'Alimento', '0', '0')";
 			      }
