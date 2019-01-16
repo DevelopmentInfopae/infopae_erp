@@ -135,13 +135,6 @@
 		<ul class="nav nav-second-level collapse">
 			<li> <a href="<?php echo $baseUrl; ?>/modules/parametros"><span class="nav-label">Parámetros generales</span></a> </li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/dias_contrato"><span class="nav-label">Días de contratos</span></a> </li>
-
-
-
-
-
-
-
 			<li><a href="#" class="sinDesarrollar">Semanas de contrato</a></li>
 			<li><a href="#" class="sinDesarrollar">Complementos alimentarios</a></li>
 			<li><a href="<?php echo $baseUrl; ?>/modules/insumos">Insumos</a></li>
@@ -157,34 +150,22 @@
 					<li><a href="<?php echo $baseUrl; ?>/modules/rutas/ruta_nuevo.php">Nueva Ruta</a></li>
 				</ul>
 			</li>
-
-
-
-
 			<li> <a href="<?php echo $baseUrl; ?>/modules/bodegas"><span class="nav-label">Bodegas</span></a> </li>
-
-
-
-
-
-
-
-
 			<li><a href="#" class="sinDesarrollar">Dispositivos bométricos</a></li>
 			<li><a href="#" class="sinDesarrollar">Departamentos</a></li>
 			<li><a href="#" class="sinDesarrollar">Municipios</a></li>
 			<li><a href="#" class="sinDesarrollar">Tipomovimiento</a></li>
 			<li><a href="#" class="sinDesarrollar">Documentos</a></li>
-			<li><a href="#" class="sinDesarrollar">Empleados</a></li>
-			<li><a href="#" class="sinDesarrollar">Tipo vehiculo</a></li>
-			<li><a href="#" class="sinDesarrollar">Tipo despacho</a></li>
-			<li><a href="#" class="sinDesarrollar">Tipo documento</a></li>
-			<li><a href="#" class="sinDesarrollar">Discapacidades</a></li>
-			<li><a href="#" class="sinDesarrollar">Estrato</a></li>
-			<li><a href="#" class="sinDesarrollar">Etnias</a></li>
-			<li><a href="#" class="sinDesarrollar">Grados</a></li>
-			<li><a href="#" class="sinDesarrollar">Jornada</a></li>
-			<li><a href="#" class="sinDesarrollar">Pblación victima</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/empleados">Empleados</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/tipo_vehiculos">Tipo vehiculo</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/tipo_despachos">Tipo despacho</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/tipo_documentos">Tipo documento</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/discapacidad">Discapacidades</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/estrato">Estrato</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/etnia">Etnias</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/grados">Grados</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/jornadas">Jornada</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/poblacion_victima">Población victima</a></li>
 		</ul>
 	</li>
 <?php } ?>

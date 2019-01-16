@@ -95,20 +95,39 @@
 
                 <div class="row">
                   <div class="form-group col-sm-6">
+                    <label for="municipio">Municipio</label>
+                    <select class="form-control" name="municipio" id="municipio" required>
+                      <option value="">Seleccione uno</option>
+                      <?php
+                        $consulta1= " SELECT * FROM departamentos WHERE id <> 0 ORDER BY nombre ASC ";
+                        $result1 = $Link->query($consulta1) or die ('Unable to execute query. '. mysqli_error($Link));
+                        if($result1->num_rows > 0){
+                          while($row1 = $result1->fetch_assoc()){ ?>
+                            <option value="<?php echo $row1['id']; ?>"
+                            <?php if(isset($datos['CodDepartamento']) && $datos['CodDepartamento'] == $row1['id']){ echo ' selected '; } ?>
+                            ><?php echo $row1['nombre']; ?></option><?php
+                          }
+                        }
+                      ?>
+                    </select>
+                  </div><!-- /.col -->
+
+                  <div class="form-group col-sm-6">
                     <label for="nombreEtc">ETC</label>
                     <input type="text" class="form-control" name="nombreEtc" id="nombreEtc" value="<?php if(isset($datos['NombreETC']) && $datos['NombreETC'] != '') { echo $datos['NombreETC']; }?>" placeholder="Ente territorial certificado" required>
                     <input type="hidden" name="id" id="id" value="<?php if(isset($datos['id']) && $datos['id']) { echo $datos['id']; } ?>">
                   </div><!-- /.col -->
 
-                  <div class="row">
-                    <div class="form-group col-sm-6">
-                      <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumios."></i></label>
-                      <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
-                    </div><!-- /.col -->
-                  </div>
+                  <!-- <div class="row"> -->
+                  <!-- </div> -->
                 </div>
 
                 <div class="row">
+                  <div class="form-group col-sm-6">
+                    <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumios."></i></label>
+                    <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
+                  </div><!-- /.col -->
+
                   <div class="col-sm-6">
                     <div class="form-group">
                       <label for="mesContrato">Mes de contrato</label>
