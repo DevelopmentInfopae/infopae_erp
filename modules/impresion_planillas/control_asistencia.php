@@ -44,144 +44,68 @@
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
           <h2>Parámetros de Consulta</h2>
-          <div>
-          <!--
-            mes
-            municipio
-            institucion
-            sede
-            tipo comp
-            Generar planilla
-              vacia
-              blanco
-              programada
-              novedades
-          -->
-          </div>
-          <form class="col-lg-12" action="planillas.php" name="formPlanillas" id="formPlanillas" method="post" target="_blank">
-
-
-
-<div class="row">
-
-  <div class="col-sm-6 form-group">
-    <label for="fechaInicial">Mes</label>
-
-
-
-
-		<?php
-		$vsql="SELECT TABLE_NAME as mes FROM information_schema.TABLES WHERE  table_schema = '$Database' AND   TABLE_NAME LIKE 'entregas_res_%'";
-		?>
-
-  <select name="mes" id="mes" class="form-control">
-			<?php
-
-
-			$result = $Link->query($vsql) or die ('Unable to execute query. '. mysqli_error($Link));
-			while($row = $result->fetch_assoc()) {
-				$aux = $row['mes'];
-				$aux = substr($aux, 13, -2);
-
-				?>
-
-
-				<option value="<?php echo $aux; ?>" <?php if (isset($_POST['mesinicial']) && $_POST['mesinicial'] == $aux ) {echo " selected "; } ?>><?php
-
-
-
-				switch ($aux) {
-					case "01":
-					echo "Enero";
-					break;
-					case "02":
-					echo "Febrero";
-					break;
-					case "03":
-					echo "Marzo";
-					break;
-					case "04":
-					echo "Abril";
-					break;
-					case "05":
-					echo "Mayo";
-					break;
-					case "06":
-					echo "Junio";
-					break;
-					case "07":
-					echo "Julio";
-					break;
-					case "08":
-					echo "Agosto";
-					break;
-					case "09":
-					echo "Septiembre";
-					break;
-					case "10":
-					echo "Octubre";
-					break;
-					case "11":
-					echo "Noviembre";
-					break;
-					case "12":
-					echo "Diciembre";
-					break;
-				}
-
-
-
-
-
-
-
-				?></option>
-
-			<?php  } ?>
-
-
-
-
-
-
-
-
+            <form class="col-lg-12" action="planillas.php" name="formPlanillas" id="formPlanillas" method="post" target="_blank">
+              <div class="row">
+                <div class="col-sm-6 form-group">
+                  <label for="fechaInicial">Mes</label>
+	                <?php $vsql="SELECT TABLE_NAME as mes FROM information_schema.TABLES WHERE  table_schema = '$Database' AND   TABLE_NAME LIKE 'entregas_res_%'"; ?>
+                  <select name="mes" id="mes" class="form-control">
+		              <?php
+  			            $result = $Link->query($vsql) or die ('Unable to execute query. '. mysqli_error($Link));
+  			            while($row = $result->fetch_assoc()) {
+          				  $aux = $row['mes'];
+  				          $aux = substr($aux, 13, -2);
+				          ?>
+				            <option value="<?php echo $aux; ?>" <?php if (isset($_POST['mesinicial']) && $_POST['mesinicial'] == $aux ) {echo " selected "; } ?>>
+                      <?php
+                				switch ($aux) {
+                					case "01":
+                					echo "Enero";
+                					break;
+                					case "02":
+                					echo "Febrero";
+                					break;
+                					case "03":
+                					echo "Marzo";
+                					break;
+                					case "04":
+                					echo "Abril";
+                					break;
+                					case "05":
+                					echo "Mayo";
+                					break;
+                					case "06":
+                					echo "Junio";
+                					break;
+                					case "07":
+                					echo "Julio";
+                					break;
+                					case "08":
+                					echo "Agosto";
+                					break;
+                					case "09":
+                					echo "Septiembre";
+                					break;
+                					case "10":
+                					echo "Octubre";
+                					break;
+                					case "11":
+                					echo "Noviembre";
+                					break;
+                					case "12":
+                					echo "Diciembre";
+                					break;
+                				}
+				              ?>
+                    </option>
+		          <?php  } ?>
 
 										 </select>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <?php
     // if(!isset($_GET['pb_mes']) || $_GET['pb_mes'] == ''){
     //   $_GET['pb_mes'] = date("n");
     // }
     ?>
-
-
-
-
-
-
-
-
 
   </div><!-- /col -->
   <div class="col-sm-6 form-group">
@@ -277,16 +201,8 @@
   </div>
 </div><!-- /.row -->
 
-
-<!--
-1. vacia
-2. blanco
-3. programada
-4. novedades
--->
-
 <div class="row">
-  <div class="col-sm-3 form-group">
+  <div class="col-sm-2 form-group">
     <div class="i-checks">
       <label>
         <input type="radio" value="1" name="tipoPlanilla"> <i></i> Vacia
@@ -294,7 +210,7 @@
     </div>
   </div><!-- /.col -->
 
-  <div class="col-sm-3 form-group">
+  <div class="col-sm-2 form-group">
     <div class="i-checks">
       <label>
         <input type="radio" value="2" name="tipoPlanilla"> <i></i> Blanco
@@ -302,7 +218,7 @@
     </div>
   </div><!-- /.col -->
 
-  <div class="col-sm-3 form-group">
+  <div class="col-sm-2 form-group">
     <div class="i-checks">
       <label>
         <input type="radio" value="3" name="tipoPlanilla"> <i></i> Programada
@@ -310,10 +226,26 @@
     </div>
   </div><!-- /.col -->
 
-  <div class="col-sm-3 form-group">
+  <div class="col-sm-2 form-group">
     <div class="i-checks">
       <label>
         <input type="radio" value="4" name="tipoPlanilla"> <i></i> Diligenciada
+      </label>
+    </div>
+  </div><!-- /.col -->
+
+  <div class="col-sm-2 form-group">
+    <div class="i-checks">
+      <label>
+        <input type="radio" value="5" name="tipoPlanilla"> <i></i> Novedades
+      </label>
+    </div>
+  </div><!-- /.col -->
+
+  <div class="col-sm-2 form-group">
+    <div class="i-checks">
+      <label>
+        <input type="radio" value="6" name="tipoPlanilla"> <i></i> Suplentes
       </label>
     </div>
   </div><!-- /.col -->
