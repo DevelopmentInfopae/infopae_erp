@@ -3,7 +3,7 @@
   include '../../header.php';
 
   $periodoActual = $_SESSION['periodoActual'];
-  $consulta1 = " SELECT * FROM parametros; ";
+  $consulta1 = "SELECT * FROM parametros;";
   $resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". mysql_error($Link));
   if ($resultado1->num_rows > 0){
     $datos = $resultado1->fetch_assoc();
@@ -96,16 +96,16 @@
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="municipio">Municipio</label>
-                    <select class="form-control" name="municipio" id="municipio" required>
+                    <select class="form-control" name="municipio" id="municipio">
                       <option value="">Seleccione uno</option>
                       <?php
-                        $consulta1= " SELECT * FROM departamentos WHERE id <> 0 ORDER BY nombre ASC ";
-                        $result1 = $Link->query($consulta1) or die ('Unable to execute query. '. mysqli_error($Link));
-                        if($result1->num_rows > 0){
-                          while($row1 = $result1->fetch_assoc()){ ?>
-                            <option value="<?php echo $row1['id']; ?>"
-                            <?php if(isset($datos['CodDepartamento']) && $datos['CodDepartamento'] == $row1['id']){ echo ' selected '; } ?>
-                            ><?php echo $row1['nombre']; ?></option><?php
+                        $municipios= "SELECT * FROM `ubicacion` WHERE CodigoDANE LIKE '%".$datos["CodDepartamento"]."%'";
+                        $datos_municipios = $Link->query($municipios) or die ('Unable to execute query. '. mysqli_error($Link));
+                        if($datos_municipios->num_rows > 0){
+                          while($municipio = $datos_municipios->fetch_assoc()){ ?>
+                            <option value="<?php echo $municipio['CodigoDANE']; ?>"
+                            <?php if(isset($datos['CodMunicipio']) && $datos['CodMunicipio'] == $municipio['CodigoDANE']){ echo ' selected '; } ?>
+                            ><?php echo $municipio['Ciudad']; ?></option><?php
                           }
                         }
                       ?>

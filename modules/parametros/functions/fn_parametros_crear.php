@@ -4,6 +4,7 @@
 
 	$anio = date("Y");
 	$nombre = (isset($_POST["nombre"]) && $_POST["nombre"] != '') ? mysqli_real_escape_string($Link, $_POST["nombre"]) : '';
+	$municipio = (isset($_POST["municipio"]) && $_POST["municipio"] != '') ? mysqli_real_escape_string($Link, $_POST["municipio"]) : '';
 	$nombreEtc = (isset($_POST["nombreEtc"]) && $_POST["nombreEtc"] != '') ? mysqli_real_escape_string($Link, $_POST["nombreEtc"]) : '';
 	$mesContrato = (isset($_POST["mesContrato"]) && $_POST["mesContrato"] != '') ? mysqli_real_escape_string($Link, $_POST["mesContrato"]) : '';
 	$departamento = (isset($_POST["departamento"]) && $_POST["departamento"] != '') ? mysqli_real_escape_string($Link, $_POST["departamento"]) : '';
@@ -11,8 +12,8 @@
 	$numeroContrato = (isset($_POST["numeroContrato"]) && $_POST["numeroContrato"] != '') ? mysqli_real_escape_string($Link, $_POST["numeroContrato"]) : '';
 	$nombredepartamento = (isset($_POST["nombredepartamento"]) && $_POST["nombredepartamento"] != '') ? mysqli_real_escape_string($Link, $_POST["nombredepartamento"]) : '';
 
-	$consulta1 = "INSERT INTO parametros (rutacarpetabackup, Operador, NumContrato, ano, CodDepartamento, NombreETC, Departamento, CantidadCupos, MesContrato)
-								VALUES ('upload/lectordhuellas', '$nombre', '$numeroContrato', '$anio', '$departamento', '$nombreEtc', '$nombredepartamento', '$cantidadCupos', '$mesContrato');";
+	$consulta1 = "INSERT INTO parametros (rutacarpetabackup, Operador, NumContrato, ano, CodDepartamento, NombreETC, Departamento, CantidadCupos, MesContrato, CodMunicipio)
+								VALUES ('upload/lectordhuellas', '$nombre', '$numeroContrato', '$anio', '$departamento', '$nombreEtc', '$nombredepartamento', '$cantidadCupos', '$mesContrato', '$municipio');";
 	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". mysql_error($Link));
 	if ($resultado1){
 		$id = $Link->insert_id;

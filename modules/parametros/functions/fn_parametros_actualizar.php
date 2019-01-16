@@ -4,6 +4,7 @@
 
 	$id = (isset($_POST["id"]) && $_POST["id"] != '') ? mysqli_real_escape_string($Link, $_POST["id"]) : '';
 	$nombre = (isset($_POST["nombre"]) && $_POST["nombre"] != '') ? mysqli_real_escape_string($Link, $_POST["nombre"]) : '';
+	$municipio = (isset($_POST["municipio"]) && $_POST["municipio"] != '') ? mysqli_real_escape_string($Link, $_POST["municipio"]) : '';
 	$nombreEtc = (isset($_POST["nombreEtc"]) && $_POST["nombreEtc"] != '') ? mysqli_real_escape_string($Link, $_POST["nombreEtc"]) : '';
 	$mesContrato = (isset($_POST["mesContrato"]) && $_POST["mesContrato"] != '') ? mysqli_real_escape_string($Link, $_POST["mesContrato"]) : '';
 	$departamento = (isset($_POST["departamento"]) && $_POST["departamento"] != '') ? mysqli_real_escape_string($Link, $_POST["departamento"]) : '';
@@ -19,7 +20,8 @@
 									NombreETC = '$nombreEtc',
 									Departamento = '$nombredepartamento',
 									CantidadCupos = '$cantidadCupos',
-									MesContrato = '$mesContrato'
+									MesContrato = '$mesContrato',
+									CodMunicipio = '$municipio'
 								WHERE id = '$id'";
 	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". mysql_error($Link));
 	if ($resultado1)

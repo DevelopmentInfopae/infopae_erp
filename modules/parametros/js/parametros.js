@@ -1,20 +1,22 @@
 $(document).ready(function(){
   toastr.options = {
-   "closeButton": true,
-   "debug": false,
-   "progressBar": true,
-   "preventDuplicates": false,
-   "positionClass": "toast-top-right",
-   "onclick": null,
-   "showDuration": "400",
-   "hideDuration": "1000",
-   "timeOut": "2000",
-   "extendedTimeOut": "1000",
-   "showEasing": "swing",
-   "hideEasing": "linear",
-   "showMethod": "fadeIn",
-   "hideMethod": "fadeOut"
- }
+    "closeButton": true,
+    "debug": false,
+    "progressBar": true,
+    "preventDuplicates": false,
+    "positionClass": "toast-top-right",
+    "onclick": null,
+    "showDuration": "400",
+    "hideDuration": "1000",
+    "timeOut": "2000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  }
+
+  $(document).on('change', '#departamento', function () { cargar_municipios($(this).val()); });
 });
 
 function guardarParametros(){
@@ -27,6 +29,7 @@ function guardarParametros(){
     formData.append('nombre', $('#nombre').val());
     formData.append('foto', $('#foto')[0].files[0]);
     formData.append('nombreEtc', $("#nombreEtc").val());
+    formData.append('municipio', $('#municipio').val());
     formData.append('mesContrato', $('#mesContrato').val());
     formData.append('departamento', $("#departamento").val());
     formData.append('cantidadCupos', $('#cantidadCupos').val());
@@ -79,4 +82,22 @@ function guardarParametros(){
   var heights = $("campos .col-sm-4").map(function() { return $(this).height(); }).get(),
   maxHeight = Math.max.apply(null, heights);
   $("campos .col-sm-4").height(maxHeight);
+}
+
+
+function cargar_municipios(id_departamento)
+{
+  $.ajax({
+    url: 'functions/fn_parametros_cargar_municipios.php',
+    type: 'POST',
+    dataType: 'html',
+    data: {Id_departamento: id_departamento},
+  })
+  .done(function(data) {
+    $('#municipio').html(data);
+  })
+  .fail(function(data) {
+    console.log(data);
+  });
+
 }
