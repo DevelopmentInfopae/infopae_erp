@@ -806,7 +806,7 @@ $grupoAlimActual = '';
       // }
 
       // Alimento
-      $pdf->Cell(68.3,4,utf8_decode($aux),1,0,'L',False);
+      $pdf->Cell(49,4,utf8_decode($aux),1,0,'L',False);
 
       if($item['presentacion'] == 'u'){
          $aux = round(0+$item['grupo1']);
@@ -904,23 +904,23 @@ $grupoAlimActual = '';
 
 
   // CANTIDAD ENTREGADA
-  $pdf->Cell(9.3,4,$aux,1,0,'C',False);
-  $pdf->Cell(9.3,4,'',1,0,'C',False);
-  $pdf->Cell(9.3,4,'',1,0,'C',False);
+  $pdf->Cell(10.6,4,$aux,1,0,'C',False);
+  $pdf->Cell(10.6,4,'',1,0,'C',False);
+  $pdf->Cell(10.6,4,'',1,0,'C',False);
 
   // ESPECIFICACIÓN DE CALIDAD
-  $pdf->Cell(11,4,'',1,0,'C',False);
-  $pdf->Cell(11,4,'',1,0,'C',False);
+  $pdf->Cell(13.7,4,'',1,0,'C',False);
+  $pdf->Cell(13.7,4,'',1,0,'C',False);
 
   // FALTANTES
-  $pdf->Cell(9.3,4,'',1,0,'C',False);
-  $pdf->Cell(9.3,4,'',1,0,'C',False);
-  $pdf->Cell(9.3,4,'',1,0,'C',False);
+  $pdf->Cell(9.2,4,'',1,0,'C',False);
+  $pdf->Cell(8.9,4,'',1,0,'C',False);
+  $pdf->Cell(13.9,4,'',1,0,'C',False);
 
   //DEVOLUCIÓN
   $pdf->Cell(9.3,4,'',1,0,'C',False);
   $pdf->Cell(9.3,4,'',1,0,'C',False);
-  $pdf->Cell(9.3,4,'',1,0,'C',False);
+  $pdf->Cell(15.2,4,'',1,0,'C',False);
 
   $pdf->Ln(4);
 

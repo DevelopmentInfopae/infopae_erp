@@ -315,7 +315,7 @@ $Link->set_charset("utf8");
                     <td><?php echo $ingredientes[$k]['Componente']; ?></td>
                     <td style="text-align: center"><?php echo $ingredientes[$k]['codigo']; ?></td>
                     <td style="text-align: center"><?php echo $ingredientes[$k]['PesoBruto']; ?></td>
-                    <td style="text-align: center"><?php echo $ingredientes[$k]['Cantidad']; $tpesoNeto = $tpesoNeto + $ingredientes[$k]['Cantidad']; ?></td>
+                    <td style="text-align: center"><?php echo $ingredientes[$k]['PesoNeto']; ?></td>
 
 
 

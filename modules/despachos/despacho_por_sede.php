@@ -745,7 +745,7 @@ unset($grupo);
 
 
       //Alimento
-      $pdf->Cell(68.3,4,utf8_decode($aux),1,0,'L',False);
+      $pdf->Cell(48.9,4,utf8_decode($aux),1,0,'L',False);
 
 
 
@@ -838,20 +838,20 @@ unset($grupo);
 
 
     // CANTIDAD ENTREGADA
-    $pdf->Cell(9.3,4,$aux,1,0,'C',False);
-    $pdf->Cell(9.3,4,'',1,0,'C',False);
-    $pdf->Cell(9.3,4,'',1,0,'C',False);
+    $pdf->Cell(10.7,4,$aux,1,0,'C',False);
+    $pdf->Cell(10.6,4,'',1,0,'C',False);
+    $pdf->Cell(10.6,4,'',1,0,'C',False);
     // ESPECIFICACIÓN DE CALIDAD
-    $pdf->Cell(11,4,'',1,0,'C',False);
-    $pdf->Cell(11,4,'',1,0,'C',False);
+    $pdf->Cell(13.6,4,'',1,0,'C',False);
+    $pdf->Cell(13.7,4,'',1,0,'C',False);
     // FALTANTES
     $pdf->Cell(9.3,4,'',1,0,'C',False);
-    $pdf->Cell(9.3,4,'',1,0,'C',False);
-    $pdf->Cell(9.3,4,'',1,0,'C',False);
+    $pdf->Cell(8.9,4,'',1,0,'C',False);
+    $pdf->Cell(14,4,'',1,0,'C',False);
     //DEVOLUCIÓN
     $pdf->Cell(9.3,4,'',1,0,'C',False);
-    $pdf->Cell(9.3,4,'',1,0,'C',False);
-    $pdf->Cell(9.3,4,'',1,0,'C',False);
+    $pdf->Cell(9.2,4,'',1,0,'C',False);
+    $pdf->Cell(16,4,'',1,0,'C',False);
 
     $pdf->Ln(4);
 
