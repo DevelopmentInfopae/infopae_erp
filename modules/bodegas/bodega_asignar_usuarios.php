@@ -60,7 +60,7 @@
 		                <select class="form-control" name="bodegaSalida" id="bodegaSalida" required>
                       <option value="">Seleccione uno</option>
                       <?php
-                        $consulta2 = "SELECT ID AS codigoBodega, NOMBRE AS nombreBodega FROM bodegas WHERE ID NOT IN (SELECT cod_sede FROM sedes18);";
+                        $consulta2 = "SELECT ID AS codigoBodega, NOMBRE AS nombreBodega FROM bodegas WHERE ID NOT IN (SELECT cod_sede FROM sedes".$_SESSION['periodoActual'].");";
                         $resultado2 = $Link->query($consulta2) or die (mysqli_error($Link));
                         if($resultado2){
                           while($registros2 = $resultado2->fetch_assoc()){
