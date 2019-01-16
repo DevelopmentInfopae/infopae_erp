@@ -1001,7 +1001,7 @@ $Link->set_charset("utf8");
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 
 <!-- Scripts sección del modulo -->
-<script src="<?php echo $baseUrl; ?>/modules/menus/js/menus.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
 <!-- Page-Level Scripts -->
 
 <?php mysqli_close($Link); ?>

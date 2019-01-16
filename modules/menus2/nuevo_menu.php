@@ -160,6 +160,7 @@ $periodoActual = $_SESSION['periodoActual'];
                   <form class="form" id="formFichaTecnica" method="post">
                     <input type="number" name="idProducto" id="idProducto" style="display: none;">
                     <input type="number" name="IdFT" id="IdFT" style="display: none;">
+                    <input type="number" name="TipoProductoFT" id="TipoProductoFT" style="display: none;">
                     <div class="form-group col-sm-12">
                       <label>Seleccione preparaciones</label>
                       <table class="table" id="tablaProductosFichaTecnicaDet">
