@@ -110,6 +110,19 @@
 		                <label for="bodegaEntrada">Bodega Entrada</label>
 		                <select class="form-control" name="bodegaEntrada" id="bodegaEntrada">
                       <option value="">Seleccionar todo</option>
+                      <?php
+                        $consulta = "SELECT ID AS codigoBodega, NOMBRE AS nombreBodega FROM bodegas WHERE CIUDAD = '".$codigoDANE["CodMunicipio"]."'";
+                        $resultado = $Link->query($consulta);
+                        if ($resultado->num_rows > 0)
+                        {
+                          while($registros = $resultado->fetch_assoc())
+                          {
+                      ?>
+                      <option value="<?php echo $registros['codigoBodega']; ?>"><?php echo $registros['nombreBodega']; ?></option>
+                      <?php
+                          }
+                        }
+                      ?>
                     </select>
 		              </div>
 

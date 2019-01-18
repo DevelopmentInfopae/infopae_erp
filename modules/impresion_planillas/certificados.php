@@ -129,8 +129,8 @@
 		<select class="form-control" name="institucion" id="institucion" required>
 			<option value="">Todas</option>
 			<?php
-			if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ){
-				$municipio = $_GET["pb_municipio"];
+			if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $codigoDANE["CodMunicipio"]){
+				$municipio = $_GET["pb_municipio"] = $codigoDANE["CodMunicipio"];
 				$consulta = " select distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
 				$consulta = $consulta." and s.cod_mun_sede = '$municipio' ";
 				$consulta = $consulta." order by s.nom_inst asc ";
@@ -160,7 +160,7 @@
 
 
 
-		<div class="i-checks"><label> <input type="radio" value="1" name="tipoPlanilla" required><i></i>Certificado Normal </label> </div>
+		<div class="i-checks"><label> <input type="radio" value="1" name="tipoPlanilla" required><i></i> Certificado Normal </label> </div>
 
 
 
@@ -169,7 +169,7 @@
 
 
 	<div class="col-sm-2 form-group">
-		<div class="i-checks"> <label> <input type="radio" value="2" name="tipoPlanilla" required><i></i>Certificado por días </label> </div>
+		<div class="i-checks"> <label> <input type="radio" value="2" name="tipoPlanilla" required><i></i> Certificado por días </label> </div>
 
 
 

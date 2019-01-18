@@ -2,7 +2,7 @@
 	require_once '../../../db/conexion.php';
 	require_once '../../../config.php';
 
-  $clave = sha1(substr($_POST["nombre"], 0, 1) . $_POST["numeroDocumento"]);
+  $clave = sha1(strtoupper(substr($_POST["nombre"], 0, 1)) . $_POST["numeroDocumento"]);
 	$id = $_POST["id"];
 
 	$consulta1 = " UPDATE usuarios SET clave = '$clave' WHERE id = '$id'";
@@ -11,7 +11,7 @@
 		$respuestaAJAX = array(
 			"estado" => 1,
 			"mensaje" => "La contraseña ha sido restaurada con éxito."
-		); 
+		);
 
 		$consulta = "SELECT nombre FROM usuarios WHERE id='$id'";
 		$resultado = $Link->query($consulta) or die ("Unable to execute query.". mysql_error($Link));

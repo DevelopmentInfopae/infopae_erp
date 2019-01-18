@@ -9,14 +9,11 @@ set_time_limit (0);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
 $tamannoFuente = 8;
-class PDF extends FPDF{
-  function Header()
-  {
-    // $logoInfopae = $_SESSION['p_Logo ETC'];
-    // $logosEnte = 'imagenes/logos_planilla_ente.jpg';
-    // $logosPae = 'imagenes/logos_planilla_pae.jpg';
-    // $this->Image($logosEnte, 23 ,4, 43.39, 18.1,'jpg', '');
-    // $this->Image($logosPae, 291.22 ,7.5, 61.38, 10.23,'jpg', '');
+class PDF extends FPDF
+{
+  function Header() {
+    $logoInfopae = $_SESSION['p_Logo ETC'];
+    $this->Image($logoInfopae, 12, 7, 95, 18.1,'jpg', '');
 
     $tamannoFuente = 11;
     $this->SetFont('Arial','B',$tamannoFuente);
@@ -30,8 +27,7 @@ class PDF extends FPDF{
   }
 
   // Pie de página
-  function Footer()
-  {
+  function Footer() {
       $tamannoFuente = 8;
       // Posición: a 1,5 cm del final
       $this->SetY(-15);
@@ -50,12 +46,6 @@ $pdf->SetAutoPageBreak(false,5);
 $pdf->AliasNbPages();
 
 
-
-
-
-//var_dump($_POST);
-//var_dump($_SESSION);
-
 $anno = $_SESSION['p_ano'];
 $anno2d = substr($anno,2);
 $mes = $_POST['mes'];
@@ -73,15 +63,15 @@ if($resultado->num_rows >= 1){
     $diasSemanas[] = $row;
   }
 }
-//var_dump($diasSemanas);
-//Termina Dias Semanas
 
 //Instituciones
-$consulta = "SELECT DISTINCT s.cod_inst,s.nom_inst,s.cod_mun_sede,u.ciudad,u.Departamento
-FROM sedes$anno2d s
-INNER JOIN sedes_cobertura AS sc ON (s.cod_inst=sc.cod_inst AND s.cod_Sede=sc.cod_Sede)
-INNER JOIN ubicacion u ON(s.cod_mun_sede=u.codigoDANE) and u.ETC = 0
-WHERE sc.ano='$anno' AND sc.mes='$mes' AND s.cod_mun_sede=$municipio";
+$consulta = "SELECT DISTINCT s.cod_inst,s.nom_inst,s.cod_mun_sede,u.ciudad,u.Departamento, usu.nombre AS nombre_rector
+			FROM sedes$anno2d s
+			INNER JOIN sedes_cobertura AS sc ON (s.cod_inst=sc.cod_inst AND s.cod_Sede=sc.cod_Sede)
+			INNER JOIN ubicacion u ON(s.cod_mun_sede=u.codigoDANE) and u.ETC = 0
+			INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
+			LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
+			WHERE sc.ano='$anno' AND sc.mes='$mes' AND s.cod_mun_sede=$municipio";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
 if($resultado->num_rows >= 1){
@@ -100,8 +90,6 @@ if($resultado->num_rows >= 1){
     $diasEntregas = $row;
   }
 }
-// var_dump($diasEntregas);
-//Termina diasEntregas
 
 //TotalesInstitucion
 $consulta = "SELECT e.cod_inst,e.nom_inst,e.cod_mun_Sede,u.ciudad,u.Departamento, COALESCE (SUM(d1),0) td01, COALESCE (SUM(d2),0) td02, COALESCE (SUM(d3),0) td03, COALESCE (SUM(d4),0) td04, COALESCE (SUM(d5),0) td05, COALESCE (SUM(d6),0) td06, COALESCE (SUM(d7),0) td07, COALESCE (SUM(d8),0) td08, COALESCE (SUM(d9),0) td09, COALESCE (SUM(d10),0) td10, COALESCE (SUM(d11),0) td11, COALESCE (SUM(d12),0) td12, COALESCE (SUM(d13),0) td13, COALESCE (SUM(d14),0) td14, COALESCE (SUM(d15),0) td15, COALESCE (SUM(d16),0) td16, COALESCE (SUM(d17),0) td17, COALESCE (SUM(d18),0)td18, COALESCE (SUM(d19),0) td19, COALESCE (SUM(d20),0) td20, COALESCE (SUM(d21),0) td21, COALESCE (SUM(d22),0) td22
@@ -115,8 +103,15 @@ if($resultado->num_rows >= 1){
     $TotalesInstitucion[$row['cod_inst']] = $row;
   }
 }
-// var_dump($TotalesInstitucion);
-//Termina TotalesInstitucion
+
+// Fechas de mes seleccionado
+$consulta_fechas = "(SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '01' ORDER BY SEMANA ASC, DIA ASC LIMIT 1) UNION ALL (SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '01' ORDER BY SEMANA DESC, DIA DESC LIMIT 1)";
+$resultado_fechas = $Link->query($consulta_fechas) or die ('Unable to execute query. '. mysqli_error($Link));
+if ($resultado_fechas->num_rows > 0) {
+	while ($registros_fechas = $resultado_fechas->fetch_assoc()) {
+		$fechas[] = $registros_fechas;
+	}
+}
 
 //EntregasSedes
 $entregasSedes = array();
@@ -131,7 +126,7 @@ if($resultado->num_rows >= 1){
     $entregasSedes[$codigoInicial][] = $row;
   }
 }
-//Termina EntregasSedes
+
 if(count($entregasSedes)>0){
 	// Se van a separar los dias que corresponden a cada semana
 	$semanaIndice = 0;
@@ -213,16 +208,16 @@ if(count($entregasSedes)>0){
 		$pdf->Cell(32,5,utf8_decode('FECHA EJECUCIÓN:'),'R',0,'L',false);
 		$pdf->SetFont('Arial','',$tamannoFuente);
 		$pdf->Cell(15,5,'Desde:','R',0,'L',false);
-		$pdf->Cell(40,5,utf8_decode(''),'R',0,'L',false);
+		$pdf->Cell(40,5,utf8_decode($fechas[0]["DIA"]." de ".mesNombre($fechas[0]["MES"])." ". $fechas[0]["ANO"]),'R',0,'L',false);
 		$pdf->Cell(15,5,'Hasta:','R',0,'L',false);
-		$pdf->Cell(40,5,'','R',0,'L',false);
+		$pdf->Cell(40,5,utf8_decode($fechas[1]["DIA"]." de ".mesNombre($fechas[1]["MES"])." ". $fechas[1]["ANO"]),'R',0,'L',false);
 		$pdf->SetX($x);
 		$pdf->Cell(0,5,'','B',5,'C',false);
 
 		$pdf->SetFont('Arial','B',$tamannoFuente);
 		$pdf->Cell(32,5,utf8_decode('NOMBRE RECTOR:'),'R',0,'L',false);
 		$pdf->SetFont('Arial','',$tamannoFuente);
-		$pdf->Cell(0,5,'','R',0,'L',false);
+		$pdf->Cell(0,5,utf8_decode($institucion["nombre_rector"]),'R',0,'L',false);
 		$pdf->SetX($x);
 		$pdf->Cell(0,5,'',0,5,'C',false);
 
@@ -615,7 +610,7 @@ if(count($entregasSedes)>0){
 		$pdf->Cell(0,4,utf8_decode('OBSERVACIONES'),'B',0,'C',true);
 		$pdf->SetFont('Arial','',$tamannoFuente-1);
 		$pdf->SetXY($x, $y+4);
-		$pdf->MultiCell(0,4,utf8_decode("lorem ipsum"),0,'L',false);
+		$pdf->MultiCell(0,4,"",0,'L',false);
 		$pdf->SetXY($x, $y);
 		$pdf->Cell(0,12,utf8_decode(''),1,0,'C',false);
 
@@ -665,4 +660,45 @@ if(count($entregasSedes)>0){
 
 } else{
 	echo "<h2>No se han encontrado entregas en el mes correspondiente.</h2>";
+}
+
+
+
+function mesNombre($mes){
+  if($mes == 1){
+    return 'Enero';
+  }
+  else if($mes == 2){
+    return 'Febrero';
+  }
+  else if($mes == 3){
+    return 'Marzo';
+  }
+  else if($mes == 4){
+    return 'Abril';
+  }
+  else if($mes == 5){
+    return 'Mayo';
+  }
+  else if($mes == 6){
+    return 'Junio';
+  }
+  else if($mes == 7){
+    return 'Julio';
+  }
+  else if($mes == 8){
+    return 'Agosto';
+  }
+  else if($mes == 9){
+    return 'Septiembre';
+  }
+  else if($mes == 10){
+    return 'Octubre';
+  }
+  else if($mes == 11){
+    return 'Noviembre';
+  }
+  else if($mes == 12){
+    return 'Diciembre';
+  }
 }

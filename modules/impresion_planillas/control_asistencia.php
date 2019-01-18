@@ -123,7 +123,6 @@
       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
       if($resultado->num_rows > 0){
         while($row = $resultado->fetch_assoc()) { ?>
-          <?= $row["ciudad"]; ?>
           <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($codigoDANE["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; } ?> ><?= $row["ciudad"]; ?></option>
         <?php
         }// Termina el while
@@ -138,11 +137,14 @@
     <select class="form-control" name="institucion" id="institucion">
       <option value="">Todas</option>
       <?php
-      if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ){
-        $municipio = $_GET["pb_municipio"];
-        $consulta = " select distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
+      if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $codigoDANE["CodMunicipio"]){
+
+        $municipio = $_GET["pb_municipio"] = $codigoDANE["CodMunicipio"];
+
+        $consulta = " SELECT distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
         $consulta = $consulta." and s.cod_mun_sede = '$municipio' ";
         $consulta = $consulta." order by s.nom_inst asc ";
+
         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
         if($resultado->num_rows >= 1){
           while($row = $resultado->fetch_assoc()) { ?>
@@ -256,22 +258,6 @@
     <button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1" ><strong>Buscar</strong></button>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <?php
     //var_dump($_GET);
