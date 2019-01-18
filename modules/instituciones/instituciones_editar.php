@@ -1,4 +1,4 @@
-<?php 
+<?php
 	include '../../header.php';
 	$codigoInstitucion = $_POST["codigoInstitucion"];
 
@@ -41,7 +41,7 @@
           	<div class="row">
         			<div class="col-xs-12">
         				<div class="row">
-        					
+
 	        				<div class="col-sm-4 col-md-4 col-lg-3">
 	        					<div class="form-group">
 			                <label for="codigo">Código</label>
@@ -98,7 +98,7 @@
 			                	<option value="">Seleccione uno</option>
 			                	<?php
 			                    $codigoCiudad = $_SESSION['codCiudad'];
-			                    $consulta3= " SELECT num_doc, nombre FROM usuarios WHERE id_perfil = '6' AND cod_mun LIKE '$codigoCiudad%' ORDER BY nombre ASC;"; echo $consulta3;
+			                    $consulta3= " SELECT num_doc, nombre FROM usuarios WHERE id_perfil = '6' AND cod_mun LIKE '$codigoCiudad%' ORDER BY nombre ASC;";
 			                    $resultado3 = $Link->query($consulta3);
 			                    if($resultado3){
 			                      while($registros3 = $resultado3->fetch_assoc()){
@@ -130,7 +130,7 @@
 			              </div>
 	        				</div>
         				</div>
-								
+
         				</div>
         			</div>
           	</div>
@@ -140,7 +140,7 @@
     </div>
   </div>
 </div>
-       
+
 <div class="modal inmodal fade" id="ventanaInformar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

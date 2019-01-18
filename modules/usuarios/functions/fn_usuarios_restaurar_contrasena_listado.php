@@ -8,7 +8,7 @@
 	if($resultado){
 		$datos = $resultado->fetch_assoc();
 		if($datos["nombre"] != "" && $datos["num_doc"] != ""){
-		  $clave = sha1(substr($datos["nombre"], 0, 1) . $datos["num_doc"]);
+		  $clave = sha1(strtoupper(substr($datos["nombre"], 0, 1)) . $datos["num_doc"]);
 
 			$consulta1 = " UPDATE usuarios SET clave = '$clave' WHERE id = '$id'";
 			$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". mysql_error($Link));
@@ -18,7 +18,7 @@
 					"mensaje" => "La contraseña ha sido restaurada con éxito."
 				];
 
-				$nombre = $datos["nombre"]; 
+				$nombre = $datos["nombre"];
 				$consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '24', 'Restauró la contraseña del usuario <strong>$nombre</strong>')";
 				$Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
 			}

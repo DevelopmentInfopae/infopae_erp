@@ -138,11 +138,11 @@
 			<li><a href="#" class="sinDesarrollar">Semanas de contrato</a></li>
 			<li><a href="#" class="sinDesarrollar">Complementos alimentarios</a></li>
 			<li><a href="<?php echo $baseUrl; ?>/modules/insumos">Insumos</a></li>
-			<li><a href="#" class="sinDesarrollar">Grupos etarios</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/grupos_etarios">Grupos etarios</a></li>
 			<li><a href="#" class="sinDesarrollar">Perfiles de usuario</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/usuarios"><span class="nav-label">Usuarios</span></a> </li>
 			<li><a href="#" class="sinDesarrollar">Asignar usuarios a bodegas</a></li>
-			<li><a href="#" class="sinDesarrollar">Proveedores</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/proveedores">Proveedores</a></li>
 			<li>
 				<a href="#"><span class="nav-label">Rutas</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-third-level">
