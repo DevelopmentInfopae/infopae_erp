@@ -5,6 +5,8 @@ require_once '../../../config.php';
 
 $respuesta = $_POST['respuesta'];
 
+//1. Obtener preparados para armar menú, 2. Obtener unidad de medida de un producto
+
 if ($respuesta == 1) { ?>
 
   <option value="">Seleccione...</option>
@@ -47,7 +49,7 @@ if ($respuesta == 1) { ?>
   }
 
   if ($tipoProducto == "01") {
-   $consulta = "select * from productos".$_SESSION['periodoActual']." where ((".$tipoPreparacion." AND Cod_Grupo_Etario = ".$grupoEtario.") or (Codigo like '04%')) and Nivel = 3 ORDER BY Codigo ASC";
+   $consulta = "select * from productos".$_SESSION['periodoActual']." where ((".$tipoPreparacion." AND Cod_Grupo_Etario = ".$grupoEtario.") or (Codigo like '04%') or (Codigo like '02%' AND Cod_Grupo_Etario = 0)) and Nivel = 3 ORDER BY Codigo ASC";
     //$consulta = "select * from productos".$_SESSION['periodoActual']." where (Codigo like '02%' or Codigo like '04%') and Nivel = 3 and Inactivo = 0 Order by Codigo asc";
   } else if ($tipoProducto == "02") {
     $consulta = "select * from productos".$_SESSION['periodoActual']." where Codigo like '03%' and Nivel = 3 and Inactivo = 0 Order by Descripcion asc";

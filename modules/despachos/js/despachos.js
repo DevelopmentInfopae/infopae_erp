@@ -187,14 +187,61 @@ function despachos_kardex(){
     console.log('Se van a mostrar los despachos por sede');
 
     $('#formDespachos').attr('action', 'despacho_kardex3.php');
+    $('#formDespachos').attr('method', 'post');
+    $('#formDespachos').submit();
+    $('#formDespachos').attr('method', 'get');
+  }
+}
 
+function despachos_kardex_multiple(){
+  //Contando los elementos checked
+  var cant = 0;
+  var despacho = 0;
+  var semana = 0;
+  var tipo = '';
+  var bandera = 0;
+  $("tbody input:checked").each(function(){
+    if(bandera == 0){
+      cant++;
+      despacho = $(this).val();
 
+      if(bandera == 0){
+        if(semana == 0){
+          semana = $("#semana_"+despacho).val();
+        }
+        else{
+          if(semana != $("#semana_"+despacho).val()){
+            bandera++;
+            alert('Los despachos seleccionados deben ser de la misma semana');
 
+          }
+        }
+      }
 
+      if(bandera == 0){
+        if(tipo == ''){
+          tipo = $("#tipo_"+despacho).val();
+        }
+        else{
+          if(tipo != $("#tipo_"+despacho).val()){
+            bandera++;
+            alert('Los despachos seleccionados deben ser del mismo tipo de ración');
+          }
+        }
+      }
+    }
+  });
 
+  if(cant == 0){
+    alert('Debe seleccionar al menos un despacho para continuar');
+    bandera++;
+  }
 
+  if(bandera == 0){
+    $( ".soloJs" ).remove();
+    console.log('Se van a mostrar los despachos por sede');
 
-
+    $('#formDespachos').attr('action', 'despacho_kardex4_multiple.php');
     $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');
@@ -620,19 +667,6 @@ function editar_despacho(){
     $('#formDespachos').attr('method', 'get');
   }// Termina el if si la bandera esta en cero
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function eliminar_despacho(){
   console.log('Se va a eliminar un despacho');
