@@ -121,6 +121,7 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
@@ -154,6 +155,8 @@ $periodoActual = $_SESSION['periodoActual'];
   /*
   dataset1.buttons().container().appendTo($('#btnExcelDataTable'));
   $('.btnExportar').removeAttr('class').css('color', '#333');*/
+
+ 
 </script>
 
 <?php mysqli_close($Link); ?>

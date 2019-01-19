@@ -153,6 +153,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
               <?php endif ?>
               <?php if (substr($Producto['Codigo'], 0, 2) == "01" || substr($Producto['Codigo'], 0, 2) == "02"): ?>
                 <div class="form-group col-sm-3" id="divVariacionMenu" >
+                  <?= $Producto['cod_variacion_menu'] ?>
                   <label>Variación menú</label>
                   <select class="form-control" name="variacionMenu" id="variacionMenu" required>
                     <option value="">Seleccione...</option>

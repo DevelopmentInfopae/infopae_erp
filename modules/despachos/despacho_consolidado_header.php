@@ -128,9 +128,11 @@
   $current_x = $pdf->GetX();
   $pdf->Cell(42.5,14.1,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y);
-  $pdf->Cell(42.5,4.7,utf8_decode('4 - 6 años 11 meses'),1,4.7,'C',False);
-  $pdf->Cell(42.5,4.7,utf8_decode('7 - 12 años 11 meses'),1,4.7,'C',False);
-  $pdf->Cell(42.5,4.7,utf8_decode('13 - 17 años 11 meses'),1,0,'C',False);
+
+
+  $pdf->Cell(42.5,4.7,utf8_decode($get[0]),1,4.7,'C',False);
+  $pdf->Cell(42.5,4.7,utf8_decode($get[1]),1,4.7,'C',False);
+  $pdf->Cell(42.5,4.7,utf8_decode($get[2]),1,0,'C',False);
   $pdf->SetXY($current_x+42.5, $current_y);
 
   $current_y = $pdf->GetY();

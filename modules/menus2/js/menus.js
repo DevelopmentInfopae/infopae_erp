@@ -230,8 +230,8 @@ function obtenerProductos(num){
     data: {"tipoProducto" : tipoProducto, "grupoEtario": grupoEtario, "variacionMenu" : variacionMenu, "tipoComplemento" : tipoComplemento,"respuesta" : "1"},
     beforeSend: function(){},
     success: function(data){
-      //console.log(data);
-        $('#productoFichaTecnicaDet'+num).append(data);
+      console.log(data);
+        $('#productoFichaTecnicaDet'+num).html(data);
       productos = data;
       //$('#debug').html(data);
     }
@@ -256,6 +256,10 @@ function anadirProducto(){
     }
     console.log(numProducto);
   $('#tbodyProductos').append(tbody);
+
+  $('.productoFichaTecnicaDet:last select').select2({
+      width : "100%"
+    });
 }
 
 function borrarProducto(){

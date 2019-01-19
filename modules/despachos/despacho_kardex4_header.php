@@ -1,88 +1,99 @@
 <?php
- //header
-  $logoInfopae = $_SESSION['p_Logo ETC'];
-  $pdf->SetFont('Arial');
-  $pdf->SetTextColor(0,0,0);
-  $pdf->SetLineWidth(.05);
-  $pdf->Image($logoInfopae, 11.5 ,7, 111.84, 15.92,'jpg', '');
-  $pdf->Cell(116.95,17.29,'',1,0,'C',False);
-  $current_y = $pdf->GetY();
-  $current_x = $pdf->GetX();
-  $pdf->MultiCell(0,17.29,'',1,'C',false);
-  $pdf->SetXY($current_x, $current_y);
-  $pdf->SetFont('Arial','B',$tamannoFuente);
-  $pdf->Cell(0,4.3,utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'),0,4.3,'C',False);
-  $pdf->Cell(0,4.3,utf8_decode('KARDEX DE VÍVERES EN INSTITUCIÓN EDUCATIVA'),0,4.3,'C',False);
-  $pdf->Cell(0,4.3,utf8_decode($descripcionTipo),0,4.3,'C',False);
-  $pdf->Cell(0,4.3,utf8_decode($tipoDespachoNm),0,4.3,'C',False);
-  $pdf->Ln(0.09);
+//header
+$logoInfopae = $_SESSION['p_Logo ETC'];
+$pdf->SetFont('Arial');
+$pdf->SetTextColor(0,0,0);
+$pdf->SetLineWidth(.05);
+$pdf->Image($logoInfopae, 11.5 ,10, 111.84, 15.92,'jpg', '');
+// $pdf->Cell(116.95,17.29,'',1,0,'C',False);
+$pdf->Cell(116.95,21.6,'',1,0,'C',False);
+$current_y = $pdf->GetY();
+$current_x = $pdf->GetX();
+$pdf->MultiCell(0,21.6,'',1,'C',false);
+$pdf->SetXY($current_x, $current_y);
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(0,4.3,utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'),0,4.3,'C',False);
+$pdf->Cell(0,4.3,utf8_decode('DOCUMENTO GUÍA DE DESCARGUE DIARIO DE'),0,4.3,'C',False);
+$pdf->Cell(0,4.3,utf8_decode('INVENTARIO DE VÍVERES EN INSTITUCIÓN EDUCATIVA'),0,4.3,'C',False);
+$pdf->Cell(0,4.3,utf8_decode($descripcionTipo),0,4.3,'C',False);
+$pdf->Cell(0,4.3,utf8_decode($tipoDespachoNm),0,4.3,'C',False);
+$pdf->Ln(0.09);
 
-  $current_y = $pdf->GetY();
-  $current_x = $pdf->GetX();
-  $pdf->Cell(0,4.76,'',1,0,'L',False);
-  $pdf->SetXY($current_x, $current_y);
-  $pdf->Cell(20,4.76,utf8_decode('OPERADOR:'),0,0,'L',False);
-  $pdf->SetFont('Arial','',$tamannoFuente);
-  $pdf->Cell(151.8,4.76,utf8_decode( $_SESSION['p_Operador']),0,0,'L',False);
+$current_y = $pdf->GetY();
+$current_x = $pdf->GetX();
+$pdf->Cell(0,4.76,'',1,0,'L',False);
+$pdf->SetXY($current_x, $current_y);
 
-  $current_y = $pdf->GetY();
-  $current_x = $pdf->GetX();
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(20,4.76,utf8_decode('OPERADOR:'),0,0,'L',False);
+$pdf->SetFont('Arial','',$tamannoFuente);
+$pdf->Cell(140,4.76,utf8_decode( $_SESSION['p_Operador']),'R',0,'L',False);
 
-  $pdf->SetXY(290,15);
-  //$pdf->Cell(0,10,utf8_decode('Página ').$pdf->PageNo().' de {nb}',0,0,'C');
-  $pdf->SetXY($current_x, $current_y);
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(28,4.76,utf8_decode('MUNICIPIO O VEREDA:'),0,0,'L',False);
+$pdf->SetFont('Arial','',$tamannoFuente);
+$pdf->Cell(65,4.76,utf8_decode($municipio),'R',0,'L',False);
 
-
-
-  $pdf->Ln(4.76);
-
-  $current_y = $pdf->GetY();
-  $current_x = $pdf->GetX();
-  $pdf->Cell(117,4.76,'',1,0,'L',False);
-  $pdf->SetXY($current_x, $current_y);
-  $pdf->SetFont('Arial','B',$tamannoFuente);
-  $pdf->Cell(8,4.76,utf8_decode('ETC:'),0,0,'L',False);
-  $pdf->SetFont('Arial','',$tamannoFuente);
-  $pdf->Cell(109,4.76,utf8_decode($_SESSION['p_Nombre ETC']),0,0,'L',False);
-
-  $current_y = $pdf->GetY();
-  $current_x = $pdf->GetX();
-  $pdf->Cell(0,4.76,'',1,0,'L',False);
-  $pdf->SetXY($current_x, $current_y);
-  $pdf->SetFont('Arial','B',$tamannoFuente);
-  $pdf->Cell(33,4.76,utf8_decode('MUNICIPIO O VEREDA:'),0,0,'L',False);
-  $pdf->SetFont('Arial','',$tamannoFuente);
-  $pdf->Cell(113.4,4.76,utf8_decode($municipio),0,0,'L',False);
-  $pdf->Ln(4.76);
-
-  $current_y = $pdf->GetY();
-  $current_x = $pdf->GetX();
-  $pdf->Cell(153.1,4.76,'',1,0,'L',False);
-  $pdf->SetXY($current_x, $current_y);
-  $pdf->SetFont('Arial','B',$tamannoFuente);
-  $pdf->Cell(54,4.76,utf8_decode('INSTITUCIÓN O CENTRO EDUCATIVO:'),0,0,'L',False);
-  $pdf->SetFont('Arial','',$tamannoFuente);
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(34,4.76,utf8_decode('FECHA DE ELABORACION:'),0,0,'L',False);
+$pdf->SetFont('Arial','',$tamannoFuente);
+$pdf->Cell(0,4.76,utf8_decode($fechaDespacho),0,0,'L',False);
 
 
 
-  $institucion = substr( $institucion, 0, 54 );
 
 
-
-  $pdf->Cell(99.1,4.76,utf8_decode($institucion),0,0,'L',False);
-
-  $current_y = $pdf->GetY();
-  $current_x = $pdf->GetX();
-  $pdf->Cell(0,4.76,'',1,0,'L',False);
-  $pdf->SetXY($current_x, $current_y);
-  $pdf->SetFont('Arial','B',$tamannoFuente);
-  $pdf->Cell(28,4.76,utf8_decode('SEDE EDUCATIVA:'),0,0,'L',False);
-  $pdf->SetFont('Arial','',$tamannoFuente);
+$current_y = $pdf->GetY();
+$current_x = $pdf->GetX();
 
 
-  $sede = substr( $sede, 0, 44);
+$pdf->SetXY(290,15);
+//$pdf->Cell(0,10,utf8_decode('Página ').$pdf->PageNo().' de {nb}',0,0,'C');
+$pdf->SetXY($current_x, $current_y);
 
-  $pdf->Cell(82.3,4.76,utf8_decode($sede),0,0,'L',False);
+$pdf->Ln(4.76);
+$current_y = $pdf->GetY();
+$current_x = $pdf->GetX();
+$pdf->Cell(45,4.76,'',1,0,'L',False);
+$pdf->SetXY($current_x, $current_y);
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(8,4.76,utf8_decode('ETC:'),0,0,'L',False);
+$pdf->SetFont('Arial','',$tamannoFuente);
+$pdf->Cell(37,4.76,utf8_decode($_SESSION['p_Nombre ETC']),0,0,'L',False);
+
+// $current_y = $pdf->GetY();
+// $current_x = $pdf->GetX();
+// $pdf->Cell(0,4.76,'',1,0,'L',False);
+// $pdf->SetXY($current_x, $current_y);
+// $pdf->SetFont('Arial','B',$tamannoFuente);
+// $pdf->Cell(33,4.76,utf8_decode('MUNICIPIO O VEREDA:'),0,0,'L',False);
+// $pdf->SetFont('Arial','',$tamannoFuente);
+// $pdf->Cell(113.4,4.76,utf8_decode($municipio),0,0,'L',False);
+// $pdf->Ln(4.76);
+
+
+$current_y = $pdf->GetY();
+$current_x = $pdf->GetX();
+$pdf->Cell(153.1,4.76,'','B',0,'L',False);
+$pdf->SetXY($current_x, $current_y);
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(47,4.76,utf8_decode('INSTITUCIÓN O CENTRO EDUCATIVO:'),0,0,'L',False);
+$pdf->SetFont('Arial','',$tamannoFuente);
+
+//$institucion = substr( $institucion, 0, 54 );
+
+$pdf->Cell(95,4.76,utf8_decode($institucion),0,0,'L',False);
+
+$current_y = $pdf->GetY();
+$current_x = $pdf->GetX();
+$pdf->Cell(0,4.76,'',1,0,'L',False);
+$pdf->SetXY($current_x, $current_y);
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(24,4.76,utf8_decode('SEDE EDUCATIVA:'),0,0,'L',False);
+$pdf->SetFont('Arial','',$tamannoFuente);
+//$sede = substr( $sede, 0, 44);
+$pdf->Cell(82.3,4.76,utf8_decode($sede),0,0,'L',False);
+
   $pdf->Ln(4.76);
   $pdf->Ln(0.8);
 
@@ -120,17 +131,9 @@
   $current_x = $pdf->GetX();
   $pdf->Cell(42.5,14.1,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y);
-  $consGrupoEtario = "SELECT * FROM grupo_etario ";
-  $resGrupoEtario = $Link->query($consGrupoEtario);
-  if ($resGrupoEtario->num_rows > 0) {
-    while ($ge = $resGrupoEtario->fetch_assoc()) {
-      $get[] = $ge['DESCRIPCION'];
-    }
-  }
-
-  $pdf->Cell(42.5,4.7,utf8_decode($get[0]),1,4.7,'C',False);
-  $pdf->Cell(42.5,4.7,utf8_decode($get[1]),1,4.7,'C',False);
-  $pdf->Cell(42.5,4.7,utf8_decode($get[2]),1,0,'C',False);
+  $pdf->Cell(42.5,4.7,utf8_decode('4 - 6 años 11 meses'),1,4.7,'C',False);
+  $pdf->Cell(42.5,4.7,utf8_decode('7 - 12 años 11 meses'),1,4.7,'C',False);
+  $pdf->Cell(42.5,4.7,utf8_decode('13 - 17 años 11 meses'),1,0,'C',False);
   $pdf->SetXY($current_x+42.5, $current_y);
 
   $current_y = $pdf->GetY();
@@ -162,10 +165,10 @@
   $auxDias = "X ";
   $cantDias = explode(',', $dias);
   $cantDias = count($cantDias);
-  $auxDias = "X ".$cantDias." DIAS ".strtoupper($dias);
+  $auxDias = "X ".$cantDias." DíAS ".strtoupper($dias);
 
 
-  $pdf->MultiCell(45,4.7,$auxDias,0,'C',False);
+  $pdf->MultiCell(45,4.7,utf8_decode($auxDias),0,'C',False);
   //$pdf->SetXY($current_x, $current_y+9.4);
   //$pdf->MultiCell(45,4.7,'SEMANA: '.$semana,0,'C',False);
 
@@ -189,7 +192,7 @@
   //$pdf->Cell(10,4.7,$semana,0,4.7,'L',False);
   //$pdf->SetFont('Arial','B',$tamannoFuente);
   $pdf->SetXY($current_x, $current_y+7,05);
-  $pdf->Cell(85,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
+  $pdf->Cell(85,4.7,utf8_decode('MENÚS: '.$auxMenus),0,0,'C',False);
   //$pdf->SetFont('Arial','',$tamannoFuente);
   //$pdf->SetXY($current_x+45, $current_y+7,05);
   //$pdf->Cell(80,4.7,$ciclo,0,0,'L',False);
@@ -275,8 +278,7 @@
   $pdf->Cell(17.471,15,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y+2.5);
   $pdf->Cell(17.471,5,'CANT',0,5,'C',False);
-  // $pdf->Cell(17.471,5,'ENTREGADA',0,5,'C',False);
-  $pdf->Cell(17.471,5,'REQUERIDA',0,5,'C',False);
+  $pdf->Cell(17.471,5,'ENTREGADA',0,5,'C',False);
 
   $pdf->SetXY($current_x+17.471, $current_y);
   $current_y = $pdf->GetY();
@@ -293,8 +295,8 @@
   $pdf->Cell(31.8,15,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y);
   $pdf->Cell(31.8,8,utf8_decode('LUNES'),'B',8,'C',False);
-  $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
+  $pdf->Cell(31.8,7,'CANT','R',0,'C',False);
+  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+31.8, $current_y);
 
@@ -303,8 +305,8 @@
   $pdf->Cell(31.8,15,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y);
   $pdf->Cell(31.8,8,utf8_decode('MARTES'),'B',8,'C',False);
-  $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
+  $pdf->Cell(31.8,7,'CANT','R',0,'C',False);
+  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+31.8, $current_y);
 
@@ -312,9 +314,9 @@
   $current_x = $pdf->GetX();
   $pdf->Cell(31.8,15,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y);
-  $pdf->Cell(31.8,8,utf8_decode('MIERCOLES'),'B',8,'C',False);
-  $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
+  $pdf->Cell(31.8,8,utf8_decode('MIÉRCOLES'),'B',8,'C',False);
+  $pdf->Cell(31.8,7,'CANT','R',0,'C',False);
+  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+31.8, $current_y);
 
@@ -323,8 +325,8 @@
   $pdf->Cell(31.8,15,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y);
   $pdf->Cell(31.8,8,utf8_decode('JUEVES'),'B',8,'C',False);
-  $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
+  $pdf->Cell(31.8,7,'CANT','R',0,'C',False);
+  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+31.8, $current_y);
 
@@ -333,8 +335,8 @@
   $pdf->Cell(31.8,15,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y);
   $pdf->Cell(31.8,8,utf8_decode('VIERNES'),'B',8,'C',False);
-  $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
+  $pdf->Cell(31.8,7,'CANT','R',0,'C',False);
+  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+31.8, $current_y);
 
