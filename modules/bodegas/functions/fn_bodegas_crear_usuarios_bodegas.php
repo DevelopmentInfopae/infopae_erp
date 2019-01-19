@@ -23,7 +23,7 @@
       $valoresCrearUsuarioBodegas .= "('$usuario','$bodegaSalida','". $registros['codigoBodega'] ."'), ";
     }
 
-    $consulta1 = "INSERT IGNORE INTO usuarios_bodegas (USUARIO, COD_BODEGA_ENTRADA, COD_BODEGA_SALIDA) VALUES " . trim($valoresCrearUsuarioBodegas, ', ');
+    $consulta1 = "INSERT IGNORE INTO usuarios_bodegas (USUARIO, COD_BODEGA_SALIDA, COD_BODEGA_ENTRADA) VALUES " . trim($valoresCrearUsuarioBodegas, ', ');
     $respuesta1 = $Link->query($consulta1) or die('Error consulta usuarios_bodegas: '. mysqli_error($Link));
     if ($respuesta1)
     {

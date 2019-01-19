@@ -13,7 +13,7 @@
                 ubi.Ciudad AS ciudadEmpleado
               FROM
                 empleados emp
-              INNER JOIN ubicacion ubi ON ubi.CodigoDANE = emp.Ciudad;";
+              LEFT JOIN ubicacion ubi ON ubi.CodigoDANE = emp.Ciudad;";
 
   $resultado = $Link->query($consulta);
   if($resultado->num_rows > 0)

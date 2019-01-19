@@ -19,15 +19,12 @@ $Link->set_charset("utf8");
 class PDF extends FPDF{
   function Header()
   {
-    $tamannoFuente = 8;
-    $this->SetFont('Arial','B',$tamannoFuente);
     $logoInfopae = $_SESSION['p_Logo ETC'];
-    $logosEnte = 'imagenes/logos_planilla_ente.jpg';
-    $logosPae = 'imagenes/logos_planilla_pae.jpg';
-    $this->Image($logosEnte, 23 ,4, 43.39, 18.1,'jpg', '');
-    $this->Image($logosPae, 291.22 ,7.5, 61.38, 10.23,'jpg', '');
+    $this->Image($logoInfopae, 1.6 ,1.6, 100, 18.1,'jpg', '');
+    $tamannoFuente = 10;
+    $this->SetFont('Arial','B',$tamannoFuente);
     $this->SetTextColor(0,0,0);
-    $this->Cell(34);
+    $this->Cell(100);
     $this->Cell(250.83,18.1,utf8_decode('CERTIFICADO DE ENTREGA DE RACIONES A INSTITUCIONES EDUCATIVAS'),0,0,'C',False);
     $this->Ln(20);
   }
@@ -59,9 +56,12 @@ $municipio = $_POST['municipio'];
 // 1. Trae de palnilla semana toda la información de los días de servicio
 // Select * from planilla_semanas where ano='2017' and mes='08';
 // 2. Trae las insituciones del municipio seleccionado
-$consulta = " SELECT DISTINCT s.cod_inst, s.nom_inst, s.cod_mun_sede, u.ciudad, u.Departamento FROM sedes$periodoActual s INNER JOIN sedes_cobertura AS sc ON (s.cod_inst = sc.cod_inst AND s.cod_Sede = sc.cod_Sede)
+$consulta = " SELECT DISTINCT s.cod_inst, s.nom_inst, s.cod_mun_sede, u.ciudad, u.Departamento, usu.nombre AS nombre_rector
+FROM sedes$periodoActual s
+INNER JOIN sedes_cobertura AS sc ON (s.cod_inst = sc.cod_inst AND s.cod_Sede = sc.cod_Sede)
 INNER JOIN ubicacion u ON (s.cod_mun_sede = u.codigoDANE) and u.ETC = 0
-
+INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
+LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
 WHERE sc.ano = '$anno' AND sc.mes = '$mes' AND s.cod_mun_sede = '$municipio' ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
@@ -103,6 +103,14 @@ if($resultado->num_rows >= 1){
 	}
 }
 
+// Fechas de mes seleccionado
+$consulta_fechas = "(SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '01' ORDER BY SEMANA ASC, DIA ASC LIMIT 1) UNION ALL (SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '01' ORDER BY SEMANA DESC, DIA DESC LIMIT 1)";
+$resultado_fechas = $Link->query($consulta_fechas) or die ('Unable to execute query. '. mysqli_error($Link));
+if ($resultado_fechas->num_rows > 0) {
+	while ($registros_fechas = $resultado_fechas->fetch_assoc()) {
+		$fechas[] = $registros_fechas;
+	}
+}
 
 //CREACION DEL PDF
 // Creación del objeto de la clase heredada
@@ -224,4 +232,43 @@ if(count($sedesInstitucion )>0){
 	$pdf->Output();
 } else {
 	echo "<h2>No se han encontrado entregas en el mes correspondiente.</h2>";
+}
+
+function mesNombre($mes){
+  if($mes == 1){
+    return 'Enero';
+  }
+  else if($mes == 2){
+    return 'Febrero';
+  }
+  else if($mes == 3){
+    return 'Marzo';
+  }
+  else if($mes == 4){
+    return 'Abril';
+  }
+  else if($mes == 5){
+    return 'Mayo';
+  }
+  else if($mes == 6){
+    return 'Junio';
+  }
+  else if($mes == 7){
+    return 'Julio';
+  }
+  else if($mes == 8){
+    return 'Agosto';
+  }
+  else if($mes == 9){
+    return 'Septiembre';
+  }
+  else if($mes == 10){
+    return 'Octubre';
+  }
+  else if($mes == 11){
+    return 'Noviembre';
+  }
+  else if($mes == 12){
+    return 'Diciembre';
+  }
 }

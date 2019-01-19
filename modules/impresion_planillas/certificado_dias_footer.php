@@ -161,7 +161,7 @@ $pdf->Cell(264,4,utf8_decode('OBSERVACIONES'),'B',0,'C',true);
 $pdf->SetFont('Arial','',$tamannoFuente-1);
 $pdf->SetXY($x, $y+4);
 $pdf->Cell(31.4);
-$pdf->MultiCell(0,4,utf8_decode("lorem ipsum"),0,'L',false);
+$pdf->MultiCell(0,4,"",0,'L',false);
 $pdf->SetXY($x, $y);
 $pdf->Cell(31.4);
 $pdf->Cell(264,12,utf8_decode(''),1,0,'C',false);
