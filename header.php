@@ -1,14 +1,17 @@
 <?php
-include 'config.php';
-$usuario = '';
-$tipoUsuario = '';
-$idUsr = '';
-$fotoUsr = '';
-require_once 'db/conexion.php';
-include 'autentication.php';
-include 'php/funciones.php';
-$idUsr = $_SESSION['id_usuario'];
-$fotoUsr = $_SESSION['foto'];
+    include 'config.php';
+    $usuario = '';
+    $tipoUsuario = '';
+    $idUsr = '';
+    $fotoUsr = '';
+    require_once 'db/conexion.php';
+    include 'autentication.php';
+    include 'php/funciones.php';
+    $idUsr = $_SESSION['id_usuario'];
+    $fotoUsr = $_SESSION['foto'];
+
+    $dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
+    if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
 ?>
 
 <!DOCTYPE html>

@@ -1,9 +1,5 @@
 <?php
 	include '../../header.php';
-
-	$con_cod_muni = "SELECT CodMunicipio FROM parametros;";
-	$res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
-	if ($res_minicipio->num_rows > 0) { $codigoDANE = $res_minicipio->fetch_array(); } //$codigoDANE["CodMunicipio"]
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -72,7 +68,7 @@
 		                    if($result1){
 		                      while($row1 = $result1->fetch_assoc()){
 		                  ?>
-		                        <option value="<?php echo $row1['CodigoDANE']; ?>" <?php if(isset($row['cod_mun']) && $row['cod_mun'] == $row1['CodigoDANE']){ echo ' selected '; } ?>>
+		                        <option value="<?php echo $row1['CodigoDANE']; ?>" <?php if(isset($row['cod_mun']) && $row['cod_mun'] == $row1['CodigoDANE'] || $municipio_defecto["CodMunicipio"] == $row1['CodigoDANE']){ echo ' selected '; } ?>>
 		                          <?php echo $row1['Ciudad']; ?>
 		                        </option>
 		                  <?php
