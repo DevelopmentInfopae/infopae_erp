@@ -43,7 +43,7 @@
 			$consulta2 = " show tables like 'focalizacion$aux' ";
 			$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
 			if($resultado2->num_rows >= 1){
-			 $semanas[] = $aux;
+			 	$semanas[] = $aux;
 			}
 		}
 	}

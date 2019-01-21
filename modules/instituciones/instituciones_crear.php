@@ -1,5 +1,9 @@
 <?php
 	include '../../header.php';
+
+	$con_cod_muni = "SELECT CodMunicipio FROM parametros;";
+	$res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
+	if ($res_minicipio->num_rows > 0) { $codigoDANE = $res_minicipio->fetch_array(); } //$codigoDANE["CodMunicipio"]
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">

@@ -104,7 +104,7 @@ if($resultado->num_rows >= 1){
 }
 
 // Fechas de mes seleccionado
-$consulta_fechas = "(SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '01' ORDER BY SEMANA ASC, DIA ASC LIMIT 1) UNION ALL (SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '01' ORDER BY SEMANA DESC, DIA DESC LIMIT 1)";
+$consulta_fechas = "(SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '$mes' ORDER BY SEMANA ASC, DIA ASC LIMIT 1) UNION ALL (SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '$mes' ORDER BY SEMANA DESC, DIA DESC LIMIT 1)";
 $resultado_fechas = $Link->query($consulta_fechas) or die ('Unable to execute query. '. mysqli_error($Link));
 if ($resultado_fechas->num_rows > 0) {
 	while ($registros_fechas = $resultado_fechas->fetch_assoc()) {
