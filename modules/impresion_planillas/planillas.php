@@ -236,7 +236,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4){
           $aux = date("d/m/Y", strtotime($aux));
           $pdf->Cell(14,$alturaLinea,utf8_decode($aux),'R',0,'C',False);
 
-          $pdf->Cell(7,$alturaLinea,utf8_decode($estudiante['etnia']),'R',0,'C',False);
+          $pdf->Cell(7,$alturaLinea,utf8_decode(($estudiante['etnia'] == 1 || $estudiante['etnia'] == 0) ? "" : "X"),'R',0,'C',False);
           $pdf->Cell(5,$alturaLinea,utf8_decode($estudiante['genero']),'R',0,'C',False);
           $pdf->Cell(7,$alturaLinea,utf8_decode($estudiante['cod_grado']),'R',0,'C',False);
           $pdf->Cell(13,$alturaLinea,utf8_decode($tipoComplemento),'R',0,'C',False);
@@ -244,7 +244,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4){
 
             // Aqui es donde se cambia de acuerdo a la plantilla
             $entregasEstudiante = 0;
-            for($j = 0 ; $j < 25 ; $j++) {
+            for($j = 0 ; $j < 24 ; $j++) {
                 if($tipoPlanilla != 2){
 
                   if($tipoPlanilla == 3){
@@ -331,7 +331,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4){
         $pdf->Cell(13,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 
         // Aqui es donde se cambia de acuerdo a la plantilla
-        for($j = 0 ; $j < 25 ; $j++){
+        for($j = 0 ; $j < 24 ; $j++){
             $pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
         }
         // Termina donde se cambia de acuerdo a la plantilla
@@ -394,7 +394,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4){
       $pdf->Cell(7,$alturaLinea,utf8_decode(''),'R',0,'C',False);
       $pdf->Cell(13,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 
-      for($j = 0 ; $j < 25 ; $j++){
+      for($j = 0 ; $j < 24 ; $j++){
         $pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
       }
 
