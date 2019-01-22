@@ -2,6 +2,11 @@
 
 
 
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+  
+  $pdf->SetXY($current_x, $current_y);
+
   $pdf->SetFont('Arial','B',8);
 
   //$pdf->Cell(0,5,'C: Cumple  NC: No Cumple',0,5,'L',False);

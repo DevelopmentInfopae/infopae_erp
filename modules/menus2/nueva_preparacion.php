@@ -80,6 +80,7 @@ $periodoActual = $_SESSION['periodoActual'];
                       <label>Grupo Etario</label>
                       <select class="form-control" name="Cod_Grupo_Etario" id="Cod_Grupo_Etario">
                         <option value="">Seleccione...</option>
+                        <option value="0">General</option>
                         <?php 
                         $consultaGrupoEtario = "select * from grupo_etario";
                         $resultadoGrupoEtario = $Link->query($consultaGrupoEtario);
@@ -159,11 +160,11 @@ $periodoActual = $_SESSION['periodoActual'];
                       <table class="table" id="tablaProductosFichaTecnicaDet">
                         <thead>
                           <tr>
-                            <th>Alimento</th>
-                            <th class="datoPreparado" style="display: none;">Unidad de medida</th>
-                            <th class="datoPreparado">Cantidad</th>
-                            <th class="datoPreparado">Peso Bruto</th>
-                            <th class="datoPreparado">Peso Neto</th>
+                            <th style="width: 30%;">Alimento</th>
+                            <th style="width: 17.5%;" class="datoPreparado" style="display: none;">Unidad de medida</th>
+                            <th style="width: 17.5%;" class="datoPreparado">Cantidad</th>
+                            <th style="width: 17.5%;" class="datoPreparado">Peso Bruto</th>
+                            <th style="width: 17.5%;" class="datoPreparado">Peso Neto</th>
                           </tr>
                         </thead>
                         <tbody id="tbodyProductos">
@@ -327,6 +328,8 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+
 
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
@@ -353,6 +356,10 @@ $periodoActual = $_SESSION['periodoActual'];
     }
     });*/
     $('#tipoProducto').change();
+
+    $('.productoFichaTecnicaDet select').select2({
+      width : "100%"
+    });
 </script>
 
 <?php mysqli_close($Link); ?>

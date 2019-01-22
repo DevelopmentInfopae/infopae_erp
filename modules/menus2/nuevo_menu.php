@@ -336,6 +336,7 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
 
@@ -361,6 +362,11 @@ $periodoActual = $_SESSION['periodoActual'];
     }
     });*/
     $('#tipoProducto').change();
+
+
+    $('.productoFichaTecnicaDet select').select2({
+      width : "100%"
+    });
 </script>
 
 <?php mysqli_close($Link); ?>

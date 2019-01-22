@@ -701,6 +701,7 @@
                                 <ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">
                                   <li><a href="#" onclick="despachos_por_sede()">Individual</a></li>
                                   <li><a href="#" onclick="despachos_kardex()">Kardex</a></li>
+                                  <li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>
                                   <!-- <li><a href="#" onclick="despachos_kardex2()">Kardex 2</a></li> -->
                                   <!-- <li><a href="#" onclick="despachos_mixta()">Mixta</a></li> -->
                                   <li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>

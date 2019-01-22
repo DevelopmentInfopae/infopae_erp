@@ -28,6 +28,14 @@ $Database = "e6y1o9y1_infopae2018";
 // $Hostname = "192.254.194.178";
 // $Username = "infopae_sylvia";
 // $Password = "Sylopez18";
+<<<<<<< HEAD
+=======
+// $Database = "infopae_giron2019";
+
+// $Hostname = "192.254.194.178";
+// $Username = "infopae_sylvia";
+// $Password = "Sylopez18";
+>>>>>>> master
 // $Database = "infopae_infopae2019";
 
 $Hostname = "localhost";

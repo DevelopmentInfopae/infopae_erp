@@ -24,20 +24,8 @@ $tamannoFuente = 7;
 $digitosDecimales = 2;
 date_default_timezone_set('America/Bogota');
 
-
-
-
 //var_dump($_POST);
 //var_dump($_SESSION);
-
-
-
-
-
-
-
-
-
 
 $Link = new mysqli($Hostname, $Username, $Password, $Database);
 if ($Link->connect_errno) {
@@ -71,10 +59,6 @@ if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
   $anno = trim($anno);
   $mesAnno = $mes.$anno;
 
-
-
-
-
   //var_dump($_POST);
   $corteDeVariables = 15;
   if(isset($_POST['seleccionarVarios'])){
@@ -94,10 +78,6 @@ if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
   //var_dump($_POST);
 }
 
-
-
-
-
 class PDF extends FPDF{
   function Header(){}
   function Footer(){}
@@ -109,23 +89,6 @@ class PDF extends FPDF{
   $pdf->SetMargins(8, 6.31, 8);
   $pdf->SetAutoPageBreak(false,5);
   $pdf->AliasNbPages();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   // Borrando variables array para usarlas en cada uno de los despachos
@@ -145,8 +108,6 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   left join tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
   left join tipo_despacho td on de.TipoDespacho = td.Id
   WHERE de.Num_Doc = $despacho ";
-
-
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
@@ -168,10 +129,6 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   $fechaDespacho = strtotime($fechaDespacho);
   $fechaDespacho = date("d/m/Y",$fechaDespacho);
 
-
-
-
-
   $auxDias = $row['Dias'];
   $diasDespacho = $row['Dias'];
   $auxDias = str_replace(",", ", ", $auxDias);
@@ -179,29 +136,8 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   $auxMenus = $row['Menus'];
   $auxMenus = str_replace(",", ", ", $auxMenus);
 
-
-
   $tipo = $modalidad;
   $sedes[] = $codSede;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // Iniciando la busqueda de los días que corresponden a esta semana de contrato.
   $arrayDiasDespacho = explode(',', $diasDespacho);
@@ -214,9 +150,7 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
     $mesesIniciales = 0;
     while($row = $resultado->fetch_assoc()){
 
-
-
-$clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
+      $clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
       if($clave !== false){
         $ciclo = $row['CICLO'];
         if($mesInicial != $row['MES']){
@@ -235,43 +169,10 @@ $clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
         $dias = $dias.intval($row['DIA']);
       }// Termina el if de la Clave
 
-
-
-
-
-
     }
     $dias .= " de  $mes";
   }
   // Termina la busqueda de los días que corresponden a esta semana de contrato.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // Bucando la cobertura para la sede en esa semana para el tipo de complementosCantidades
   $cantSedeGrupo1 = 0;
@@ -319,21 +220,9 @@ if($resultado->num_rows >= 1){
   }
 }
 
-
-
-
-
-
-
-
 //var_dump($alimentos);
 
   // Buscando propiedades y cantidades de cada alimento.
-
-
-
-
-
 
 /*
    cantu2,
@@ -344,10 +233,6 @@ if($resultado->num_rows >= 1){
 
 
 */
-
-
-
-
   for ($i=0; $i < count($alimentos) ; $i++) {
     $alimento = $alimentos[$i];
     $auxCodigo = $alimento['codigo'];
@@ -355,10 +240,6 @@ if($resultado->num_rows >= 1){
     $consulta = " select distinct ftd.codigo, ftd.Componente,
     p.nombreunidad2 presentacion,
     p.cantidadund1 cantidadPresentacion,
-
-
-
-
 
     m.grupo_alim, ftd.UnidadMedida, ( select Cantidad
 
@@ -368,14 +249,7 @@ if($resultado->num_rows >= 1){
     from despachos_det$mesAnno
     where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
 
-
-
     (select Cantidad from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 3) as cant_grupo3,
-
-
-
-
-
 
    (SELECT cantu2 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu2,
     (SELECT cantu3 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu3,
@@ -384,18 +258,11 @@ if($resultado->num_rows >= 1){
     (SELECT cantotalpresentacion FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantotalpresentacion,
 
 
-
-
-
-
     ( SELECT sum(D1) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D1,
     ( SELECT sum(D2) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D2,
     ( SELECT sum(D3) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D3,
     ( SELECT sum(D4) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D4,
     ( SELECT sum(D5) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D5,
-
-
-
 
     p.cantidadund2,
     p.cantidadund3,
@@ -406,21 +273,7 @@ if($resultado->num_rows >= 1){
     p.nombreunidad4,
     p.nombreunidad5
 
-
-
-
-
-
-
-
     from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  ";
-
-
-
-
-
-
-
 
 
     // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
@@ -438,8 +291,6 @@ if($resultado->num_rows >= 1){
     $alimento['cant_total'] = 0;
 
 
-
-
     if($resultado->num_rows >= 1){
       while($row = $resultado->fetch_assoc()){
         $alimento['componente'] = $row['Componente'];
@@ -451,21 +302,7 @@ if($resultado->num_rows >= 1){
         $alimento['cant_grupo3'] = $row['cant_grupo3'];
 
 
-
-
         $alimento['cant_total'] = $row['cant_grupo1'] + $row['cant_grupo2'] + $row['cant_grupo3'];
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         $alimento['cantu2'] = $row['cantu2'];
@@ -509,6 +346,10 @@ if($resultado->num_rows >= 1){
   /*************************************************************/
   /*************************************************************/
   //var_dump($alimentosTotales);
+  unset($sort);
+  unset($grupo);
+  $sort = array();
+  $grupo = array();
   $sort = array();
   foreach($alimentos as $k=>$v) {
       $sort['componente'][$k] = $v['componente'];
@@ -523,18 +364,6 @@ if($resultado->num_rows >= 1){
   /*************************************************************/
   /*************************************************************/
 
-
-
-
-
-
-
-
-
-
-
-
-
   $pdf->AddPage();
   $pdf->SetTextColor(0,0,0);
   $pdf->SetFillColor(255,255,255);
@@ -546,29 +375,7 @@ if($resultado->num_rows >= 1){
   include 'despacho_por_sede_footer.php';
   include 'despacho_kardex3_header.php';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   $grupoAlimActual = '';
-
-
 
 
   for ($i=0; $i < count($alimentos ) ; $i++) {
@@ -589,16 +396,11 @@ if($resultado->num_rows >= 1){
     $pdf->SetFillColor(255,255,255);
 
 
-
-
-
-
     //Grupo Alimenticio
     $largoNombreGrupo = 25;
     if($alimento['grupo_alim'] != $grupoAlimActual){
         $grupoAlimActual = $alimento['grupo_alim'];
         $filas = array_count_values($grupo)[$grupoAlimActual];
-
 
         // Codigo para validar que todas las filas del grupo caben en la hoja
         $alturaGrupo = 4 * $filas;
@@ -612,17 +414,10 @@ if($resultado->num_rows >= 1){
         // Termina codigo para validar que todas las filas del grupo caben en la hoja
 
 
-
-
-
-
-
         $current_y = $pdf->GetY();
         $current_x = $pdf->GetX();
         $altura = 4 * $filas;
         $pdf->Cell(44.388,$altura,'',1,0,'C',False);
-
-
 
         $aux = $alimento['grupo_alim'];
         $aux = mb_strtoupper($aux, 'UTF-8');
@@ -636,36 +431,14 @@ if($resultado->num_rows >= 1){
             $margenSuperiorCelda = 0;
         }
 
-
-
-
-
-
         $pdf->SetXY($current_x, $current_y+$margenSuperiorCelda);
         $pdf->MultiCell(44.388,$altura,utf8_decode($aux),0,'C',False);
-
-
-
-
-
 
         $pdf->SetXY($current_x+44.388, $current_y);
     }
     else{
          $pdf->SetX(52.388);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     $aux = $alimento['componente'];
     $long_nombre=strlen($aux);
@@ -676,8 +449,6 @@ if($resultado->num_rows >= 1){
 
     // Unidad de presentación
     $pdf->Cell(13.141,4,$alimento['presentacion'],1,0,'C',False);
-
-
 
 
  //echo "<br>".$alimento['componente'];
@@ -693,8 +464,6 @@ if($resultado->num_rows >= 1){
   $cantTotal = number_format( $cantTotal, $digitosDecimales);
  $b = number_format($b, $digitosDecimales);
 
-
-
     //echo  $cantTotal;
     //echo "<br>";
 
@@ -703,16 +472,6 @@ if($resultado->num_rows >= 1){
 
     //echo  $cantTotal - $b;
     //echo "<br><br>";
-
-
-
-
-
-
-
-
-
-
 
     if($alimento['presentacion'] == 'u'){
       $aux = round(0+$cantTotal);
@@ -753,13 +512,10 @@ if($resultado->num_rows >= 1){
     // $alimento['cant_total'] = number_format($alimento['cant_grupo1'], $digitosDecimales, '.', '') + number_format($alimento['cant_grupo2'], $digitosDecimales, '.', '') + number_format($alimento['cant_grupo3'], $digitosDecimales, '.', '');
 
 
-
      //var_dump($alimento);
 
     $saldo = $cantTotal;
     //echo "<br>Total: ".$saldo."<br>";
-
-
 
     for( $k = 1; $k <= 5; $k++ ){
         $consumoDia = 0;
@@ -771,15 +527,6 @@ if($resultado->num_rows >= 1){
             $consumoDia = $consumoDia +  $alimento['D'.$m];
         }
          $saldo = $cantTotal;
-
-
-
-
-
-
-
-
-
 
         $consumoDia = number_format($consumoDia, $digitosDecimales);
         //$consumoDia = $alimento['D'.$k];
@@ -793,13 +540,7 @@ if($resultado->num_rows >= 1){
         $consumoDia = $alimento['D'.$k];
         $consumoDia = number_format($consumoDia, $digitosDecimales);
 
-
-
-
-
-
         //echo "<br>".$saldo."<br>";
-
 
         $pdf->Cell(15.9,4,$consumoDia,'1',0,'C',False);
         $pdf->Cell(15.9,4,'','1',0,'C',False);
@@ -809,38 +550,8 @@ if($resultado->num_rows >= 1){
 
     $pdf->Cell(18,4,'','1',0,'C',False);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     $pdf->Ln(4);
   }//Termina el for de los alimentos
-
-
-
-
 
   $current_y = $pdf->GetY();
   //$pdf->Cell(0,5,$current_y,0,5,'C',False);
