@@ -1,13 +1,13 @@
 <?php
-  session_start();
-  if($_SESSION['perfil'] != 6){
-		if(!isset($_REQUEST['codInst'])){ header('Location: instituciones.php'); }
-	}
   include '../../header.php';
   set_time_limit (0);
   ini_set('memory_limit','6000M');
-  $periodoActual = $_SESSION['periodoActual'];
 
+  if($_SESSION['perfil'] != 6){
+    if(!isset($_REQUEST['codInst'])){ header('Location: instituciones.php'); }
+  }
+
+  $periodoActual = $_SESSION['periodoActual'];
 
   // Quien consulta es el rector de la Institución
   if($_SESSION['perfil'] == 6){

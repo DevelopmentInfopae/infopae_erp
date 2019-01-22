@@ -1,66 +1,32 @@
 <?php
-include '../../header.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
-$periodoActual = $_SESSION['periodoActual'];
-require_once '../../db/conexion.php';
-$Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-    echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}
-$Link->set_charset("utf8");
+	include '../../header.php';
+	require_once '../../db/conexion.php';
+	set_time_limit (0);
+	ini_set('memory_limit','6000M');
+	$periodoActual = $_SESSION['periodoActual'];
 ?>
 
-
-
-
-
-
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-            <div class="col-lg-8">
-                <h2>Nueva Novedad de Priorización</h2>
-				<div class="debug"></div>
-
-<!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Small Modal</button> -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="<?php echo $baseUrl; ?>">Home</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion">Novedades de Priorización</a>
-                    </li>
-                    <li class="active">
-                        <strong>Novedad en Priorización crear</strong>
-                    </li>
-                </ol>
-            </div>
-            <div class="col-lg-4">
-                <div class="title-action">
-                   <!--
-                    <a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
-                    <a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a>
-                  -->
-                	<a href="#" target="_self" class="btn btn-primary guaradarNovedad"><i class="fa fa-check"></i> Guardar</a>
-                </div>
-            </div>
+    <div class="col-lg-8">
+	    <h2>Nueva Novedad de Priorización</h2>
+		<div class="debug"></div>
+        <ol class="breadcrumb">
+            <li>
+                <a href="<?php echo $baseUrl; ?>">Home</a>
+            </li>
+            <li>
+                <a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion">Novedades de Priorización</a>
+            </li>
+            <li class="active">
+                <strong>Novedad en Priorización crear</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-4">
+        <div class="title-action">
+        	<a href="#" target="_self" class="btn btn-primary guaradarNovedad"><i class="fa fa-check"></i> Guardar</a>
+        </div>
+    </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -69,45 +35,43 @@ $Link->set_charset("utf8");
 			<form class="col-lg-12" action="" method="post" name="formArchivos" id="formArchivos" enctype="multipart/form-data">
 	      		<div class="ibox float-e-margins">
 	        		<div class="ibox-content contentBackground">
-				            <div class="row">
-								<div class="col-sm-4 form-group">
-									<label for="municipio">Municipio</label>
-									<select class="form-control" name="municipio" id="municipio">
-										<option value="">Seleccione uno</option>
-									</select>
-								</div><!-- /.col -->
-								<div class="col-sm-8 form-group">
-									<label for="institucion">Institución</label>
-									<select class="form-control" name="institucion" id="institucion">
-										<option value="">Seleccione una</option>
-									</select>
-								</div><!-- /.col -->
-								<div class="col-sm-6 form-group">
-									<label for="sede">Sede</label>
-									<select class="form-control" name="sede" id="sede">
-										<option value="">Selecciones una</option>
-									</select>
-								</div><!-- /.col -->
-								<div class="col-sm-3 form-group">
-									<label for="mes">Mes</label>
-									<select class="form-control" name="mes" id="mes">
-										<option value="">Seleccione uno</option>
-									</select>
-								</div><!-- /.col -->
-								<div class="col-sm-3 form-group">
-									<label for="semana">Semana</label>
-									<div id="semana">
+			            <div class="row">
+							<div class="col-sm-4 form-group">
+								<label for="municipio">Municipio</label>
+								<select class="form-control" name="municipio" id="municipio">
+									<option value="">Seleccione uno</option>
+								</select>
+							</div><!-- /.col -->
+							<div class="col-sm-8 form-group">
+								<label for="institucion">Institución</label>
+								<select class="form-control" name="institucion" id="institucion">
+									<option value="">Seleccione una</option>
+								</select>
+							</div><!-- /.col -->
+							<div class="col-sm-6 form-group">
+								<label for="sede">Sede</label>
+								<select class="form-control" name="sede" id="sede">
+									<option value="">Selecciones una</option>
+								</select>
+							</div><!-- /.col -->
+							<div class="col-sm-3 form-group">
+								<label for="mes">Mes</label>
+								<select class="form-control" name="mes" id="mes">
+									<option value="">Seleccione uno</option>
+								</select>
+							</div><!-- /.col -->
+							<div class="col-sm-3 form-group">
+								<label for="semana">Semana</label>
+								<div id="semana">
 
-									</div>
-								</div><!-- /.col -->
-							</div><!-- -/.row -->
-							<div class="row">
-								<div class="col-sm-4 form-group">
-									<button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1"><strong>Buscar</strong></button>
 								</div>
+							</div><!-- /.col -->
+						</div><!-- -/.row -->
+						<div class="row">
+							<div class="col-sm-4 form-group">
+								<button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1"><strong>Buscar</strong></button>
 							</div>
-
-
+						</div>
 	        		</div><!-- /.ibox-content -->
 				</div><!-- /.ibox float-e-margins -->
 
@@ -235,25 +199,10 @@ $Link->set_charset("utf8");
 						</div>
 					</div>
 				</div>
-
-
-
-
-
-
-
 			</form>
     	</div><!-- /.col-lg-12 -->
   	</div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
-
-
-
-
-
-
-
-
 
 <div class="modal fade" id="myModal" role="dialog">
 	<div class="modal-dialog modal-sm">
@@ -271,11 +220,6 @@ $Link->set_charset("utf8");
 		</div>
 	</div>
 </div>
-
-
-
-
-
 
 <?php include '../../footer.php'; ?>
 
@@ -299,9 +243,7 @@ $Link->set_charset("utf8");
 <!-- CodeMirror -->
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/codemirror.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/mode/xml/xml.js"></script>
-
 <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede_archivos.js"></script>
-
 <script src="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/js/novedades_priorizacion_crear.js"></script>
 
 <!-- Page-Level Scripts -->

@@ -13,6 +13,6 @@ if($tipo != ''){
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()) { ?>
-		<option value="<?php echo $row['cod_inst']; ?>"><?php echo $row['nom_inst']; ?></option>
+		<option value="<?php echo $row['cod_inst']; ?>" <?php if ($municipio_defecto["CodMunicipio"] == $row["cod_inst"]) { echo "selected"; } ?>><?php echo $row['nom_inst']; ?></option>
 	<?php }
 }

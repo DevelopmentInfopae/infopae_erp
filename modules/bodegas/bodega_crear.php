@@ -69,7 +69,7 @@
 		                    if($resultado1){
 		                      while($registros1 = $resultado1->fetch_assoc()){
 		                  ?>
-		                        <option value="<?php echo $registros1['CodigoDANE']; ?>" <?php if(isset($row['cod_mun']) && $row['cod_mun'] == $registros1['CodigoDANE']){ echo ' selected '; } ?>>
+		                        <option value="<?php echo $registros1['CodigoDANE']; ?>" <?php if(isset($row['cod_mun']) && $row['cod_mun'] == $registros1['CodigoDANE'] || $municipio_defecto["CodMunicipio"] == $registros1["CodigoDANE"]){ echo ' selected '; } ?>>
 		                          <?php echo $registros1['Ciudad']; ?>
 		                        </option>
 		                  <?php

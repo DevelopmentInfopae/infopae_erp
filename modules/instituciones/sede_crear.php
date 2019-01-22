@@ -4,7 +4,7 @@
 
 	$codigoInstitucion = (isset($_POST["codigoInstitucion"]) && $_POST["codigoInstitucion"] != "") ? mysqli_real_escape_string($Link, $_POST["codigoInstitucion"]) : "";
 	if($codigoInstitucion != ""){
-		$consultaInstitucion = "SELECT * FROM instituciones WHERE codigo_inst = '$codigoInstitucion'";
+		$consultaInstitucion = "SELECT * FROM instituciones WHERE codigo_inst = '$codigoInstitucion' AND cod_mun = '". $municipio_defecto["CodMunicipio"] ."'";
 		$resultadoInstitucion = $Link->query($consultaInstitucion);
 		if ($resultadoInstitucion->num_rows > 0){
 			$registrosIntitucion = $resultadoInstitucion->fetch_assoc();
@@ -73,7 +73,7 @@
                         $resultado = $Link->query($consulta);
                         if($resultado->num_rows > 0){
                           while($row = $resultado->fetch_assoc()) {
-                            $selected = (isset($registrosIntitucion["cod_mun"]) && $registrosIntitucion["cod_mun"] == $row["codigoDANE"] ) ? " selected " : "";
+                            $selected = (isset($registrosIntitucion["cod_mun"]) && $registrosIntitucion["cod_mun"] == $row["codigoDANE"] || $municipio_defecto["CodMunicipio"] == $row["codigoDANE"]) ? " selected " : "";
                             echo '<option value="' . $row["codigoDANE"] . '" ' . $selected . '>
                                     ' . $row["ciudad"] .
                                   '</option>';

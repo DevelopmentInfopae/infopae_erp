@@ -68,7 +68,7 @@
                         $resultado = $Link->query($consulta);
                         if($resultado->num_rows > 0){
                           while($row = $resultado->fetch_assoc()) { ?>
-                            <option value="<?php echo $row["codigoDANE"]; ?>" <?php if(isset($_POST["municipio"]) && $_POST["municipio"] == $row["codigoDANE"] ) { echo " selected "; } ?>>
+                            <option value="<?php echo $row["codigoDANE"]; ?>" <?php if(isset($_POST["municipio"]) && $_POST["municipio"] == $row["codigoDANE"] || $municipio_defecto["CodMunicipio"] == $row["codigoDANE"]) { echo " selected "; } ?>>
                               <?php echo $row["ciudad"]; ?>
                             </option>
                       <?php
@@ -83,7 +83,7 @@
                     <select class="form-control" name="institucion" id="institucion" required>
                       <option value="">Todas</option>
                       <?php
-                          $municipio = mysqli_real_escape_string($Link, $_POST["municipio"]);
+                          $municipio = (isset($_POST["municipio"]) && empty($_POST["municipio"])) ? mysqli_real_escape_string($Link, $_POST["municipio"]) : $municipio_defecto["CodMunicipio"];
                           $consultaIns = "SELECT codigo_inst AS cod_inst, nom_inst FROM instituciones WHERE cod_mun = '$municipio'";
 
                           $consultaIns .=" order by codigo_inst asc "; echo $consultaIns;

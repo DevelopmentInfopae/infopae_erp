@@ -320,15 +320,15 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4){
         }
         $x = $pdf->GetX();
         $y = $pdf->GetY();
-        $pdf->Cell(8,$alturaLinea,utf8_decode($linea),'R',0,'C',False);
-        $pdf->Cell(10,$alturaLinea,utf8_decode(''),'R',0,'C',False);
-        $pdf->Cell(20,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-        $pdf->Cell(31.7,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-        $pdf->Cell(31.7,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-        $pdf->Cell(31.7,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-        $pdf->Cell(31.7,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-        $pdf->Cell(14,$alturaLinea,utf8_decode(''),'R',0,'C',False);
-        $pdf->Cell(13,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+        $pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(10,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(20,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(14,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
 
         // Aqui es donde se cambia de acuerdo a la plantilla
         for($j = 0 ; $j < 24 ; $j++){
