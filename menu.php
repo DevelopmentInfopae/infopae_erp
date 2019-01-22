@@ -135,13 +135,13 @@
 		<ul class="nav nav-second-level collapse">
 			<li> <a href="<?php echo $baseUrl; ?>/modules/parametros"><span class="nav-label">Parámetros generales</span></a> </li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/dias_contrato"><span class="nav-label">Días de contratos</span></a> </li>
-			<li><a href="#" class="sinDesarrollar">Semanas de contrato</a></li>
-			<li><a href="#" class="sinDesarrollar">Complementos alimentarios</a></li>
+			<!-- <li><a href="#" class="sinDesarrollar">Semanas de contrato</a></li> -->
+			<li><a href="<?php echo $baseUrl; ?>/modules/complementos_alimentarios">Complementos alimentarios</a></li>
 			<li><a href="<?php echo $baseUrl; ?>/modules/insumos">Insumos</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/grupos_etarios">Grupos etarios</a></li>
 			<li><a href="#" class="sinDesarrollar">Perfiles de usuario</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/usuarios"><span class="nav-label">Usuarios</span></a> </li>
-			<li><a href="#" class="sinDesarrollar">Asignar usuarios a bodegas</a></li>
+			<!-- <li><a href="#" class="sinDesarrollar">Asignar usuarios a bodegas</a></li> -->
 			<li><a href="<?= $baseUrl; ?>/modules/proveedores">Proveedores</a></li>
 			<li>
 				<a href="#"><span class="nav-label">Rutas</span> <span class="fa arrow"></span></a>
@@ -151,11 +151,11 @@
 				</ul>
 			</li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/bodegas"><span class="nav-label">Bodegas</span></a> </li>
-			<li><a href="#" class="sinDesarrollar">Dispositivos bométricos</a></li>
+			<!-- <li><a href="#" class="sinDesarrollar">Dispositivos bométricos</a></li>
 			<li><a href="#" class="sinDesarrollar">Departamentos</a></li>
 			<li><a href="#" class="sinDesarrollar">Municipios</a></li>
 			<li><a href="#" class="sinDesarrollar">Tipomovimiento</a></li>
-			<li><a href="#" class="sinDesarrollar">Documentos</a></li>
+			<li><a href="#" class="sinDesarrollar">Documentos</a></li> -->
 			<li><a href="<?= $baseUrl; ?>/modules/empleados">Empleados</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_vehiculos">Tipo vehiculo</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_despachos">Tipo despacho</a></li>
