@@ -38,13 +38,13 @@
 
     <link href="<?php echo $baseUrl; ?>/theme/css/animate.css" rel="stylesheet">
 
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/dropzone/basic.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/dropzone/dropzone.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/codemirror/codemirror.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/iCheck/custom.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/steps/jquery.steps.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/toggle/toggle.min.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/dropzone/basic.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/dropzone/dropzone.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/codemirror/codemirror.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/iCheck/custom.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/toggle/toggle.min.css" rel="stylesheet">
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/select2/select2.min.css" rel="stylesheet">
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
