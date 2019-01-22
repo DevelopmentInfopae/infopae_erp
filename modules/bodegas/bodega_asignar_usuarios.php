@@ -7,6 +7,7 @@
   if ($res_minicipio->num_rows > 0) {
     $codigoDANE = $res_minicipio->fetch_array();
   }
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -96,7 +97,7 @@
                         $resultado = $Link->query($consulta);
                         if($resultado->num_rows > 0){
                           while($row = $resultado->fetch_assoc()) {
-                            $selected = (isset($codigoDANE["CodMunicipio"]) && $codigoDANE["CodMunicipio"] == $row["codigoDANE"] ) ? " selected " : "";
+                            $selected = (isset($codigoDANE["CodMunicipio"]) && $codigoDANE["CodMunicipio"] == $row["codigoDANE"] )  ? " selected " : "";
                             echo '<option value="' . $row["codigoDANE"] . '" ' . $selected . '>
                                     ' . $row["ciudad"] .
                                   '</option>';

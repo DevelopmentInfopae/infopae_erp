@@ -13,10 +13,8 @@ if($resultado->num_rows >= 1){
 	$row = $resultado->fetch_assoc();
 	$datosNovedad = $row;
 }
-// var_dump($datosNovedad);
-$mesNm = mesEnLetras($datosNovedad['MES']);
-// var_dump($mesNm);
 
+$mesNm = mesEnLetras($datosNovedad['MES']);
 $semana = $datosNovedad['Semana'];
 $codSede = $datosNovedad['cod_sede'];
 
@@ -26,15 +24,6 @@ if($resultado->num_rows >= 1){
 	$row = $resultado->fetch_assoc();
 	$datosPriorizacion = $row;
 }
-// var_dump($datosPriorizacion);
-
-
-
-
-
-
-
-
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">

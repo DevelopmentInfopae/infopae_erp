@@ -68,7 +68,7 @@
                         $resultado = $Link->query($consulta);
                         if($resultado->num_rows > 0){
                           while($row = $resultado->fetch_assoc()) { ?>
-                            <option value="<?php echo $row["codigoDANE"]; ?>" <?php if(isset($_POST["municipio"]) && $_POST["municipio"] == $row["codigoDANE"] ) { echo " selected "; } ?>>
+                            <option value="<?php echo $row["codigoDANE"]; ?>" <?php if(isset($_POST["municipio"]) && $_POST["municipio"] == $row["codigoDANE"] || $municipio_defecto["CodMunicipio"] == $row["codigoDANE"]) { echo " selected "; } ?>>
                               <?php echo $row["ciudad"]; ?>
                             </option>
                       <?php
@@ -80,14 +80,14 @@
 
                   <div class="col-sm-3 form-group">
                     <label for="institucion">Institución</label>
-                    <select class="form-control" name="institucion" id="institucion">
+                    <select class="form-control" name="institucion" id="institucion" required>
                       <option value="">Todas</option>
                       <?php
-                        if(isset($_POST["municipio"]) && $_POST["municipio"] != "" ){
-                          $municipio = mysqli_real_escape_string($Link, $_POST["municipio"]);
-                          $consultaIns = "SELECT codigo_inst AS cod_inst, nom_inst FROM instituciones WHERE cod_mun = '$municipio' ORDER BY nom_inst ASC;";
-                          $consultaIns = $consultaIns." and s.cod_mun_sede = '$municipio' ";
-                          $consultaIns = $consultaIns." order by s.nom_inst asc ";
+                          $municipio = (isset($_POST["municipio"]) && empty($_POST["municipio"])) ? mysqli_real_escape_string($Link, $_POST["municipio"]) : $municipio_defecto["CodMunicipio"];
+                          $consultaIns = "SELECT codigo_inst AS cod_inst, nom_inst FROM instituciones WHERE cod_mun = '$municipio'";
+
+                          $consultaIns .=" order by codigo_inst asc "; echo $consultaIns;
+
                           $resultado = $Link->query($consultaIns) or die ('Unable to execute query. '. mysqli_error($Link));
                           if($resultado->num_rows >= 1){
                             while($row = $resultado->fetch_assoc()) { ?>
@@ -95,7 +95,6 @@
                       <?php
                             }// Termina el while
                           }//Termina el if que valida que si existan resultados
-                        }
                        ?>
                     </select>
                   </div><!-- /.col -->
@@ -349,8 +348,8 @@
         method: 'POST',
         url: 'functions/fn_sedes_buscar_dataTables.php',
         data:{
-          municipio: $('#municipio').val(),
-          institucion: $('#institucion').val()
+          municipio: '<?= $_POST["municipio"] ?>',
+          institucion: '<?= $_POST["institucion"] ?>'
         }
       },
       columns:[

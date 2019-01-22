@@ -25,7 +25,7 @@ $respuesta = 1;
 date_default_timezone_set('America/Bogota');
 $fecha = date('Y-m-d H:i:s');
 
-$carpetaFisica = $rootUrl.'/upload/novedades/';
+$carpetaFisica = '../../../upload/novedades/';
 $carpeta = 'upload/novedades/';
 
 //Verificando la existencia del directorio
@@ -95,6 +95,7 @@ if (isset($_FILES["foto"])){
 				Etario3_CAJMPS,
 				Semana,
 				observaciones,
+				arch_adjunto,
 				estado
 			)
 			values
@@ -133,8 +134,9 @@ if (isset($_FILES["foto"])){
 			$consulta .= " '$aux', ";
 			$aux = $_POST['observaciones'];
 			$consulta .= " '$aux', ";
+			$consulta .= " '$carpeta', ";
 			$consulta .= " 1 ) ";
-			//echo "<br><br>$consulta<br><br>";
+			// echo "<br><br>$consulta<br><br>";
 			$Link->query($consulta) or die ('Error insertando la novedad de priorización.'. mysqli_error($Link));
 			$nuevoId = $Link->insert_id;
 			// echo "<br><br>Nuevo ID: $nuevoId <br><br>";
@@ -178,9 +180,6 @@ if (isset($_FILES["foto"])){
 			$Link->query($consulta) or die ('Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede '. mysqli_error($Link));
 
 
-
-
-
 			if($nuevoId > 0){
 				//Colocando el archivo en la carpeta
 				$nombre = $nuevoId.'.'.$ext;
@@ -192,6 +191,9 @@ if (isset($_FILES["foto"])){
 					$consulta = " update novedades_priorizacion set arch_adjunto = '$srcw' where id = $nuevoId ";
 					// echo "<br><br> $consulta <br><br>";
 					$Link->query($consulta) or die ('Error actualizando la URL del archivo de priorización'. mysqli_error($Link));
+				} else {
+					$reporte = "El archivo adjunto no ha sido cargado exitosamente. ->" . $ruta_provisional . "  -> " . $src ;
+					$respuesta++;
 				}
 			}
 			// Cuando hay más de una semana se hancen las inserciones con la misma información y el mismo archivo adjunto
@@ -298,7 +300,6 @@ if (isset($_FILES["foto"])){
 				}
 				$indiceSemana++;
 			}
-
 		}else{
 			$respuesta++;
 		}

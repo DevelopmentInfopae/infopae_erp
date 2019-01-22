@@ -28,7 +28,7 @@ $(document).ready(function(){
 });
 
 function crearSede(){
-  window.open('sede_crear.php', '_self');
+    window.open('sede_crear.php', '_self');
 }
 
 function editarSede(codigoSede, nombreSede){
@@ -271,7 +271,7 @@ function subirArchivoFocalizacion(){
 
 function generarInformeFocalizacion()
 {
-  window.open('functions/fn_sede_generar_informe?semana='+$('#semanaFocalizacion').val(), '_blank');
+  window.open('functions/fn_sede_generar_informe.php?semana='+$('#semanaFocalizacion').val(), '_blank');
 }
 
 function verDispositivosSede(codigoSede){

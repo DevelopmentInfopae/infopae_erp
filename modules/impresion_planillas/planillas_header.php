@@ -267,7 +267,7 @@ $pdf->SetXY($x, $y+7);
 
 if($tipoPlanilla != 1){
 	$dia = 0;
-	for($i = 0 ; $i < 25 ; $i++){
+	for($i = 0 ; $i < 24 ; $i++){
 		$dia++;
 		if($dia < 10){
 			$auxDia = 'D0'.$dia;

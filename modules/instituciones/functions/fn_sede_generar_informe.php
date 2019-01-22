@@ -55,7 +55,7 @@
 	$pdf->AliasNbPages();
 	$pdf->SetDrawColor(188,188,188);
 
-	$pdf->Image("../../../theme/img/zender_logo.png",12,12,30);
+	$pdf->Image("../../../theme/img/logo_simbolo_infopae2.png",12,12,30);
 	$pdf->SetFont('Arial','B',11);
 	$pdf->Cell(30,15,'','TRBL',0,'C');
 	$pdf->Cell(130,15,utf8_decode(strtoupper("Informe de diferencias de Titulares focalizacion")),'TB',0,'C');
