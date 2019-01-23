@@ -1,41 +1,28 @@
 <?php
-include "../../config.php";
-$titulo = 'Consulta resumida de entregas';
-include '../../header.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
-$periodoActual = $_SESSION['periodoActual'];
-require_once '../../db/conexion.php';
-$Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-    echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}
-$Link->set_charset("utf8");
+  include '../../header.php';
+  set_time_limit (0);
+  ini_set('memory_limit','6000M');
+  $periodoActual = $_SESSION['periodoActual'];
+  $titulo = 'Consulta resumida de entregas';
 ?>
 
 
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-  <div class="col-lg-8">
-    <h2>Consulta resumida de entregas</h2>
-    <ol class="breadcrumb">
-      <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
-      </li>
-      <li class="active">
-        <strong>Consulta resumida de entregas</strong>
-      </li>
-    </ol>
-  </div><!-- /.col -->
-  <div class="col-lg-4">
-    <div class="title-action">
-      <!--
-      <a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
-      <a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a>
-      <a href="#" onclick="actualizarDespacho()" target="_self" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar Cambios </a>
-      -->
-    </div><!-- /.title-action -->
-  </div><!-- /.col -->
+    <div class="col-lg-8">
+        <h2>Consulta resumida de entregas</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="<?php echo $baseUrl; ?>">Home</a>
+            </li>
+            <li class="active">
+                <strong>Consulta resumida de entregas</strong>
+            </li>
+        </ol>
+    </div><!-- /.col -->
+    <div class="col-lg-4">
+        <div class="title-action"></div><!-- /.title-action -->
+    </div><!-- /.col -->
 </div><!-- /.row -->
 
 
@@ -89,31 +76,23 @@ $Link->set_charset("utf8");
                 </select>
               </div><!-- /.col -->
 
-              <div class="col-sm-3 form-group">
-                <label for="municipio">Municipio</label>
-                <select id="municipio" name="municipio" onchange="buscar_instituciones();" class="form-control" required>
-                  <?php
-            if (isset($departamento) && $departamento != "") {
-
-              $vsql = "select distinct ciudad, codigodane from ubicacion where ETC = 0 and codigodane like '$departamento%' order by ciudad asc";
-							if($_SESSION['perfil'] == 6){
-								$rectorDocumento = $_SESSION['num_doc'];
-								$vsql = "SELECT ubicacion.ciudad as ciudad, ubicacion.CodigoDANE as codigodane from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento limit 1";
-							}
-
-              $result = $Link->query($vsql);
-
-            ?>
-              <option value="">TODOS</option>
-            <?php
-                while($row = $result->fetch_assoc()) {  ?>
-                  <option value="<?php echo $row["codigodane"]; ?>"
-
-
-                  <?php if (isset($_POST['municipio']) && ($_POST['municipio'] == $row["codigodane"]) ) {
-                    echo ' selected ';
-                  }  ?>
-                  ><?php echo $row["ciudad"]; ?></option>
+                <div class="col-sm-3 form-group">
+                    <label for="municipio">Municipio</label>
+                    <select id="municipio" name="municipio" onchange="buscar_instituciones();" class="form-control" required>
+                    <?php
+                        if (isset($departamento) && $departamento != "") {
+                            $vsql = "select distinct ciudad, codigodane from ubicacion where ETC = 0 and codigodane like '$departamento%' order by ciudad asc";
+				            if($_SESSION['perfil'] == 6){
+					           $rectorDocumento = $_SESSION['num_doc'];
+					           $vsql = "SELECT ubicacion.ciudad as ciudad, ubicacion.CodigoDANE as codigodane from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento limit 1";
+				            }
+                        $result = $Link->query($vsql);
+                    ?>
+                        <option value="">TODOS</option>
+                    <?php
+                        while($row = $result->fetch_assoc()) {
+                    ?>
+                        <option value="<?php echo $row["codigodane"]; ?>" <?php if ((isset($_POST['municipio']) && $_POST['municipio'] == $row["codigodane"]) || $municipio_defecto["CodMunicipio"] == $row["codigodane"]) { echo ' selected '; } ?>><?php echo $row["ciudad"]; ?></option>
           <?php }
           } else{?> <option value="">TODOS</option> <?php }  ?>
 
@@ -127,17 +106,12 @@ $Link->set_charset("utf8");
                 <label for="departamento">Institución</label>
                 <!-- onchange="buscar_sedes();" -->
                 <select id="institucion" name="institucion" onchange="buscar_sedes();" class="form-control">
-                             <?php
-                          if (isset($_POST["municipio"]) && $_POST["municipio"] != "") {
-
-                            $municipio = $_POST["municipio"];
-
-                            $vsql = "select distinct cod_inst, nom_inst from sedes".$periodoactual." where cod_mun_sede = '$municipio' order by nom_inst asc";
-                            $result = $Link->query($vsql);
-
-
-
-                          ?>
+                            <?php
+                            if (isset($_POST["municipio"]) && $_POST["municipio"] != "" || $municipio_defecto["CodMunicipio"]) {
+                                $municipio = (isset($_POST["municipio"])) ? $_POST["municipio"] : $municipio_defecto["CodMunicipio"];
+                                $vsql = "select distinct cod_inst, nom_inst from sedes".$periodoactual." where cod_mun_sede = '$municipio' order by nom_inst asc"; echo $vsql;
+                                $result = $Link->query($vsql);
+                            ?>
                             <option value="">TODOS</option>
                           <?php
                                while($row = $result->fetch_assoc()) {  ?>

@@ -1,14 +1,17 @@
 <?php
-include 'config.php';
-$usuario = '';
-$tipoUsuario = '';
-$idUsr = '';
-$fotoUsr = '';
-require_once 'db/conexion.php';
-include 'autentication.php';
-include 'php/funciones.php';
-$idUsr = $_SESSION['id_usuario'];
-$fotoUsr = $_SESSION['foto'];
+    include 'config.php';
+    $usuario = '';
+    $tipoUsuario = '';
+    $idUsr = '';
+    $fotoUsr = '';
+    require_once 'db/conexion.php';
+    include 'autentication.php';
+    include 'php/funciones.php';
+    $idUsr = $_SESSION['id_usuario'];
+    $fotoUsr = $_SESSION['foto'];
+
+    $dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
+    if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
 ?>
 
 <!DOCTYPE html>
@@ -35,13 +38,13 @@ $fotoUsr = $_SESSION['foto'];
 
     <link href="<?php echo $baseUrl; ?>/theme/css/animate.css" rel="stylesheet">
 
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/dropzone/basic.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/dropzone/dropzone.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/codemirror/codemirror.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/iCheck/custom.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/steps/jquery.steps.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl; ?>/theme/css/plugins/toggle/toggle.min.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/dropzone/basic.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/dropzone/dropzone.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/codemirror/codemirror.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/iCheck/custom.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/steps/jquery.steps.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/css/plugins/toggle/toggle.min.css" rel="stylesheet">
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/select2/select2.min.css" rel="stylesheet">
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">

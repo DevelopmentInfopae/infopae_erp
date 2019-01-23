@@ -8,8 +8,7 @@
   $municipio   = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
   $institucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? mysqli_real_escape_string($Link, $_POST["institucion"]) : "";
 
-  $consultaSedes = "SELECT 
-                      /*sed.id,  */
+  $consultaSedes = "SELECT
                       sed.cod_sede AS codigoSede,
                       sed.nom_sede AS nombreSede,
                       sed.cod_inst AS codigoInstitucion,
@@ -19,8 +18,8 @@
                       sed.tipo_validacion AS tipoValidacion,
                       sed.estado AS estadoSede
                     FROM sedes$periodoActual sed
-                    LEFT JOIN usuarios usu ON usu.id = sed.id_coordinador 
-                    LEFT JOIN jornada jor ON jor.id = sed.jornada 
+                    LEFT JOIN usuarios usu ON usu.id = sed.id_coordinador
+                    LEFT JOIN jornada jor ON jor.id = sed.jornada
                     WHERE 1=1 ";
   if($municipio  != ""){ $consultaSedes .= " AND cod_mun_sede = '" . $_POST['municipio'] . "' "; }
   if($institucion != ""){ $consultaSedes .= " AND cod_inst = '" . $_POST['institucion'] . "' "; }
@@ -39,5 +38,5 @@
     'iTotalDisplayRecords' => count($data),
     'aaData' => $data
   ];
-  
+
   echo json_encode($output);

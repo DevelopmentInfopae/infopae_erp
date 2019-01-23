@@ -4,81 +4,60 @@ function editarRuta(id){
   window.open(ruta,'_self');
 }
 
+$(document).ready(function() {
+    var mes = $('#mesi').val();
+    var mesText = $("#mesi option[value='"+mes+"']").text()
+    $('#mesfText').val(mesText);
+    $('#mesf').val(mes);
+
+    $('#seleccionarVarios').change(function(){
+        console.log('Cambio el de varios');
+        if ($('#seleccionarVarios').is(':checked')) {
+            $('tbody input[type=checkbox]').prop( "checked", true );
+        } else {
+        $('tbody input[type=checkbox]').prop( "checked", false );
+        }
+    });
 
 
-
-
-
-
-$(document).ready(function(){
-  var mes = $('#mesi').val();
-  var mesText = $("#mesi option[value='"+mes+"']").text()
-  $('#mesfText').val(mesText);
-  $('#mesf').val(mes);
-
-
-
-
-
-
-
-
-
-
-
-  $('#seleccionarVarios').change(function(){
-    console.log('Cambio el de varios');
-    if ($('#seleccionarVarios').is(':checked')) {
-      $('tbody input[type=checkbox]').prop( "checked", true );
-    }
-    else{
-      $('tbody input[type=checkbox]').prop( "checked", false );
-    }
-  });
-
-
-   $('#municipio').change(function(){
-    var tipo = $('#tipoRacion').val();
-    var municipio = $(this).val();
-    buscar_institucion(municipio,tipo);
-  });
+    $('#municipio').change(function(){
+        var tipo = $('#tipoRacion').val();
+        var municipio = $(this).val();
+        buscar_institucion(municipio,tipo);
+    });
 
 
     $('#institucion').change(function(){
-    var institucion = $(this).val();
-    var tipo = $('#tipoRacion').val();
-    var municipio = $('#municipio').val();
-    var semana = $('#semana').val();
-    buscar_sede(semana,municipio,tipo,institucion);
+        var institucion = $(this).val();
+        var tipo = $('#tipoRacion').val();
+        var municipio = $('#municipio').val();
+        var semana = $('#semana').val();
+        buscar_sede(semana,municipio,tipo,institucion);
+    });
 
 
-  });
-
-
-$( "#btnBuscar" ).click(function(){
-  console.log('Se va  hacer uan busqueda.');
-  $("#pb_annoi").val($("#annoi").val());
-  $("#pb_mesi").val($("#mesi").val());
-  $("#pb_diai").val($("#diai").val());
-  $("#pb_annof").val($("#annof").val());
-  $("#pb_mesf").val($("#mesf").val());
-  $("#pb_diaf").val($("#diaf").val());
-  $("#pb_tipo").val($("#tipo").val());
-  $("#pb_municipio").val($("#municipio").val());
-  $("#pb_institucion").val($("#institucion").val());
-  $("#pb_sede").val($("#sede").val());
-  $("#pb_tipoDespacho").val($("#tipoDespacho").val());
-  $("#pb_btnBuscar").val(1);
-  $("#parametrosBusqueda").submit();
+    $( "#btnBuscar" ).click(function(){
+        console.log('Se va  hacer uan busqueda.');
+        $("#pb_annoi").val($("#annoi").val());
+        $("#pb_mesi").val($("#mesi").val());
+        $("#pb_diai").val($("#diai").val());
+        $("#pb_annof").val($("#annof").val());
+        $("#pb_mesf").val($("#mesf").val());
+        $("#pb_diaf").val($("#diaf").val());
+        $("#pb_tipo").val($("#tipo").val());
+        $("#pb_municipio").val($("#municipio").val());
+        $("#pb_institucion").val($("#institucion").val());
+        $("#pb_sede").val($("#sede").val());
+        $("#pb_tipoDespacho").val($("#tipoDespacho").val());
+        $("#pb_btnBuscar").val(1);
+        $("#parametrosBusqueda").submit();
+    });
 });
 
-
-
-
-
-
-});
-
+function crearRuta()
+{
+    window.open('ruta_nuevo.php', '_self');
+}
 
 
 

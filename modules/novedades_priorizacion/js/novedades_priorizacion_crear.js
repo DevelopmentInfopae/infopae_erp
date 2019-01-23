@@ -443,9 +443,7 @@ function guardar_priorizacion(){
 					var obj = JSON.parse(datos);
 					console.log(obj);
 					if(obj.respuesta == 1){
-						//$("#myModal").modal();
 						alert('Se ha registrado con éxito la novedad de priorización');
-						//location.reload();
 						location.href="index.php";
 					}else{
 						alert(obj.reporte);
