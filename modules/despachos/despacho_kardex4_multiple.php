@@ -442,7 +442,7 @@ foreach ($codesedes as $sedecod => $isset) {
         for ($i=0; $i < count($alimentosTotales) ; $i++) {
           $alimentoTotal = $alimentosTotales[$i];
           $auxCodigo = $alimentoTotal['codigo'];
-          $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion,m.grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
+          $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion, m.grupo_alim, m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
           from  fichatecnicadet ftd
           inner join productos$anno  p on ftd.codigo=p.codigo
           inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
@@ -453,6 +453,7 @@ foreach ($codesedes as $sedecod => $isset) {
             $alimentoTotal['componente'] = $row['Componente'];
             $alimentoTotal['presentacion'] = $row['presentacion'];
             $alimentoTotal['grupo_alim'] = $row['grupo_alim'];
+            $alimentoTotal['orden_grupo_alim'] = $row['orden_grupo_alim'];
 
             $alimentoTotal['nombreunidad2'] = $row['NombreUnidad2'];
             $alimentoTotal['nombreunidad3'] = $row['NombreUnidad3'];
@@ -478,7 +479,7 @@ foreach ($codesedes as $sedecod => $isset) {
         foreach($alimentosTotales as $kOrden=>$vOrden) {
           //echo '<br>'.$vOrden['componente'];
             $sort['componente'][$kOrden] = $vOrden['componente'];
-            $sort['grupo_alim'][$kOrden] = $vOrden['grupo_alim'];
+            $sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
             $grupo[$kOrden] = $vOrden['grupo_alim'];
         }
         array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentosTotales);
@@ -621,8 +622,13 @@ foreach ($codesedes as $sedecod => $isset) {
               for( $k = 1; $k <= 5; $k++ ){
                 $consumoDia = 0;
                 $consumoDia = $item['d'.$k];
-                $consumoDia = number_format($consumoDia, $digitosDecimales);
-                $pdf->Cell(22,4,$consumoDia,'1',0,'C',False);
+                if ($item['presentacion'] == "u") {
+                $consumoDia = number_format($consumoDia, 0, '', '');
+                  $pdf->Cell(22,4,round($consumoDia),'1',0,'C',False);
+                } else {
+                  $consumoDia = number_format($consumoDia, $digitosDecimales);
+                  $pdf->Cell(22,4,$consumoDia,'1',0,'C',False);
+                }
                 //$pdf->Cell(31.8,4,'','1',0,'C',False);
               }
               $pdf->Cell(19.7,4,'','1',0,'C',False);
@@ -658,7 +664,7 @@ foreach ($codesedes as $sedecod => $isset) {
         $current_y = $pdf->GetY();
         // La hoja mide de alto 215.9 mm
         // La firma mide aprox 91 mm
-        if((215.9 - $current_y) < 91){
+        if((215.9 - $current_y) < 60){
           $pdf->AddPage();
           include 'despacho_kardex4_multiple_header.php';
           include 'despacho_firma_planilla_kardex3.php';

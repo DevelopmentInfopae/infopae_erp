@@ -49,6 +49,7 @@ $(document).ready(function(){
          beforeSend: function(){},
          success: function(data){
           $('#productosDesp').append(data);
+          $('.productodesp:last').select2();
          }
        });
     }
@@ -399,6 +400,7 @@ function anadirProducto(){
    beforeSend: function(){},
    success: function(data){
     $('#productosDesp').append(data);
+    $('.productodesp:last').select2();
    }
   });
 

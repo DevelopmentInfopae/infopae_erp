@@ -926,7 +926,7 @@
 
 <?php mysqli_close($Link); ?>
 
-<form action="despacho_por_sede.php" method="post" name="formDespachoPorSede" id="formDespachoPorSede" target="_self">
+<form action="despacho_por_sede.php" method="post" name="formDespachoPorSede" id="formDespachoPorSede" target="_blank">
   <input type="hidden" name="despachoAnnoI" id="despachoAnnoI" value="">
   <input type="hidden" name="despachoMesI" id="despachoMesI" value="">
   <input type="hidden" name="despacho" id="despacho" value="">

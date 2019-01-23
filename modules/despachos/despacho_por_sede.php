@@ -337,7 +337,7 @@ for ($k=0; $k < count($_POST) ; $k++){
     $consulta = " select distinct ftd.codigo, ftd.Componente,
     p.nombreunidad2 presentacion,
     p.cantidadund1 cantidadPresentacion,
-    m.grupo_alim, ftd.UnidadMedida, ( select Cantidad
+    m.grupo_alim, m.orden_grupo_alim,ftd.UnidadMedida, ( select Cantidad
 
     from despachos_det$mesAnno
 
@@ -423,6 +423,7 @@ for ($k=0; $k < count($_POST) ; $k++){
         $alimento['presentacion'] = $row['presentacion'];
         $alimento['cantidadpresentacion'] = $row['cantidadPresentacion'];
         $alimento['grupo_alim'] = $row['grupo_alim'];
+        $alimento['orden_grupo_alim'] = $row['orden_grupo_alim'];
         $alimento['cant_grupo1'] = $row['cant_grupo1'];
         $alimento['cant_grupo2'] = $row['cant_grupo2'];
         $alimento['cant_grupo3'] = $row['cant_grupo3'];
@@ -489,7 +490,7 @@ unset($grupo);
   $grupo = array();
   foreach($alimentos as $kOrden=>$vOrden) {
       $sort['componente'][$kOrden] = $vOrden['componente'];
-      $sort['grupo_alim'][$kOrden] = $vOrden['grupo_alim'];
+      $sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
       $grupo[$kOrden] = $vOrden['grupo_alim'];
   }
   array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentos);
@@ -873,7 +874,7 @@ unset($grupo);
             $pdf->SetTextColor(0,0,0);
             $pdf->SetFillColor(255,255,255);
 
-            $aux = $sangria.$alimento['componente'].$presentacion;
+            $aux = "■".$sangria.$alimento['componente'].$presentacion;
 
 
 

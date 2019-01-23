@@ -33,6 +33,85 @@ $periodoActual = $_SESSION['periodoActual'];
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
+          <form class="form row" method="POST">
+            <div class="form-group col-sm-3">
+              <label>N° de Ciclo</label>
+              <select class="form-control" name="ciclo_menus">
+                <option value="">Seleccione...</option>
+                <?php 
+                // $consMenus = "SELECT * FROM productos".$_SESSION['periodoActual']." WHERE Codigo LIKE '01%' AND Nivel = '3' ORDER BY Codigo ASC";
+                $consMenus = "SELECT * FROM productos".$_SESSION['periodoActual']." WHERE Codigo LIKE '01%' AND Nivel = 3 ORDER BY Orden_Ciclo ASC;";
+                $resMenus = $Link->query($consMenus);
+                if ($resMenus->num_rows > 0) {
+                  $productos_ciclo = [];
+                  $ciclo_guardado = [];
+                  $cntCiclo = 1;
+                  while ($menus = $resMenus->fetch_assoc()) {
+                    if ($menus['Orden_Ciclo'] > ($cntCiclo * 5)) {
+                      $cntCiclo++;
+                    }
+                    $productos_ciclo[$cntCiclo][] = $menus['Id'];
+                  }
+                }
+
+                for ($i=1; $i <= $cntCiclo ; $i++) {  ?>
+                  <option value="<?= $i ?>" <?= (isset($_POST['ciclo_menus']) && $_POST['ciclo_menus'] == $i) ? "selected='selected'" : ""; ?> >Ciclo <?= $i ?></option>
+                <?php }
+                 ?>
+              </select>
+            </div>
+            <div class="form-group col-sm-3">
+              <label>Tipo de complemento</label>
+              <select class="form-control" name="complemento_menus">
+                <option value="">Seleccione...</option>
+                <?php 
+                $consComplementos = "SELECT * FROM tipo_complemento";
+                $resComplementos = $Link->query($consComplementos);
+                if ($resComplementos->num_rows > 0) {
+                  while ($complementos = $resComplementos->fetch_assoc()) { ?>
+                    <option value="<?= $complementos['CODIGO'] ?>" <?= (isset($_POST['complemento_menus']) && $_POST['complemento_menus'] == $complementos['CODIGO']) ? "selected='selected'" : ""; ?>><?= $complementos['CODIGO'] ?></option>
+                  <?php }
+                }
+
+                 ?>
+              </select>
+            </div>
+            <div class="form-group col-sm-3">
+              <label>Grupo Etario</label>
+              <select class="form-control" name="etario_menus">
+                <option value="">Seleccione...</option>
+                <?php 
+                $consEtarios = "SELECT * FROM grupo_etario";
+                $resEtarios = $Link->query($consEtarios);
+                if ($resEtarios->num_rows > 0) {
+                  while ($etarios = $resEtarios->fetch_assoc()) { ?>
+                    <option value="<?= $etarios['ID'] ?>"  <?= (isset($_POST['etario_menus']) && $_POST['etario_menus'] == $etarios['ID']) ? "selected='selected'" : ""; ?> ><?= $etarios['DESCRIPCION'] ?></option>
+                  <?php }
+                }
+                 ?>
+              </select>
+            </div>
+            <div class="form-group col-sm-12" style="padding-top: 2%;">
+              <!-- <input type="submit" name="filtro_menu" value="Buscar" class="btn btn-success"> -->
+              <input type="hidden" name="filtro_menus">
+              <button type="submit" class="btn btn-success"><span class="fa fa-search"></span> Buscar</button>
+              <?php if (isset($_POST['filtro_menus'])): ?>
+                <a href="index.php" class="btn btn-default"><span class="fa fa-times"></span> Limpiar búsqueda</a>
+              <?php endif ?>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground">
 
              <!--  <div class="dropdown pull-right">
                 <button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">
@@ -76,7 +155,33 @@ $periodoActual = $_SESSION['periodoActual'];
                   $variacionesMenu[$row['id']] = $row['descripcion'];
                 }
               }
-              $consulta = "SELECT * FROM productos".date('y')." WHERE Codigo like '01%' AND nivel = '3'";
+
+              if (isset($_POST['filtro_menus'])) {
+
+                $condicion = "";
+
+                if (isset($_POST['ciclo_menus']) && $_POST['ciclo_menus'] != "") {
+                  $condicion = " AND ID IN (";
+                  foreach ($productos_ciclo[$_POST['ciclo_menus']] as $row => $idProducto) {
+                      $condicion.= $idProducto.", ";
+                  }
+                  $condicion = trim($condicion, ", ");
+                  $condicion.=") ";
+                }
+
+                if (isset($_POST['complemento_menus']) && $_POST['complemento_menus'] != "") {
+                  $condicion .= "AND Cod_Tipo_complemento = '".$_POST['complemento_menus']."' ";
+                }
+
+                if (isset($_POST['etario_menus']) && $_POST['etario_menus'] != "") {
+                  $condicion .= "AND Cod_Grupo_Etario = '".$_POST['etario_menus']."' ";
+                }
+
+                $consulta = "SELECT * FROM productos".date('y')." WHERE Codigo like '01%' AND nivel = '3' ".$condicion;
+                // echo $consulta;
+              } else {
+                $consulta = "SELECT * FROM productos".date('y')." WHERE Codigo like '01%' AND nivel = '3'";
+              }
                 $result1 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                 if($result1->num_rows > 0){
 

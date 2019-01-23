@@ -100,7 +100,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
           </div>
           <div class="form-group col-sm-3">
             <label>Institución</label>
-            <select class="form-control" name="cod_inst" id="cod_inst" onchange="existenBiometrias()" required>
+            <select class="form-control select2" name="cod_inst" id="cod_inst" onchange="existenBiometrias()" required>
               <?php 
               $consultaInstParametros = "SELECT DISTINCT codigo_inst, nom_inst, cod_mun FROM instituciones WHERE cod_mun = '".$infoDispositivo['cod_mun_sede']."' AND EXISTS (SELECT cod_inst FROM sedes".$_SESSION['periodoActual']." WHERE cod_inst = codigo_inst) ORDER BY nom_inst ASC ";
               $resultado = $Link->query($consultaInstParametros);
@@ -121,7 +121,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
           </div>
           <div class="form-group col-sm-3">
             <label>Sede</label>
-            <select class="form-control" name="cod_sede" id="cod_sede" onchange="existenBiometrias()" required>
+            <select class="form-control select2" name="cod_sede" id="cod_sede" onchange="existenBiometrias()" required>
               <?php $consultaInstParametros = "SELECT DISTINCT cod_sede, nom_sede FROM sedes".$_SESSION['periodoActual']." WHERE cod_inst = '".$infoDispositivo['codigo_inst']."' ORDER BY nom_sede ASC";
                 $resultado = $Link->query($consultaInstParametros);
                 if ($resultado->num_rows > 0) {
@@ -368,6 +368,7 @@ Dispositivo no definido.
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/js/dispositivos_biometricos.js"></script>
 
@@ -392,6 +393,9 @@ Dispositivo no definido.
       }
     }
     });*/
+    $('.select2').select2({
+      width: "resolve"
+    });
     $('#tipoProducto').change();
 </script>
 

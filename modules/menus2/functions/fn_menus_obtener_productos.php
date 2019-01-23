@@ -36,7 +36,7 @@ if ($respuesta == 1) { ?>
     $tipoComplemento = 0;
   }
 
-  if ($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI" || $tipoComplemento == "APS") {
+  if ($tipoComplemento == "CAJMPS" || $tipoComplemento == "APS") {
 
     if ($tipoComplemento == "CAJMPS") {
       $tipoPreparacion = " (Codigo like '0202%' or Codigo like '0201%')";

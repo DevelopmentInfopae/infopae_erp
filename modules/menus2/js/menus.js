@@ -170,26 +170,7 @@ function ocultarDatosDetPreparado(tipoProducto){
 }
 
 $('#descripcion').on('keyup', function(){
-  if ($("#tipoProducto").val() == "03" || $("#tipoProducto").val() == "04") {
-    $.ajax({
-      type: "POST",
-      url: "functions/fn_menus_validar_nombre_producto.php",
-      data: {"descripcion" : $(this).val()},
-      beforeSend: function(){},
-      success: function(data){
-        console.log("Valida nombre : "+data);
-        if (data == "1") {
-          $('#existeDesc').css('display', '');
-          $('#botonSiguiente').attr('disabled', true);
-          $(this).css('border-color', '#cc5965');
-        } else {
-          $('#existeDesc').css('display', 'none');
-          $('#botonSiguiente').removeAttr('disabled');
-          $(this).css('border-color', '');
-        }
-      }
-    });
-  }
+  validar_existe_producto($(this));
 });
 
  /*fichaTecnicaDet*/
@@ -231,7 +212,7 @@ function obtenerProductos(num){
     beforeSend: function(){},
     success: function(data){
       console.log(data);
-        $('#productoFichaTecnicaDet'+num).html(data);
+        $('#productoFichaTecnicaDet'+num).append(data);
       productos = data;
       //$('#debug').html(data);
     }
@@ -247,11 +228,11 @@ function anadirProducto(){
     var tipoProducto = $( "#tipoProducto" ).val();
     if (tipoProducto == "02") {
       tbody = '<tr id="filaProductoFichaTecnicaDet'+numProducto+'" class="productoFichaTecnicaDet"><td><select name="productoFichaTecnicaDet['+numProducto+']" id="productoFichaTecnicaDet'+numProducto+'" class="form-control" onchange="obtenerUnidadMedidaProducto(this, '+numProducto+');" required>'+productos+'</select></td><td><input type="text" name="unidadMedidaProducto['+numProducto+']" id="unidadMedidaProducto'+numProducto+'" class="form-control" readOnly></td><td><input type="text" name="cantidadProducto['+numProducto+']" id="cantidadProducto'+numProducto+'" class="form-control" onchange="cambiarPesos(this, '+numProducto+');" required></td><td><input type="text" name="pesoBrutoProducto['+numProducto+']" id="pesoBrutoProducto'+numProducto+'" class="form-control" required></td><td><input type="text" name="pesoNetoProducto['+numProducto+']" id="pesoNetoProducto'+numProducto+'" class="form-control" required></td></tr>';
-    } else if (tipoProducto == "01") {
+    } else if (tipoProducto == "01" || tipoProducto == "03") {
       tbody = '<tr id="filaProductoFichaTecnicaDet'+numProducto+'" class="productoFichaTecnicaDet"><td><select name="productoFichaTecnicaDet['+numProducto+']" id="productoFichaTecnicaDet'+numProducto+'" class="form-control" required>'+productos+'</select></td></tr>';
     }
 
-    if (numProducto == 1) {
+    if (numProducto == 1 && tipoProducto != "04") {
       obtenerProductos(1);
     }
     console.log(numProducto);
@@ -285,9 +266,36 @@ function cambiarPesos(input, num){
   $('#pesoNetoProducto'+num).val(valor);
 }
 
+function validar_existe_producto(input){
+  if ($("#tipoProducto").val() != "01") {
+    $.ajax({
+      type: "POST",
+      url: "functions/fn_menus_validar_nombre_producto.php",
+      data: {"descripcion" : $(input).val(), "tipoProducto" : $("#tipoProducto").val(), "grupoEtario" : $("#Cod_Grupo_Etario").val()},
+      beforeSend: function(){},
+      success: function(data){
+        console.log("Valida nombre : "+data);
+        if (data == "1") {
+          $('#existeDesc').css('display', '');
+          $('#botonSiguiente').attr('disabled', true);
+          $(input).css('border-color', '#cc5965');
+        } else {
+          $('#existeDesc').css('display', 'none');
+          $('#botonSiguiente').removeAttr('disabled');
+          $(input).css('border-color', '');
+        }
+      }
+    });
+  }
+}
+
  /*fichaTecnicaDet*/
 
 $( "#Cod_Grupo_Etario" ).change(function() {
+
+
+validar_existe_producto($('#descripcion'));
+
   obtenerCiclo();
 /*fichaTecnicaDet*/
 obtenerProductos(1);

@@ -321,7 +321,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
               <section>
                 <div class="form-group col-sm-3">
                   <label>Institución</label>
-                  <select name="cod_inst" id="cod_inst" class="form-control" onchange="obtenerSedes(this)" required>
+                  <select name="cod_inst" id="cod_inst" class="form-control select2" onchange="obtenerSedes(this)" style="width: 100%;" required>
                   <?php
 
                   $consultarInstitucion = "SELECT instituciones.* FROM instituciones, parametros WHERE cod_mun like CONCAT(parametros.CodDepartamento, '%') AND EXISTS(SELECT cod_inst FROM sedes".$_SESSION['periodoActual']." as sedes WHERE sedes.cod_inst = instituciones.codigo_inst) ORDER BY nom_inst ASC";
@@ -345,7 +345,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                 </div>
                 <div class="form-group col-sm-3">
                   <label>Sede</label>
-                  <select name="cod_sede" id="cod_sede" class="form-control" required>
+                  <select name="cod_sede" id="cod_sede" class="form-control select2" style="width: 100%;" required>
                   <?php $consultaInstParametros = "SELECT DISTINCT cod_sede, nom_sede FROM sedes".$_SESSION['periodoActual']." WHERE cod_inst = '".$datosTitular['cod_inst']."' ORDER BY nom_sede ASC";
                     $resultado = $Link->query($consultaInstParametros);
                     if ($resultado->num_rows > 0) {
@@ -539,6 +539,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/titulares_derecho/js/titulares_derecho.js"></script>
 
@@ -605,6 +606,10 @@ form.children("div").steps({
       }
     }
     });*/
+
+    $('.select2').select2({
+      width: "resolve"
+    });
 </script>
 
 <?php mysqli_close($Link); ?>

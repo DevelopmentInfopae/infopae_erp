@@ -79,13 +79,13 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
           </div>
           <div class="form-group col-sm-3">
             <label>Institución</label>
-            <select class="form-control" name="cod_inst" id="cod_inst" required>
+            <select class="form-control select2" name="cod_inst" id="cod_inst" required>
               <option value="">Seleccione municipio</option>
             </select>
           </div>
           <div class="form-group col-sm-3">
             <label>Sede</label>
-            <select class="form-control" name="cod_sede" id="cod_sede" required>
+            <select class="form-control select2" name="cod_sede" id="cod_sede" required>
               <option value="">Seleccione institución</option>
             </select>
             <input type="hidden" name="nom_sede" id="nom_sede">
@@ -227,6 +227,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/js/dispositivos_biometricos.js"></script>
 
@@ -252,6 +253,10 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
     }
     });*/
     $('#tipoProducto').change();
+
+    $('.select2').select2({
+      width: "resolve"
+    });
 </script>
 
 <?php mysqli_close($Link); ?>

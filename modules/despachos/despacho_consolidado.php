@@ -554,7 +554,7 @@ for ($i=1; $i < count($alimentos) ; $i++) {
 for ($i=0; $i < count($alimentosTotales) ; $i++) {
   $alimentoTotal = $alimentosTotales[$i];
   $auxCodigo = $alimentoTotal['codigo'];
-  $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion,m.grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
+  $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
   from  fichatecnicadet ftd
   inner join productos$anno  p on ftd.codigo=p.codigo
   inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
@@ -565,6 +565,7 @@ for ($i=0; $i < count($alimentosTotales) ; $i++) {
     $alimentoTotal['componente'] = $row['Componente'];
     $alimentoTotal['presentacion'] = $row['presentacion'];
     $alimentoTotal['grupo_alim'] = $row['grupo_alim'];
+    $alimentoTotal['orden_grupo_alim'] = $row['orden_grupo_alim'];
 
     $alimentoTotal['nombreunidad2'] = $row['NombreUnidad2'];
     $alimentoTotal['nombreunidad3'] = $row['NombreUnidad3'];
@@ -595,7 +596,7 @@ $grupo = array();
 foreach($alimentosTotales as $kOrden=>$vOrden) {
 	//echo '<br>'.$vOrden['componente'];
     $sort['componente'][$kOrden] = $vOrden['componente'];
-    $sort['grupo_alim'][$kOrden] = $vOrden['grupo_alim'];
+    $sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
     $grupo[$kOrden] = $vOrden['grupo_alim'];
 }
 array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentosTotales);
