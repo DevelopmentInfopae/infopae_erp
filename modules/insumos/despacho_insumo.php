@@ -91,19 +91,19 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
             </div>
             <div class="form-group col-sm-3">
               <label>Institución</label>
-              <select name="institucion_desp" id="institucion_desp" class="form-control">
+              <select name="institucion_desp" id="institucion_desp" class="form-control select2">
                 <option value="">Seleccione municipio</option>
               </select>
             </div>
             <div class="form-group col-sm-3">
               <label>Sede</label>
-              <select name="sede_desp" id="sede_desp" class="form-control">
+              <select name="sede_desp" id="sede_desp" class="form-control select2">
                 <option value="">Seleccione institución</option>
               </select>
             </div>
             <div class="form-group col-sm-3">
               <label>Rutas</label>
-              <select name="ruta_desp" id="ruta_desp" class="form-control">
+              <select name="ruta_desp" id="ruta_desp" class="form-control select2">
                 <option value="">Seleccione...</option>
               <?php 
               $consultaRutas = "SELECT * FROM rutas"; 
@@ -272,6 +272,11 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
     }
     });*/
     $('#tipoProducto').change();
+
+
+  $('.select2').select2({
+    width: "resolve"
+  });
 </script>
 
 <?php mysqli_close($Link); ?>

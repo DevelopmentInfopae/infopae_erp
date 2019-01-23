@@ -5,19 +5,23 @@
 
   $num = $_POST['num_producto'];
 
+  ?>
+  <div class="col-sm-3" id="producto_<?php echo $num; ?>">
+      <select class="form-control productodesp" onchange="validaProductos(this, '<?php echo $num; ?>')" name="productoDespacho[]" id="producto_<?php echo $num; ?>"
+        required>
+
+  <?php
+
   $consulta = "SELECT * FROM productos".$_SESSION['periodoActual']." WHERE Codigo LIKE '05%' AND Nivel = '3'";
   $resultado = $Link->query($consulta);
   if ($resultado->num_rows > 0) { ?>
-    <div class="col-sm-3" id="producto_<?php echo $num; ?>">
-      <select class="form-control productodesp" onchange="validaProductos(this, '<?php echo $num; ?>')" name="productoDespacho[]" id="producto_<?php echo $num; ?>"
-        required>
-      	<option value="">Seleccione...</option>
-  	<?php while ($producto = $resultado->fetch_assoc()) { ?>
-  		<option value="<?php echo $producto['Codigo'] ?>"><?php echo $producto['Descripcion'] ?></option>
-  	<?php }
-	  } else { ?>
-	  	<option value="">Sin insumos registrados.</option>
-	  <?php } ?>
-      </select>
-      <input type="hidden" name="DescInsumo[]" id="descIns_<?php echo $num; ?>" value="">
-    </div>
+  	<option value="">Seleccione...</option>
+<?php while ($producto = $resultado->fetch_assoc()) { ?>
+	<option value="<?php echo $producto['Codigo'] ?>"><?php echo $producto['Descripcion'] ?></option>
+<?php }
+} else { ?>
+	<option value="">Sin insumos registrados.</option>
+<?php } ?>
+  </select>
+  <input type="hidden" name="DescInsumo[]" id="descIns_<?php echo $num; ?>" value="">
+</div>

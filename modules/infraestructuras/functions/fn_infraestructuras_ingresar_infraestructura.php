@@ -68,7 +68,7 @@ if (isset($_POST['observaciones'])) {
 	$observaciones = "";
 }
 
-$sqlInfraestructura = "INSERT INTO Infraestructura (id, cod_inst, cod_sede, Atencion_MayoritariaI, id_Complem_JMJT, id_Almuerzo, Comedor_Escolar, Concepto_Sanitario, Fecha_Expe, observaciones) VALUES ('', '".$cod_inst."', '".$cod_sede."', '".$Atencion_MayoritariaI."', '".$id_Complem_JMJT."', '".$id_Almuerzo."', '".$Comedor_Escolar."', '".$Concepto_Sanitario."', '".$fecha_expedicion."', '".$observaciones."')";
+$sqlInfraestructura = "INSERT INTO Infraestructura (cod_inst, cod_sede, Atencion_MayoritariaI, id_Complem_JMJT, id_Almuerzo, Comedor_Escolar, Concepto_Sanitario, Fecha_Expe, observaciones) VALUES ('".$cod_inst."', '".$cod_sede."', '".$Atencion_MayoritariaI."', '".$id_Complem_JMJT."', '".$id_Almuerzo."', '".$Comedor_Escolar."', '".$Concepto_Sanitario."', '".$fecha_expedicion."', '".$observaciones."')";
 
 if ($Link->query($sqlInfraestructura) === true) {
 	$idInfraestructura = $Link->insert_id;
@@ -269,9 +269,9 @@ if ($Link->query($sqlInfraestructura) === true) {
 	}
 
 
-	$sqlValoresParametro = "INSERT INTO valores_param_infraestructura (id, cod_infraestructura, cod_parametrosInf, piso, paredes, techo, mesones, utensilios_suf, cant_mesasillas_suf, energia, agua, acueducto, gas, alcantarillado, alm_agua, area_alm, final_residuos, lavado_manos, estado_lavadomanos, manos_implemento_aseo, bano_manipuladoras, estado_bano, bano_implemento_aseo) VALUES ";
+	$sqlValoresParametro = "INSERT INTO valores_param_infraestructura (cod_infraestructura, cod_parametrosInf, piso, paredes, techo, mesones, utensilios_suf, cant_mesasillas_suf, energia, agua, acueducto, gas, alcantarillado, alm_agua, area_alm, final_residuos, lavado_manos, estado_lavadomanos, manos_implemento_aseo, bano_manipuladoras, estado_bano, bano_implemento_aseo) VALUES ";
 	for ($i=0; $i < sizeof($id_parametro); $i++) { 
-		$sqlValoresParametro.= "('0', '".$idInfraestructura."', '".$id_parametro[$i]."', '".$material_piso[$id_parametro[$i]]."', '".$material_paredes[$id_parametro[$i]]."', '".$material_techo[$id_parametro[$i]]."', '".$material_mesones[$id_parametro[$i]]."', '".$utensilios_suficientes[$id_parametro[$i]]."', '".$mesas_sillas_suficientes[$id_parametro[$i]]."', '".$energia[$id_parametro[$i]]."', '".$agua[$id_parametro[$i]]."', '".$acueducto[$id_parametro[$i]]."', '".$gas[$id_parametro[$i]]."', '".$alcantarillado[$id_parametro[$i]]."', '".$almacenamiento_agua[$id_parametro[$i]]."', '".$area_alm[$id_parametro[$i]]."', '".$final_residuos[$id_parametro[$i]]."', '".$lavado_manos[$id_parametro[$i]]."', '".$estado_lavadomanos[$id_parametro[$i]]."', '".$manos_implemento_aseo[$id_parametro[$i]]."', '".$bano_manipuladoras[$id_parametro[$i]]."', '".$estado_bano[$id_parametro[$i]]."', '".$bano_implemento_aseo[$id_parametro[$i]]."'), ";
+		$sqlValoresParametro.= "('".$idInfraestructura."', '".$id_parametro[$i]."', '".$material_piso[$id_parametro[$i]]."', '".$material_paredes[$id_parametro[$i]]."', '".$material_techo[$id_parametro[$i]]."', '".$material_mesones[$id_parametro[$i]]."', '".$utensilios_suficientes[$id_parametro[$i]]."', '".$mesas_sillas_suficientes[$id_parametro[$i]]."', '".$energia[$id_parametro[$i]]."', '".$agua[$id_parametro[$i]]."', '".$acueducto[$id_parametro[$i]]."', '".$gas[$id_parametro[$i]]."', '".$alcantarillado[$id_parametro[$i]]."', '".$almacenamiento_agua[$id_parametro[$i]]."', '".$area_alm[$id_parametro[$i]]."', '".$final_residuos[$id_parametro[$i]]."', '".$lavado_manos[$id_parametro[$i]]."', '".$estado_lavadomanos[$id_parametro[$i]]."', '".$manos_implemento_aseo[$id_parametro[$i]]."', '".$bano_manipuladoras[$id_parametro[$i]]."', '".$estado_bano[$id_parametro[$i]]."', '".$bano_implemento_aseo[$id_parametro[$i]]."'), ";
 	}
 
 	$sqlValoresParametro = trim($sqlValoresParametro, ", ");
@@ -314,29 +314,29 @@ if ($Link->query($sqlInfraestructura) === true) {
 		for ($l=0; $l < sizeof($id_parametro) ; $l++) { 
 			for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
 				if (!isset($tiene[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$tiene[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					$tiene[$id_parametro[$l]][$id_dotacion[$m]] = 0;
 				}
 				if (!isset($en_uso[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$en_uso[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					$en_uso[$id_parametro[$l]][$id_dotacion[$m]] = 0;
 				}
 				if (!isset($funciona[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$funciona[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					$funciona[$id_parametro[$l]][$id_dotacion[$m]] = 0;
 				}
 				if (!isset($tipo[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$tipo[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					$tipo[$id_parametro[$l]][$id_dotacion[$m]] = 0;
 				}
 				if (!isset($capacidad[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$capacidad[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					$capacidad[$id_parametro[$l]][$id_dotacion[$m]] = 0;
 				}
 			}
 		}
 
-		$sqlDotacionParamVal = "INSERT INTO dotacion_param_val (id, cod_infraestructura, cod_dotacion, tiene, enuso, tipo, funciona, capacidad) VALUES ";
+		$sqlDotacionParamVal = "INSERT INTO dotacion_param_val (cod_infraestructura, cod_dotacion, tiene, enuso, tipo, funciona, capacidad) VALUES ";
 		for ($l=0; $l < sizeof($id_parametro) ; $l++) { 
 			for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
 				if ($tiene[$id_parametro[$l]][$id_dotacion[$m]] != "" || $en_uso[$id_parametro[$l]][$id_dotacion[$m]] != "" || $tipo[$id_parametro[$l]][$id_dotacion[$m]] != "" || $capacidad[$id_parametro[$l]][$id_dotacion[$m]] || $funciona[$id_parametro[$l]][$id_dotacion[$m]] != "") {
 
-					$sqlDotacionParamVal.="('0', '".$idInfraestructura."', '".$id_dotacion[$m]."', '".$tiene[$id_parametro[$l]][$id_dotacion[$m]]."', '".$en_uso[$id_parametro[$l]][$id_dotacion[$m]]."', '".$tipo[$id_parametro[$l]][$id_dotacion[$m]]."', '".$funciona[$id_parametro[$l]][$id_dotacion[$m]]."', '".$capacidad[$id_parametro[$l]][$id_dotacion[$m]]."'), ";
+					$sqlDotacionParamVal.="('".$idInfraestructura."', '".$id_dotacion[$m]."', '".$tiene[$id_parametro[$l]][$id_dotacion[$m]]."', '".$en_uso[$id_parametro[$l]][$id_dotacion[$m]]."', '".$tipo[$id_parametro[$l]][$id_dotacion[$m]]."', '".$funciona[$id_parametro[$l]][$id_dotacion[$m]]."', '".$capacidad[$id_parametro[$l]][$id_dotacion[$m]]."'), ";
 
 				}
 			}
@@ -345,7 +345,7 @@ if ($Link->query($sqlInfraestructura) === true) {
 		$sqlDotacionParamVal = trim($sqlDotacionParamVal, ", ");
 
 		if ($Link->query($sqlDotacionParamVal)===true) {
-			$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '40', 'Creó diagnóstico de infraestructura de la sede <strong>".$nom_sede."</strong>')";
+			$sqlBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '40', 'Creó diagnóstico de infraestructura de la sede <strong>".$nom_sede."</strong>')";
 			$Link->query($sqlBitacora);
 			echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Creado con éxito", "IdInfraestructura" : "'.$idInfraestructura.'"}]}';
 		} else {

@@ -332,7 +332,7 @@ $pdf->Ln(4.76);
 
   if($modalidad == 'APS'){
     $pdf->SetFont('Arial','',$tamannoFuente+7);
-    $pdf->Cell(10,8,utf8_decode($jt),0,0,'C',False);
+    $pdf->Cell(0,8,utf8_decode($jt),0,0,'C',False);
     $pdf->SetFont('Arial','',$tamannoFuente);
   }else{
     $pdf->Cell(5,4.7,'JM:',0,0,'L',False);
