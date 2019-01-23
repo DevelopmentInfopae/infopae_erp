@@ -5,8 +5,6 @@ $(document).ready(function () {
 	$(document).on('click', '#actualizarComplementoAlimentario', function () { actualizarComplementoAlimentario(false); });
 	$(document).on('click', '#actualizarComplementoAlimentarioContinuar', function () { actualizarComplementoAlimentario(true); });
 	$(document).on('click', '.editarComplementoAlimentario', function () { editarComplementoAlimentario($(this).data('idtipocomplemento'), $(this).data('codigotipocomplemento')); });
-	// $(document).on('click', '.confirmarGrupoEtario', function () { confirmarEliminarGrupoEtario($(this).data('codigogrupoetario')); });
-	// $(document).on('click', '#eliminarGrupoEtario', function () { eliminarGrupoEtario(); });
 
 	// Configuración inicial del plugin toastr.
   toastr.options = {
@@ -38,13 +36,6 @@ function editarComplementoAlimentario(idTipoComplemento, codigoTipoComplemento)
 	$('#formEditarComplementosAlimentarios #codigoTipoComplemento').val(codigoTipoComplemento);
 	$('#formEditarComplementosAlimentarios').submit();
 }
-
-// function confirmarEliminarGrupoEtario(codigoGrupoEtario)
-// {
-// 	$('#idAEliminar').val(codigoGrupoEtario);
-// 	$('#ventanaConfirmar .modal-body p').html('¿Está seguro de eliminar el grupo etario?');
-// 	$('#ventanaConfirmar').	modal('toggle');
-// }
 
 function guardarComplementoAlimentario(continuar)
 {
@@ -150,47 +141,3 @@ function actualizarComplementoAlimentario(continuar)
     });
   }
 }
-
-// function eliminarGrupoEtario()
-// {
-// 	$.ajax({
-//     type: "POST",
-//     url: "functions/fn_grupos_etarios_eliminar.php",
-//     data: { codigo: $('#idAEliminar').val() },
-//     dataType: 'json',
-//     beforeSend: function(){ $('#loader').fadeIn(); },
-//     success: function(data)
-//     {
-//       if(data.estado == 1){
-//           Command: toastr.success(
-//             data.mensaje,
-//             "Eliminado",
-//             {
-//               onHidden : function(){
-//                 window.open('index.php', '_self');
-//               }
-//             }
-//           );
-//         } else {
-//           Command: toastr.warning(
-//             data.mensaje,
-//             "Error al actualizar",
-//             {
-//               onHidden : function(){ $('#loader').fadeOut(); }
-//             }
-//           );
-//         }
-//     },
-//     error: function(data)
-//     {
-//     	console.log(data.responseText);
-//       Command: toastr.error(
-//         'Al parecer existe un error en el proceso',
-//         "Error al crear",
-//         {
-//           onHidden : function(){ $('#loader').fadeOut(); }
-//         }
-//       );
-//     }
-//   });
-// }
