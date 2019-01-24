@@ -135,21 +135,21 @@ $periodoActual = $_SESSION['periodoActual'];
               <div class="col-sm-3 form-group">
                 <label for="institucion">Institución</label>
                 <!-- Tipo Complemento - Codigo -->
-                <select class="form-control" name="institucion" id="institucion">
+                <select class="form-control select2" name="institucion" id="institucion">
                   <option value="">Todos</option>
                 </select>
               </div><!-- /.col -->
               <div class="col-sm-3 form-group">
                 <label for="sede">Sede</label>
                 <!-- Tipo Complemento - Codigo -->
-                <select class="form-control" name="sede" id="sede">
+                <select class="form-control select2" name="sede" id="sede">
                   <option value="">Todos</option>
                 </select>
               </div><!-- /.col -->
               <div class="col-sm-3 form-group">
                 <label for="ruta">Buscar Sedes x Ruta</label>
                 <!-- Tipo Complemento - Codigo -->
-                <select class="form-control" name="ruta" id="ruta">
+                <select class="form-control select2" name="ruta" id="ruta">
                   <option value="">Seleccione una</option>
                   <?php
                   $consulta = " select * from rutas order by nombre asc ";
@@ -306,6 +306,7 @@ $periodoActual = $_SESSION['periodoActual'];
     <!-- Custom and plugin javascript -->
     <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 
     <script src="<?php echo $baseUrl; ?>/modules/despachos/js/despacho_nuevo.js"></script>
@@ -314,6 +315,11 @@ $periodoActual = $_SESSION['periodoActual'];
 
     <!-- Page-Level Scripts -->
 
+<script type="text/javascript">
+  $('.select2').select2({
+    width: "resolve"
+  });
+</script>
 
 <?php mysqli_close($Link); ?>
 

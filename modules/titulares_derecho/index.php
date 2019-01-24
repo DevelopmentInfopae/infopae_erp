@@ -76,13 +76,13 @@ $periodoActual = $_SESSION['periodoActual'];
 									</div>
 									<div class="col-sm-3">
 										<label>Institución</label>
-										<select name="institucion_titular" id="institucion_titular" class="form-control" required>
+										<select name="institucion_titular" id="institucion_titular" class="form-control select2" required>
 											<option value="">Seleccione...</option>
 										</select>
 									</div>
 									<div class="col-sm-3">
 										<label>Sede</label>
-										<select name="sede_titular" id="sede_titular" class="form-control" required>
+										<select name="sede_titular" id="sede_titular" class="form-control select2" required>
 											<option value="">Seleccione...</option>
 										</select>
 									</div>
@@ -257,6 +257,7 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
 
 <script src="<?php echo $baseUrl; ?>/modules/titulares_derecho/js/titulares_derecho.js"></script>
@@ -340,6 +341,9 @@ $(document).on('click', '.dropdown-menu li:nth-child(2)', function(event){
 	setTimeout(function() {$('#sede_titular').val('<?php echo $_POST['sede_titular']; ?>').change();}, 2200);
 <?php endif ?>
 
+    $('.select2').select2({
+      width: "resolve"
+    });
     </script>
 
 <form action="titular.php" method="post" name="verTitular" id="verTitular">

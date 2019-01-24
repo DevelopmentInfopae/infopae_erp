@@ -40,7 +40,7 @@ if (isset($_POST['nom_sede'])) {
 	$nom_sede = "";
 }
 
-$sqlDispositivo = "INSERT INTO dispositivos (id, referencia, num_serial, cod_sede, id_usuario, tipo) VALUES ('', '".$referencia."', '".$num_serial."', '".$cod_sede."', '".$id_usuario."', '".$tipo."')";
+$sqlDispositivo = "INSERT INTO dispositivos (referencia, num_serial, cod_sede, id_usuario, tipo) VALUES ('".$referencia."', '".$num_serial."', '".$cod_sede."', '".$id_usuario."', '".$tipo."')";
 
 if ($Link->query($sqlDispositivo)===true) {
 	$idDispositivo = $Link->insert_id;
@@ -61,11 +61,11 @@ if ($Link->query($sqlDispositivo)===true) {
 		}
 
 		$cntValida = 0;
-		$sqlBiometria = "INSERT INTO biometria (id, tipo_doc, num_doc, id_dispositivo, id_bioest, cod_sede) VALUES ";
+		$sqlBiometria = "INSERT INTO biometria (tipo_doc, num_doc, id_dispositivo, id_bioest, cod_sede) VALUES ";
 		for ($i=0; $i < sizeof($num_doc) ; $i++) { 
 			if ($id_bioest[$num_doc[$i]] != "") {
 				$cntValida++;
-				$sqlBiometria .= "('', '".$tipo_doc[$num_doc[$i]]."', '".$num_doc[$i]."', '".$idDispositivo."', '".$id_bioest[$num_doc[$i]]."', '".$cod_sede."'), ";
+				$sqlBiometria .= "('".$tipo_doc[$num_doc[$i]]."', '".$num_doc[$i]."', '".$idDispositivo."', '".$id_bioest[$num_doc[$i]]."', '".$cod_sede."'), ";
 			}
 		}
 
@@ -81,12 +81,12 @@ if ($Link->query($sqlDispositivo)===true) {
 			}
 		} else {
 			echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Creado con éxito."}]}'; //Si cargó la tabla de estudiantes y de los estudiantes no les registró ninguna biometría.
-			$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '43', 'Registró un dispositivito biométrico para la sede <strong>".$nom_sede."</strong> con número de serial <strong>".$num_serial."</strong>')";
+			$sqlBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '43', 'Registró un dispositivito biométrico para la sede <strong>".$nom_sede."</strong> con número de serial <strong>".$num_serial."</strong>')";
 				$Link->query($sqlBitacora);
 		}
 	} else {
 		echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Creado con éxito."}]}'; //Si no cargó la tabla de estudiantes
-		$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '43', 'Registró un dispositivito biométrico para la sede <strong>".$nom_sede."</strong> con número de serial <strong>".$num_serial."</strong>')";
+		$sqlBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '43', 'Registró un dispositivito biométrico para la sede <strong>".$nom_sede."</strong> con número de serial <strong>".$num_serial."</strong>')";
 				$Link->query($sqlBitacora);
 	}
 } else {

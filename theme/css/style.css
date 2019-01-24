@@ -7993,3 +7993,7 @@ body.md-skin {
 	max-width: 200px;
 	width: 200px;
 }
+
+.select2-container--default .select2-selection--single {
+    height: 35px !important;
+}

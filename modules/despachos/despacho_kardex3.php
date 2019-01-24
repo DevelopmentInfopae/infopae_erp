@@ -241,7 +241,7 @@ if($resultado->num_rows >= 1){
     p.nombreunidad2 presentacion,
     p.cantidadund1 cantidadPresentacion,
 
-    m.grupo_alim, ftd.UnidadMedida, ( select Cantidad
+    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida, ( select Cantidad
 
     from despachos_det$mesAnno
 
@@ -273,7 +273,7 @@ if($resultado->num_rows >= 1){
     p.nombreunidad4,
     p.nombreunidad5
 
-    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  ";
+    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' order by orden_grupo_alim ASC ";
 
 
     // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
@@ -297,6 +297,7 @@ if($resultado->num_rows >= 1){
         $alimento['presentacion'] = $row['presentacion'];
         $alimento['cantidadpresentacion'] = $row['cantidadPresentacion'];
         $alimento['grupo_alim'] = $row['grupo_alim'];
+        $alimento['orden_grupo_alim'] = $row['orden_grupo_alim'];
         $alimento['cant_grupo1'] = $row['cant_grupo1'];
         $alimento['cant_grupo2'] = $row['cant_grupo2'];
         $alimento['cant_grupo3'] = $row['cant_grupo3'];
@@ -353,7 +354,7 @@ if($resultado->num_rows >= 1){
   $sort = array();
   foreach($alimentos as $k=>$v) {
       $sort['componente'][$k] = $v['componente'];
-      $sort['grupo_alim'][$k] = $v['grupo_alim'];
+      $sort['grupo_alim'][$k] = $v['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
       $grupo[$k] = $v['grupo_alim'];
   }
   array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentos);
@@ -461,7 +462,14 @@ if($resultado->num_rows >= 1){
  //echo $b;
  //echo "<br>";
 
-  $cantTotal = number_format( $cantTotal, $digitosDecimales);
+  // $cantTotal = number_format( $cantTotal, $digitosDecimales);
+
+   if ($alimento['presentacion'] == "u") {
+      $cantTotal = number_format($cantTotal,0,'','');
+    } else {
+      $cantTotal = number_format( $cantTotal, $digitosDecimales);
+    }
+
  $b = number_format($b, $digitosDecimales);
 
     //echo  $cantTotal;
@@ -536,13 +544,20 @@ if($resultado->num_rows >= 1){
 
         $saldo = $saldo - $consumoDia;
 
-
-        $consumoDia = $alimento['D'.$k];
-        $consumoDia = number_format($consumoDia, $digitosDecimales);
-
         //echo "<br>".$saldo."<br>";
 
-        $pdf->Cell(15.9,4,$consumoDia,'1',0,'C',False);
+        if ($alimento['presentacion'] == "u") {
+          // $pdf->Cell(15.9,4,round($consumoDia),'1',0,'C',False);
+          // $consumoDia = number_format($consumoDia, 0, '', '');
+          $consumoDia = $alimento['D'.$k];
+          $consumoDia = number_format($consumoDia, 0, '', '');
+          $pdf->Cell(15.9,4,round($consumoDia),'1',0,'C',False);
+        } else {
+          $consumoDia = $alimento['D'.$k];
+          $consumoDia = number_format($consumoDia, $digitosDecimales);
+          $pdf->Cell(15.9,4,$consumoDia,'1',0,'C',False);
+        }
+
         $pdf->Cell(15.9,4,'','1',0,'C',False);
         //$pdf->Cell(13,4,'','1',0,'C',False);
 
@@ -555,7 +570,7 @@ if($resultado->num_rows >= 1){
 
   $current_y = $pdf->GetY();
   //$pdf->Cell(0,5,$current_y,0,5,'C',False);
-  if($current_y > 175){
+  if($current_y > 270){
 
     $pdf->AddPage();
     include 'despacho_por_sede_footer.php';

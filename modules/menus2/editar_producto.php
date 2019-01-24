@@ -666,6 +666,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
@@ -692,7 +693,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
     }
     });*/
 
-    if ($('#IdFT').val() != null) {
+    if ($('#IdFT').val() != null && $('#tipoProducto').val() != "04") {
       for (var i = <?php if(isset($cntFTD)){echo $cntFTD;} else {echo 0;} ?>; i > 0; i--) {
         obtenerProductos(i);
       }
@@ -705,6 +706,10 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
     } else if ($('#tipoProducto').val() == "02") {
       ocultarDatosDetPreparado(2);
     }
+
+    $('.productoFichaTecnicaDet select').select2({
+      width : "100%"
+    });
 
     console.log(numProducto);
 </script>
