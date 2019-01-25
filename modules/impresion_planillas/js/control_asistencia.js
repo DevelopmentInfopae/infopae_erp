@@ -1,13 +1,16 @@
 $( document ).ready(function() {
     console.log( "ready!" );
-	$('#municipio').change(function(){
+
+
+	$('#municipio').change(function() {
+		alert($("#municipio option:selected").text());
 		console.log('Cambio de municipio');
 		var tipo = $('#tipoRacion').val();
 		var municipio = $(this).val();
 		$('#municipioNm').val($("#municipio option:selected").text());
 		buscar_institucion(municipio,tipo);
-		//$('#formDespachoPorSede').submit();
 	});
+    $('#municipio').trigger('change');
 
 	$('#institucion').change(function(){
 		var institucion = $(this).val();
