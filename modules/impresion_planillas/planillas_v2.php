@@ -188,7 +188,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 
   foreach ($estudiantes as $estudiantesSede) {
     $codigoSede = $estudiantesSede[0]['cod_sede'];
-    $consulta = "SELECT count(id) AS titulares, sum(D1+D2+D3+D4+D5+D6+D7+D8+D9+D10+D11+D12+D13+D14+D15+D16+D17+D18+D19+D20+D21+D22) AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
+    $consulta = "SELECT count(id) AS titulares, sum(IFNULL(D1,0)+IFNULL(D2,0)+IFNULL(D3,0)+IFNULL(D4,0)+IFNULL(D5,0)+IFNULL(D6,0)+IFNULL(D7,0)+IFNULL(D8,0)+IFNULL(D9,0)+IFNULL(D10,0)+IFNULL(D11,0)+IFNULL(D12,0)+IFNULL(D13,0)+IFNULL(D14,0)+IFNULL(D15,0)+IFNULL(D16,0)+IFNULL(D17,0)+IFNULL(D18,0)+IFNULL(D19,0)+IFNULL(D20,0)+IFNULL(D21,0)+IFNULL(D22,0)+IFNULL(D23,0)+IFNULL(D24,0)+IFNULL(D25,0)+IFNULL(D26,0)+IFNULL(D27,0)+IFNULL(D28,0)+IFNULL(D29,0)+IFNULL(D30,0)+IFNULL(D31,0)) AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
 		if($sedeParametro != '') { $consulta .= " and cod_sede = '$sedeParametro' "; }
     $resultado = $Link->query($consulta) or die ('Unable to execute query. <br>'.$consulta.'<br>'. mysqli_error($Link));
     if($resultado->num_rows > 0) {
@@ -366,19 +366,10 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 
 
   foreach ($estudiantes as $estudiantesSede) {
-    $codigoSede = $estudiantesSede[0]['cod_sede'];
-    // $consulta = "SELECT count(id) AS titulares, sum(D1+D2+D3+D4+D5+D6+D7+D8+D9+D10+D11+D12+D13+D14+D15+D16+D17+D18+D19+D20+D21+D22) AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
-    // if($sedeParametro != '') { $consulta .= " and cod_sede = '$sedeParametro' "; }
-    // $resultado = $Link->query($consulta) or die ('Unable to execute query. <br>'.$consulta.'<br>'. mysqli_error($Link));
-    // if($resultado->num_rows > 0) {
-    //   while($row = $resultado->fetch_assoc()) {
-    //     $totales = $row;
-    //   }
-    // }
-
-    $paginas = ceil(count($estudiantesSede) / $lineas);
-    $pagina = 1;
     $linea = 1;
+    $pagina = 1;
+    $codigoSede = $estudiantesSede[0]['cod_sede'];
+    $paginas = ceil(count($estudiantesSede) / $lineas);
 
     $pdf->AddPage();
     $pdf->SetTextColor(0,0,0);

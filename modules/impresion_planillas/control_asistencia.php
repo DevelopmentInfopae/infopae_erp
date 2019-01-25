@@ -140,7 +140,7 @@
         $consulta = $consulta." order by s.nom_inst asc ";
 
         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-        if($resultado->num_rows >= 1){
+        if($resultado->num_rows > 0){
           while($row = $resultado->fetch_assoc()) { ?>
             <option value="<?php echo $row['cod_inst']; ?>" <?php if(isset($_GET["pb_institucion"]) && $_GET["pb_institucion"] == $row['cod_inst'] ){ echo " selected "; }  ?> > <?php echo $row['nom_inst']; ?></option>
           <?php }// Termina el while
@@ -176,14 +176,14 @@
     <select class="form-control" name="tipo" id="tipo">
         <option value="">Seleccione una</option>
         <?php
-          $consulta = " select DISTINCT CODIGO from tipo_complemento ";
-          $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-          if($resultado->num_rows >= 1){
-            while($row = $resultado->fetch_assoc()) { ?>
-              <option value="<?php echo $row["CODIGO"]; ?>" <?php  if (isset($_GET['pb_tipo']) && ($_GET['pb_tipo'] == $row["CODIGO"]) ) { echo ' selected '; } ?>   ><?php echo $row["CODIGO"]; ?></option>
-              <?php
-            }// Termina el while
-          }//Termina el if que valida que si existan resultados
+          // $consulta = "SELECT DISTINCT CODIGO from tipo_complemento";
+          // $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+          // if($resultado->num_rows >= 1){
+          //   while($row = $resultado->fetch_assoc()) { ?>
+          //     <option value="<?php echo $row["CODIGO"]; ?>" <?php  if (isset($_GET['pb_tipo']) && ($_GET['pb_tipo'] == $row["CODIGO"]) ) { echo ' selected '; } ?>   ><?php echo $row["CODIGO"]; ?></option>
+          //     <?php
+          //   }// Termina el while
+          // }//Termina el if que valida que si existan resultados
         ?>
     </select>
   </div><!-- /.col -->
