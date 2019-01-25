@@ -20,7 +20,7 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(69,$tamannoFuente,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJM:'),0,0,'L',False);
+	$pdf->Cell(69,$tamannoFuente,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJM:'.$tipoPlanilla." ".$tipoComplemento ),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
 	$pdf->Cell(10,5,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4) ? $totales['entregas'] : "0" ),"B",0,'C',False);
 
@@ -123,6 +123,7 @@ if ($tipoPlanilla == 5 || $tipoPlanilla == 6) {
 } else {
 	$pdf->SetXY($x, $y+29);
 }
+
 $pdf->SetFont('Arial','B',7);
 $pdf->Cell(65,5,'FIRMA Y NOMBRE RESPONSABLE DEL OPERADOR',0,0,'L',False);
 $pdf->Cell(100,5,'','B',0,'L',False);

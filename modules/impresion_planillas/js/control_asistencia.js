@@ -4,7 +4,7 @@ $( document ).ready(function() {
 		console.log('Cambio de municipio');
 		var tipo = $('#tipoRacion').val();
 		var municipio = $(this).val();
-		$('#municipioNm').val($("#municipio option:selected").text());		
+		$('#municipioNm').val($("#municipio option:selected").text());
 		buscar_institucion(municipio,tipo);
 		//$('#formDespachoPorSede').submit();
 	});
@@ -12,7 +12,15 @@ $( document ).ready(function() {
 	$('#institucion').change(function(){
 		var institucion = $(this).val();
 		var municipio = $('#municipio').val();
+		var sede = $('#sede').val();
 		buscar_sede(municipio, institucion);
+		buscar_complemento(institucion, sede);
+	});
+
+	$('#sede').change(function(){
+		var institucion = $('#institucion').val();
+		var sede = $('#sede').val();
+		buscar_complemento(institucion, sede);
 	});
 
 	$('#btnBuscar').click(function(){
@@ -51,15 +59,14 @@ $( document ).ready(function() {
 				bandera++;
 				alert('Debe seleccionar un tipo de planilla');
 				$('input[name="tipoPlanilla"]').focus();
-			}			
+			}
 		}
 
 
 
 		if(bandera == 0){
 			$('#formPlanillas').submit();
-		}	
-
+		}
 	});
 });
 
@@ -111,4 +118,15 @@ function buscar_sede(municipio, institucion){
     .always(function(){
       $('#loader').fadeOut();
     });
+}
+
+function buscar_complemento(institucion, sede) {
+    $.ajax({
+      type: "POST",
+      url: "functions/fn_buscar_complemento.php",
+      data: {"sede":sede,"institucion":institucion},
+      beforeSend: function() { $('#loader').fadeIn(); },
+      success: function(data) { $('#tipo').html(data); }
+    })
+    .always(function() { $('#loader').fadeOut(); });
 }
