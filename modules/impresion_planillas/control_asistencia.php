@@ -6,12 +6,6 @@
 
   $periodoActual = $_SESSION['periodoActual'];
   $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
-
-  $con_cod_muni = "SELECT CodMunicipio FROM parametros;";
-  $res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
-  if ($res_minicipio->num_rows > 0) {
-    $codigoDANE = $res_minicipio->fetch_array();
-  }
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -44,7 +38,7 @@
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
           <h2>Parámetros de Consulta</h2>
-            <form class="col-lg-12" action="planillas.php" name="formPlanillas" id="formPlanillas" method="post" target="_blank">
+            <form class="col-lg-12" action="planillas_v2.php" name="formPlanillas" id="formPlanillas" method="post" target="_blank">
               <div class="row">
                 <div class="col-sm-6 form-group">
                   <label for="fechaInicial">Mes</label>
@@ -123,7 +117,7 @@
       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
       if($resultado->num_rows > 0){
         while($row = $resultado->fetch_assoc()) { ?>
-          <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($codigoDANE["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; } ?> ><?= $row["ciudad"]; ?></option>
+          <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($municipio_defecto["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; } ?> ><?= $row["ciudad"]; ?></option>
         <?php
         }// Termina el while
       }//Termina el if que valida que si existan resultados
@@ -137,9 +131,9 @@
     <select class="form-control" name="institucion" id="institucion">
       <option value="">Todas</option>
       <?php
-      if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $codigoDANE["CodMunicipio"]){
+      if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $municipio_defecto["CodMunicipio"]){
 
-        $municipio = $_GET["pb_municipio"] = $codigoDANE["CodMunicipio"];
+        $municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"];
 
         $consulta = " SELECT distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
         $consulta = $consulta." and s.cod_mun_sede = '$municipio' ";
