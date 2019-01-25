@@ -110,17 +110,15 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','',$tamannoFuente);
 	$pdf->Cell(10,$tamannoFuente,'', 1, 1, 'C',False);
 } else {
-$y = 186;
-$pdf->SetXY($x, $y);
-
+	$y = 186;
+	$pdf->SetXY($x, $y);
 }
-
 
 $pdf->Ln(1);
 $pdf->SetTextColor(0,0,0);
 $pdf->Cell(0,25,'',1,36,'C',False);
 
-if ($tipoPlanilla == 5) {
+if ($tipoPlanilla == 5 || $tipoPlanilla == 6) {
 	$pdf->SetXY($x, $y+2);
 } else {
 	$pdf->SetXY($x, $y+29);
