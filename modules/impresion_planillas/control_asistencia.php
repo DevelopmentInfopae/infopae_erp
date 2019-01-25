@@ -23,11 +23,6 @@
 	</div>
 	<div class="col-lg-4">
 		<div class="title-action">
-			<!--
-			<a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
-			<a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a>
-		-->
-		<!-- <a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary"><i class="fa fa-truck"></i> Nuevo despacho </a> -->
 	</div>
 </div>
 </div>
@@ -95,11 +90,6 @@
 		          <?php  } ?>
 
 										 </select>
-    <?php
-    // if(!isset($_GET['pb_mes']) || $_GET['pb_mes'] == ''){
-    //   $_GET['pb_mes'] = date("n");
-    // }
-    ?>
 
   </div><!-- /col -->
   <div class="col-sm-6 form-group">
@@ -460,21 +450,6 @@
                         <div class="table-responsive">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             <table class="table table-striped table-bordered table-hover selectableRows" id="box-table-movimientos" >
                                 <thead>
                 <tr>
@@ -501,11 +476,6 @@
                       <input type="checkbox" class="despachos" value="<?php echo $row['Num_doc']; ?>" name="<?php echo $row['Num_doc']; ?>"id="<?php echo $row['Num_doc']; ?>"<?php if($row['estado'] == 0){echo " disabled "; } ?> />
 
                     </td>
-
-
-
-
-
 
                     <td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Num_doc']; ?></td>
                     <td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['FechaHora_Elab']; ?></td>

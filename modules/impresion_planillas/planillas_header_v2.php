@@ -168,11 +168,11 @@ $pdf->Cell(10,14,utf8_decode(''),'R',0,'C',False);
 $x = $pdf->GetX();
 $y = $pdf->GetY();
 $pdf->SetXY($x, $y-1.6);
-$pdf->Cell(20,14,utf8_decode('N° Doc de'),0,0,'C',False);
+$pdf->Cell(22,14,utf8_decode('N° Doc de'),0,0,'C',False);
 $pdf->SetXY($x, $y+1.6);
-$pdf->Cell(20,14,utf8_decode('Identidad'),0,0,'C',False);
+$pdf->Cell(22,14,utf8_decode('Identidad'),0,0,'C',False);
 $pdf->SetXY($x, $y);
-$pdf->Cell(20,14,utf8_decode(''),'R',0,'C',False);
+$pdf->Cell(22,14,utf8_decode(''),'R',0,'C',False);
 
 
 $x = $pdf->GetX();

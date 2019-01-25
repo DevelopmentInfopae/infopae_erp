@@ -16,99 +16,99 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(72,$tamannoFuente,utf8_decode('RACIONES MENSUALES PROGRAMADAS CAJM:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,5,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : "0"), "B", 0, 'C', False);
+	$pdf->Cell(10,5,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : ""), "B", 0, 'C', False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(69,$tamannoFuente,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJM:'.$tipoPlanilla." ".$tipoComplemento ),0,0,'L',False);
+	$pdf->Cell(69,$tamannoFuente,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJM:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,5,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4) ? $totales['entregas'] : "0" ),"B",0,'C',False);
+	$pdf->Cell(10,5,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4) ? $totales['entregas'] : "" ),"B",0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(30,$tamannoFuente,utf8_decode("PREPARAR EN SITIO:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,(($tipoComplemento == "CAJMPS") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
+	$pdf->Cell(5,$tamannoFuente,(($tipoComplemento == "CAJMPS") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(27,$tamannoFuente,utf8_decode("INDUSTRIALIZADA:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,(($tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
+	$pdf->Cell(5,$tamannoFuente,(($tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(18,$tamannoFuente,utf8_decode("CATERING:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,'',1,1,'C',False);
+	$pdf->Cell(5,$tamannoFuente,'',1,1,'C',False);
 
 	$pdf->Ln(1);
 
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(72,$tamannoFuente,utf8_decode('RACIONES MENSUALES PROGRAMADAS CAJT:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,5,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : "0"), "B", 0, 'C', False);
+	$pdf->Cell(10,5,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : ""), "B", 0, 'C', False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(69,$tamannoFuente,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJT:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,5,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla == 4) ? $totales['entregas'] : "0" ),"B",0,'C',False);
+	$pdf->Cell(10,5,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla == 4) ? $totales['entregas'] : "" ),"B",0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(30,$tamannoFuente,utf8_decode("PREPARAR EN SITIO:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,(($tipoComplemento == "CAJTPS") && ($tipoPlanilla != 1) ? "X" : ""),1,0,'C',False);
+	$pdf->Cell(5,$tamannoFuente,(($tipoComplemento == "CAJTPS") && ($tipoPlanilla != 1) ? "X" : ""),1,0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(27,$tamannoFuente,utf8_decode("INDUSTRIALIZADA:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? "X" : ""),1,0,'C',False);
+	$pdf->Cell(5,$tamannoFuente,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? "X" : ""),1,0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(18,$tamannoFuente,utf8_decode("CATERING:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,'',1,1,'C',False);
+	$pdf->Cell(5,$tamannoFuente,'',1,1,'C',False);
 
 	$pdf->Ln(1);
 
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(72,$tamannoFuente,utf8_decode('RACIONES MENSUALES PROGRAMADAS ALMUERZOS:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,5,(($tipoComplemento == "APS") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : "0" ), "B", 0, 'C', False);
+	$pdf->Cell(10,5,(($tipoComplemento == "APS") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : "" ), "B", 0, 'C', False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(69,$tamannoFuente,utf8_decode('RACIONES MENSUALES ENTREGADAS ALMUERZOS:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,5,(($tipoComplemento == "APS" && $tipoPlanilla == 4) ? $totales['entregas'] : "0" ), "B", 0, 'C', False);
+	$pdf->Cell(10,5,(($tipoComplemento == "APS" && $tipoPlanilla == 4) ? $totales['entregas'] : "" ), "B", 0, 'C', False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(30,$tamannoFuente,utf8_decode("PREPARAR EN SITIO:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,(($tipoComplemento == "APS") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
+	$pdf->Cell(5,$tamannoFuente,(($tipoComplemento == "APS") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(27,$tamannoFuente,utf8_decode("INDUSTRIALIZADA:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,'',1,0,'C',False);
+	$pdf->Cell(5,$tamannoFuente,'',1,0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(18,$tamannoFuente,utf8_decode("CATERING:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,'',1,0,'C',False);
+	$pdf->Cell(5,$tamannoFuente,'',1,0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(22,$tamannoFuente,utf8_decode("OLLA COMÚN:"),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$tamannoFuente,'', 1, 1, 'C',False);
+	$pdf->Cell(5,$tamannoFuente,'', 1, 1, 'C',False);
 } else {
 	$y = 186;
 	$pdf->SetXY($x, $y);

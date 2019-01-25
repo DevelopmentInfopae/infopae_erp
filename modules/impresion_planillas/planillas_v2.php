@@ -33,7 +33,6 @@ if(isset($_POST['sede']) && $_POST['sede'] != ''){
 	$sedeParametro = $_POST['sede'];
 }
 
-
 //Primera consulta: los dias de la s entregas
 $consulta = "SELECT ID,ANO,MES,D1 AS 'D01',D2 AS D02,D3 AS D03,D4 AS D04,D5 AS D05,D6 AS D06,D7 AS D07,D8 AS D08,D9 AS D09,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22 FROM planilla_dias where ano='$anno' AND mes='$mes'";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -42,7 +41,6 @@ if ($resultado->num_rows >= 1) {
     $dias = $row;
   }
 }
-
 
 // Revisando si tiene más de un mes
 $aux = 0;
@@ -81,29 +79,6 @@ if($resultado_sedes->num_rows > 0) {
     echo "<script>alert('No existe datos para los parametros seleccionados.'); window.close();</script>";
 }
 
-
-// if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
-// 	$consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben,
-// 	cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, D1 AS 'D01',D2 AS D02,D3 AS D03,D4 AS D04,D5 AS D05,D6 AS D06,D7 AS D07,D8 AS D08,D9 AS D09,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22
-// 	FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento'";
-// 	if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' "; }
-// 	$consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
-// 	$resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
-
-//   $codigo = '';
-//   if($resultado->num_rows >= 1){
-//     while($row = $resultado->fetch_assoc()){
-//       if($codigo != $row['cod_sede']){
-//         $codigo = $row['cod_sede'];
-//       }
-//       $estudiantes[$codigo][] = $row;
-//     }
-//   } else {
-//     echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
-//   }
-// }
-
-
 class PDF extends PDF_Rotate
 {
   function set_data($data) {
@@ -111,7 +86,7 @@ class PDF extends PDF_Rotate
   }
 
   function Header() {
-    $tamannoFuente = 7;
+    $tamannoFuente = 10;
     $logoInfopae = $_SESSION['p_Logo ETC'];
     if ($this->tipoPlanilla == 5) {
       $tituloPlanilla = "Registro de novedades - repitentes del programa de alimentaciÓn escolar - pae";
@@ -231,7 +206,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $y = $pdf->GetY();
       $pdf->Cell(8,$alturaLinea,utf8_decode($nEstudiante),'R',0,'C',False);
       $pdf->Cell(10,$alturaLinea,utf8_decode($estudiante['tipo_doc_nom']),'R',0,'C',False);
-      $pdf->Cell(20,$alturaLinea,utf8_decode($estudiante['num_doc']),'R',0,'L',False);
+      $pdf->Cell(22,$alturaLinea,utf8_decode($estudiante['num_doc']),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['nom1']),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['nom2']),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['ape1']),'R',0,'L',False);
@@ -319,7 +294,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
         $y = $pdf->GetY();
         $pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
         $pdf->Cell(10,$alturaLinea,"",'R',0,'C',False);
-        $pdf->Cell(20,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(22,$alturaLinea,"",'R',0,'L',False);
         $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
         $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
         $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
@@ -401,7 +376,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $y = $pdf->GetY();
       $pdf->Cell(8,$alturaLinea,utf8_decode($nEstudiante),'R',0,'C',False);
       $pdf->Cell(10,$alturaLinea,utf8_decode($estudiante['tipo_doc_nom']),'R',0,'C',False);
-      $pdf->Cell(20,$alturaLinea,utf8_decode($estudiante['num_doc']),'R',0,'L',False);
+      $pdf->Cell(22,$alturaLinea,utf8_decode($estudiante['num_doc']),'R',0,'L',False);
       $pdf->Cell(31.7,$alturaLinea,utf8_decode($estudiante['nom1']),'R',0,'L',False);
       $pdf->Cell(31.7,$alturaLinea,utf8_decode($estudiante['nom2']),'R',0,'L',False);
       $pdf->Cell(31.7,$alturaLinea,utf8_decode($estudiante['ape1']),'R',0,'L',False);
@@ -464,7 +439,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $y = $pdf->GetY();
       $pdf->Cell(8,$alturaLinea,utf8_decode(''),'R',0,'C',False);
       $pdf->Cell(10,$alturaLinea,utf8_decode(''),'R',0,'C',False);
-      $pdf->Cell(20,$alturaLinea,utf8_decode(''),'R',0,'L',False);
+      $pdf->Cell(22,$alturaLinea,utf8_decode(''),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);

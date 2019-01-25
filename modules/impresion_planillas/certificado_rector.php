@@ -2,40 +2,36 @@
 error_reporting(E_ALL);
 include '../../config.php';
 require_once '../../autentication.php';
-require('../../fpdf181/fpdf.php');
 require_once '../../db/conexion.php';
 include '../../php/funciones.php';
+require('../../fpdf181/fpdf.php');
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
+
 $tamannoFuente = 8;
 class PDF extends FPDF
 {
-  function Header() {
-    $logoInfopae = $_SESSION['p_Logo ETC'];
-    $this->Image($logoInfopae, 12, 7, 95, 18.1,'jpg', '');
+	function Header() {
+		$logoInfopae = $_SESSION['p_Logo ETC'];
+		$this->Image($logoInfopae, 12, 7, 95, 18.1,'jpg', '');
 
-    $tamannoFuente = 11;
-    $this->SetFont('Arial','B',$tamannoFuente);
-    $this->SetTextColor(0,0,0);
+		$tamannoFuente = 11;
+		$this->SetFont('Arial','B',$tamannoFuente);
+		$this->SetTextColor(0,0,0);
 
-    $this->Cell(91.9);
-    $this->MultiCell(100,6,"CERTIFICADO DE ENTREGA DE RACIONES A INSTITUCIONES EDUCATIVAS" ,0,'C',false);
+		$this->Cell(91.9);
+		$this->MultiCell(100,6,"CERTIFICADO DE ENTREGA DE RACIONES A INSTITUCIONES EDUCATIVAS" ,0,'C',false);
 
-    $this->Ln(8);
+		$this->Ln(8);
+	}
 
-  }
-
-  // Pie de página
-  function Footer() {
-      $tamannoFuente = 8;
-      // Posición: a 1,5 cm del final
-      $this->SetY(-15);
-      // Arial italic 8
-      $this->SetFont('Arial','I',8);
-      // Número de página
-      //$this->Cell(0,10,'Page '.$this->PageNo().'/{nb}',0,0,'C');
-  }
+  	// Pie de página
+  	function Footer() {
+      	$tamannoFuente = 8;
+      	$this->SetY(-15);
+      	$this->SetFont('Arial','I',8);
+  	}
 }
 
 //CREACION DEL PDF
@@ -56,7 +52,7 @@ $municipio = $_POST['municipio'];
 
 
 //Dias Semanas
-$consulta = "Select * from planilla_semanas where ano='$anno' and mes='$mes'";
+$consulta = "SELECT * FROM planilla_semanas WHERE ano='$anno' AND mes='$mes'";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
   while($row = $resultado->fetch_assoc()){
@@ -72,6 +68,7 @@ $consulta = "SELECT DISTINCT s.cod_inst,s.nom_inst,s.cod_mun_sede,u.ciudad,u.Dep
 			INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
 			LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
 			WHERE sc.ano='$anno' AND sc.mes='$mes' AND s.cod_mun_sede=$municipio";
+$consulta .= (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND s.cod_inst = '".$_POST["institucion"]."'" : ""; //echo $consulta . " <br>";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
 if($resultado->num_rows >= 1){
@@ -92,7 +89,7 @@ if($resultado->num_rows >= 1){
 }
 
 //TotalesInstitucion
-$consulta = "SELECT e.cod_inst,e.nom_inst,e.cod_mun_Sede,u.ciudad,u.Departamento, COALESCE (SUM(d1),0) td01, COALESCE (SUM(d2),0) td02, COALESCE (SUM(d3),0) td03, COALESCE (SUM(d4),0) td04, COALESCE (SUM(d5),0) td05, COALESCE (SUM(d6),0) td06, COALESCE (SUM(d7),0) td07, COALESCE (SUM(d8),0) td08, COALESCE (SUM(d9),0) td09, COALESCE (SUM(d10),0) td10, COALESCE (SUM(d11),0) td11, COALESCE (SUM(d12),0) td12, COALESCE (SUM(d13),0) td13, COALESCE (SUM(d14),0) td14, COALESCE (SUM(d15),0) td15, COALESCE (SUM(d16),0) td16, COALESCE (SUM(d17),0) td17, COALESCE (SUM(d18),0)td18, COALESCE (SUM(d19),0) td19, COALESCE (SUM(d20),0) td20, COALESCE (SUM(d21),0) td21, COALESCE (SUM(d22),0) td22
+$consulta = "SELECT e.cod_inst,e.nom_inst,e.cod_mun_Sede,u.ciudad,u.Departamento, COALESCE (SUM(d1),0) td01, COALESCE (SUM(d2),0) td02, COALESCE (SUM(d3),0) td03, COALESCE (SUM(d4),0) td04, COALESCE (SUM(d5),0) td05, COALESCE (SUM(d6),0) td06, COALESCE (SUM(d7),0) td07, COALESCE (SUM(d8),0) td08, COALESCE (SUM(d9),0) td09, COALESCE (SUM(d10),0) td10, COALESCE (SUM(d11),0) td11, COALESCE (SUM(d12),0) td12, COALESCE (SUM(d13),0) td13, COALESCE (SUM(d14),0) td14, COALESCE (SUM(d15),0) td15, COALESCE (SUM(d16),0) td16, COALESCE (SUM(d17),0) td17, COALESCE (SUM(d18),0)td18, COALESCE (SUM(d19),0) td19, COALESCE (SUM(d20),0) td20, COALESCE (SUM(d21),0) td21, COALESCE (SUM(d22),0) td22, COALESCE (SUM(d23),0) td23, COALESCE (SUM(d24),0) td24, COALESCE (SUM(d25),0) td25, COALESCE (SUM(d26),0) td26, COALESCE (SUM(d27),0) td27, COALESCE (SUM(d28),0) td28, COALESCE (SUM(d29),0) td29, COALESCE (SUM(d30),0) td30, COALESCE (SUM(d31),0) td31
 FROM entregas_res_$mes$anno2d e
 INNER JOIN ubicacion u ON e.cod_mun_sede=u.codigodane and u.ETC = 0
 WHERE e.cod_mun_sede=$municipio
@@ -115,7 +112,12 @@ if ($resultado_fechas->num_rows > 0) {
 
 //EntregasSedes
 $entregasSedes = array();
-$consulta = "SELECT cod_inst,cod_sede,nom_sede, tipo_complem, COALESCE (SUM(d1),0) d01, COALESCE (SUM(d2),0) d02, COALESCE (SUM(d3),0) d03, COALESCE (SUM(d4),0) d04, COALESCE (SUM(d5),0) d05, COALESCE (SUM(d6),0) d06, COALESCE (SUM(d7),0) d07, COALESCE (SUM(d8),0) d08, COALESCE (SUM(d9),0) d09, COALESCE (SUM(d10),0) d10, COALESCE (SUM(d11),0) d11, COALESCE (SUM(d12),0) d12, COALESCE (SUM(d13),0) d13, COALESCE (SUM(d14),0) d14, COALESCE (SUM(d15),0) d15, COALESCE (SUM(d16),0) d16, COALESCE (SUM(d17),0) d17, COALESCE (SUM(d18),0) d18, COALESCE (SUM(d19),0) d19, COALESCE (SUM(d20),0) d20, COALESCE (SUM(d21),0) d21, COALESCE (SUM(d22),0) d22, (d1+d2+d3+d4+d5+d6+d7+d8+d9+d10+d11+d12+d13+d14+d15+d16+d17+d18+d19+d20+d21+d22) numdias FROM entregas_res_$mes$anno2d WHERE (d1+d2+d3+d4+d5+d6+d7+d8+d9+d10+d11+d12+d13+d14+d15+d16+d17+d18+d19+d20+d21+d22)>0 AND cod_mun_sede=$municipio GROUP BY cod_sede,tipo_complem";
+$consulta = "SELECT cod_inst,cod_sede,nom_sede, tipo_complem, COALESCE (SUM(d1),0) d01, COALESCE (SUM(d2),0) d02, COALESCE (SUM(d3),0) d03, COALESCE (SUM(d4),0) d04, COALESCE (SUM(d5),0) d05, COALESCE (SUM(d6),0) d06, COALESCE (SUM(d7),0) d07, COALESCE (SUM(d8),0) d08, COALESCE (SUM(d9),0) d09, COALESCE (SUM(d10),0) d10, COALESCE (SUM(d11),0) d11, COALESCE (SUM(d12),0) d12, COALESCE (SUM(d13),0) d13, COALESCE (SUM(d14),0) d14, COALESCE (SUM(d15),0) d15, COALESCE (SUM(d16),0) d16, COALESCE (SUM(d17),0) d17, COALESCE (SUM(d18),0) d18, COALESCE (SUM(d19),0) d19, COALESCE (SUM(d20),0) d20, COALESCE (SUM(d21),0) d21, COALESCE (SUM(d22),0) d22, COALESCE (SUM(d23),0) d23, COALESCE (SUM(d24),0) d24, COALESCE (SUM(d25),0) d25, COALESCE (SUM(d26),0) d26, COALESCE (SUM(d27),0) d27, COALESCE (SUM(d28),0) d28, COALESCE (SUM(d29),0) d29, COALESCE (SUM(d30),0) d30, COALESCE (SUM(d31),0) d31, (d1+d2+d3+d4+d5+d6+d7+d8+d9+d10+d11+d12+d13+d14+d15+d16+d17+d18+d19+d20+d21+d22+d23+d24+d25+d26+d27+d28+d29+d30+d31) numdias
+	FROM entregas_res_$mes$anno2d
+	WHERE (IFNULL(d1,0)+IFNULL(d2,0)+IFNULL(d3,0)+IFNULL(d4,0)+IFNULL(d5,0)+IFNULL(d6,0)+IFNULL(d7,0)+IFNULL(d8,0)+IFNULL(d9,0)+IFNULL(d10,0)+IFNULL(d11,0)+IFNULL(d12,0)+IFNULL(d13,0)+IFNULL(d14,0)+IFNULL(d15,0)+IFNULL(d16,0)+IFNULL(d17,0)+IFNULL(d18,0)+IFNULL(d19,0)+IFNULL(d20,0)+IFNULL(d21,0)+IFNULL(d22,0)+IFNULL(d23,0)+IFNULL(d24,0)+IFNULL(d25,0)+IFNULL(d26,0)+IFNULL(d27,0)+IFNULL(d28,0)+IFNULL(d29,0)+IFNULL(d30,0)+IFNULL(d31,0))>0 AND cod_mun_sede=$municipio GROUP BY cod_sede,tipo_complem";
+$consulta .= (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND cod_inst = '". $_POST["institucion"] ."'" : "";
+
+
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
   $codigoInicial = 0;
@@ -138,12 +140,6 @@ if(count($entregasSedes)>0){
 		}
 		$diasSemana[$numeroSemana][] = $diaSemana;
 	}
-
-
-
-
-
-
 
 	foreach ($instituciones as $institucion){
 		$pdf->AddPage();
@@ -196,7 +192,7 @@ if(count($entregasSedes)>0){
 		$pdf->SetFont('Arial','B',$tamannoFuente);
 		$pdf->Cell(32,5,utf8_decode('MUNICIPIO:'),'R',0,'L',false);
 		$pdf->SetFont('Arial','',$tamannoFuente);
-		$pdf->Cell(110,5,$institucion['ciudad'],'R',0,'L',false);
+		$pdf->Cell(110,5,utf8_decode($institucion['ciudad']),'R',0,'L',false);
 		$pdf->SetFont('Arial','B',$tamannoFuente);
 		$pdf->Cell(25,5,utf8_decode('CÓDIGO DANE:'),'R',0,'L',false);
 		$pdf->SetFont('Arial','',$tamannoFuente);
@@ -332,9 +328,6 @@ if(count($entregasSedes)>0){
 		$pdf->SetFont('Arial','B',$tamannoFuente-1);
 		$pdf->MultiCell(0,3,utf8_decode("TOTAL RACIONES"),0,'C',false);
 
-
-
-
 		$pdf->SetXY($x, $y);
 		$pdf->Cell(0,11,'','B',0,'C',false);
 		$pdf->Ln(11);
@@ -345,8 +338,9 @@ if(count($entregasSedes)>0){
 
 
 		//Impresion de las entregas de cada mes
-		$entregasSedesInstitucion = $entregasSedes[$institucion['cod_inst']];
-		//var_dump($entregasSedesInstitucion);
+		if (array_key_exists($institucion['cod_inst'], $entregasSedes)) {
+			$entregasSedesInstitucion = $entregasSedes[$institucion['cod_inst']];
+		}
 
 		$banderaNombres = 0;
 		$lineas = 0;
@@ -379,31 +373,17 @@ if(count($entregasSedes)>0){
 			}
 			$lineas++;
 
-
-
-
-
-
-
 			$pdf->SetFont('Arial','',$tamannoFuente-1);
 			$pdf->Cell(45,4,'','R',0,'C',false);
 			$pdf->Cell(15,4,$entregasSedeInstitucion['tipo_complem'],'R',0,'C',false);
 
-
-
 			$indice = 0;
 			$totalSemana = 0;
-			for($i = 0; $i < 5 ; $i++){
-				if(isset($diasSemana[$i])){
+			for($i = 0; $i < 5 ; $i++) {
+				if(isset($diasSemana[$i])) {
 					$total = 0;
 					$indicePrint = 0;
-					foreach ($diasSemana[$i] as $diaSemana){
-
-
-
-
-
-						//var_dump($diaSemana);
+					foreach ($diasSemana[$i] as $diaSemana) {
 						$indicePrint++;
 						$indice++;
 						if($indice < 10){
@@ -411,14 +391,10 @@ if(count($entregasSedes)>0){
 						} else{
 							$aux = 'd'.$indice;
 						}
-						//echo  '<br>'.$aux.' - '.$entregasSedeInstitucion[$aux];
 
 						$total = $total + $entregasSedeInstitucion[$aux];
 						$totalSemana = $totalSemana + $entregasSedeInstitucion[$aux];
 						$totalesSemanas[$i] = $totalesSemanas[$i] + $entregasSedeInstitucion[$aux];
-
-
-
 					}
 					$pdf->Cell(13,4,$total,'R',0,'C',false);
 					$pdf->Cell(10,4,$indicePrint,'R',0,'C',false);
@@ -428,28 +404,16 @@ if(count($entregasSedes)>0){
 				}
 			}
 
-
 			$pdf->Cell(0,4,$totalSemana,0,0,'C',false);
 			$pdf->SetX($aux_x);
 			$pdf->Cell(45);
 			$pdf->Cell(0,4,'','B',0,'C',false);
 			$pdf->Ln(4);
-
-
-
-
-
-
-
-
-
-
-
-
 		}
+
 		$pdf->SetXY($aux_x, $aux_y-$linea+4);
 
-		if($lineas<= 1){
+		if($lineas<= 1) {
 			$nombre = substr($nombre,0,$maxCaracteres);
 		}
 
@@ -458,17 +422,12 @@ if(count($entregasSedes)>0){
 		$pdf->Cell(45,$linea+4,'','B',0,'C',false);
 		$pdf->Ln($linea+4);
 
-
-
 		$pdf->SetFont('Arial','B',$tamannoFuente-1);
-		//$pdf->SetXY($x, $y+35);
 		$pdf->Cell(60,4,'TOTAL:','R',0,'L',false);
 		$pdf->SetFont('Arial','',$tamannoFuente-1);
 
 		$granTotal = 0;
-		for($i = 0; $i < 5 ; $i++){
-
-
+		for($i = 0; $i < 5 ; $i++) {
 			$pdf->Cell(23,4, $totalesSemanas[$i],'R',0,'C',false);
 			$granTotal = $granTotal + $totalesSemanas[$i];
 		}
@@ -647,24 +606,14 @@ if(count($entregasSedes)>0){
 		$pdf->Write(4,'www.infopae.com.co',$link);
 	}//Termina el for de instituciones
 
-
-
-
-
-
-
-
-
-
 	$pdf->Output();
-
 } else{
 	echo "<h2>No se han encontrado entregas en el mes correspondiente.</h2>";
 }
 
 
 
-function mesNombre($mes){
+function mesNombre($mes) {
   if($mes == 1){
     return 'Enero';
   }
