@@ -10,7 +10,7 @@ include '../../php/funciones.php';
 
 
 $largoNombre = 30;
-$sangria = "    ";
+$sangria = " - ";
 $tamannoFuente = 7;
 
 //var_dump($_POST);
@@ -236,23 +236,6 @@ if (!in_array($row['Semana'], $semanasMostrar, true)) {
     $dias .= " de  $mes";
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
     $semanasMostrar[] =  $row['Semana'];
     $semana = $row['Semana'];
@@ -461,17 +444,7 @@ for ($i=0; $i < count($despachos) ; $i++) {
     $alimento['nombreunidad3'] = '';
     $alimento['nombreunidad4'] = '';
     $alimento['nombreunidad5'] = '';
-
-
-
-
-
-
-
-
-
-
-      $alimentos[] = $alimento;
+    $alimentos[] = $alimento;
     }
   }
 }
@@ -847,12 +820,7 @@ $grupoAlimActual = '';
 
 
     $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
-    if($item['presentacion'] == 'u'){
-      $aux = round(0+$aux);
-    }
-    else{
-      $aux = number_format($aux, 2, '.', '');
-    }
+    $aux = number_format($aux, 2, '.', '');
 
    /*
 
@@ -878,11 +846,18 @@ $grupoAlimActual = '';
     //Imprimiendo CNT TOTAL
     $pdf->Cell(13.141,4,$aux,1,0,'C',False);
 
+    if($item['presentacion'] == 'u'){
+      $aux = round(0+$aux);
+    }
+    else{
+      $aux = number_format($aux, 2, '.', '');
+    }
 
 
 
     if($item['cantotalpresentacion'] > 0 ){
       $aux = $item['cantotalpresentacion'];
+      $aux2 = $aux;
       if($item['presentacion'] == 'u'){
         $aux = round(0+$aux);
       }
@@ -912,6 +887,7 @@ $grupoAlimActual = '';
 
   // CANTIDAD ENTREGADA
   $pdf->Cell(10.6,4,$aux,1,0,'C',False);
+    //total entregado
   $pdf->Cell(10.6,4,'',1,0,'C',False);
   $pdf->Cell(10.6,4,'',1,0,'C',False);
 

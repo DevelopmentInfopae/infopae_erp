@@ -115,9 +115,11 @@
   $current_x = $pdf->GetX();
   $pdf->Cell(42.5,14.1,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y);
-  $pdf->Cell(42.5,4.7,utf8_decode('4 - 6 años 11 meses'),1,4.7,'C',False);
-  $pdf->Cell(42.5,4.7,utf8_decode('7 - 12 años 11 meses'),1,4.7,'C',False);
-  $pdf->Cell(42.5,4.7,utf8_decode('13 - 17 años 11 meses'),1,0,'C',False);
+
+
+  $pdf->Cell(42.5,4.7,utf8_decode($get[0]),1,4.7,'C',False);
+  $pdf->Cell(42.5,4.7,utf8_decode($get[1]),1,4.7,'C',False);
+  $pdf->Cell(42.5,4.7,utf8_decode($get[2]),1,0,'C',False);
   $pdf->SetXY($current_x+42.5, $current_y);
 
   $current_y = $pdf->GetY();
@@ -238,7 +240,16 @@
   $current_x2 = $pdf->GetX();
   $pdf->Cell(13.1,7,utf8_decode(''),1,0,'C',False);
   $pdf->SetXY($current_x2, $current_y2);
-  $pdf->Cell(13.1,3.5,utf8_decode('4 - 6'),0,3.5,'C',False);
+
+  $etario_1 = str_replace(" + 11 meses", "", $get[0]);
+  $etario_2 = str_replace(" + 11 meses", "", $get[1]);
+  $etario_3 = str_replace(" + 11 meses", "", $get[2]);
+
+  $etario_1 = str_replace(" años", "", $etario_1);
+  $etario_2 = str_replace(" años", "", $etario_2);
+  $etario_3 = str_replace(" años", "", $etario_3);
+
+  $pdf->Cell(13.1,3.5,utf8_decode($etario_1),0,3.5,'C',False);
   $pdf->Cell(13.1,3.5,utf8_decode('AÑOS'),0,3.5,'C',False);
 
   $pdf->SetXY($current_x2+13.1, $current_y2);
@@ -246,7 +257,7 @@
   $current_x2 = $pdf->GetX();
   $pdf->Cell(13.1,7,utf8_decode(''),1,0,'C',False);
   $pdf->SetXY($current_x2, $current_y2);
-  $pdf->Cell(13.1,3.5,utf8_decode('7 - 12'),0,3.5,'C',False);
+  $pdf->Cell(13.1,3.5,utf8_decode($etario_2),0,3.5,'C',False);
   $pdf->Cell(13.1,3.5,utf8_decode('AÑOS'),0,3.5,'C',False);
 
   $pdf->SetXY($current_x2+13.1, $current_y2);
@@ -254,7 +265,7 @@
   $current_x2 = $pdf->GetX();
   $pdf->Cell(13.1,7,utf8_decode(''),1,0,'C',False);
   $pdf->SetXY($current_x2, $current_y2);
-  $pdf->Cell(13.1,3.5,utf8_decode('13 - 17'),0,3.5,'C',False);
+  $pdf->Cell(13.1,3.5,utf8_decode($etario_3),0,3.5,'C',False);
   $pdf->Cell(13.1,3.5,utf8_decode('AÑOS'),0,3.5,'C',False);
 
   $pdf->SetXY($current_x+39.33, $current_y);
