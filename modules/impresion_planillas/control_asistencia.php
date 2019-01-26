@@ -6,12 +6,6 @@
 
   $periodoActual = $_SESSION['periodoActual'];
   $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
-
-  $con_cod_muni = "SELECT CodMunicipio FROM parametros;";
-  $res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
-  if ($res_minicipio->num_rows > 0) {
-    $codigoDANE = $res_minicipio->fetch_array();
-  }
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -29,11 +23,6 @@
 	</div>
 	<div class="col-lg-4">
 		<div class="title-action">
-			<!--
-			<a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
-			<a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a>
-		-->
-		<!-- <a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary"><i class="fa fa-truck"></i> Nuevo despacho </a> -->
 	</div>
 </div>
 </div>
@@ -44,7 +33,7 @@
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
           <h2>Parámetros de Consulta</h2>
-            <form class="col-lg-12" action="planillas.php" name="formPlanillas" id="formPlanillas" method="post" target="_blank">
+            <form class="col-lg-12" action="planillas_v2.php" name="formPlanillas" id="formPlanillas" method="post" target="_blank">
               <div class="row">
                 <div class="col-sm-6 form-group">
                   <label for="fechaInicial">Mes</label>
@@ -101,11 +90,6 @@
 		          <?php  } ?>
 
 										 </select>
-    <?php
-    // if(!isset($_GET['pb_mes']) || $_GET['pb_mes'] == ''){
-    //   $_GET['pb_mes'] = date("n");
-    // }
-    ?>
 
   </div><!-- /col -->
   <div class="col-sm-6 form-group">
@@ -123,7 +107,7 @@
       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
       if($resultado->num_rows > 0){
         while($row = $resultado->fetch_assoc()) { ?>
-          <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($codigoDANE["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; } ?> ><?= $row["ciudad"]; ?></option>
+          <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($municipio_defecto["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; } ?> ><?= $row["ciudad"]; ?></option>
         <?php
         }// Termina el while
       }//Termina el if que valida que si existan resultados
@@ -137,16 +121,16 @@
     <select class="form-control" name="institucion" id="institucion">
       <option value="">Todas</option>
       <?php
-      if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $codigoDANE["CodMunicipio"]){
+      if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $municipio_defecto["CodMunicipio"]){
 
-        $municipio = $_GET["pb_municipio"] = $codigoDANE["CodMunicipio"];
+        $municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"];
 
         $consulta = " SELECT distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
         $consulta = $consulta." and s.cod_mun_sede = '$municipio' ";
         $consulta = $consulta." order by s.nom_inst asc ";
 
         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-        if($resultado->num_rows >= 1){
+        if($resultado->num_rows > 0){
           while($row = $resultado->fetch_assoc()) { ?>
             <option value="<?php echo $row['cod_inst']; ?>" <?php if(isset($_GET["pb_institucion"]) && $_GET["pb_institucion"] == $row['cod_inst'] ){ echo " selected "; }  ?> > <?php echo $row['nom_inst']; ?></option>
           <?php }// Termina el while
@@ -182,14 +166,14 @@
     <select class="form-control" name="tipo" id="tipo">
         <option value="">Seleccione una</option>
         <?php
-          $consulta = " select DISTINCT CODIGO from tipo_complemento ";
-          $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-          if($resultado->num_rows >= 1){
-            while($row = $resultado->fetch_assoc()) { ?>
-              <option value="<?php echo $row["CODIGO"]; ?>" <?php  if (isset($_GET['pb_tipo']) && ($_GET['pb_tipo'] == $row["CODIGO"]) ) { echo ' selected '; } ?>   ><?php echo $row["CODIGO"]; ?></option>
-              <?php
-            }// Termina el while
-          }//Termina el if que valida que si existan resultados
+          // $consulta = "SELECT DISTINCT CODIGO from tipo_complemento";
+          // $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+          // if($resultado->num_rows >= 1){
+          //   while($row = $resultado->fetch_assoc()) { ?>
+          //     <option value="<?php echo $row["CODIGO"]; ?>" <?php  if (isset($_GET['pb_tipo']) && ($_GET['pb_tipo'] == $row["CODIGO"]) ) { echo ' selected '; } ?>   ><?php echo $row["CODIGO"]; ?></option>
+          //     <?php
+          //   }// Termina el while
+          // }//Termina el if que valida que si existan resultados
         ?>
     </select>
   </div><!-- /.col -->
@@ -466,21 +450,6 @@
                         <div class="table-responsive">
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             <table class="table table-striped table-bordered table-hover selectableRows" id="box-table-movimientos" >
                                 <thead>
                 <tr>
@@ -507,11 +476,6 @@
                       <input type="checkbox" class="despachos" value="<?php echo $row['Num_doc']; ?>" name="<?php echo $row['Num_doc']; ?>"id="<?php echo $row['Num_doc']; ?>"<?php if($row['estado'] == 0){echo " disabled "; } ?> />
 
                     </td>
-
-
-
-
-
 
                     <td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Num_doc']; ?></td>
                     <td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['FechaHora_Elab']; ?></td>

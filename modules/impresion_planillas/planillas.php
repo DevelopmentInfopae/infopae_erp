@@ -102,9 +102,9 @@ if($resultado_sedes->num_rows > 0) {
 if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 	$consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben,
 	cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, D1 AS 'D01',D2 AS D02,D3 AS D03,D4 AS D04,D5 AS D05,D6 AS D06,D7 AS D07,D8 AS D08,D9 AS D09,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22
-	FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento' ";
+	FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento'";
 	if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' "; }
-	$consulta .= " Order By cod_sede, cod_grado,ape1,ape2,nom1,nom2 asc ";
+	$consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
 
   $codigo = '';
