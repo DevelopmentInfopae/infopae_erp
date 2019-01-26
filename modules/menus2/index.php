@@ -94,7 +94,7 @@ $periodoActual = $_SESSION['periodoActual'];
             <div class="form-group col-sm-12" style="padding-top: 2%;">
               <!-- <input type="submit" name="filtro_menu" value="Buscar" class="btn btn-success"> -->
               <input type="hidden" name="filtro_menus">
-              <button type="submit" class="btn btn-success"><span class="fa fa-search"></span> Buscar</button>
+              <button type="submit" class="btn btn-primary"><span class="fa fa-search"></span> Buscar</button>
               <?php if (isset($_POST['filtro_menus'])): ?>
                 <a href="index.php" class="btn btn-default"><span class="fa fa-times"></span> Limpiar búsqueda</a>
               <?php endif ?>
@@ -231,12 +231,12 @@ $periodoActual = $_SESSION['periodoActual'];
     </div><!-- /.col-lg-12 -->
   </div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
-<form method="Post" id="menus_analisis" action="menus_analisis.php" style="display: none;">
+<form method="Post" id="menus_analisis" action="menus_analisis.php" target="_blank" style="display: none;">
   <input type="hidden" name="descripcion" id="descripcion">
   <input type="hidden" name="codigo" id="codigo">
   <input type="hidden" name="idProducto" id="idProducto">
 </form>
-<form method="Post" id="editar_producto" action="editar_producto.php" style="display: none;">
+<form method="Post" id="editar_producto" action="editar_producto.php" target="_blank" style="display: none;">
   <input type="hidden" name="idProducto" id="idProductoEditar">
 </form>
 <?php include '../../footer.php'; ?>

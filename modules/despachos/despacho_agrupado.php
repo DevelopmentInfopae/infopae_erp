@@ -12,7 +12,7 @@ require_once '../../db/conexion.php';
 
 
 $largoNombre = 40;
-$sangria = "    ";
+$sangria = " - ";
 
 
 
@@ -47,7 +47,13 @@ $anno = substr($anno, -2);
 $anno = trim($anno);
 $mesAnno = $mes.$anno;
 
-
+  $consGrupoEtario = "SELECT * FROM grupo_etario ";
+  $resGrupoEtario = $Link->query($consGrupoEtario);
+  if ($resGrupoEtario->num_rows > 0) {
+    while ($ge = $resGrupoEtario->fetch_assoc()) {
+      $get[] = $ge['DESCRIPCION'];
+    }
+  }
 
 
 
@@ -690,9 +696,12 @@ $grupoAlimActual = '';
 
 
     $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
-    if($item['presentacion'] == 'u'){$aux = round(0+$aux); } else{$aux = number_format($aux, 2, '.', ''); }
-    $pdf->Cell(13.141,5,$aux,1,0,'C',False);
+    $aux2 = number_format($aux, 2, '.', '');
+    if($item['presentacion'] == 'u'){$aux = ceil(0+$aux); } else{$aux = number_format($aux, 2, '.', ''); }
 
+
+    $pdf->Cell(13.141,5,( ($item['presentacion'] == 'u') ? $aux2 : $aux),1,0,'C',False);
+      //total
 
 
     if($item['cantotalpresentacion'] > 0){
@@ -700,37 +709,7 @@ $grupoAlimActual = '';
       $aux = number_format($aux, 2, '.', '');
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     $pdf->Cell(10.6,5,$aux,1,0,'C',False);
-
-
-
-
-
-
-
-
-
-
-
-
 
     $pdf->Cell(10.638,5,'',1,0,'C',False);
     $pdf->Cell(10.6,5,'',1,0,'C',False);

@@ -16,7 +16,7 @@ ini_set('memory_limit','6000M');
 //echo ini_get('memory_limit');
 $largoNombre = 28;
 
-$sangria = "    ";
+$sangria = " - ";
 $tamannoFuente = 7;
 $digitosDecimales = 2;
 date_default_timezone_set('America/Bogota');

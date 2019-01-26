@@ -10,7 +10,7 @@ include '../../php/funciones.php';
 
 
 $largoNombre = 30;
-$sangria = "    ";
+$sangria = " - ";
 $tamannoFuente = 6;
 $digitosDecimales = 2;
 
@@ -600,7 +600,7 @@ foreach ($codesedes as $sedecod => $isset) {
               $pdf->Cell(13.141,4,$item['presentacion'],1,0,'C',False);
               $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
               if($item['presentacion'] == 'u'){
-                $aux = round(0+$aux);
+                $aux = ceil(0+$aux);
               }
               else{
                 $aux = number_format($aux, 2, '.', '');
