@@ -3,7 +3,7 @@ $( document ).ready(function() {
 
 
 	$('#municipio').change(function() {
-		alert($("#municipio option:selected").text());
+		// alert($("#municipio option:selected").text());
 		console.log('Cambio de municipio');
 		var tipo = $('#tipoRacion').val();
 		var municipio = $(this).val();

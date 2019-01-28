@@ -19,7 +19,6 @@ $tipoPlanilla = $_POST['tipoPlanilla'];
 $periodoActual = $_SESSION['periodoActual'];
 $departamento = $_SESSION['p_Departamento'];
 
-
 $anno2d = substr($anno,2);
 
 if($mes < 10){
@@ -269,7 +268,6 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
         $lineas = 25;
         // $alturaLinea = 4.5;
         $codigoSede = $sede['cod_sede'];
-
         $pdf->AddPage();
         $pdf->SetTextColor(0,0,0);
         $pdf->SetFillColor(255,255,255);
