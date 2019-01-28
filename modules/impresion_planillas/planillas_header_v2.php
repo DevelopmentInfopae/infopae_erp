@@ -27,6 +27,60 @@ if($codigoSede){
 	$codigo_institucion = "";
 }
 
+//Código para obtener el total programado en el mes seleccionado, búsqueda por Tipo de complemento, Sede y Mes.
+
+$semanasMes = [];
+$consSemanasMes = "SELECT SEMANA FROM planilla_semanas WHERE MES = '".$mes."' GROUP BY SEMANA;"; //obtenemos las semanas que hay en el mes
+$resSemanasMes = $Link->query($consSemanasMes);
+if ($resSemanasMes->num_rows > 0) {
+	while ($dsm = $resSemanasMes->fetch_assoc()) {
+		$semanasMes[$dsm['SEMANA']] = 1; //guardamos las semanas en un array
+	}
+}
+
+$totalProgramadoMes = 0; //variable para sumar los totales de cada semana y obtener un total del mes
+
+foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas obtenidas para cambiar la tabla de priorización, ej : priorizacion01, priorizacion02, etc
+
+	$consTotalEntregado = "SELECT DISTINCT SEMANA AS SM, COUNT(DIA) AS dias_semana,
+							(
+								(SELECT SUM(".$tipoComplemento.") FROM priorizacion".$semana." WHERE cod_sede = '".$codigoSede."') * 
+							    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM)
+							) AS total_entregas
+							FROM planilla_semanas WHERE SEMANA = '".$semana."';"; //obtenemos el total de priorizaciones por complemento seleccionado de la semana en turno, luego lo multiplicamos por el número de días que tiene la semana en turno.
+	// echo $consTotalEntregado;
+	$resTotalEntregado = $Link->query($consTotalEntregado);
+
+	if ($resTotalEntregado !== FALSE && $resTotalEntregado->num_rows > 0) { //Si el SQL se ejecuta correctamente y hay datos, es decir si encuentra la tabla priorización$semana (priorizacion03, priorizacion03b, etc)
+
+	  $te = $resTotalEntregado->fetch_assoc();
+	  $totalProgramadoMes+=$te['total_entregas'];
+
+	  $diasSemana = $te['dias_semana']; //guardamos los días que tiene la semana en turno.
+
+	} else { //En caso de no encontrar datos para la semana en turno o la tabla para dicha semana, multiplicamos la priorización de la semana del mes seleccionado que si tiene tabla de priorización, por el número de dias de dicho mes, la priorización mencionada ya se guardó en la variable $totalProgramadoMes en el turno de la semana anterior.
+		
+	// Esto sucede cuando sólo hay priorización del primer día o primera semana en el Mes seleccionado.
+
+		$consDiasMes = "SELECT * FROM planilla_dias WHERE mes = '".$mes."'"; //consultamos los días que tiene el mes seleccionado
+		$resDiasMes = $Link->query($consDiasMes);
+		if ($resDiasMes->num_rows > 0) {
+			$dms = $resDiasMes->fetch_assoc();
+			$diasMes = 0;
+			for ($i=1; $i < 31; $i++) { //recorremos los campos D1, D2, etc que no estén vacíos.
+				if (!empty($dms['D'.$i])) {
+					$diasMes++;
+				}
+			}
+		}
+		$totalProgramadoMes = ($totalProgramadoMes / $diasSemana) * $diasMes; //multiplicamos el total de entregas para la primera semana, pero se divide el $totalProgramadoMes por los días de la primera semana por si hay más de un día que son compartidos.
+		break;
+
+	}
+}
+
+//Código para obtener el total programado en el mes seleccionado, búsqueda por Tipo de complemento, Sede y Mes.
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(35,$tamannoFuente,utf8_decode('NOMBRE SEDE:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
