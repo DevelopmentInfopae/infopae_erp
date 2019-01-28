@@ -12,8 +12,9 @@ $( document ).ready(function() {
 		var municipio = $(this).val();
 		$('#municipioNm').val($("#municipio option:selected").text());
 		buscar_institucion(municipio,tipo);
-		//$('#formDespachoPorSede').submit();
 	});
+
+	$('#municipio').trigger('change');
 
 	$('#institucion').change(function(){
 		var institucion = $(this).val();
