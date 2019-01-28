@@ -16,7 +16,8 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(72,$tamannoFuente,utf8_decode('RACIONES MENSUALES PROGRAMADAS CAJM:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,5,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : ""), "B", 0, 'C', False);
+	// $pdf->Cell(10,5,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : ""), "B", 0, 'C', False);
+	$pdf->Cell(10,5,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla != 1) ? $totalProgramadoMes : ""), "B", 0, 'C', False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
@@ -47,7 +48,8 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(72,$tamannoFuente,utf8_decode('RACIONES MENSUALES PROGRAMADAS CAJT:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,5,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : ""), "B", 0, 'C', False);
+	// $pdf->Cell(10,5,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : ""), "B", 0, 'C', False);
+	$pdf->Cell(10,5,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? $totalProgramadoMes : ""), "B", 0, 'C', False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
@@ -78,7 +80,8 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(72,$tamannoFuente,utf8_decode('RACIONES MENSUALES PROGRAMADAS ALMUERZOS:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,5,(($tipoComplemento == "APS") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : "" ), "B", 0, 'C', False);
+	// $pdf->Cell(10,5,(($tipoComplemento == "APS") && ($tipoPlanilla != 1) ? $totales['titulares'] * $totalDias : "" ), "B", 0, 'C', False);
+	$pdf->Cell(10,5,(($tipoComplemento == "APS") && ($tipoPlanilla != 1) ? $totalProgramadoMes : "" ), "B", 0, 'C', False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
