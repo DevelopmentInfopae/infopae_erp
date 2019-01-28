@@ -14,7 +14,7 @@ ini_set('memory_limit','6000M');
 //echo "<br> Limite de Memoria: ";
 //echo ini_get('memory_limit');
 $largoNombre = 30;
-$sangria = "    ";
+$sangria = " - ";
 $tamannoFuente = 6;
 date_default_timezone_set('America/Bogota');
 
@@ -752,7 +752,7 @@ unset($grupo);
 
 
     if($alimento['presentacion'] == 'u'){
-      $aux = round(0+$alimento['cant_grupo1']);
+      $aux = round($alimento['cant_grupo1']);
     }else{
       $aux = 0+$alimento['cant_grupo1'];
       $aux = number_format($aux, 2, '.', '');
@@ -761,7 +761,7 @@ unset($grupo);
 
 
     if($alimento['presentacion'] == 'u'){
-      $aux = round(0+$alimento['cant_grupo2']);
+      $aux = round($alimento['cant_grupo2']);
     }else{
       $aux = 0+$alimento['cant_grupo2'];
       $aux = number_format($aux, 2, '.', '');
@@ -769,7 +769,7 @@ unset($grupo);
     $pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
     if($alimento['presentacion'] == 'u'){
-      $aux = round(0+$alimento['cant_grupo3']);
+      $aux = round($alimento['cant_grupo3']);
     }else{
       $aux = 0+$alimento['cant_grupo3'];
       $aux = number_format($aux, 2, '.', '');
@@ -780,14 +780,7 @@ unset($grupo);
     $pdf->Cell(13.141,4,$alimento['presentacion'],1,0,'C',False);
 
 
-    if($alimento['presentacion'] == 'u'){
-      $aux = round(0+$alimento['cant_total']);
-    }else{
-      $aux = 0+$alimento['cant_total'];
-      $aux = number_format($aux, 2, '.', '');
-    }
-
-
+    $aux = number_format($aux, 2, '.', '');
 
 //MOSTRAR O NO CUANDO HAY PRESENTACIONES
 
@@ -798,11 +791,9 @@ unset($grupo);
     }
 
 
+    $aux = number_format($alimento['cant_total'], 2, '.', '');
     $pdf->Cell(13.141,4,$aux,1,0,'C',False);
-
-
-
-
+    //total requerido
 
 
     if($alimento['cantotalpresentacion'] > 0){
@@ -816,6 +807,12 @@ unset($grupo);
     }
 
 
+if($alimento['presentacion'] == 'u'){
+      $aux = ceil($alimento['cant_total']);
+    }else{
+      $aux = 0+$alimento['cant_total'];
+      $aux = number_format($aux, 2, '.', '');
+    }
 
 
 // // CANTIDAD ENTREGADA
@@ -840,6 +837,7 @@ unset($grupo);
 
     // CANTIDAD ENTREGADA
     $pdf->Cell(10.7,4,$aux,1,0,'C',False);
+      //total entregado
     $pdf->Cell(10.6,4,'',1,0,'C',False);
     $pdf->Cell(10.6,4,'',1,0,'C',False);
     // ESPECIFICACIÓN DE CALIDAD
@@ -874,7 +872,7 @@ unset($grupo);
             $pdf->SetTextColor(0,0,0);
             $pdf->SetFillColor(255,255,255);
 
-            $aux = "■".$sangria.$alimento['componente'].$presentacion;
+            $aux = $sangria.$alimento['componente'].$presentacion;
 
 
 

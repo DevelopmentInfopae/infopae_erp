@@ -19,7 +19,7 @@ ini_set('memory_limit','6000M');
 //echo ini_get('memory_limit');
 $largoNombre = 28;
 
-$sangria = "    ";
+$sangria = " - ";
 $tamannoFuente = 7;
 $digitosDecimales = 2;
 date_default_timezone_set('America/Bogota');
@@ -314,7 +314,8 @@ if($resultado->num_rows >= 1){
         $alimento['cantidadund2'] = $row['cantidadund2'];
         $alimento['cantidadund3'] = $row['cantidadund3'];
         $alimento['cantidadund4'] = $row['cantidadund4'];
-        $alimento['cantidadund5'] = $row['cantidadund5'];
+        $alimento['cantidadund5'] = $row['cantidadund5']; 
+        // $alimento['cantotalpresentacion'] = round($row['cantu2']) + round($row['cantu3']) + round($row['cantu4']) + round($row['cantu5']);
         $alimento['nombreunidad2'] = $row['nombreunidad2'];
         $alimento['nombreunidad3'] = $row['nombreunidad3'];
         $alimento['nombreunidad4'] = $row['nombreunidad4'];
@@ -464,11 +465,11 @@ if($resultado->num_rows >= 1){
 
   // $cantTotal = number_format( $cantTotal, $digitosDecimales);
 
-   if ($alimento['presentacion'] == "u") {
-      $cantTotal = number_format($cantTotal,0,'','');
-    } else {
-      $cantTotal = number_format( $cantTotal, $digitosDecimales);
-    }
+  if ($alimento['presentacion'] == "u") {
+    $cantTotal = ceil($cantTotal);
+  } else {
+    $cantTotal = number_format( $cantTotal, $digitosDecimales);
+  }
 
  $b = number_format($b, $digitosDecimales);
 
@@ -481,14 +482,13 @@ if($resultado->num_rows >= 1){
     //echo  $cantTotal - $b;
     //echo "<br><br>";
 
-    if($alimento['presentacion'] == 'u'){
-      $aux = round(0+$cantTotal);
+    // if($alimento['presentacion'] == 'u'){
+    //   $aux = ceil(0+$cantTotal);
+    // }else{
+    //   $aux = 0+$cantTotal;
+    // }
 
-    }else{
       $aux = 0+$cantTotal;
-
-
-    }
     //TOTAL REQUERIDO
     $pdf->Cell(17.471,4,$aux,1,0,'C',False);
 
