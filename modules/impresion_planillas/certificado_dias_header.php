@@ -34,10 +34,7 @@ $y1 = $pdf->GetY();
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(32,6,utf8_decode('INSTITUCIÓN:'),'R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
-
-
-$aux = $institucion['nom_inst'];
-$pdf->Cell(198,6,utf8_decode($aux),'R',0,'L',false);
+$pdf->Cell(198,6,utf8_decode($institucion['nom_inst']),'R',0,'L',false);
 
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
@@ -78,11 +75,7 @@ $y1 = $pdf->GetY();
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(32,6,'MUNICIPIO:','R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
-
-
-
-$aux = $_POST['municipioNm'];
-$pdf->Cell(198,6,utf8_decode($aux),'R',0,'L',false);
+$pdf->Cell(198,6,utf8_decode($_POST['municipioNm']),'R',0,'L',false);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(23,6,utf8_decode('CÓDIGO DANE:'),'R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
@@ -128,9 +121,6 @@ $pdf->Ln(10);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(0,6,utf8_decode('El suscrito Rector de la Institución Educativa citada en el encabezado, certifica que se entregaron las siguientes raciones, en las fechas señaladas y de acuerdo con la siguiente distribución: '),0,0,'C',false);
 $pdf->Ln(10);
-
-
-
 
 
 
