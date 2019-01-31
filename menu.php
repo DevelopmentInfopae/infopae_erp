@@ -23,7 +23,13 @@
 
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/instituciones.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Instituciones</span></a> </li>
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/sedes.php"><i class="fa fa-bank"></i> <span class="nav-label">Sedes educativas</span></a> </li>
-	<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span></a> </li>
+	<li>
+		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+			<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"><i class="fa fa-child"></i> <span class="nav-label">Derecho</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"><i class="fa fa-tags"></i> <span class="nav-label">Suplentes</span></a> </li>
+		</ul>
+	</li>
 
 	<li>
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>

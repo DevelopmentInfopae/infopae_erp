@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	// listarBodegasUsuario();
+	listarBodegasUsuario();
 	$(document).on('click', '#crearBodega', crearBodega);
 	$(document).on('click', '#guardarBodega', function () { guardarBodega(false); });
 	$(document).on('click', '#guardarBodegaContinuar', function () { guardarBodega(true); });
@@ -343,7 +343,7 @@ function listarBodegasUsuario(codigoUsuario)
     pageLength: 25,
     responsive: true,
     "preDrawCallback": function( settings ) {
-      $('#loader').fadeIn();
+      // $('#loader').fadeIn();
     }
   }).on('draw', function()
   {

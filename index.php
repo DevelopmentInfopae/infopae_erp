@@ -15,7 +15,6 @@
                     </div>
                     <div class="pull-right">
                         <div class="btn-group">
-                            <!-- <button type="button" class="timeOption btn btn-xs btn-white active" value="3">Día</button> -->
                             <button type="button" class="timeOption btn btn-xs btn-white active" value="1">Semana</button>
                             <button type="button" class="timeOption btn btn-xs btn-white" value="2">Mes</button>
                         </div>
@@ -39,230 +38,167 @@
     </div>
 
 <?php
-	// require_once 'db/conexion.php';
-	// $Link = new mysqli($Hostname, $Username, $Password, $Database);
-	// if ($Link->connect_errno) {
-	// echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-	// }
-	// $Link->set_charset("utf8");
+	// Bitacora / Actividades de usuarios
+	$consulta = " SELECT b.*, ba.descripciones, u.nombre, u.foto FROM bitacora b left join bitacora_acciones ba on ba.id = b.tipo_accion left join usuarios u on b.usuario = u.id ORDER BY b.id DESC LIMIT 20 ";
+	//echo $consulta;
+	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
-		// Bitacora / Actividades de usuarios
-		$consulta = " SELECT b.*, ba.descripciones, u.nombre, u.foto FROM bitacora b left join bitacora_acciones ba on ba.id = b.tipo_accion left join usuarios u on b.usuario = u.id ORDER BY b.id DESC LIMIT 20 ";
-		//echo $consulta;
-		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	//Novidades
+	$novedades = array();
 
-
-		//Novidades
-		$novedades = array();
-
-		// Novedades de Priorización 1
-		$consulta = " SELECT 1 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_priorizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario LIMIT 20";
-		$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-		$indice = 0;
-		$aux = '';
-		if($resultado2->num_rows >= 1){
-			while($row = $resultado2->fetch_assoc()){
-				$aux = $row['fecha_hora'];
-				if(isset($novedades[$aux])){
-					$bandera = 0;
-					while ($bandera == 0) {
-                        //$aux = $row['fecha'].$indice;
-						$aux = $indice;
-                        if(isset($novedades[$aux])){
-							$indice++;
-						}
-						else{
-							$indice = 0;
-							$bandera = 1;
-						}
+	// Novedades de Priorización 1
+	$consulta = " SELECT 1 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_priorizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario LIMIT 20";
+	$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	$indice = 0;
+	$aux = '';
+	if($resultado2->num_rows >= 1){
+		while($row = $resultado2->fetch_assoc()){
+			$aux = $row['fecha_hora'];
+			if(isset($novedades[$aux])){
+				$bandera = 0;
+				while ($bandera == 0) {
+                    //$aux = $row['fecha'].$indice;
+					$aux = $indice;
+                    if(isset($novedades[$aux])){
+						$indice++;
+					}
+					else{
+						$indice = 0;
+						$bandera = 1;
 					}
 				}
-				$novedades[$aux] = $row;
-				$aux = '';
 			}
+			$novedades[$aux] = $row;
+			$aux = '';
 		}
+	}
 
-		// Novedades de Focalización 2
-		$consulta = " SELECT 2 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_focalizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
-		$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-		$indice = 0;
-		$aux = '';
-		if($resultado2->num_rows >= 1){
-			while($row = $resultado2->fetch_assoc()){
-				$aux = $row['fecha_hora'];
-				if(isset($novedades[$aux])){
-					$bandera = 0;
-					while ($bandera == 0) {
-						$aux = $row['fecha_hora'].$indice;
-						if(isset($novedades[$aux])){
-							$indice++;
-						}
-						else{
-							$indice = 0;
-							$bandera = 1;
-						}
+	// Novedades de Focalización 2
+	$consulta = " SELECT 2 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_focalizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
+	$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	$indice = 0;
+	$aux = '';
+	if($resultado2->num_rows >= 1){
+		while($row = $resultado2->fetch_assoc()){
+			$aux = $row['fecha_hora'];
+			if(isset($novedades[$aux])){
+				$bandera = 0;
+				while ($bandera == 0) {
+					$aux = $row['fecha_hora'].$indice;
+					if(isset($novedades[$aux])){
+						$indice++;
+					}
+					else{
+						$indice = 0;
+						$bandera = 1;
 					}
 				}
-				$novedades[$aux] = $row;
-				$aux = '';
 			}
+			$novedades[$aux] = $row;
+			$aux = '';
 		}
-		krsort($novedades);
-	?>
+	}
+	krsort($novedades);
+?>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Novedades</h5>
+            </div>
+
+            <div class="ibox-content inspinia-timeline">
+			<?php
+                foreach ($novedades as $novedad) {
+				    $tipo = $novedad['tipo'];
+				    if($tipo == 1) {
+                        $tipo = 'fa-bank';
+				        $tipoNm = 'Agrego novedad de priorización';
+					} else if($tipo == 2) {
+						$tipo = 'fa-child';
+						$tipoNm = 'Agrego novedad de focalización';
+					}
+				    $fecha = $novedad['fecha_hora'];
+				    $fecha = date("d/m/Y h:i:s a", strtotime($fecha));
+				    $nombre = $novedad['nombre'];
+				    $observaciones = $novedad['observaciones'];
 
 
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Novedades</h5>
+                    $aux = $novedad['foto'];
+                    $aux = substr( $aux, 5);
+				    $foto = $baseUrl.$aux;
+                    if(!is_url_exist($foto)) { $foto = $baseUrl."/img/no_image48.jpg"; }
+			?>
+				<div class="timeline-item">
+                    <div class="row">
+                        <div class="col-xs-1">
+                            <i class="fa <?= $tipo; ?>"></i>
+                        </div>
+                        <div class="col-xs-11 /*content no-top-border*/">
+							<a href="#" class="pull-left" style="margin-right: 10px">
+								<img alt="image" style="width: 38px; height: 38px;" class="img-circle" src="<?php echo $foto; ?>">
+							</a>
+							<div class="media-body ">
+                            <!-- <p class="m-b-xs"><strong><?= $nombre; ?></strong> <?= $tipoNm; ?></p> -->
+                            <strong><?= $nombre; ?></strong> <?= $tipoNm; ?>
+
+                            <?= $observaciones; ?>
+                            <small class="text-muted"><?= $fecha; ?></small>
+						</div>
+                        </div>
+                    </div>
+                    <hr>
                 </div>
+			<?php
+                }
+            ?>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Actividades de usuarios</h5>
+                <div class="ibox-tools"> </div>
+            </div>
+            <div class="ibox-content">
 
-                <div class="ibox-content inspinia-timeline">
-				<?php
-                    foreach ($novedades as $novedad) {
-					    $tipo = $novedad['tipo'];
-					    if($tipo == 1) {
-                            $tipo = 'fa-bank';
-					        $tipoNm = 'Agrego novedad de priorización';
-    					} else if($tipo == 2) {
-    						$tipo = 'fa-child';
-    						$tipoNm = 'Agrego novedad de focalización';
-    					}
-					    $fecha = $novedad['fecha_hora'];
-					    $fecha = date("d/m/Y h:i:s a", strtotime($fecha));
-					    $nombre = $novedad['nombre'];
-					    $observaciones = $novedad['observaciones'];
+                <div>
+                    <div class="feed-activity-list">
+						<?php
+							if($resultado->num_rows >= 1){
+							    while($row = $resultado->fetch_assoc()){
+                                    $aux = $row['foto'];
+                                    $aux = substr( $aux, 5);
+                                    $foto = $baseUrl.$aux;
+                                    if(!is_url_exist($foto)){
+										$foto = $baseUrl."/img/no_image48.jpg";
+                                    }
 
+									$fecha = $row['fecha'];
+									$fecha = date("d/m/Y h:i:s a", strtotime($fecha));
+									?>
+									<div class="feed-element">
+										<a href="#" class="pull-left">
+											<img alt="image" style="width: 38px; height: auto;" class="img-circle" src="<?php echo $foto; ?>">
+										</a>
+										<div class="media-body ">
+											<!-- <small class="pull-right">5m ago</small> -->
+											<strong><?php echo $row['nombre']; ?></strong> <?php echo $row['descripciones']; ?>. <br>
+											<?php echo $row['observacion']; ?>. <br>
+											<small class="text-muted"><?php echo $fecha; ?></small>
 
-                        $aux = $novedad['foto'];
-                        $aux = substr( $aux, 5);
-					    $foto = $baseUrl.$aux;
-                        if(!is_url_exist($foto)) { $foto = $baseUrl."/img/no_image48.jpg"; }
-				?>
-					<div class="timeline-item">
-                        <div class="row">
-                            <div class="col-xs-1">
-                                <i class="fa <?= $tipo; ?>"></i>
-                            </div>
-                            <div class="col-xs-11 /*content no-top-border*/">
-								<a href="#" class="pull-left" style="margin-right: 10px">
-									<img alt="image" style="width: 38px; height: 38px;" class="img-circle" src="<?php echo $foto; ?>">
-								</a>
-								<div class="media-body ">
-                                <!-- <p class="m-b-xs"><strong><?= $nombre; ?></strong> <?= $tipoNm; ?></p> -->
-                                <strong><?= $nombre; ?></strong> <?= $tipoNm; ?>
-
-                                <?= $observaciones; ?>
-                                <small class="text-muted"><?= $fecha; ?></small>
-							</div>
-                            </div>
-                        </div>
-                        <hr>
+										</div>
+									</div>
+								<?php
+								}
+							}
+						?>
                     </div>
-				<?php
-                    }
-                ?>
-
-
-
-
-
-
-<!--
-
-                    <div class="timeline-item">
-                        <div class="row">
-                            <div class="col-xs-3 date">
-                                <i class="fa fa-file-text"></i>
-                                7:00 am
-                                <br/>
-                                <small class="text-navy">3 hour ago</small>
-                            </div>
-                            <div class="col-xs-7 content">
-                                <p class="m-b-xs"><strong>Send documents to Mike</strong></p>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since.</p>
-                            </div>
-                        </div>
-                    </div> -->
-                    <!-- <div class="timeline-item">
-                        <div class="row">
-                            <div class="col-xs-3 date">
-                                <i class="fa fa-coffee"></i>
-                                8:00 am
-                                <br/>
-                            </div>
-                            <div class="col-xs-7 content">
-                                <p class="m-b-xs"><strong>Coffee Break</strong></p>
-                                <p>
-                                    Go to shop and find some products.
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="row">
-                            <div class="col-xs-3 date">
-                                <i class="fa fa-phone"></i>
-                                11:00 am
-                                <br/>
-                                <small class="text-navy">21 hour ago</small>
-                            </div>
-                            <div class="col-xs-7 content">
-                                <p class="m-b-xs"><strong>Phone with Jeronimo</strong></p>
-                                <p>
-                                    Lorem Ipsum has been the industry's standard dummy text ever since.
-                                </p>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Actividades de usuarios</h5>
-                    <div class="ibox-tools"> </div>
-                </div>
-                <div class="ibox-content">
-
-                    <div>
-                        <div class="feed-activity-list">
-							<?php
-								if($resultado->num_rows >= 1){
-								    while($row = $resultado->fetch_assoc()){
-                                        $aux = $row['foto'];
-                                        $aux = substr( $aux, 5);
-                                        $foto = $baseUrl.$aux;
-                                        if(!is_url_exist($foto)){
-											$foto = $baseUrl."/img/no_image48.jpg";
-                                        }
-
-										$fecha = $row['fecha'];
-										$fecha = date("d/m/Y h:i:s a", strtotime($fecha));
-										?>
-										<div class="feed-element">
-											<a href="#" class="pull-left">
-												<img alt="image" style="width: 38px; height: auto;" class="img-circle" src="<?php echo $foto; ?>">
-											</a>
-											<div class="media-body ">
-												<!-- <small class="pull-right">5m ago</small> -->
-												<strong><?php echo $row['nombre']; ?></strong> <?php echo $row['descripciones']; ?>. <br>
-												<?php echo $row['observacion']; ?>. <br>
-												<small class="text-muted"><?php echo $fecha; ?></small>
-
-											</div>
-										</div>
-									<?php
-									}
-								}
-							?>
-                        </div>
-                    </div>
-                </div>
-            </div>
     </div>
 </div><!-- /.wrapper -->
 <?php include 'footer.php'; ?>
@@ -279,7 +215,6 @@
 
     <!-- jQuery UI -->
     <script src="theme/js/plugins/jquery-ui/jquery-ui.min.js"></script>
-
 
     <!-- Flot -->
     <script src="theme/js/plugins/flot/jquery.flot.js"></script>
