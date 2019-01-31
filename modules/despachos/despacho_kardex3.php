@@ -465,10 +465,14 @@ if($resultado->num_rows >= 1){
 
   // $cantTotal = number_format( $cantTotal, $digitosDecimales);
 
-  if ($alimento['presentacion'] == "u") {
+  if ($alimento['presentacion'] == 'u') {
     $cantTotal = ceil($cantTotal);
   } else {
-    $cantTotal = number_format( $cantTotal, $digitosDecimales);
+    if ($alimento['presentacion'] == "u") {
+      $cantTotal = round($cantTotal);
+    } else {
+      $cantTotal = number_format( $cantTotal, $digitosDecimales);
+    }
   }
 
  $b = number_format($b, $digitosDecimales);

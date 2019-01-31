@@ -599,11 +599,15 @@ foreach ($codesedes as $sedecod => $isset) {
               // Unidad de medida
               $pdf->Cell(13.141,4,$item['presentacion'],1,0,'C',False);
               $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
-              if($item['presentacion'] == 'u'){
+              if (strpos($item['componente'], "huevo")) {
                 $aux = ceil(0+$aux);
-              }
-              else{
-                $aux = number_format($aux, 2, '.', '');
+              } else {
+                if($item['presentacion'] == 'u'){
+                  $aux = round(0+$aux);
+                }
+                else{
+                  $aux = number_format($aux, 2, '.', '');
+                }
               }
               //TOTAL REQUERIDO
               $pdf->Cell(17.471,4,$aux,1,0,'C',False);
