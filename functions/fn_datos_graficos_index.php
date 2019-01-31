@@ -2,49 +2,26 @@
 error_reporting(E_ALL);
 session_start();
 
-
-// var_dump($_POST);
-// echo "<br><br><br><br><br><br>";
-
-
+$bandera = 0;
 $actualizar = 0;
 $timeOption = 1;
+$barras = array();
+$entregas = array();
+$labelsSemanas = array();
+$barrasTotalesMes = array();
+$entregasTotalesMes = array();
+$barrasTotalesSemana = array();
+$entregasTotalesSemana = array();
 
 
 
 
 // timeOption 1 = semana
 // timeOption 2 = mes
+// timeOption 3 = día
 
-if(isset($_POST['actualizar']) && $_POST['actualizar'] != ''){
-	$actualizar = $_POST['actualizar'];
-}
-
-if(isset($_POST['timeOption']) && $_POST['timeOption'] != ''){
-	$timeOption = $_POST['timeOption'];
-}
-
-
-
-$barras = array();
-$barrasTotalesMes = array();
-$barrasTotalesSemana = array();
-$entregas = array();
-$entregasTotalesMes = array();
-$entregasTotalesSemana = array();
-
-$labelsSemanas = array();
-
-
-$bandera = 0;
-
-
-
-
-
-
-
-
+if(isset($_POST['actualizar']) && $_POST['actualizar'] != ''){ $actualizar = $_POST['actualizar']; }
+if(isset($_POST['timeOption']) && $_POST['timeOption'] != ''){ $timeOption = $_POST['timeOption']; }
 
 // La bandera la usamos para detectar si se encoontro el archivo de la consulta y en caso de que no, se actualiza los array y se genera el archivo.
 
@@ -83,7 +60,7 @@ if($actualizar == 1 || $bandera > 0){
 	}
 	$Link->set_charset("utf8");
 
-	$consulta = " select ps.dia, ps.semana, ps.mes, ps.ano, (select sum(sc.num_est_focalizados) from sedes_cobertura sc where sc.semana = ps.semana) as cantidad from planilla_semanas ps";
+	$consulta = " SELECT ps.dia, ps.semana, ps.mes, ps.ano, (SELECT SUM(sc.num_est_focalizados) FROM sedes_cobertura sc WHERE sc.semana = ps.semana) AS cantidad FROM planilla_semanas ps";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	$cantidadTotal = 0;
 	$mesInicial = 0;
