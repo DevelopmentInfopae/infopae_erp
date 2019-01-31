@@ -696,15 +696,26 @@ $grupoAlimActual = '';
 
 
     $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
-    $aux2 = number_format($aux, 2, '.', '');
-    if($item['presentacion'] == 'u'){$aux = ceil(0+$aux); } else{$aux = number_format($aux, 2, '.', ''); }
+
+    if ((strpos($alimento['componente'], "huevo"))) {
+
+      $aux = ceil($aux);
+
+    } else {
+      if($item['presentacion'] == 'u'){
+        $aux = round(0+$aux); 
+      } else{
+        $aux = number_format($aux, 2, '.', ''); 
+      }
+    }
 
 
-    $pdf->Cell(13.141,5,( ($item['presentacion'] == 'u') ? $aux2 : $aux),1,0,'C',False);
+    $pdf->Cell(13.141,5,($aux),1,0,'C',False);
       //total
 
 
     if($item['cantotalpresentacion'] > 0){
+
       $aux = 0+$item['cantotalpresentacion'];
       $aux = number_format($aux, 2, '.', '');
     }

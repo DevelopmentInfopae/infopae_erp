@@ -68,7 +68,7 @@ if (isset($_POST['observaciones'])) {
 	$observaciones = "";
 }
 
-$sqlInfraestructura = "INSERT INTO Infraestructura (cod_inst, cod_sede, Atencion_MayoritariaI, id_Complem_JMJT, id_Almuerzo, Comedor_Escolar, Concepto_Sanitario, Fecha_Expe, observaciones) VALUES ('".$cod_inst."', '".$cod_sede."', '".$Atencion_MayoritariaI."', '".$id_Complem_JMJT."', '".$id_Almuerzo."', '".$Comedor_Escolar."', '".$Concepto_Sanitario."', '".$fecha_expedicion."', '".$observaciones."')";
+$sqlInfraestructura = "INSERT INTO infraestructura (cod_inst, cod_sede, Atencion_MayoritariaI, id_Complem_JMJT, id_Almuerzo, Comedor_Escolar, Concepto_Sanitario, Fecha_Expe, observaciones) VALUES ('".$cod_inst."', '".$cod_sede."', '".$Atencion_MayoritariaI."', '".$id_Complem_JMJT."', '".$id_Almuerzo."', '".$Comedor_Escolar."', '".$Concepto_Sanitario."', '".$fecha_expedicion."', '".$observaciones."')";
 
 if ($Link->query($sqlInfraestructura) === true) {
 	$idInfraestructura = $Link->insert_id;

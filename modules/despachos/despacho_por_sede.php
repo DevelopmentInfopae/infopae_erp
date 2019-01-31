@@ -337,7 +337,7 @@ for ($k=0; $k < count($_POST) ; $k++){
     $consulta = " select distinct ftd.codigo, ftd.Componente,
     p.nombreunidad2 presentacion,
     p.cantidadund1 cantidadPresentacion,
-    m.grupo_alim, m.orden_grupo_alim,ftd.UnidadMedida, ( select Cantidad
+    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida, ( select Cantidad
 
     from despachos_det$mesAnno
 
@@ -391,7 +391,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 
 
 
-    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  ";
+    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  order by m.orden_grupo_alim ASC ";
 
 
 
@@ -790,8 +790,12 @@ unset($grupo);
       // $aux = '';
     }
 
-
-    $aux = number_format($alimento['cant_total'], 2, '.', '');
+    if ($alimento['presentacion'] == 'u') {
+      // $aux = number_format($alimento['cant_total'], 2, '.', '');
+      $aux = round($alimento['cant_total']);
+    } else {
+      $aux = number_format($alimento['cant_total'], 2, '.', '');
+    }
     $pdf->Cell(13.141,4,$aux,1,0,'C',False);
     //total requerido
 
@@ -807,12 +811,17 @@ unset($grupo);
     }
 
 
-if($alimento['presentacion'] == 'u'){
-      $aux = ceil($alimento['cant_total']);
-    }else{
-      $aux = 0+$alimento['cant_total'];
-      $aux = number_format($aux, 2, '.', '');
-    }
+if(strpos($alimento['componente'], "huevo")){
+  $aux = ceil($alimento['cant_total']);
+}else{
+
+  if ($alimento['presentacion'] == 'u') {
+    $aux = round(0+$alimento['cant_total']);
+  } else {
+    $aux = number_format($alimento['cant_total'], 2, '.', '');
+    // $aux = number_format($aux, 0, '.', '');
+  }
+}
 
 
 // // CANTIDAD ENTREGADA
