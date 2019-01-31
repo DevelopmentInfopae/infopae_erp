@@ -7,8 +7,9 @@
   $periodoActual = $_SESSION['periodoActual'];
   $sede = (isset($_POST['sede'])) ? $_POST['sede'] : "";
   $institucion = (isset($_POST['institucion'])) ? $_POST['institucion'] : "";
+  $mes = (isset($_POST['mes'])) ? $_POST['mes'] : "";
 
-  $consulta = "SELECT DISTINCT tipo_complem from entregas_res_0119 WHERE 1";
+  $consulta = "SELECT DISTINCT tipo_complem from entregas_res_".$mes.$_SESSION['periodoActual']." WHERE 1"; //cambio de mes seleccionado y año de periodo actual.
   if($institucion != '') { $consulta = $consulta." AND cod_inst = '$institucion'"; }
   if($sede != '') { $consulta = $consulta." AND cod_sede = '$sede'"; }
 

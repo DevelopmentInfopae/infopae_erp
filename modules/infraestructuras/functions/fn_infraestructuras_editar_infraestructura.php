@@ -68,7 +68,7 @@ if (isset($_POST['observaciones'])) {
 	$observaciones = "";
 }
 
-$sqlInfraestructura = "UPDATE Infraestructura SET Atencion_MayoritariaI = '".$Atencion_MayoritariaI."', id_Complem_JMJT = '".$id_Complem_JMJT."', id_Almuerzo = '".$id_Almuerzo."', Comedor_Escolar = '".$Comedor_Escolar."', Concepto_Sanitario = '".$Concepto_Sanitario."', Fecha_Expe = '".$fecha_expedicion."', observaciones = '".$observaciones."' WHERE id = ".$idinfraestructura;
+$sqlInfraestructura = "UPDATE infraestructura SET Atencion_MayoritariaI = '".$Atencion_MayoritariaI."', id_Complem_JMJT = '".$id_Complem_JMJT."', id_Almuerzo = '".$id_Almuerzo."', Comedor_Escolar = '".$Comedor_Escolar."', Concepto_Sanitario = '".$Concepto_Sanitario."', Fecha_Expe = '".$fecha_expedicion."', observaciones = '".$observaciones."' WHERE id = ".$idinfraestructura;
 
 if ($Link->query($sqlInfraestructura) === true) {
 	//---- Parametros ---

@@ -95,9 +95,9 @@ $periodoActual = $_SESSION['periodoActual'];
 
               if (isset($_POST['cod_inst']) && $_POST['cod_inst'] != "") {
                 $inst = $_POST['cod_inst'];
-                $consulta = "SELECT * FROM Infraestructura WHERE cod_inst = ".$inst;
+                $consulta = "SELECT * FROM infraestructura WHERE cod_inst = ".$inst;
               } else {
-                $consulta = "SELECT * FROM Infraestructura ";
+                $consulta = "SELECT * FROM infraestructura ";
               }
 
 

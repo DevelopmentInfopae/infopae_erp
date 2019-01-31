@@ -4,7 +4,7 @@ require_once '../../../db/conexion.php';
 
 $idinfraestructura = $_POST['idinfraestructura'];
 
-$consultaNomSede = "SELECT sedes.nom_sede FROM Infraestructura, sedes".$_SESSION['periodoActual']." as sedes WHERE sedes.cod_sede = Infraestructura.cod_sede AND Infraestructura.id = ".$idinfraestructura;
+$consultaNomSede = "SELECT sedes.nom_sede FROM infraestructura, sedes".$_SESSION['periodoActual']." as sedes WHERE sedes.cod_sede = infraestructura.cod_sede AND infraestructura.id = ".$idinfraestructura;
 $resultadoNomSede = $Link->query($consultaNomSede);
 if ($resultadoNomSede->num_rows > 0) {
 	if ($infoSede = $resultadoNomSede->fetch_assoc()) {
@@ -14,7 +14,7 @@ if ($resultadoNomSede->num_rows > 0) {
 	$nom_sede = "nombre no encontrado.";
 }
 
-$borrarInfraestructura = "DELETE FROM Infraestructura WHERE id = ".$idinfraestructura;
+$borrarInfraestructura = "DELETE FROM infraestructura WHERE id = ".$idinfraestructura;
 if ($Link->query($borrarInfraestructura)=== true) {
 
 	$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '42', 'Eliminó el diagnóstico de infraestructura de la sede <strong>".$nom_sede."</strong>')";

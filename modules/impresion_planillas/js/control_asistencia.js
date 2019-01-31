@@ -16,14 +16,16 @@ $( document ).ready(function() {
 		var institucion = $(this).val();
 		var municipio = $('#municipio').val();
 		var sede = $('#sede').val();
+		var mes = $('#mes').val();
 		buscar_sede(municipio, institucion);
-		buscar_complemento(institucion, sede);
+		buscar_complemento(institucion, sede, mes);
 	});
 
 	$('#sede').change(function(){
 		var institucion = $('#institucion').val();
 		var sede = $('#sede').val();
-		buscar_complemento(institucion, sede);
+		var mes = $('#mes').val();
+		buscar_complemento(institucion, sede, mes);
 	});
 
 	$('#btnBuscar').click(function(){
@@ -123,13 +125,15 @@ function buscar_sede(municipio, institucion){
     });
 }
 
-function buscar_complemento(institucion, sede) {
+function buscar_complemento(institucion, sede, mes) { 
     $.ajax({
       type: "POST",
       url: "functions/fn_buscar_complemento.php",
-      data: {"sede":sede,"institucion":institucion},
+      data: {"sede":sede,"institucion":institucion, "mes":mes},
       beforeSend: function() { $('#loader').fadeIn(); },
       success: function(data) { $('#tipo').html(data); }
     })
     .always(function() { $('#loader').fadeOut(); });
+
+    //se añade el valor del mes escogido, para buscar en tabla entregas_res correspondiente al mes
 }
