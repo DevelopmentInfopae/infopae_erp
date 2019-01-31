@@ -56,13 +56,14 @@ $municipio = $_POST['municipio'];
 // 1. Trae de palnilla semana toda la información de los días de servicio
 // Select * from planilla_semanas where ano='2017' and mes='08';
 // 2. Trae las insituciones del municipio seleccionado
-$consulta = " SELECT DISTINCT s.cod_inst, s.nom_inst, s.cod_mun_sede, u.ciudad, u.Departamento, usu.nombre AS nombre_rector
-FROM sedes$periodoActual s
-INNER JOIN sedes_cobertura AS sc ON (s.cod_inst = sc.cod_inst AND s.cod_Sede = sc.cod_Sede)
-INNER JOIN ubicacion u ON (s.cod_mun_sede = u.codigoDANE) and u.ETC = 0
-INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
-LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
-WHERE sc.ano = '$anno' AND sc.mes = '$mes' AND s.cod_mun_sede = '$municipio' ";
+$consulta = " SELECT
+				DISTINCT s.cod_inst, s.nom_inst, s.cod_mun_sede, u.ciudad, u.Departamento, usu.nombre AS nombre_rector
+			FROM sedes$periodoActual s
+			INNER JOIN sedes_cobertura AS sc ON (s.cod_inst = sc.cod_inst AND s.cod_Sede = sc.cod_Sede)
+			INNER JOIN ubicacion u ON (s.cod_mun_sede = u.codigoDANE) and u.ETC = 0
+			INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
+			LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
+			WHERE sc.ano = '$anno' AND sc.mes = '$mes' AND s.cod_mun_sede = '$municipio' ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
@@ -72,7 +73,11 @@ if($resultado->num_rows >= 1){
 
 
 // 3. Dias en los que se sirvio
-$consulta = " SELECT ID, ANO, MES, D1 AS 'D01', D2 AS D02, D3 AS D03, D4 AS D04, D5 AS D05, D6 AS D06, D7 AS D07, D8 AS D08, D9 AS D09, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22 FROM planilla_dias WHERE ano = '$anno' AND mes = '$mes' ";
+$consulta = "SELECT
+				ID, ANO, MES, D1 AS 'D01', D2 AS D02, D3 AS D03, D4 AS D04, D5 AS D05, D6 AS D06, D7 AS D07, D8 AS D08, D9 AS D09, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28, D29, D30, D31
+			FROM planilla_dias
+			WHERE ano = '$anno'
+			AND mes = '$mes' ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
@@ -94,7 +99,48 @@ if($resultado->num_rows >= 1){
 
 // 5.Entregas por sedes
 $sedesInstitucion = array();
-$consulta = " SELECT cod_inst, cod_sede, nom_sede, tipo_complem, COALESCE(SUM(d1), 0) d01, COALESCE(SUM(d2), 0) d02, COALESCE(SUM(d3), 0) d03, COALESCE(SUM(d4), 0) d04, COALESCE(SUM(d5), 0) d05, COALESCE(SUM(d6), 0) d06, COALESCE(SUM(d7), 0) d07, COALESCE(SUM(d8), 0) d08, COALESCE(SUM(d9), 0) d09, COALESCE(SUM(d10), 0) d10, COALESCE(SUM(d11), 0) d11, COALESCE(SUM(d12), 0) d12, COALESCE(SUM(d13), 0) d13, COALESCE(SUM(d14), 0) d14, COALESCE(SUM(d15), 0) d15, COALESCE(SUM(d16), 0) d16, COALESCE(SUM(d17), 0) d17, COALESCE(SUM(d18), 0) d18, COALESCE(SUM(d19), 0) d19, COALESCE(SUM(d20), 0) d20, COALESCE(SUM(d21), 0) d21, COALESCE(SUM(d22), 0) d22, (d1 + d2 + d3 + d4 + d5 + d6 + d7 + d8 + d9 + d10 + d11 + d12 + d13 + d14 + d15 + d16 + d17 + d18 + d19 + d20 + d21 + d22) numdias FROM entregas_res_$mes$periodoActual WHERE (d1 + d2 + d3 + d4 + d5 + d6 + d7 + d8 + d9 + d10 + d11 + d12 + d13 + d14 + d15 + d16 + d17 + d18 + d19 + d20 + d21 + d22) > 0 AND cod_mun_sede = $municipio GROUP BY cod_sede , tipo_complem ";
+$consulta = " SELECT
+				cod_inst,
+				cod_sede,
+				nom_sede,
+				tipo_complem,
+				COALESCE(SUM(d1), 0) d01,
+				COALESCE(SUM(d2), 0) d02,
+				COALESCE(SUM(d3), 0) d03,
+				COALESCE(SUM(d4), 0) d04,
+				COALESCE(SUM(d5), 0) d05,
+				COALESCE(SUM(d6), 0) d06,
+				COALESCE(SUM(d7), 0) d07,
+				COALESCE(SUM(d8), 0) d08,
+				COALESCE(SUM(d9), 0) d09,
+				COALESCE(SUM(d10), 0) d10,
+				COALESCE(SUM(d11), 0) d11,
+				COALESCE(SUM(d12), 0) d12,
+				COALESCE(SUM(d13), 0) d13,
+				COALESCE(SUM(d14), 0) d14,
+				COALESCE(SUM(d15), 0) d15,
+				COALESCE(SUM(d16), 0) d16,
+				COALESCE(SUM(d17), 0) d17,
+				COALESCE(SUM(d18), 0) d18,
+				COALESCE(SUM(d19), 0) d19,
+				COALESCE(SUM(d20), 0) d20,
+				COALESCE(SUM(d21), 0) d21,
+				COALESCE(SUM(d22), 0) d22,
+				COALESCE(SUM(d22), 0) d23,
+				COALESCE(SUM(d22), 0) d24,
+				COALESCE(SUM(d22), 0) d25,
+				COALESCE(SUM(d22), 0) d26,
+				COALESCE(SUM(d22), 0) d27,
+				COALESCE(SUM(d22), 0) d28,
+				COALESCE(SUM(d22), 0) d29,
+				COALESCE(SUM(d22), 0) d30,
+				COALESCE(SUM(d22), 0) d31,
+				(IFNULL(d1, 0) + IFNULL(d2, 0) + IFNULL(d3, 0) + IFNULL(d4, 0) + IFNULL(d5, 0) + IFNULL(d6, 0) + IFNULL(d7, 0) + IFNULL(d8, 0) + IFNULL(d9, 0) + IFNULL(d10, 0) + IFNULL(d11, 0) + IFNULL(d12, 0) + IFNULL(d13, 0) + IFNULL(d14, 0) + IFNULL(d15, 0) + IFNULL(d16, 0) + IFNULL(d17, 0) + IFNULL(d18, 0) + IFNULL(d19, 0) + IFNULL(d20, 0) + IFNULL(d21, 0) + IFNULL(d22, 0) + IFNULL(d23, 0) + IFNULL(d24, 0) + IFNULL(d25, 0) + IFNULL(d26, 0) + IFNULL(d27, 0) + IFNULL(d28, 0) + IFNULL(d29, 0) + IFNULL(d30, 0) + IFNULL(d31, 0)) numdias
+			FROM entregas_res_$mes$periodoActual
+			WHERE (IFNULL(d1, 0) + IFNULL(d2, 0) + IFNULL(d3, 0) + IFNULL(d4, 0) + IFNULL(d5, 0) + IFNULL(d6, 0) + IFNULL(d7, 0) + IFNULL(d8, 0) + IFNULL(d9, 0) + IFNULL(d10, 0) + IFNULL(d11, 0) + IFNULL(d12, 0) + IFNULL(d13, 0) + IFNULL(d14, 0) + IFNULL(d15, 0) + IFNULL(d16, 0) + IFNULL(d17, 0) + IFNULL(d18, 0) + IFNULL(d19, 0) + IFNULL(d20, 0) + IFNULL(d21, 0) + IFNULL(d22, 0) + IFNULL(d23, 0) + IFNULL(d24, 0) + IFNULL(d25, 0) + IFNULL(d26, 0) + IFNULL(d27, 0) + IFNULL(d28, 0) + IFNULL(d29, 0) + IFNULL(d30, 0) + IFNULL(d31, 0)) > 0
+				AND cod_mun_sede = $municipio
+			GROUP BY cod_sede , tipo_complem ";
+
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
@@ -104,7 +150,7 @@ if($resultado->num_rows >= 1){
 }
 
 // Fechas de mes seleccionado
-$consulta_fechas = "(SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '$mes' ORDER BY SEMANA ASC, DIA ASC LIMIT 1) UNION ALL (SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '$mes' ORDER BY SEMANA DESC, DIA DESC LIMIT 1)";
+$consulta_fechas = "(SELECT ANO, MES, DIA FROM planilla_semanas WHERE MES = '$mes' ORDER BY SEMANA ASC, DIA ASC LIMIT 1) UNION ALL (SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '$mes' ORDER BY SEMANA DESC, DIA DESC LIMIT 1)";
 $resultado_fechas = $Link->query($consulta_fechas) or die ('Unable to execute query. '. mysqli_error($Link));
 if ($resultado_fechas->num_rows > 0) {
 	while ($registros_fechas = $resultado_fechas->fetch_assoc()) {
@@ -133,6 +179,7 @@ $maximoLineas = 7;
 $linea = 0;
 
 foreach ($instituciones as $institucion) {
+if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 	$pdf->AddPage();
 	include 'certificado_dias_header.php';
 	$linea = 0;
@@ -147,8 +194,6 @@ foreach ($instituciones as $institucion) {
 			foreach ($entregas as $entrega) {
 
 				$linea++;
-
-
 
 				$x1 = $pdf->GetX();
 				$y1 = $pdf->GetY();
@@ -170,8 +215,6 @@ foreach ($instituciones as $institucion) {
 					include 'certificado_dias_header.php';
 					$linea = 1;
 				}
-
-				//var_dump($entrega);
 
 				$x1 = $pdf->GetX();
 				$y1 = $pdf->GetY();
@@ -208,8 +251,8 @@ foreach ($instituciones as $institucion) {
 
 				$pdf->Cell(16,4,utf8_decode($total),'R',0,'C',false);
 				$aux = $entrega['numdias'];
-				//$pdf->Cell(0,4,utf8_decode($aux),'R',0,'C',false);
-				$pdf->Cell(0,4,utf8_decode($linea),'R',0,'C',false);
+				$pdf->Cell(0,4,utf8_decode($aux),'R',0,'C',false);
+				// $pdf->Cell(0,4,utf8_decode($linea),'R',0,'C',false);
 				$pdf->SetXY($x1, $y1);
 				if($linea != $maximoLineas){
 
@@ -225,16 +268,15 @@ foreach ($instituciones as $institucion) {
 		include 'certificado_dias_footer.php';
 
 	}
-
-
 }
-if(count($sedesInstitucion )>0){
+}
+if(count($sedesInstitucion) > 0) {
 	$pdf->Output();
 } else {
-	echo "<h2>No se han encontrado entregas en el mes correspondiente.</h2>";
+	echo "<script>alert('No se han encontrado entregas en el mes correspondiente.'); window.close()</script>";
 }
 
-function mesNombre($mes){
+function mesNombre($mes) {
   if($mes == 1){
     return 'Enero';
   }

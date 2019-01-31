@@ -1,9 +1,8 @@
-<?php $index = 1; ?>
-<?php include 'header.php'; ?>
-
 <?php
-
+    $index = 1;
+    include 'header.php';
 ?>
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -16,6 +15,7 @@
                     </div>
                     <div class="pull-right">
                         <div class="btn-group">
+                            <!-- <button type="button" class="timeOption btn btn-xs btn-white active" value="3">Día</button> -->
                             <button type="button" class="timeOption btn btn-xs btn-white active" value="1">Semana</button>
                             <button type="button" class="timeOption btn btn-xs btn-white" value="2">Mes</button>
                         </div>
@@ -23,42 +23,28 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                    <div class="col-lg-9">
-                        <div class="flot-chart">
-                            <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                        <div class="col-lg-9">
+                            <div class="flot-chart">
+                                <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3">
+                        <div class="col-lg-3">
 
-                        <ul class="stat-list" id="listaTotales">
-
-
-
-
-                            </ul>
+                            <ul class="stat-list" id="listaTotales"></ul>
                         </div>
-
-
-
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-
-
-
-
-	<?php
-	require_once 'db/conexion.php';
-	$Link = new mysqli($Hostname, $Username, $Password, $Database);
-	if ($Link->connect_errno) {
-	echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-	}
-	$Link->set_charset("utf8");
+<?php
+	// require_once 'db/conexion.php';
+	// $Link = new mysqli($Hostname, $Username, $Password, $Database);
+	// if ($Link->connect_errno) {
+	// echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+	// }
+	// $Link->set_charset("utf8");
 
 		// Bitacora / Actividades de usuarios
 		$consulta = " SELECT b.*, ba.descripciones, u.nombre, u.foto FROM bitacora b left join bitacora_acciones ba on ba.id = b.tipo_accion left join usuarios u on b.usuario = u.id ORDER BY b.id DESC LIMIT 20 ";
@@ -70,7 +56,7 @@
 		$novedades = array();
 
 		// Novedades de Priorización 1
-		$consulta = " SELECT 1 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_priorizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario ";
+		$consulta = " SELECT 1 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_priorizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario LIMIT 20";
 		$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		$indice = 0;
 		$aux = '';
@@ -97,7 +83,7 @@
 		}
 
 		// Novedades de Focalización 2
-		$consulta = " SELECT 2 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_focalizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario ";
+		$consulta = " SELECT 2 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_focalizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
 		$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		$indice = 0;
 		$aux = '';
@@ -122,22 +108,7 @@
 			}
 		}
 		krsort($novedades);
-		//var_dump($novedades);
-
-
-
 	?>
-
-
-
-
-
-
-
-
-
-
-
 
 
     <div class="row">
@@ -145,85 +116,53 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Novedades</h5>
-                    <!-- <span class="label label-primary">Meeting today</span> -->
-                    <!-- <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fa fa-wrench"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-user">
-                            <li><a href="#">Config option 1</a>
-                            </li>
-                            <li><a href="#">Config option 2</a>
-                            </li>
-                        </ul>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </div> -->
                 </div>
 
                 <div class="ibox-content inspinia-timeline">
+				<?php
+                    foreach ($novedades as $novedad) {
+					    $tipo = $novedad['tipo'];
+					    if($tipo == 1) {
+                            $tipo = 'fa-bank';
+					        $tipoNm = 'Agrego novedad de priorización';
+    					} else if($tipo == 2) {
+    						$tipo = 'fa-child';
+    						$tipoNm = 'Agrego novedad de focalización';
+    					}
+					    $fecha = $novedad['fecha_hora'];
+					    $fecha = date("d/m/Y h:i:s a", strtotime($fecha));
+					    $nombre = $novedad['nombre'];
+					    $observaciones = $novedad['observaciones'];
 
 
-
-
-
-
-
-				<?php foreach ($novedades as $novedad) {
-					$tipo = $novedad['tipo'];
-					if($tipo == 1){
-						$tipo = 'fa-bank';
-						$tipoNm = 'Agrego novedad de priorización';
-					}else if($tipo == 2){
-						$tipo = 'fa-child';
-						$tipoNm = 'Agrego novedad de focalización';
-					}
-					$fecha = $novedad['fecha_hora'];
-					$fecha = date("d/m/Y h:i:s a", strtotime($fecha));
-					$nombre = $novedad['nombre'];
-					$observaciones = $novedad['observaciones'];
-
-
-                    $aux = $novedad['foto'];
-                    $aux = substr( $aux, 5);
-					$foto = $baseUrl.$aux;
-                    if(!is_url_exist($foto)){
-                        $foto = $baseUrl."/img/no_image48.jpg";
-                    }
-					// if($novedad['foto'] == ''){
-					// 	$foto = $baseUrl."/img/no_image48.jpg";
-					// }
-					?>
+                        $aux = $novedad['foto'];
+                        $aux = substr( $aux, 5);
+					    $foto = $baseUrl.$aux;
+                        if(!is_url_exist($foto)) { $foto = $baseUrl."/img/no_image48.jpg"; }
+				?>
 					<div class="timeline-item">
                         <div class="row">
-                            <div class="col-xs-3 date">
-
-								<?php  ?>
-
-
-                                <i class="fa <?php echo $tipo; ?>"></i>
-                                <?php echo $fecha; ?>
-                                <br/>
-                                <!-- <small class="text-navy">2 hour ago</small> -->
+                            <div class="col-xs-1">
+                                <i class="fa <?= $tipo; ?>"></i>
                             </div>
-                            <div class="col-xs-7 content no-top-border">
-								<a href="#" class="pull-left">
+                            <div class="col-xs-11 /*content no-top-border*/">
+								<a href="#" class="pull-left" style="margin-right: 10px">
 									<img alt="image" style="width: 38px; height: 38px;" class="img-circle" src="<?php echo $foto; ?>">
 								</a>
 								<div class="media-body ">
-                                <p class="m-b-xs"><strong><?php echo $nombre; ?></strong> <?php echo $tipoNm; ?></p>
+                                <!-- <p class="m-b-xs"><strong><?= $nombre; ?></strong> <?= $tipoNm; ?></p> -->
+                                <strong><?= $nombre; ?></strong> <?= $tipoNm; ?>
 
-                                <p><?php echo $observaciones; ?></p>
+                                <?= $observaciones; ?>
+                                <small class="text-muted"><?= $fecha; ?></small>
 							</div>
-
                             </div>
                         </div>
+                        <hr>
                     </div>
-				<?php } ?>
+				<?php
+                    }
+                ?>
 
 
 
@@ -285,9 +224,7 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Actividades de usuarios</h5>
-                    <div class="ibox-tools">
-                        <!-- <span class="label label-warning-light pull-right">10 Messages</span> -->
-                       </div>
+                    <div class="ibox-tools"> </div>
                 </div>
                 <div class="ibox-content">
 
@@ -299,7 +236,6 @@
                                         $aux = $row['foto'];
                                         $aux = substr( $aux, 5);
                                         $foto = $baseUrl.$aux;
-										//$foto = $baseUrl."/".$row['foto'];
                                         if(!is_url_exist($foto)){
 											$foto = $baseUrl."/img/no_image48.jpg";
                                         }
@@ -323,98 +259,8 @@
 									}
 								}
 							?>
-
-
-
-                            <!-- <div class="feed-element">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="theme/img/profile.jpg">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">5m ago</small>
-                                    <strong>Monica Smith</strong> posted a new blog. <br>
-                                    <small class="text-muted">Today 5:60 pm - 12.06.2014</small>
-
-                                </div>
-                            </div>
-
-                            <div class="feed-element">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="theme/img/a2.jpg">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">2h ago</small>
-                                    <strong>Mark Johnson</strong> posted message on <strong>Monica Smith</strong> site. <br>
-                                    <small class="text-muted">Today 2:10 pm - 12.06.2014</small>
-                                </div>
-                            </div>
-                            <div class="feed-element">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="theme/img/a3.jpg">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">2h ago</small>
-                                    <strong>Janet Rosowski</strong> add 1 photo on <strong>Monica Smith</strong>. <br>
-                                    <small class="text-muted">2 days ago at 8:30am</small>
-                                </div>
-                            </div>
-                            <div class="feed-element">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="theme/img/a4.jpg">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right text-navy">5h ago</small>
-                                    <strong>Chris Johnatan Overtunk</strong> started following <strong>Monica Smith</strong>. <br>
-                                    <small class="text-muted">Yesterday 1:21 pm - 11.06.2014</small>
-                                    <div class="actions">
-                                        <a class="btn btn-xs btn-white"><i class="fa fa-thumbs-up"></i> Like </a>
-                                        <a class="btn btn-xs btn-white"><i class="fa fa-heart"></i> Love</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="feed-element">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="theme/img/a5.jpg">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">2h ago</small>
-                                    <strong>Kim Smith</strong> posted message on <strong>Monica Smith</strong> site. <br>
-                                    <small class="text-muted">Yesterday 5:20 pm - 12.06.2014</small>
-                                    <div class="well">
-                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
-                                        Over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-                                    </div>
-                                    <div class="pull-right">
-                                        <a class="btn btn-xs btn-white"><i class="fa fa-thumbs-up"></i> Like </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="feed-element">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="theme/img/profile.jpg">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">23h ago</small>
-                                    <strong>Monica Smith</strong> love <strong>Kim Smith</strong>. <br>
-                                    <small class="text-muted">2 days ago at 2:30 am - 11.06.2014</small>
-                                </div>
-                            </div> -->
-                            <!-- <div class="feed-element">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="theme/img/a7.jpg">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">46h ago</small>
-                                    <strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>. <br>
-                                    <small class="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
-                                </div>
-                            </div> -->
                         </div>
-
-                        <!-- <button class="btn btn-primary btn-block m-t"><i class="fa fa-arrow-down"></i> Show More</button> -->
-
                     </div>
-
                 </div>
             </div>
     </div>
@@ -443,61 +289,6 @@
     <script src="theme/js/plugins/flot/jquery.flot.pie.js"></script>
     <script src="theme/js/plugins/flot/jquery.flot.symbol.js"></script>
     <script src="theme/js/plugins/flot/jquery.flot.time.js"></script>
-
-
     <script src="js/index.js"></script>
-
-    <script>
-        $(document).ready(function() {
-        });
-
-
-
-
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <script>
-        $(document).ready(function() {
-
-
-
-
-
-
-        });
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </body>
 </html>
