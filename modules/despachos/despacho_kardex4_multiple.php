@@ -643,6 +643,13 @@ foreach ($codesedes as $sedecod => $isset) {
         }
 
         for ($s=1; $s <=5 ; $s++) { 
+          $current_y = $pdf->GetY();
+          if($current_y > 200){
+            $filas = 0;
+            $pdf->AddPage();
+            include 'despacho_consolidado_footer.php';
+            include 'despacho_kardex4_multiple_header.php';
+          }
           $pdf->Cell(42.4,$altura,'',1,0,'C',False);//GRUPO ALIMENTO
           $pdf->Cell(45.2,$altura,'',1,0,'C',False);//ALIMENTO
           $pdf->Cell(13.141,$altura,'',1,0,'C',False);//U MEDIDA

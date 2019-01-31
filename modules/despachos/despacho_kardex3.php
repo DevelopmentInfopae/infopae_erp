@@ -574,7 +574,7 @@ if($resultado->num_rows >= 1){
 
   $current_y = $pdf->GetY();
   //$pdf->Cell(0,5,$current_y,0,5,'C',False);
-  if($current_y > 270){
+  if($current_y > 160){
 
     $pdf->AddPage();
     include 'despacho_por_sede_footer.php';

@@ -646,7 +646,7 @@ unset($grupo);
 
 //210
         // if(($current_y + (4*$filas)) > 172){
-        if(($current_y + (4*$filas)) > 162){
+        if(($current_y + (4*$filas)) > 177){
           $pdf->AddPage();
           include 'despacho_por_sede_footer.php';
           include 'despacho_por_sede_header.php';
@@ -1051,20 +1051,13 @@ if(strpos($alimento['componente'], "huevo")){
 
   $current_y = $pdf->GetY();
   //$pdf->Cell(0,5,$current_y,0,5,'C',False);
-  if($current_y > 175){
+  if($current_y > 160){
     $filas = 0;
     $pdf->AddPage();
     include 'despacho_por_sede_footer.php';
     include 'despacho_por_sede_header.php';
   }
 
-  $current_y = $pdf->GetY();
-  // if($current_y > 172){
-  if($current_y > 168){
-    $pdf->AddPage();
-    include 'despacho_por_sede_footer.php';
-    include 'despacho_por_sede_header.php';
-  }
   include 'despacho_firma_planilla.php';
 }
 mysqli_close ( $Link );
