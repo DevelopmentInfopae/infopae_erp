@@ -156,7 +156,7 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 						<tbody>
 							<?php
 
-							$consulta = " SELECT f.num_doc, f.activo, t.Abreviatura AS tipo_doc, CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre, f.genero, g.nombre as grado, f.nom_grupo, jor.nombre as jornada, f.edad, f.Tipo_complemento, GROUP_CONCAT(f.Tipo_complemento) as complementos FROM focalizacion$semana f LEFT JOIN tipodocumento t ON t.id = f.tipo_doc LEFT JOIN grados g ON g.id = f.cod_grado LEFT JOIN jornada jor ON jor.id = f.cod_jorn_est ".$cod_inst.$cod_sede." GROUP BY f.num_doc order by f.nom1 asc";
+							$consulta = " SELECT f.num_doc, f.activo, t.Abreviatura AS tipo_doc, CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre, f.genero, g.nombre as grado, f.nom_grupo, jor.nombre as jornada, f.edad, f.Tipo_complemento, GROUP_CONCAT(f.Tipo_complemento) as complementos FROM focalizacion$semana f LEFT JOIN tipodocumento t ON t	.id = f.tipo_doc LEFT JOIN grados g ON g.id = f.cod_grado LEFT JOIN jornada jor ON jor.id = f.cod_jorn_est ".$cod_inst.$cod_sede." GROUP BY f.num_doc order by f.nom1 asc";
 
 							$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 							if($resultado->num_rows >= 1){

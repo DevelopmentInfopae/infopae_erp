@@ -36,8 +36,10 @@ function buscarCantidadesGraficos(actualizar,timeOption){
 		success: function(data){
 			try {
 				var obj = JSON.parse(data);
-				console.log(obj.barras);
+
+                console.log(obj.barras);
                 console.log(obj.entregas);
+
                 $('#listaTotales').html(obj.totales);
                 graficar(obj.entregas,obj.barras,timeOption,obj.labels);
 			}
