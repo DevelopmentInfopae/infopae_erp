@@ -391,7 +391,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 
 
 
-    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  order by m.orden_grupo_alim ASC ";
+    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  order by m.orden_grupo_alim ASC, ftd.Componente DESC ";
 
 
 
@@ -491,12 +491,14 @@ unset($grupo);
   foreach($alimentos as $kOrden=>$vOrden) {
       $sort['componente'][$kOrden] = $vOrden['componente'];
       $sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
+      $sort['cantidadpresentacion'][$kOrden] = $vOrden['cantidadpresentacion'];
       $grupo[$kOrden] = $vOrden['grupo_alim'];
   }
-  array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentos);
+
+  // array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC, $sort['cantidadpresentacion'], SORT_NUMERIC, SORT_ASC, $alimentos);
 
   //var_dump($alimentos);
-  //array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
+  array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
   sort($grupo);
   //var_dump($alimentosTotales);
   /*************************************************************/
@@ -528,28 +530,8 @@ unset($grupo);
   include 'despacho_por_sede_header.php';
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   $filas = 0;
   $grupoAlimActual = '';
-
-
 
 
   for ($i=0; $i < count($alimentos ) ; $i++) {
@@ -646,7 +628,7 @@ unset($grupo);
 
 //210
         // if(($current_y + (4*$filas)) > 172){
-        if(($current_y + (4*$filas)) > 162){
+        if(($current_y + (4*$filas)) > 177){
           $pdf->AddPage();
           include 'despacho_por_sede_footer.php';
           include 'despacho_por_sede_header.php';
@@ -1051,20 +1033,13 @@ if(strpos($alimento['componente'], "huevo")){
 
   $current_y = $pdf->GetY();
   //$pdf->Cell(0,5,$current_y,0,5,'C',False);
-  if($current_y > 175){
+  if($current_y > 160){
     $filas = 0;
     $pdf->AddPage();
     include 'despacho_por_sede_footer.php';
     include 'despacho_por_sede_header.php';
   }
 
-  $current_y = $pdf->GetY();
-  // if($current_y > 172){
-  if($current_y > 168){
-    $pdf->AddPage();
-    include 'despacho_por_sede_footer.php';
-    include 'despacho_por_sede_header.php';
-  }
   include 'despacho_firma_planilla.php';
 }
 mysqli_close ( $Link );

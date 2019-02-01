@@ -222,8 +222,6 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
     </div><!-- /.col-lg-12 -->
-  </div><!-- /.row -->
-</div><!-- /.wrapper wrapper-content animated fadeInRight -->
 
 <form method="POST" id="ver_insumo" action="ver_insumo.php" style="display: none;">
   <input type="hidden" name="codigoinsumover" id="codigoinsumover">
