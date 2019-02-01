@@ -244,7 +244,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/codemirror.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/mode/xml/xml.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede_archivos.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/js/p"></script>
+<script src="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/js/novedades_priorizacion.js"></script>
 
 <!-- Page-Level Scripts -->
 

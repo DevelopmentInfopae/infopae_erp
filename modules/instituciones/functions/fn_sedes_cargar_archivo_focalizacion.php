@@ -251,10 +251,10 @@
 				$arrayCodEst[$datos[1]][] = $datos[36];
 
 				// String con valores para crear entregas_res
-				$conValCreEnt .= "('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".$datos[19]."', '".$datos[20]."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".$datos[34]."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". trim($valDias, ", ") ."), ";
+				$conValCreEnt .= "('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". trim($valDias, ", ") ."), ";
 
 				// String con valores para crear focalización
-				$conValFoc .= "('".$datos[0]."', '".$datos[1]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".$datos[19]."', '".$datos[20]."', '".$datos[21]."', '".$datos[22]."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."', '1', '".$datos[36]."' ), ";
+				$conValFoc .= "('".$datos[0]."', '".$datos[1]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."', '1', '".$datos[36]."' ), ";
 			} // FIN Iteración de los datos del archivo
 
 			// Obtener lo datos unicos de instituciones y sedes.
@@ -324,10 +324,10 @@
 			while(($datos = fgetcsv($archivo, null, $separador))==true)
 			{
 				// String con valores para crear entregas_res
-				$conValCreEnt .= "('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".$datos[19]."', '".$datos[20]."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".$datos[34]."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". trim($valDias, ", ") ."), ";
+				$conValCreEnt .= "('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". trim($valDias, ", ") ."), ";
 
 				// String con valores para crear focalización
-				$conValFoc .= "('".$datos[0]."', '".$datos[1]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".$datos[19]."', '".$datos[20]."', '".$datos[21]."', '".$datos[22]."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."', '1', '".$datos[36]."' ), ";
+				$conValFoc .= "('".$datos[0]."', '".$datos[1]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."', '1', '".$datos[36]."' ), ";
 			} // FIN Iteración del archivo.
 		} // FIN No se requiere validaciones.
 		// FIN VALIDACIONES
@@ -354,7 +354,7 @@
 														cod_mun_res INT(11) NULL DEFAULT NULL,
 														telefono VARCHAR(50) NULL DEFAULT NULL,
 														cod_mun_nac INT(11) NULL DEFAULT '0',
-														fecha_nac DATE NULL DEFAULT '0000-00-00',
+														fecha_nac DATE NULL DEFAULT NULL,
 														cod_estrato INT(11) NULL DEFAULT '0',
 														sisben DECIMAL(5,3) NULL DEFAULT '0.000',
 														cod_discap INT(11) NULL DEFAULT '0',
@@ -422,7 +422,7 @@
 														COLLATE='utf8_general_ci'
 														ENGINE=InnoDB
 														AUTO_INCREMENT=0;";
-			$resCreTabEntRes = $Link->query($conCreTabEntRes);
+			$resCreTabEntRes = $Link->query($conCreTabEntRes) or die (mysqli_error($Link));
 			if($resCreTabEntRes)
 			{
 				// Se ingresa los registros
@@ -438,7 +438,14 @@
 					echo json_encode($respuestaAJAX);
 					exit;
 				}
-			} // FIN si se creo la tabla entrega_res
+			} else{
+				$respuestaAJAX = [
+					"estado" => 0,
+					"mensaje" => "No fue posible crear la tabla de Entregas"
+				];
+				echo json_encode($respuestaAJAX);
+				exit;
+			}
 		} // FIN si existe tabla res del mes seleccion
 
 
@@ -456,7 +463,7 @@
 											cod_mun_res INTEGER(11) DEFAULT '0',
 											telefono VARCHAR(50) COLLATE utf8_general_ci DEFAULT NULL,
 											cod_mun_nac INTEGER(11) DEFAULT '0',
-											fecha_nac DATE DEFAULT '0000-00-00',
+											fecha_nac DATE DEFAULT NULL,
 											cod_estrato INTEGER(11) DEFAULT '0',
 											sisben DECIMAL(5,3) DEFAULT '0.000',
 											cod_discap INTEGER(11) DEFAULT '0',
@@ -482,7 +489,7 @@
 											)
 										ENGINE=InnoDB
 										AUTO_INCREMENT=1 CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';";
-		$resCreTabFoc = $Link->query($conCreTabFoc);
+		$resCreTabFoc = $Link->query($conCreTabFoc) or die (mysqli_error($Link));;
 		if($resCreTabFoc)
 		{
 			// Crear consulta para ingresar datos de focalización[$mes]
@@ -508,7 +515,7 @@
 		{
 			$respuestaAJAX = [
 				"estado" => 0,
-				"mensaje" => "No fue posible crear la tabla entregas_res"
+				"mensaje" => "No fue posible crear la tabla de focalización"
 			];
 			echo json_encode($respuestaAJAX);
 			exit;

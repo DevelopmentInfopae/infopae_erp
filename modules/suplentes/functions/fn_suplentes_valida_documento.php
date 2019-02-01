@@ -15,10 +15,20 @@
 		}
 	}
 
+
+
 	if ($semanas != "") {
 		$respuesta = '{"respuesta" : [{ "respuesta":"1", "semanas" : "'.trim($semanas, ", ").'"}]}';
 		echo $respuesta;
 	} else {
+		// Consulta que retorna si el estudiante ya esxiste como suplente.
+		$resultado_existe_suplente = $Link->query("SELECT num_doc  FROM suplentes WHERE num_doc = '$num_doc';");
+		if ($resultado_existe_suplente->num_rows > 0) {
+			echo $respuesta = '{"respuesta" : [{ "respuesta":"1", "semanas" : "Suplentes"}]}';
+			exit;
+		}
+
+
 		$respuesta = '{"respuesta" : [{ "respuesta":"0"}]}';
 		echo $respuesta;
 	}
