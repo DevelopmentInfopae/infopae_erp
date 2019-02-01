@@ -273,7 +273,7 @@ if($resultado->num_rows >= 1){
     p.nombreunidad4,
     p.nombreunidad5
 
-    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' order by orden_grupo_alim ASC ";
+    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' order by orden_grupo_alim ASC, ftd.Componente DESC ";
 
 
     // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
@@ -358,7 +358,8 @@ if($resultado->num_rows >= 1){
       $sort['grupo_alim'][$k] = $v['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
       $grupo[$k] = $v['grupo_alim'];
   }
-  array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentos);
+  // array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentos);
+  array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
   sort($grupo);
   //var_dump($alimentosTotales);
   /*************************************************************/

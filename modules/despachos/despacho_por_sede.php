@@ -391,7 +391,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 
 
 
-    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  order by m.orden_grupo_alim ASC ";
+    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  order by m.orden_grupo_alim ASC, ftd.Componente DESC ";
 
 
 
@@ -491,12 +491,14 @@ unset($grupo);
   foreach($alimentos as $kOrden=>$vOrden) {
       $sort['componente'][$kOrden] = $vOrden['componente'];
       $sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
+      $sort['cantidadpresentacion'][$kOrden] = $vOrden['cantidadpresentacion'];
       $grupo[$kOrden] = $vOrden['grupo_alim'];
   }
-  array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentos);
+
+  // array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC, $sort['cantidadpresentacion'], SORT_NUMERIC, SORT_ASC, $alimentos);
 
   //var_dump($alimentos);
-  //array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
+  array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
   sort($grupo);
   //var_dump($alimentosTotales);
   /*************************************************************/
@@ -528,28 +530,8 @@ unset($grupo);
   include 'despacho_por_sede_header.php';
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   $filas = 0;
   $grupoAlimActual = '';
-
-
 
 
   for ($i=0; $i < count($alimentos ) ; $i++) {

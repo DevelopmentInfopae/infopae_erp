@@ -65,8 +65,9 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 
 		function Header()
 		{
+			$logoInfopae = '../'.$_SESSION['p_Logo ETC'];
 		    $this->SetFont('Arial','B',10);
-		    $this->Image('http://192.254.194.178/~infopae/infopae2019/upload/logotipos/logo10.jpg',28,8,100);
+		    $this->Image($logoInfopae,28,8,100, 15.92,'jpg', '');
 		    $this->Cell(141.5,17,'','TBRL',0,'C');
 		    $this->Cell(141.5,8.5,utf8_decode('PROGRAMA DE ATENCIÓN ESCOLAR'),'TRL',1,'C');
 		    $this->Cell(141.5,8.5,utf8_decode(''),'',0,'C');
@@ -281,7 +282,7 @@ foreach ($sedes as $key => $sede) {
 		    			$pdf->Cell(70.75,5,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
 			    		$pdf->Cell(30,5,utf8_decode($detalles['Umedida']),'BR',0,'C');
 			    		$pdf->Cell(30,5,utf8_decode(round($detalles['Cantidad']/1000, 2)),'BR',0,'C');
-			    		$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CanTotalPresentacion'], 3, '.', ',')),'BR',0,'C');
+			    		$pdf->Cell(12.8,5,utf8_decode( (($detalles['Umedida'] == " x 1 ") ? number_format($detalles['Cantidad'], 0, '', '') : number_format($detalles['CanTotalPresentacion'], 3, '.', ','))) ,'BR',0,'C');
 			    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
 			    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
 			    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');

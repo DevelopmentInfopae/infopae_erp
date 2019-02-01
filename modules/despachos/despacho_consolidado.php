@@ -11,7 +11,7 @@ include '../../php/funciones.php';
 
 $largoNombre = 30;
 $sangria = " - ";
-$tamannoFuente = 7;
+$tamannoFuente = 6;
 
 //var_dump($_POST);
 
@@ -572,8 +572,8 @@ foreach($alimentosTotales as $kOrden=>$vOrden) {
     $sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
     $grupo[$kOrden] = $vOrden['grupo_alim'];
 }
-array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentosTotales);
-
+// array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC,$alimentosTotales);
+array_multisort($sort['grupo_alim'], SORT_ASC,$alimentosTotales);
 //var_dump($alimentos);
 //array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
 sort($grupo);

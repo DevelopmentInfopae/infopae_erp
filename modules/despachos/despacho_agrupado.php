@@ -585,7 +585,7 @@ foreach($alimentosTotales as $kOrden=>$vOrden) {
     $sort['grupo_alim'][$kOrden] = $vOrden['grupo_alim'];
     $grupo[$kOrden] = $vOrden['grupo_alim'];
 }
-array_multisort($sort['componente'], SORT_ASC,$alimentosTotales);
+array_multisort($sort['grupo_alim'], SORT_ASC,$alimentosTotales);
 
 //var_dump($alimentos);
 //array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
