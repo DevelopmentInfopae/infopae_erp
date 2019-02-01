@@ -310,7 +310,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal" onclick="$('#frmSubirArchivoFocalizacion')[0].reset()">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal" onclick="$('#ventanaFormularioFoc').on('hidden.bs.modal', function (e) { $('#frmSubirArchivoFocalizacion')[0].reset(); })">Cancelar</button>
         <button type="button" class="btn btn-primary btn-sm" id="subirArchivoFocalizacion">Aceptar</button>
       </div>
     </div>

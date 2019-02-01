@@ -103,8 +103,6 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
     </div><!-- /.col-lg-12 -->
-  </div><!-- /.row -->
-</div><!-- /.wrapper wrapper-content animated fadeInRight -->
 
 <?php include '../../footer.php'; ?>
 
