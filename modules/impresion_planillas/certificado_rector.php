@@ -459,7 +459,7 @@ if(count($entregasSedes)>0){
 
 		/////////////////////////////////////////////////////////////////////////
 
-		$resultadoComplementos = $Link->query("SELECT DISTINCT tipo_complem FROM entregas_res_".$mes.$_SESSION['periodoActual']) or die (mysqli_error($Link));
+		$resultadoComplementos = $Link->query("SELECT DISTINCT tipo_complem FROM entregas_res_".$mes.$_SESSION['periodoActual']." WHERE tipo_complem IS NOT NULL;") or die (mysqli_error($Link));
 		if ($resultadoComplementos->num_rows > 0) {
 			while ($registrosComplementos = $resultadoComplementos->fetch_assoc()) {
 				$complementos[] = $registrosComplementos["tipo_complem"];
@@ -498,6 +498,7 @@ if(count($entregasSedes)>0){
 			}
 		}
 
+		$totalComplementos1 = $totalComplementos2 = $totalComplementos3 = 0;
 		$condicionInstitucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND cod_inst = '".$_POST["institucion"]."'" : "";
 		for ($i=0; $i < count($prioridades); $i++) {
 			$pdf->SetFont('Arial','',$tamannoFuente-1);
@@ -505,7 +506,7 @@ if(count($entregasSedes)>0){
 			$aux_y = $pdf->GetY();
 			$pdf->SetXY($aux_x, $aux_y);
 			$pdf->Cell(60,4,utf8_decode(strtoupper($prioridades[$i]["descripcion"])),'R',0,'L',false);
-
+			$columna = 1;
 			foreach ($complementos as $complemento) {
 				$condicion = "";
 				if ($i == 1) {
@@ -526,6 +527,15 @@ if(count($entregasSedes)>0){
 				}
 
 				$pdf->Cell((104/count($complementos)),4,$cantidadComplemento,'R',0,'C',false);
+
+				if ($columna == 1) {
+					$totalComplementos1 += $cantidadComplemento;
+				} else if ($columna == 2) {
+					$totalComplementos2 += $cantidadComplemento;
+				} else {
+					$totalComplementos3 += $cantidadComplemento;
+				}
+				$columna++;
 			}
 
 			$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"];
@@ -550,6 +560,7 @@ if(count($entregasSedes)>0){
 		$aux_y = $pdf->GetY();
 		$pdf->SetXY($aux_x, $aux_y);
 		$pdf->Cell(60,4,utf8_decode('POBLACIÓN MAYORITARIA'),'R',0,'L',false);
+		$columna = 1;
 		foreach ($complementos as $complemento) {
 			$condicion = "";
 			foreach ($prioridades as $prioridad) {
@@ -566,6 +577,15 @@ if(count($entregasSedes)>0){
 			}
 
 			$pdf->Cell((104/count($complementos)),4,$cantidadMayoritaria,'R',0,'C',false);
+
+			if ($columna == 1) {
+				$totalComplementos1 += $cantidadMayoritaria;
+			} else if ($columna == 2) {
+				$totalComplementos2 += $cantidadMayoritaria;
+			} else {
+				$totalComplementos3 += $cantidadMayoritaria;
+			}
+			$columna++;
 		}
 
 		$con_can_est_total = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion;
@@ -587,8 +607,16 @@ if(count($entregasSedes)>0){
 		$aux_y = $pdf->GetY();
 		$pdf->SetXY($aux_x, $aux_y);
 		$pdf->Cell(60,4,utf8_decode('TOTAL'),'R',0,'L',false);
+		$columna = 1;
 		foreach ($complementos as $complemento) {
-			$pdf->Cell((104/count($complementos)),4,utf8_decode(''),'R',0,'C',false);
+			if ($columna == 1) {
+				$pdf->Cell((104/count($complementos)),4,$totalComplementos1,'R',0,'C',false);
+			} else if ($columna == 2) {
+				$pdf->Cell((104/count($complementos)),4,$totalComplementos2,'R',0,'C',false);
+			} else {
+				$pdf->Cell((104/count($complementos)),4,$totalComplementos3,'R',0,'C',false);
+			}
+			$columna++;
 		}
 		$pdf->Cell(0,4,utf8_decode(''),'R',0,'C',false);
 		$pdf->SetXY($aux_x, $aux_y);
