@@ -126,7 +126,7 @@
 
 	<div class="col-sm-4 form-group">
 		<label for="institucion">Institución</label>
-		<select class="form-control" name="institucion" id="institucion">
+		<select class="form-control" name="institucion" id="institucion" required>
 			<option value="">Todas</option>
 			<?php
 			if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $codigoDANE["CodMunicipio"]){

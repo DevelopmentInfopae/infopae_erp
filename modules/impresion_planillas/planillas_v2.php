@@ -78,6 +78,11 @@ if($resultado_sedes->num_rows > 0) {
     echo "<script>alert('No existe datos para los parametros seleccionados.'); window.close();</script>";
 }
 
+$res_cod_etnia = $Link->query("SELECT * FROM `etnia` WHERE UPPER(DESCRIPCION) LIKE '%NO APLICA%'") or die (mysqli_error($Link));
+if ($res_cod_etnia->num_rows > 0) {
+  $datos_etnia = $res_cod_etnia->fetch_assoc();
+}
+
 class PDF extends PDF_Rotate
 {
   function set_data($data) {
@@ -213,7 +218,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['ape1']),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['ape2']),'R',0,'L',False);
       $pdf->Cell(7,$alturaLinea,utf8_decode($estudiante["edad"]),'R',0,'C',False);
-      $pdf->Cell(7,$alturaLinea,utf8_decode(($estudiante['etnia'] == 1 || $estudiante['etnia'] == 0) ? "" : "X"),'R',0,'C',False);
+      $pdf->Cell(7,$alturaLinea,utf8_decode(($estudiante['etnia'] == $datos_etnia["ID"]) ? "" : "X"),'R',0,'C',False);
       $pdf->Cell(5,$alturaLinea,utf8_decode($estudiante['genero']),'R',0,'C',False);
       $pdf->Cell(7,$alturaLinea,utf8_decode($estudiante['cod_grado']),'R',0,'C',False);
       $pdf->Cell(13,$alturaLinea,utf8_decode($tipoComplemento),'R',0,'C',False);
