@@ -365,6 +365,7 @@
       ],
           /*order: [ 0, 'asc' ],*/
     pageLength: 25,
+    lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "TODO"] ],
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
     buttons : [{extend:'excel', title:'Menus', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6]}}],
