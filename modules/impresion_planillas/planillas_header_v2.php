@@ -39,6 +39,7 @@ if ($resSemanasMes->num_rows > 0) {
 }
 
 $totalProgramadoMes = 0; //variable para sumar los totales de cada semana y obtener un total del mes
+$diasCubiertos = 0;
 
 foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas obtenidas para cambiar la tabla de priorización, ej : priorizacion01, priorizacion02, etc
 
@@ -54,9 +55,10 @@ foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas 
 	if ($resTotalEntregado !== FALSE && $resTotalEntregado->num_rows > 0) { //Si el SQL se ejecuta correctamente y hay datos, es decir si encuentra la tabla priorización$semana (priorizacion03, priorizacion03b, etc)
 
 	  $te = $resTotalEntregado->fetch_assoc();
-	  $totalProgramadoMes+=$te['total_entregas'];
-
+	  $totalProgramadoMes+=$te['total_entregas']; //suma de entregas en dias cubiertos
+	  $tpm = $te['total_entregas']; //guardado del total de entregas de la última semana que si está priorizada (Para cálculo en caso de que falten semanas por priorizar)
 	  $diasSemana = $te['dias_semana']; //guardamos los días que tiene la semana en turno.
+	  $diasCubiertos += $te['dias_semana']; //Suma de los números(cuenta) de días cubiertos.
 
 	} else { //En caso de no encontrar datos para la semana en turno o la tabla para dicha semana, multiplicamos la priorización de la semana del mes seleccionado que si tiene tabla de priorización, por el número de dias de dicho mes, la priorización mencionada ya se guardó en la variable $totalProgramadoMes en el turno de la semana anterior.
 		
@@ -73,9 +75,12 @@ foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas 
 				}
 			}
 		}
-		$totalProgramadoMes = ($totalProgramadoMes / $diasSemana) * $diasMes; //multiplicamos el total de entregas para la primera semana, pero se divide el $totalProgramadoMes por los días de la primera semana por si hay más de un día que son compartidos.
-		break;
 
+		$diassiporfavor = $diasMes-$diasCubiertos; //a los días obtenidos del mes, les restamos los días que ya se cubrieron
+		$tpm = (($tpm / $diasSemana) * $diassiporfavor) + $totalProgramadoMes; //Se divide el total de entregas de la última semana priorizada por el número de días de la misma, al resultado se le multiplica por el número de días que hacen falta por cubrir. Luego, al total obtenido, se le suma el total de los días cubiertos.
+		$totalProgramadoMes = $tpm;
+
+		break;
 	}
 }
 

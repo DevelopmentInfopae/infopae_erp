@@ -179,13 +179,15 @@ $altoEncabezado = 8;
 $maximoLineas = 7;
 $linea = 0;
 
-$resultadoComplementos = $Link->query("SELECT DISTINCT tipo_complem FROM entregas_res_".$mes.$_SESSION['periodoActual']) or die (mysqli_error($Link));
+$resultadoComplementos = $Link->query("SELECT DISTINCT tipo_complem FROM entregas_res_".$mes.$_SESSION['periodoActual']." WHERE tipo_complem IS NOT NULL;") or die (mysqli_error($Link));
 if ($resultadoComplementos->num_rows > 0) {
 	while ($registrosComplementos = $resultadoComplementos->fetch_assoc()) {
 		$complementos[] = $registrosComplementos["tipo_complem"];
 	}
 }
+// var_dump("SELECT DISTINCT tipo_complem FROM entregas_res_".$mes.$_SESSION['periodoActual']." WHERE tipo_complem IS NOT NULL;");
 
+// Consulta que retorna el order de las priorizaciones de las caracterizaciones.
 $resultadoPrioridad = $Link->query("SELECT * FROM prioridad_caracterizacion ORDER BY orden") or die(mysql_error($Link));
 if ($resultadoPrioridad->num_rows > 0) {
 	while ($registrosPrioridad = $resultadoPrioridad->fetch_assoc()) {

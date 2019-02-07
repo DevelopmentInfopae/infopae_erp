@@ -334,8 +334,8 @@
 		/*****************************************************************************************************/
 
 		/*****************************************************************************************************/
-		// Validar si ya existe el mes para entregas_res que se desea subir.
-		$consultaEntregaResSemana = "show tables like 'entregas_res_". $semana . $_SESSION["periodoActual"] ."'";
+		// Consulta que valida si existe la tabla entregas_res_[MES][AÑO] que se desea subir.
+		$consultaEntregaResSemana = "show tables like 'entregas_res_". $mes . $_SESSION["periodoActual"] ."'";
 		$resultadoEntregaResSemana = $Link->query($consultaEntregaResSemana);
 		if($resultadoEntregaResSemana->num_rows == 0)
 		{
