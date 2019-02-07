@@ -345,6 +345,7 @@ if(count($entregasSedes)>0){
 		$lineas = 0;
 		$lineasTotales = 0;
 		$maxCaracteres = 27;
+		// var_dump($entregasSedesInstitucion);
 		foreach ($entregasSedesInstitucion as $entregasSedeInstitucion) {
 			$lineasTotales++;
 			$aux_x = $pdf->GetX();
@@ -362,9 +363,6 @@ if(count($entregasSedes)>0){
 					$pdf->MultiCell(45,4,utf8_decode($nombre),0,'L',false);
 					$pdf->SetXY($aux_x, $aux_y-$linea);
 					$pdf->Cell(45,$linea,'','B',0,'C',false);
-
-
-
 					$nombre = $entregasSedeInstitucion['nom_sede'];
 					$lineas = 0;
 					$pdf->SetXY($aux_x, $aux_y);
@@ -414,9 +412,10 @@ if(count($entregasSedes)>0){
 
 		$pdf->SetXY($aux_x, $aux_y-$linea+4);
 
-		// if($lineas<= 1) {
-		// 	$nombre = substr($nombre,0,$maxCaracteres);
-		// }
+		// Eliminar caracteres.
+		if($lineas<= 1) {
+			$nombre = substr($nombre,0,$maxCaracteres);
+		}
 
 
 		$pdf->MultiCell(45,4,utf8_decode(isset($nombre) ? $nombre: ""),0,'L',false);

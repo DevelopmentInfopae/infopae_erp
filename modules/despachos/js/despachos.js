@@ -753,6 +753,7 @@ $(document).ready( function () {
   dataset1 = $('#box-table-movimientos').DataTable({
     order: [ 1, 'desc' ],
     pageLength: 25,
+    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
     responsive: true,
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
@@ -768,8 +769,7 @@ $(document).ready( function () {
         sPrevious: 'Anterior'
       }
     }
-    });
-  // Fin Funcionamiento del report
+  });
 });
 
 

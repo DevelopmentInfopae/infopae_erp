@@ -72,11 +72,11 @@
                               <?php echo $row["ciudad"]; ?>
                             </option>
                       <?php
-                          }// Termina el while
-                        }//Termina el if que valida que si existan resultados
+                          }
+                        }
                       ?>
                     </select>
-                  </div><!-- /.col -->
+                  </div>
 
                   <div class="col-sm-3 form-group">
                     <label for="institucion">Institución</label>
@@ -348,8 +348,8 @@
         method: 'POST',
         url: 'functions/fn_sedes_buscar_dataTables.php',
         data:{
-          municipio: '<?= $_POST["municipio"] ?>',
-          institucion: '<?= $_POST["institucion"] ?>'
+          municipio: '<?= ((isset($_POST["municipio"]) && $_POST["municipio"] != "") ? $_POST["municipio"] : $municipio_defecto["CodMunicipio"]); ?>',
+          institucion: '<?= (isset($_POST["institucion"]) ? $_POST["institucion"] : ""); ?>'
         }
       },
       columns:[
@@ -488,9 +488,7 @@
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla sedes.CSV</a></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.xlsx" dowload> <i class="fa fa-download"></i> Descarga plantilla sedes.XLSX </a></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/priorizacion/Plantilla_Priorizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla priorización .CSV</a></li>'+
-                        /*'<li><a href="'+ $('#inputBaseUrl').val() +'/download/priorizacion/Plantilla_Priorizacion.xlsx" dowload> <i class="fa fa-download"></i> Descarga plantilla priorización .XLSX </a></li>'+*/
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/focalizacion/Plantilla_Focalizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla focalización .CSV</a></li>'+
-                        /*'<li><a href="'+ $('#inputBaseUrl').val() +'/download/focalizacion/Plantilla_Focalizacion.xlsx" dowload> <i class="fa fa-download"></i> Descarga plantilla focalización .XLSX </a></li>'+*/
                         '<ul>'+
                       '</ul>'+
                     '</div>';
