@@ -43,7 +43,7 @@ $(document).ready(function(){
         "hideMethod": "fadeOut"
     }
 
-    $('#tablaSuplentes tbody td:nth-child(-n+8)').on('click', function() { ver_suplente($(this).parent().attr('numDoc'), $(this).parent().attr('tipoDoc')); });
+    // $('#tablaSuplentes tbody td:nth-child(-n+8)').on('click', function() { ver_suplente($(this).parent().attr('numDoc'), $(this).parent().attr('tipoDoc')); });
     $(document).on('change', '#tipo_doc', function () { $('#abreviatura').val($("#tipo_doc option:selected").data('abreviatura')); });
 });
 
@@ -185,7 +185,7 @@ $('#formNuevoSuplente').on('submit', function(event){
         dataType: 'json',
         success: function(data) { console.log(data);
             if (data.success == 1) {
-                Command: toastr.success('Se guardó el suplente con éxito.', 'Guardado con éxito.', {onHidden : function() { location.reload(); }});
+                Command: toastr.success(data.message, 'Guardado con éxito.', {onHidden : function() { location.reload(); }});
             } else {
                 Command: toastr.error(data.message, 'Proceso cancelado', { onHidden : function() { /*location.reload();*/ } });
             }
@@ -197,26 +197,24 @@ $('#formNuevoSuplente').on('submit', function(event){
     event.preventDefault();
 });
 
-// $('#formTitularEditar').on('submit', function(event){
-//   $('#loader').fadeIn();
+$('#formSuplentesEditar').on('submit', function(event) {
+    $('#loader').fadeIn();
 
-//   var datos = $('#formTitularEditar').serialize();
-
-//   $.ajax({
-//       type: "POST",
-//       url: "functions/fn_titulares_derecho_editar_titular.php",
-//       data: datos,
-//       beforeSend: function(){},
-//       success: function(data){
-//         if (data == "1") {
-//          Command: toastr.success("Se actualizó el estudiante con éxito.", "Actualizado con éxito.", {onHidden : function(){location.href="index.php";}})
-//         } else {
-//           console.log(data);
-//         }
-//       }
-//     });
-// event.preventDefault();
-// });
+    $.ajax({
+        type: "POST",
+        url: "functions/fn_suplentes_editar.php",
+        data: $('#formSuplentesEditar').serialize(),
+        dataType : "JSON",
+        success: function(data){ console.log(data);
+            if (data.success == 1) {
+                Command: toastr.success(data.message, "Actualizado con éxito.", {onHidden : function(){location.href="index.php";}})
+            } else {
+                console.log(data);
+            }
+        }
+    });
+    event.preventDefault();
+});
 
 function validaNumDoc(input){
     num_doc = $(input).val();

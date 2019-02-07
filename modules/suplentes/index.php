@@ -59,9 +59,9 @@
 												if($resultado->num_rows >= 1) {
 													while($row = $resultado->fetch_assoc()) {
 											?>
-											<tr numDoc="<?= $row['num_doc']; ?>" tipoDoc="<?= $row['tipo_doc']; ?>" style="cursor:pointer">
+											<tr numDoc="<?= $row['num_doc']; ?>" tipoDoc="<?= $row['tipo_doc']; ?>">
 												<td><?= $row['num_doc']; ?></td>
-												<td><?= $row['tipo_doc']; ?></td>
+												<td><?= $row['tipo_doc_nom']; ?></td>
 												<td><?= $row['nombre']; ?></td>
 												<td style="text-align: center;"><?= $row['genero']; ?></td>
 												<td><?= $row['grado']; ?></td>
@@ -168,28 +168,6 @@
 	  	<input type="hidden" name="numDoc" id="numDoc">
 	  	<input type="hidden" name="tipoDoc" id="tipoDoc">
 	</form>
-
-	<!-- <form action="despacho_por_sede.php" method="post" name="formDespachoPorSede" id="formDespachoPorSede">
-	  	<input type="hidden" name="despachoAnnoI" id="despachoAnnoI" value="">
-	  	<input type="hidden" name="despachoMesI" id="despachoMesI" value="">
-	  	<input type="hidden" name="despacho" id="despacho" value="">
-	</form>
-
-	<form action="despachos.php" id="parametrosBusqueda" method="get">
-	  	<input type="hidden" id="pb_annoi" name="pb_annoi" value="">
-	  	<input type="hidden" id="pb_mes" name="pb_mes" value="">
-	  	<input type="hidden" id="pb_diai" name="pb_diai" value="">
-	  	<input type="hidden" id="pb_annof" name="pb_annof" value="">
-	  	<input type="hidden" id="pb_mesf" name="pb_mesf" value="">
-	  	<input type="hidden" id="pb_diaf" name="pb_diaf" value="">
-	  	<input type="hidden" id="pb_tipo" name="pb_tipo" value="">
-	  	<input type="hidden" id="pb_municipio" name="pb_municipio" value="">
-	  	<input type="hidden" id="pb_institucion" name="pb_institucion" value="">
-	  	<input type="hidden" id="pb_sede" name="pb_sede" value="">
-	  	<input type="hidden" id="pb_tipoDespacho" name="pb_tipoDespacho" value="">
-	  	<input type="hidden" id="pb_ruta" name="pb_ruta" value="">
-	  	<input type="hidden" id="pb_btnBuscar" name="pb_btnBuscar" value="">
-	</form> -->
 
 	<?php mysqli_close($Link); ?>
 </body>

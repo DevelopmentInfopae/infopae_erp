@@ -2,9 +2,7 @@
 	require_once '../../../config.php';
 	require_once '../../../db/conexion.php';
 
-	$valida = 0;
-	$semanas = '';
-	$zona_res_est = 0;
+	$id = (isset($_POST['id'])) ? $_POST['id'] : "";
 	$nom1 = (isset($_POST['nom1'])) ? $_POST['nom1'] : "";
 	$nom2 = (isset($_POST['nom2'])) ? $_POST['nom2'] : "";
 	$ape1 = (isset($_POST['ape1'])) ? $_POST['ape1'] : "";
@@ -13,6 +11,7 @@
 	$sisben = (isset($_POST['sisben'])) ? $_POST['sisben'] : "";
 	$genero = (isset($_POST['genero'])) ? $_POST['genero'] : "";
 	$sector = (isset($_POST['sector'])) ? $_POST['sector'] : "";
+	$estado = (isset($_POST['estado'])) ? $_POST['estado'] : "";
 	$dir_res = (isset($_POST['dir_res'])) ? $_POST['dir_res'] : "";
 	$num_doc = (isset($_POST['num_doc'])) ? $_POST['num_doc'] : "";
 	$cod_mun = (isset($_POST['cod_mun'])) ? $_POST['cod_mun'] : "";
@@ -51,19 +50,6 @@
 		}
 	}
 
-	// Consulta que retorna si el estudiante ya esxiste como suplente.
-	$resultado_existe_suplente = $Link->query("SELECT num_doc  FROM suplentes WHERE num_doc = '$num_doc';");
-	if ($resultado_existe_suplente->num_rows > 0) {
-		$respuestaAJAX = [
-			"success" => 0,
-			"message" => "No es posibles crear el suplente debido a que ya se encuentra registrado como suplente."
-		];
-		echo joson_encode($respuestaAJAX);
-		exit;
-	}
-
-
-
 	// Algoritmo para calcular la esdad del estudiante suplente.
 	$date1 = new DateTime($fecha_nac);
 	$date2 = new DateTime(date('d-m-Y'));
@@ -71,8 +57,8 @@
 	$edad = $diff->y;
 
 	// Consulta utilizada para insertar un nuevo estudiante como suplente.
-	$nuevo_suplente = "INSERT INTO suplentes (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, cod_pob_victima, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, repitente, edad, zona_res_est, activo)
-	VALUES ('$tipo_doc', '$num_doc', '$abreviatura', '$ape1', '$ape2', '$nom1', '$nom2', '$genero', '$dir_res', '$cod_mun_res', '$telefono', '$cod_mun_nac', '$fecha_nac', '$cod_estrato', '$sisben', '$cod_discap', '$etnia', '$cod_pob_victima', '$cod_sede', '$cod_inst', '$cod_mun', '$cod_mun', '$nom_sede', '$nom_inst', '$cod_grado', '$nom_grupo', '$cod_jorn_est', '$repitente', '$edad', '$sector', '1')";
+	$nuevo_suplente = "UPDATE suplentes SET tipo_doc = '$tipo_doc', num_doc = '$num_doc', tipo_doc_nom = '$abreviatura', ape1 = '$ape1', ape2 = '$ape2', nom1 = '$nom1', nom2 = '$nom2', genero = '$genero', dir_res = '$dir_res', cod_mun_res = '$cod_mun_res', telefono = '$telefono', cod_mun_nac = '$cod_mun_nac', fecha_nac = '$fecha_nac', cod_estrato = '$cod_estrato', sisben = '$sisben', cod_discap = '$cod_discap', etnia = '$etnia', cod_pob_victima = '$cod_pob_victima', cod_sede = '$cod_sede', cod_inst = '$cod_inst', cod_mun_inst = '$cod_mun', cod_mun_sede = '$cod_mun', nom_sede = '$nom_sede', nom_inst = '$nom_inst', cod_grado = '$cod_grado', nom_grupo = '$nom_grupo', cod_jorn_est = '$cod_jorn_est', repitente = '$repitente', edad = '$edad', zona_res_est = '$sector', activo = '$estado' WHERE id = '$id'";
+
 	// Condición que verifica si la consulta se ejecutó exitosamente.
 	if ($Link->query($nuevo_suplente) === TRUE) {
 		$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '48', 'Ingresó el suplente con número de identificación <strong>".$num_doc."	</strong>')";
@@ -80,12 +66,12 @@
 
 		$respuestaAJAX = [
 			"success" => 1,
-			"message" => "El estudiante con número de identificación <strong>". $num_doc ."</strong> fue agregado como suplente exitosamente."
+			"message" => "El estudiante con número de identificación <strong>". $num_doc ."</strong> fue actualizado como suplente exitosamente."
 		];
 	} else {
 		$respuestaAJAX = [
 			"success" => 0,
-			"message" => "El estudiante con número de identificación <strong>". $num_doc ."</strong> No pudo ser agregado como suplente exitosamente."
+			"message" => "El estudiante con número de identificación <strong>". $num_doc ."</strong> No pudo ser actualizado como suplente exitosamente."
 		];
 	}
 

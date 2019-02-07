@@ -20,7 +20,7 @@
 	$arrayDatPri = [];
 	$conPri = "SELECT sedc.cod_sede, sed.nom_sede, SUM(APS) AS APS, SUM(CAJMRI) AS CAJMRI, SUM(CAJTRI) AS CAJTRI, SUM(CAJMPS) AS CAJMPS
 						FROM sedes_cobertura sedc
-            INNER JOIN sedes18 sed ON sedc.cod_sede = sed.cod_sede
+            	INNER JOIN sedes".$_SESSION['periodoActual']." sed ON sedc.cod_sede = sed.cod_sede
 						WHERE semana = '$semana'
 						GROUP BY cod_sede;";
 	$resPri = $Link->query($conPri);
@@ -55,7 +55,7 @@
 	$pdf->AliasNbPages();
 	$pdf->SetDrawColor(188,188,188);
 
-	$pdf->Image("../../../theme/img/logo_simbolo_infopae2.png",12,12,30);
+	$pdf->Image("../../../img/logo_simbolo_infopae2.png",15,8,18);
 	$pdf->SetFont('Arial','B',11);
 	$pdf->Cell(30,15,'','TRBL',0,'C');
 	$pdf->Cell(130,15,utf8_decode(strtoupper("Informe de diferencias de Titulares focalizacion")),'TB',0,'C');

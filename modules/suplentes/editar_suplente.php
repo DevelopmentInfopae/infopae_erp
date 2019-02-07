@@ -15,26 +15,20 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
 </style>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-  <div class="col-lg-8">
-    <h2><?php echo $titulo; ?></h2>
-    <ol class="breadcrumb">
-      <li>
-        <a href="<?php echo $baseUrl; ?>">Inicio</a>
-      </li>
-      <li>
-        <a href="index.php">Suplentes</a>
-      </li>
-      <li class="active">
-        <strong><?php echo $titulo; ?></strong>
-      </li>
-    </ol>
-  </div><!-- /.col -->
-  <div class="col-lg-4">
-    <div class="title-action">
-      <button class="btn btn-primary" onclick="validForm(0, 0, 0);" id="segundoBtnSubmit" style="display: none;"><span class="fa fa-check"></span> Guardar</button>
-    </div><!-- /.title-action -->
-  </div><!-- /.col -->
-</div><!-- /.row -->
+    <div class="col-lg-8">
+        <h2><?php echo $titulo; ?></h2>
+        <ol class="breadcrumb">
+            <li><a href="<?php echo $baseUrl; ?>">Inicio</a></li>
+            <li><a href="index.php">Suplentes</a></li>
+            <li class="active"><strong><?php echo $titulo; ?></strong></li>
+        </ol>
+    </div>
+    <div class="col-lg-4">
+        <div class="title-action">
+            <button class="btn btn-primary" onclick="validForm(0, 0, 0);" id="segundoBtnSubmit" style="display: none;"><span class="fa fa-check"></span> Guardar</button>
+        </div>
+    </div>
+</div>
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -50,16 +44,15 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                 $suplente = $registroBuscarSuplente;
                             }
                         }
-
-                        var_dump($suplente);
+                        // var_dump($suplente);
                     ?>
-                    <form class="form row" id="formTitularEditar">
+                    <form class="form row" id="formSuplentesEditar">
                         <div>
                             <h3>Datos del estudiante</h3>
                             <section>
                                 <div class="form-group col-sm-3">
                                     <label>Tipo de documento</label>
-                                    <select name="tipo_doc" class="form-control" required>
+                                    <select name="tipo_doc" id="tipo_doc" class="form-control" required>
                                         <option value="">Seleccione...</option>
                                         <?php
                                             $tiposdocumento = [];
@@ -72,9 +65,10 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                         <option value="<?= $tdoc["id"]; ?>" data-abreviatura="<?= $tdoc["Abreviatura"]; ?>" <?= (isset($suplente) && $suplente["tipo_doc"] == $tdoc["id"]) ? "selected" : ""; ?>><?= $tdoc["nombre"]; ?></option>
                                         <?php
                                                 }
-                                            }/*onchange="validaNumDoc(this)"*/
+                                            }
                                         ?>
                                     </select>
+                                    <input type="hidden" name="abreviatura" id="abreviatura" value="<?= $suplente["tipo_doc_nom"] ?>">
                                     <label for="tipo_doc" class="error"></label>
                                 </div>
                                 <div class="form-group col-sm-3">
@@ -198,6 +192,18 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                     </div>
                                     <label for="sector" class="error"></label>
                                 </div>
+                                <div class="form-group col-sm-3">
+                                    <label for="sector">Estado</label>
+                                    <div class="radio" style="margin-top: 5px; margin-bottom: 0px;">
+                                        <label>
+                                            <input type="radio" name="estado" id="activo" value="1" <?= (isset($suplente) && $suplente["activo"] == "1") ? "checked": ""; ?> required> Activo
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="estado" id="inactivo" value="0" <?= (isset($suplente) && $suplente["activo"] == "0") ? "checked": ""; ?> required> Inactivo
+                                        </label>
+                                    </div>
+                                    <label for="estado" class="error"></label>
+                                </div>
                                 <div class="col-sm-12">
                                     <em id="errorEst" style="display: none; font-size: 120%;"> <b>Nota : </b>Ya ha sido registrado un estudiante con el número de documento especificado en <b><span id="semanasErr"></span></b>.</em>
                                 </div>
@@ -264,10 +270,27 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                             <h3>Información académica</h3>
                             <section>
                                 <div class="form-group col-sm-3">
+                                        <label>Municipio</label>
+                                        <select name="cod_mun" id="cod_mun" class="form-control select2" onchange="obtenerInstituciones(this.value)" style="width: 100%;" required>
+                                            <option value="">Seleccione...</option>
+                                            <?php
+                                                $resultadoMunicipio = $Link->query("SELECT ubicacion.* FROM ubicacion WHERE CodigoDANE like CONCAT((SELECT CodDepartamento FROM parametros), '%') ORDER BY Ciudad");
+                                                if ($resultadoMunicipio->num_rows > 0) {
+                                                    while ($municipio = $resultadoMunicipio->fetch_assoc()) { ?>
+                                                        <option value="<?= $municipio['CodigoDANE'] ?>" <?= (isset($suplente) && $suplente["cod_mun_inst"] == $municipio["CodigoDANE"]) ? "selected" : "";?>><?= $municipio['Ciudad'] ?></option>
+                                            <?php
+                                                    }
+                                                }
+                                            ?>
+                                        </select>
+                                        <label for="cod_inst" class="error"></label>
+                                    </div>
+                                <div class="form-group col-sm-3">
                                     <label>Institución</label>
                                     <select name="cod_inst" id="cod_inst" class="form-control select2" onchange="obtenerSedes(this)" style="width: 100%;" required>
                                     <?php
-                                        $consultarInstitucion = "SELECT instituciones.* FROM instituciones, parametros WHERE cod_mun like CONCAT(parametros.CodDepartamento, '%') AND EXISTS(SELECT cod_inst FROM sedes".$_SESSION['periodoActual']." as sedes WHERE sedes.cod_inst = instituciones.codigo_inst) ORDER BY nom_inst ASC";
+                                        $consultarInstitucion = "SELECT instituciones.* FROM instituciones, parametros WHERE cod_mun like CONCAT(parametros.CodDepartamento, '%') AND cod_mun = '".$suplente["cod_mun_inst"]."' AND EXISTS(SELECT cod_inst FROM sedes".$_SESSION['periodoActual']." as sedes WHERE sedes.cod_inst = instituciones.codigo_inst) ORDER BY nom_inst ASC";
+                                        echo $consultarInstitucion;
                                         $resultadoInstitucion = $Link->query($consultarInstitucion);
                                         if ($resultadoInstitucion->num_rows > 0) {
                                             while ($institucion = $resultadoInstitucion->fetch_assoc()) {
@@ -278,171 +301,77 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                         }
                                     ?>
                                     </select>
+                                    <input type="hidden" name="nom_inst" id="nom_inst" value="<?= $suplente["nom_inst"]; ?>">
                                     <label for="cod_inst" class="error"></label>
                                 </div>
-                        <!-- <div class="form-group col-sm-3">
-                          <label>Sede</label>
-                          <select name="cod_sede" id="cod_sede" class="form-control select2" style="width: 100%;" required>
-                          <?php $consultaInstParametros = "SELECT DISTINCT cod_sede, nom_sede FROM sedes".$_SESSION['periodoActual']." WHERE cod_inst = '".$suplente['cod_inst']."' ORDER BY nom_sede ASC";
-                            $resultado = $Link->query($consultaInstParametros);
-                            if ($resultado->num_rows > 0) {
-                              while ($institucion = $resultado->fetch_assoc()) {
-
-                                if ($suplente['cod_sede'] == $institucion['cod_sede']) {
-                                  $selected = "selected";
-                                } else {
-                                  $selected = "";
-                                }
-
-                                ?>
-                                <option value="<?php echo $institucion['cod_sede'] ?>" <?php echo $selected; ?>><?php echo $institucion['nom_sede'] ?></option>
-                              <?php }
-                            } ?>
-                          </select>
-                          <label for="cod_sede" class="error"></label>
-                        </div>
-                        <div class="form-group col-sm-3">
-                          <label>Grado</label>
-                          <select name="cod_grado" class="form-control" required>
-                            <?php
-                            $consultarGrados = "SELECT * FROM grados ORDER BY id ASC";
-                            $resultadoGrados = $Link->query($consultarGrados);
-                            if ($resultadoGrados->num_rows > 0) {
-                              while ($grado = $resultadoGrados->fetch_assoc()) {
-
-                                if ($suplente['cod_grado'] == $grado['id']) {
-                                  $selected = "selected";
-                                } else {
-                                  $selected = "";
-                                }
-
-                                ?>
-                                <option value="<?php echo $grado['id'] ?>" <?php echo $selected; ?>><?php echo $grado['nombre'] ?></option>
-                              <?php }
-                            }
-                             ?>
-                          </select>
-                          <label for="cod_grado" class="error"></label>
-                        </div>
-                        <div class="form-group col-sm-3">
-                          <label>Grupo</label>
-                          <input type="text" name="nom_grupo" value="<?php echo $suplente['nom_grupo'] ?>" class="form-control" required>
-                          <label for="nom_grupo" class="error"></label>
-                        </div>
-                        <div class="form-group col-sm-3">
-                          <label>Jornada</label>
-                          <select name="cod_jorn_est" class="form-control" required>
-                            <?php
-                            $consultarGrados = "SELECT * FROM jornada ORDER BY id ASC";
-                            $resultadoGrados = $Link->query($consultarGrados);
-                            if ($resultadoGrados->num_rows > 0) {
-                              while ($grado = $resultadoGrados->fetch_assoc()) {
-
-                                if ($suplente['nom_grupo'] == $grado['id']) {
-                                  $selected = "selected";
-                                } else {
-                                  $selected = "";
-                                }
-
-                                ?>
-                                <option value="<?php echo $grado['id'] ?>" <?php echo $selected; ?>><?php echo $grado['nombre'] ?></option>
-                              <?php }
-                            }
-                             ?>
-                          </select>
-                          <label for="cod_jorn_est" class="error"></label>
-                        </div>
-                        <div class="form-group col-sm-3">
-                          <label>¿Repitente?</label>
-                          <select name="repitente" class="form-control" required>
-                            <?php if ($suplente['repitente'] == "N"): ?>
-                            <option value="N">No</option>
-                            <option value="S">Si</option>
-                            <?php elseif ($suplente['repitente'] == "S"): ?>
-                            <option value="S">Si</option>
-                            <option value="N">No</option>
-                            <?php endif ?>
-                          </select>
-                          <label for="repitente" class="error"></label>
-                        </div>
-                        <div class="col-sm-12">
-                          <span class="btn btn-primary" onclick="agregarSemana()"><i class="fa fa-plus"></i></span>
-                          <span class="btn btn-primary" onclick="eliminarSemana()"><i class="fa fa-minus"></i></span>
-                        </div>
-
-                        <div class="form-group col-sm-12">
-                          <table class="table">
-                            <thead>
-                              <tr>
-                                <th style="width: 40%;">Semana</th>
-                                <th>Tipo complemento</th>
-                              </tr>
-                            </thead>
-                            <tbody id="semanasComplemento">
-                            <?php
-
-                            $cnt = 0;
-                              for ($i=0; $i < sizeof($complemento_semana) ; $i++) {
-                                foreach ($complemento_semana[$i] as $semana => $complemento) {
-                                  $cnt++;
-                                  ?>
-
-                              <tr id="semana_<?php echo $cnt; ?>">
-                                <input type="hidden" name="id_comp_semana[<?php echo $cnt; ?>]" value="<?php echo $id_comp_semana[$i][$semana]?>">
-                                <td>
-                                  <select name="semana[<?php echo $cnt; ?>]" id="semana<?php echo $cnt; ?>" onchange="validaCompSemana(this, 1)" class="form-control semana" required>
-                                    <?php $consultarFocalizacion = "SELECT table_name AS tabla FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name like 'focalizacion%' ";
-                                $resultadoFocalizacion = $Link->query($consultarFocalizacion);
-                                if ($resultadoFocalizacion->num_rows > 0) {
-                                    while ($focalizacion = $resultadoFocalizacion->fetch_assoc()) {
-
-                                      if ($focalizacion['tabla'] == $semana) { ?>
-                                        <option value="<?php echo $focalizacion['tabla']; ?>" <?php echo $selected; ?>>Semana <?php echo substr($focalizacion['tabla'], 12, 2); ?></option>
-                                      <?php }
-                                    }
-                                  } ?>
-                                  </select>
-                                  <label for="#semana<?php echo $cnt; ?>" class="error"></label>
-                                </td>
-                                <td>
-                                  <select name="tipo_complemento[<?php echo $cnt; ?>]" id="tipo_complemento<?php echo $cnt; ?>" onchange="validaCompSemana(this, 2)" class="form-control tipo_complemento" required>
-                                    <option value="">Seleccione...</option>
+                                <div class="form-group col-sm-3">
+                                    <label>Sede</label>
+                                    <select name="cod_sede" id="cod_sede" class="form-control select2" onchange="obtenerNombreSede();" style="width: 100%;" required>
                                     <?php
-                                    $consultarGrados = "SELECT * FROM tipo_complemento ORDER BY ID ASC";
-                                    $resultadoGrados = $Link->query($consultarGrados);
-                                    if ($resultadoGrados->num_rows > 0) {
-                                      while ($grado = $resultadoGrados->fetch_assoc()) {
-
-                                        if ($grado['CODIGO'] == $complemento) {
-                                          $selected = "selected";
-                                        } else {
-                                          $selected = "";
+                                        $consultaInstParametros = "SELECT DISTINCT cod_sede, nom_sede FROM sedes".$_SESSION['periodoActual']." WHERE cod_inst = '".$suplente['cod_inst']."' ORDER BY nom_sede ASC";
+                                        $resultado = $Link->query($consultaInstParametros);
+                                        if ($resultado->num_rows > 0) {
+                                            while ($sede = $resultado->fetch_assoc()) {
+                                    ?>
+                                        <option value="<?= $sede['cod_sede'] ?>" <?= (isset($suplente) && $suplente['cod_sede'] == $sede['cod_sede']) ? "selected" : "";?>><?= $sede['nom_sede'] ?></option>
+                                    <?php
+                                            }
                                         }
-
+                                    ?>
+                                    </select>
+                                    <input type="hidden" name="nom_sede" id="nom_sede" value="<?= $suplente["nom_sede"]; ?>">
+                                    <label for="cod_sede" class="error"></label>
+                                </div>
+                                <div class="form-group col-sm-3">
+                                    <label>Grado</label>
+                                    <select name="cod_grado" class="form-control" required>
+                                    <?php
+                                        $consultarGrados = "SELECT * FROM grados ORDER BY id ASC";
+                                        $resultadoGrados = $Link->query($consultarGrados);
+                                        if ($resultadoGrados->num_rows > 0) {
+                                            while ($grado = $resultadoGrados->fetch_assoc()) {
+                                    ?>
+                                            <option value="<?= $grado['id'] ?>" <?= (isset($suplente) && $suplente['cod_grado'] == $grado['id']) ? "selected" : ""; ?>><?= $grado['nombre'] ?></option>
+                                    <?php
+                                            }
+                                        }
+                                    ?>
+                                    </select>
+                                    <label for="cod_grado" class="error"></label>
+                                </div>
+                                <div class="form-group col-sm-3">
+                                    <label>Grupo</label>
+                                    <input type="text" name="nom_grupo" value="<?= $suplente['nom_grupo'] ?>" class="form-control" required>
+                                    <label for="nom_grupo" class="error"></label>
+                                </div>
+                                <div class="form-group col-sm-3">
+                                  <label>Jornada</label>
+                                  <select name="cod_jorn_est" class="form-control" required>
+                                    <?php
+                                        $consultarGrados = "SELECT * FROM jornada ORDER BY id ASC";
+                                        $resultadoGrados = $Link->query($consultarGrados);
+                                        if ($resultadoGrados->num_rows > 0) {
+                                            while ($grado = $resultadoGrados->fetch_assoc()) {
                                         ?>
-                                        <option value="<?php echo $grado['CODIGO'] ?>" <?php echo $selected; ?>><?php echo $grado['CODIGO']." (".$grado['DESCRIPCION'].")" ?></option>
-                                      <?php }
-                                    }
-                                     ?>
-                                  </select>
-                                  <br>
-                                  <label for="#tipo_complemento<?php echo $cnt; ?>" class="error"></label>
-                                </td>
-                              </tr>
-                                <?php }
-                              }
-                            ?>
-                            </tbody>
-                            <tfoot>
-                              <tr>
-                                <th>Semana</th>
-                                <th>Tipo complemento</th>
-                              </tr>
-                            </tfoot>
-                          </table>
+                                            <option value="<?= $grado['id'] ?>" <?= (isset($suplente) && $suplente['nom_grupo'] == $grado['id']) ? "selected" : ""; ?>><?= $grado['nombre'] ?></option>
+                                    <?php
+                                            }
+                                        }
+                                    ?>
+                                    </select>
+                                    <label for="cod_jorn_est" class="error"></label>
+                                </div>
+                                <div class="form-group col-sm-3">
+                                    <label>¿Repitente?</label>
+                                    <select name="repitente" class="form-control" required>
+                                        <option value="S" <?= (isset($suplente) && $suplente['repitente'] == "S") ? "selected" : "" ?>>Si</option>
+                                        <option value="N" <?= (isset($suplente) && $suplente['repitente'] == "N") ? "selected" : "" ?>>No</option>
+                                    </select>
+                                    <label for="repitente" class="error"></label>
+                                </div>
+                            </section>
                         </div>
-                      </section> -->
-                        </div>
+                        <input type="hidden" name="id" id="id" value="<?= $suplente["id"];?>">
                     </form>
                 <?php
                     } else {
@@ -484,7 +413,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
 
 <script type="text/javascript">
 
-    var form = $("#formTitularEditar");
+    var form = $("#formSuplentesEditar");
     form.validate({
         errorPlacement: function errorPlacement(error, element) { element.before(error); },
         rules: {
@@ -520,7 +449,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
         {
             form.validate().settings.ignore = ":disabled";
             if (form.valid()) {
-              $('#formTitularEditar').submit();
+              $('#formSuplentesEditar').submit();
             }
         }
     });

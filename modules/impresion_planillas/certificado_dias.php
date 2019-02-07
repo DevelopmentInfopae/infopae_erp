@@ -49,13 +49,14 @@ if($mes < 10){
 }
 $anno = $_SESSION['p_ano'];
 $municipio = $_POST['municipio'];
-//var_dump($_POST);
-//var_dump($_SESSION);
+$institucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? $_POST["institucion"] : "";
+
 
 // Consultas
 // 1. Trae de palnilla semana toda la información de los días de servicio
 // Select * from planilla_semanas where ano='2017' and mes='08';
 // 2. Trae las insituciones del municipio seleccionado
+$con_ins = (isset($institucion) && $institucion != "") ? " AND s.cod_inst = " . $institucion : "";
 $consulta = " SELECT
 				DISTINCT s.cod_inst, s.nom_inst, s.cod_mun_sede, u.ciudad, u.Departamento, usu.nombre AS nombre_rector
 			FROM sedes$periodoActual s
@@ -63,7 +64,7 @@ $consulta = " SELECT
 			INNER JOIN ubicacion u ON (s.cod_mun_sede = u.codigoDANE) and u.ETC = 0
 			INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
 			LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
-			WHERE sc.ano = '$anno' AND sc.mes = '$mes' AND s.cod_mun_sede = '$municipio' ";
+			WHERE sc.ano = '$anno' AND sc.mes = '$mes' AND s.cod_mun_sede = '$municipio'" . $con_ins;
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
@@ -178,6 +179,22 @@ $altoEncabezado = 8;
 $maximoLineas = 7;
 $linea = 0;
 
+$resultadoComplementos = $Link->query("SELECT DISTINCT tipo_complem FROM entregas_res_".$mes.$_SESSION['periodoActual']." WHERE tipo_complem IS NOT NULL;") or die (mysqli_error($Link));
+if ($resultadoComplementos->num_rows > 0) {
+	while ($registrosComplementos = $resultadoComplementos->fetch_assoc()) {
+		$complementos[] = $registrosComplementos["tipo_complem"];
+	}
+}
+// var_dump("SELECT DISTINCT tipo_complem FROM entregas_res_".$mes.$_SESSION['periodoActual']." WHERE tipo_complem IS NOT NULL;");
+
+// Consulta que retorna el order de las priorizaciones de las caracterizaciones.
+$resultadoPrioridad = $Link->query("SELECT * FROM prioridad_caracterizacion ORDER BY orden") or die(mysql_error($Link));
+if ($resultadoPrioridad->num_rows > 0) {
+	while ($registrosPrioridad = $resultadoPrioridad->fetch_assoc()) {
+		$prioridades[] = $registrosPrioridad;
+	}
+}
+
 foreach ($instituciones as $institucion) {
 if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 	$pdf->AddPage();
@@ -202,6 +219,7 @@ if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 					$pdf->Cell(0,4,'','T',0,'C',false);
 				}
 				$pdf->SetXY($x1, $y1);
+
 
 
 				//Control de saltos de pagina
