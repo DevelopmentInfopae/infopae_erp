@@ -349,9 +349,9 @@ if ($Link->query($sqlProducto) === true) {
 			      }
 
 			      if (isset($IdFTDet[$i])) {
-			      	$sqlFichaTecnicaDet = "update fichatecnicadet set codigo = '".$productoFichaTecnicaDet[$i]."', Componente = '".$descProductoFichaTecnicaDet."', Cantidad = '".$cantidadProducto[$i]."', UnidadMedida = '".$unidadMedidaProducto[$i]."', Factor = '".$factorProducto."', Estado = '0', Tipo = 'Alimento', TipoProducto = 'Alimento', PesoBruto = '".$pesoBrutoProducto[$i]."', PesoNeto = '".$pesoNetoProducto[$i]."'  WHERE Id = '".$IdFTDet[$i]."'";
+			      	$sqlFichaTecnicaDet = "update fichatecnicadet set codigo = '".$productoFichaTecnicaDet[$i]."', Componente = '".$descProductoFichaTecnicaDet."', Cantidad = '".$cantidadProducto[$i]."', UnidadMedida = '".$unidadMedidaProducto[$i]."', Factor = '".$factorProducto."', Estado = '0', Tipo = 'Alimentos', TipoProducto = 'Alimentos', PesoBruto = '".$pesoBrutoProducto[$i]."', PesoNeto = '".$pesoNetoProducto[$i]."'  WHERE Id = '".$IdFTDet[$i]."'";
 			      } else {
-			      	$sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values (NULL, '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '".$cantidadProducto[$i]."', '".$unidadMedidaProducto[$i]."', '0', '".$IdFT."', '0', '".$factorProducto."', '0', 'Alimento', 'Alimento', '".$pesoBrutoProducto[$i]."', '".$pesoNetoProducto[$i]."')";
+			      	$sqlFichaTecnicaDet = "insert into fichatecnicadet (Id, codigo, Componente, Cantidad, UnidadMedida, Costo, IdFT, Subtotal, Factor, Estado, Tipo, TipoProducto, PesoBruto, PesoNeto) values (NULL, '".$productoFichaTecnicaDet[$i]."', '".$descProductoFichaTecnicaDet."', '".$cantidadProducto[$i]."', '".$unidadMedidaProducto[$i]."', '0', '".$IdFT."', '0', '".$factorProducto."', '0', 'Alimentos', 'Alimentos', '".$pesoBrutoProducto[$i]."', '".$pesoNetoProducto[$i]."')";
 			      }
 			     	if ($Link->query($sqlFichaTecnicaDet) === true) {
 			        $validaRegistro++;
