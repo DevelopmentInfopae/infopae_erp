@@ -142,6 +142,8 @@ $consulta = " SELECT
 				AND cod_mun_sede = $municipio
 			GROUP BY cod_sede , tipo_complem ";
 
+			// echo $consulta;
+
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
@@ -195,6 +197,11 @@ if ($resultadoPrioridad->num_rows > 0) {
 	}
 }
 
+$totalesPorDia = []; //Array para almacenar total por días.
+$totalDeTotales = 0; //Variable para almacenar el total de todas las sedes.
+
+// var_dump($entregasSede);
+
 foreach ($instituciones as $institucion) {
 if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 	$pdf->AddPage();
@@ -207,8 +214,12 @@ if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 
 
 		foreach ($sedes as $sede) {
+
 			$entregas = $entregasSede[$sede];
+
 			foreach ($entregas as $entrega) {
+
+				$contadorDias = 0; //Variable para llevar la cuenta de días en los que se realiza entrega.
 
 				$linea++;
 
@@ -265,11 +276,29 @@ if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 						$total = $total + $valor;
 					}
 					$pdf->Cell(7.5,4,utf8_decode($valor),'R',0,'C',false);
+
+					//Suma de totales por día.
+					if (isset($totalesPorDia[$i])) {
+						$totalesPorDia[$i] += $valor;
+					} else {
+						$totalesPorDia[$i] = $valor;
+					}
+					//Suma de totales por día.
+
+					//Suma de total de días con entrega (Revisar consulta por que en algunos casos trae menos, SEDE = 16830700026001 / I.E. COLEGIO NIEVES CORTES PIC )
+					if ($valor != 0) {
+						$contadorDias++;
+					}
+					//Suma de total de días con entrega
 				}
 
+				//Suma de total por sedes.
+				$totalDeTotales += $total;
+				//Suma de total por sedes.
+
 				$pdf->Cell(16,4,utf8_decode($total),'R',0,'C',false);
-				$aux = $entrega['numdias'];
-				$pdf->Cell(0,4,utf8_decode($aux),'R',0,'C',false);
+				// $aux = $entrega['numdias'];
+				$pdf->Cell(0,4,utf8_decode($contadorDias),'R',0,'C',false);
 				// $pdf->Cell(0,4,utf8_decode($linea),'R',0,'C',false);
 				$pdf->SetXY($x1, $y1);
 				if($linea != $maximoLineas){
@@ -279,6 +308,61 @@ if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 				$pdf->Ln(4);
 			}
 		}
+		///inicio
+		$linea++;
+
+		$x1 = $pdf->GetX();
+		$y1 = $pdf->GetY();
+		if($linea > 1){
+			$pdf->Cell(49);
+			$pdf->Cell(0,4,'','T',0,'C',false);
+		}
+		$pdf->SetXY($x1, $y1);
+
+		//Control de saltos de pagina
+		if($linea > $maximoLineas){
+			$linea = $linea-1;
+			$pdf->SetXY($x, $y);
+			$aux = ($linea*4) + $altoEncabezado;
+			$pdf->Cell(0,$aux,utf8_decode(''),1,0,'C',false);
+			include 'certificado_dias_footer.php';
+			$pdf->AddPage();
+			include 'certificado_dias_header.php';
+			$linea = 1;
+		}
+
+		$x1 = $pdf->GetX();
+		$y1 = $pdf->GetY();
+
+		//var_dump($entrega);
+		$aux = 'TOTALES';
+		$aux = substr($aux,0,30);
+		$pdf->Cell(49,4,utf8_decode($aux),'R',0,'R',false);
+
+		$pdf->SetXY($x1, $y1);
+		$pdf->Cell(49,4,'','B',0,'L',false);
+
+
+		$aux = '';
+		$pdf->Cell(14,4,utf8_decode($aux),'R',0,'C',false);
+
+		$total = 0;
+		for ($i=0; $i < 31 ; $i++) {
+			$pdf->Cell(7.5,4,utf8_decode($totalesPorDia[$i]),'R',0,'C',false);
+		}
+
+		$pdf->Cell(16,4,utf8_decode($totalDeTotales),'R',0,'C',false);
+		$pdf->Cell(0,4,utf8_decode(''),'R',0,'C',false);
+		// $pdf->Cell(0,4,utf8_decode($linea),'R',0,'C',false);
+		$pdf->SetXY($x1, $y1);
+		if($linea != $maximoLineas){
+
+		}
+
+		$pdf->Ln(4);
+		///fin
+
+
 		$pdf->SetXY($x, $y);
 		$aux = ($linea*4) + $altoEncabezado;
 		$pdf->Cell(0,$aux,utf8_decode(''),1,0,'C',false);

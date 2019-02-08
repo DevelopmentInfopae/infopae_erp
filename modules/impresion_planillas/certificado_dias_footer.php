@@ -40,7 +40,7 @@ $pdf->MultiCell(100,4,utf8_decode("No. DE TITULARES DE\nDERECHO"),1,'C',true);
 $pdf->SetXY($x, $y);
 $pdf->Ln(8);
 
-
+$totalEstudiantesEntregas = 0; //Variable para sacar el total de estudiantes contados en todas las características.
 $totalComplementos1 = $totalComplementos2 = $totalComplementos3 = 0;
 $condicionInstitucion = (isset($institucion['cod_inst']) && $institucion['cod_inst'] != "") ? " AND cod_inst = '".$institucion['cod_inst']."'" : "";
 for ($i=0; $i < count($prioridades); $i++) {
@@ -70,6 +70,8 @@ for ($i=0; $i < count($prioridades); $i++) {
 			$cantidadComplemento = 0;
 		}
 
+		$pdf->Cell((104/count($complementos)),4,$cantidadComplemento,'LB',0,'C',false);
+
 		if ($j == 1) {
 			$totalComplementos1 += $cantidadComplemento;
 		} else if ($j == 2) {
@@ -78,11 +80,10 @@ for ($i=0; $i < count($prioridades); $i++) {
 			$totalComplementos3 += $cantidadComplemento;
 		}
 
-		$pdf->Cell((104/count($complementos)),4,$cantidadComplemento,'LB',0,'C',false);
 		$j++;
 	}
 
-	$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"];
+	$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion; //Se añade condición para no contar los estudiantes que ya se contaron en la prioridad anterior.
 	$res_can_est_com = $Link->query($con_can_est_com) or die (mysql_error($Link));
 	if ($res_can_est_com->num_rows > 0) {
 		while ($reg_can_est_com = $res_can_est_com->fetch_assoc()) {
@@ -93,6 +94,7 @@ for ($i=0; $i < count($prioridades); $i++) {
 	}
 
 	$pdf->Cell(100,4,$can_est_com,'LBR',0,'C',false);
+	$totalEstudiantesEntregas += $can_est_com;
 	$pdf->Ln(4);
 }
 
@@ -131,7 +133,9 @@ foreach ($complementos as $complemento) {
 	$columna++;
 }
 
-$con_can_est_total = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion;
+$condicionMayoritaria = " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"]." AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"]." AND " . $prioridades[2]["campo_entregas_res"] . " = " . $prioridades[2]["valor_NA"]." "; //Variable para la condición de búsqueda de estudiantes de población mayoritaria, que no cumplen con ninguna caracterización.
+
+$con_can_est_total = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion. $condicionMayoritaria;
 $res_can_est_total = $Link->query($con_can_est_total) or die (mysql_error($Link));
 if ($res_can_est_total->num_rows > 0) {
 	while ($reg_can_est_total = $res_can_est_total->fetch_assoc()) {
@@ -141,6 +145,7 @@ if ($res_can_est_total->num_rows > 0) {
 	$can_est_total = 0;
 }
 $pdf->Cell(100,4,$can_est_total,'RLB',0,'C',false);
+$totalEstudiantesEntregas += $can_est_total;
 $pdf->Ln(4);
 
 
@@ -161,7 +166,7 @@ $pdf->Ln(4);
 			}
 			$columna++;
 		}
-		$pdf->Cell(100,4,utf8_decode(''),'LBR',0,'C',false);
+		$pdf->Cell(100,4,utf8_decode($totalEstudiantesEntregas),'LBR',0,'C',false);
 		$pdf->Ln(5);
 
 $x = $pdf->GetX();

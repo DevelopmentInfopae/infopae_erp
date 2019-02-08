@@ -42,7 +42,8 @@ $pdf->Cell(23,6,utf8_decode('CÓDIGO DANE:'),'R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
 
-$aux = $institucion['cod_mun_sede'];
+$aux = $institucion['cod_inst'];
+// var_dump($institucion);
 $pdf->Cell(0,6,$aux,0,0,'L',false);
 $pdf->SetXY($x1, $y1);
 $pdf->Cell(0,6,'','B',0,'L',false);
@@ -79,7 +80,8 @@ $pdf->Cell(198,6,utf8_decode($_POST['municipioNm']),'R',0,'L',false);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(23,6,utf8_decode('CÓDIGO DANE:'),'R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$aux = $_POST['municipioNm'];
+// $aux = $_POST['municipioNm'];
+$aux = $institucion['cod_mun_sede'];
 $pdf->Cell(0,6,utf8_decode($aux),0,0,'L',false);
 $pdf->SetXY($x1, $y1);
 $pdf->Cell(0,6,'','B',0,'L',false);

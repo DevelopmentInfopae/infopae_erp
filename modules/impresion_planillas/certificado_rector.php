@@ -414,12 +414,14 @@ if(count($entregasSedes)>0){
 
 		$pdf->SetXY($aux_x, $aux_y-$linea+4);
 
-		// if($lineas<= 1) {
-		// 	$nombre = substr($nombre,0,$maxCaracteres);
-		// }
+		if($lineas<= 1) {
+			$nombre = substr($nombre,0,$maxCaracteres-3);
+			$nombre.="...";
+		}
 
 
 		$pdf->MultiCell(45,4,utf8_decode(isset($nombre) ? $nombre: ""),0,'L',false);
+		// $pdf->MultiCell(45,4,utf8_decode(""),0,'L',false);
 		$pdf->SetXY($aux_x, $aux_y-$linea);
 		$pdf->Cell(45,$linea+4,'','B',0,'C',false);
 		$pdf->Ln($linea+4);
@@ -498,6 +500,7 @@ if(count($entregasSedes)>0){
 			}
 		}
 
+		$totalEstudiantesEntregas = 0; //Variable para sacar el total de estudiantes contados en todas las características.
 		$totalComplementos1 = $totalComplementos2 = $totalComplementos3 = 0;
 		$condicionInstitucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND cod_inst = '".$_POST["institucion"]."'" : "";
 		for ($i=0; $i < count($prioridades); $i++) {
@@ -516,6 +519,8 @@ if(count($entregasSedes)>0){
 				}
 
 				$consultaCantidadComplemento = "SELECT IFNULL(SUM((IFNULL(D1,0) + IFNULL(D2,0) + IFNULL(D3,0) + IFNULL(D4,0) + IFNULL(D5,0) + IFNULL(D6,0) + IFNULL(D7,0) + IFNULL(D8,0) + IFNULL(D9,0) + IFNULL(D10,0) + IFNULL(D11,0) + IFNULL(D12,0) + IFNULL(D13,0) + IFNULL(D14,0) + IFNULL(D15,0) + IFNULL(D16,0) + IFNULL(D17,0) + IFNULL(D18,0) + IFNULL(D19,0) + IFNULL(D20,0) + IFNULL(D21,0) + IFNULL(D22,0) + IFNULL(D23,0) + IFNULL(D24,0) + IFNULL(D25,0) + IFNULL(D26,0) + IFNULL(D27,0) + IFNULL(D28,0) + IFNULL(D29,0) + IFNULL(D30,0) + IFNULL(D31,0))),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "' AND ". $prioridades[$i]["campo_entregas_res"] ." != " . $prioridades[$i]["valor_NA"] . $condicion;
+
+				// echo $consultaCantidadComplemento;
 
 				$resultadoCantidadComplemento = $Link->query($consultaCantidadComplemento) or die (mysqli_error($Link));
 				if ($resultadoCantidadComplemento->num_rows > 0) {
@@ -538,11 +543,12 @@ if(count($entregasSedes)>0){
 				$columna++;
 			}
 
-			$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"];
+			$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion;
 			$res_can_est_com = $Link->query($con_can_est_com) or die (mysql_error($Link));
 			if ($res_can_est_com->num_rows > 0) {
 				while ($reg_can_est_com = $res_can_est_com->fetch_assoc()) {
 					$can_est_com = $reg_can_est_com["cantidad"];
+					$totalEstudiantesEntregas += $can_est_com;
 				}
 			} else {
 				$can_est_com = 0;
@@ -588,11 +594,14 @@ if(count($entregasSedes)>0){
 			$columna++;
 		}
 
-		$con_can_est_total = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion;
+		$condicionMayoritaria = " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"]." AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"]." AND " . $prioridades[2]["campo_entregas_res"] . " = " . $prioridades[2]["valor_NA"]." "; //Variable para la condición de búsqueda de estudiantes de población mayoritaria, que no cumplen con ninguna caracterización.
+
+		$con_can_est_total = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion.$condicionMayoritaria;
 		$res_can_est_total = $Link->query($con_can_est_total) or die (mysql_error($Link));
 		if ($res_can_est_total->num_rows > 0) {
 			while ($reg_can_est_total = $res_can_est_total->fetch_assoc()) {
 				$can_est_total = $reg_can_est_total["cantidad"];
+				$totalEstudiantesEntregas += $can_est_total;
 			}
 		} else {
 			$can_est_total = 0;
@@ -618,7 +627,7 @@ if(count($entregasSedes)>0){
 			}
 			$columna++;
 		}
-		$pdf->Cell(0,4,utf8_decode(''),'R',0,'C',false);
+		$pdf->Cell(0,4,utf8_decode($totalEstudiantesEntregas),'R',0,'C',false);
 		$pdf->SetXY($aux_x, $aux_y);
 		$pdf->Cell(0,4,utf8_decode(''),'B',0,'L',false);
 
