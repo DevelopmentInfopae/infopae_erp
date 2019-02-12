@@ -1,9 +1,9 @@
 $( document ).ready(function() {
-    console.log( "ready!" );
-
+    $(document).on('change', '#mes', function () { cargarSemanas($(this).val()); });
+    $(document).on('change', '#semana_inicial', function () { cargarSemanas($('#mes').val(), $("#semana_inicial option:selected").data("diainicial"));});
+    $(document).on('change', '#semana_final', function () { actualizarDiasCampo(); });
 
 	$('#municipio').change(function() {
-		// alert($("#municipio option:selected").text());
 		console.log('Cambio de municipio');
 		var tipo = $('#tipoRacion').val();
 		var municipio = $(this).val();
@@ -29,36 +29,37 @@ $( document ).ready(function() {
 	});
 
 	$('#btnBuscar').click(function(){
-		console.log('Enviar Formulario');
 		//Validaciones
 		var bandera = 0;
-		if( $('#mes').val() == '' ){
-			bandera++;
-			alert('Debe seleccionar un mes');
-			$('#mes').focus();
-		}
-		else if( $('#municipio').val() == '' ){
+		if( $('#municipio').val() == '' ){
 			bandera++;
 			alert('Debe seleccionar un municipio');
 			$('#municipio').focus();
-		}
-		else if( $('#institucion').val() == '' ){
+		} else if($('#mes').val() == '') {
+			bandera++;
+			alert('Debe seleccionar un mes');
+			$('#mes').focus();
+		} else if ($('#semana_inicial').val() == '') {
+			bandera++;
+			alert('Debe seleccionar la semana Inicial');
+			$('#semana_inicial').focus();
+		} else if ($('#semana_final').val() == '') {
+			bandera++;
+			alert('Debe seleccionar la semana final');
+			$('#semana_final').focus();
+		} else if( $('#institucion').val() == '' ) {
 			bandera++;
 			alert('Debe seleccionar una institucion');
 			$('#institucion').focus();
-		}
-		// else if( $('#sede').val() == '' ){
-		// 	bandera++;
-		// 	alert('Debe seleccionar una sede');
-		// 	$('#sede').focus();
-		// }
-		else if( $('#tipo').val() == '' ){
+		} else if( $('#sede').val() == '' ) {
+			bandera++;
+			alert('Debe seleccionar una sede');
+			$('#sede').focus();
+		} else if($('#tipo').val() == '') {
 			bandera++;
 			alert('Debe seleccionar un tipo de complemento');
 			$('#tipo').focus();
-		}
-
-		else{
+		} else {
 			var tipoPlanilla = $('input[name="tipoPlanilla"]:checked').val();
 			if (tipoPlanilla == null){
 				bandera++;
@@ -75,10 +76,53 @@ $( document ).ready(function() {
 	});
 });
 
+// Método AJAX para cargar combo con las semanas del mes seleccionado.
+function cargarSemanas($mes, $diainicialSemanaAnterior = '') {
+	if ($diainicialSemanaAnterior == '') {
+		$('#semana_final').html('<option value="">Selecciones uno</option>');
+	}
 
+	$.ajax({
+		url: 'functions/fn_buscar_semanas.php',
+		type: 'POST',
+		dataType: 'HTML',
+		data: {
+			'mes': $mes,
+			'diainicialSemanaAnterior' : $diainicialSemanaAnterior
+		},
+	})
+	.done(function(data) {
+		if (data != '') {
+			if ($diainicialSemanaAnterior != '') {
+				$('#semana_final').html(data);
 
+				var diainicialSemanaInicial = $('#semana_inicial option:selected').data("diainicial");
+				var diafinalSemanaInicial = $('#semana_inicial option:selected').data("diafinal");
+				$('#diaInicialSemanaInicial').val(diainicialSemanaInicial);
+				$('#diaFinalSemanaInicial').val(diafinalSemanaInicial);
+				$('#diaInicialSemanaFinal').val('');
+				$('#diaFinalSemanaFinal').val('');
+			} else {
+				$('#semana_inicial').html(data);
+				$('#semana_final').html('<option value="">Selecciones uno</option>');
+				$('#diaInicialSemanaInicial').val('');
+				$('#diaFinalSemanaInicial').val('');
+				$('#diaInicialSemanaFinal').val('');
+				$('#diaFinalSemanaFinal').val('');
+			}
+		}
+	})
+	.fail(function(data) {
+		console.log(data);
+	});
+}
 
-
+function actualizarDiasCampo() {
+	var diainicialSemanaFinal = $('#semana_final option:selected').data("diainicial");
+	var diafinalSemanaFinal = $('#semana_final option:selected').data("diafinal");
+	$('#diaInicialSemanaFinal').val(diainicialSemanaFinal);
+	$('#diaFinalSemanaFinal').val(diafinalSemanaFinal);
+}
 
 function buscar_institucion(municipio,tipo){
   console.log('Actualizando lista de instituciones.');
@@ -125,7 +169,7 @@ function buscar_sede(municipio, institucion){
     });
 }
 
-function buscar_complemento(institucion, sede, mes) { 
+function buscar_complemento(institucion, sede, mes) {
     $.ajax({
       type: "POST",
       url: "functions/fn_buscar_complemento.php",

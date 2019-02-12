@@ -18,22 +18,37 @@ $municipioNm = $_POST['municipioNm'];
 $tipoPlanilla = $_POST['tipoPlanilla'];
 $periodoActual = $_SESSION['periodoActual'];
 $departamento = $_SESSION['p_Departamento'];
+$sedeParametro = (isset($_POST['sede']) && $_POST['sede'] != '') ? $_POST['sede'] : "";
+
+// Variables para el rango de fechas de búsqueda.
+if (isset($_POST["semana_inicial"]) && $_POST["semana_inicial"] != "") {
+  $semanaInicial = mysqli_real_escape_string($Link, $_POST["semana_inicial"]);
+  $diaInicialSemanaInicial = mysqli_real_escape_string($Link, $_POST["diaInicialSemanaInicial"]);
+  $diaFinalSemanaInicial = mysqli_real_escape_string($Link, $_POST["diaFinalSemanaInicial"]);
+} else {
+  $semanaInicial = $diaInicialSemanaInicial = $diaFinalSemanaInicial = "";
+}
+
+if (isset($_POST["semana_final"]) && $_POST["semana_final"] != "") {
+  $semanaFinal = mysqli_real_escape_string($Link, $_POST["semana_final"]);
+  $diaInicialSemanaFinal = mysqli_real_escape_string($Link, $_POST["diaInicialSemanaFinal"]);
+  $diaFinalSemanaFinal = mysqli_real_escape_string($Link, $_POST["diaFinalSemanaFinal"]);
+} else {
+  $semanaFinal = $diaInicialSemanaFinal = $diaFinalSemanaFinal = "";
+}
+
 
 $anno2d = substr($anno,2);
-
 if($mes < 10){
   if(substr($mes,0,1)!="0"){
     $mes = '0'.$mes;
   }
 }
 
-$sedeParametro = '';
-if(isset($_POST['sede']) && $_POST['sede'] != ''){
-	$sedeParametro = $_POST['sede'];
-}
 
 //Primera consulta: los dias de la s entregas
-$consulta = "SELECT ID,ANO,MES,D1 AS D01,D2 AS D02,D3 AS D03,D4 AS D04,D5 AS D05,D6 AS D06,D7 AS D07,D8 AS D08,D9 AS D09,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias where ano='$anno' AND mes='$mes'";
+// $consulta = "SELECT ID,ANO,MES,D1 AS D01,D2 AS D02,D3 AS D03,D4 AS D04,D5 AS D05,D6 AS D06,D7 AS D07,D8 AS D08,D9 AS D09,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias where ano='$anno' AND mes='$mes'";
+$consulta = "SELECT ID, ANO, MES, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias where ano='$anno' AND mes='$mes'";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if ($resultado->num_rows >= 1) {
   while ($row = $resultado->fetch_assoc()) {
@@ -44,9 +59,13 @@ if ($resultado->num_rows >= 1) {
 // Revisando si tiene más de un mes
 $aux = 0;
 $auxVal = 0;
-$mesAdicional = 0;
+$registro = 0;
 $totalDias = 0;
-foreach ($dias as $dia) {
+$mesAdicional = 0;
+$dia_consulta = "";
+$dias_encabezado = [];
+// $cantidad_remplazo = 1;
+foreach ($dias as $clave => $dia) {
   if($aux > 2 && $dia != ''){
     $totalDias++;
 
@@ -55,6 +74,13 @@ foreach ($dias as $dia) {
     }
     else{
       $mesAdicional++;
+    }
+
+    if ($dia >= $diaInicialSemanaInicial && $dia <= $diaFinalSemanaFinal) {
+      if ($registro == 0) { $primer_dia = substr($clave, 1); }
+      $registro++;
+      $dia_consulta .=  $clave .", ";
+      $dias_encabezado[$clave] = $dia;
     }
   }
   $aux++;
@@ -78,7 +104,8 @@ if($resultado_sedes->num_rows > 0) {
     echo "<script>alert('No existe datos para los parametros seleccionados.'); window.close();</script>";
 }
 
-$res_cod_etnia = $Link->query("SELECT * FROM `etnia` WHERE UPPER(DESCRIPCION) LIKE '%NO APLICA%'") or die (mysqli_error($Link));
+// Consulta que retorna el identificador y el nombre del registro dónde etnia es igual a "No aplica".
+$res_cod_etnia = $Link->query("SELECT * FROM etnia WHERE UPPER(DESCRIPCION) LIKE '%NO APLICA%'") or die (mysqli_error($Link));
 if ($res_cod_etnia->num_rows > 0) {
   $datos_etnia = $res_cod_etnia->fetch_assoc();
 }
@@ -145,10 +172,14 @@ $lineas = 25;
 $alturaLinea = 4;
 
 if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
-  $consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, D1 AS 'D01',D2 AS D02,D3 AS D03,D4 AS D04,D5 AS D05,D6 AS D06,D7 AS D07,D8 AS D08,D9 AS D09,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22
+  // $consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, D1 AS 'D01',D2 AS D02,D3 AS D03,D4 AS D04,D5 AS D05,D6 AS D06,D7 AS D07,D8 AS D08,D9 AS D09,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31
+  // FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento'";
+  // if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' "; }
+  $consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, ". trim($dia_consulta, ", ") ."
   FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento'";
   if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' "; }
   $consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
+  // echo $consulta;
   $resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
 
   $codigo = '';
@@ -165,10 +196,10 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 
 
   foreach ($estudiantes as $estudiantesSede) {
+    // Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
     $codigoSede = $estudiantesSede[0]['cod_sede'];
-    $consulta = "SELECT count(id) AS titulares, sum(IFNULL(D1,0)+IFNULL(D2,0)+IFNULL(D3,0)+IFNULL(D4,0)+IFNULL(D5,0)+IFNULL(D6,0)+IFNULL(D7,0)+IFNULL(D8,0)+IFNULL(D9,0)+IFNULL(D10,0)+IFNULL(D11,0)+IFNULL(D12,0)+IFNULL(D13,0)+IFNULL(D14,0)+IFNULL(D15,0)+IFNULL(D16,0)+IFNULL(D17,0)+IFNULL(D18,0)+IFNULL(D19,0)+IFNULL(D20,0)+IFNULL(D21,0)+IFNULL(D22,0)+IFNULL(D23,0)+IFNULL(D24,0)+IFNULL(D25,0)+IFNULL(D26,0)+IFNULL(D27,0)+IFNULL(D28,0)+IFNULL(D29,0)+IFNULL(D30,0)+IFNULL(D31,0)) AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
-		if($sedeParametro != '') { $consulta .= " and cod_sede = '$sedeParametro' "; }
-
+    // $consulta = "SELECT count(id) AS titulares, sum(IFNULL(D1,0)+IFNULL(D2,0)+IFNULL(D3,0)+IFNULL(D4,0)+IFNULL(D5,0)+IFNULL(D6,0)+IFNULL(D7,0)+IFNULL(D8,0)+IFNULL(D9,0)+IFNULL(D10,0)+IFNULL(D11,0)+IFNULL(D12,0)+IFNULL(D13,0)+IFNULL(D14,0)+IFNULL(D15,0)+IFNULL(D16,0)+IFNULL(D17,0)+IFNULL(D18,0)+IFNULL(D19,0)+IFNULL(D20,0)+IFNULL(D21,0)+IFNULL(D22,0)+IFNULL(D23,0)+IFNULL(D24,0)+IFNULL(D25,0)+IFNULL(D26,0)+IFNULL(D27,0)+IFNULL(D28,0)+IFNULL(D29,0)+IFNULL(D30,0)+IFNULL(D31,0)) AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
+    $consulta = "SELECT count(id) AS titulares, sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
     $resultado = $Link->query($consulta) or die ('Unable to execute query. <br>'.$consulta.'<br>'. mysqli_error($Link));
     if($resultado->num_rows > 0) {
       while($row = $resultado->fetch_assoc()) {
@@ -222,7 +253,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $pdf->Cell(5,$alturaLinea,utf8_decode($estudiante['genero']),'R',0,'C',False);
       $pdf->Cell(7,$alturaLinea,utf8_decode($estudiante['cod_grado']),'R',0,'C',False);
       $pdf->Cell(13,$alturaLinea,utf8_decode($tipoComplemento),'R',0,'C',False);
-      $dia = 0;
+      $dia = $primer_dia;
 
       // Aqui es donde se cambia de acuerdo a la plantilla
       $entregasEstudiante = 0;
@@ -230,8 +261,8 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
           if($tipoPlanilla != 2) {
             if($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
 
-            $dia++;
-            if($dia < 10){ $auxDia = 'D0'.$dia; } else { $auxDia = 'D'.$dia; }
+            // if($dia < 10){ $auxDia = 'D0'.$dia; } else { $auxDia = 'D'.$dia; }
+            $auxDia = 'D'.$dia;
 
             if(isset($estudiante[$auxDia]) && $estudiante[$auxDia] == 1 && $tipoPlanilla != 6) {
               $pdf->Cell(6,$alturaLinea,utf8_decode('x'),'R',0,'C',False);
@@ -245,6 +276,8 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
           else{
             $pdf->Cell(6,$alturaLinea,utf8_decode(' '),'R',0,'C',False);
           }
+
+        $dia++;
       }
       $pdf->SetTextColor(0,0,0);
 
@@ -258,7 +291,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $racionesProgramadas += $entregasEstudiante;
     }
 
-// echo count($estudiantesSede) * $totalDias;
+
 
         //Termina impresión de estudiantes de la sede
         $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
