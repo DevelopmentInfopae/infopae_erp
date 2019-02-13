@@ -8,7 +8,7 @@
     <h2><?php echo $titulo; ?></h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
+        <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>

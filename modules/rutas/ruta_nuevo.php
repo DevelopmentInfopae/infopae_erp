@@ -1,5 +1,5 @@
-<?php 
-include '../../header.php'; 
+<?php
+include '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';
 $Link = new mysqli($Hostname, $Username, $Password, $Database);
@@ -46,25 +46,25 @@ $Link->set_charset("utf8");
 
                         <div class="row">
                             <form class="col-lg-12" role="form">
-                                <div class="row">                                    
+                                <div class="row">
                                     <div class="col-sm-3 form-group"><label>Nombre de la Ruta</label>
                                         <input type="text" placeholder="Nombre de la Ruta" class="form-control" id="nombreRuta" name="nombreRuta">
                                     </div>
-                                    
+
                                     <div class="col-sm-3 form-group">
-                                        <label>Municipio</label> 
+                                        <label>Municipio</label>
                                         <select class="form-control municipio" name="municipio" id="municipio">
                                             <option value="">Seleccione uno</option>
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-3 form-group"><label>Institución</label> 
+                                    <div class="col-sm-3 form-group"><label>Institución</label>
                                         <select class="form-control institucion" name="institucion" id="institucion">
                                             <option value="">Todos</option>
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-3 form-group"><label>Sede</label> 
+                                    <div class="col-sm-3 form-group"><label>Sede</label>
                                         <select class="form-control institucion" name="sede" id="sede">
                                             <option value="">Todos</option>
                                         </select>
@@ -73,46 +73,46 @@ $Link->set_charset("utf8");
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-3 form-group">
-                                        <button class="btn btn-w-s btn-success" type="button" id="btnAgregar"><strong>+</strong></button>
-                                        <button class="btn btn-w-s btn-success" type="button" id="btnQuitar"><strong>-</strong></button>
-                                        <button class="btn btn-w-s btn-success" type="button" onclick="guardarRuta()"><strong>Guardar Ruta</strong></button>
+                                        <button class="btn btn-w-s btn-primary" type="button" id="btnAgregar"><strong>+</strong></button>
+                                        <button class="btn btn-w-s btn-primary" type="button" id="btnQuitar"><strong>-</strong></button>
+                                        <button class="btn btn-w-s btn-primary" type="button" onclick="guardarRuta()"><strong>Guardar Ruta</strong></button>
                                     </div>
-                                </div>    
+                                </div>
                                 <div class="row">
                                     <hr>
                                     <div class="col-sm-3 form-group">
                                         <input type="checkbox" name="selectVarios" id="selectVarios" value="">
                                         <label for="selectVarios">Seleccionar Todos</label>
                                     </div>
-                                </div>   
+                                </div>
                             </form>
-                        </div> 
-
-
-                       
+                        </div>
 
 
 
 
 
 
-                        <div class="table-responsive">            
+
+
+
+                        <div class="table-responsive">
                             <table class="table table-striped table-bordered table-hover dataTables-example" id="box-table-a" >
                                 <thead>
-                                    <tr> 
+                                    <tr>
                                         <th></th>
                                         <th class="center">Municipio</th>
                                         <th class="center">Institución</th>
                                         <th class="center">Sede</th>
                                     </tr>
                                 </thead>
-                                <tbody>  
+                                <tbody>
                                     <tr>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                    </tr>                                 
+                                    </tr>
                                 </tbody>
                                 <tfoot>
                                 <tr>
@@ -139,7 +139,7 @@ $Link->set_charset("utf8");
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
-    
+
     <!-- Custom and plugin javascript -->
     <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
@@ -151,7 +151,7 @@ $Link->set_charset("utf8");
 
     <!-- Page-Level Scripts -->
     <script>
-        $(document).ready(function() {   
+        $(document).ready(function() {
             dataset1 =  $('#box-table-a').DataTable({
             "bPaginate": false,
           "order": [[ 1, "asc" ]],
