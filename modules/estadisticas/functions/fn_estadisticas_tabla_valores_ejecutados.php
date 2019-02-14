@@ -33,61 +33,99 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 		$consComplementos ="SELECT tipo_complem , $datos  AS total FROM entregas_res_$mes$periodoActual GROUP BY tipo_complem;";
 		// echo $consComplementos."\n";
 		$resComplementos = $Link->query($consComplementos);
+		$tcom = [];
 		if ($resComplementos->num_rows > 0) {
 			while ($Complementos = $resComplementos->fetch_assoc()) {
-				if ($Complementos['tipo_complem'] == "APS") {
-					if (isset($totalesComplementos[$mes]["APS"])) {
-						$totalesComplementos[$mes]["APS"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
-					} else {
-						$totalesComplementos[$mes]["APS"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
-					}
-				} else {
-					if (isset($totalesComplementos[$mes]["AM/PM"])) {
-						$totalesComplementos[$mes]["AM/PM"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
-					} else {
-						$totalesComplementos[$mes]["AM/PM"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
-					}
+				// if ($Complementos['tipo_complem'] == "APS") {
+				// 	if (isset($totalesComplementos[$mes]["APS"])) {
+				// 		$totalesComplementos[$mes]["APS"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
+				// 	} else {
+				// 		$totalesComplementos[$mes]["APS"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
+				// 	}
+				// } else {
+				// 	if (isset($totalesComplementos[$mes]["AM/PM"])) {
+				// 		$totalesComplementos[$mes]["AM/PM"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
+				// 	} else {
+				// 		$totalesComplementos[$mes]["AM/PM"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
+				// 	}
+				// }
+
+				if ($Complementos['total'] == '') {
+					continue;
 				}
-				
+
+				if (isset($totalesComplementos[$mes][$Complementos['tipo_complem']])) {
+					$totalesComplementos[$mes][$Complementos['tipo_complem']]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+				} else {
+					$totalesComplementos[$mes][$Complementos['tipo_complem']]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+				}
+				if (!isset($tcom[$Complementos['tipo_complem']])) {
+					$tcom[$Complementos['tipo_complem']] = 1;
+				}
 			}
 		}
 	}
 
-	if (!isset($totalesComplementos[$mes]["APS"])) {
-		$totalesComplementos[$mes]["APS"] = 0;
-	}
+	// if (!isset($totalesComplementos[$mes]["APS"])) {
+	// 	$totalesComplementos[$mes]["APS"] = 0;
+	// }
 
-	if (!isset($totalesComplementos[$mes]["AM/PM"])) {
-		$totalesComplementos[$mes]["AM/PM"] = 0;
-	}
+	// if (!isset($totalesComplementos[$mes]["AM/PM"])) {
+	// 	$totalesComplementos[$mes]["AM/PM"] = 0;
+	// }
 }
+
+// var_dump($totalesComplementos);
 
 $tabla="";
 
-$tabla.="<thead><tr><th>Mes</th><th>APS</th><th>AM/PM</th><th>Total</th><tr></thead>";
+$tabla.="<thead>
+			<tr>
+				<th>Mes</th>";
+foreach ($tcom as $comp => $set) {
+	$tabla.="<th>".$comp."</th>";
+}
+$tabla.="		<th>Total</th>
+			</tr>
+		</thead>";
+
 
 $tabla.="<tbody>";
 
-$totalesSum=0;
-
-$totalAPS = 0;
-$totalAMPM = 0;
-
 $totalesComplement = [];
 
-foreach ($totalesComplementos as $mes => $totales) {
-	$tabla.="<tr><td>".$mesesNom[$mes]."</td><td>$ ".number_format($totales['APS'], 0, "", ".")."</td><td>$ ".number_format($totales['AM/PM'], 0, "", ".")."</td>";
-	$totalAPS+=$totales['APS'];
-	$totalAMPM += $totales['AM/PM'];
-	$totalMes = $totales['APS']+$totales['AM/PM'];
-	$totalesSum+=$totalMes;
-	$tabla.="<th>$ ".number_format($totalMes, 0, "", ".")."</th></tr>";
+foreach ($totalesComplementos as $mes => $arrT) {
+	$totalM = 0;
+	$tabla.="<tr>
+				<th>".$mesesNom[$mes]."</th>";
+		foreach ($arrT as $complemento => $total) {
+			$tabla.="<td> $ ".number_format($total, 0, "", ".")."</td>";	
+			$totalM += $total;
+			if (isset($totalesComplement[$complemento])) {
+				$totalesComplement[$complemento] += $total;
+			} else {
+				$totalesComplement[$complemento] = $total;
+			}
+		}
+
+	$tabla.="	<th> $ ".number_format($totalM, 0, "", ".")."</th>
+			<tr>";
 }
 $tabla.="</tbody>";
-$totalesComplement['APS'] = $totalAPS;
-$totalesComplement['AM/PM'] = $totalAMPM;
 
-$tabla.="<tfoot><tr><th>Total</th><th>$ ".number_format($totalAPS, 0, "", ".")."</th><th>$ ".number_format($totalAMPM, 0, "", ".")."</th><th>$ ".number_format($totalesSum, 0, "", ".")."</th><tr></tfoot>";
+
+
+$tabla.="<tfoot>
+			<tr>
+				<th>Total</th>";
+$tTotal = 0;
+foreach ($totalesComplement as $complemento => $total) {
+	$tabla.="<th> $ ".number_format($total, 0, "", ".")."</th>";
+	$tTotal += $total;
+}
+$tabla.="		<th> $ ".number_format($tTotal, 0, "", ".")."</th>
+			<tr>
+		</tfoot>";
 
 $data['tabla'] = $tabla;
 $data['info'] = $totalesComplementos;

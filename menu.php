@@ -112,7 +112,7 @@
 		<ul class="nav nav-second-level collapse">
 			<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php"><span class="nav-label">Trazabilidad</span></a> </li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php"><span class="nav-label">Trazabilidad Insumos</span></a> </li>
-			<li><a href="#" class="sinDesarrollar">Estadisticas</a></li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
 			<li><a href="#" class="sinDesarrollar">Bitácora de usuarios</a></li>
 			<li><a href="#" class="sinDesarrollar">Informe CHIP</a></li>
 			<li><a href="#" class="sinDesarrollar">Informe de alimentos ordenados por proveedor</a></li>
