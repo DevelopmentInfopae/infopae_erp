@@ -28,9 +28,9 @@ if($codigoSede){
 }
 
 //Código para obtener el total programado en el mes seleccionado, búsqueda por Tipo de complemento, Sede y Mes.
-
 $semanasMes = [];
-$consSemanasMes = "SELECT SEMANA FROM planilla_semanas WHERE MES = '".$mes."' GROUP BY SEMANA;"; //obtenemos las semanas que hay en el mes
+$consSemanasMes = "SELECT SEMANA FROM planilla_semanas WHERE MES = '".$mes."' AND DIA >= $diaInicialSemanaInicial AND DIA <= $diaFinalSemanaFinal GROUP BY SEMANA;"; //obtenemos las semanas que hay en el mes
+// echo $consSemanasMes;
 $resSemanasMes = $Link->query($consSemanasMes);
 if ($resSemanasMes->num_rows > 0) {
 	while ($dsm = $resSemanasMes->fetch_assoc()) {
@@ -42,18 +42,19 @@ $totalProgramadoMes = 0; //variable para sumar los totales de cada semana y obte
 $diasCubiertos = 0;
 
 foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas obtenidas para cambiar la tabla de priorización, ej : priorizacion01, priorizacion02, etc
-
+	//obtenemos el total de priorizaciones por complemento seleccionado de la semana en turno, luego lo multiplicamos por el número de días que tiene la semana en turno.
 	$consTotalEntregado = "SELECT DISTINCT SEMANA AS SM, COUNT(DIA) AS dias_semana,
-							(
-								(SELECT SUM(".$tipoComplemento.") FROM priorizacion".$semana." WHERE cod_sede = '".$codigoSede."') * 
-							    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM)
-							) AS total_entregas
-							FROM planilla_semanas WHERE SEMANA = '".$semana."';"; //obtenemos el total de priorizaciones por complemento seleccionado de la semana en turno, luego lo multiplicamos por el número de días que tiene la semana en turno.
+						(
+							(SELECT SUM(".$tipoComplemento.") FROM priorizacion".$semana." WHERE cod_sede = '".$codigoSede."') *
+						    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM)
+						) AS total_entregas
+						FROM planilla_semanas WHERE SEMANA = '".$semana."';";
 	// echo $consTotalEntregado;
+
 	$resTotalEntregado = $Link->query($consTotalEntregado);
 
-	if ($resTotalEntregado !== FALSE && $resTotalEntregado->num_rows > 0) { //Si el SQL se ejecuta correctamente y hay datos, es decir si encuentra la tabla priorización$semana (priorizacion03, priorizacion03b, etc)
-
+	//Si el SQL se ejecuta correctamente y hay datos, es decir si encuentra la tabla priorización$semana (priorizacion03, priorizacion03b, etc)
+	if ($resTotalEntregado !== FALSE && $resTotalEntregado->num_rows > 0) {
 	  $te = $resTotalEntregado->fetch_assoc();
 	  $totalProgramadoMes+=$te['total_entregas']; //suma de entregas en dias cubiertos
 	  $tpm = $te['total_entregas']; //guardado del total de entregas de la última semana que si está priorizada (Para cálculo en caso de que falten semanas por priorizar)
@@ -61,17 +62,20 @@ foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas 
 	  $diasCubiertos += $te['dias_semana']; //Suma de los números(cuenta) de días cubiertos.
 
 	} else { //En caso de no encontrar datos para la semana en turno o la tabla para dicha semana, multiplicamos la priorización de la semana del mes seleccionado que si tiene tabla de priorización, por el número de dias de dicho mes, la priorización mencionada ya se guardó en la variable $totalProgramadoMes en el turno de la semana anterior.
-		
+
 	// Esto sucede cuando sólo hay priorización del primer día o primera semana en el Mes seleccionado.
 
-		$consDiasMes = "SELECT * FROM planilla_dias WHERE mes = '".$mes."'"; //consultamos los días que tiene el mes seleccionado
+		//consultamos los días que tiene el mes seleccionado
+		$consDiasMes = "SELECT * FROM planilla_dias WHERE mes = '".$mes."'";
 		$resDiasMes = $Link->query($consDiasMes);
 		if ($resDiasMes->num_rows > 0) {
 			$dms = $resDiasMes->fetch_assoc();
 			$diasMes = 0;
 			for ($i=1; $i < 31; $i++) { //recorremos los campos D1, D2, etc que no estén vacíos.
-				if (!empty($dms['D'.$i])) {
-					$diasMes++;
+				if ($i >= 11 && $i <= 22) {
+					if (!empty($dms['D'.$i])) {
+						$diasMes++;
+					}
 				}
 			}
 		}
@@ -145,59 +149,6 @@ if (isset($pagina)){
 	$aux = '';
 }
 $pdf->Cell(0,$tamannoFuente,utf8_decode($aux),0,0,'R',False);
-
-// // Condición que oculta o muestra la sección de información de las raciones.
-// if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
-// 	$pdf->Ln(5);
-// 	$pdf->SetFont('Arial','B',$tamannoFuente);
-// 	$pdf->Cell(95,$tamannoFuente,utf8_decode('RACIONES PROGRAMADAS COMPLEMENTO ALIMENTARIO:'),0,0,'L',False);
-// 	$pdf->SetFont('Arial','',$tamannoFuente);
-
-
-// 	// Los cálculos de las entregas programadas se realiza con la información
-// 	// total de titulares de derecho * la cantidad total de días del mes por sede.
-
-// 	if(isset($totales)){
-// 		$aux = $totales['titulares']*$totalDias;
-// 	}else{
-// 		$aux = '';
-// 	}
-
-// 	$pdf->Cell(25,5,$aux,'B',0,'C',False);
-// 	$pdf->SetFont('Arial','B',$tamannoFuente);
-// 	$pdf->Cell(10);
-// 	$pdf->Cell(60,$tamannoFuente,utf8_decode('RACIONES ATENDIDAS:'),0,0,'L',False);
-// 	$pdf->Cell(10,$tamannoFuente,utf8_decode('A.M:'),0,0,'L',False);
-// 	$pdf->Cell(25,5,'','B',0,'C',False);
-// 	$pdf->Cell(10);
-// 	$pdf->Cell(10,$tamannoFuente,utf8_decode('P.M:'),0,0,'L',False);
-// 	$pdf->Cell(25,5,'','B',0,'C',False);
-// 	$pdf->Ln(5);
-// 	$pdf->SetFont('Arial','B',$tamannoFuente);
-// 	$pdf->Cell(95,$tamannoFuente,utf8_decode('RACIONES PROGRAMADAS ALMUERZO:'),0,0,'L',False);
-// 	$pdf->SetFont('Arial','',$tamannoFuente);
-
-// 	if(isset($totales)){
-// 		$aux = $totales['titulares']*$totalDias;
-// 	}else{
-// 		$aux = '';
-// 	}
-
-// 	$pdf->Cell(25,5,$aux,'B',0,'C',False);
-// 	$pdf->SetFont('Arial','B',$tamannoFuente);
-// 	$pdf->Cell(10);
-// 	$pdf->Cell(70,$tamannoFuente,utf8_decode('RACIONES ENTREGADAS ALMUERZO: '),0,0,'L',False);
-// 	$pdf->SetFont('Arial','',$tamannoFuente);
-
-// 	if(isset($totales)){
-// 		$aux = $totales['entregas'];
-// 	}else{
-// 		$aux = '';
-// 	}
-
-// 	$pdf->Cell(25,5,utf8_decode($aux),'B',0,'C',False);
-// }
-
 $pdf->Ln(8);
 $x = $pdf->GetX();
 $y = $pdf->GetY();
@@ -280,8 +231,6 @@ $y = $pdf->GetY();
 $pdf->SetXY($x, $y);
 $pdf->RotatedText($x+4.5,$y+12,utf8_decode("Edad"),90);
 $pdf->Cell(10,14,utf8_decode(''),0,0,'C',False);
-// $pdf->SetXY($x, $y+1.6);
-// $pdf->Cell(14,14,utf8_decode(''),0,0,'C',False);
 $pdf->SetXY($x, $y);
 $pdf->Cell(7,14,utf8_decode(''),'R',0,'C',False);
 
@@ -326,20 +275,20 @@ $pdf->Cell(0,7,utf8_decode('Fecha de Entrega'),'B',0,'C',False);
 $pdf->SetXY($x, $y+7);
 
 if($tipoPlanilla != 1){
-	$dia = 0;
+	$dia = (int)$primer_dia;
 	for($i = 0 ; $i < 24 ; $i++){
+			// if($dia < 10) {
+				// $auxDia = 'D0'.$dia;
+			// } else {
+				$auxDia = 'D'.$dia;
+			// }
+
+			if(isset($dias_encabezado[$auxDia])){
+		 		$pdf->Cell(6,7,utf8_decode($dias_encabezado[$auxDia]),'R',0,'C',False);
+			}else{
+		 		$pdf->Cell(6,7,"",'R',0,'C',False);
+			}
 		$dia++;
-		if($dia < 10){
-			$auxDia = 'D0'.$dia;
-		}
-		else{
-			$auxDia = 'D'.$dia;
-		}
-		if(isset($dias[$auxDia])){
-	 		$pdf->Cell(6,7,utf8_decode($dias[$auxDia]),'R',0,'C',False);
-		}else{
-	 		$pdf->Cell(6,7,"",'R',0,'C',False);
-		}
 	}
 }else{
 	for($i = 0 ; $i < 25 ; $i++){

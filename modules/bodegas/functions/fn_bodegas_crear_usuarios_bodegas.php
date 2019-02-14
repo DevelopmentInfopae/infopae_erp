@@ -2,18 +2,19 @@
   require_once '../../../db/conexion.php';
   require_once '../../../config.php';
 
+  // Variables.
   $condicionConsulta = '';
   $usuario = (isset($_POST['usuario']) && $_POST['usuario'] != '') ? mysqli_real_escape_string($Link, $_POST['usuario']) : '';
   $municipio = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST['municipio']) : '';
   $bodegaSalida = (isset($_POST['bodegaSalida']) && $_POST['bodegaSalida'] != '') ? mysqli_real_escape_string($Link, $_POST['bodegaSalida']) : '';
   $bodegaEntrada = (isset($_POST['bodegaEntrada']) && $_POST['bodegaEntrada'] != '') ? mysqli_real_escape_string($Link, $_POST['bodegaEntrada']) : '';
 
-  // Validar si existen la bodega de entrada seleccionada.
-  $condicionBodegaEntrada = ($bodegaEntrada != '') ? " AND ID = '$bodegaEntrada'" : '';
-  // validar si existe el mucipio seleccionado.
-  $condicionMunicipio = ($municipio != '') ? " AND CIUDAD = '$municipio'" : '';
+  // Consulta que retorna el codigo de la bodega que no sea la misma de salida.
+  $consulta = "SELECT ID AS codigoBodega FROM bodegas WHERE 1";
+  $consulta .= ($bodegaEntrada != "") ? " AND ID = '$bodegaEntrada'" : "";
+  $consulta .= ($bodegaSalida != "") ? " AND ID != '$bodegaSalida'" : "";
+  $consulta .= ($municipio != "") ? " AND CIUDAD = '$municipio'" : "";
 
-  $consulta = "SELECT ID AS codigoBodega FROM bodegas WHERE ID != '$bodegaSalida'". $condicionMunicipio . $condicionBodegaEntrada;
   $resultado = $Link->query($consulta) or die('Error consulta bodegas: '. mysqli_error($Link));
   if ($resultado->num_rows > 0)
   {

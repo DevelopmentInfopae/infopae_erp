@@ -5,8 +5,9 @@
   // Declaración de variables.
   $data = [];
   $periodoActual = $_SESSION['periodoActual'];
-  $municipio   = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
   $institucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? mysqli_real_escape_string($Link, $_POST["institucion"]) : "";
+  $municipio   = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? ($_POST["municipio"] == "0") ? "" : mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
+
 
   $consultaSedes = "SELECT
                       sed.cod_sede AS codigoSede,

@@ -383,8 +383,16 @@ if(count($entregasSedes)>0){
 					$total = 0;
 					$indicePrint = 0;
 					foreach ($diasSemana[$i] as $diaSemana) {
-						$indicePrint++;
 						$indice++;
+						$res_can_comp = $Link->query("SELECT SUM(D$indice) AS cantidadComplemento FROM entregas_res_0119 WHERE cod_inst = '". $entregasSedeInstitucion["cod_inst"] ."' AND cod_sede = '". $entregasSedeInstitucion["cod_sede"] ."' AND tipo_complem = '". $entregasSedeInstitucion["tipo_complem"] ."';") or die (mysqli_error($Link));
+						if ($res_can_comp->num_rows > 0) {
+							$reg_can_comp = $res_can_comp->fetch_assoc();
+
+							if ($reg_can_comp["cantidadComplemento"] > 0) {
+								$indicePrint++;
+							}
+						}
+
 						if($indice < 10){
 							$aux = 'd0'.$indice;
 						} else{

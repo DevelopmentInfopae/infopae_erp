@@ -7,6 +7,32 @@
 
 	use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
+	// Función que calcula la cantidad de dias a ingresar o actualizar.
+	function calcularDias($primer_dia_semana, $ultimo_dia_semana, $dato, $insert = FALSE) {
+		$dia = substr($primer_dia_semana, 1);
+		$cadena_valores = "";
+		$cadena_consulta = "";
+
+		if ($insert) {
+			for ($i = $dia; $i <= $ultimo_dia_semana; $i++) {
+				$cadena_consulta .= "D".$i.", ";
+				$cadena_valores .= "'1', ";
+			}
+
+			return [
+				"campos"  => trim($cadena_consulta, ", "),
+				"valores" => trim($cadena_valores, ", ")
+			];
+		} else {
+			for ($i = $dia; $i <= $ultimo_dia_semana; $i++) {
+				$cadena_consulta .= "D".$i." = '$dato', ";
+			}
+
+			return trim($cadena_consulta, ", ");
+		}
+
+	}
+
 	// Declaración de variables.
 	$mes = (isset($_POST["mes"]) && $_POST["mes"] != "") ? $_POST["mes"] : "";
 	$semana = (isset($_POST["semana"]) && $_POST["semana"] != "") ? $_POST["semana"] : "";
@@ -75,10 +101,10 @@
 	{
 		// Obtengo los dias
 		$conDiasMes = "SELECT
-										SUM(
-											IF( D1 != '', 1, 0 ) + IF( D2 != '', 1, 0 ) + IF( D3 != '', 1, 0 ) + IF( D4 != '', 1, 0 ) + IF( D5 != '', 1, 0 ) + IF( D6 != '', 1, 0 ) + IF( D7 != '', 1, 0 ) + IF( D8 != '', 1, 0 ) + IF( D9 != '', 1, 0 ) + IF( D10 != '', 1, 0 ) + IF( D11 != '', 1, 0 ) + IF( D12 != '', 1, 0 ) + IF( D13 != '', 1, 0 ) + IF( D14 != '', 1, 0 ) + IF( D15 != '', 1, 0 ) + IF( D16 != '', 1, 0 ) + IF( D17 != '', 1, 0 ) + IF( D18 != '', 1, 0 ) + IF( D19 != '', 1, 0 ) + IF( D20 != '', 1, 0 ) + IF( D21 != '', 1, 0 ) + IF( D22 != '', 1, 0 ) + IF( D23 != '', 1, 0 ) + IF( D24 != '', 1, 0 ) + IF( D25 != '', 1, 0 ) + IF( D26 != '', 1, 0 ) + IF( D27 != '', 1, 0 ) + IF( D28 != '', 1, 0 ) + IF( D29 != '', 1, 0 ) + IF( D30 != '', 1, 0 ) + IF( D31 != '', 1, 0 )
-										) AS 'cantidadDias'
-									FROM planilla_dias WHERE mes = '". $mes ."';";
+						SUM(
+							IF( D1 != '', 1, 0 ) + IF( D2 != '', 1, 0 ) + IF( D3 != '', 1, 0 ) + IF( D4 != '', 1, 0 ) + IF( D5 != '', 1, 0 ) + IF( D6 != '', 1, 0 ) + IF( D7 != '', 1, 0 ) + IF( D8 != '', 1, 0 ) + IF( D9 != '', 1, 0 ) + IF( D10 != '', 1, 0 ) + IF( D11 != '', 1, 0 ) + IF( D12 != '', 1, 0 ) + IF( D13 != '', 1, 0 ) + IF( D14 != '', 1, 0 ) + IF( D15 != '', 1, 0 ) + IF( D16 != '', 1, 0 ) + IF( D17 != '', 1, 0 ) + IF( D18 != '', 1, 0 ) + IF( D19 != '', 1, 0 ) + IF( D20 != '', 1, 0 ) + IF( D21 != '', 1, 0 ) + IF( D22 != '', 1, 0 ) + IF( D23 != '', 1, 0 ) + IF( D24 != '', 1, 0 ) + IF( D25 != '', 1, 0 ) + IF( D26 != '', 1, 0 ) + IF( D27 != '', 1, 0 ) + IF( D28 != '', 1, 0 ) + IF( D29 != '', 1, 0 ) + IF( D30 != '', 1, 0 ) + IF( D31 != '', 1, 0 )
+						) AS 'cantidadDias'
+					FROM planilla_dias WHERE mes = '". $mes ."';";
 		$resDiasMes = $Link->query($conDiasMes);
 		if($resDiasMes->num_rows > 0)
 		{
@@ -315,7 +341,6 @@
 		else
 		{
 			$conValCreEnt = $conValFoc = "";
-
 			//Abrimos nuestro archivo
 			$archivo=fopen($rutaArchivo, "r");
 			$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
@@ -385,37 +410,37 @@
 														tipo_complem4 VARCHAR(45) NULL DEFAULT NULL,
 														tipo_complem5 VARCHAR(45) NULL DEFAULT NULL,
 														tipo_complem VARCHAR(45) NULL DEFAULT NULL,
-														D1 VARCHAR(45) NULL DEFAULT NULL,
-														D2 VARCHAR(45) NULL DEFAULT NULL,
-														D3 VARCHAR(45) NULL DEFAULT NULL,
-														D4 VARCHAR(45) NULL DEFAULT NULL,
-														D5 VARCHAR(45) NULL DEFAULT NULL,
-														D6 VARCHAR(45) NULL DEFAULT NULL,
-														D7 VARCHAR(45) NULL DEFAULT NULL,
-														D8 VARCHAR(45) NULL DEFAULT NULL,
-														D9 VARCHAR(45) NULL DEFAULT NULL,
-														D10 VARCHAR(45) NULL DEFAULT NULL,
-														D11 VARCHAR(45) NULL DEFAULT NULL,
-														D12 VARCHAR(45) NULL DEFAULT NULL,
-														D13 VARCHAR(45) NULL DEFAULT NULL,
-														D14 VARCHAR(45) NULL DEFAULT NULL,
-														D15 VARCHAR(45) NULL DEFAULT NULL,
-														D16 VARCHAR(45) NULL DEFAULT NULL,
-														D17 VARCHAR(45) NULL DEFAULT NULL,
-														D18 VARCHAR(45) NULL DEFAULT NULL,
-														D19 VARCHAR(45) NULL DEFAULT NULL,
-														D20 VARCHAR(45) NULL DEFAULT NULL,
-														D21 VARCHAR(45) NULL DEFAULT NULL,
-														D22 VARCHAR(45) NULL DEFAULT NULL,
-														D23 VARCHAR(45) NULL DEFAULT NULL,
-														D24 VARCHAR(45) NULL DEFAULT NULL,
-														D25 VARCHAR(45) NULL DEFAULT NULL,
-														D26 VARCHAR(45) NULL DEFAULT NULL,
-														D27 VARCHAR(45) NULL DEFAULT NULL,
-														D28 VARCHAR(45) NULL DEFAULT NULL,
-														D29 VARCHAR(45) NULL DEFAULT NULL,
-														D30 VARCHAR(45) NULL DEFAULT NULL,
-														D31 VARCHAR(45) NULL DEFAULT NULL,
+														D1 VARCHAR(45) NULL DEFAULT '0',
+														D2 VARCHAR(45) NULL DEFAULT '0',
+														D3 VARCHAR(45) NULL DEFAULT '0',
+														D4 VARCHAR(45) NULL DEFAULT '0',
+														D5 VARCHAR(45) NULL DEFAULT '0',
+														D6 VARCHAR(45) NULL DEFAULT '0',
+														D7 VARCHAR(45) NULL DEFAULT '0',
+														D8 VARCHAR(45) NULL DEFAULT '0',
+														D9 VARCHAR(45) NULL DEFAULT '0',
+														D10 VARCHAR(45) NULL DEFAULT '0',
+														D11 VARCHAR(45) NULL DEFAULT '0',
+														D12 VARCHAR(45) NULL DEFAULT '0',
+														D13 VARCHAR(45) NULL DEFAULT '0',
+														D14 VARCHAR(45) NULL DEFAULT '0',
+														D15 VARCHAR(45) NULL DEFAULT '0',
+														D16 VARCHAR(45) NULL DEFAULT '0',
+														D17 VARCHAR(45) NULL DEFAULT '0',
+														D18 VARCHAR(45) NULL DEFAULT '0',
+														D19 VARCHAR(45) NULL DEFAULT '0',
+														D20 VARCHAR(45) NULL DEFAULT '0',
+														D21 VARCHAR(45) NULL DEFAULT '0',
+														D22 VARCHAR(45) NULL DEFAULT '0',
+														D23 VARCHAR(45) NULL DEFAULT '0',
+														D24 VARCHAR(45) NULL DEFAULT '0',
+														D25 VARCHAR(45) NULL DEFAULT '0',
+														D26 VARCHAR(45) NULL DEFAULT '0',
+														D27 VARCHAR(45) NULL DEFAULT '0',
+														D28 VARCHAR(45) NULL DEFAULT '0',
+														D29 VARCHAR(45) NULL DEFAULT '0',
+														D30 VARCHAR(45) NULL DEFAULT '0',
+														D31 VARCHAR(45) NULL DEFAULT '0',
 														PRIMARY KEY (id),
 														INDEX Acel_est1 (num_doc, cod_jorn_est, cod_grado, cod_pob_victima, cod_inst, cod_discap) USING BTREE
 														)
@@ -446,8 +471,91 @@
 				echo json_encode($respuestaAJAX);
 				exit;
 			}
-		} // FIN si existe tabla res del mes seleccion
+		} else {
+			// Consulta para saber el dia en que comienza la semana seleccionada.
+			$res_dias_semana = $Link->query("SELECT IF(DIA>10,DIA,CONCAT('0',DIA)) AS dia FROM planilla_semanas WHERE MES = '$mes' AND SEMANA = '$semana' ORDER BY DIA LIMIT 1") or die (mysqli_error($Link));
+			if ($res_dias_semana->num_rows > 0) {
+				$dia_semana =  $res_dias_semana->fetch_assoc();
 
+				// variable para asignar la cantidad de días por mes.
+				$contador_dia = 0;
+				// Variable para asignar el primer día de la semana.
+				$dia_actual = 1;
+				// Consulta para obtener el primer dia se la semana seleccionada.
+				$res_D = $Link->query("SELECT D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias WHERE mes = '$mes'") or die (mysql($Link));
+				if ($res_D->num_rows > 0) {
+					$d = $res_D->fetch_assoc();
+					foreach ($d as $nombre_columna => $dia) {
+						// Condición que valida si el día contiene algun día de mes asignado.
+						if ($dia != "") { $contador_dia += 1; }
+						// Condición que valida si el dia de planilla_semanas es igual a planillas_dias.
+						if ($dia == $dia_semana["dia"]) { $dia_actual = $nombre_columna; }
+					}
+				}
+
+				// Consulta que retorna todos los datos de la tabla entregas_res[MES][AÑO]
+				$res_entregas_res = $Link->query("SELECT id, num_doc, cod_sede, tipo_complem FROM entregas_res_".$mes.$_SESSION["periodoActual"]." WHERE 1") or die (mysqli_error($Link));
+				if ($res_entregas_res->num_rows > 0) {
+					while ($reg_est_entregas_res = $res_entregas_res->fetch_assoc()) {
+							$estudiantes_entregas_res[$reg_est_entregas_res["num_doc"]][]= $reg_est_entregas_res;
+					}
+				}
+
+				//Abrimos nuestro archivo
+				$archivo=fopen($rutaArchivo, "r");
+				$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
+
+				// Iteramos el archivo
+				while(($datos = fgetcsv($archivo, null, $separador))==true)
+				{
+					// Variable para identificar si el registro es nuevo o ya existe.
+					$existe = false;
+					// Condición que valida si existe el documento del estudiante.
+					if (isset($estudiantes_entregas_res[$datos[1]])) {
+						// Iteramos los datos de entregas_res
+						foreach ($estudiantes_entregas_res[$datos[1]] as $dat_est_ent_res) {
+							if ($dat_est_ent_res["tipo_complem"] != $datos[36] || $dat_est_ent_res["cod_sede"] != $datos[22]) {
+								if ($existe) {
+									if (count($estudiantes_entregas_res[$datos[1]]) > 1) {
+										$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+										$existe = true;
+									}
+								} else {
+									$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+									$existe = false;
+								}
+							} else {
+								if ($existe) {
+									if (count($estudiantes_entregas_res[$datos[1]]) > 1) {
+										$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+										$existe = false;
+									} else {
+										$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+									}
+								} else {
+									$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 1) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+									$existe = true;
+								}
+								$existe = true;
+							}
+						}
+						// Condición que valida si se necesita agregar nuevo registro.
+						if (!$existe) {
+							$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die (mysqli_error($Link));
+						}
+					} else {
+						$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die (mysqli_error($Link));
+					}
+				}
+			} else {
+				$respuestaAJAX = [
+					"estado"  => 0,
+					"mensaje" => "No fue posible encontrar el día para la semana seleccionada."
+				];
+			}
+		}
+
+		/*************************** Bloque para manipular los datos de focalización.***************************/
 
 		// Se crea la tabla focalizacion[$mes]
 		$conCreTabFoc = "CREATE TABLE focalizacion".$semana." (
@@ -529,7 +637,7 @@
 		];
 	}
 
-	echo json_encode($respuestaAJAX);
+	// echo json_encode($respuestaAJAX);
 
 	/*****************************************************************************************************/
 

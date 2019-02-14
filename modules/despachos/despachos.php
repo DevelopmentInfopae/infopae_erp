@@ -6,322 +6,189 @@
   require_once '../../db/conexion.php';
 ?>
 
-
-
-
-
-
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-            <div class="col-lg-8">
-                <h2>Despachos</h2>
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="<?php echo $baseUrl; ?>">Home</a>
-                    </li>
-                    <li class="active">
-                        <strong>Despachos</strong>
-                    </li>
-                </ol>
-            </div>
-						<div class="col-lg-4">
-							<div class="title-action">
-								<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-									<a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary">Nuevo</a>
-								<?php } ?>
-							</div>
-						</div>
+  <div class="col-lg-8">
+      <h2>Despachos</h2>
+      <ol class="breadcrumb">
+          <li>
+              <a href="<?php echo $baseUrl; ?>">Home</a>
+          </li>
+          <li class="active">
+              <strong>Despachos</strong>
+          </li>
+      </ol>
+  </div>
+	<div class="col-lg-4">
+		<div class="title-action">
+			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+				<a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary">Nuevo</a>
+			<?php } ?>
+		</div>
+	</div>
 </div>
-
-
-
-
 
 <div class="wrapper wrapper-content animated fadeInRight">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="ibox float-e-margins">
-        <div class="ibox-content contentBackground">
-          <h2>Parámetros de Consulta</h2>
-          <form class="col-lg-12" action="despachos.php" name="formDespachos" id="formDespachos" method="post" target="_blank">
-            <div class="row">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content contentBackground">
+                    <h2>Parámetros de Consulta</h2>
+                    <form class="col-lg-12" action="despachos.php" name="formDespachos" id="formDespachos" method="post" target="_blank">
+                        <div class="row">
+                            <div class="col-sm-3 form-group">
+                                <label for="fechaInicial">Fecha Inicial</label>
+                                <div class="row compositeDate">
+                                    <div class="col-sm-4 nopadding">
+                                        <select name="annoi" id="annoi" class="form-control">
+                                            <option value="<?php echo $_SESSION['periodoActualCompleto']; ?>"><?php echo $_SESSION['periodoActualCompleto']; ?></option>
+                                        </select>
+                                    </div><!-- /.col-sm-4 -->
+                                    <div class="col-sm-5 nopadding">
+                                    <?php if(!isset($_GET['pb_mesi']) || $_GET['pb_mesi'] == ''){ $_GET['pb_mesi'] = date("n"); } ?>
+                                        <select name="mesi" id="mesi" onchange="mesFinal();" class="form-control">
+                                            <option value="">mm</option>
+                                            <option value="1" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 1) {echo " selected "; } ?>>Enero</option>
+                                            <option value="2" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 2) {echo " selected "; } ?>>Febrero</option>
+                                            <option value="3" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 3) {echo " selected "; } ?>>Marzo</option>
+                                            <option value="4" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 4) {echo " selected "; } ?>>Abril</option>
+                                            <option value="5" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 5) {echo " selected "; } ?>>Mayo</option>
+                                            <option value="6" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 6) {echo " selected "; } ?>>Junio</option>
+                                            <option value="7" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 7) {echo " selected "; } ?>>Julio</option>
+                                            <option value="8" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 8) {echo " selected "; } ?>>Agosto</option>
+                                            <option value="9" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 9) {echo " selected "; } ?>>Septiembre</option>
+                                            <option value="10" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 10) {echo " selected "; } ?>>Octubre</option>
+                                            <option value="11" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 11) {echo " selected "; } ?>>Noviembre</option>
+                                            <option value="12" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 12) {echo " selected "; } ?>>Diciembre</option>
+                                        </select>
+                                        <input type="hidden" name="mesiConsulta" id="mesiConsulta" value="<?php if (isset($_GET['pb_mesi'])) { echo $_GET['pb_mesi']; } ?>">
+                                    </div><!-- /.col -->
 
-                                <div class="col-sm-4 form-group">
-                                    <label for="fechaInicial">Fecha Inicial</label>
-                                    <div class="row compositeDate">
-                                        <div class="col-sm-4 nopadding">
-                                            <select name="annoi" id="annoi" class="form-control">
-                                                <option value="<?php echo $_SESSION['periodoActualCompleto']; ?>"><?php echo $_SESSION['periodoActualCompleto']; ?></option>
-                                            </select>
-                                        </div><!-- /.col-sm-4 -->
-                                        <div class="col-sm-5 nopadding">
-                                            <?php
-                                                if(!isset($_GET['pb_mesi']) || $_GET['pb_mesi'] == ''){
-                                                    $_GET['pb_mesi'] = date("n");
-                                                }
-                                            ?>
-                                            <select name="mesi" id="mesi" onchange="mesFinal();" class="form-control">
-                                                <option value="">mm</option>
-                                                <option value="1" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 1) {echo " selected "; } ?>>Enero</option>
-                                                <option value="2" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 2) {echo " selected "; } ?>>Febrero</option>
-                                                <option value="3" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 3) {echo " selected "; } ?>>Marzo</option>
-                                                <option value="4" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 4) {echo " selected "; } ?>>Abril</option>
-                                                <option value="5" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 5) {echo " selected "; } ?>>Mayo</option>
-                                                <option value="6" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 6) {echo " selected "; } ?>>Junio</option>
-                                                <option value="7" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 7) {echo " selected "; } ?>>Julio</option>
-                                                <option value="8" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 8) {echo " selected "; } ?>>Agosto</option>
-                                                <option value="9" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 9) {echo " selected "; } ?>>Septiembre</option>
-                                                <option value="10" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 10) {echo " selected "; } ?>>Octubre</option>
-                                                <option value="11" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 11) {echo " selected "; } ?>>Noviembre</option>
-                                                <option value="12" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 12) {echo " selected "; } ?>>Diciembre</option>
-                                            </select>
-                                            <input type="hidden" name="mesiConsulta" id="mesiConsulta" value="<?php if (isset($_GET['pb_mesi'])) { echo $_GET['pb_mesi']; } ?>">
-                                        </div><!-- /.col -->
+                                    <div class="col-md-3 nopadding">
+                                        <select name="diai" id="diai" class="form-control">
+                                            <option value="">dd</option>
+                                            <option value="1" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 1) { echo " selected "; } ?>>01</option>
+                                            <option value="2" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 2) { echo " selected "; } ?>>02</option>
+                                            <option value="3" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 3) { echo " selected "; } ?>>03</option>
+                                            <option value="4" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 4) { echo " selected "; } ?>>04</option>
+                                            <option value="5" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 5) { echo " selected "; } ?>>05</option>
+                                            <option value="6" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 6) { echo " selected "; } ?>>06</option>
+                                            <option value="7" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 7) { echo " selected "; } ?>>07</option>
+                                            <option value="8" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 8) { echo " selected "; } ?>>08</option>
+                                            <option value="9" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 9) { echo " selected "; } ?>>09</option>
+                                            <option value="10" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 10) { echo " selected "; } ?>>10</option>
+                                            <option value="11" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 11) { echo " selected "; } ?>>11</option>
+                                            <option value="12" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 12) { echo " selected "; } ?>>12</option>
+                                            <option value="13" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 13) { echo " selected "; } ?>>13</option>
+                                            <option value="14" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 14) { echo " selected "; } ?>>14</option>
+                                            <option value="15" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 15) { echo " selected "; } ?>>15</option>
+                                            <option value="16" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 16) { echo " selected "; } ?>>16</option>
+                                            <option value="17" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 17) { echo " selected "; } ?>>17</option>
+                                            <option value="18" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 18) { echo " selected "; } ?>>18</option>
+                                            <option value="19" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 19) { echo " selected "; } ?>>19</option>
+                                            <option value="20" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 20) { echo " selected "; } ?>>20</option>
+                                            <option value="21" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 21) { echo " selected "; } ?>>21</option>
+                                            <option value="22" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 22) { echo " selected "; } ?>>22</option>
+                                            <option value="23" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 23) { echo " selected "; } ?>>23</option>
+                                            <option value="24" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 24) { echo " selected "; } ?>>24</option>
+                                            <option value="25" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 25) { echo " selected "; } ?>>25</option>
+                                            <option value="26" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 26) { echo " selected "; } ?>>26</option>
+                                            <option value="27" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 27) { echo " selected "; } ?>>27</option>
+                                            <option value="28" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 28) { echo " selected "; } ?>>28</option>
+                                            <option value="29" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 29) { echo " selected "; } ?>>29</option>
+                                            <option value="30" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 30) { echo " selected "; } ?>>30</option>
+                                            <option value="31" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 31) { echo " selected "; } ?>>31</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div class="col-sm-3 form-group">
+                                <label for="fechaInicial">Fecha Final</label>
+                                <div class="row compositeDate">
+                                    <div class="col-sm-4 form-group nopadding">
+                                        <select name="annof" id="annof" class="form-control">
+                                            <option value="<?php echo $_SESSION['periodoActualCompleto']; ?>"><?php echo $_SESSION['periodoActualCompleto']; ?></option>
+                                      </select>
+                                    </div>
+                                    <div class="col-sm-5 form-group nopadding">
+                                        <input type="text" name="mesfText" id="mesfText" value="mm" readonly="readonly" class="form-control">
+                                        <input type="hidden" name="mesf" id="mesf" value="">
+                                    </div>
+                                    <div class="col-sm-3 form-group nopadding">
+                                        <select name="diaf" id="diaf" class="form-control">
+                                            <option value="">dd</option>
+                                            <option value="1" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 1) {echo " selected "; } ?>>01</option>
+                                            <option value="2" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 2) { echo " selected "; } ?>>02</option>
+                                            <option value="3" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 3) { echo " selected "; } ?>>03</option>
+                                            <option value="4" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 4) { echo " selected "; } ?>>04</option>
+                                            <option value="5" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 5) { echo " selected "; } ?>>05</option>
+                                            <option value="6" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 6) { echo " selected "; } ?>>06</option>
+                                            <option value="7" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 7) { echo " selected "; } ?>>07</option>
+                                            <option value="8" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 8) { echo " selected "; } ?>>08</option>
+                                            <option value="9" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 9) { echo " selected "; } ?>>09</option>
+                                            <option value="10" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 10) { echo " selected "; } ?>>10</option>
+                                            <option value="11" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 11) { echo " selected "; } ?>>11</option>
+                                            <option value="12" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 12) { echo " selected "; } ?>>12</option>
+                                            <option value="13" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 13) { echo " selected "; } ?>>13</option>
+                                            <option value="14" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 14) { echo " selected "; } ?>>14</option>
+                                            <option value="15" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 15) { echo " selected "; } ?>>15</option>
+                                            <option value="16" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 16) { echo " selected "; } ?>>16</option>
+                                            <option value="17" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 17) { echo " selected "; } ?>>17</option>
+                                            <option value="18" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 18) { echo " selected "; } ?>>18</option>
+                                            <option value="19" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 19) { echo " selected "; } ?>>19</option>
+                                            <option value="20" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 20) { echo " selected "; } ?>>20</option>
+                                            <option value="21" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 21) { echo " selected "; } ?>>21</option>
+                                            <option value="22" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 22) { echo " selected "; } ?>>22</option>
+                                            <option value="23" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 23) { echo " selected "; } ?>>23</option>
+                                            <option value="24" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 24) { echo " selected "; } ?>>24</option>
+                                            <option value="25" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 25) { echo " selected "; } ?>>25</option>
+                                            <option value="26" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 26) { echo " selected "; } ?>>26</option>
+                                            <option value="27" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 27) { echo " selected "; } ?>>27</option>
+                                            <option value="28" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 28) { echo " selected "; } ?>>28</option>
+                                            <option value="29" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 29) { echo " selected "; } ?>>29</option>
+                                            <option value="30" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 30) { echo " selected "; } ?>>30</option>
+                                            <option value="31" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 31) { echo " selected "; } ?>>31</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
-                                        <div class="col-md-3 nopadding">
+                            <div class="col-sm-3 form-group">
+                                <label for="semana">Semana</label>
+                                <select name="semana" id="semana" class="form-control">
+                                    <option value="">Seleccione uno</option>
+                                    <?php
+                                        $mes = ($_GET['pb_mesi'] > 9) ? $_GET['pb_mesi'] : "0". $_GET['pb_mesi'];
+                                        $res_sem = $Link->query("SELECT DISTINCT SEMANA FROM planilla_semanas WHERE MES = '$mes'") or die (mysqli_error($Link));
+                                        if ($res_sem->num_rows > 0) {
+                                            while ($reg_sem = $res_sem->fetch_assoc()) {
+                                    ?>
+                                        <option value="<?= $reg_sem["SEMANA"]; ?>" <?php if (isset($_GET["pb_semana"]) && $_GET["pb_semana"] == $reg_sem["SEMANA"]) { echo "selected"; }?>><?= "SEMANA ". $reg_sem["SEMANA"]; ?></option>
+                                    <?php
+                                            }
+                                        }
+                                    ?>
+                                </select>
+                            </div>
 
-
-
-
-
-
-                                            <select name="diai" id="diai" class="form-control">
-                           <option value="">dd</option>
-
-
-                           <option value="1" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 1) {echo " selected "; } ?>>01</option>
-
-
-                           <option value="2" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 2) {
-                              echo " selected ";
-                           } ?>>02</option>
-                           <option value="3" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 3) {
-                              echo " selected ";
-                           } ?>>03</option>
-                           <option value="4" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 4) {
-                              echo " selected ";
-                           } ?>>04</option>
-                           <option value="5" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 5) {
-                              echo " selected ";
-                           } ?>>05</option>
-                           <option value="6" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 6) {
-                              echo " selected ";
-                           } ?>>06</option>
-                           <option value="7" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 7) {
-                              echo " selected ";
-                           } ?>>07</option>
-                           <option value="8" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 8) {
-                              echo " selected ";
-                           } ?>>08</option>
-                           <option value="9" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 9) {
-                              echo " selected ";
-                           } ?>>09</option>
-                           <option value="10" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 10) {
-                              echo " selected ";
-                           } ?>>10</option>
-                           <option value="11" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 11) {
-                              echo " selected ";
-                           } ?>>11</option>
-                           <option value="12" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 12) {
-                              echo " selected ";
-                           } ?>>12</option>
-                           <option value="13" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 13) {
-                              echo " selected ";
-                           } ?>>13</option>
-                           <option value="14" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 14) {
-                              echo " selected ";
-                           } ?>>14</option>
-                           <option value="15" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 15) {
-                              echo " selected ";
-                           } ?>>15</option>
-                           <option value="16" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 16) {
-                              echo " selected ";
-                           } ?>>16</option>
-                           <option value="17" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 17) {
-                              echo " selected ";
-                           } ?>>17</option>
-                           <option value="18" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 18) {
-                              echo " selected ";
-                           } ?>>18</option>
-                           <option value="19" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 19) {
-                              echo " selected ";
-                           } ?>>19</option>
-                           <option value="20" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 20) {
-                              echo " selected ";
-                           } ?>>20</option>
-                           <option value="21" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 21) {
-                              echo " selected ";
-                           } ?>>21</option>
-                           <option value="22" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 22) {
-                              echo " selected ";
-                           } ?>>22</option>
-                           <option value="23" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 23) {
-                              echo " selected ";
-                           } ?>>23</option>
-                           <option value="24" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 24) {
-                              echo " selected ";
-                           } ?>>24</option>
-                           <option value="25" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 25) {
-                              echo " selected ";
-                           } ?>>25</option>
-                           <option value="26" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 26) {
-                              echo " selected ";
-                           } ?>>26</option>
-                           <option value="27" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 27) {
-                              echo " selected ";
-                           } ?>>27</option>
-                           <option value="28" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 28) {
-                              echo " selected ";
-                           } ?>>28</option>
-                           <option value="29" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 29) {
-                              echo " selected ";
-                           } ?>>29</option>
-                           <option value="30" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 30) {
-                              echo " selected ";
-                           } ?>>30</option>
-                           <option value="31" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 31) {
-                              echo " selected ";
-                           } ?>>31</option>
-                       </select>
-                                            </div><!-- /.col-sm-4 -->
-                                        </div><!-- /.row -->
-                                    </div><!-- /Fecha inicial -->
-
-
-
-<div class="col-sm-4 form-group">
-    <label for="fechaInicial">Fecha Final</label>
-    <div class="row compositeDate">
-        <div class="col-sm-4 form-group nopadding">
-            <select name="annof" id="annof" class="form-control">
-                <option value="<?php echo $_SESSION['periodoActualCompleto']; ?>"><?php echo $_SESSION['periodoActualCompleto']; ?></option>
-          </select>
-        </div>
-        <div class="col-sm-5 form-group nopadding">
-            <input type="text" name="mesfText" id="mesfText" value="mm" readonly="readonly" class="form-control">
-            <input type="hidden" name="mesf" id="mesf" value="">
-        </div>
-        <div class="col-sm-3 form-group nopadding">
-            <select name="diaf" id="diaf" class="form-control">
-                           <option value="">dd</option>
-
-
-                           <option value="1" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 1) {echo " selected "; } ?>>01</option>
-
-
-                           <option value="2" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 2) {
-                              echo " selected ";
-                           } ?>>02</option>
-                           <option value="3" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 3) {
-                              echo " selected ";
-                           } ?>>03</option>
-                           <option value="4" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 4) {
-                              echo " selected ";
-                           } ?>>04</option>
-                           <option value="5" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 5) {
-                              echo " selected ";
-                           } ?>>05</option>
-                           <option value="6" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 6) {
-                              echo " selected ";
-                           } ?>>06</option>
-                           <option value="7" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 7) {
-                              echo " selected ";
-                           } ?>>07</option>
-                           <option value="8" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 8) {
-                              echo " selected ";
-                           } ?>>08</option>
-                           <option value="9" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 9) {
-                              echo " selected ";
-                           } ?>>09</option>
-                           <option value="10" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 10) {
-                              echo " selected ";
-                           } ?>>10</option>
-                           <option value="11" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 11) {
-                              echo " selected ";
-                           } ?>>11</option>
-                           <option value="12" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 12) {
-                              echo " selected ";
-                           } ?>>12</option>
-                           <option value="13" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 13) {
-                              echo " selected ";
-                           } ?>>13</option>
-                           <option value="14" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 14) {
-                              echo " selected ";
-                           } ?>>14</option>
-                           <option value="15" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 15) {
-                              echo " selected ";
-                           } ?>>15</option>
-                           <option value="16" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 16) {
-                              echo " selected ";
-                           } ?>>16</option>
-                           <option value="17" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 17) {
-                              echo " selected ";
-                           } ?>>17</option>
-                           <option value="18" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 18) {
-                              echo " selected ";
-                           } ?>>18</option>
-                           <option value="19" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 19) {
-                              echo " selected ";
-                           } ?>>19</option>
-                           <option value="20" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 20) {
-                              echo " selected ";
-                           } ?>>20</option>
-                           <option value="21" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 21) {
-                              echo " selected ";
-                           } ?>>21</option>
-                           <option value="22" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 22) {
-                              echo " selected ";
-                           } ?>>22</option>
-                           <option value="23" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 23) {
-                              echo " selected ";
-                           } ?>>23</option>
-                           <option value="24" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 24) {
-                              echo " selected ";
-                           } ?>>24</option>
-                           <option value="25" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 25) {
-                              echo " selected ";
-                           } ?>>25</option>
-                           <option value="26" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 26) {
-                              echo " selected ";
-                           } ?>>26</option>
-                           <option value="27" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 27) {
-                              echo " selected ";
-                           } ?>>27</option>
-                           <option value="28" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 28) {
-                              echo " selected ";
-                           } ?>>28</option>
-                           <option value="29" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 29) {
-                              echo " selected ";
-                           } ?>>29</option>
-                           <option value="30" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 30) {
-                              echo " selected ";
-                           } ?>>30</option>
-                           <option value="31" <?php if (isset($_GET['pb_diaf']) && $_GET['pb_diaf'] == 31) {
-                              echo " selected ";
-                           } ?>>31</option>
-                       </select>
-        </div>
-    </div>
-</div><!-- /Fecha final -->
-
-<div class="col-sm-4 form-group">
-    <label for="tipo">Tipo Complemento</label>
-    <select class="form-control" name="tipo" id="tipo">
-    <option value="">Seleccione una</option>
-    <?php
-                $consulta = " select DISTINCT CODIGO from tipo_complemento ";
-                $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-                if($resultado->num_rows >= 1){
-                  while($row = $resultado->fetch_assoc()) { ?>
-                    <option value="<?php echo $row["CODIGO"]; ?>" <?php  if (isset($_GET['pb_tipo']) && ($_GET['pb_tipo'] == $row["CODIGO"]) ) { echo ' selected '; } ?>   ><?php echo $row["CODIGO"]; ?></option>
-                    <?php
-                  }// Termina el while
-                }//Termina el if que valida que si existan resultados
-
-                ?>
-</select>
-</div>
-            </div><!-- /.row -->
+                            <div class="col-sm-3 form-group">
+                                <label for="tipo">Tipo Complemento</label>
+                                <select class="form-control" name="tipo" id="tipo">
+                                    <option value="">Seleccione una</option>
+                                    <?php
+                                        $consulta = " select DISTINCT CODIGO from tipo_complemento ";
+                                        $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+                                        if($resultado->num_rows >= 1){
+                                            while($row = $resultado->fetch_assoc()) {
+                                    ?>
+                                        <option value="<?php echo $row["CODIGO"]; ?>" <?php  if (isset($_GET['pb_tipo']) && ($_GET['pb_tipo'] == $row["CODIGO"]) ) { echo ' selected '; } ?>   ><?php echo $row["CODIGO"]; ?></option>
+                                    <?php
+                                            }
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                        </div><!-- /.row -->
 
 
 
@@ -573,7 +440,6 @@
           de.Tipo_Complem,
           de.tipodespacho,
           td.Descripcion as tipodespacho_nm,
-
           de.estado,
           u.Ciudad,
           b.NOMBRE AS bodegaOrigen,
@@ -595,15 +461,20 @@
           where 1=1
            ";
 
-          if(isset($_GET["pb_diai"]) && $_GET["pb_diai"] != "" ){
-            $diainicial = $_GET["pb_diai"];
-            $consulta = $consulta." and DAYOFMONTH(de.FechaHora_Elab) >= ".$diainicial." ";
-          }
+            if (isset($_GET["pb_semana"]) && $_GET["pb_semana"] == "") {
+                if(isset($_GET["pb_diai"]) && $_GET["pb_diai"] != "" ){
+                    $diainicial = $_GET["pb_diai"];
+                    $consulta = $consulta." and DAYOFMONTH(de.FechaHora_Elab) >= ".$diainicial." ";
+                }
 
-          if(isset($_GET["pb_diaf"]) && $_GET["pb_diaf"] != "" ){
-            $diafinal = $_GET["pb_diaf"];
-            $consulta = $consulta." and DAYOFMONTH(de.FechaHora_Elab) <= ".$diafinal." ";
-          }
+                if(isset($_GET["pb_diaf"]) && $_GET["pb_diaf"] != "" ){
+                    $diafinal = $_GET["pb_diaf"];
+                    $consulta = $consulta." and DAYOFMONTH(de.FechaHora_Elab) <= ".$diafinal." ";
+                }
+            } else {
+                $semana = $_GET["pb_semana"];
+                $consulta .= " AND semana = '$semana'";
+            }
 
 
           if(isset($_GET["pb_tipo"]) && $_GET["pb_tipo"] != "" ){
@@ -642,21 +513,8 @@
           }
 
 
-
-
-
-
-
-          //Impromir la consulta que filtra los despachos
-          //echo "<br>$consulta<br><br><br>";
-
           $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-
-
-          //var_dump($resultado);
-
-
-          ?>
+?>
 
 
 
@@ -939,6 +797,7 @@
   <input type="hidden" id="pb_annof" name="pb_annof" value="">
   <input type="hidden" id="pb_mesf" name="pb_mesf" value="">
   <input type="hidden" id="pb_diaf" name="pb_diaf" value="">
+  <input type="hidden" id="pb_semana" name="pb_semana" value="">
   <input type="hidden" id="pb_tipo" name="pb_tipo" value="">
   <input type="hidden" id="pb_municipio" name="pb_municipio" value="">
   <input type="hidden" id="pb_institucion" name="pb_institucion" value="">

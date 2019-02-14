@@ -59,6 +59,7 @@ $( "#btnBuscar" ).click(function(){
   $("#pb_annof").val($("#annof").val());
   $("#pb_mesf").val($("#mesf").val());
   $("#pb_diaf").val($("#diaf").val());
+  $('#pb_semana').val($("#semana").val());
   $("#pb_tipo").val($("#tipo").val());
   $("#pb_municipio").val($("#municipio").val());
   $("#pb_institucion").val($("#institucion").val());
@@ -134,8 +135,26 @@ function mesFinal(){
   var mesText = $("#mesi option[value='"+mes+"']").text()
   $('#mesfText').val(mesText);
   $('#mesf').val(mes);
+
+  cargar_semanas_mes(mes);
 }
 
+function cargar_semanas_mes(mes) {
+  $.ajax({
+    url: 'functions/fn_despacho_buscar_semanas.php',
+    type: 'POST',
+    dataType: 'HTML',
+    data: {"mes": mes},
+  })
+  .done(function(data) { console.log(data);
+    if (data != '') {
+      $("#semana").html(data);
+    }
+  })
+  .fail(function(data) {
+    console.log(data);
+  });
+}
 
 function despachos_kardex(){
   //Contando los elementos checked
@@ -753,6 +772,7 @@ $(document).ready( function () {
   dataset1 = $('#box-table-movimientos').DataTable({
     order: [ 1, 'desc' ],
     pageLength: 25,
+    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
     responsive: true,
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
@@ -768,8 +788,7 @@ $(document).ready( function () {
         sPrevious: 'Anterior'
       }
     }
-    });
-  // Fin Funcionamiento del report
+  });
 });
 
 

@@ -1,5 +1,4 @@
 $(document).ready(function(){
-	listarBodegasUsuario();
 	$(document).on('click', '#crearBodega', crearBodega);
 	$(document).on('click', '#guardarBodega', function () { guardarBodega(false); });
 	$(document).on('click', '#guardarBodegaContinuar', function () { guardarBodega(true); });
