@@ -1,6 +1,6 @@
 <?php
 	include '../../header.php';
-	$titulo = "Nueva Bodega";
+	$titulo = "Actualizar Bodega";
 
   $codigoBodega = (isset($_POST['codigoBodega']) && $_POST['codigoBodega'] != '') ? $_POST['codigoBodega'] : '';
   $consulta1 = "SELECT * FROM bodegas WHERE ID = '$codigoBodega'";
@@ -21,7 +21,7 @@
     <h2><?php echo $titulo; ?></h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
+        <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li class="active">
       	<a href="<?php echo $baseUrl . '/modules/bodegas/index.php'; ?>">Bodegas</a>

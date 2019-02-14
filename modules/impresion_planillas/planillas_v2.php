@@ -120,7 +120,7 @@ class PDF extends PDF_Rotate
     $tamannoFuente = 10;
     $logoInfopae = $_SESSION['p_Logo ETC'];
     if ($this->tipoPlanilla == 5) {
-      $tituloPlanilla = "Registro de novedades - repitentes del programa de alimentaciÓn escolar - pae";
+      $tituloPlanilla = "Registro de novedades - repitentes y/o suplentes del programa de alimentaciÓn escolar - pae";
     } else if ($this->tipoPlanilla == 6) {
       $tituloPlanilla = "Registro de novedades - suplentes del programa de alimentaciÓn escolar - pae";
     } else {
