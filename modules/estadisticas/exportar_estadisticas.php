@@ -98,7 +98,7 @@ $periodoActual = $_SESSION['periodoActual'];
 $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 
   $diasSemanas = [];
-  $consDiasSemanas = "SELECT GROUP_CONCAT(DIA) AS Dias, MES, SEMANA FROM planilla_semanas GROUP BY SEMANA";
+  $consDiasSemanas = "SELECT GROUP_CONCAT(DIA) AS Dias, MES, SEMANA FROM planilla_semanas WHERE CONCAT(ANO, '-', MES, '-', IF(DIA < 10, CONCAT(0, DIA), DIA)) <= '".date('Y-m-d')."' GROUP BY SEMANA";
   $resDiasSemanas = $Link->query($consDiasSemanas);
   if ($resDiasSemanas->num_rows > 0) {
     while ($dataDiasSemanas = $resDiasSemanas->fetch_assoc()) {
@@ -1095,14 +1095,13 @@ $consValores = "SELECT 'ValorContrato' AS Concepto, ValorContrato FROM parametro
                 UNION
                 SELECT CODIGO AS Concepto, ValorRacion AS ValorContrato FROM tipo_complemento;";
 $resValores = $Link->query($consValores);
+$valorRaciones = [];
 if ($resValores->num_rows > 0) {
   while($Valores = $resValores->fetch_assoc()) {
     if ($Valores['Concepto'] == "ValorContrato") {
       $valorContrato = $Valores['ValorContrato'];
-    } else if ($Valores['Concepto'] == "APS") {
-      $valorAPS = $Valores['ValorContrato'];
     } else {
-      $valorAMPM = $Valores['ValorContrato'];
+      $valorRaciones[$Valores['Concepto']] = $Valores['ValorContrato'];
     }
   }
 }
@@ -1114,16 +1113,14 @@ $sheet->setCellValue('C'.$numFila, $valorContrato);
 $sheet->getStyle('B'.$numFila)->applyFromArray($titulos);
 $sheet->getStyle("C".$numFila)->applyFromArray($infor);
 $numFila++;
-$sheet->setCellValue('B'.$numFila, 'Valor ofertado por APS');
-$sheet->setCellValue('C'.$numFila, $valorAPS);
-$sheet->getStyle('B'.$numFila)->applyFromArray($titulos);
-$sheet->getStyle("C".$numFila)->applyFromArray($infor);
-$numFila++;
-$sheet->setCellValue('B'.$numFila, 'Valor ofertado por Complemento AM/PM');
-$sheet->setCellValue('C'.$numFila, $valorAMPM);
-$sheet->getStyle('B'.$numFila)->applyFromArray($titulos);
-$sheet->getStyle("C".$numFila)->applyFromArray($infor);
-$numFila++;
+
+foreach ($valorRaciones as $complemento => $valor) {
+  $sheet->setCellValue('B'.$numFila, 'Valor ofertado por '.$complemento);
+  $sheet->setCellValue('C'.$numFila, $valor);
+  $sheet->getStyle('B'.$numFila)->applyFromArray($titulos);
+  $sheet->getStyle("C".$numFila)->applyFromArray($infor);
+  $numFila++;
+}
 
 $finGrafica = $numFila;
 
@@ -1166,69 +1163,107 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 
 				$ejecutado += $Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0); //porcentajes
 
-				if ($Complementos['tipo_complem'] == "APS") {
-					if (isset($totalesComplementos[$mes]["APS"])) {
-						$totalesComplementos[$mes]["APS"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
-					} else {
-						$totalesComplementos[$mes]["APS"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
-					}
-				} else {
-					if (isset($totalesComplementos[$mes]["AM/PM"])) {
-						$totalesComplementos[$mes]["AM/PM"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
-					} else {
-						$totalesComplementos[$mes]["AM/PM"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
-					}
-				}
+				// if ($Complementos['tipo_complem'] == "APS") {
+				// 	if (isset($totalesComplementos[$mes]["APS"])) {
+				// 		$totalesComplementos[$mes]["APS"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+				// 	} else {
+				// 		$totalesComplementos[$mes]["APS"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+				// 	}
+				// } else {
+				// 	if (isset($totalesComplementos[$mes]["AM/PM"])) {
+				// 		$totalesComplementos[$mes]["AM/PM"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+				// 	} else {
+				// 		$totalesComplementos[$mes]["AM/PM"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+				// 	}
+				// }
+
+        if ($Complementos['total'] == '') {
+          continue;
+        }
+
+        if (isset($totalesComplementos[$mes][$Complementos['tipo_complem']])) {
+          $totalesComplementos[$mes][$Complementos['tipo_complem']]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+        } else {
+          $totalesComplementos[$mes][$Complementos['tipo_complem']]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+        }
+        if (!isset($tcom[$Complementos['tipo_complem']])) {
+          $tcom[$Complementos['tipo_complem']] = 1;
+        }
 				
 			}
 		}
 	}
 
-	if (!isset($totalesComplementos[$mes]["APS"])) {
-		$totalesComplementos[$mes]["APS"] = 0;
-	}
+	// if (!isset($totalesComplementos[$mes]["APS"])) {
+	// 	$totalesComplementos[$mes]["APS"] = 0;
+	// }
 
-	if (!isset($totalesComplementos[$mes]["AM/PM"])) {
-		$totalesComplementos[$mes]["AM/PM"] = 0;
-	}
+	// if (!isset($totalesComplementos[$mes]["AM/PM"])) {
+	// 	$totalesComplementos[$mes]["AM/PM"] = 0;
+	// }
 }
 
 $numFila++;
 $sheet->setCellValue('B'.$numFila, 'Mes');
-$sheet->setCellValue('C'.$numFila, 'APS');
-$sheet->setCellValue('D'.$numFila, 'AM/PM');
-$sheet->setCellValue('E'.$numFila, 'Total');
+$letra = "B";
+foreach ($tcom as $complemento => $set) {
+  $letra++;
+  $sheet->setCellValue($letra.$numFila, $complemento);
+}
 
-$sheet->getStyle('B'.$numFila.':E'.$numFila)->applyFromArray($titulos);
+$letra++;
+$sheet->setCellValue($letra.$numFila, "Total");
+
+// $sheet->setCellValue('C'.$numFila, 'APS');
+// $sheet->setCellValue('D'.$numFila, 'AM/PM');
+// $sheet->setCellValue('E'.$numFila, 'Total');
+
+$sheet->getStyle('B'.$numFila.':'.$letra.$numFila)->applyFromArray($titulos);
 $filaLabels = $numFila;
-$letraFinLabels = 'D';
 $numFila++;
 
-$totalAPS = 0;
-$totalAMPM = 0;
+$totalesComplement = [];
 $totales = [];
 $inicioGrafica = $numFila;
 foreach ($totalesComplementos as $mes => $complementos) {
 	$sheet->setCellValue("B".$numFila, $mesesNom[$mes]);
 	$totalMes = 0;
-	$sheet->setCellValue('C'.$numFila, $complementos['APS']);
-	$totalAPS += $complementos['APS'];
-	$sheet->setCellValue('D'.$numFila, $complementos['AM/PM']);
-	$totalAMPM += $complementos['AM/PM'];
-	$totalMes = $complementos['APS']+$complementos['AM/PM'];
-	$sheet->setCellValue('E'.$numFila, $totalMes);
+  $letra = "B";
+  foreach ($complementos as $complemento => $total) {
+    $letra++;
+    $sheet->setCellValue($letra.$numFila, $total);
+    $totalMes += $total;
+
+    if (isset($totalesComplement[$complemento])) {
+      $totalesComplement[$complemento] += $total;
+    } else {
+      $totalesComplement[$complemento] = $total;
+    }
+
+  }
+  $letra++;
+	$sheet->setCellValue($letra.$numFila, $totalMes);
 	$numFila++;
 }
 $finGrafica = $numFila;
+$letraFinLabels = $letra;
+
 $sheet->setCellValue('B'.$numFila, 'Total');
-$sheet->setCellValue('C'.$numFila, $totalAPS);
-$sheet->setCellValue('D'.$numFila, $totalAMPM);
-$totaldetotales = $totalAPS+$totalAMPM;
-$sheet->setCellValue('E'.$numFila, $totaldetotales);
-$sheet->getStyle("B".$inicioGrafica.":E".$finGrafica)->applyFromArray($infor);
-$sheet->getStyle('C'.$inicioGrafica.':C'.$finGrafica)->getNumberFormat()->setFormatCode('$ #,##0');
-$sheet->getStyle('D'.$inicioGrafica.':D'.$finGrafica)->getNumberFormat()->setFormatCode('$ #,##0');
-$sheet->getStyle('E'.$inicioGrafica.':E'.$finGrafica)->getNumberFormat()->setFormatCode('$ #,##0');
+$tTotal = 0;
+$letra = "B";
+
+foreach ($totalesComplement as $complemento => $total) {
+  $letra++;
+  $sheet->setCellValue($letra.$numFila, $total);
+  $tTotal += $total;
+}
+$letra++;
+$sheet->setCellValue($letra.$numFila, $tTotal);
+$sheet->getStyle("B".$inicioGrafica.":".$letra.$finGrafica)->applyFromArray($infor);
+
+for ($i="C"; $i <= $letra ; $i++) { 
+  $sheet->getStyle($i.$inicioGrafica.':'.$i.$finGrafica)->getNumberFormat()->setFormatCode('$ #,##0');
+}
 
 $dataSeriesLabels = [];
 $dataSeriesValues = [];

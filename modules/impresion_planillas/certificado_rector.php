@@ -429,6 +429,7 @@ if(count($entregasSedes)>0){
 
 
 		$pdf->MultiCell(45,4,utf8_decode(isset($nombre) ? $nombre: ""),0,'L',false);
+		// $pdf->MultiCell(45,4,utf8_decode(""),0,'L',false);
 		$pdf->SetXY($aux_x, $aux_y-$linea);
 		$pdf->Cell(45,$linea+4,'','B',0,'C',false);
 		$pdf->Ln($linea+4);

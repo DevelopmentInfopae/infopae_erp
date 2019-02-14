@@ -44,8 +44,8 @@ if ($respuesta == 1) { ?>
       $tipoPreparacion = " Codigo like '0202%' ";
     }
 
-  } else if ($tipoComplemento == "CAJMRI") {
-    $tipoPreparacion = " Codigo like '0201%' ";
+  } else if ($tipoComplemento == "CAJMRI" || $tipoComplemento == "CAJTRI") {
+    $tipoPreparacion = " Codigo like '0204%' ";
   }
 
   if ($tipoProducto == "01") {
