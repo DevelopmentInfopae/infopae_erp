@@ -105,14 +105,14 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
                             UNION
                             SELECT CODIGO AS Concepto, ValorRacion AS ValorContrato FROM tipo_complemento;";
             $resValores = $Link->query($consValores);
+
+            $valorRaciones = [];
             if ($resValores->num_rows > 0) {
               while($Valores = $resValores->fetch_assoc()) {
                 if ($Valores['Concepto'] == "ValorContrato") {
                   $valorContrato = $Valores['ValorContrato'];
-                } else if ($Valores['Concepto'] == "APS") {
-                  $valorAPS = $Valores['ValorContrato'];
                 } else {
-                  $valorAMPM = $Valores['ValorContrato'];
+                  $valorRaciones[$Valores['Concepto']] = $Valores['ValorContrato'];
                 }
               }
             }
@@ -124,14 +124,12 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
                 <th>Valor del contrato</th>
                 <td style="text-align: right;">$ <?php echo number_format($valorContrato, 2, ",", "."); ?></td>
               </tr>
-              <tr>
-                <th>Valor Ofertado por APS</th>
-                <td style="text-align: right;">$ <?php echo number_format($valorAPS, 2, ",", "."); ?></td>
-              </tr>
-              <tr>
-                <th>Valor ofertado por complemento AM/PM</th>
-                <td style="text-align: right;">$ <?php echo number_format($valorAMPM, 2, ",", "."); ?></td>
-              </tr>
+              <?php foreach ($valorRaciones as $complemento => $valor): ?>
+                <tr>
+                  <th>Valor Ofertado por <?= $complemento ?></th>
+                  <td style="text-align: right;">$ <?php echo number_format($valor, 2, ",", "."); ?></td>
+                </tr>
+              <?php endforeach ?>
             </table>
           </div>
           <div class="col-sm-12">

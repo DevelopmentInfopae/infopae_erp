@@ -207,7 +207,10 @@ function CargarTablas(){
 				});
 				cnt++;
 				json[cnt] = [];
-				json[cnt].push("Total", data['totales']['APS'], data['totales']['AM/PM']);
+				json[cnt].push("Total");
+				$.each(data['totales'], function(complemento, total){
+					json[cnt].push(total);
+				});
 				console.log(json);
 				google.charts.load('current', {packages: ['corechart', 'bar']});
 				google.charts.setOnLoadCallback(function(){
