@@ -154,9 +154,6 @@ dataset1 =  $('#box-table-a').DataTable({
 
 
     if(bandera == 0){
-
-
-      console.log('Buscando items agregados.');
       $( "#box-table-a tbody input[type=checkbox]" ).each(function(){
         itemsActuales.push($(this).val());
         console.log($(this).val());
@@ -173,9 +170,6 @@ dataset1 =  $('#box-table-a').DataTable({
           $('#loader').fadeIn();
         },
         success: function(data){
-          console.log(data);
-          //$('#debug').html(data);
-
           if(consecutivo == 0){
             dataset1.clear();
             dataset1.destroy();
@@ -235,156 +229,95 @@ dataset1 =  $('#box-table-a').DataTable({
 
 // Funcion para crear y guardar el despacho.
 function generarDespacho(){
-  console.log('Se va a generar el despacho.');
-
+  var bandera = 0;
+  var itemsDespacho = [];
+  var dias = new Array();
+  var placa = $('#placa').val();
+  var semana = $('#semana').val();
   var subtipo = $('#subtipo').val();
+  var tipo = $('#tipoRacion').val();
   var subtipoNm = $('#subtipoNm').val();
-
+  var conductor = $('#conductor').val();
+  var tipoDespacho = $('#tipoDespacho').val();
+  var bodegaOrigen = $('#bodegaOrigen').val();
+  var tipoTransporte = $('#tipoTransporte').val();
   var proveedorEmpleado = $('#proveedorEmpleado').val();
   var proveedorEmpleadoNm = $('#proveedorEmpleadoNm').val();
 
-  var semana = $('#semana').val();
-  var tipo = $('#tipoRacion').val();
-  var tipoDespacho = $('#tipoDespacho').val();
-
-
-
-
-
-  var bodegaOrigen = $('#bodegaOrigen').val();
-  var tipoTransporte = $('#tipoTransporte').val();
-  var placa = $('#placa').val();
-  var conductor = $('#conductor').val();
-  var dias = new Array();
-  $('#dias .dia:checked').each(
-    function() {
-      //alert("El checkbox con valor " + $(this).val() + " está seleccionado");
-      var aux = $(this).val();
-      dias.push(aux);
-    }
-  );
-
-  var itemsDespacho = [];
-
-  console.log('Buscando items agregados.');
-  $( "#box-table-a tbody input[type=checkbox]" ).each(function(){
-    itemsDespacho.push($(this).val());
-    console.log($(this).val());
+  $('#dias .dia:checked').each(function() {
+    var aux = $(this).val();
+    dias.push(aux);
   });
 
-  bandera = 0;
+  $( "#box-table-a tbody input[type=checkbox]" ).each(function() {
+    itemsDespacho.push($(this).val());
+  });
+
   // Validaciones para generar el despacho
   if(subtipo == ''){
     alert('El campo tipo de despacho es obligatorio.');
     bandera++;
-  }
-  else if(proveedorEmpleado == ''){
+  } else if (proveedorEmpleado == '') {
     alert('El campo Proveedor / Empleado es obligatorio.');
     bandera++;
-  }
-  else if(semana == ''){
+  } else if (semana == '') {
     alert('El campo semana es obligatorio.');
     bandera++;
-  }
-  else if(dias.length == 0){
+  } else if (dias.length == 0) {
     alert('Debe seleccionar al menos un día para el despacho');
     bandera++;
-  }
-  else if(itemsDespacho.length == 0){
+  } else if (itemsDespacho.length == 0) {
     alert('Debe agregar al menos una sede para el despacho');
     bandera++;
-  }
-  else if(bodegaOrigen == ''){
+  } else if (bodegaOrigen == '') {
     alert('El campo bodega origen es obligatorio');
     bandera++;
-  }
-  else if(tipoTransporte == ''){
+  } else if (tipoTransporte == '') {
     alert('El campo tipo de transporte es obligatorio');
     bandera++;
   }
 
-
-
-
-
-
-
-  if(bandera == 0){
-
-
-
-
-    var datos = {
-      "subtipo":subtipo,
-      "subtipoNm":subtipoNm,
-      "proveedorEmpleado":proveedorEmpleado,
-      "proveedorEmpleadoNm":proveedorEmpleadoNm,
-      "semana":semana,
-      "dias":dias,
-      "tipo":tipo,
-      "tipoDespacho":tipoDespacho,
-      "itemsDespacho":itemsDespacho,
-      "bodegaOrigen":bodegaOrigen,
-      "tipoTransporte":tipoTransporte,
-      "placa":placa,
-      "conductor":conductor
-    };
-
+  if(bandera == 0) {
     $.ajax({
       type: "POST",
       url: "functions/fn_despacho_generar.php",
-      data: datos,
-      beforeSend: function(){
-        console.log('Inicia la inserción en tablas');
-        $('#loader').fadeIn();
+      dataType: "HTML",
+      data: {
+        "subtipo":subtipo,
+        "subtipoNm":subtipoNm,
+        "proveedorEmpleado":proveedorEmpleado,
+        "proveedorEmpleadoNm":proveedorEmpleadoNm,
+        "semana":semana,
+        "dias":dias,
+        "tipo":tipo,
+        "tipoDespacho":tipoDespacho,
+        "itemsDespacho":itemsDespacho,
+        "bodegaOrigen":bodegaOrigen,
+        "tipoTransporte":tipoTransporte,
+        "placa":placa,
+        "conductor":conductor
       },
-      success: function(data){
-        $('#debug').html(data);
-
-        if(data == 1){
-          alert('El despacho se ha registrado con éxito.');
-          $(window).unbind('beforeunload');
-          window.location.href = 'despachos.php';
-          //window.open("despacho_consolidado_fecha_lote.php");
-          //window.location.href = 'despacho_consolidado_fecha_lote.php';
-        }else{
-          alert(data);
-          console.log(data);
-          //if (data.indexOf('Se ha encontrado un despacho para la sede')==-1) {
-          //$('#debug').html(data);
-          //}
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      beforeSend: function(){
+        $('#loader').fadeIn();
       }
     })
-    .done(function(){ })
-    .fail(function(){ })
+    .done(function(data) {
+      $('#debug').html(data);
+
+      if (data == 1) {
+        alert('El despacho se ha registrado con éxito.');
+        $(window).unbind('beforeunload');
+        window.location.href = 'despachos.php';
+      } else {
+        alert(data);
+      }
+    })
+    .fail(function(data){ console.log(data); })
     .always(function(){
       $('#loader').fadeOut();
     });
-  }//Termina el if de bandera == 0
-
+  }
 }
-
-
-
-
-
-
-
 
 function reiniciarTabla(){
   dataset1 = $('#box-table-a').DataTable({
@@ -418,7 +351,6 @@ function reiniciarTabla(){
 }
 
 function buscar_bodegas(usuario){
-  console.log(usuario);
   var datos = {"usuario":usuario};
   $.ajax({
     type: "POST",
@@ -451,7 +383,6 @@ function buscar_dias(semana){
 
 
 function buscar_proveedor_empleado(subtipo){
-  console.log('Buscar proveedor empleado')
   var datos = {"subtipo":subtipo};
     $.ajax({
       type: "POST",
@@ -467,9 +398,6 @@ function buscar_proveedor_empleado(subtipo){
 
 
 function buscar_institucion(municipio,tipo){
-  console.log('Actualizando lista de instituciones.');
-  console.log(municipio);
-  console.log(tipo);
   var datos = {"municipio":municipio,"tipo":tipo};
     $.ajax({
       type: "POST",

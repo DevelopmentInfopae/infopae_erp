@@ -60,7 +60,7 @@ if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
   $mesAnno = $mes.$anno;
 
   //var_dump($_POST);
-  $corteDeVariables = 15;
+  $corteDeVariables = 16;
   if(isset($_POST['seleccionarVarios'])){
     $corteDeVariables++;
   }
@@ -109,7 +109,7 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   left join tipo_despacho td on de.TipoDespacho = td.Id
   WHERE de.Num_Doc = $despacho ";
 
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
 
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
@@ -143,7 +143,7 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   $arrayDiasDespacho = explode(',', $diasDespacho);
   $dias = '';
   $consulta = " select * from planilla_semanas where SEMANA = '$semana' ";
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
   $cantDias = $resultado->num_rows;
   if($resultado->num_rows >= 1){
     $mesInicial = '';
@@ -183,7 +183,7 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   from sedes_cobertura
   where semana = '$semana' and cod_sede  = $codSede ";
 
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
     $cantSedeGrupo1 = $row['grupo1'];
@@ -211,7 +211,7 @@ order by cod_alimento asc ";
 
 //CONSULTA LOS CODIGOS DE ALIMENTOS DE ESTE DESPACHO
 
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+$resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
 if($resultado->num_rows >= 1){
   while($row = $resultado->fetch_assoc()){
     $alimento = array();
@@ -280,7 +280,7 @@ if($resultado->num_rows >= 1){
     //echo "<br>$consulta<br>";
 
 
-    $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+    $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
 
     $alimento['componente'] = '';
     $alimento['presentacion'] = '';
@@ -314,7 +314,7 @@ if($resultado->num_rows >= 1){
         $alimento['cantidadund2'] = $row['cantidadund2'];
         $alimento['cantidadund3'] = $row['cantidadund3'];
         $alimento['cantidadund4'] = $row['cantidadund4'];
-        $alimento['cantidadund5'] = $row['cantidadund5']; 
+        $alimento['cantidadund5'] = $row['cantidadund5'];
         // $alimento['cantotalpresentacion'] = round($row['cantu2']) + round($row['cantu3']) + round($row['cantu4']) + round($row['cantu5']);
         $alimento['nombreunidad2'] = $row['nombreunidad2'];
         $alimento['nombreunidad3'] = $row['nombreunidad3'];
