@@ -1,42 +1,29 @@
-<?php 
-include '../../header.php'; 
-include '../../db/conexion.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
-$periodoActual = $_SESSION['periodoActual'];
+<?php
+  include '../../header.php';
+  include '../../db/conexion.php';
+  set_time_limit (0);
+  ini_set('memory_limit','6000M');
+  $periodoActual = $_SESSION['periodoActual'];
 ?>
 
-
-
-
-
-
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-            <div class="col-lg-8">
-                <h2>Nuevo Despacho</h2>
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="<?php echo $baseUrl; ?>">Home</a>
-                    </li>
-                    <li class="active">
-                        <strong>Nuevo Despacho</strong>
-                    </li>
-                </ol>
-            </div>
-            <div class="col-lg-4">
-                <div class="title-action">
-                   <!--
-                    <a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
-                    <a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a>
-                  -->
-                    <a href="#" onclick="generarDespacho()" target="_self" class="btn btn-primary"><i class="fa fa-truck"></i> Generar despachos </a>
-                </div>
-            </div>
+  <div class="col-lg-8">
+      <h2>Nuevo Despacho</h2>
+      <ol class="breadcrumb">
+          <li>
+              <a href="<?php echo $baseUrl; ?>">Inicio</a>
+          </li>
+          <li class="active">
+              <strong>Nuevo Despacho</strong>
+          </li>
+      </ol>
+  </div>
+  <div class="col-lg-4">
+      <div class="title-action">
+          <a href="#" onclick="generarDespacho()" target="_self" class="btn btn-primary"><i class="fa fa-truck"></i> Generar despachos </a>
+      </div>
+  </div>
 </div>
-
-
-
-
 
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
@@ -162,7 +149,7 @@ $periodoActual = $_SESSION['periodoActual'];
                   }//Termina el if que valida que si existan resultados
                   ?>
                 </select>
-              </div><!-- /.col -->          
+              </div><!-- /.col -->
             </div><!-- -/.row -->
             <div class="row">
               <div class="col-sm-3 form-group">
@@ -202,7 +189,7 @@ $periodoActual = $_SESSION['periodoActual'];
               </tr>
             </tbody>
           </table>
-              
+
             </div><!-- /.table-responsive -->
 
 
@@ -244,12 +231,12 @@ $periodoActual = $_SESSION['periodoActual'];
             <label for="placa">Placa</label>
             <!-- Planilla tipoTransportes -->
             <input type="text" name="placa" id="placa" value="" class="form-control">
-          </div><!-- /.col -->     
+          </div><!-- /.col -->
           <div class="col-sm-3 form-group">
             <label for="conductor">Nombre Conductor</label>
             <!-- Planilla tipoTransportes -->
             <input type="text" name="conductor" id="conductor" value="" class="form-control">
-          </div><!-- /.col -->         
+          </div><!-- /.col -->
         </div><!-- -/.row -->
 
 
@@ -263,7 +250,7 @@ $periodoActual = $_SESSION['periodoActual'];
 
 
           </form>
-              
+
 
 
           <div class="listadoFondo">
@@ -302,7 +289,7 @@ $periodoActual = $_SESSION['periodoActual'];
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
-    
+
     <!-- Custom and plugin javascript -->
     <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
