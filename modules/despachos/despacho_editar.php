@@ -4,11 +4,11 @@ set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';
-$Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-    echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}
-$Link->set_charset("utf8");
+// $Link = new mysqli($Hostname, $Username, $Password, $Database);
+// if ($Link->connect_errno) {
+//     echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+// }
+// $Link->set_charset("utf8");
 ?>
 
 
@@ -21,7 +21,7 @@ $Link->set_charset("utf8");
                 <h2>Editar Despacho</h2>
                 <ol class="breadcrumb">
                     <li>
-                        <a href="<?php echo $baseUrl; ?>">Home</a>
+                        <a href="<?php echo $baseUrl; ?>">Inicio</a>
                     </li>
                     <li class="active">
                         <strong>Editar Despacho</strong>
@@ -30,11 +30,7 @@ $Link->set_charset("utf8");
             </div>
             <div class="col-lg-4">
                 <div class="title-action">
-                   <!--
-                    <a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
-                    <a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a>
-                  -->
-                    <a href="#" onclick="actualizarDespacho()" target="_self" class="btn btn-primary"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar Cambios </a>
+                    <a href="#" onclick="actualizarDespacho()" target="_self" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"></i> Guardar Cambios </a>
                 </div>
             </div>
 </div>
@@ -71,7 +67,7 @@ $mesAnno = '';
 
 
 
-          $corteDeVariables = 15;
+          $corteDeVariables = 16;
           if(isset($_POST['seleccionarVarios'])){
             $corteDeVariables++;
           }
@@ -85,25 +81,8 @@ $mesAnno = '';
             $corteDeVariables++;
           }
 
-
-
-
-
-
-
-
-
           $_POST = array_slice($_POST, $corteDeVariables);
           $_POST = array_values($_POST);
-
-          //var_dump($_SESSION);
-          //var_dump($_POST);
-
-
-
-
-
-
         }
 
 
@@ -112,13 +91,8 @@ $mesAnno = '';
         $claves = array_keys($_POST);
         $aux = $claves[0];
         $despacho = $_POST[$aux];
-        //echo $despacho;
+        // var_dump($_POST);
         $consulta = " select * from despachos_enc$mesAnno where Num_Doc = $despacho ";
-
-        //echo "<br>Se va a recibir el numero d edespacho para hacer la consulta y traer los encabezados del despacho.<br>$consulta<br>";
-
-
-
         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
         if($resultado->num_rows >= 1){
           $row = $resultado->fetch_assoc();
@@ -134,7 +108,7 @@ $mesAnno = '';
 
         $consulta = " select * from productosmov$mesAnno pm where pm.Numero = $despacho and pm.Documento='DES' ";
 
-        //echo "<br>Segunda consulta para traer los datos almacenados en productosmov 16 que complementan los parametros del despacho<br>$consulta<br>";
+        // echo "<br>Segunda consulta para traer los datos almacenados en productosmov 16 que complementan los parametros del despacho<br>$consulta<br>";
 
 
 
@@ -438,7 +412,7 @@ $mesAnno = '';
           <div class="col-sm-3 form-group">
             <label for="conductor">Nombre Conductor</label>
             <!-- Planilla tipoTransportes -->
-            <input type="text" name="conductor" id="conductor" value="<?php echo $conductor; ?>">
+            <input type="text" name="conductor" id="conductor" value="<?php echo $conductor; ?>" class="form-control">
           </div><!-- /.col -->
         </div><!-- -/.row -->
 

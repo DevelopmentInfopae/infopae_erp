@@ -61,7 +61,7 @@ if(isset($_POST['rutaNm']) && $_POST['rutaNm']!= ''){
 
 
 //var_dump($_POST);
-$corteDeVariables = 15;
+$corteDeVariables = 16;
 if(isset($_POST['seleccionarVarios'])){
   $corteDeVariables++;
 }

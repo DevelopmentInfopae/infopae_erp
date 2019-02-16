@@ -518,17 +518,7 @@ function despachos_por_sede(){
 
   if(bandera == 0){
     $( ".soloJs" ).remove();
-    console.log('Se van a mostrar los despachos por sede');
-
     $('#formDespachos').attr('action', 'despacho_por_sede.php');
-
-
-
-
-
-
-
-
     $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');

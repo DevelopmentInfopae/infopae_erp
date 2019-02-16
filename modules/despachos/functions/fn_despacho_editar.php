@@ -863,6 +863,9 @@ if($bandera == 0){
 
     //$consulta = $consulta." ( ";
     $sede = $sedesCobertura[$i];
+    $grupo1 = $sede['grupo1'];
+    $grupo2 = $sede['grupo2'];
+    $grupo3 = $sede['grupo3'];
     //$consecutivo = $consecutivos[$i];
 
 
@@ -911,23 +914,10 @@ if($bandera == 0){
   */
 
 
-    $consulta = " update despachos_enc$annoMes set FechaHora_Elab = '$fecha', Id_usuario = $idUsuario, cod_Sede = $sede, Tipo_Complem = '$tipo', Semana = '$semana', Cobertura = $cobertura, Dias = '$diasDespacho', Menus = '$menusReg'where Tipo_Doc = 'DES' and Num_Doc = $despacho ";
-
-
-
-
-
+    $consulta = "UPDATE despachos_enc$annoMes SET FechaHora_Elab = '$fecha', Id_usuario = $idUsuario, cod_Sede = $sede, Tipo_Complem = '$tipo', Semana = '$semana', Cobertura = $cobertura, Dias = '$diasDespacho', Menus = '$menusReg', Cobertura_G1 = '$grupo1', Cobertura_G2 = '$grupo2', Cobertura_G3 = '$grupo3' WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho";
   }
 
-  //echo "<br>".$consulta."<br>";
   $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-
-
-
-
-
-
-
 
 
   // Insertando en despachos_det

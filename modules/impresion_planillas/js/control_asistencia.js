@@ -51,11 +51,11 @@ $( document ).ready(function() {
 			bandera++;
 			alert('Debe seleccionar una institucion');
 			$('#institucion').focus();
-		} else if( $('#sede').val() == '' ) {
+		} /*else if( $('#sede').val() == '' ) {
 			bandera++;
 			alert('Debe seleccionar una sede');
 			$('#sede').focus();
-		} else if($('#tipo').val() == '') {
+		} */else if($('#tipo').val() == '') {
 			bandera++;
 			alert('Debe seleccionar un tipo de complemento');
 			$('#tipo').focus();

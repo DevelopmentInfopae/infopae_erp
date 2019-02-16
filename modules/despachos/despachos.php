@@ -1,27 +1,27 @@
 <?php
-  include '../../header.php';
-  set_time_limit (0);
-  ini_set('memory_limit','6000M');
-  $periodoActual = $_SESSION['periodoActual'];
-  require_once '../../db/conexion.php';
+    include '../../header.php';
+    set_time_limit (0);
+    ini_set('memory_limit','6000M');
+    $periodoActual = $_SESSION['periodoActual'];
+    require_once '../../db/conexion.php';
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-  <div class="col-lg-8">
+    <div class="col-lg-8">
       <h2>Despachos</h2>
-      <ol class="breadcrumb">
-          <li>
-              <a href="<?php echo $baseUrl; ?>">Home</a>
-          </li>
-          <li class="active">
-              <strong>Despachos</strong>
-          </li>
-      </ol>
-  </div>
+        <ol class="breadcrumb">
+            <li>
+                <a href="<?php echo $baseUrl; ?>">Inicio</a>
+            </li>
+            <li class="active">
+                <strong>Despachos</strong>
+            </li>
+        </ol>
+    </div>
 	<div class="col-lg-4">
 		<div class="title-action">
 			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-				<a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary">Nuevo</a>
+				<a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo</a>
 			<?php } ?>
 		</div>
 	</div>

@@ -1,95 +1,68 @@
 <?php
-include '../../config.php';
-require_once '../../autentication.php';
-require('../../fpdf181/fpdf.php');
-require_once '../../db/conexion.php';
-//echo "Tiempo de ejecución: ";
-//echo ini_get('max_execution_time');
-set_time_limit (0);
-//echo "<br> Tiempo de ejecución: ";
-//echo ini_get('max_execution_time');
-//echo "<br> Limite de Memoria: ";
-//echo ini_get('memory_limit');
-ini_set('memory_limit','6000M');
-//echo "<br> Limite de Memoria: ";
-//echo ini_get('memory_limit');
-$largoNombre = 30;
-$sangria = " - ";
-$tamannoFuente = 6;
-date_default_timezone_set('America/Bogota');
+  include '../../config.php';
+  require_once '../../autentication.php';
+  require('../../fpdf181/fpdf.php');
+  require_once '../../db/conexion.php';
 
-$Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-  echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}
-$Link->set_charset("utf8");
+  set_time_limit (0);
+  ini_set('memory_limit','6000M');
+  date_default_timezone_set('America/Bogota');
 
-$mesAnno = '';
-if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho']) ){
-  // Se va a recuperar el mes y el año para las tablaMesAnno
-  $mes = $_POST['despachoMesI'];
-  if($mes < 10){
-    $mes = '0'.$mes;
-  }
-  $mes = trim($mes);
-  $anno = $_POST['despachoAnnoI'];
-  $anno = substr($anno, -2);
-  $anno = trim($anno);
-  $mesAnno = $mes.$anno;
-  $_POST = array_slice($_POST, 2);
-  $_POST = array_values($_POST);
-}else{
-  // Se va a recuperar el mes y el año para las tablaMesAnno
-  $mes = $_POST['mesiConsulta'];
-  if($mes < 10){
-    $mes = '0'.$mes;
-  }
-  $mes = trim($mes);
-  $anno = $_POST['annoi'];
-  $anno = substr($anno, -2);
-  $anno = trim($anno);
-  $mesAnno = $mes.$anno;
+  $mesAnno = '';
+  $sangria = " - ";
+  $largoNombre = 30;
+  $tamannoFuente = 6;
 
+  if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho'])) {
+    // Se va a recuperar el mes y el año para las tablaMesAnno
+    $mes = $_POST['despachoMesI'];
+    if($mes < 10){
+      $mes = '0'.$mes;
+    }
 
+    $mes = trim($mes);
+    $anno = $_POST['despachoAnnoI'];
+    $anno = substr($anno, -2);
+    $anno = trim($anno);
+    $mesAnno = $mes.$anno;
+    $_POST = array_slice($_POST, 2);
+    $_POST = array_values($_POST);
+  } else {
+    // Se va a recuperar el mes y el año para las tablaMesAnno
+    $mes = $_POST['mesiConsulta'];
+    if($mes < 10){
+      $mes = '0'.$mes;
+    }
+    $mes = trim($mes);
+    $anno = $_POST['annoi'];
+    $anno = substr($anno, -2);
+    $anno = trim($anno);
+    $mesAnno = $mes.$anno;
 
+    $corteDeVariables = 16;
+    if(isset($_POST['seleccionarVarios'])){
+      $corteDeVariables++;
+    }
+    if(isset($_POST['informeRuta'])){
+      $corteDeVariables++;
+    }
+    if(isset($_POST['ruta'])){
+      $corteDeVariables++;
+    }
+    if(isset($_POST['rutaNm'])){
+      $corteDeVariables++;
+    }
 
-
-  // var_dump($_POST);
-  $corteDeVariables = 15;
-  if(isset($_POST['seleccionarVarios'])){
-    $corteDeVariables++;
-  }
-  if(isset($_POST['informeRuta'])){
-    $corteDeVariables++;
-  }
-  if(isset($_POST['ruta'])){
-    $corteDeVariables++;
-  }
-  if(isset($_POST['rutaNm'])){
-    $corteDeVariables++;
-  }
-  $_POST = array_slice($_POST, $corteDeVariables);
-  $_POST = array_values($_POST);
-  // echo "<br><br>";
-  // var_dump($_POST);
-
-
-
-
-
-
+    $_POST = array_slice($_POST, $corteDeVariables);
+    $_POST = array_values($_POST);
 }
 
-  //echo "<br><br>$mesAnno<br><br>";
+  class PDF extends FPDF{
+    function Header(){}
+    function Footer(){}
+  }
 
-
-
-class PDF extends FPDF{
-  function Header(){}
-  function Footer(){}
-}
-
-//CREACION DEL PDF
+  //CREACION DEL PDF
   // Creación del objeto de la clase heredada
   $pdf= new PDF('L','mm',array(279.4,215.9));
   $pdf->SetMargins(8, 6.31, 8);
@@ -97,22 +70,6 @@ class PDF extends FPDF{
   $pdf->AliasNbPages();
 
   include '../../php/funciones.php';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 for ($k=0; $k < count($_POST) ; $k++){
   // Borrando variables array para usarlas en cada uno de los despachos
@@ -125,13 +82,14 @@ for ($k=0; $k < count($_POST) ; $k++){
   $claves = array_keys($_POST);
   $aux = $claves[$k];
   $despacho = $_POST[$aux];
-  $consulta = " SELECT de.*, tc.descripcion, s.nom_sede, s.nom_inst, u.Ciudad, td.Descripcion as tipoDespachoNm, tc.jornada
-  FROM despachos_enc$mesAnno de
-  left join sedes$anno s on de.cod_sede = s.cod_sede
+  $consulta = "SELECT de.*, tc.descripcion, s.nom_sede, s.nom_inst, u.Ciudad, td.Descripcion as tipoDespachoNm, tc.jornada
+        FROM despachos_enc$mesAnno de
+        left join sedes$anno s on de.cod_sede = s.cod_sede
   left join ubicacion u on s.cod_mun_sede = u.CodigoDANE
   left join tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
   left join tipo_despacho td on de.TipoDespacho = td.Id
   WHERE de.Num_Doc = $despacho ";
+
 
   // echo '<br><br>'.$consulta.'<br><br>';
 
@@ -139,7 +97,6 @@ for ($k=0; $k < count($_POST) ; $k++){
 
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
-  }
   $municipio = $row['Ciudad'];
   $institucion = $row['nom_inst'];
   $sede = $row['nom_sede'];
@@ -170,6 +127,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 
   $tipo = $modalidad;
   $sedes[] = $codSede;
+  }
 
 
 
@@ -250,33 +208,25 @@ for ($k=0; $k < count($_POST) ; $k++){
 
 
 
-
-
+  /********************** Modificación para cambiar los datos de los 3 campos agregados a la tabla despachos_encMESAÑO **********************/
   // Bucando la cobertura para la sede en esa semana para el tipo de complementosCantidades
   $cantSedeGrupo1 = 0;
   $cantSedeGrupo2 = 0;
   $cantSedeGrupo3 = 0;
 
-  $consulta = " select Etario1_$modalidad as grupo1, Etario2_$modalidad as grupo2, Etario3_$modalidad as grupo3
-  from sedes_cobertura
-  where semana = '$semana' and cod_sede  = $codSede ";
-
+  // $consulta = "SELECT Etario1_$modalidad as grupo1, Etario2_$modalidad as grupo2, Etario3_$modalidad as grupo3
+  //             FROM sedes_cobertura
+  //             WHERE semana = '$semana' and cod_sede  = $codSede ";
+  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3 FROM despachos_enc0219 WHERE Num_doc = '$despacho'";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
-    $cantSedeGrupo1 = $row['grupo1'];
-    $cantSedeGrupo2 = $row['grupo2'];
-    $cantSedeGrupo3 = $row['grupo3'];
+    $cantSedeGrupo1 = $row['Cobertura_G1'];
+    $cantSedeGrupo2 = $row['Cobertura_G2'];
+    $cantSedeGrupo3 = $row['Cobertura_G3'];
   }
 
-  //echo "<br>".$cantSedeGrupo1;
-  //echo "<br>".$cantSedeGrupo2;
-  //echo "<br>".$cantSedeGrupo3;
-
-  // A medida que se recoja la información de los aliemntos se
-  // determianra si todos los grupos etarios fueron beneficiados
-  // y usaremos las cantidades de las siguientes variables.
-
+  // A medida que se recoja la información de los aliemntos se determianra si todos los grupos etarios fueron beneficiados y usaremos las cantidades de las siguientes variables.
   $sedeGrupo1 = 0;
   $sedeGrupo2 = 0;
   $sedeGrupo3 = 0;
@@ -301,35 +251,6 @@ for ($k=0; $k < count($_POST) ; $k++){
     }
   }
 
-
-
-
-
-
-
-
-              //var_dump($alimentos);
-
-                // Buscando propiedades y cantidades de cada alimento.
-
-
-
-
-
-
-              /*
-                 cantu2,
-                  cantu3,
-                  cantu4,
-                  cantu5,
-                  cantotalpresentacion,
-
-
-              */
-
-
-
-
   for ($i=0; $i < count($alimentos) ; $i++) {
     $alimento = $alimentos[$i];
     $auxCodigo = $alimento['codigo'];
@@ -345,35 +266,12 @@ for ($k=0; $k < count($_POST) ; $k++){
     from despachos_det$mesAnno
     where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
 
-
-
     (select Cantidad from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 3) as cant_grupo3,
-
-
-
-
-
-
-
-
-
-
     (SELECT cantu2 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu2,
     (SELECT cantu3 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu3,
     (SELECT cantu4 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu4,
     (SELECT cantu5 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu5,
     (SELECT cantotalpresentacion FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantotalpresentacion,
-
-
-
-
-
-
-
-
-
-
-
 
     p.cantidadund2,
     p.cantidadund3,
@@ -384,22 +282,7 @@ for ($k=0; $k < count($_POST) ; $k++){
     p.nombreunidad4,
     p.nombreunidad5
 
-
-
-
-
-
-
-
     from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  order by m.orden_grupo_alim ASC, ftd.Componente DESC ";
-
-
-
-
-
-
-
-
 
         // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
         //echo "<br><br>".$consulta."<br><br>";
