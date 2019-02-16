@@ -186,7 +186,7 @@ function despachos_kardex(){
     $( ".soloJs" ).remove();
     console.log('Se van a mostrar los despachos por sede');
 
-    $('#formDespachos').attr('action', 'despacho_kardex3.php');
+    $('#formDespachos').attr('action', 'ordenes_kardex.php');
     $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');
@@ -520,7 +520,7 @@ function despachos_por_sede(){
     $( ".soloJs" ).remove();
     console.log('Se van a mostrar los despachos por sede');
 
-    $('#formDespachos').attr('action', 'despacho_por_sede.php');
+    $('#formDespachos').attr('action', 'ordenes_por_sede.php');
 
 
 

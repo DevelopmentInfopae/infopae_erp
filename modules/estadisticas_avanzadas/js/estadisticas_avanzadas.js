@@ -39,15 +39,6 @@ function CargarTablas(){
 		$('#tHeadSemana').html(data['thead']);
 		$('#tBodySemana').html(data['tbody']);
 		$('#tFootSemana').html(data['tfoot']);
-		$('.verGraficas').on('click', 
-			function(){ 
-				$('.exportarEstadisticas').css('display', '');
-				$('#filtroSemana').css('display', '');
-				verSemana($(this).data('semana'), data['diasSemanas'], data['tipoComplementos']);
-				$('#numSemana').html($(this).data('semana'));
-				$('#semana').val($(this).data('semana'));
-			}
-		);
 		$('td').mouseover(function(){
 			if ($(this).prop('class') != "") {
 				clase = $(this).prop('class');
@@ -63,10 +54,34 @@ function CargarTablas(){
 			}
 		});
 
+		info = data['info'];
+
+		console.log(info);
+
+		json = [];
+
+		json[0] = ["Semana", "Total"];
+		cnt = 0;
+
+		$.each(info, function(semana, total){
+			cnt++;
+			json[cnt] = [semana, parseInt(total)];
+		});
+
+		console.log(json);
+
+		google.charts.load('current', {packages: ['corechart', 'bar']});
+		google.charts.setOnLoadCallback(function(){
+			armarGrafica(json, 'Totales por semana', 'Ordenado por mes', 'graficaTotalesSemanas', 'right', 1);
+		});
+
+		var diasSemanaD = data['diasSemanas'];
+
+
 			$.ajax({
 			type:"POST",
 			url:"functions/fn_estadisticas_tabla_totales_complemento.php",
-			data : {"diasSemanas" : data['diasSemanas'], "tipoComplementos" : data['tipoComplementos']},
+			data : {"diasSemanas" : diasSemanaD, "tipoComplementos" : data['tipoComplementos']},
 			success:function(data){
 				data = JSON.parse(data);
 				$('#tHeadComp').html(data['thead']);
@@ -94,157 +109,21 @@ function CargarTablas(){
 				google.charts.setOnLoadCallback(function(){
 					armarGrafica(json, 'Totales por tipo complemento alimentario', 'Ordenado por mes', 'graficaTotalesComplemento', 'right', 1);
 				});
-				}
-			});
 
-			$.ajax({
-				type : "POST",
-				url : "functions/fn_estadisticas_tabla_totales_municipios.php",
-				data : {"diasSemanas" : data['diasSemanas']},
-				error : function(data){
-					console.log("Error :"+data);
-				}, 
-				success : function(data){
-					data = JSON.parse(data);
-					$('#tHeadSemanaMun').html(data['thead']);
-					$('#tBodySemanaMun').html(data['tbody']);
-					$('#tFootSemanaMun').html(data['tfoot']);
-					info = data['info'];
-					dataset1 = $('#tablaMunicipios').DataTable({
-				    order: [ 0, 'asc' ],
-				    pageLength: 10,
-				    responsive: true,
-				    dom : 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons" B>',
-				    buttons : [{extend:'excel', title:'Dispositivos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4]}}],
-				    oLanguage: {
-				      sLengthMenu: 'Mostrando _MENU_ registros por pÁgina',
-				      sZeroRecords: 'No se encontraron registros',
-				      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-				      sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-				      sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-				      sSearch:         'Buscar: ',
-				      oPaginate:{
-				        sFirst:    'Primero',
-				        sLast:     'Último',
-				        sNext:     'Siguiente',
-				        sPrevious: 'Anterior'
-				      }
-				    }
-				    });
-
-					markersJ = [];
-					cityAreaData = [];
-
-					console.log(info);
-
-				    $.each(info, function(ciudad, total){
-				    		markersJ.push({latLng : [ coordenadas[ciudad]['Latitud'], coordenadas[ciudad]['Longitud'] ], name : "Muncipio : \n"+total[1]+" = "+total[0]});
-				    		cityAreaData.push(total[0]);
-				    })
-
-				    $(function(){
-
-					  map = new jvm.Map({
-					    container: $('#map'),
-					    map: 'co_merc',
-					    markers: markersJ,
-					    zoomButtons : false,
-					    zoomOnScroll: false,
-					    markerStyle: {
-					      initial: {
-					        fill: '#4DAC26'
-					      }
-					    },
-					    series: {
-					      markers: [{
-					        attribute: 'r',
-					        scale: [5, 15],
-					        values: cityAreaData
-					      }]
-					    }
-					  });
-
-					  $('#map').vectorMap('get','mapObject').setFocus({region: jvectorDept[data['codDepartamento']], animate: true});
-					});
-
-				    // info = data['info'];
-				    // console.log(info);
-				    // json = [];
-				    // json[0] = ['Ciudad', 'Total'];
-				    // $.each(info, function(ciudad, total){
-				    // 	json.push([ciudad, total]);
-				    // });
-				    // console.log(json);
-					// google.charts.load('current', {packages: ['corechart', 'bar']});
-					// google.charts.setOnLoadCallback(function(){
-					// armarGrafica2(json, 'Totales por municipio  y semana', 'Ordenado por semana', 'graficaTotalesMunicipio', 'none', 1);});
-					setTimeout(function() {$('#loader').fadeOut();}, 2000);
-				}
-			});
-
-			$.ajax({
-			type:"POST",
-			url:"functions/fn_estadisticas_tabla_valores_ejecutados.php",
-			data : {"diasSemanas" : data['diasSemanas']},
-			success:function(data){
-				data = JSON.parse(data);
-				$('#tablaValoresEjecutados').html(data['tabla']);
-
-				info = data['info'];
-				json = [];
-				json[0] = [];
-				json[0].push('Mes');
-				cnt = 0;
-				$.each(info, function(mes, arrComplem){
-					cnt++;
-					json[cnt] = [];
-					json[cnt].push(mesesNom[mes]);
-					$.each(arrComplem, function(complemento, total){
-						if (!json[0].includes(complemento)) {
-							json[0].push(complemento);
-						}
-						json[cnt].push(parseInt(total));
-					});
-				});
-				cnt++;
-				json[cnt] = [];
-				json[cnt].push("Total");
-				$.each(data['totales'], function(complemento, total){
-					json[cnt].push(total);
-				});
-				console.log(json);
-				google.charts.load('current', {packages: ['corechart', 'bar']});
-				google.charts.setOnLoadCallback(function(){
-					armarGrafica(json, 'Valor de recursos ejecutados', 'Ordenado por mes', 'graficaValoresEjecutados', 'right', 1);
+				$.ajax({
+					type:"POST",
+					url:"functions/fn_estadisticas_tabla_totales_genero.php",
+					data : {"diasSemanas" : diasSemanaD},
+					success:function(data){
+						data = JSON.parse(data);
+						$('#tHeadGenero').html(data['thead']);
+						$('#tBodyGenero').html(data['tbody']);
+						$('#tFootGenero').html(data['tfoot']);
+					}
 				});
 
 				}
 			});
-
-			$.ajax({
-			type:"POST",
-			url:"functions/fn_estadisticas_tabla_valores_ejecutados_porcentajes.php",
-			data : {"diasSemanas" : data['diasSemanas']},
-			success:function(data){
-				data = JSON.parse(data);
-				$('#tablaValoresEjecutadosPorcentajes').html(data['tabla']);
-
-				info = data['info'];
-
-
-				json = [];
-
-				json[0] = ["Concepto", "Valor"];
-				json[1] = ["Ejecutado", info['Ejecutado']];
-				json[2] = ["Ejecutar", info['Ejecutar']];
-				google.charts.load('current', {packages: ['corechart']});
-				google.charts.setOnLoadCallback(function(){
-					pieChart(json);
-				});
-
-				}
-			});
-
 		}
 	});
 

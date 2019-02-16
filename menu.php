@@ -60,6 +60,7 @@
 		<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level">
 			<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
+			<li><a href="<?php echo $baseUrl; ?>/modules/ordenes_compra/ordenes.php">Órdenes de compra</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/despachos.php"><span class="nav-label">Insumos</span></a> </li>
 		</ul>
 	</li>

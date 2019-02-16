@@ -8,13 +8,13 @@
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-      <h2>Despachos</h2>
+      <h2>Órdenes de compra</h2>
       <ol class="breadcrumb">
           <li>
               <a href="<?php echo $baseUrl; ?>">Home</a>
           </li>
           <li class="active">
-              <strong>Despachos</strong>
+              <strong>Órdenes de compra</strong>
           </li>
       </ol>
   </div>
@@ -909,7 +909,7 @@
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 
 
-    <script src="<?php echo $baseUrl; ?>/modules/despachos/js/despachos.js"></script>
+    <script src="<?php echo $baseUrl; ?>/modules/ordenes_compra/js/ordenes.js"></script>
 
 
 
