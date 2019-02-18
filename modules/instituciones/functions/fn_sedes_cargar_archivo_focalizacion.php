@@ -493,6 +493,12 @@
 					}
 				}
 
+				/***************************** Modificación ************************************************/
+				// Se actualiza a cero (0) las columnas de todos los registros en entregas_res[MES][AÑO], a partir del primer día de la semana seleccionada. Ej: D7.
+				$consulta_actualizacion = "UPDATE entregas_res_". $mes . $_SESSION["periodoActual"] ." SET ". calcularDias($dia_actual, $contador_dia, 0) . " WHERE id > 0";
+				$resultado_actualizacion = $Link->query($consulta_actualizacion) or die (mysqli_error($Link));
+				/**************************************************************************************/
+
 				// Consulta que retorna todos los datos de la tabla entregas_res[MES][AÑO]
 				$res_entregas_res = $Link->query("SELECT id, num_doc, cod_sede, tipo_complem FROM entregas_res_".$mes.$_SESSION["periodoActual"]." WHERE 1") or die (mysqli_error($Link));
 				if ($res_entregas_res->num_rows > 0) {
@@ -506,8 +512,7 @@
 				$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
 
 				// Iteramos el archivo
-				while(($datos = fgetcsv($archivo, null, $separador))==true)
-				{
+				while(($datos = fgetcsv($archivo, null, $separador))==true) {
 					// Variable para identificar si el registro es nuevo o ya existe.
 					$existe = false;
 					// Condición que valida si existe el documento del estudiante.
@@ -637,7 +642,7 @@
 		];
 	}
 
-	// echo json_encode($respuestaAJAX);
+	echo json_encode($respuestaAJAX);
 
 	/*****************************************************************************************************/
 
