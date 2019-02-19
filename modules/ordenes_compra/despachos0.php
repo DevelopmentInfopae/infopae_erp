@@ -1,31 +1,44 @@
 <?php
-    include '../../header.php';
-    set_time_limit (0);
-    ini_set('memory_limit','6000M');
-    $periodoActual = $_SESSION['periodoActual'];
-    require_once '../../db/conexion.php';
+include '../../header.php';
+set_time_limit (0);
+ini_set('memory_limit','6000M');
+$periodoActual = $_SESSION['periodoActual'];
+require_once '../../db/conexion.php';
+$Link = new mysqli($Hostname, $Username, $Password, $Database);
+if ($Link->connect_errno) {
+    echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+}
+$Link->set_charset("utf8");
 ?>
 
+
+
+
+
+
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-    <div class="col-lg-8">
-      <h2>Despachos</h2>
-        <ol class="breadcrumb">
-            <li>
-                <a href="<?php echo $baseUrl; ?>">Inicio</a>
-            </li>
-            <li class="active">
-                <strong>Despachos</strong>
-            </li>
-        </ol>
-    </div>
-	<div class="col-lg-4">
-		<div class="title-action">
-			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-				<a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo</a>
-			<?php } ?>
-		</div>
-	</div>
+            <div class="col-lg-8">
+                <h2>Despachos</h2>
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="<?php echo $baseUrl; ?>">Home</a>
+                    </li>
+                    <li class="active">
+                        <strong>Despachos</strong>
+                    </li>
+                </ol>
+            </div>
+						<div class="col-lg-4">
+							<div class="title-action">
+								<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+									<a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary">Nuevo</a>
+								<?php } ?>
+							</div>
+						</div>
 </div>
+
+
+
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -34,7 +47,7 @@
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
           <h2>Parámetros de Consulta</h2>
-          <form class="col-lg-12" action="despachos.php" name="formDespachos" id="formDespachos" method="post" target="_blank">
+          <form class="col-lg-12" action="despachos.php" name="formDespachos" id="formDespachos" method="post" target="_self">
             <div class="row">
 
                                 <div class="col-sm-4 form-group">
@@ -352,7 +365,7 @@
     $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
     if($resultado->num_rows >= 1){
     while($row = $resultado->fetch_assoc()) { ?>
-    <option value="<?php echo $row["codigoDANE"]; ?>"  <?php  if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($municipio_defecto["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; } ?> ><?php echo $row["ciudad"]; ?></option>
+    <option value="<?php echo $row["codigoDANE"]; ?>"  <?php  if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"] ){ echo " selected "; } ?> ><?php echo $row["ciudad"]; ?></option>
     <?php
     }// Termina el while
     }//Termina el if que valida que si existan resultados
@@ -368,28 +381,43 @@
     <div class="col-sm-3 form-group">
         <label for="institucion">Institución</label>
         <select class="form-control" name="institucion" id="institucion">
-            <option value="">Todas</option>
-            <?php
-                if ((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ) || $municipio_defecto["CodMunicipio"] != "") {
-                    $municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"];
-                    $consulta = "SELECT DISTINCT s.cod_inst, s.nom_inst FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE 1=1";
-                    $consulta = $consulta." AND s.cod_mun_sede = '$municipio'";
-                    $consulta = $consulta." ORDER BY s.nom_inst ASC";
-                    echo $consulta;
+    <option value="">Todas</option>
+    <?php
 
-                    $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-                    if($resultado->num_rows >= 1){
-                        while($row = $resultado->fetch_assoc()) {
-            ?>
-                            <option value="<?php echo $row['cod_inst']; ?>" <?php if(isset($_GET["pb_institucion"]) && $_GET["pb_institucion"] == $row['cod_inst'] ){ echo " selected "; }  ?> > <?php echo $row['nom_inst']; ?></option>
-            <?php
-                        }
-                    }
-                }
 
-            ?>
-        </select>
-    </div>
+
+
+
+    if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ){
+        $municipio = $_GET["pb_municipio"];
+        $consulta = " select distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
+        $consulta = $consulta." and s.cod_mun_sede = '$municipio' ";
+
+        $consulta = $consulta." order by s.nom_inst asc ";
+
+
+
+          $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+          if($resultado->num_rows >= 1){
+            while($row = $resultado->fetch_assoc()) { ?>
+              <option value="<?php echo $row['cod_inst']; ?>" <?php if(isset($_GET["pb_institucion"]) && $_GET["pb_institucion"] == $row['cod_inst'] ){ echo " selected "; }  ?> > <?php echo $row['nom_inst']; ?></option>
+            <?php }// Termina el while
+          }//Termina el if que valida que si existan resultados
+    }
+
+
+
+
+
+
+
+
+    ?>
+    </select>
+    </div><!-- /.col -->
+
+
+
 
     <div class="col-sm-3 form-group">
         <label for="sede">sede</label>
@@ -665,6 +693,10 @@
 
 
 <hr>
+
+
+
+
                 <div class="row">
 
                   <div class="col-xs-6 flexMid">
@@ -674,43 +706,37 @@
 
                     <div class="col-xs-6">
 
-                            <div class="pull-right dropdown">
+                            <div class="pull-right social-action dropdown">
 
-                                <!-- <button data-toggle="dropdown" class="dropdown-toggle btn-white" title="Generar Planilla">
+
+
+                                <button data-toggle="dropdown" class="dropdown-toggle btn-white" title="Generar Planilla">
                                     <i class="fa fa-file-pdf-o"></i>
                                 </button>
                                 <ul class="dropdown-menu m-t-xs">
                                     <li><a href="#" onclick="despachos_por_sede()">Individual</a></li>
                                     <li><a href="#" onclick="despachos_kardex()">Kardex</a></li>
-                                    <li><a href="#" onclick="despachos_kardex2()">Kardex 2</a></li>
-                                    <li><a href="#" onclick="despachos_mixta()">Mixta</a></li>
+                                    <!-- <li><a href="#" onclick="despachos_kardex2()">Kardex 2</a></li> -->
+                                    <!-- <li><a href="#" onclick="despachos_mixta()">Mixta</a></li> -->
                                     <li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>
                                     <li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>
-                                </ul> -->
-
-                               <div class="dropdown pull-right" id="">
-                                <button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button>
-                                <ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">
-                                  <li><a href="#" onclick="despachos_por_sede()">Individual</a></li>
-                                  <li><a href="#" onclick="despachos_kardex()">Kardex</a></li>
-                                  <li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>
-                                  <!-- <li><a href="#" onclick="despachos_kardex2()">Kardex 2</a></li> -->
-                                  <!-- <li><a href="#" onclick="despachos_mixta()">Mixta</a></li> -->
-                                  <li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>
-                                  <li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>
-                                  <?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-                                    <li>
-                                      <a href="#" onclick="editar_despacho()">Editar Despacho</a>
-                                    </li>
-                                    <li>
-                                      <a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a>
-                                    </li>
-                                    <li>
-                                      <a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a>
-                                    </li>
-                                  <?php } ?>
                                 </ul>
-                              </div>
+
+
+																<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+																	<button class="btn-white" title="Editar Despacho" onclick="editar_despacho()" type="button">
+																		<i class="fa fa-pencil"></i>
+																	</button>
+																	<button class="btn-white" title="Ingresar Lotes y Fechas de vencimiento" onclick="despachos_por_sede_fecha_lote()" type="button">
+																		<i class="fa fa-clock-o"></i>
+																	</button>
+																	<button class="btn-white" title="Eliminar Despacho" onclick="eliminar_despacho()" type="button">
+																		<i class="fa fa-trash"></i>
+																	</button>
+																<?php } ?>
+
+
+
 
 
                             </div>
