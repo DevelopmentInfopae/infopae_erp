@@ -8,21 +8,21 @@
     <h2>Novedades de priorización</h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
+        <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li class="active">
         <strong>Novedades de priorización</strong>
       </li>
     </ol>
-  </div><!-- /.col -->
+  </div>
   <div class="col-lg-4">
     <div class="title-action">
 			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
 				<a href="#" class="btn btn-primary" onclick="crearNovedadPriorizacion();"><i class="fa fa-plus"></i> Nuevo </a>
 			<?php } ?>
-    </div><!-- /.title-action -->
-  </div><!-- /.col -->
-</div><!-- /.row -->
+    </div>
+  </div>
+</div>
 
 <!-- Seccion de filtros -->
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -44,12 +44,6 @@
                 <th>CAJMPS</th>
                 <th>Semana</th>
                 <th>Observaciones</th>
-								<!-- <th class="text-center">Acciones</th> -->
-                <!-- <th>Correo electrónico</th>
-                <th>Perfil</th>
-                <th>Tipo de usuario</th>
-                <th>Municipio</th>
-							-->
               </tr>
             </thead>
             <tbody>
@@ -65,20 +59,14 @@
 								<th>CAJMPS</th>
 								<th>Semana</th>
 								<th>Observaciones</th>
-								<!-- <th class="text-center">Acciones</th> -->
               </tr>
             </tfoot>
           </table>
-
-
-
         </div>
       </div>
     </div>
   </div>
-
 </div>
-
 
 <div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
   <div class="modal-dialog modal-sm">
@@ -100,12 +88,6 @@
   </div>
 </div>
 
-
-
-
-
-
-
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
@@ -125,29 +107,13 @@
 
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/js/novedades_priorizacion.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
   $(document).ready(function(){
     // Configuración para la tabla de sedes.
     datatables = $('.dataTablesNovedadesPriorizacion').DataTable({
       ajax: {
         method: 'POST',
-        url: 'functions/fn_novedades_priorizacion_buscar_datatables.php',
-        // data:{
-        //   municipio: $('#municipio').val(),
-        //   institucion: $('#institucion').val()
-        // }
+        url: 'functions/fn_novedades_priorizacion_buscar_datatables.php'
       },
       columns:[
         { data: 'municipio'},
@@ -158,17 +124,7 @@
         { data: 'CAJMRI'},
         { data: 'CAJMPS'},
         { data: 'Semana'},
-        { data: 'observaciones'},
-        // { data: 'codigoInstitucion'},
-        // { data: 'nombreInstitucion'},
-        // { data: 'nombreCoordinador'},
-        // { data: 'nombreJornada'},
-        // { data: 'tipoValidacion'},
-
-
-
-
-        //{ defaultContent: '<div class="btn-group">'+ '<div class="dropdown pull-right">'+ '<button class="btn btn-primary btn-sm" type="button" id="dropDownMenu1" data-toggle="dropdown"  aria-haspopup="true">'+ 'Acciones <span class="caret"></span>'+ '</button>'+ '<ul class="dropdown-menu pull-right" aria-labelledby="dropDownMenu1">'+ '<li>'+ '<a href="#" class="editarSede"><i class="fa fa-pencil fa-lg"></i> Editar</a>'+ '</li>'+ '<li>'+ '<a href="#">'+ 'Estado: &nbsp;'+ '<input type="checkbox" class="estadoSede" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24">'+ '</a>'+ '</li>'+ '</ul>'+ '</div>'+ '</div>'}
+        { data: 'observaciones'}
       ],
       buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } } ],
       dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
@@ -193,14 +149,8 @@
       }
     }).on("draw", function(){ $('#loader').fadeOut(); $('.estadoSede').bootstrapToggle(); });
 
-
-
-
-
-
-
 		// Evento para ver
-		$(document).on('click', '.dataTablesNovedadesPriorizacion tbody td:nth-child(-n+8)', function(){
+		$(document).on('click', '.dataTablesNovedadesPriorizacion tbody td:nth-child(-n+9)', function(){
 			console.log('Click en la fila');
 			var tr = $(this).closest('tr');
 			var datos = datatables.row( tr ).data();

@@ -1,39 +1,34 @@
-function crearNovedadPriorizacion(){
-  window.open('novedades_priorizacion_crear.php', '_self');
-}
 $(document).ready(function(){
 	buscar_municipios();
 
-
-    $('#municipio').change(function(){
-        var municipio = $(this).val();
+  $('#municipio').change(function(){
+    var municipio = $(this).val();
 		buscar_institucion(municipio);
 		$('#sede').html('<option value = "">Seleccione una</option>');
 	});
 
 	$('#institucion').change(function(){
-        var institucion = $(this).val();
-        buscar_sede(institucion);
+    var institucion = $(this).val();
+    buscar_sede(institucion);
 	});
 
 	$('#institucion').change(function(){
-        var institucion = $(this).val();
-        buscar_sede(institucion);
+    var institucion = $(this).val();
+    buscar_sede(institucion);
 	});
 
 	$('#sede').change(function(){
-        var sede = $(this).val();
-        buscar_meses(sede);
-    });
+    var sede = $(this).val();
+    buscar_meses(sede);
+  });
 
 	$('#mes').change(function(){
-        var mes = $(this).val();
+    var mes = $(this).val();
 		var sede = $('#sede').val();
-        buscar_semanas(mes,sede);
-    });
+    buscar_semanas(mes,sede);
+  });
 
-    $('#btnBuscar').click(function(){
-		//$("#myModal").modal();
+  $('#btnBuscar').click(function(){
 		validar_semanas_cantidades();
 	});
 
@@ -46,6 +41,10 @@ $(document).ready(function(){
 	});
 });
 
+function crearNovedadPriorizacion(){
+  window.open('novedades_priorizacion_crear.php', '_self');
+}
+
 function buscar_municipios(){
     $.ajax({
 		type: "POST",
@@ -54,20 +53,16 @@ function buscar_municipios(){
 			$('#loader').fadeIn();
 		},
     	success: function(data){
-			try {
+				try {
 		  		var obj = JSON.parse(data);
-				// console.log('Log');
-				// console.log(obj.log);
-				// console.log('Respuesta');
-				// console.log(obj.respuesta);
-				$('#municipio').html(obj.respuesta);
-  			}
-  			catch(err) {
-				$('.debug').html(err.message);
-				$('.debug').append('<br/><br/>');
-				$('.debug').append(data);
-  			}
-      	}
+					$('#municipio').html(obj.respuesta);
+				}
+				catch(err) {
+					$('.debug').html(err.message);
+					$('.debug').append('<br/><br/>');
+					$('.debug').append(data);
+				}
+    	}
     })
     .done(function(){ })
     .fail(function(){ })
@@ -77,37 +72,24 @@ function buscar_municipios(){
 }
 
 function buscar_institucion(municipio){
-    console.log('Actualizando lista de instituciones.');
-    console.log(municipio);
-    var datos = {"municipio":municipio};
     $.ajax({
-		type: "POST",
-		url: "functions/fn_buscar_institucion.php",
-		data: datos,
-		beforeSend: function(){
-			$('#loader').fadeIn();
-		},
+			type: "POST",
+			url: "functions/fn_buscar_institucion.php",
+			data: {"municipio":municipio},
+			dataType: "HTML",
+			beforeSend: function(){
+				$('#loader').fadeIn();
+			},
     	success: function(data){
-			try {
-		  		var obj = JSON.parse(data);
-				// console.log('Log');
-				// console.log(obj.log);
-				// console.log('Respuesta');
-				// console.log(obj.respuesta);
-				$('#institucion').html(obj.respuesta);
-  			}
-  			catch(err) {
-				$('.debug').html(err.message);
-				$('.debug').append('<br/><br/>');
-				$('.debug').append(data);
-  			}
-      	}
-    })
-    .done(function(){ })
-    .fail(function(){ })
-    .always(function(){
-    	$('#loader').fadeOut();
-    });
+				$('#institucion').html(data);
+    	}
+	  })
+	  .fail(function(data){
+	  	console.log(data);
+	  })
+	  .always(function(){
+	  	$('#loader').fadeOut();
+	  });
 }
 
 function buscar_sede(institucion){
@@ -178,17 +160,13 @@ function buscar_meses(sede){
 }
 
 function buscar_semanas(mes,sede){
-    console.log('Actualizando lista de semanas.');
-    console.log('mes: '+mes);
-    console.log('sede: '+sede);
-    var datos = {"mes":mes, "sede":sede};
     $.ajax({
-		type: "POST",
-		url: "functions/fn_buscar_semanas.php",
-		data: datos,
-		beforeSend: function(){
-			$('#loader').fadeIn();
-		},
+			type: "POST",
+			url: "functions/fn_buscar_semanas.php",
+			data: {"mes":mes, "sede":sede},
+			beforeSend: function(){
+				$('#loader').fadeIn();
+			},
     	success: function(data){
 			try {
 		  		var obj = JSON.parse(data);
@@ -215,12 +193,12 @@ function buscar_semanas(mes,sede){
 function validar_semanas_cantidades(){
 	$('.priorizacionAction').hide('fast');
 	var bandera = 0;
-	console.log('Buscar priorización.');
-	console.log($('#municipio').val());
-	console.log($('#institucion').val());
-	console.log($('#sede').val());
-	console.log($('#mes').val());
-	console.log($('#semana').val());
+	// console.log('Buscar priorización.');
+	// console.log($('#municipio').val());
+	// console.log($('#institucion').val());
+	// console.log($('#sede').val());
+	// console.log($('#mes').val());
+	// console.log($('#semana').val());
 	if($('#municipio').val() === undefined || $('#municipio').val() == ''){
 		alert('Debe seleccionar un municipio.');
 		$('#municipio').focus();
@@ -244,16 +222,17 @@ function validar_semanas_cantidades(){
 	// Recogemos todas las semanas chequeadas
 	var semanas = new Array();
     $('#semana .semana:checked').each(
-		function() {
-			var aux = $(this).val();
-			semanas.push(aux);
-		}
+			function() {
+				var aux = $(this).val();
+				semanas.push(aux);
+			}
     );
+
 	if(semanas.length <= 0 && bandera == 0){
 		alert('Debe seleccionar por lo menos una semana.');
 		$('#semana0').focus();
 	}else if(bandera == 0){
-		console.log(semanas);
+		// console.log(semanas);
 		var sede = $('#sede').val();
 		var datos = {"semanas":semanas, "sede":sede};
 		$.ajax({

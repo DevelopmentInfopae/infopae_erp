@@ -1,25 +1,25 @@
 <?php
-require_once '../../../config.php';
-require_once '../../../autentication.php';
-require_once '../../../db/conexion.php';
+	require_once '../../../config.php';
+	require_once '../../../autentication.php';
+	require_once '../../../db/conexion.php';
 
-$mes = (isset($_POST['mes']) && $_POST['mes'] != '') ? mysqli_real_escape_string($Link, $_POST["mes"]) : "";
-$sede = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
-$periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
+	$mes = (isset($_POST['mes']) && $_POST['mes'] != '') ? mysqli_real_escape_string($Link, $_POST["mes"]) : "";
+	$sede = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
+	$periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
-$log = "";
-$respuesta = "";
+	$log = "";
+	$respuesta = "";
 
-$semanas = array();
-$consulta = " select distinct semana from planilla_semanas where mes = '$mes' order by semana asc ";
-// echo $consulta;
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-if($resultado->num_rows >= 1){
-	while($row = $resultado->fetch_assoc()){
-		$semanas[] = $row['semana'];
-	}// Termina el while
-}//Termina el if que valida que si existan resultados
-//var_dump($semanas);
+	$semanas = array();
+	$consulta = " select distinct semana from planilla_semanas where mes = '$mes' order by semana asc ";
+
+	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	if($resultado->num_rows >= 1){
+		while($row = $resultado->fetch_assoc()){
+			$semanas[] = $row['semana'];
+		}// Termina el while
+	}//Termina el if que valida que si existan resultados
+
 
 // Buscando la existencia de tablas de prorización
 $consulta = " SELECT TABLE_NAME AS tabla FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$Database' and TABLE_NAME LIKE 'priorizacion%' ";
@@ -50,7 +50,7 @@ foreach ($semanas as $semana) {
 //var_dump($semanasMostrar);
 $aux = 0;
 foreach ($semanasMostrar as $semanaMostrar) {
-	$respuesta .= "<div class=\"checkboxSemana\"><input type=\"checkbox\" class=\"semana\" id=\"semana$aux\" name=\"semana$aux\" value=\"$semanaMostrar\">
+	$respuesta .= "<div class=\"checkboxSemana\"><input type=\"radio\" class=\"semana\" id=\"semana$aux\" name=\"semana\" value=\"$semanaMostrar\">
 	<label>$semanaMostrar</label></div>";
 	$aux++;
 }

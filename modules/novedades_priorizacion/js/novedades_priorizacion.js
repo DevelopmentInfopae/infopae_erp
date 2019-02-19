@@ -1,6 +1,4 @@
-$(document).ready(function(){
-
-});
+$(document).ready(function(){});
 
 function crearNovedadPriorizacion(){
   window.open('novedades_priorizacion_crear.php', '_self');
@@ -30,7 +28,6 @@ function revertirEstado(){
 function cambiarEstado(){
   $.ajax({
     type: "POST",
-    //url: "functions/fn_sedes_cambiar_estado.php",
     dataType: 'json',
     data: {
       codigo: $('#codigoACambiar').val(),
