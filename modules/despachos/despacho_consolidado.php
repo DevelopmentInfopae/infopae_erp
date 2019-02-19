@@ -349,8 +349,8 @@ for ($i=0; $i < count($sedes) ; $i++) {
 
   $auxSede = $sedes[$i];
 
-  $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo
-  from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
+  $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
+  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' and cod_sede = $auxSede";
 
   // Consulta que busca las coberturas de las diferentes sedes.
   //echo "<br><br>".$consulta."<br><br>";
@@ -361,11 +361,11 @@ for ($i=0; $i < count($sedes) ; $i++) {
 
     while($row = $resultado->fetch_assoc()) {
       $sedeCobertura['cod_sede'] = $row['cod_sede'];
-      $aux1 = "Etario1_$tipo";
+      $aux1 = "Cobertura_G1";
       $sedeCobertura['grupo1'] = $row[$aux1];
-      $aux2 = "Etario2_$tipo";
+      $aux2 = "Cobertura_G2";
       $sedeCobertura['grupo2'] = $row[$aux2];
-      $aux3 = "Etario3_$tipo";
+      $aux3 = "Cobertura_G3";
       $sedeCobertura['grupo3'] = $row[$aux3];
       $sedeCobertura['total'] = $row[$aux1] + $row[$aux2] + $row[$aux3];
       $sedesCobertura[] = $sedeCobertura;

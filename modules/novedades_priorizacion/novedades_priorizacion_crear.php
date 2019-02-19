@@ -4,6 +4,9 @@
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 	$periodoActual = $_SESSION['periodoActual'];
+
+	$dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
+	if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -12,7 +15,7 @@
 		<div class="debug"></div>
         <ol class="breadcrumb">
             <li>
-                <a href="<?php echo $baseUrl; ?>">Home</a>
+                <a href="<?php echo $baseUrl; ?>">Inicio</a>
             </li>
             <li>
                 <a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion">Novedades de Priorización</a>
@@ -46,6 +49,20 @@
 								<label for="institucion">Institución</label>
 								<select class="form-control" name="institucion" id="institucion">
 									<option value="">Seleccione una</option>
+									<?php
+										$consulta = "SELECT DISTINCT s.cod_inst, s.nom_inst FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE s.cod_mun_sede = '". $municipio_defecto["CodMunicipio"] ."' ";
+										if($tipo != ''){
+											$consulta = $consulta." and sc.$tipo > 0 ";
+										}
+										$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+										if($resultado->num_rows >= 1){
+											while($row = $resultado->fetch_assoc()) {
+									?>
+									<option value="<?php echo $row['cod_inst']; ?>" <?php if ($municipio_defecto["CodMunicipio"] == $row["cod_inst"]) { echo "selected"; } ?>><?php echo $row['nom_inst']; ?></option>
+									<?php
+											}
+										}
+									?>
 								</select>
 							</div><!-- /.col -->
 							<div class="col-sm-6 form-group">
@@ -244,7 +261,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/codemirror.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/mode/xml/xml.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede_archivos.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/js/novedades_priorizacion.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/js/novedades_priorizacion_crear.js"></script>
 
 <!-- Page-Level Scripts -->
 
