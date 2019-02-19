@@ -28,6 +28,42 @@ use PhpOffice\PhpSpreadsheet\Style\Supervisor;
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
+$titulos = [
+    'font' => [
+        'bold' => true,
+        'size'  => 7,
+        'name' => 'calibrí'
+    ],
+    'alignment' => [
+        'wrapText' => true,
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    ],
+    'borders' => [
+        'diagonalDirection' => Borders::DIAGONAL_BOTH,
+        'allBorders' => [
+            'borderStyle' => Border::BORDER_THIN,
+        ],
+    ],
+];
+
+$infor = [
+    'font' => [
+        'size'  => 7,
+        'name' => 'calibrí'
+    ],
+    'alignment' => [
+        'wrapText' => true,
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    ],
+    'borders' => [
+        'diagonalDirection' => Borders::DIAGONAL_BOTH,
+        'allBorders' => [
+            'borderStyle' => Border::BORDER_THIN,
+        ],
+    ],
+];
 
 $rowNum = 1;
 
@@ -326,317 +362,193 @@ unset($grupo);
   sort($grupo);
 
 // HEADER
+
+$inicioTitulos = $rowNum;
+  
 $logoInfopae = $_SESSION['p_Logo ETC'];
 
 $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
 $drawing->setName('Logo');
 $drawing->setDescription('Logo');
 $drawing->setPath($logoInfopae);
-$drawing->setHeight(70);
+$drawing->setHeight(60);
 $drawing->setCoordinates('A'.$rowNum);
-$drawing->setOffsetX(25);
-$drawing->setOffsetY(17);
+$drawing->setOffsetX(5);
+$drawing->setOffsetY(5);
 $drawing->setWorksheet($spreadsheet->getActiveSheet());
 
+$sheet->mergeCells('A'.$rowNum.':G'.($rowNum+3));
+
 $sheet->setCellValue('H'.$rowNum, 'PROGRAMA DE ALIMENTACIÓN ESCOLAR');
+$sheet->mergeCells('H'.$rowNum.':R'.$rowNum);
 $rowNum++;
 $sheet->setCellValue('H'.$rowNum, 'REMISIÓN ENTREGA DE VÍVERES EN INSTITUCIÓN EDUCATIVA');
+$sheet->mergeCells('H'.$rowNum.':R'.$rowNum);
 $rowNum++;
 $sheet->setCellValue('H'.$rowNum, $descripcionTipo);
+$sheet->mergeCells('H'.$rowNum.':R'.$rowNum);
 $rowNum++;
 $sheet->setCellValue('H'.$rowNum, $tipoDespachoNm);
+$sheet->mergeCells('H'.$rowNum.':R'.$rowNum);
 $rowNum++;
 
 $sheet->setCellValue('A'.$rowNum, 'OPERADOR:');
+$sheet->mergeCells('A'.$rowNum.':B'.$rowNum);
 $sheet->setCellValue('C'.$rowNum, $_SESSION['p_Operador']);
+$sheet->mergeCells('C'.$rowNum.':L'.$rowNum);
 $sheet->setCellValue('M'.$rowNum, 'FECHA DE ELABORACIÓN:');
+$sheet->mergeCells('M'.$rowNum.':O'.$rowNum);
 $sheet->setCellValue('P'.$rowNum, $fechaDespacho);
+$sheet->mergeCells('P'.$rowNum.':R'.$rowNum);
 
 $rowNum++;
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(117,4.76,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->SetFont('Arial','B',$tamannoFuente);
-// $pdf->Cell(8,4.76,utf8_decode('ETC:'),0,0,'L',False);
-// $pdf->SetFont('Arial','',$tamannoFuente);
-// $pdf->Cell(109,4.76,utf8_decode($_SESSION['p_Nombre ETC']),0,0,'L',False);
+$sheet->setCellValue('A'.$rowNum, 'ETC:');
+$sheet->mergeCells('A'.$rowNum.':D'.$rowNum);
+$sheet->setCellValue('E'.$rowNum, $_SESSION['p_Nombre ETC']);
+$sheet->mergeCells('E'.$rowNum.':I'.$rowNum);
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(146.4,4.76,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->SetFont('Arial','B',$tamannoFuente);
-// $pdf->Cell(33,4.76,utf8_decode('MUNICIPIO O VEREDA:'),0,0,'L',False);
-// $pdf->SetFont('Arial','',$tamannoFuente);
-// $pdf->Cell(113.4,4.76,utf8_decode($municipio),0,0,'L',False);
-// $pdf->Ln(4.76);
+$sheet->setCellValue('J'.$rowNum, 'MUNICIPIO O VEREDA:');
+$sheet->mergeCells('K'.$rowNum.':M'.$rowNum);
+$sheet->setCellValue('N'.$rowNum, $municipio);
+$sheet->mergeCells('N'.$rowNum.':R'.$rowNum);
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(153.1,4.76,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->SetFont('Arial','B',$tamannoFuente);
-// $pdf->Cell(54,4.76,utf8_decode('INSTITUCIÓN O CENTRO EDUCATIVO:'),0,0,'L',False);
-// $pdf->SetFont('Arial','',$tamannoFuente);
+$rowNum++;
 
-// $institucion = substr( $institucion, 0, 54 );
+$institucion = substr( $institucion, 0, 54 );
+$sede = substr( $sede, 0, 44);
 
-// $pdf->Cell(99.1,4.76,utf8_decode($institucion),0,0,'L',False);
+$sheet->setCellValue('A'.$rowNum, 'INSTITUCIÓN O CENTRO EDUCATIVO:');
+$sheet->mergeCells('A'.$rowNum.':D'.$rowNum);
+$sheet->setCellValue('E'.$rowNum, $institucion);
+$sheet->mergeCells('E'.$rowNum.':I'.$rowNum);
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(110.3,4.76,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->SetFont('Arial','B',$tamannoFuente);
-// $pdf->Cell(28,4.76,utf8_decode('SEDE EDUCATIVA:'),0,0,'L',False);
-// $pdf->SetFont('Arial','',$tamannoFuente);
+$sheet->setCellValue('J'.$rowNum, 'SEDE EDUCATIVA:');
+$sheet->mergeCells('K'.$rowNum.':M'.$rowNum);
+$sheet->setCellValue('N'.$rowNum, $sede);
+$sheet->mergeCells('N'.$rowNum.':R'.$rowNum);
 
+$rowNum++;
 
-// $sede = substr( $sede, 0, 44);
+$sheet->setCellValue('A'.$rowNum, 'RANGO DE EDAD');
+$sheet->mergeCells('A'.$rowNum.':C'.$rowNum);
+$sheet->setCellValue('D'.$rowNum, 'N° DE RACIONES ADJUDICADAS');
+$sheet->mergeCells('D'.$rowNum.':F'.$rowNum);
+$sheet->setCellValue('G'.$rowNum, 'N° DE RACIONES ATENDIDAS');
+$sheet->mergeCells('G'.$rowNum.':I'.$rowNum);
+$sheet->setCellValue('J'.$rowNum, 'N° DE DÍAS A ATENDER');
+$sheet->mergeCells('J'.$rowNum.':L'.$rowNum);
+$sheet->setCellValue('M'.$rowNum, 'N° DE MENÚ Y SEMANA DEL CICLO DE MENÚS ENTREGADO');
+$sheet->mergeCells('M'.$rowNum.':O'.$rowNum);
+$sheet->setCellValue('P'.$rowNum, 'TOTAL RACIONES');
+$sheet->mergeCells('P'.$rowNum.':R'.$rowNum);
 
-// $pdf->Cell(82.3,4.76,utf8_decode($sede),0,0,'L',False);
-// $pdf->Ln(4.76);
-// $pdf->Ln(0.8);
+$rowNum++;
 
-// $pdf->SetFont('Arial','B',$tamannoFuente);
-// $pdf->Cell(42.5,8,'RANGO DE EDAD',1,0,'C',False);
+$consGrupoEtario = "SELECT * FROM grupo_etario ";
+$resGrupoEtario = $Link->query($consGrupoEtario);
+if ($resGrupoEtario->num_rows > 0) {
+  while ($ge = $resGrupoEtario->fetch_assoc()) {
+    $get[] = $ge['DESCRIPCION'];
+  }
+}
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(36.7,8,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(36.7,4,utf8_decode('N° DE RACIONES'),0,4,'C',False);
-// $pdf->Cell(36.7,4,utf8_decode('ADJUDICADAS'),0,0,'C',False);
-// $pdf->SetXY($current_x+36.7, $current_y);
+$sheet->setCellValue('A'.$rowNum, $get[0]);
+$sheet->mergeCells('A'.$rowNum.':C'.$rowNum);
+$sheet->setCellValue('A'.($rowNum+1), $get[1]);
+$sheet->mergeCells('A'.($rowNum+1).':C'.($rowNum+1));
+$sheet->setCellValue('A'.($rowNum+2), $get[2]);
+$sheet->mergeCells('A'.($rowNum+2).':C'.($rowNum+2));
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(36.7,8,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(36.7,4,utf8_decode('N° DE RACIONES'),0,4,'C',False);
-// $pdf->Cell(36.7,4,utf8_decode('ATENDIDAS'),0,0,'C',False);
-// $pdf->SetXY($current_x+36.7, $current_y);
+$sheet->setCellValue('D'.$rowNum, $sedeGrupo1);
+$sheet->mergeCells('D'.$rowNum.':F'.$rowNum);
+$sheet->setCellValue('D'.($rowNum+1), $sedeGrupo2);
+$sheet->mergeCells('D'.($rowNum+1).':F'.($rowNum+1));
+$sheet->setCellValue('D'.($rowNum+2), $sedeGrupo3);
+$sheet->mergeCells('D'.($rowNum+2).':F'.($rowNum+2));
 
-// $pdf->Cell(45,8,utf8_decode('N° DE DÍAS A ATENDER'),1,0,'C',False);
+$sheet->setCellValue('G'.$rowNum, $sedeGrupo1);
+$sheet->mergeCells('G'.$rowNum.':I'.$rowNum);
+$sheet->setCellValue('G'.($rowNum+1), $sedeGrupo2);
+$sheet->mergeCells('G'.($rowNum+1).':I'.($rowNum+1));
+$sheet->setCellValue('G'.($rowNum+2), $sedeGrupo3);
+$sheet->mergeCells('G'.($rowNum+2).':I'.($rowNum+2));
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(57.8,8,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(57.8,4,utf8_decode('N° DE MENÚ Y SEMANA DEL CICLO DE'),0,4,'C',False);
-// $pdf->Cell(57.8,4,utf8_decode('MENÚS ENTREGADO'),0,0,'C',False);
-// $pdf->SetXY($current_x+57.8, $current_y);
+$cantDias = explode(',', $diasDespacho);
+$cantDias = count($cantDias);
+$auxDias = "X ".$cantDias." DIAS ".strtoupper($dias);
 
-// $pdf->Cell(44.7,8,utf8_decode('TOTAL RACIONES'),1,0,'C',False);
-// $pdf->Ln(8);
+$sheet->setCellValue('J'.$rowNum, $auxDias);
+$sheet->mergeCells('J'.$rowNum.':L'.$rowNum);
+$sheet->setCellValue('J'.($rowNum+1), 'SEMANA: '.$semana);
+$sheet->mergeCells('J'.($rowNum+1).':L'.($rowNum+1));
 
-// $pdf->SetFont('Arial','',$tamannoFuente);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(42.5,14.1,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $consGrupoEtario = "SELECT * FROM grupo_etario ";
-// $resGrupoEtario = $Link->query($consGrupoEtario);
-// if ($resGrupoEtario->num_rows > 0) {
-//   while ($ge = $resGrupoEtario->fetch_assoc()) {
-//     $get[] = $ge['DESCRIPCION'];
-//   }
-// }
+$sheet->setCellValue('M'.$rowNum, 'SEMANA: '.$ciclo);
+$sheet->mergeCells('M'.$rowNum.':O'.$rowNum);
+$sheet->setCellValue('M'.($rowNum+1), 'MENUS: '.$auxMenus);
+$sheet->mergeCells('M'.($rowNum+1).':O'.($rowNum+1));
 
-// $pdf->Cell(42.5,4.7,utf8_decode($get[0]),1,4.7,'C',False);
-// $pdf->Cell(42.5,4.7,utf8_decode($get[1]),1,4.7,'C',False);
-// $pdf->Cell(42.5,4.7,utf8_decode($get[2]),1,0,'C',False);
-// $pdf->SetXY($current_x+42.5, $current_y);
+$jm = '';
+$jt = '';
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(36.7,14.1,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(36.7,4.7,utf8_decode($sedeGrupo1),1,4.7,'C',False);
-// $pdf->Cell(36.7,4.7,utf8_decode($sedeGrupo2),1,4.7,'C',False);
-// $pdf->Cell(36.7,4.7,utf8_decode($sedeGrupo3),1,0,'C',False);
-// $pdf->SetXY($current_x+36.7, $current_y);
+// 2 es la jornada de la mañana
+// 3 es la jornada de la tarde
+if($jornada == 2){
+  $jm = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3;
+}else if($jornada == 3){
+  $jt = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3;
+}
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(36.7,14.1,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(36.7,4.7,utf8_decode($sedeGrupo1),1,4.7,'C',False);
-// $pdf->Cell(36.7,4.7,utf8_decode($sedeGrupo2),1,4.7,'C',False);
-// $pdf->Cell(36.7,4.7,utf8_decode($sedeGrupo3),1,0,'C',False);
-// $pdf->SetXY($current_x+36.7, $current_y);
+$sheet->setCellValue('P'.$rowNum, 'JM:'.$jm);
+$sheet->mergeCells('P'.$rowNum.':R'.$rowNum);
+$sheet->setCellValue('P'.($rowNum+1), 'JT:'.$jt);
+$sheet->mergeCells('P'.($rowNum+1).':R'.($rowNum+1));
 
-// $pdf->SetFillColor(255,255,255);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(45,14.1,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y+2.35);
+$rowNum+=3;
 
-// $cantDias = explode(',', $diasDespacho);
-// $cantDias = count($cantDias);
-// $auxDias = "X ".$cantDias." DIAS ".strtoupper($dias);
+$sheet->setCellValue('A'.$rowNum, 'GRUPO ALIMENTO');
+$sheet->mergeCells('A'.$rowNum.':A'.($rowNum+1));
+$sheet->setCellValue('B'.$rowNum, 'ALIMENTO');
+$sheet->mergeCells('B'.$rowNum.':B'.($rowNum+1));
 
-// $pdf->MultiCell(45,4.7,$auxDias,0,'C',False);
-// $pdf->SetXY($current_x, $current_y+9.4);
-// $pdf->MultiCell(45,4.7,'SEMANA: '.$semana,0,'C',False);
+$sheet->setCellValue('C'.$rowNum, 'CNT DE ALIMENTOS POR NÚMEROS DE RACIONES');
+$sheet->mergeCells('C'.$rowNum.':E'.$rowNum);
+$sheet->setCellValue('C'.($rowNum+1), $get[0].'');
+$sheet->setCellValue('D'.($rowNum+1), $get[1].'');
+$sheet->setCellValue('E'.($rowNum+1), $get[2].'');
 
-// $pdf->SetXY($current_x+45, $current_y);
+$sheet->setCellValue('F'.$rowNum, 'UNIDAD DE MEDIDA');
+$sheet->mergeCells('F'.$rowNum.':F'.($rowNum+1));
+$sheet->setCellValue('G'.$rowNum, 'TOTAL REQ');
+$sheet->mergeCells('G'.$rowNum.':G'.($rowNum+1));
 
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(57.8,14.1,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y+2.35);
-// $pdf->Cell(57.8,4.7,'SEMANA: '.$ciclo,0,0,'C',False);
+$sheet->setCellValue('H'.$rowNum, 'CANTIDAD ENTREGADA');
+$sheet->mergeCells('H'.$rowNum.':J'.$rowNum);
+$sheet->setCellValue('H'.($rowNum+1), 'TOTAL');
+$sheet->setCellValue('I'.($rowNum+1), 'C');
+$sheet->setCellValue('J'.($rowNum+1), 'NC');
 
-// $pdf->SetXY($current_x, $current_y+7,05);
-// $pdf->Cell(57.8,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
-// $pdf->SetFont('Arial','',$tamannoFuente);
+$sheet->setCellValue('K'.$rowNum, 'ESPECIFICACIÓN DE CALIDAD');
+$sheet->mergeCells('K'.$rowNum.':L'.$rowNum);
+$sheet->setCellValue('K'.($rowNum+1), 'C');
+$sheet->setCellValue('L'.($rowNum+1), 'NC');
 
-// $pdf->SetXY($current_x+57.8, $current_y);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(44.7,14.1,'',1,0,'L',False);
-// $pdf->SetXY($current_x+2, $current_y+2.35);
+$sheet->setCellValue('M'.$rowNum, 'FALTANTES');
+$sheet->mergeCells('M'.$rowNum.':O'.$rowNum);
+$sheet->setCellValue('M'.($rowNum+1), 'SI');
+$sheet->setCellValue('N'.($rowNum+1), 'NO');
+$sheet->setCellValue('O'.($rowNum+1), 'CANT');
 
-// $jm = '';
-// $jt = '';
+$sheet->setCellValue('P'.$rowNum, 'DEVOLUCIÓN');
+$sheet->mergeCells('P'.$rowNum.':R'.$rowNum);
+$sheet->setCellValue('P'.($rowNum+1), 'SI');
+$sheet->setCellValue('Q'.($rowNum+1), 'NO');
+$sheet->setCellValue('R'.($rowNum+1), 'CANT');
 
-// // 2 es la jornada de la mañana
-// // 3 es la jornada de la tarde
-// if($jornada == 2){
-//   $jm = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3;
-// }else if($jornada == 3){
-//   $jt = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3;
-// }
-// $pdf->Cell(7,4.7,'JM:',0,0,'L',False);
-// $pdf->Cell(33,4.7,$jm,'B',0,'L',False);
-// $pdf->SetXY($current_x+2, $current_y+7.05);
-// $pdf->Cell(7,4.7,'JT:',0,0,'L',False);
-// $pdf->Cell(33,4.7,$jt,'B',0,'L',False);
-
-// $pdf->SetXY($current_x, $current_y+14.1);
-// $pdf->Ln(0.8);
-
-// $pdf->SetFont('Arial','B',$tamannoFuente);
-
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(23.788,15,'',1,0,'C',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Ln(2.5);
-// $pdf->MultiCell(23.755,5,'GRUPO ALIMENTO',0,'C',False);
-// $pdf->SetXY($current_x+23.788, $current_y);
-
-// $pdf->Cell(48.972,15,'ALIMENTO',1,0,'C',False);
-
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(39.33,15,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(39.33,8,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(39.33,4,'CNT DE ALIMENTOS POR',0,4,'C',False);
-// $pdf->Cell(39.33,4,utf8_decode('NÚMEROS DE RACIONES'),0,4,'C',False);
-// $current_y2 = $pdf->GetY();
-// $current_x2 = $pdf->GetX();
-// $pdf->Cell(13.1,7,utf8_decode(''),1,0,'C',False);
-// $pdf->SetXY($current_x2, $current_y2);
-
-// $etario_1 = str_replace(" + 11 meses", "", $get[0]);
-// $etario_2 = str_replace(" + 11 meses", "", $get[1]);
-// $etario_3 = str_replace(" + 11 meses", "", $get[2]);
-
-// $etario_1 = str_replace(" años", "", $etario_1);
-// $etario_2 = str_replace(" años", "", $etario_2);
-// $etario_3 = str_replace(" años", "", $etario_3);
-
-// $pdf->Cell(13.1,3.5,utf8_decode($etario_1),0,3.5,'C',False);
-// $pdf->Cell(13.1,3.5,utf8_decode('AÑOS'),0,3.5,'C',False);
-
-// $pdf->SetXY($current_x2+13.1, $current_y2);
-// $current_y2 = $pdf->GetY();
-// $current_x2 = $pdf->GetX();
-// $pdf->Cell(13.1,7,utf8_decode(''),1,0,'C',False);
-// $pdf->SetXY($current_x2, $current_y2);
-// $pdf->Cell(13.1,3.5,utf8_decode($etario_2),0,3.5,'C',False);
-// $pdf->Cell(13.1,3.5,utf8_decode('AÑOS'),0,3.5,'C',False);
-
-// $pdf->SetXY($current_x2+13.1, $current_y2);
-// $current_y2 = $pdf->GetY();
-// $current_x2 = $pdf->GetX();
-// $pdf->Cell(13.1,7,utf8_decode(''),1,0,'C',False);
-// $pdf->SetXY($current_x2, $current_y2);
-// $pdf->Cell(13.1,3.5,utf8_decode($etario_3),0,3.5,'C',False);
-// $pdf->Cell(13.1,3.5,utf8_decode('AÑOS'),0,3.5,'C',False);
-
-// $pdf->SetXY($current_x+39.33, $current_y);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(13.141,15,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(13.141,5,'UNIDAD',0,5,'C',False);
-// $pdf->Cell(13.141,5,'DE',0,5,'C',False);
-// $pdf->Cell(13.141,5,'MEDIDA',0,5,'C',False);
-
-
-// $pdf->SetXY($current_x+13.141, $current_y);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(13.141,15,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y+2.5);
-// $pdf->Cell(13.141,5,'TOTAL',0,5,'C',False);
-// $pdf->Cell(13.141,5,'REQ',0,5,'C',False);
-
-
-// $pdf->SetXY($current_x+13.141, $current_y);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(31.838,15,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(31.838,4,'CANTIDAD',0,4,'C',False);
-// $pdf->Cell(31.838,4,'ENTREGADA','B',4,'C',False);
-// $pdf->Cell(10.6,7,'TOTAL','R',0,'C',False);
-// $pdf->Cell(10.638,7,'C','R',0,'C',False);
-// $pdf->Cell(10.6,7,'NC','R',0,'C',False);
-
-// $pdf->SetXY($current_x+31.838, $current_y);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(27.252,15,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(27.252,4,utf8_decode('ESPECIFICACIÓN'),0,4,'C',False);
-// $pdf->Cell(27.252,4,utf8_decode('DE CALIDAD'),'B',4,'C',False);
-// $pdf->Cell(13.626,7,'C','R',0,'C',False);
-// $pdf->Cell(13.626,7,'NC','R',0,'C',False);
-
-// $pdf->SetXY($current_x+27.252, $current_y);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(32.191,15,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(32.191,8,utf8_decode('FALTANTES'),'B',8,'C',False);
-// $pdf->Cell(9.349,7,'SI','R',0,'C',False);
-// $pdf->Cell(8.819,7,'NO','R',0,'C',False);
-// $pdf->Cell(14.023,7,'CANT','R',0,'C',False);
-
-// $pdf->SetXY($current_x+32.191, $current_y);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(33.747,15,'',1,0,'L',False);
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Cell(33.747,8,utf8_decode('DEVOLUCIÓN'),'B',8,'C',False);
-// $pdf->Cell(9.26,7,'SI','R',0,'C',False);
-// $pdf->Cell(9.084,7,'NO','R',0,'C',False);
-// $pdf->Cell(15.403,7,'CANT','R',0,'C',False);
-
-// $pdf->SetXY($current_x, $current_y);
-// $pdf->Ln(15);
+$rowNum+=2;
+$finTitulos = $rowNum-1;
 // HEADER
-
-$rowNum++;
-
+$inicioInfo = $rowNum;
 
   $filas = 0;
   $grupoAlimActual = '';
@@ -758,23 +670,11 @@ $rowNum++;
     }
     // Termina la impresión de grupo alimenticio
 
-
-  // Se verifica que no haya cantidades en las direntes presentaciones, para no mostrar la primera fila.
-  //if($alimento['cantu2'] <= 0 && $alimento['cantu3'] <= 0 && $alimento['cantu4'] <= 0 && $alimento['cantu5'] <= 0){
-
     if(1==1){
 
     $aux = $alimento['componente'];
-    // $long_nombre=strlen($aux);
-    // if($long_nombre > $largoNombre){
-    //   $aux = substr($aux,0,$largoNombre);
-    // }
-     //23.788
-    // 72.76
 
-      //Alimento
     $sheet->setCellValue('B'.$rowNum, $aux);
-    // $pdf->Cell(48.9,4,utf8_decode($aux),1,0,'L',False);
 
     if($alimento['presentacion'] == 'u'){
       $aux = round($alimento['cant_grupo1']);
@@ -783,7 +683,6 @@ $rowNum++;
       $aux = number_format($aux, 2, '.', '');
     }
     $sheet->setCellValue('C'.$rowNum, $aux);
-    // $pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
 
     if($alimento['presentacion'] == 'u'){
@@ -793,7 +692,6 @@ $rowNum++;
       $aux = number_format($aux, 2, '.', '');
     }
     $sheet->setCellValue('D'.$rowNum, $aux);
-    // $pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
     if($alimento['presentacion'] == 'u'){
       $aux = round($alimento['cant_grupo3']);
@@ -802,16 +700,10 @@ $rowNum++;
       $aux = number_format($aux, 2, '.', '');
     }
     $sheet->setCellValue('E'.$rowNum, $aux);
-    // $pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
-    //UNIDAD DE MEDIDA
     $sheet->setCellValue('F'.$rowNum, $alimento['presentacion']);
-    // $pdf->Cell(13.141,4,$alimento['presentacion'],1,0,'C',False);
-
 
     $aux = number_format($aux, 2, '.', '');
-
-//MOSTRAR O NO CUANDO HAY PRESENTACIONES
 
     if($alimento['cantu2'] <= 0 && $alimento['cantu3'] <= 0 && $alimento['cantu4'] <= 0 && $alimento['cantu5'] <= 0){
 
@@ -827,9 +719,6 @@ $rowNum++;
     }
 
     $sheet->setCellValue('G'.$rowNum, $aux);
-    // $pdf->Cell(13.141,4,$aux,1,0,'C',False);
-    //total requerido
-
 
     if($alimento['cantotalpresentacion'] > 0){
       $aux = 0+$alimento['cantotalpresentacion'];
@@ -856,34 +745,21 @@ if(strpos($alimento['componente'], "huevo")){
 
     // CANTIDAD ENTREGADA
     $sheet->setCellValue('H'.$rowNum, $aux);
-    // $pdf->Cell(10.7,4,$aux,1,0,'C',False);
-      //total entregado
+
     $sheet->setCellValue('I'.$rowNum, '');
     $sheet->setCellValue('J'.$rowNum, '');
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // ESPECIFICACIÓN DE CALIDAD
+
     $sheet->setCellValue('K'.$rowNum, '');
     $sheet->setCellValue('L'.$rowNum, '');
-    // $pdf->Cell(13.6,4,'',1,0,'C',False);
-    // $pdf->Cell(13.7,4,'',1,0,'C',False);
-    // FALTANTES
 
     $sheet->setCellValue('M'.$rowNum, '');
     $sheet->setCellValue('N'.$rowNum, '');
     $sheet->setCellValue('O'.$rowNum, '');
-    // $pdf->Cell(9.3,4,'',1,0,'C',False);
-    // $pdf->Cell(8.9,4,'',1,0,'C',False);
-    // $pdf->Cell(14,4,'',1,0,'C',False);
-    //DEVOLUCIÓN
+
     $sheet->setCellValue('P'.$rowNum, '');
     $sheet->setCellValue('Q'.$rowNum, '');
     $sheet->setCellValue('R'.$rowNum, '');
-    // $pdf->Cell(9.3,4,'',1,0,'C',False);
-    // $pdf->Cell(9.1,4,'',1,0,'C',False);
-    // $pdf->Cell(15.4,4,'',1,0,'C',False);
 
-    // $pdf->Ln(4);
     $rowNum++;
 
     }//Termina el if que validad si hay cantidades en las unidades con el fin de ocultar la fila inicial.
@@ -905,35 +781,20 @@ if(strpos($alimento['componente'], "huevo")){
     $sheet->setCellValue('F'.$rowNum, '');
     $sheet->setCellValue('G'.$rowNum, '');
 
-    // $pdf->Cell(48.9,4,utf8_decode($aux),1,0,'L',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.141,4,'',1,0,'C',False);
-    // $pdf->Cell(13.141,4,'',1,0,'C',False);
     $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-    // CANTIDAD ENTREGADA
 
     $sheet->setCellValue('H'.$rowNum, $aux);
     $sheet->setCellValue('I'.$rowNum, '');
     $sheet->setCellValue('J'.$rowNum, '');
-    // $pdf->Cell(10.7,4,$aux,1,0,'C',False);
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // ESPECIFICACIÓN DE CALIDAD
+
     $sheet->setCellValue('K'.$rowNum, '');
     $sheet->setCellValue('L'.$rowNum, '');
-    // $pdf->Cell(13.6,4,'',1,0,'C',False);
-    // $pdf->Cell(13.7,4,'',1,0,'C',False);
-    // FALTANTES
+
 
     $sheet->setCellValue('M'.$rowNum, '');
     $sheet->setCellValue('N'.$rowNum, '');
     $sheet->setCellValue('O'.$rowNum, '');
-    // $pdf->Cell(9.3,4,'',1,0,'C',False);
-    // $pdf->Cell(8.9,4,'',1,0,'C',False);
-    // $pdf->Cell(14,4,'',1,0,'C',False);
-    //DEVOLUCIÓN
+
 
     $sheet->setCellValue('P'.$rowNum, '');
     $sheet->setCellValue('Q'.$rowNum, '');
@@ -959,35 +820,18 @@ if(strpos($alimento['componente'], "huevo")){
     $sheet->setCellValue('F'.$rowNum, '');
     $sheet->setCellValue('G'.$rowNum, '');
 
-    // $pdf->Cell(48.9,4,utf8_decode($aux),1,0,'L',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.141,4,'',1,0,'C',False);
-    // $pdf->Cell(13.141,4,'',1,0,'C',False);
     $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-    // CANTIDAD ENTREGADA
 
     $sheet->setCellValue('H'.$rowNum, $aux);
     $sheet->setCellValue('I'.$rowNum, '');
     $sheet->setCellValue('J'.$rowNum, '');
-    // $pdf->Cell(10.7,4,$aux,1,0,'C',False);
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // ESPECIFICACIÓN DE CALIDAD
+
     $sheet->setCellValue('K'.$rowNum, '');
     $sheet->setCellValue('L'.$rowNum, '');
-    // $pdf->Cell(13.6,4,'',1,0,'C',False);
-    // $pdf->Cell(13.7,4,'',1,0,'C',False);
-    // FALTANTES
 
     $sheet->setCellValue('M'.$rowNum, '');
     $sheet->setCellValue('N'.$rowNum, '');
     $sheet->setCellValue('O'.$rowNum, '');
-    // $pdf->Cell(9.3,4,'',1,0,'C',False);
-    // $pdf->Cell(8.9,4,'',1,0,'C',False);
-    // $pdf->Cell(14,4,'',1,0,'C',False);
-    //DEVOLUCIÓN
 
     $sheet->setCellValue('P'.$rowNum, '');
     $sheet->setCellValue('Q'.$rowNum, '');
@@ -1017,35 +861,18 @@ if(strpos($alimento['componente'], "huevo")){
     $sheet->setCellValue('F'.$rowNum, '');
     $sheet->setCellValue('G'.$rowNum, '');
 
-    // $pdf->Cell(48.9,4,utf8_decode($aux),1,0,'L',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.141,4,'',1,0,'C',False);
-    // $pdf->Cell(13.141,4,'',1,0,'C',False);
     $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-    // CANTIDAD ENTREGADA
 
     $sheet->setCellValue('H'.$rowNum, $aux);
     $sheet->setCellValue('I'.$rowNum, '');
     $sheet->setCellValue('J'.$rowNum, '');
-    // $pdf->Cell(10.7,4,$aux,1,0,'C',False);
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // ESPECIFICACIÓN DE CALIDAD
+
     $sheet->setCellValue('K'.$rowNum, '');
     $sheet->setCellValue('L'.$rowNum, '');
-    // $pdf->Cell(13.6,4,'',1,0,'C',False);
-    // $pdf->Cell(13.7,4,'',1,0,'C',False);
-    // FALTANTES
 
     $sheet->setCellValue('M'.$rowNum, '');
     $sheet->setCellValue('N'.$rowNum, '');
     $sheet->setCellValue('O'.$rowNum, '');
-    // $pdf->Cell(9.3,4,'',1,0,'C',False);
-    // $pdf->Cell(8.9,4,'',1,0,'C',False);
-    // $pdf->Cell(14,4,'',1,0,'C',False);
-    //DEVOLUCIÓN
 
     $sheet->setCellValue('P'.$rowNum, '');
     $sheet->setCellValue('Q'.$rowNum, '');
@@ -1077,35 +904,17 @@ if(strpos($alimento['componente'], "huevo")){
     $sheet->setCellValue('F'.$rowNum, '');
     $sheet->setCellValue('G'.$rowNum, '');
 
-    // $pdf->Cell(48.9,4,utf8_decode($aux),1,0,'L',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.1,4,'',1,0,'C',False);
-    // $pdf->Cell(13.141,4,'',1,0,'C',False);
-    // $pdf->Cell(13.141,4,'',1,0,'C',False);
     $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-    // CANTIDAD ENTREGADA
 
     $sheet->setCellValue('H'.$rowNum, $aux);
     $sheet->setCellValue('I'.$rowNum, '');
     $sheet->setCellValue('J'.$rowNum, '');
-    // $pdf->Cell(10.7,4,$aux,1,0,'C',False);
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // $pdf->Cell(10.6,4,'',1,0,'C',False);
-    // ESPECIFICACIÓN DE CALIDAD
     $sheet->setCellValue('K'.$rowNum, '');
     $sheet->setCellValue('L'.$rowNum, '');
-    // $pdf->Cell(13.6,4,'',1,0,'C',False);
-    // $pdf->Cell(13.7,4,'',1,0,'C',False);
-    // FALTANTES
 
     $sheet->setCellValue('M'.$rowNum, '');
     $sheet->setCellValue('N'.$rowNum, '');
     $sheet->setCellValue('O'.$rowNum, '');
-    // $pdf->Cell(9.3,4,'',1,0,'C',False);
-    // $pdf->Cell(8.9,4,'',1,0,'C',False);
-    // $pdf->Cell(14,4,'',1,0,'C',False);
-    //DEVOLUCIÓN
 
     $sheet->setCellValue('P'.$rowNum, '');
     $sheet->setCellValue('Q'.$rowNum, '');
@@ -1117,7 +926,25 @@ if(strpos($alimento['componente'], "huevo")){
 
 
 }//Termina el for de los alimentos
+$sheet->setCellValue('A'.$rowNum, 'OBSERVACIONES:');
+$sheet->mergeCells('A'.$rowNum.':B'.$rowNum);
+$sheet->mergeCells('C'.$rowNum.':R'.$rowNum);
+$sheet->mergeCells('A'.($rowNum+1).':R'.($rowNum+1));
+
+$rowNum += 5;
+$finInfo = $rowNum - 4;
+
+  $sheet->getStyle("A".$inicioTitulos.":R".$finTitulos)->applyFromArray($titulos);
+  $sheet->getStyle("A".$inicioInfo.":R".$finInfo)->applyFromArray($infor);
 }
+
+$sheet->getColumnDimension("A")->setWidth(16); 
+
+$sheet->getColumnDimension("B")->setWidth(24); 
+
+$sheet->getColumnDimension("C")->setWidth(12); 
+$sheet->getColumnDimension("D")->setWidth(12); 
+$sheet->getColumnDimension("E")->setWidth(12); 
 
 $writer = new Xlsx($spreadsheet);
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

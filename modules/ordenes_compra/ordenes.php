@@ -34,7 +34,7 @@
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
           <h2>Parámetros de Consulta</h2>
-          <form class="col-lg-12" action="despachos.php" name="formDespachos" id="formDespachos" method="post" target="_blank">
+          <form class="col-lg-12" action="ordenes.php" name="formDespachos" id="formDespachos" method="post" target="_blank">
             <div class="row">
 
                                 <div class="col-sm-4 form-group">
@@ -924,7 +924,7 @@
   <input type="hidden" name="despacho" id="despacho" value="">
 </form>
 
-<form action="despachos.php" id="parametrosBusqueda" method="get">
+<form action="ordenes.php" id="parametrosBusqueda" method="get">
   <input type="hidden" id="pb_annoi" name="pb_annoi" value="">
   <input type="hidden" id="pb_mesi" name="pb_mesi" value="">
   <input type="hidden" id="pb_diai" name="pb_diai" value="">

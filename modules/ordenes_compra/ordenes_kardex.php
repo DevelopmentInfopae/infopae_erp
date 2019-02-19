@@ -32,6 +32,44 @@ use PhpOffice\PhpSpreadsheet\Style\Supervisor;
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
+$titulos = [
+    'font' => [
+        'bold' => true,
+        'size'  => 7,
+        'name' => 'calibrí'
+    ],
+    'alignment' => [
+        'wrapText' => true,
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    ],
+    'borders' => [
+        'diagonalDirection' => Borders::DIAGONAL_BOTH,
+        'allBorders' => [
+            'borderStyle' => Border::BORDER_THIN,
+        ],
+    ],
+];
+
+$infor = [
+    'font' => [
+        'size'  => 7,
+        'name' => 'calibrí'
+    ],
+    'alignment' => [
+        'wrapText' => true,
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    ],
+    'borders' => [
+        'diagonalDirection' => Borders::DIAGONAL_BOTH,
+        'allBorders' => [
+            'borderStyle' => Border::BORDER_THIN,
+        ],
+    ],
+];
+
+
 $rowNum = 1;
 
 $Link = new mysqli($Hostname, $Username, $Password, $Database);
@@ -339,56 +377,82 @@ if($resultado->num_rows >= 1){
   array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
   sort($grupo);
 //HEADER
+
+$inicioTitulos = $rowNum;
+
 $logoInfopae = $_SESSION['p_Logo ETC'];
 
 $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
 $drawing->setName('Logo');
 $drawing->setDescription('Logo');
 $drawing->setPath($logoInfopae);
-$drawing->setHeight(70);
+$drawing->setHeight(60);
 $drawing->setCoordinates('A'.$rowNum);
-$drawing->setOffsetX(0);
-$drawing->setOffsetY(0);
+$drawing->setOffsetX(5);
+$drawing->setOffsetY(5);
 $drawing->setWorksheet($spreadsheet->getActiveSheet());
 
+
+$sheet->mergeCells('A'.$rowNum.':G'.($rowNum+3));
+
 $sheet->setCellValue('H'.$rowNum, 'PROGRAMA DE ALIMENTACIÓN ESCOLAR');
+$sheet->mergeCells('H'.$rowNum.':P'.$rowNum);
 $rowNum++;
 $sheet->setCellValue('H'.$rowNum, 'KARDEX DE VÍVERES EN INSTITUCIÓN EDUCATIVA');
+$sheet->mergeCells('H'.$rowNum.':P'.$rowNum);
 $rowNum++;
 $sheet->setCellValue('H'.$rowNum, $descripcionTipo);
+$sheet->mergeCells('H'.$rowNum.':P'.$rowNum);
 $rowNum++;
 $sheet->setCellValue('H'.$rowNum, $tipoDespachoNm);
+$sheet->mergeCells('H'.$rowNum.':P'.$rowNum);
 $rowNum++;
 
 $sheet->setCellValue('A'.$rowNum, 'OPERADOR:');
+$sheet->mergeCells('A'.$rowNum.':B'.$rowNum);
 $sheet->setCellValue('C'.$rowNum, $_SESSION['p_Operador']);
+$sheet->mergeCells('C'.$rowNum.':P'.$rowNum);
 
 $rowNum++;
 
 $sheet->setCellValue('A'.$rowNum, 'ETC:');
+$sheet->mergeCells('A'.$rowNum.':B'.$rowNum);
 $sheet->setCellValue('C'.$rowNum, $_SESSION['p_Nombre ETC']);
+$sheet->mergeCells('C'.$rowNum.':G'.$rowNum);
 
 $sheet->setCellValue('H'.$rowNum, 'MUNICIPIO O VEREDA:');
+$sheet->mergeCells('H'.$rowNum.':J'.$rowNum);
 $sheet->setCellValue('K'.$rowNum, $municipio);
+$sheet->mergeCells('K'.$rowNum.':P'.$rowNum);
 
 $rowNum++;
 
 $sheet->setCellValue('A'.$rowNum, 'INSTITUCIÓN O CENTRO EDUCATIVO:');
+$sheet->mergeCells('A'.$rowNum.':C'.$rowNum);
 $institucion = substr( $institucion, 0, 54 );
 $sheet->setCellValue('D'.$rowNum, $institucion);
+$sheet->mergeCells('D'.$rowNum.':G'.$rowNum);
 
 $sheet->setCellValue('H'.$rowNum, 'SEDE EDUCATIVA:');
+$sheet->mergeCells('H'.$rowNum.':J'.$rowNum);
 $sede = substr( $sede, 0, 54 );
 $sheet->setCellValue('K'.$rowNum, $sede);
+$sheet->mergeCells('K'.$rowNum.':P'.$rowNum);
 
 $rowNum++;
 
 $sheet->setCellValue('A'.$rowNum, 'RANGO DE EDAD');
+$sheet->mergeCells('A'.$rowNum.':C'.$rowNum);
 $sheet->setCellValue('D'.$rowNum, 'N° DE RACIONES ADJUDICADAS');
+$sheet->mergeCells('D'.$rowNum.':E'.$rowNum);
 $sheet->setCellValue('F'.$rowNum, 'N° DE RACIONES ATENDIDAS');
+$sheet->mergeCells('F'.$rowNum.':G'.$rowNum);
 $sheet->setCellValue('H'.$rowNum, 'N° DE DÍAS A ATENDER');
+$sheet->mergeCells('H'.$rowNum.':J'.$rowNum);
 $sheet->setCellValue('K'.$rowNum, 'N° DE MENÚ Y SEMANA DEL CICLO DE MENÚS ENTREGADO');
+$sheet->mergeCells('K'.$rowNum.':L'.$rowNum);
 $sheet->setCellValue('M'.$rowNum, 'TOTAL RACIONES');
+$sheet->mergeCells('M'.$rowNum.':P'.$rowNum);
 
 $rowNum++;
 
@@ -401,16 +465,25 @@ if ($resGrupoEtario->num_rows > 0) {
 }
 
 $sheet->setCellValue('A'.$rowNum, $get[0]);
+$sheet->mergeCells('A'.$rowNum.':C'.$rowNum);
 $sheet->setCellValue('A'.($rowNum+1), $get[1]);
+$sheet->mergeCells('A'.($rowNum+1).':C'.($rowNum+1));
 $sheet->setCellValue('A'.($rowNum+2), $get[2]);
+$sheet->mergeCells('A'.($rowNum+2).':C'.($rowNum+2));
 
 $sheet->setCellValue('D'.$rowNum, $sedeGrupo1);
+$sheet->mergeCells('D'.$rowNum.':E'.$rowNum);
 $sheet->setCellValue('D'.($rowNum+1), $sedeGrupo2);
+$sheet->mergeCells('D'.($rowNum+1).':E'.($rowNum+1));
 $sheet->setCellValue('D'.($rowNum+2), $sedeGrupo3);
+$sheet->mergeCells('D'.($rowNum+2).':E'.($rowNum+2));
 
 $sheet->setCellValue('F'.$rowNum, $sedeGrupo1);
+$sheet->mergeCells('F'.$rowNum.':G'.$rowNum);
 $sheet->setCellValue('F'.($rowNum+1), $sedeGrupo2);
+$sheet->mergeCells('F'.($rowNum+1).':G'.($rowNum+1));
 $sheet->setCellValue('F'.($rowNum+2), $sedeGrupo3);
+$sheet->mergeCells('F'.($rowNum+2).':G'.($rowNum+2));
 
 $auxDias = "X ";
 $cantDias = explode(',', $dias);
@@ -418,9 +491,13 @@ $cantDias = count($cantDias);
 $auxDias = "X ".$cantDias." DIAS ".strtoupper($dias);
 
 $sheet->setCellValue('H'.$rowNum, $auxDias);
+$sheet->mergeCells('H'.$rowNum.':J'.$rowNum);
+
 
 $sheet->setCellValue('K'.$rowNum, "SEMANA : ".$ciclo);
+$sheet->mergeCells('K'.$rowNum.':L'.$rowNum);
 $sheet->setCellValue('K'.($rowNum+1), 'MENUS: '.$auxMenus);
+$sheet->mergeCells('K'.($rowNum+1).':L'.($rowNum+1));
 
 $jm = 0;
 $jt = 0;
@@ -435,137 +512,60 @@ if($jornada == 2){
 
 if($modalidad == 'APS'){
   $sheet->setCellValue('M'.$rowNum, "".$jt);
+  $sheet->mergeCells('M'.$rowNum.':P'.$rowNum);
 }else{
   $sheet->setCellValue('M'.$rowNum, "JM: ".$jm);
+  $sheet->mergeCells('M'.$rowNum.':P'.$rowNum);
   $sheet->setCellValue('M'.($rowNum+1), "JT: ".$jt);
+  $sheet->mergeCells('M'.($rowNum+1).':P'.($rowNum+1));
 }
 
 $rowNum+=3;
 
+$sheet->setCellValue('A'.$rowNum, "GRUPO ALIMENTO");
+$sheet->mergeCells('A'.$rowNum.':A'.($rowNum+1));
+$sheet->setCellValue('B'.$rowNum, "ALIMENTO");
+$sheet->mergeCells('B'.$rowNum.':B'.($rowNum+1));
+$sheet->setCellValue('C'.$rowNum, "UNIDAD DE MEDIDA");
+$sheet->mergeCells('C'.$rowNum.':C'.($rowNum+1));
+$sheet->setCellValue('D'.$rowNum, "CANT REQUERIDA");
+$sheet->mergeCells('D'.$rowNum.':D'.($rowNum+1));
+$sheet->setCellValue('E'.$rowNum, "EXISTENCIAS");
+$sheet->mergeCells('E'.$rowNum.':E'.($rowNum+1));
 
-  // $pdf->Cell(42.5,4.7,utf8_decode($get[0]),1,4.7,'C',False);
-  // $pdf->Cell(42.5,4.7,utf8_decode($get[1]),1,4.7,'C',False);
-  // $pdf->Cell(42.5,4.7,utf8_decode($get[2]),1,0,'C',False);
-  // $pdf->SetXY($current_x+42.5, $current_y);
+$sheet->setCellValue('F'.$rowNum, "LUNES");
+$sheet->mergeCells('F'.$rowNum.':G'.$rowNum);
+$sheet->setCellValue('F'.($rowNum+1), "CANT");
+$sheet->setCellValue('G'.($rowNum+1), "SALIDA");
 
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(45,14.1,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(45,4.7,utf8_decode($sedeGrupo1),1,4.7,'C',False);
-  // $pdf->Cell(45,4.7,utf8_decode($sedeGrupo2),1,4.7,'C',False);
-  // $pdf->Cell(45,4.7,utf8_decode($sedeGrupo3),1,0,'C',False);
-  // $pdf->SetXY($current_x+45, $current_y);
+$sheet->setCellValue('H'.$rowNum, "MARTES");
+$sheet->mergeCells('H'.$rowNum.':I'.$rowNum);
+$sheet->setCellValue('H'.($rowNum+1), "CANT");
+$sheet->setCellValue('I'.($rowNum+1), "SALIDA");
 
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(45,14.1,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(45,4.7,utf8_decode($sedeGrupo1),1,4.7,'C',False);
-  // $pdf->Cell(45,4.7,utf8_decode($sedeGrupo2),1,4.7,'C',False);
-  // $pdf->Cell(45,4.7,utf8_decode($sedeGrupo3),1,0,'C',False);
+$sheet->setCellValue('J'.$rowNum, "MIÉRCOLES");
+$sheet->mergeCells('J'.$rowNum.':K'.$rowNum);
+$sheet->setCellValue('J'.($rowNum+1), "CANT");
+$sheet->setCellValue('K'.($rowNum+1), "SALIDA");
 
-  // $pdf->SetXY($current_x, $current_y+14.1);
-  // $pdf->Ln(0.8);
+$sheet->setCellValue('L'.$rowNum, "JUEVES");
+$sheet->mergeCells('L'.$rowNum.':M'.$rowNum);
+$sheet->setCellValue('L'.($rowNum+1), "CANT");
+$sheet->setCellValue('M'.($rowNum+1), "SALIDA");
 
-  // $pdf->SetFont('Arial','B',$tamannoFuente);
+$sheet->setCellValue('N'.$rowNum, "VIERNES");
+$sheet->mergeCells('N'.$rowNum.':O'.$rowNum);
+$sheet->setCellValue('N'.($rowNum+1), "CANT");
+$sheet->setCellValue('O'.($rowNum+1), "SALIDA");
 
+$sheet->setCellValue('P'.$rowNum, "SALDO");
+$sheet->mergeCells('P'.$rowNum.':P'.($rowNum+1));
 
-  // $pdf->Cell(44.388,15,'GRUPO ALIMENTO',1,0,'C',False);
-  // $pdf->Cell(44,15,'ALIMENTO',1,0,'C',False);
+$rowNum+=2;
 
+$finTitulos = $rowNum-1;
 
-
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(13.141,15,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(13.141,5,'UNIDAD',0,5,'C',False);
-  // $pdf->Cell(13.141,5,'DE',0,5,'C',False);
-  // $pdf->Cell(13.141,5,'MEDIDA',0,5,'C',False);
-
-  // $pdf->SetXY($current_x+13.141, $current_y);
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(17.471,15,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y+2.5);
-  // $pdf->Cell(17.471,5,'CANT',0,5,'C',False);
-  // // $pdf->Cell(17.471,5,'ENTREGADA',0,5,'C',False);
-  // $pdf->Cell(17.471,5,'REQUERIDA',0,5,'C',False);
-
-  // $pdf->SetXY($current_x+17.471, $current_y);
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(18,15,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(18,15,'EXISTENCIAS',0,15,'C',False);
-
-  // $pdf->SetXY($current_x+18, $current_y);
-
-
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(31.8,15,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(31.8,8,utf8_decode('LUNES'),'B',8,'C',False);
-  // $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
-
-  // $pdf->SetXY($current_x+31.8, $current_y);
-
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(31.8,15,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(31.8,8,utf8_decode('MARTES'),'B',8,'C',False);
-  // $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
-
-  // $pdf->SetXY($current_x+31.8, $current_y);
-
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(31.8,15,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(31.8,8,utf8_decode('MIERCOLES'),'B',8,'C',False);
-  // $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
-
-  // $pdf->SetXY($current_x+31.8, $current_y);
-
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(31.8,15,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(31.8,8,utf8_decode('JUEVES'),'B',8,'C',False);
-  // $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
-
-  // $pdf->SetXY($current_x+31.8, $current_y);
-
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(31.8,15,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(31.8,8,utf8_decode('VIERNES'),'B',8,'C',False);
-  // $pdf->Cell(15.9,7,'CANT','R',0,'C',False);
-  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
-
-  // $pdf->SetXY($current_x+31.8, $current_y);
-
-  // $current_y = $pdf->GetY();
-  // $current_x = $pdf->GetX();
-  // $pdf->Cell(18,15,'',1,0,'L',False);
-  // $pdf->SetXY($current_x, $current_y);
-  // $pdf->Cell(18,15,'SALDO',0,15,'C',False);
-
-  // $pdf->SetXY($current_x+18, $current_y);
-
-  // $pdf->Ln(15);
-  // //Termina el header
-
-
-  //   $pdf->SetFont('Arial','',$tamannoFuente);
+$inicioInfo = $rowNum;
 
 //HEADER
 
@@ -593,15 +593,13 @@ $rowNum+=3;
             $margenSuperiorCelda = ((4 * $filas)/2)-4;
             $altura = 4;
             //$aux = substr($aux,0,$largoNombreGrupo);
-        }
-        else{
+        } else{
             $margenSuperiorCelda = 0;
         }
 
         $sheet->setCellValue('A'.$rowNum, $aux);
         $sheet->mergeCells('A'.$rowNum.':A'.($rowNum+($filas-1)));
-    }
-    else{
+    } else{
          // $pdf->SetX(52.388);
     }
 
@@ -692,7 +690,27 @@ $rowNum+=3;
     $rowNum++;
   }//Termina el for de los alimentos
 
+  $rowNum++;
+  $sheet->setCellValue('A'.$rowNum, "OBSERVACIONES : ");
+  $sheet->mergeCells('A'.$rowNum.':B'.$rowNum);
+  $sheet->mergeCells('C'.$rowNum.':P'.$rowNum);
+  $rowNum++;
+  $sheet->mergeCells('A'.$rowNum.':P'.$rowNum);
+
+  $finInfo = $rowNum;
+
+  $rowNum+=3;
+
+
+  $sheet->getStyle("A".$inicioTitulos.":P".$finTitulos)->applyFromArray($titulos);
+  $sheet->getStyle("A".$inicioInfo.":P".$finInfo)->applyFromArray($infor);
+
  }
+
+$sheet->getColumnDimension("A")->setWidth(16); 
+
+$sheet->getColumnDimension("B")->setWidth(24); 
+
 
 $writer = new Xlsx($spreadsheet);
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
