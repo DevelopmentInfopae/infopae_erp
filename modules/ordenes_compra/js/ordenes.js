@@ -241,7 +241,7 @@ function despachos_kardex_multiple(){
     $( ".soloJs" ).remove();
     console.log('Se van a mostrar los despachos por sede');
 
-    $('#formDespachos').attr('action', 'despacho_kardex4_multiple.php');
+    $('#formDespachos').attr('action', 'ordenes_kardex_multiple.php');
     $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');
