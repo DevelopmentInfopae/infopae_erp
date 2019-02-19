@@ -1,18 +1,18 @@
 $(document).ready(function(){
-	var mes = $('#mesi').val();
-	var mesText = $("#mesi option[value='"+mes+"']").text()
-	$('#mesfText').val(mesText);
-	$('#mesf').val(mes);
+  var mes = $('#mesi').val();
+  var mesText = $("#mesi option[value='"+mes+"']").text()
+  $('#mesfText').val(mesText);
+  $('#mesf').val(mes);
 
-	$('#seleccionarVarios').change(function(){
-		console.log('Cambio el de varios');
-		if ($('#seleccionarVarios').is(':checked')) {
-			$('tbody input[type=checkbox]').prop( "checked", true );
-		}
-		else{
-			$('tbody input[type=checkbox]').prop( "checked", false );
-		}
-	});
+  $('#seleccionarVarios').change(function(){
+    console.log('Cambio el de varios');
+    if ($('#seleccionarVarios').is(':checked')) {
+      $('tbody input[type=checkbox]').prop( "checked", true );
+    }
+    else{
+      $('tbody input[type=checkbox]').prop( "checked", false );
+    }
+  });
 
 
 
@@ -59,6 +59,7 @@ $( "#btnBuscar" ).click(function(){
   $("#pb_annof").val($("#annof").val());
   $("#pb_mesf").val($("#mesf").val());
   $("#pb_diaf").val($("#diaf").val());
+  $('#pb_semana').val($("#semana").val());
   $("#pb_tipo").val($("#tipo").val());
   $("#pb_municipio").val($("#municipio").val());
   $("#pb_institucion").val($("#institucion").val());
@@ -134,8 +135,26 @@ function mesFinal(){
   var mesText = $("#mesi option[value='"+mes+"']").text()
   $('#mesfText').val(mesText);
   $('#mesf').val(mes);
+
+  cargar_semanas_mes(mes);
 }
 
+function cargar_semanas_mes(mes) {
+  $.ajax({
+    url: 'functions/fn_despacho_buscar_semanas.php',
+    type: 'POST',
+    dataType: 'HTML',
+    data: {"mes": mes},
+  })
+  .done(function(data) { console.log(data);
+    if (data != '') {
+      $("#semana").html(data);
+    }
+  })
+  .fail(function(data) {
+    console.log(data);
+  });
+}
 
 function despachos_kardex(){
   //Contando los elementos checked
@@ -518,7 +537,17 @@ function despachos_por_sede(){
 
   if(bandera == 0){
     $( ".soloJs" ).remove();
+    console.log('Se van a mostrar los despachos por sede');
+
     $('#formDespachos').attr('action', 'despacho_por_sede.php');
+
+
+
+
+
+
+
+
     $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');
