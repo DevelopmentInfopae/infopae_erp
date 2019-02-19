@@ -92,10 +92,10 @@ $despachosRecibidos = $_POST;
 
 foreach ($despachosRecibidos as &$valor){
   //echo "<br>".$valor."<br>";
-  $consulta = " SELECT de.*, tc.descripcion , u.Ciudad, tc.jornada, s.nom_inst , s.nom_sede FROM despachos_enc$mesAnno de 
-                INNER JOIN sedes$anno  s ON de.cod_Sede = s.cod_sede 
-                INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE 
-                INNER JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO 
+  $consulta = " SELECT de.*, tc.descripcion , u.Ciudad, tc.jornada, s.nom_inst , s.nom_sede FROM despachos_enc$mesAnno de
+                INNER JOIN sedes$anno  s ON de.cod_Sede = s.cod_sede
+                INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE
+                INNER JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO
                 WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor ";
   // echo $consulta;
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -151,11 +151,11 @@ foreach ($codesedes as $sedecod => $isset) {
 
         foreach ($despachosRecibidos as &$valor){
           //echo "<br>".$valor."<br>";
-          $consulta = " SELECT de.*, tc.descripcion , u.Ciudad, tc.jornada, s.nom_inst , s.nom_sede FROM despachos_enc$mesAnno de 
+          $consulta = " SELECT de.*, tc.descripcion , u.Ciudad, tc.jornada, s.nom_inst , s.nom_sede FROM despachos_enc$mesAnno de
                         INNER JOIN sedes$anno  s ON de.cod_Sede = s.cod_sede
-                        INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE 
-                        LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO 
-                        WHERE Tipo_Doc = 'DES' AND de.Num_Doc = ".$valor."  AND s.cod_sede = '".$sedecod."' ";
+                        INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE
+                        LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO
+                        WHERE Tipo_Doc = 'DES' AND de.Num_Doc = '".$valor."'  AND s.cod_sede = '".$sedecod."'";
           // echo "<br>$consulta<br>";
           $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta);
           if($resultado->num_rows >= 1){
@@ -285,8 +285,8 @@ foreach ($codesedes as $sedecod => $isset) {
 
           $auxSede = $sedes[$i];
 
-          $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo
-          from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
+          // $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
+          $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' and cod_sede = $auxSede";
 
           // Consulta que busca las coberturas de las diferentes sedes.
           //echo "<br><br>".$consulta."<br><br>";
@@ -296,11 +296,11 @@ foreach ($codesedes as $sedecod => $isset) {
 
             while($row = $resultado->fetch_assoc()) {
               $sedeCobertura['cod_sede'] = $row['cod_sede'];
-              $aux1 = "Etario1_$tipo";
+              $aux1 = "Cobertura_G1";
               $sedeCobertura['grupo1'] = $row[$aux1];
-              $aux2 = "Etario2_$tipo";
+              $aux2 = "Cobertura_G2";
               $sedeCobertura['grupo2'] = $row[$aux2];
-              $aux3 = "Etario3_$tipo";
+              $aux3 = "Cobertura_G3";
               $sedeCobertura['grupo3'] = $row[$aux3];
               $sedeCobertura['total'] = $row[$aux1] + $row[$aux2] + $row[$aux3];
               $sedesCobertura[] = $sedeCobertura;
@@ -343,12 +343,11 @@ foreach ($codesedes as $sedecod => $isset) {
           $despacho = $despachos[$i];
           $numero = $despacho['num_doc'];
           //$consulta = " select * from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $numero ";
-          $consulta = " select dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion 
-          from despachos_det$mesAnno dd 
-          left join productosmovdet$mesAnno pmd on dd.Tipo_Doc = pmd.Documento and dd.Num_Doc = pmd.Numero and dd.cod_Alimento = pmd.CodigoProducto 
-          where dd.Tipo_Doc = 'DES' and dd.Num_Doc = $numero  ";
-
-          //echo "<br>".$consulta."<br>";
+          $consulta = "SELECT dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion
+          FROM despachos_det$mesAnno dd
+          LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto
+          WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero";
+          // echo "<br>".$consulta."<br>";
 
           $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
           if($resultado->num_rows >= 1){
@@ -437,13 +436,12 @@ foreach ($codesedes as $sedecod => $isset) {
                 $alimentosTotales[] = $alimento;
             }
         }
-
         // Vamos a traer los datos que faltan para mostrar en la tabla
         for ($i=0; $i < count($alimentosTotales) ; $i++) {
           $alimentoTotal = $alimentosTotales[$i];
           $auxCodigo = $alimentoTotal['codigo'];
-          $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion, m.grupo_alim, m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
-          from  fichatecnicadet ftd
+          $consulta = "SELECT distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion, m.grupo_alim, m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
+          FROM  fichatecnicadet ftd
           inner join productos$anno  p on ftd.codigo=p.codigo
           inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
           where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' ";
@@ -642,7 +640,7 @@ foreach ($codesedes as $sedecod => $isset) {
           }
         }
 
-        for ($s=1; $s <=5 ; $s++) { 
+        for ($s=1; $s <=5 ; $s++) {
           $current_y = $pdf->GetY();
           if($current_y > 200){
             $filas = 0;
