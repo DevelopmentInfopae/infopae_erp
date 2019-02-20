@@ -4,6 +4,7 @@ date_default_timezone_set('America/Bogota');
 $tituloProyecto = 'InfoPAE2019';
 // $baseUrl = 'http://192.254.194.178/~infopae/giron2019';
 $baseUrl = 'http://localhost/infopae2019';
+$token_seguridad = sha1($baseUrl);
 $rootUrl = "/".$_SERVER['DOCUMENT_ROOT'].'/infopae2019';
 // $rootUrl = $_SERVER['DOCUMENT_ROOT'].'/~infopae/giron2019';
 $_SESSION['periodoActualCompleto'] = 2019;

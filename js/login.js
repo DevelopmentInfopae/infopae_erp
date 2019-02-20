@@ -42,8 +42,9 @@ function doLogin() {
                     alert('Usuario o contraseña incorrectos ');
                 } else if (i=='nueva_clave') {
                     window.location = "cambiar_clave.php";
-                }
-                else{
+                } else if (i == "-2"){
+                    $("#ventanaInformar").modal();
+                } else {
                     $('#debug').html(i);
                 }
         	}

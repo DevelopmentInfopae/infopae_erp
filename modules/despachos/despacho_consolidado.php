@@ -1,32 +1,27 @@
 <?php
-error_reporting(E_ALL);
-//set_time_limit (0);
-ini_set('memory_limit','6000M');
-include '../../config.php';
-require_once '../../autentication.php';
-require('../../fpdf181/fpdf.php');
-require_once '../../db/conexion.php';
-include '../../php/funciones.php';
+	error_reporting(E_ALL);
+	ini_set('memory_limit','6000M');
+	include '../../config.php';
+	require_once '../../autentication.php';
+	require('../../fpdf181/fpdf.php');
+	require_once '../../db/conexion.php';
+	include '../../php/funciones.php';
 
+	date_default_timezone_set('America/Bogota');
 
-$largoNombre = 30;
-$sangria = " - ";
-$tamannoFuente = 6;
+	$largoNombre = 30;
+	$sangria = " - ";
+	$tamannoFuente = 6;
 
-//var_dump($_POST);
+	$tablaAnno = $_SESSION['periodoActual'];
+	$tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
 
-$tablaAnno = $_SESSION['periodoActual'];
-$tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
+// $Link = new mysqli($Hostname, $Username, $Password, $Database);
+// if ($Link->connect_errno) {
+//   echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+// }
+// $Link->set_charset("utf8");
 
-//require_once 'autenticacion.php';
-
-$Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-  echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}
-$Link->set_charset("utf8");
-
-date_default_timezone_set('America/Bogota');
 $hoy = date("d/m/Y");
 $fechaDespacho = $hoy;
 
@@ -191,8 +186,7 @@ foreach ($despachosRecibidos as &$valor){
   $auxMenus = $row['Menus'];
   $menusMostrar[] = $auxMenus;
 
-  $arrayDiasDespacho = explode(',', $diasDespacho)
-  ;
+  $arrayDiasDespacho = explode(',', $diasDespacho);
 
 if (!in_array($row['Semana'], $semanasMostrar, true)) {
   $semanasMostrar[] =  $row['Semana'];
@@ -349,8 +343,8 @@ for ($i=0; $i < count($sedes) ; $i++) {
 
   $auxSede = $sedes[$i];
 
-  $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
-  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' and cod_sede = $auxSede";
+  // $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
+  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."'";
 
   // Consulta que busca las coberturas de las diferentes sedes.
   //echo "<br><br>".$consulta."<br><br>";

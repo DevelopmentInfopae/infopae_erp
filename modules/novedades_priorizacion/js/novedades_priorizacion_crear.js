@@ -28,17 +28,15 @@ $(document).ready(function(){
     buscar_semanas(mes,sede);
   });
 
-  $('#btnBuscar').click(function(){
-		validar_semanas_cantidades();
-	});
-
+  $('#btnBuscar').click(function(){ validar_semanas_cantidades(); });
 	$('.tablaNuevasCantidades input').change(function(){
-		totalizar();
-	});
+		console.log($(this).val());
+		if ($(this).val() == "") {
+			$(this).val('0');
+		}
 
-	$('.guaradarNovedad').click(function(){
-		guardar_priorizacion();
-	});
+		totalizar(); });
+	$('.guaradarNovedad').click(function(){ guardar_priorizacion(); });
 });
 
 function crearNovedadPriorizacion(){
@@ -93,8 +91,6 @@ function buscar_institucion(municipio){
 }
 
 function buscar_sede(institucion){
-    console.log('Actualizando lista de sedes.');
-    console.log(institucion);
     var datos = {"institucion":institucion};
     $.ajax({
 		type: "POST",
@@ -106,10 +102,6 @@ function buscar_sede(institucion){
     	success: function(data){
 			try {
 		  		var obj = JSON.parse(data);
-				// console.log('Log');
-				// console.log(obj.log);
-				// console.log('Respuesta');
-				// console.log(obj.respuesta);
 				$('#sede').html(obj.respuesta);
   			}
   			catch(err) {
@@ -138,11 +130,6 @@ function buscar_meses(sede){
     	success: function(data){
 			try {
 		  		var obj = JSON.parse(data);
-				console.log(obj);
-				// console.log('Log');
-				// console.log(obj.log);
-				// console.log('Respuesta');
-				// console.log(obj.respuesta);
 				$('#mes').html(obj.respuesta);
   			}
   			catch(err) {
@@ -170,11 +157,8 @@ function buscar_semanas(mes,sede){
     	success: function(data){
 			try {
 		  		var obj = JSON.parse(data);
-				// console.log('Log');
-				// console.log(obj.log);
-				// console.log('Respuesta');
-				// console.log(obj.respuesta);
 				$('#semana').html(obj.respuesta);
+				$('input').iCheck({ radioClass: "iradio_square-green" });
   			}
   			catch(err) {
 				$('.debug').html(err.message);
@@ -191,48 +175,42 @@ function buscar_semanas(mes,sede){
 }
 
 function validar_semanas_cantidades(){
-	$('.priorizacionAction').hide('fast');
 	var bandera = 0;
-	// console.log('Buscar priorización.');
-	// console.log($('#municipio').val());
-	// console.log($('#institucion').val());
-	// console.log($('#sede').val());
-	// console.log($('#mes').val());
-	// console.log($('#semana').val());
+
+	$('.priorizacionAction').hide('fast');
+
 	if($('#municipio').val() === undefined || $('#municipio').val() == ''){
 		alert('Debe seleccionar un municipio.');
 		$('#municipio').focus();
 		bandera++;
-	}
-	else if($('#institucion').val() === undefined || $('#institucion').val() == ''){
+	} else if($('#institucion').val() === undefined || $('#institucion').val() == ''){
 		alert('Debe seleccionar una institución.');
 		$('#institucion').focus();
 		bandera++;
-	}
-	else if($('#sede').val() === undefined || $('#sede').val() == ''){
+	} else if($('#sede').val() === undefined || $('#sede').val() == ''){
 		alert('Debe seleccionar una sede.');
 		$('#sede').focus();
 		bandera++;
-	}
-	else if($('#mes').val() === undefined || $('#mes').val() == ''){
+	} else if($('#mes').val() === undefined || $('#mes').val() == ''){
 		alert('Debe seleccionar un mes.');
 		$('#mes').focus();
 		bandera++;
 	}
+
 	// Recogemos todas las semanas chequeadas
 	var semanas = new Array();
-    $('#semana .semana:checked').each(
-			function() {
-				var aux = $(this).val();
-				semanas.push(aux);
-			}
-    );
+
+  $('#semana .semana:checked').each(
+		function() {
+			var aux = $(this).val();
+			semanas.push(aux);
+		}
+  );
 
 	if(semanas.length <= 0 && bandera == 0){
 		alert('Debe seleccionar por lo menos una semana.');
 		$('#semana0').focus();
 	}else if(bandera == 0){
-		// console.log(semanas);
 		var sede = $('#sede').val();
 		var datos = {"semanas":semanas, "sede":sede};
 		$.ajax({
@@ -246,13 +224,11 @@ function validar_semanas_cantidades(){
 				try {
 					var obj = JSON.parse(data);
 					if(obj.respuesta == 1){
-						console.log('Las semanas seleccionadas tienen las mismas cantidades.');
 						buscar_priorizacion(semanas);
 					}
 					else{
 						alert(obj.log);
 					}
-					console.log(obj);
 				}
 				catch(err) {
 					$('.debug').html(err.message);
@@ -271,31 +247,28 @@ function validar_semanas_cantidades(){
 
 function buscar_priorizacion(semanas){
 	// Bucaremos si hay registros de priorización para la sede seleccionada en el mes seleccionado.
-	console.log('Buscando registros de priorización');
-
 	var municipio = $('#municipio').val();
 	var institucion = $('#institucion').val();
 	var sede = $('#sede').val();
 	var mes = $('#mes').val();
 
-	var datos = {"municipio":municipio, "institucion":institucion, "sede":sede, "mes":mes, "semanas":semanas};
-
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_priorizacion.php",
-		data: datos,
+		data: {
+			"mes":mes,
+			"sede":sede,
+			"semanas":semanas,
+			"municipio":municipio,
+			"institucion":institucion
+		},
 		beforeSend: function(){
 			$('#loader').fadeIn();
 		},
 		success: function(data){
 			try {
 				var obj = JSON.parse(data);
-				console.log(obj);
-				// console.log('Log');
-				// console.log(obj.log);
-				// console.log('Respuesta');
-				// console.log(obj.respuesta);
-				//$('#semana').html(obj.respuesta);
+
 				if(obj.registros > 0){
 					var aps = obj.aps;
 					var aps1 = obj.aps1;
@@ -311,42 +284,42 @@ function buscar_priorizacion(semanas){
 					var cajmri3 = obj.cajmri3;
 					var cantEstudiantes = obj.cantEstudiantes;
 					var numEstFocalizados = obj.numEstFocalizados;
-					if(aps == 0){
+					if(aps == 0) {
 						$('.APSactual').hide('fast');
-					}else{
+					} else {
 						$('#APSactualTotal').val(aps);
-						$('#APSactual1').val(aps1);
-						$('#APSactual2').val(aps2);
-						$('#APSactual3').val(aps3);
+						$('#APSactual1').val(aps1); $('#APS1').val(aps1);
+						$('#APSactual2').val(aps2); $('#APS2').val(aps2);
+						$('#APSactual3').val(aps3); $('#APS3').val(aps3);
 						$('#APSTotal').val(aps);
-						$('#APS1').val(aps1);
-						$('#APS2').val(aps2);
-						$('#APS3').val(aps3);
+
 						$('.APSactual').show('fast');
 					}
 					if(cajmps == 0){
 						$('.CAJMPSactual').hide('fast');
 					}else{
 						$('#CAJMPSactualTotal').val(cajmps);
-						$('#CAJMPSactual1').val(cajmps1);
-						$('#CAJMPSactual2').val(cajmps2);
-						$('#CAJMPSactual3').val(cajmps3);
+						$('#CAJMPSactual1').val(cajmps1); $('#CAJMPS1').val(cajmps1);
+						$('#CAJMPSactual2').val(cajmps2); $('#CAJMPS2').val(cajmps2)
+						$('#CAJMPSactual3').val(cajmps3); $('#CAJMPS3').val(cajmps3)
+
 						$('.CAJMPSactual').show('fast');
 					}
 					if(cajmri == 0){
 						$('.CAJMRIactual').hide('fast');
 					}else{
 						$('#CAJMRIactualTotal').val(cajmri);
-						$('#CAJMRIactual1').val(cajmri1);
-						$('#CAJMRIactual2').val(cajmri2);
-						$('#CAJMRIactual3').val(cajmri3);
+						$('#CAJMRIactual1').val(cajmri1); $('#CAJMRI1').val(cajmri1);
+						$('#CAJMRIactual2').val(cajmri2); $('#CAJMRI2').val(cajmri2);
+						$('#CAJMRIactual3').val(cajmri3); $('#CAJMRI3').val(cajmri3);
+
 						$('.CAJMRIactual').show('fast');
 					}
+
 					totalizar();
 					$('.priorizacionAction').fadeIn();
 				}
-			  }
-			  catch(err) {
+		  } catch(err) {
 				$('.debug').html(err.message);
 				$('.debug').append('<br/><br/>');
 				$('.debug').append(data);
@@ -361,15 +334,17 @@ function buscar_priorizacion(semanas){
 }
 
 function totalizar(){
-	console.log('Cambio en las cantidades.');
 	// Se va a calcular las cantidades totales para cada complemento.
 	var aux = 0;
 	aux = parseInt($('#APS1').val()) + parseInt($('#APS2').val()) + parseInt($('#APS3').val());
 	$('#APSTotal').val(aux);
+
 	aux = parseInt($('#CAJMPS1').val()) + parseInt($('#CAJMPS2').val()) + parseInt($('#CAJMPS3').val());
 	$('#CAJMPSTotal').val(aux);
+
 	aux = parseInt($('#CAJMRI1').val()) + parseInt($('#CAJMRI2').val()) + parseInt($('#CAJMRI3').val());
 	$('#CAJMRITotal').val(aux);
+
 	aux = parseInt($('#APSTotal').val()) + parseInt($('#CAJMPSTotal').val()) + parseInt($('#CAJMRITotal').val());
 	$('#totalTotal').val(aux);
 	aux = parseInt($('#APS1').val()) + parseInt($('#CAJMPS1').val()) + parseInt($('#CAJMRI1').val());
@@ -381,16 +356,13 @@ function totalizar(){
 }
 
 function guardar_priorizacion(){
-	console.log('Guardar priorización');
 	var bandera = 0;
-
 	var semanas = new Array();
-    $('#semana .semana:checked').each(
-		function() {
-			var aux = $(this).val();
-			semanas.push(aux);
-		}
-    );
+
+  $('#semana .semana:checked').each(function() {
+		var aux = $(this).val();
+		semanas.push(aux);
+	});
 
 	if($('#observaciones').val() == ''){
 		alert('El campo observaciones es obligatorio.');
@@ -405,11 +377,9 @@ function guardar_priorizacion(){
 	if(bandera == 0){
 		var formData = new FormData($("#formArchivos")[0]);
 		formData.append('semanas',semanas);
-		console.log(formData);
-		var ruta = "functions/fn_guardar_priorizacion.php";
-		var auxContenido = '';
+
 		$.ajax({
-			url: ruta,
+			url: "functions/fn_guardar_priorizacion.php",
 			type: "POST",
 			data: formData,
 			contentType: false,
@@ -418,9 +388,9 @@ function guardar_priorizacion(){
 				$('#loader').fadeIn();
 			},
 			success: function(datos){
+				console.log(datos);
 				try{
 					var obj = JSON.parse(datos);
-					console.log(obj);
 					if(obj.respuesta == 1){
 						alert('Se ha registrado con éxito la novedad de priorización');
 						location.href="index.php";
@@ -435,8 +405,6 @@ function guardar_priorizacion(){
 				}
 			}
 		})
-		.done(function(){ })
-		.fail(function(){ })
 		.always(function(){
 			$('#loader').fadeOut();
 		});
