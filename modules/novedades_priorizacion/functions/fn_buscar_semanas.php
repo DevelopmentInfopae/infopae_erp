@@ -50,8 +50,10 @@ foreach ($semanas as $semana) {
 //var_dump($semanasMostrar);
 $aux = 0;
 foreach ($semanasMostrar as $semanaMostrar) {
-	$respuesta .= "<div class=\"checkboxSemana\"><input type=\"radio\" class=\"semana\" id=\"semana$aux\" name=\"semana\" value=\"$semanaMostrar\">
-	<label>$semanaMostrar</label></div>";
+	$respuesta .= "<label for=\"semana$aux\">
+										<input type=\"radio\" class=\"semana\" id=\"semana$aux\" name=\"semana\" value=\"$semanaMostrar\">
+										$semanaMostrar
+									</label>";
 	$aux++;
 }
-echo json_encode(array("log"=>$log, "respuesta"=>$respuesta));
+echo json_encode(array("log"=>$log, "respuesta"=>'<div class="radio">'. $respuesta ."</div>"));

@@ -65,19 +65,19 @@
 									?>
 								</select>
 							</div><!-- /.col -->
-							<div class="col-sm-6 form-group">
+							<div class="col-sm-4 form-group">
 								<label for="sede">Sede</label>
 								<select class="form-control" name="sede" id="sede">
 									<option value="">Selecciones una</option>
 								</select>
 							</div><!-- /.col -->
-							<div class="col-sm-3 form-group">
+							<div class="col-sm-4 form-group">
 								<label for="mes">Mes</label>
 								<select class="form-control" name="mes" id="mes">
 									<option value="">Seleccione uno</option>
 								</select>
 							</div><!-- /.col -->
-							<div class="col-sm-3 form-group">
+							<div class="col-sm-4 form-group">
 								<label for="semana">Semana</label>
 								<div id="semana">
 
@@ -86,7 +86,7 @@
 						</div><!-- -/.row -->
 						<div class="row">
 							<div class="col-sm-4 form-group">
-								<button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1"><strong>Buscar</strong></button>
+								<button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1"><strong> <i class="fa fa-search"></i> Buscar</strong></button>
 							</div>
 						</div>
 	        		</div><!-- /.ibox-content -->
@@ -260,6 +260,7 @@
 <!-- CodeMirror -->
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/codemirror.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/mode/xml/xml.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede_archivos.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/js/novedades_priorizacion_crear.js"></script>
 

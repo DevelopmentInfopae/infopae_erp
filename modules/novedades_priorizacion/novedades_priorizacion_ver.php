@@ -177,9 +177,9 @@
 										<tr class="total">
 											<td> <input type="text" class="form-control" name="totalNm" id="totalNm" value="TOTAL" readonly> </td>
 											<td> <input type="text" class="form-control" name="totalTotal" id="totalTotal" value="<?php echo $datosNovedad['APS'] + $datosNovedad['CAJMPS'] + $datosNovedad['CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="total1" id="total1" value="<?php echo $datosNovedad['Etario1_APS'] + $datosNovedad['Etario1_CAJMPS'] + $datosNovedad['Etario1_CAJMRI']; ?>" readonly  style="text-align:center;"> </td>
-											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="total2" id="total2" value="<?php echo $datosNovedad['Etario2_APS'] + $datosNovedad['Etario2_CAJMPS'] + $datosNovedad['Etario2_CAJMRI']; ?>" readonly  style="text-align:center;"> </td>
-											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="total3" id="total3" value="<?php echo $datosNovedad['Etario3_APS'] + $datosNovedad['Etario3_CAJMPS'] + $datosNovedad['Etario3_CAJMRI']; ?>" readonly  style="text-align:center;"> </td>
+											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total1" id="total1" value="<?php echo $datosNovedad['Etario1_APS'] + $datosNovedad['Etario1_CAJMPS'] + $datosNovedad['Etario1_CAJMRI']; ?>" readonly  style="text-align:center;"> </td>
+											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total2" id="total2" value="<?php echo $datosNovedad['Etario2_APS'] + $datosNovedad['Etario2_CAJMPS'] + $datosNovedad['Etario2_CAJMRI']; ?>" readonly  style="text-align:center;"> </td>
+											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total3" id="total3" value="<?php echo $datosNovedad['Etario3_APS'] + $datosNovedad['Etario3_CAJMPS'] + $datosNovedad['Etario3_CAJMRI']; ?>" readonly  style="text-align:center;"> </td>
 										</tr>
 
 									</tbody>
@@ -193,7 +193,7 @@
 							<div class="row">
 								<div class="col-sm-6 form-group">
 									<label for="observaciones">Observaciones</label>
-									<textarea name="observaciones" id="observaciones" class="form-control" rows="8" cols="80"><?php echo $datosNovedad['observaciones']; ?></textarea>
+									<textarea name="observaciones" id="observaciones" class="form-control" rows="8" cols="80" readonly><?php echo $datosNovedad['observaciones']; ?></textarea>
 								</div><!-- /.col -->
 								<div class="col-sm-6 form-group">
 									<label for="departamento">Archivo</label>
