@@ -52,6 +52,23 @@
         </div>
     </div>
 
+    <div class="modal inmodal fade" id="ventanaInformar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header text-info" style="padding: 15px;">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
+          </div>
+          <div class="modal-body">
+              <p class="text-center">Existe un sistema de InfoPAE iniciada. No es posible iniciar sesión. Cierre sesión e intentelo nuevamente.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Aceptar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Mainly scripts -->
     <script src="theme/js/jquery-3.1.1.min.js"></script>
     <script src="theme/js/bootstrap.min.js"></script>

@@ -30,8 +30,6 @@
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
-
-
           <table class="table table-striped table-hover selectableRows dataTablesNovedadesPriorizacion">
             <thead>
               <tr>
@@ -151,9 +149,8 @@
 
 		// Evento para ver
 		$(document).on('click', '.dataTablesNovedadesPriorizacion tbody td:nth-child(-n+9)', function(){
-			console.log('Click en la fila');
 			var tr = $(this).closest('tr');
-			var datos = datatables.row( tr ).data();
+			var datos = datatables.row(tr).data();
 			$('#formVerNovedad #idNovedad').val(datos.id);
 			$('#formVerNovedad').submit();
 		});
@@ -162,7 +159,6 @@
 		$(document).on('change', '.dataTablesSedes tbody input[type=checkbox].estadoSede', function(){
 			var tr = $(this).closest('tr');
 			var datos = datatables.row( tr ).data();
-			alert('Hola');
 			confirmarCambioEstado(datos.codigoSede, datos.estadoSede);
 		});
 

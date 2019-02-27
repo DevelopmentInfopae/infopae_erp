@@ -129,25 +129,6 @@ for ($k=0; $k < count($_POST) ; $k++){
   $sedes[] = $codSede;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  // Iniciando la busqueda de los días que corresponden a esta semana de contrato.
  $arrayDiasDespacho = explode(',', $diasDespacho);
  $dias = '';
@@ -182,42 +163,13 @@ for ($k=0; $k < count($_POST) ; $k++){
  // Termina la busqueda de los días que corresponden a esta semana de contrato.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /********************** Modificación para cambiar los datos de los 3 campos agregados a la tabla despachos_encMESAÑO **********************/
   // Bucando la cobertura para la sede en esa semana para el tipo de complementosCantidades
   $cantSedeGrupo1 = 0;
   $cantSedeGrupo2 = 0;
   $cantSedeGrupo3 = 0;
 
-  // $consulta = "SELECT Etario1_$modalidad as grupo1, Etario2_$modalidad as grupo2, Etario3_$modalidad as grupo3
-  //             FROM sedes_cobertura
-  //             WHERE semana = '$semana' and cod_sede  = $codSede ";
-  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3 FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede  = '$codSede'";
+  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3 FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede  = '$codSede' AND  Tipo_Complem = '$modalidad'";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();

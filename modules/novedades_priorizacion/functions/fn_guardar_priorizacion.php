@@ -3,44 +3,36 @@ include '../../../config.php';
 require_once '../../../autentication.php';
 require_once '../../../db/conexion.php';
 include_once 'funciones.php';
-// var_dump($_SESSION);
-//var_dump($_POST);
-$semanas = '';
+
+date_default_timezone_set('America/Bogota');
+
+$log = "";
+$semanas = "";
+$reporte = "";
+$respuesta = 1;
+$fecha = date('Y-m-d H:i:s');
+$carpeta = 'upload/novedades/';
+$carpetaFisica = '../../../upload/novedades/';
+
 if(isset($_POST['semanas'])){
 	$semanas = $_POST['semanas'];
 	$semanas = explode(',', $semanas);
 }
-//var_dump($semanas);
-
-
-
-
-
-
-
-$log = "";
-$reporte = "";
-$respuesta = 1;
-
-date_default_timezone_set('America/Bogota');
-$fecha = date('Y-m-d H:i:s');
-
-$carpetaFisica = '../../../upload/novedades/';
-$carpeta = 'upload/novedades/';
 
 //Verificando la existencia del directorio
 if (!file_exists($carpetaFisica)) {
     mkdir($carpetaFisica, 0777);
 }
 
-if (isset($_FILES["foto"])){
+if (isset($_FILES["foto"])) {
    	$reporte = null;
-    for($x=0; $x<count($_FILES["foto"]["name"]); $x++){
+    for($x=0; $x<count($_FILES["foto"]["name"]); $x++) {
 	    $file = $_FILES["foto"];
-	    $nombre = $file["name"][$x];
 	    $tipo = $file["type"][$x];
-	    $ruta_provisional = $file["tmp_name"][$x];
 	    $size = $file["size"][$x];
+	    $nombre = $file["name"][$x];
+	    $ruta_provisional = $file["tmp_name"][$x];
+
 	    $dimensiones = getimagesize($ruta_provisional);
 	    $width = $dimensiones[0];
 	    $height = $dimensiones[1];
@@ -52,54 +44,45 @@ if (isset($_FILES["foto"])){
 	    $bandera = 0;
 
 	    if ($tipo != 'image/jpeg' && $tipo != 'image/jpg' && $tipo != 'image/png' && $tipo != 'image/gif' && $tipo != 'application/pdf')
-		{
-	        $reporte .= "<p style='color: red'>Error $nombre, el archivo no es una imagen o un PDF.</p>";
-			$bandera++;
-	    }
-	    else if($size > 220000)
-	    {
-	        $reporte .= "<p style='color: red'>Error, el tamaño máximo permitido es 200 KB </p>";
-			$bandera++;
-	    }
-	    else if($width > 500 || $height > 500)
-	    {
-	        //$reporte .= "<p style='color: red'>Error $nombre, la anchura y la altura máxima permitida es de 500px</p>";
-	    }
-	    else if($width < 60 || $height < 60)
-	    {
-	        //$reporte .= "<p style='color: red'>Error $nombre, la anchura y la altura mínima permitida es de 60px</p>";
+			{
+        $reporte .= "<p style='color: red'>Error $nombre, el archivo no es una imagen o un PDF.</p>";
+				$bandera++;
+	    } else if ($size > 220000) {
+        $reporte .= "<p style='color: red'>Error, el tamaño máximo permitido es 200 KB </p>";
+				$bandera++;
+	    } else if ($width > 500 || $height > 500) {
+        //$reporte .= "<p style='color: red'>Error $nombre, la anchura y la altura máxima permitida es de 500px</p>";
+	    } else if ($width < 60 || $height < 60) {
+        //$reporte .= "<p style='color: red'>Error $nombre, la anchura y la altura mínima permitida es de 60px</p>";
 	    }
 
 	    if($bandera == 0){
 	    	//resize_crop_image(826,550,$ruta_provisional, $src);
-			$Link = new mysqli($Hostname, $Username, $Password, $Database);
-			if ($Link->connect_errno) { echo "Fallo al contenctar a MySQL: (" . $Link->connect_errno . ") " . $Link->connect_error; }
-			$Link->set_charset("utf8");
-			$consulta = " insert into novedades_priorizacion
-			(
-				num_novedad,
-				id_usuario,
-				fecha_hora,
-				cod_sede,
-				APS,
-				CAJMRI,
-				CAJMPS,
-				Etario1_APS,
-				Etario1_CAJMRI,
-				Etario1_CAJMPS,
-				Etario2_APS,
-				Etario2_CAJMRI,
-				Etario2_CAJMPS,
-				Etario3_APS,
-				Etario3_CAJMRI,
-				Etario3_CAJMPS,
-				Semana,
-				observaciones,
-				arch_adjunto,
-				estado
-			)
-			values
-			( 1, ";
+				// $Link = new mysqli($Hostname, $Username, $Password, $Database);
+				// if ($Link->connect_errno) { echo "Fallo al contenctar a MySQL: (" . $Link->connect_errno . ") " . $Link->connect_error; }
+				// $Link->set_charset("utf8");
+				$consulta = "INSERT INTO novedades_priorizacion (
+											num_novedad,
+											id_usuario,
+											fecha_hora,
+											cod_sede,
+											APS,
+											CAJMRI,
+											CAJMPS,
+											Etario1_APS,
+											Etario1_CAJMRI,
+											Etario1_CAJMPS,
+											Etario2_APS,
+											Etario2_CAJMRI,
+											Etario2_CAJMPS,
+											Etario3_APS,
+											Etario3_CAJMRI,
+											Etario3_CAJMPS,
+											Semana,
+											observaciones,
+											arch_adjunto,
+											estado
+										) VALUES ( 1, ";
 
 			$aux = $_SESSION['id_usuario'];
 			$consulta .= " $aux, ";
@@ -200,7 +183,7 @@ if (isset($_FILES["foto"])){
 			$indiceSemana = 0;
 			foreach ($semanas as $semana) {
 				if($indiceSemana > 0){
-					$consulta = " insert into novedades_priorizacion
+					$consulta = "INSERT INTO novedades_priorizacion
 					(
 						num_novedad,
 						id_usuario,
@@ -223,7 +206,7 @@ if (isset($_FILES["foto"])){
 						arch_adjunto,
 						estado
 					)
-					values
+					VALUES
 					( 1, ";
 
 					$aux = $_SESSION['id_usuario'];

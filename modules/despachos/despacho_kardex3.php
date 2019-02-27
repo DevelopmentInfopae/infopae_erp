@@ -182,7 +182,7 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   // $consulta = " select Etario1_$modalidad as grupo1, Etario2_$modalidad as grupo2, Etario3_$modalidad as grupo3
   // from sedes_cobertura
   // where semana = '$semana' and cod_sede  = $codSede ";
-  $consulta = "SELECT Cobertura_G1 AS grupo1, Cobertura_G2 AS grupo2, Cobertura_G3 AS grupo3 FROM despachos_enc$mesAnno WHERE semana = '$semana' and cod_sede  = $codSede ";
+  $consulta = "SELECT Cobertura_G1 AS grupo1, Cobertura_G2 AS grupo2, Cobertura_G3 AS grupo3 FROM despachos_enc$mesAnno WHERE semana = '$semana' and cod_sede  = $codSede AND Tipo_Complem = '$tipo'";
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
   if($resultado->num_rows >= 1){

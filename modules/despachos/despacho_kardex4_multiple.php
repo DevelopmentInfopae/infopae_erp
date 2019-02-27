@@ -286,7 +286,7 @@ foreach ($codesedes as $sedecod => $isset) {
           $auxSede = $sedes[$i];
 
           // $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
-          $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' and cod_sede = $auxSede";
+          $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '$tipo'";
 
           // Consulta que busca las coberturas de las diferentes sedes.
           //echo "<br><br>".$consulta."<br><br>";

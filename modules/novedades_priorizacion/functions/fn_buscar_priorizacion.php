@@ -9,10 +9,9 @@ $semanas = (isset($_POST['semanas']) && $_POST['semanas'] != '') ? $_POST["seman
 $periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
 $registros = 0;
-//var_dump($_POST);
 
 $semana = $semanas[0];
-$consulta = " SELECT * FROM priorizacion$semana where cod_sede = '$sede' ";
+$consulta = "SELECT * FROM priorizacion$semana where cod_sede = '$sede'";
 //echo $consulta;
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
@@ -27,7 +26,7 @@ if($resultado->num_rows >= 1){
 		$cajmri = $row['CAJMRI'];
 		$cajmri1 = $row['Etario1_CAJMRI'];
 		$cajmri2 = $row['Etario2_CAJMRI'];
-		$cajmri3 = $row['Etario3_CAJTRI'];
+		$cajmri3 = $row['Etario3_CAJMRI'];
 		$cajmps = $row['CAJMPS'];
 		$cajmps1 = $row['Etario1_CAJMPS'];
 		$cajmps2 = $row['Etario2_CAJMPS'];
