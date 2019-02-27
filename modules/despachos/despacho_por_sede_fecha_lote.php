@@ -75,9 +75,9 @@ $Link->set_charset("utf8");
     $anno = trim($anno);
     $mesAnno = $mes.$anno;
     // Quitando las variable que no sean numeros de despacho
-    $_POST = array_slice($_POST, 17);
+    $_POST = array_slice($_POST, 18);
     $_POST = array_values($_POST);
-    //var_dump($_POST);
+    // var_dump($_POST);
   }
 ?>
 
@@ -100,7 +100,7 @@ $Link->set_charset("utf8");
               left join ubicacion u on s.cod_mun_sede = u.CodigoDANE and u.ETC = 0
               WHERE de.Num_Doc = $despacho ";
 
-              //echo '<br><br>'.$consulta.'<br><br>';
+              // echo '<br><br>'.$consulta.'<br><br>';
 
               $resultado = $Link->query($consulta) or die ('Unable to execute query datos del despacho '. mysqli_error($Link));
               if($resultado->num_rows >= 1){
@@ -157,6 +157,8 @@ $Link->set_charset("utf8");
               $cantSedeGrupo3 = 0;
 
               $consulta = " select Etario1_$modalidad as grupo1, Etario2_$modalidad as grupo2, Etario3_$modalidad as grupo3 from sedes_cobertura where semana = '$semana' and cod_sede  = $codSede ";
+
+              // echo $consulta."</br>";
 
               $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
               if($resultado->num_rows >= 1){

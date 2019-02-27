@@ -149,6 +149,7 @@ $periodoActual = $_SESSION['periodoActual'];
                 <option value="3">Producto</option>
                 <option value="4">Grupo etario</option>
                 <option value="5">Tipo complemento</option>
+                <option value="6">Fecha vencimiento</option>
               </select>
             </div>
             <div id="divBodegas" style="display: none;">
@@ -206,6 +207,16 @@ $periodoActual = $_SESSION['periodoActual'];
                  ?>
               </select>
             </div>
+            <div id="divFechaVencimiento" style="display: none;">
+              <div class="form-group col-sm-2">
+                <label>Desde : </label>
+                <input type="date" name="fechavto_desde" class="form-control">
+              </div>
+              <div class="form-group col-sm-2">
+                <label>Desde : </label>
+                <input type="date" name="fechavto_hasta" class="form-control">
+              </div>
+            </div>
             <input type="hidden" name="buscar" value="1">
           </form>
           <div class="col-sm-12">
@@ -229,19 +240,21 @@ $periodoActual = $_SESSION['periodoActual'];
              <table class="table" id="tablaTrazabilidad">
                 <thead>
                   <tr>
-                    <th style="width: 7.7%;">Tipo Doc</th>
-                    <th style="width: 7.7%; word-wrap: break-word;">Número</th>
-                    <th style="width: 7.7%;">Fecha / Hora</th>
-                    <th style="width: 7.7%;">Responsable / Proveedor</th>
-                    <th style="width: 7.7%;">Nombre Producto / Alimento</th>
-                    <th style="width: 7.7%;">Unidad Medida</th>
-                    <th style="width: 7.7%;">Factor</th>
-                    <th style="width: 7.7%;">Cantidad</th>
-                    <th style="width: 7.7%;">Nombre Bodega Origen</th>
-                    <th style="width: 7.7%;">Nombre Bodega Destino</th>
-                    <th style="width: 7.7%;">Tipo Transp</th>
-                    <th style="width: 7.7%;">Placa</th>
-                    <th style="width: 7.6%;">Conductor</th>
+                    <th style="width: 6.25%;">Tipo Doc</th>
+                    <th style="width: 6.25%; word-wrap: break-word;">Número</th>
+                    <th style="width: 6.25%;">Fecha / Hora</th>
+                    <th style="width: 6.25%;">Responsable / Proveedor</th>
+                    <th style="width: 6.25%;">Nombre Producto / Alimento</th>
+                    <th style="width: 6.25%;">Unidad Medida</th>
+                    <th style="width: 6.25%;">Factor</th>
+                    <th style="width: 6.25%;">Cantidad</th>
+                    <th style="width: 6.25%;">Nombre Bodega Origen</th>
+                    <th style="width: 6.25%;">Nombre Bodega Destino</th>
+                    <th style="width: 6.25%;">Tipo Transp</th>
+                    <th style="width: 6.25%;">Placa</th>
+                    <th style="width: 6.25%;">Conductor</th>
+                    <th style="width: 6.25%;">Lote</th>
+                    <th style="width: 6.25%;">Fecha Vence</th>
                   </tr>
                 </thead>
                 <tbody id="tBodyTrazabilidad">
@@ -262,6 +275,8 @@ $periodoActual = $_SESSION['periodoActual'];
                     <th>Tipo Transp</th>
                     <th>Placa</th>
                     <th>Conductor</th>
+                    <th>Lote</th>
+                    <th>Fecha Vence</th>
                   </tr>
                 </tfoot>
               </table>
@@ -273,7 +288,7 @@ $periodoActual = $_SESSION['periodoActual'];
     $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
     $consulta = "SELECT 
-        pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe 
+        pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento
         FROM productosmov$numtabla AS pmov 
           INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero 
           INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen 
@@ -285,7 +300,7 @@ $periodoActual = $_SESSION['periodoActual'];
     $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual']; //Número MesAño según mes escogido
     $condiciones = ""; //Donde se almacenan las condiciones según parámetros
     $inners="";//Donde se almacenan los INNERS necesarios para traer datos externos.
-    $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe  ";
+    $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento  ";
 
     if (isset($_POST['fecha_de']) && $_POST['fecha_de'] != "") { //Si está seteado el tipo de búsqueda por fecha
       $fecha_de = $_POST['fecha_de'];
@@ -356,9 +371,9 @@ $periodoActual = $_SESSION['periodoActual'];
 
                 if ($condiciones == "") { //Si no hay otros criterios especificados, muestra sólo valores Nombre de producto, Factor, Unidad medida y Cantidad
                   $txtTotales = "--";
-                  $datos =" '".$txtTotales."' as Tipo, '".$txtTotales."' as Numero, '".$txtTotales."' as FechaMYSQL, '".$txtTotales."' as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad,  '".$txtTotales."' as nomBodegaOrigen, '".$txtTotales."' as nomBodegaDestino,  '".$txtTotales."' as TipoTransporte, '".$txtTotales."' as Placa, '".$txtTotales."' as ResponsableRecibe ";
+                  $datos =" '".$txtTotales."' as Tipo, '".$txtTotales."' as Numero, '".$txtTotales."' as FechaMYSQL, '".$txtTotales."' as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad,  '".$txtTotales."' as nomBodegaOrigen, '".$txtTotales."' as nomBodegaDestino,  '".$txtTotales."' as TipoTransporte, '".$txtTotales."' as Placa, '".$txtTotales."' as ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento ";
                 } else { //Si hay criterios, muestra los resultados agrupados
-                  $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe  ";
+                  $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento  ";
                 }
 
                 $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' GROUP BY pmovdet.CodigoProducto ";
@@ -385,6 +400,23 @@ $periodoActual = $_SESSION['periodoActual'];
           $condiciones.=" AND denc.Tipo_Complem = '".$_POST['tipo_complemento']."' ";
         }
 
+      } else if ($filtro == 6) {
+
+        $condicionFvto = "";
+
+        if ($_POST['fechavto_desde'] != "" || $_POST['fechavto_hasta'] != "") {
+
+          $condicionFvto.=" AND pmovdet.FechaVencimiento >= '".$_POST['fechavto_desde']."' AND pmovdet.FechaVencimiento <= '".$_POST['fechavto_hasta']."'";
+
+        } else {
+
+          if ($_POST['fechavto_desde'] != "") {
+              $condicionFvto.=" AND pmovdet.FechaVencimiento >= '".$_POST['fechavto_desde']."'";
+          } else if ($_POST['fechavto_hasta'] != "") {
+              $condicionFvto.=" AND pmovdet.FechaVencimiento <= '".$_POST['fechavto_hasta']."'";
+          }
+
+        }
       }
     }
 
@@ -392,7 +424,7 @@ $periodoActual = $_SESSION['periodoActual'];
                       $datos
                   FROM
                     productosmov$numtabla AS pmov
-                      INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero
+                      INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero $condicionFvto
                       INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
                       INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
                       INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
@@ -455,6 +487,8 @@ $periodoActual = $_SESSION['periodoActual'];
         { data: 'TipoTransporte'},
         { data: 'Placa'},
         { data: 'ResponsableRecibe'},
+        { data: 'Lote'},
+        { data: 'FechaVencimiento'},
       ],
           /*order: [ 0, 'asc' ],*/
     pageLength: 25,

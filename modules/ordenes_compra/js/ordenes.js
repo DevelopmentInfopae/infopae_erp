@@ -610,7 +610,7 @@ function despachos_consolidado(){
     $('#rutaNm').val(rutaSeleccionada);
 
 
-    $('#formDespachos').attr('action', 'despacho_consolidado.php');
+    $('#formDespachos').attr('action', 'ordenes_consolidado.php');
     $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');
