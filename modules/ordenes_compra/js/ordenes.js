@@ -610,7 +610,7 @@ function despachos_consolidado(){
     $('#rutaNm').val(rutaSeleccionada);
 
 
-    $('#formDespachos').attr('action', 'despacho_consolidado.php');
+    $('#formDespachos').attr('action', 'ordenes_consolidado.php');
     $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');
@@ -859,7 +859,7 @@ function despachos_agrupados(){
   if(bandera == 0){
     $( ".soloJs" ).remove();
     console.log('Se van a mostrar los despachos agrupados');
-    $('#formDespachos').attr('action', 'despacho_agrupado.php');
+    $('#formDespachos').attr('action', 'ordenes_agrupado.php');
     $('#formDespachos').submit();
 
   }

@@ -67,6 +67,7 @@ $('#tipo_filtro').on('change', function(){
 		$('#divProductos').css('display', 'none');
 		$('#divGrupoEtario').css('display', 'none');
 		$('#divTipoComplemento').css('display', 'none');
+		$('#divFechaVencimiento').css('display', 'none');
 
 	if (filtro == "1") {
 		$.ajax({
@@ -120,6 +121,10 @@ $('#tipo_filtro').on('change', function(){
 		fechaDe(2);
 		$('#fecha_de').val(2);
 		$('#divTipoComplemento').css('display', '');
+	} else if (filtro == "6") {
+		fechaDe(2);
+		$('#fecha_de').val(2);
+		$('#divFechaVencimiento').css('display', '');
 	}
 
 	setTimeout(function() {
