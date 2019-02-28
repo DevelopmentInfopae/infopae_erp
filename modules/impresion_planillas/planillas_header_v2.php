@@ -72,16 +72,14 @@ foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas 
 			$dms = $resDiasMes->fetch_assoc();
 			$diasMes = 0;
 			for ($i=1; $i < 31; $i++) { //recorremos los campos D1, D2, etc que no estén vacíos.
-				if ($i >= 11 && $i <= 22) {
 					if (!empty($dms['D'.$i])) {
 						$diasMes++;
 					}
-				}
 			}
 		}
 
-		$diassiporfavor = $diasMes-$diasCubiertos; //a los días obtenidos del mes, les restamos los días que ya se cubrieron
-		$tpm = (($tpm / $diasSemana) * $diassiporfavor) + $totalProgramadoMes; //Se divide el total de entregas de la última semana priorizada por el número de días de la misma, al resultado se le multiplica por el número de días que hacen falta por cubrir. Luego, al total obtenido, se le suma el total de los días cubiertos.
+		$diasNoPriorizados = $diasMes-$diasCubiertos; //a los días obtenidos del mes, les restamos los días que ya se cubrieron
+		$tpm = (($tpm / $diasSemana) * $diasNoPriorizados) + $totalProgramadoMes; //Se divide el total de entregas de la última semana priorizada por el número de días de la misma, al resultado se le multiplica por el número de días que hacen falta por cubrir. Luego, al total obtenido, se le suma el total de los días cubiertos.
 		$totalProgramadoMes = $tpm;
 
 		break;
