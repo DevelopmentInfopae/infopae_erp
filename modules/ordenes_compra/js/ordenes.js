@@ -859,7 +859,7 @@ function despachos_agrupados(){
   if(bandera == 0){
     $( ".soloJs" ).remove();
     console.log('Se van a mostrar los despachos agrupados');
-    $('#formDespachos').attr('action', 'despacho_agrupado.php');
+    $('#formDespachos').attr('action', 'ordenes_agrupado.php');
     $('#formDespachos').submit();
 
   }

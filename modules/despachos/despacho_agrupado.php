@@ -17,7 +17,7 @@ $sangria = " - ";
 
 
 
-//var_dump($_GET);
+//var_dump($_POST);
 
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
@@ -37,12 +37,12 @@ $fechaDespacho = $hoy;
 
 // Se va a recuperar el mes y el año para las tablaMesAnno
 $mesAnno = '';
-$mes = $_GET['mesiConsulta'];
+$mes = $_POST['mesiConsulta'];
 if($mes < 10){
   $mes = '0'.$mes;
 }
 $mes = trim($mes);
-$anno = $_GET['annoi'];
+$anno = $_POST['annoi'];
 $anno = substr($anno, -2);
 $anno = trim($anno);
 $mesAnno = $mes.$anno;
@@ -57,23 +57,23 @@ $mesAnno = $mes.$anno;
 
 
 
-//var_dump($_GET);
+//var_dump($_POST);
 $corteDeVariables = 15;
-if(isset($_GET['seleccionarVarios'])){
+if(isset($_POST['seleccionarVarios'])){
   $corteDeVariables++;
 }
-if(isset($_GET['informeRuta'])){
+if(isset($_POST['informeRuta'])){
   $corteDeVariables++;
 }
-if(isset($_GET['ruta'])){
+if(isset($_POST['ruta'])){
   $corteDeVariables++;
 }
-if(isset($_GET['rutaNm'])){
+if(isset($_POST['rutaNm'])){
   $corteDeVariables++;
 }
-$_GET = array_slice($_GET, $corteDeVariables);
-$_GET = array_values($_GET);
-//var_dump($_GET);
+$_POST = array_slice($_POST, $corteDeVariables);
+$_POST = array_values($_POST);
+//var_dump($_POST);
 
 
 
@@ -81,8 +81,8 @@ $_GET = array_values($_GET);
 
 
 $annoActual = $tablaAnnoCompleto;
-//var_dump($_GET);
-$despachosRecibidos = $_GET;
+//var_dump($_POST);
+$despachosRecibidos = $_POST;
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el
 // municipio que lo usaremos en los encabezados de la tabla.
@@ -126,11 +126,11 @@ foreach ($despachosRecibidos as &$valor){
 
 
 
- //echo "<br>$consulta<br>";
+ // echo "<br>$consulta<br>";
 
 
 
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link). $consulta);
 
 
 
@@ -194,7 +194,7 @@ foreach ($despachosRecibidos as &$valor){
     $semanasMostrar[] =  $row['Semana'];
     $semana = $row['Semana'];
     $consulta = " select * from planilla_semanas where SEMANA = '$semana' ";
-    $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+    $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link). $consulta);
 
 
     $cantDias = $resultado->num_rows;
@@ -276,8 +276,8 @@ foreach ($despachosRecibidos as &$valor){
     // Termina la busqueda del mes al que pertenecen los despachos
 }
 
-  }
   $despachos[] = $despacho;
+  }
 
 
 }
@@ -368,7 +368,7 @@ for ($i=0; $i < count($sedes) ; $i++) {
   // Consulta que busca las coberturas de las diferentes sedes.
   //echo "<br><br>".$consulta."<br><br>";
 
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link). $consulta);
   if($resultado->num_rows >= 1){
 
 
@@ -418,9 +418,13 @@ $totalGrupo2 = 0;
 $totalGrupo3 = 0;
 
 // Vamos a buscar los alimentos de los depachos
+// var_dump($despachos);
 $alimentos = array();
 for ($i=0; $i < count($despachos) ; $i++) {
   $despacho = $despachos[$i];
+  if ($despacho == null) {
+    continue;
+  }
   $numero = $despacho['num_doc'];
   //$consulta = " select * from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $numero ";
   $consulta = " select dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion
@@ -437,7 +441,7 @@ for ($i=0; $i < count($despachos) ; $i++) {
 
 
 
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link). $consulta);
 
 
 
@@ -537,7 +541,7 @@ for ($i=0; $i < count($alimentosTotales) ; $i++) {
  //echo "<br><br>$consulta<br><br>";
 
 
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link). $consulta);
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
     $alimentoTotal['componente'] = $row['Componente'];

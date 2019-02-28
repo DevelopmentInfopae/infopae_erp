@@ -1,88 +1,138 @@
 <?php
 include '../../config.php';
-ini_set('memory_limit','6000M');
 require_once '../../autentication.php';
-require('../../fpdf181/fpdf.php');
-include '../../php/funciones.php';
 require_once '../../db/conexion.php';
+include '../../php/funciones.php';
 
 
-
-
-
-
-$largoNombre = 40;
+$largoNombre = 30;
 $sangria = " - ";
+$tamannoFuente = 6;
 
+ini_set('memory_limit','6000M');
 
-
-
-//var_dump($_GET);
+//var_dump($_POST);
 
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
 
 //require_once 'autenticacion.php';
 
+require '../../vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Borders;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Conditional;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Font;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Style\Protection;
+use PhpOffice\PhpSpreadsheet\Style\Style;
+use PhpOffice\PhpSpreadsheet\Style\Supervisor;
+
+$spreadsheet = new Spreadsheet();
+$sheet = $spreadsheet->getActiveSheet();
+
+$titulos = [
+    'font' => [
+        'bold' => true,
+        'size'  => 7,
+        'name' => 'calibrí'
+    ],
+    'alignment' => [
+        'wrapText' => true,
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    ],
+    'borders' => [
+        'diagonalDirection' => Borders::DIAGONAL_BOTH,
+        'allBorders' => [
+            'borderStyle' => Border::BORDER_THIN,
+        ],
+    ],
+];
+
+$infor = [
+    'font' => [
+        'size'  => 7,
+        'name' => 'calibrí'
+    ],
+    'alignment' => [
+        'wrapText' => true,
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+    ],
+    'borders' => [
+        'diagonalDirection' => Borders::DIAGONAL_BOTH,
+        'allBorders' => [
+            'borderStyle' => Border::BORDER_THIN,
+        ],
+    ],
+];
+
+
+$rowNum = 1;
 
 $Link = new mysqli($Hostname, $Username, $Password, $Database);
 if ($Link->connect_errno) {
   echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
 $Link->set_charset("utf8");
-$largoNombre = 40;
+
 date_default_timezone_set('America/Bogota');
 $hoy = date("d/m/Y");
 $fechaDespacho = $hoy;
 
 // Se va a recuperar el mes y el año para las tablaMesAnno
 $mesAnno = '';
-$mes = $_GET['mesiConsulta'];
+$mes = $_POST['mesiConsulta'];
 if($mes < 10){
   $mes = '0'.$mes;
 }
 $mes = trim($mes);
-$anno = $_GET['annoi'];
+$anno = $_POST['annoi'];
 $anno = substr($anno, -2);
 $anno = trim($anno);
 $mesAnno = $mes.$anno;
 
-  $consGrupoEtario = "SELECT * FROM grupo_etario ";
-  $resGrupoEtario = $Link->query($consGrupoEtario);
+  $cget = "SELECT * FROM grupo_etario";
+  $resGrupoEtario = $Link->query($cget);
   if ($resGrupoEtario->num_rows > 0) {
     while ($ge = $resGrupoEtario->fetch_assoc()) {
       $get[] = $ge['DESCRIPCION'];
     }
   }
 
+$ruta = '';
+if(isset($_POST['rutaNm']) && $_POST['rutaNm']!= ''){
+  $ruta = $_POST['rutaNm'];
+}
 
-
-//var_dump($_GET);
+//var_dump($_POST);
 $corteDeVariables = 15;
-if(isset($_GET['seleccionarVarios'])){
+if(isset($_POST['seleccionarVarios'])){
   $corteDeVariables++;
 }
-if(isset($_GET['informeRuta'])){
+if(isset($_POST['informeRuta'])){
   $corteDeVariables++;
 }
-if(isset($_GET['ruta'])){
+if(isset($_POST['ruta'])){
   $corteDeVariables++;
 }
-if(isset($_GET['rutaNm'])){
+if(isset($_POST['rutaNm'])){
   $corteDeVariables++;
 }
-$_GET = array_slice($_GET, $corteDeVariables);
-$_GET = array_values($_GET);
-//var_dump($_GET);
-
-
-
-
-
+$_POST = array_slice($_POST, $corteDeVariables);
+$_POST = array_values($_POST);
+//var_dump($_POST);
 
 $annoActual = $tablaAnnoCompleto;
-//var_dump($_GET);
-$despachosRecibidos = $_GET;
+//var_dump($_POST);
+$despachosRecibidos = $_POST;
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el
 // municipio que lo usaremos en los encabezados de la tabla.
@@ -93,54 +143,33 @@ $tipos = array();
 $semanas = array();
 $municipios = array();
 
-
-
 $semanasMostrar = array();
 $diasMostrar = array();
 $ciclos = array();
 $ciclo = '';
 $sede = '';
 
-
-
-
 $dias = '';
 $mes = '';
 
 foreach ($despachosRecibidos as &$valor){
 
-
-
   //echo "<br>".$valor."<br>";
 
-
-
-
-
-  $consulta = " select de.*, tc.descripcion , u.Ciudad, s.nom_sede, tc.jornada
+  $consulta = " select de.*, tc.descripcion , u.Ciudad, tc.jornada
   from despachos_enc$mesAnno de
   inner join sedes$anno  s on de.cod_Sede = s.cod_sede
   inner join ubicacion u on s.cod_mun_sede = u.CodigoDANE
   left join tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
   where Tipo_Doc = 'DES' and de.Num_Doc = $valor ";
 
-
-
- //echo "<br>$consulta<br>";
-
-
+  //echo "<br>$consulta<br>";
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-
-
-
-
-
 
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
 
-    $sede = $row['nom_sede'];
     $despacho['num_doc'] = $row['Num_Doc'];
     $despacho['cod_sede'] = $row['cod_Sede'];
     $despacho['tipo_complem'] = $row['Tipo_Complem'];
@@ -148,20 +177,10 @@ foreach ($despachosRecibidos as &$valor){
     $despacho['semana'] = $row['Semana'];
     $despacho['cobertura'] = $row['Cobertura'];
     $despacho['ciudad'] = $row['Ciudad'];
-    $diasDespacho = $row['Dias'];
-
-
-
-
-
-
-
-
     $descripcionTipo = $row['descripcion'];
     $jornada = $row['jornada'];
 
-
-      $aux = $row['FechaHora_Elab'];
+    $aux = $row['FechaHora_Elab'];
     $aux = strtotime($aux);
     if($fechaDespacho < $aux){
       $fechaDespacho = date("d/m/Y",$aux);
@@ -174,69 +193,33 @@ foreach ($despachosRecibidos as &$valor){
     $semanas[] = $row['Semana'];
     $municipios[] = $row['Ciudad'];
 
+    //TRATAMIENTO DE LOS DIAS
 
-
-
-
-
-
-
-//TRATAMIENTO DE LOS DIAS
-  $arrayDiasDespacho = explode(',', $diasDespacho);
-  // Buscar el mes de la semana a la que pertenecen los despachos
-  $auxDias = $row['Dias'];
+    // Buscar el mes de la semana a la que pertenecen los despachos
+    $auxDias = $row['Dias'];
+    $diasDespacho = $row['Dias'];
   $diasMostrar[] = $auxDias;
 
   $auxMenus = $row['Menus'];
   $menusMostrar[] = $auxMenus;
 
-  if (!in_array($row['Semana'], $semanasMostrar, true)) {
-    $semanasMostrar[] =  $row['Semana'];
-    $semana = $row['Semana'];
-    $consulta = " select * from planilla_semanas where SEMANA = '$semana' ";
-    $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $arrayDiasDespacho = explode(',', $diasDespacho)
+  ;
 
+if (!in_array($row['Semana'], $semanasMostrar, true)) {
+  $semanasMostrar[] =  $row['Semana'];
+  $semana = $row['Semana'];
+  $consulta = " select * from planilla_semanas where SEMANA = '$semana' ";
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
-    $cantDias = $resultado->num_rows;
-    if($resultado->num_rows >= 1){
-      $mesInicial = '';
-      $mesesIniciales = 0;
-      while($row = $resultado->fetch_assoc()){
+  $cantDias = $resultado->num_rows;
+  if($resultado->num_rows >= 1){
+    $mesInicial = '';
+    $mesesIniciales = 0;
+    while($row = $resultado->fetch_assoc()){
 
-
-
-
-
-
-
-          $clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
-        if($clave !== false){
-          $ciclo = $row['CICLO'];
-          if($mesInicial != $row['MES']){
-            $mesesIniciales++;
-            if($mesesIniciales > 1){
-              $dias .= " de  $mes ";
-            }
-            $mesInicial = $row['MES'];
-            $mes = $row['MES'];
-            $mes = mesEnLetras($mes);
-          }else{
-            if($dias != ''){
-              $dias .= ', ';
-            }
-          }
-          $dias = $dias.intval($row['DIA']);
-        }// Termina el if de la Clave
-
-
-
-
-
-
-
-
-
-/*
+      $clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
+      if($clave !== false){
         $ciclo = $row['CICLO'];
         if($mesInicial != $row['MES']){
           $mesesIniciales++;
@@ -250,36 +233,18 @@ foreach ($despachosRecibidos as &$valor){
           if($dias != ''){
             $dias .= ', ';
           }
-
         }
         $dias = $dias.intval($row['DIA']);
+      }// Termina el if de la Clave
 
-*/
-
-
-      }
-      $dias .= " de  $mes";
-    }
-
-
-    /*if($resultado->num_rows >= 1){
-    $row = $resultado->fetch_assoc();
-    $mes = $row['MES'];
-    $ciclo = $row['CICLO'];
-    $ciclos[] = $ciclo;
-    $mes = mesEnLetras($mes);
 
     }
-    else{
-    echo "<br>N°o se obtuvo més de la semana de despacho.<br>";
-  }*/
-    // Termina la busqueda del mes al que pertenecen los despachos
+    $dias .= " de  $mes";
+  }
 }
 
   }
   $despachos[] = $despacho;
-
-
 }
 
 $auxDias = '';
@@ -317,7 +282,6 @@ for ($i=0; $i < count($ciclos) ; $i++) {
 }
 
 
-
 $auxMenus = '';
 for ($i=0; $i < count($menusMostrar) ; $i++) {
   if($i > 0){
@@ -329,23 +293,6 @@ $auxMenus = explode(',', $auxMenus);
 $auxMenus = array_unique ($auxMenus);
 sort($auxMenus);
 $auxMenus = implode(", ",$auxMenus);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 $municipios = array_unique($municipios);
 $municipios = array_values($municipios);
@@ -386,20 +333,6 @@ for ($i=0; $i < count($sedes) ; $i++) {
       $total2 = $total2 + $row[$aux2];
       $total3 = $total3 + $row[$aux3];
       $totalTotal = $totalTotal +  $sedeCobertura['total'];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
   }
@@ -423,24 +356,16 @@ for ($i=0; $i < count($despachos) ; $i++) {
   $despacho = $despachos[$i];
   $numero = $despacho['num_doc'];
   //$consulta = " select * from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $numero ";
-  $consulta = " select dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion
+
+
+
+  $consulta = " select DISTINCT dd.id, dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion
   from despachos_det$mesAnno dd
-  left join productosmovdet$mesAnno pmd on dd.Tipo_Doc = pmd.Documento and dd.Num_Doc = pmd.Numero and dd.cod_Alimento = pmd.CodigoProducto
+  left join productosmovdet$mesAnno pmd on dd.Tipo_Doc = pmd.Documento and dd.Num_Doc = pmd.Numero
   where dd.Tipo_Doc = 'DES' and dd.Num_Doc = $numero  ";
 
-
-
-
-//echo "<br><br>$consulta<br><br>";
-
-
-
-
-
+ // echo "<br>".$consulta."<br>";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-
-
-
   if($resultado->num_rows >= 1){
     while($row = $resultado->fetch_assoc()){
       $alimento = array();
@@ -448,13 +373,20 @@ for ($i=0; $i < count($despachos) ; $i++) {
       $auxGrupo = $row['Id_GrupoEtario'];
       $alimento['grupo'.$auxGrupo] = $row['Cantidad'];
 
+
+
       $alimento['cantotalpresentacion'] = $row['CanTotalPresentacion'];
       $alimento['cantu2'] = $row['CantU2'];
       $alimento['cantu3'] = $row['CantU3'];
       $alimento['cantu4'] = $row['CantU4'];
       $alimento['cantu5'] = $row['CantU5'];
 
-      $alimento['componente'] = '';
+      // Guardamos el numero de documento para discriminar la unidades de cada despacho
+      $alimento['Num_Doc'] = $row['Num_Doc'];
+
+
+
+    $alimento['componente'] = '';
     $alimento['presentacion'] = '';
     $alimento['grupo_alim'] = '';
 
@@ -462,8 +394,7 @@ for ($i=0; $i < count($despachos) ; $i++) {
     $alimento['nombreunidad3'] = '';
     $alimento['nombreunidad4'] = '';
     $alimento['nombreunidad5'] = '';
-
-      $alimentos[] = $alimento;
+    $alimentos[] = $alimento;
     }
   }
 }
@@ -487,21 +418,23 @@ for ($i=1; $i < count($alimentos) ; $i++) {
       $alimentoTotal = $alimentosTotales[$j];
       if($alimento['codigo'] == $alimentoTotal['codigo']){
         $encontrado++;
+
+        // Marzo 30 de 2017 sumando presentaciones
+
+      if($alimentoTotal['Num_Doc'] != $alimento['Num_Doc']){
+          $alimentoTotal['cantotalpresentacion'] = $alimentoTotal['cantotalpresentacion'] + $alimento['cantotalpresentacion'];
+          $alimentoTotal['cantu2'] = $alimentoTotal['cantu2'] + $alimento['cantu2'];
+          $alimentoTotal['cantu3'] = $alimentoTotal['cantu3'] + $alimento['cantu3'];
+          $alimentoTotal['cantu4'] = $alimentoTotal['cantu4'] + $alimento['cantu4'];
+          $alimentoTotal['cantu5'] = $alimentoTotal['cantu5'] + $alimento['cantu5'];
+          $alimentoTotal['Num_Doc'] = $alimento['Num_Doc'];
+      }
+
+        // Marzo 30 de 2017 sumando presentaciones
+
         $alimentoTotal['grupo1'] = $alimentoTotal['grupo1'] + $alimento['grupo1'];
         $alimentoTotal['grupo2'] = $alimentoTotal['grupo2'] + $alimento['grupo2'];
         $alimentoTotal['grupo3'] = $alimentoTotal['grupo3'] + $alimento['grupo3'];
-
-
-        $alimentoTotal['cantotalpresentacion'] = $alimento['cantotalpresentacion'];
-        $alimentoTotal['cantu2'] = $alimento['cantu2'];
-        $alimentoTotal['cantu3'] = $alimento['cantu3'];
-        $alimentoTotal['cantu4'] = $alimento['cantu4'];
-        $alimentoTotal['cantu5'] = $alimento['cantu5'];
-
-
-
-
-
 
         $alimentosTotales[$j] = $alimentoTotal;
         break;
@@ -514,159 +447,254 @@ for ($i=1; $i < count($alimentos) ; $i++) {
 
 //var_dump($alimentosTotales);
 
-
-
-
-
-
-
-
-
 // Vamos a traer los datos que faltan para mostrar en la tabla
 for ($i=0; $i < count($alimentosTotales) ; $i++) {
   $alimentoTotal = $alimentosTotales[$i];
   $auxCodigo = $alimentoTotal['codigo'];
-  $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion,m.grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
+  $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
   from  fichatecnicadet ftd
   inner join productos$anno  p on ftd.codigo=p.codigo
   inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
   where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' ";
-
-
-
- //echo "<br><br>$consulta<br><br>";
-
-
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
     $alimentoTotal['componente'] = $row['Componente'];
     $alimentoTotal['presentacion'] = $row['presentacion'];
     $alimentoTotal['grupo_alim'] = $row['grupo_alim'];
+    $alimentoTotal['orden_grupo_alim'] = $row['orden_grupo_alim'];
 
     $alimentoTotal['nombreunidad2'] = $row['NombreUnidad2'];
     $alimentoTotal['nombreunidad3'] = $row['NombreUnidad3'];
     $alimentoTotal['nombreunidad4'] = $row['NombreUnidad4'];
     $alimentoTotal['nombreunidad5'] = $row['NombreUnidad5'];
 
-
-
-
-
-
-
-
-
-
-
+    $alimentosTotales[$i] = $alimentoTotal;
   }
-  $alimentosTotales[$i] = $alimentoTotal;
+
 }
 
-mysqli_close ( $Link );
-
-
-
-
-
-
-
-/*************************************************************/
-/*************************************************************/
-/*************************************************************/
-/*************************************************************/
-//  var_dump($alimentos);
 unset($sort);
 unset($grupo);
+
 $sort = array();
 $grupo = array();
+
 foreach($alimentosTotales as $kOrden=>$vOrden) {
     $sort['componente'][$kOrden] = $vOrden['componente'];
-    $sort['grupo_alim'][$kOrden] = $vOrden['grupo_alim'];
+    $sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
     $grupo[$kOrden] = $vOrden['grupo_alim'];
 }
 array_multisort($sort['grupo_alim'], SORT_ASC,$alimentosTotales);
-
-//var_dump($alimentos);
-//array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
 sort($grupo);
-//var_dump($alimentosTotales);
-/*************************************************************/
-/*************************************************************/
-/*************************************************************/
-/*************************************************************/
 
+// HEADER
 
+$inicioTitulos = $rowNum;
 
+$logoInfopae = $_SESSION['p_Logo ETC'];
 
+$drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+$drawing->setName('Logo');
+$drawing->setDescription('Logo');
+$drawing->setPath($logoInfopae);
+$drawing->setHeight(60);
+$drawing->setCoordinates('A'.$rowNum);
+$drawing->setOffsetX(5);
+$drawing->setOffsetY(5);
+$drawing->setWorksheet($spreadsheet->getActiveSheet());
 
+$sheet->mergeCells('A'.$rowNum.':H'.($rowNum+3));
 
+$sheet->setCellValue('I'.$rowNum, 'PROGRAMA DE ALIMENTACIÓN ESCOLAR');
+$sheet->mergeCells('I'.$rowNum.':R'.$rowNum);
+$rowNum++;
+$sheet->setCellValue('I'.$rowNum, 'REMISIÓN ENTREGA DE VÍVERES EN INSTITUCIÓN EDUCATIVA');
+$sheet->mergeCells('I'.$rowNum.':R'.$rowNum);
+$rowNum++;
+$sheet->setCellValue('I'.$rowNum, $descripcionTipo);
+$sheet->mergeCells('I'.$rowNum.':R'.$rowNum);
+$rowNum+=2;
 
+$sheet->setCellValue('A'.$rowNum, 'OPERADOR:');
+$sheet->mergeCells('A'.$rowNum.':C'.$rowNum);
+$sheet->setCellValue('D'.$rowNum, $_SESSION['p_Operador']);
+$sheet->mergeCells('D'.$rowNum.':K'.$rowNum);
 
+$sheet->setCellValue('L'.$rowNum, 'FECHA:');
+$sheet->mergeCells('L'.$rowNum.':M'.$rowNum);
+$sheet->setCellValue('N'.$rowNum, $fechaDespacho);
+$sheet->mergeCells('N'.$rowNum.':R'.$rowNum);
 
+$rowNum++;
 
+$sheet->setCellValue('A'.$rowNum, 'ETC:');
+$sheet->mergeCells('A'.$rowNum.':C'.$rowNum);
+$sheet->setCellValue('D'.$rowNum, $_SESSION['p_Nombre ETC']);
+$sheet->mergeCells('D'.$rowNum.':H'.$rowNum);
 
+if($ruta == '' || $ruta == 'Todos'){
 
+  $sheet->setCellValue('I'.$rowNum, 'MUNICIPIO O VEREDA:');
+  $sheet->mergeCells('I'.$rowNum.':J'.$rowNum);
 
+  $aux = '';
+  for ($ii=0; $ii < count($municipios) ; $ii++) {
+    if($ii > 0){
+      $aux = $aux.", ";
+    }
+    $aux = $aux.$municipios[$ii];
+  }
 
+  $sheet->setCellValue('K'.$rowNum, $aux);
+  $sheet->mergeCells('K'.$rowNum.':R'.$rowNum);
 
+} else {
 
+  $sheet->setCellValue('I'.$rowNum, 'RUTA:');
+  $sheet->mergeCells('I'.$rowNum.':J'.$rowNum);
+  $sheet->setCellValue('K'.$rowNum, $ruta);
+  $sheet->mergeCells('K'.$rowNum.':R'.$rowNum);
 
-class PDF extends FPDF{
-  function Header(){}
-  function Footer(){}
 }
 
-//CREACION DEL PDF
-// Creación del objeto de la clase heredada
-$pdf= new PDF('L','mm',array(279.4,215.9));
-$pdf->SetMargins(8, 6.31, 8);
-$pdf->SetAutoPageBreak(false,5);
-$pdf->AliasNbPages();
+$rowNum++;
 
-$pdf->AddPage();
-$pdf->SetTextColor(0,0,0);
-$pdf->SetFillColor(255,255,255);
-$pdf->SetDrawColor(0,0,0);
-$pdf->SetLineWidth(.05);
-$pdf->SetFont('Arial','',8);
+$sheet->setCellValue('A'.$rowNum, 'RANGO DE EDAD');
+$sheet->mergeCells('A'.$rowNum.':C'.$rowNum);
+$sheet->setCellValue('D'.$rowNum, 'N° DE RACIONES ADJUDICADAS');
+$sheet->mergeCells('D'.$rowNum.':F'.$rowNum);
+$sheet->setCellValue('G'.$rowNum, 'N° DE RACIONES ATENDIDAS');
+$sheet->mergeCells('G'.$rowNum.':I'.$rowNum);
+$sheet->setCellValue('J'.$rowNum, 'N° DE DÍAS A ATENDER');
+$sheet->mergeCells('J'.$rowNum.':L'.$rowNum);
+$sheet->setCellValue('M'.$rowNum, 'N° DE MENÚ Y SEMANA DEL CICLO DE MENÚS ENTREGADO');
+$sheet->mergeCells('M'.$rowNum.':O'.$rowNum);
+$sheet->setCellValue('P'.$rowNum, 'TOTAL RACIONES');
+$sheet->mergeCells('P'.$rowNum.':R'.$rowNum);
 
-include 'despacho_agrupado_footer.php';
-include 'despacho_agrupado_header.php';
+$rowNum++;
+
+$sheet->setCellValue('A'.$rowNum, $get[0]);
+$sheet->mergeCells('A'.$rowNum.':C'.$rowNum);
+$sheet->setCellValue('A'.($rowNum+1), $get[1]);
+$sheet->mergeCells('A'.($rowNum+1).':C'.($rowNum+1));
+$sheet->setCellValue('A'.($rowNum+2), $get[2]);
+$sheet->mergeCells('A'.($rowNum+2).':C'.($rowNum+2));
+
+$sheet->setCellValue('D'.$rowNum, $totalGrupo1);
+$sheet->mergeCells('D'.$rowNum.':F'.$rowNum);
+$sheet->setCellValue('D'.($rowNum+1), $totalGrupo2);
+$sheet->mergeCells('D'.($rowNum+1).':F'.($rowNum+1));
+$sheet->setCellValue('D'.($rowNum+2), $totalGrupo3);
+$sheet->mergeCells('D'.($rowNum+2).':F'.($rowNum+2));
+
+$sheet->setCellValue('G'.$rowNum, $totalGrupo1);
+$sheet->mergeCells('G'.$rowNum.':I'.$rowNum);
+$sheet->setCellValue('G'.($rowNum+1), $totalGrupo2);
+$sheet->mergeCells('G'.($rowNum+1).':I'.($rowNum+1));
+$sheet->setCellValue('G'.($rowNum+2), $totalGrupo3);
+$sheet->mergeCells('G'.($rowNum+2).':I'.($rowNum+2));
+
+$sheet->setCellValue('J'.$rowNum, $auxDias);
+$sheet->mergeCells('J'.$rowNum.':L'.$rowNum);
+$sheet->setCellValue('J'.($rowNum+1), 'SEMANA: '.$semana);
+$sheet->mergeCells('J'.($rowNum+1).':L'.($rowNum+1));
+
+$sheet->setCellValue('M'.$rowNum, 'SEMANA: '.$auxCiclos);
+$sheet->mergeCells('M'.$rowNum.':O'.$rowNum);
+$sheet->setCellValue('M'.($rowNum+1), 'MENUS: '.$auxMenus);
+$sheet->mergeCells('M'.($rowNum+1).':O'.($rowNum+1));
+
+$jm = '';
+$jt = '';
+
+// 2 es la jornada de la mañana
+// 3 es la jornada de la tarde
+if($jornada == 2){
+  $jm = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
+}else if($jornada == 3){
+  $jt = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
+}
+
+$sheet->setCellValue('P'.$rowNum, 'JM:'.$jm);
+$sheet->mergeCells('P'.$rowNum.':R'.$rowNum);
+$sheet->setCellValue('P'.($rowNum+1), 'JT:'.$jt);
+$sheet->mergeCells('P'.($rowNum+1).':R'.($rowNum+1));
+
+$rowNum+=3;
+
+$sheet->setCellValue('A'.$rowNum, 'ALIMENTO');
+$sheet->mergeCells('A'.$rowNum.':A'.($rowNum+1));
+
+$sheet->setCellValue('B'.$rowNum, 'CNT DE ALIMENTOS POR NÚMEROS DE RACIONES');
+$sheet->mergeCells('B'.$rowNum.':D'.$rowNum);
+
+  $etario_1 = str_replace(" + 11 meses", "", $get[0]);
+  $etario_2 = str_replace(" + 11 meses", "", $get[1]);
+  $etario_3 = str_replace(" + 11 meses", "", $get[2]);
+
+  $etario_1 = str_replace(" años", "", $etario_1);
+  $etario_2 = str_replace(" años", "", $etario_2);
+  $etario_3 = str_replace(" años", "", $etario_3);
+
+$sheet->setCellValue('B'.($rowNum+1), $etario_1." años");
+$sheet->setCellValue('C'.($rowNum+1), $etario_2." años");
+$sheet->setCellValue('D'.($rowNum+1), $etario_3." años");
+
+$sheet->setCellValue('E'.$rowNum, 'UNIDAD DE MEDIDA');
+$sheet->mergeCells('E'.$rowNum.':E'.($rowNum+1));
+$sheet->setCellValue('F'.$rowNum, 'CNT TOTAL');
+$sheet->mergeCells('F'.$rowNum.':F'.($rowNum+1));
+
+$sheet->setCellValue('G'.$rowNum, 'CANTIDAD ENTREGADA');
+$sheet->mergeCells('G'.$rowNum.':I'.$rowNum);
+$sheet->setCellValue('G'.($rowNum+1), 'TOTAL');
+$sheet->setCellValue('H'.($rowNum+1), 'C');
+$sheet->setCellValue('I'.($rowNum+1), 'NC');
+
+$sheet->setCellValue('J'.$rowNum, 'ESPECIFICACIÓN DE CALIDAD');
+$sheet->mergeCells('J'.$rowNum.':K'.$rowNum);
+$sheet->setCellValue('J'.($rowNum+1), 'C');
+$sheet->setCellValue('K'.($rowNum+1), 'NC');
+
+$sheet->setCellValue('L'.$rowNum, 'FALTANTES');
+$sheet->mergeCells('L'.$rowNum.':N'.$rowNum);
+$sheet->setCellValue('L'.($rowNum+1), 'SI');
+$sheet->setCellValue('M'.($rowNum+1), 'NO');
+$sheet->setCellValue('N'.($rowNum+1), 'CANT');
+
+$sheet->setCellValue('O'.$rowNum, 'DEVOLUCIÓN');
+$sheet->mergeCells('O'.$rowNum.':Q'.$rowNum);
+$sheet->setCellValue('O'.($rowNum+1), 'SI');
+$sheet->setCellValue('P'.($rowNum+1), 'NO');
+$sheet->setCellValue('Q'.($rowNum+1), 'CANT');
+
+$rowNum+=2;
+
+$finTitulos = $rowNum-1;
+
+$inicioInfo = $rowNum;
+
+// HEADER
 
 //var_dump($item);
 $filas = 0;
 $grupoAlimActual = '';
-$pdf->SetFont('Arial','',8);
 $grupoAlimActual = '';
 
 
    for ($i=0; $i < count($alimentosTotales ) ; $i++) {
       $item = $alimentosTotales[$i];
-      if($item['componente'] != ''){
+    if($item['componente'] != ''){
 
 
-
-
-      $filas = $filas+1;
-      if($filas > 26){
-         $filas = 0;
-         $pdf->AddPage();
-         include 'despacho_agrupado_footer.php';
-         include 'despacho_agrupado_header.php';
-         $pdf->SetFont('Arial','',8);
-      }
-
-      $pdf->SetTextColor(0,0,0);
-      $pdf->SetFillColor(255,255,255);
+    if(1==1){
 
       $aux = $item['componente'];
-      $long_nombre=strlen($aux);
-      if($long_nombre > $largoNombre){
-         $aux = substr($aux,0,$largoNombre);
-      }
 
-      $pdf->Cell(72.76,5,utf8_decode($aux),1,0,'L',False);
+      $sheet->setCellValue('A'.$rowNum, $aux);
+
 
       if($item['presentacion'] == 'u'){
          $aux = round(0+$item['grupo1']);
@@ -674,7 +702,7 @@ $grupoAlimActual = '';
          $aux = 0+$item['grupo1'];
          $aux = number_format($aux, 2, '.', '');
       }
-      $pdf->Cell(13.1,5,utf8_decode($aux),1,0,'C',False);
+        $sheet->setCellValue('B'.$rowNum, $aux);
 
 
     if($item['presentacion'] == 'u'){
@@ -683,7 +711,7 @@ $grupoAlimActual = '';
       $aux = 0+$item['grupo2'];
       $aux = number_format($aux, 2, '.', '');
     }
-    $pdf->Cell(13.1,5,utf8_decode($aux),1,0,'C',False);
+      $sheet->setCellValue('C'.$rowNum, $aux);
 
     if($item['presentacion'] == 'u'){
       $aux = round(0+$item['grupo3']);
@@ -691,268 +719,132 @@ $grupoAlimActual = '';
       $aux = 0+$item['grupo3'];
       $aux = number_format($aux, 2, '.', '');
     }
-    $pdf->Cell(13.1,5,utf8_decode($aux),1,0,'C',False);
-    $pdf->Cell(13.141,5,$item['presentacion'],1,0,'C',False);
+        $sheet->setCellValue('D'.$rowNum, $aux);
 
+
+        $sheet->setCellValue('E'.$rowNum, $item['presentacion']);
 
     $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
+    $aux = number_format($aux, 2, '.', '');
 
-    if ((strpos($alimento['componente'], "huevo"))) {
+    //MOSTRAR O NO CUANDO HAY PRESENTACIONES
 
-      $aux = ceil($aux);
-
-    } else {
-      if($item['presentacion'] == 'u'){
-        $aux = round(0+$aux); 
-      } else{
-        $aux = number_format($aux, 2, '.', ''); 
-      }
+    // Para no mostrar lso totales de los alimentos que tienen diferentes presentaciones.
+    if($item['cantotalpresentacion'] > 0 ){
+      //$aux = '';
     }
 
+    //Imprimiendo CNT TOTAL
+        $sheet->setCellValue('F'.$rowNum, $aux);
 
-    $pdf->Cell(13.141,5,($aux),1,0,'C',False);
-      //total
-
-
-    if($item['cantotalpresentacion'] > 0){
-
-      $aux = 0+$item['cantotalpresentacion'];
+    if($item['presentacion'] == 'u'){
+      $aux = round(0+$aux);
+    }
+    else{
       $aux = number_format($aux, 2, '.', '');
     }
 
-    $pdf->Cell(10.6,5,$aux,1,0,'C',False);
+    if($item['cantotalpresentacion'] > 0 ){
+      $aux = $item['cantotalpresentacion'];
+      $aux2 = $aux;
+      if($item['presentacion'] == 'u'){
+        $aux = round(0+$aux);
+      }
+      else{
+        $aux = number_format($aux, 2, '.', '');
+      }
+    }
 
-    $pdf->Cell(10.638,5,'',1,0,'C',False);
-    $pdf->Cell(10.6,5,'',1,0,'C',False);
-    $pdf->Cell(13.626,5,'',1,0,'C',False);
-    $pdf->Cell(13.626,5,'',1,0,'C',False);
-    $pdf->Cell(9.349,5,'',1,0,'C',False);
-    $pdf->Cell(8.819,5,'',1,0,'C',False);
-    $pdf->Cell(14.023,5,'',1,0,'C',False);
-    $pdf->Cell(9.26,5,'',1,0,'C',False);
-    $pdf->Cell(9.084,5,'',1,0,'C',False);
-    $pdf->Cell(15.403,5,'',1,0,'C',False);
-    $pdf->Ln(5);
+    // Para no mostrar lso totales de los alimentos que tienen diferentes presentaciones.
+    if($item['cantotalpresentacion'] > 0 ){
+      //$aux = '';
+    }
 
-
-
-    $alimento = $item;
-
-
-
-
-
-
-
-
-
-                $unidad = 2;
-          if($alimento['cantu'.$unidad] > 0){
-
-
-            $presentacion = " ".$alimento['nombreunidad'.$unidad];
-
-            $filas = $filas+1;
-            if($filas > 26){
-              $filas = 0;
-              $pdf->AddPage();
-              include 'despacho_por_sede_footer.php';
-              include 'despacho_agrupado_header.php';
-            }
-            $pdf->SetTextColor(0,0,0);
-            $pdf->SetFillColor(255,255,255);
-
-            $aux = $sangria.$alimento['componente'].$presentacion;
-
-
-
-            $long_nombre=strlen($aux);
-            if($long_nombre > $largoNombre){
-              $aux = substr($aux,0,$largoNombre);
-            }
-            $pdf->Cell(72.76,5,utf8_decode($aux),1,0,'L',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.141,5,'',1,0,'C',False);
-            $pdf->Cell(13.141,5,'',1,0,'C',False);
-            $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-            $pdf->Cell(10.6,5,$aux,1,0,'C',False);
-            $pdf->Cell(10.638,5,'',1,0,'C',False);
-            $pdf->Cell(10.6,5,'',1,0,'C',False);
-            $pdf->Cell(13.626,5,'',1,0,'C',False);
-            $pdf->Cell(13.626,5,'',1,0,'C',False);
-            $pdf->Cell(9.349,5,'',1,0,'C',False);
-            $pdf->Cell(8.819,5,'',1,0,'C',False);
-            $pdf->Cell(14.023,5,'',1,0,'C',False);
-            $pdf->Cell(9.26,5,'',1,0,'C',False);
-            $pdf->Cell(9.084,5,'',1,0,'C',False);
-            $pdf->Cell(15.403,5,'',1,0,'C',False);
-            $pdf->Ln(5);
-          }
-
-          $unidad = 3;
-          if($alimento['cantu'.$unidad] > 0){
-
-            $presentacion = " ".$alimento['nombreunidad'.$unidad];
-
-
-            $filas = $filas+1;
-            if($filas > 26){
-              $filas = 0;
-              $pdf->AddPage();
-              include 'despacho_por_sede_footer.php';
-              include 'despacho_agrupado_header.php';
-            }
-            $pdf->SetTextColor(0,0,0);
-            $pdf->SetFillColor(255,255,255);
-
-            $aux = $sangria.$alimento['componente'].$presentacion;
-            $long_nombre=strlen($aux);
-            if($long_nombre > $largoNombre){
-              $aux = substr($aux,0,$largoNombre);
-            }
-            $pdf->Cell(72.76,5,utf8_decode($aux),1,0,'L',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.141,5,'',1,0,'C',False);
-            $pdf->Cell(13.141,5,'',1,0,'C',False);
-            $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-            $pdf->Cell(10.6,5,$aux,1,0,'C',False);
-            $pdf->Cell(10.638,5,'',1,0,'C',False);
-            $pdf->Cell(10.6,5,'',1,0,'C',False);
-            $pdf->Cell(13.626,5,'',1,0,'C',False);
-            $pdf->Cell(13.626,5,'',1,0,'C',False);
-            $pdf->Cell(9.349,5,'',1,0,'C',False);
-            $pdf->Cell(8.819,5,'',1,0,'C',False);
-            $pdf->Cell(14.023,5,'',1,0,'C',False);
-            $pdf->Cell(9.26,5,'',1,0,'C',False);
-            $pdf->Cell(9.084,5,'',1,0,'C',False);
-            $pdf->Cell(15.403,5,'',1,0,'C',False);
-            $pdf->Ln(5);
-          }
-
-          $unidad = 4;
-          if($alimento['cantu'.$unidad] > 0){
-
-            $presentacion = " ".$alimento['nombreunidad'.$unidad];
-
-            $filas = $filas+1;
-            if($filas > 26){
-              $filas = 0;
-              $pdf->AddPage();
-              include 'despacho_por_sede_footer.php';
-              include 'despacho_agrupado_header.php';
-            }
-            $pdf->SetTextColor(0,0,0);
-            $pdf->SetFillColor(255,255,255);
-
-            $aux = $sangria.$alimento['componente'].$presentacion;
-            $long_nombre=strlen($aux);
-            if($long_nombre > $largoNombre){
-              $aux = substr($aux,0,$largoNombre);
-            }
-            $pdf->Cell(72.76,5,utf8_decode($aux),1,0,'L',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.141,5,'',1,0,'C',False);
-            $pdf->Cell(13.141,5,'',1,0,'C',False);
-            $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-            $pdf->Cell(10.6,5,$aux,1,0,'C',False);
-            $pdf->Cell(10.638,5,'',1,0,'C',False);
-            $pdf->Cell(10.6,5,'',1,0,'C',False);
-            $pdf->Cell(13.626,5,'',1,0,'C',False);
-            $pdf->Cell(13.626,5,'',1,0,'C',False);
-            $pdf->Cell(9.349,5,'',1,0,'C',False);
-            $pdf->Cell(8.819,5,'',1,0,'C',False);
-            $pdf->Cell(14.023,5,'',1,0,'C',False);
-            $pdf->Cell(9.26,5,'',1,0,'C',False);
-            $pdf->Cell(9.084,5,'',1,0,'C',False);
-            $pdf->Cell(15.403,5,'',1,0,'C',False);
-            $pdf->Ln(5);
-          }
-
-          $unidad = 5;
-          if($alimento['cantu'.$unidad] > 0){
-
-
-           $presentacion = " ".$alimento['nombreunidad'.$unidad];
-
-
-
-
-            $filas = $filas+1;
-            if($filas > 26){
-              $filas = 0;
-              $pdf->AddPage();
-              include 'despacho_por_sede_footer.php';
-              include 'despacho_agrupado_header.php';
-            }
-            $pdf->SetTextColor(0,0,0);
-            $pdf->SetFillColor(255,255,255);
-
-            $aux = $sangria.$alimento['componente'].$presentacion;
-            $long_nombre=strlen($aux);
-            if($long_nombre > $largoNombre){
-              $aux = substr($aux,0,$largoNombre);
-            }
-            $pdf->Cell(72.76,5,utf8_decode($aux),1,0,'L',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.1,5,'',1,0,'C',False);
-            $pdf->Cell(13.141,5,'',1,0,'C',False);
-            $pdf->Cell(13.141,5,'',1,0,'C',False);
-            $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-            $pdf->Cell(10.6,5,$aux,1,0,'C',False);
-            $pdf->Cell(10.638,5,'',1,0,'C',False);
-            $pdf->Cell(10.6,5,'',1,0,'C',False);
-            $pdf->Cell(13.626,5,'',1,0,'C',False);
-            $pdf->Cell(13.626,5,'',1,0,'C',False);
-            $pdf->Cell(9.349,5,'',1,0,'C',False);
-            $pdf->Cell(8.819,5,'',1,0,'C',False);
-            $pdf->Cell(14.023,5,'',1,0,'C',False);
-            $pdf->Cell(9.26,5,'',1,0,'C',False);
-            $pdf->Cell(9.084,5,'',1,0,'C',False);
-            $pdf->Cell(15.403,5,'',1,0,'C',False);
-            $pdf->Ln(5);
-          }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  // CANTIDAD ENTREGADA
+        $sheet->setCellValue('G'.$rowNum, $aux);
+        $rowNum++;
 }
-  }// Termina el for de los alimentos
+
+$alimento = $item;
+
+    $unidad = 2;
+    if($alimento['cantu'.$unidad] > 0){
+      $presentacion = " ".$alimento['nombreunidad'.$unidad];
+      $aux = $sangria.$alimento['componente'].$presentacion;
+      $long_nombre=strlen($aux);
+      if($long_nombre > $largoNombre){
+        $aux = substr($aux,0,$largoNombre);
+      }
+      $sheet->setCellValue('A'.$rowNum, $aux);
+      $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+      $sheet->setCellValue('F'.$rowNum, $aux);
+      $rowNum++;
+    }
+
+    $unidad = 3;
+    if($alimento['cantu'.$unidad] > 0){
+      $presentacion = " ".$alimento['nombreunidad'.$unidad];
+      $aux = $sangria.$alimento['componente'].$presentacion;
+      $long_nombre=strlen($aux);
+      if($long_nombre > $largoNombre){
+        $aux = substr($aux,0,$largoNombre);
+      }
+      $sheet->setCellValue('A'.$rowNum, $aux);
+      $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+      $sheet->setCellValue('F'.$rowNum, $aux);
+      $rowNum++;
+    }
+
+    $unidad = 4;
+    if($alimento['cantu'.$unidad] > 0){
+      $presentacion = " ".$alimento['nombreunidad'.$unidad];
+      $aux = $sangria.$alimento['componente'].$presentacion;
+      $long_nombre=strlen($aux);
+      if($long_nombre > $largoNombre){
+        $aux = substr($aux,0,$largoNombre);
+      }
+      $sheet->setCellValue('A'.$rowNum, $aux);
+      $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+      $sheet->setCellValue('F'.$rowNum, $aux);
+      $rowNum++;
+    }
+
+    $unidad = 5;
+    if($alimento['cantu'.$unidad] > 0){
+      $presentacion = " ".$alimento['nombreunidad'.$unidad];
+      $aux = $sangria.$alimento['componente'].$presentacion;
+      $long_nombre=strlen($aux);
+      if($long_nombre > $largoNombre){
+        $aux = substr($aux,0,$largoNombre);
+      }
+      $sheet->setCellValue('A'.$rowNum, $aux);
+      $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+      $sheet->setCellValue('F'.$rowNum, $aux);
+      $rowNum++;
+    }
 
 
 
- $current_y = $pdf->GetY();
-  if($current_y > 175){
-    $filas = 0;
-    $pdf->AddPage();
-    include 'despacho_agrupado_footer.php';
-    include 'despacho_agrupado_header.php';
+      }
   }
-  include 'despacho_firma_planilla.php';
 
+$sheet->setCellValue('A'.$rowNum, 'OBSERVACIONES : ');
+$sheet->mergeCells('B'.$rowNum.':R'.$rowNum);
+$rowNum++;
+$sheet->mergeCells('A'.$rowNum.':R'.$rowNum);
 
+$finInfo = $rowNum;
 
-$pdf->Output();
+$sheet->getStyle("A".$inicioTitulos.":R".$finTitulos)->applyFromArray($titulos);
+$sheet->getStyle("A".$inicioInfo.":R".$finInfo)->applyFromArray($infor);
+
+$sheet->getColumnDimension("A")->setWidth(24); 
+
+// $pdf->Output();
+
+$writer = new Xlsx($spreadsheet);
+header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+header('Content-Disposition: attachment; filename="ordenes_agrupado.xlsx"');
+$writer->save('php://output','ordenes_agrupado.xlsx');
+
+mysqli_close ( $Link );
