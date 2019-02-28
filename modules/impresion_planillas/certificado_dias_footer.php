@@ -29,14 +29,6 @@ foreach ($complementos as $complemento) {
 $aux_x = $pdf->GetX();
 $aux_y = $pdf->GetY();
 $pdf->MultiCell(100,4,utf8_decode("No. DE TITULARES DE\nDERECHO"),1,'C',true);
-// $pdf->SetXY($aux_x, $aux_y);
-// $pdf->Cell(0,8,utf8_decode(''),'R',0,'C',false);
-
-// $pdf->SetXY($x, $y);
-// $pdf->Cell(0,8,utf8_decode(''),'B',0,'L',false);
-// $pdf->SetXY($x, $y);
-// $pdf->Cell(0,28,utf8_decode(''),1,0,'L',false);
-
 $pdf->SetXY($x, $y);
 $pdf->Ln(8);
 
@@ -59,7 +51,7 @@ for ($i=0; $i < count($prioridades); $i++) {
 			$condicion .= " AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"] . " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"];
 		}
 
-		$consultaCantidadComplemento = "SELECT IFNULL(SUM((IFNULL(D1,0) + IFNULL(D2,0) + IFNULL(D3,0) + IFNULL(D4,0) + IFNULL(D5,0) + IFNULL(D6,0) + IFNULL(D7,0) + IFNULL(D8,0) + IFNULL(D9,0) + IFNULL(D10,0) + IFNULL(D11,0) + IFNULL(D12,0) + IFNULL(D13,0) + IFNULL(D14,0) + IFNULL(D15,0) + IFNULL(D16,0) + IFNULL(D17,0) + IFNULL(D18,0) + IFNULL(D19,0) + IFNULL(D20,0) + IFNULL(D21,0) + IFNULL(D22,0) + IFNULL(D23,0) + IFNULL(D24,0) + IFNULL(D25,0) + IFNULL(D26,0) + IFNULL(D27,0) + IFNULL(D28,0) + IFNULL(D29,0) + IFNULL(D30,0) + IFNULL(D31,0))),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "' AND ". $prioridades[$i]["campo_entregas_res"] ." != " . $prioridades[$i]["valor_NA"] . $condicion;
+		$consultaCantidadComplemento = "SELECT IFNULL(SUM((". trim($sumaCamposEntregasDias, " + ") .")),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "' AND ". $prioridades[$i]["campo_entregas_res"] ." != " . $prioridades[$i]["valor_NA"] . $condicion;
 
 		$resultadoCantidadComplemento = $Link->query($consultaCantidadComplemento) or die (mysqli_error($Link));
 		if ($resultadoCantidadComplemento->num_rows > 0) {
@@ -111,7 +103,7 @@ foreach ($complementos as $complemento) {
 	foreach ($prioridades as $prioridad) {
 		$condicion .= " AND ". $prioridad["campo_entregas_res"] ." = " . $prioridad["valor_NA"];
 	}
-	$con_can_may = "SELECT IFNULL(SUM((IFNULL(D1,0) + IFNULL(D2,0) + IFNULL(D3,0) + IFNULL(D4,0) + IFNULL(D5,0) + IFNULL(D6,0) + IFNULL(D7,0) + IFNULL(D8,0) + IFNULL(D9,0) + IFNULL(D10,0) + IFNULL(D11,0) + IFNULL(D12,0) + IFNULL(D13,0) + IFNULL(D14,0) + IFNULL(D15,0) + IFNULL(D16,0) + IFNULL(D17,0) + IFNULL(D18,0) + IFNULL(D19,0) + IFNULL(D20,0) + IFNULL(D21,0) + IFNULL(D22,0) + IFNULL(D23,0) + IFNULL(D24,0) + IFNULL(D25,0) + IFNULL(D26,0) + IFNULL(D27,0) + IFNULL(D28,0) + IFNULL(D29,0) + IFNULL(D30,0) + IFNULL(D31,0))),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "'" . $condicion;
+	$con_can_may = "SELECT IFNULL(SUM((". trim($sumaCamposEntregasDias, " + ") .")),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "'" . $condicion;
 	$res_can_may = $Link->query($con_can_may) or die (mysqli_error($Link));
 	if ($res_can_may->num_rows > 0) {
 		while ($reg_can_may = $res_can_may->fetch_assoc()) {

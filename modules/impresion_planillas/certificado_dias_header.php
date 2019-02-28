@@ -154,7 +154,11 @@ for ($i=0; $i < 31 ; $i++) {
 		$aux = 'D'.$aux;
 	}
 	if(isset($dias[$aux]) && $dias[$aux] != ''){
-		$dia = $dias[$aux];
+		if ($dias[$aux] >= $diaInicialSemanaInicial && $dias[$aux] <= $diaFinalSemanaFinal) {
+			$dia = $dias[$aux];
+		} else {
+			$dia = "";
+		}
 	}
 	$pdf->Cell(7.5,4,utf8_decode($dia),'R',0,'C',false);
 	$auxIndice++;
