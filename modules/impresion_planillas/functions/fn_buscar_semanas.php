@@ -12,8 +12,9 @@
 	if ($diainicialSemanaAnterior != "") {
 		$diaInicial = "AND DIA >= $diainicialSemanaAnterior";
 	}
-	// echo "SELECT ID, SEMANA, MIN(DIA) AS dia_inicial, MAX(DIA) AS dia_final FROM planilla_semanas WHERE MES = '$mes' $diaInicial GROUP BY SEMANA;";
-	$res_sem = $Link->query("SELECT ID, SEMANA, MIN(DIA) AS dia_inicial, MAX(DIA) AS dia_final FROM planilla_semanas WHERE MES = '$mes' $diaInicial GROUP BY SEMANA;") or die(mysqli_error($Link));
+
+	$consultaPlanillaSemanas = "SELECT ID, SEMANA, MIN(DIA) AS dia_inicial, MAX(DIA) AS dia_final FROM planilla_semanas WHERE MES = '$mes' $diaInicial GROUP BY SEMANA;";
+	$res_sem = $Link->query($consultaPlanillaSemanas) or die(mysqli_error($Link));
 
 	if ($res_sem->num_rows > 0) {
 		while ($reg_sem = $res_sem->fetch_assoc()) {

@@ -75,31 +75,6 @@
 
 <div class="row">
 	<div class="col-sm-4 form-group">
-		<label for="fechaInicial">Mes</label>
-		<?php
-		if(!isset($_GET['pb_mes']) || $_GET['pb_mes'] == ''){
-			$_GET['pb_mes'] = date("n");
-		}
-		?>
-		<select name="mes" id="mes" class="form-control" required>
-			<option value="">mm</option>
-			<option value="1" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 1) {echo " selected "; } ?>>Enero</option>
-			<option value="2" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 2) {echo " selected "; } ?>>Febrero</option>
-			<option value="3" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 3) {echo " selected "; } ?>>Marzo</option>
-			<option value="4" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 4) {echo " selected "; } ?>>Abril</option>
-			<option value="5" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 5) {echo " selected "; } ?>>Mayo</option>
-			<option value="6" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 6) {echo " selected "; } ?>>Junio</option>
-			<option value="7" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 7) {echo " selected "; } ?>>Julio</option>
-			<option value="8" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 8) {echo " selected "; } ?>>Agosto</option>
-			<option value="9" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 9) {echo " selected "; } ?>>Septiembre</option>
-			<option value="10" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 10) {echo " selected "; } ?>>Octubre</option>
-			<option value="11" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 11) {echo " selected "; } ?>>Noviembre</option>
-			<option value="12" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 12) {echo " selected "; } ?>>Diciembre</option>
-		</select>
-		<input type="hidden" name="mesConsulta" id="mesConsulta" value="<?php if (isset($_GET['pb_mes'])) { echo $_GET['pb_mes']; } ?>">
-	</div><!-- /col -->
-
-	<div class="col-sm-4 form-group">
 		<label for="fechaInicial">Municipio</label>
 		<select class="form-control" name="municipio" id="municipio" required>
 			<option value="">Seleccione uno</option>
@@ -123,7 +98,6 @@
 		</select>
 		<input type="hidden" name="municipioNm" id="municipioNm">
 	</div><!-- /.col -->
-
 	<div class="col-sm-4 form-group">
 		<label for="institucion">Institución</label>
 		<select class="form-control" name="institucion" id="institucion" required>
@@ -146,7 +120,50 @@
 	</div><!-- /.col -->
 
 </div><!-- /.row -->
+<div class="row">
+  <div class="col-sm-4 form-group">
+    <label for="fechaInicial">Mes</label>
+    <?php
+    // if(!isset($_GET['pb_mes']) || $_GET['pb_mes'] == ''){
+    //   $_GET['pb_mes'] = date("n");
+    // }
+    ?>
+    <select name="mes" id="mes" class="form-control" required>
+      <option value="">Seleccione uno</option>
+      <option value="1" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 1) {echo " selected "; } ?>>Enero</option>
+      <option value="2" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 2) {echo " selected "; } ?>>Febrero</option>
+      <option value="3" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 3) {echo " selected "; } ?>>Marzo</option>
+      <option value="4" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 4) {echo " selected "; } ?>>Abril</option>
+      <option value="5" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 5) {echo " selected "; } ?>>Mayo</option>
+      <option value="6" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 6) {echo " selected "; } ?>>Junio</option>
+      <option value="7" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 7) {echo " selected "; } ?>>Julio</option>
+      <option value="8" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 8) {echo " selected "; } ?>>Agosto</option>
+      <option value="9" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 9) {echo " selected "; } ?>>Septiembre</option>
+      <option value="10" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 10) {echo " selected "; } ?>>Octubre</option>
+      <option value="11" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 11) {echo " selected "; } ?>>Noviembre</option>
+      <option value="12" <?php if (isset($_GET['pb_mes']) && $_GET['pb_mes'] == 12) {echo " selected "; } ?>>Diciembre</option>
+    </select>
+    <input type="hidden" name="mesConsulta" id="mesConsulta" value="<?php if (isset($_GET['pb_mes'])) { echo $_GET['pb_mes']; } ?>">
+  </div><!-- /col -->
 
+  <div class="col-sm-4 form-group">
+    <label for="semana_inicial">Semana Inicial</label>
+    <select class="form-control" name="semana_inicial" id="semana_inicial" required>
+      <option value="">Seleccione uno</option>
+    </select>
+    <input type="hidden" name="diaInicialSemanaInicial" id="diaInicialSemanaInicial">
+    <input type="hidden" name="diaFinalSemanaInicial" id="diaFinalSemanaInicial">
+  </div>
+
+  <div class="col-sm-4   form-group">
+    <label for="semana_final">Semana Final</label>
+    <select class="form-control" name="semana_final" id="semana_final" required>
+      <option value="">Seleccione uno</option>
+    </select>
+    <input type="hidden" name="diaInicialSemanaFinal" id="diaInicialSemanaFinal">
+    <input type="hidden" name="diaFinalSemanaFinal" id="diaFinalSemanaFinal">
+  </div>
+</div><!-- /.row -->
 
 <div class="row">
   <div class="col-sm-12">
