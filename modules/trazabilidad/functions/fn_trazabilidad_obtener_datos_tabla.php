@@ -14,11 +14,10 @@
   }
 
    $output = [
-    'sEcho' => 1,
-    'iTotalRecords' => count($data),
-    'iTotalDisplayRecords' => count($data),
-    'aaData' => $data
-  ];
-
+      'sEcho' => 1,
+      'iTotalRecords' => count($data),
+      'iTotalDisplayRecords' => count($data),
+      'aaData' => $data
+    ];
 
   echo json_encode($output);
