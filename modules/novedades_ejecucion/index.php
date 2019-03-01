@@ -71,16 +71,11 @@
               </tr>
             </tfoot>
           </table>
-
-
-
         </div>
       </div>
     </div>
   </div>
-
 </div>
-
 
 <div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
   <div class="modal-dialog modal-sm">
@@ -102,12 +97,6 @@
   </div>
 </div>
 
-
-
-
-
-
-
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
@@ -128,17 +117,6 @@
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/js/novedades_ejecucion.js"></script>
 
-
-
-
-
-
-
-
-
-
-
-
 <script>
   $(document).ready(function(){
 		$('#loader').fadeIn();
@@ -146,11 +124,7 @@
     datatables = $('.dataTablesNovedadesPriorizacion').DataTable({
       ajax: {
         method: 'POST',
-        url: 'functions/fn_novedades_focalizacion_index_buscar_datatables.php',
-        // data:{
-        //   municipio: $('#municipio').val(),
-        //   institucion: $('#institucion').val()
-        // }
+        url: 'functions/fn_novedades_focalizacion_index_buscar_datatables.php'
       },
       columns:[
         { data: 'id'},
@@ -167,30 +141,6 @@
         { data: 'd3'},
         { data: 'd4'},
         { data: 'd5'}
-				// {
-				// 	sortable: false,
-				// 	"render": function ( data, type, full, meta ) {
-				// 		var numDoc = full.num_doc
-				// 		var d5 = full.d5;
-				// 		var accion = ' <div class="i-checks"><label> <input disabled type="checkbox" name="'+numDoc+'_d5" id="'+numDoc+'_d5" value="1" ';
-				// 		if(d5 == 1){
-				// 			accion = accion + ' checked ';
-				// 		}
-				// 		accion = accion + ' > <i></i></label></div> ';
-				// 		return accion;
-				// 	}
-				// }
-
-        // { data: 'codigoInstitucion'},
-        // { data: 'nombreInstitucion'},
-        // { data: 'nombreCoordinador'},
-        // { data: 'nombreJornada'},
-        // { data: 'tipoValidacion'},
-
-
-
-
-        //{ defaultContent: '<div class="btn-group">'+ '<div class="dropdown pull-right">'+ '<button class="btn btn-primary btn-sm" type="button" id="dropDownMenu1" data-toggle="dropdown"  aria-haspopup="true">'+ 'Acciones <span class="caret"></span>'+ '</button>'+ '<ul class="dropdown-menu pull-right" aria-labelledby="dropDownMenu1">'+ '<li>'+ '<a href="#" class="editarSede"><i class="fa fa-pencil fa-lg"></i> Editar</a>'+ '</li>'+ '<li>'+ '<a href="#">'+ 'Estado: &nbsp;'+ '<input type="checkbox" class="estadoSede" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24">'+ '</a>'+ '</li>'+ '</ul>'+ '</div>'+ '</div>'}
       ],
       buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } } ],
       dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
@@ -214,13 +164,6 @@
         $('#loader').fadeIn();
       }
     }).on("draw", function(){ $('#loader').fadeOut(); $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', }); });
-
-
-//$('#loader').fadeOut();
-
-
-
-
 
 		// Evento para ver
 		$(document).on('click', '.dataTablesNovedadesPriorizacion tbody td:nth-child(-n+8)', function(){
