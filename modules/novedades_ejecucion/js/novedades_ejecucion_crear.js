@@ -1,40 +1,30 @@
 var tablaFocalizados;
 var tablaNoFocalizados;
+var cantidadDiasFocalizados = 0;
 
 $(document).ready(function(){
 	buscarMunicipios();
+	$('#btnBuscar').click(function(){ buscarFocalizacion(); });
+	$('.guaradarNovedad').click(function(){ guardarNovedad(); });
+	$('#municipio').change(function(){ buscarInstituciones($(this).val()); });
 
-
-	$('#btnBuscar').click(function(){
-		buscarFocalizacion();
-	});
-
-
-	$('.guaradarNovedad').click(function(){
-		guardarNovedad();
-	});
-
-	$('#municipio').change(function(){
-		var municipio = $(this).val();
-		buscarInstituciones();
-		$('#sede').html('<option value = "">Seleccione una</option>');
-	});
 	$('#institucion').change(function(){
 		var institucion = $(this).val();
 		buscarSede();
 	});
-	$('#sede').change(function(){
-		var sede = $(this).val();
-		buscarMeses();
-	});
-	$('#mes').change(function(){
-		buscarSemanas();
-	});
-	$('#semana').change(function(){
-		buscarComplementos();
-	});
 
+	$('#sede').change(function(){ buscarMeses($(this).val()); });
+	$('#mes').change(function(){ buscarSemanas(); });
+	$('#semana').change(function(){ buscarComplementos(); });
 
+	$(document).on('ifChecked', '.checkbox-header', function () { $('.checkbox'+ $(this).data('columna')).iCheck('check'); });
+	$(document).on('ifUnchecked', '.checkbox-header', function () { $('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); });
+
+	$(document).on('ifChecked', '.checkbox-header-2', function () { $('.checkbox-2'+ $(this).data('columna')).iCheck('check'); });
+	$(document).on('ifUnchecked', '.checkbox-header-2', function () { $('.checkbox-2'+ $(this).data('columna')).iCheck('uncheck'); });
+
+	$(document).on('ifChecked', '.checkbox1, .checkbox2, .checkbox3, .checkbox4, .checkbox5', function () { sumarCantidadDias($(this)); });
+	$(document).on('ifUnchecked', '.checkbox1, .checkbox2, .checkbox3, .checkbox4, .checkbox5', function () { restarCantidadDias($(this)); });
 	// Configuración inicial del plugin toastr.
 	toastr.options = {
 		"closeButton": true,
@@ -69,30 +59,37 @@ function buscarMunicipios(){
 			} else {
 				Command: toastr.error( data.mensaje, "Error al cargar los municipios.", { onHidden : function(){ $('#loader').fadeOut(); } } );
 			}
+		},
+		error: function (data){
+			console.log(data.responseText);
 		}
 	});
 }
-function buscarInstituciones(){
-	var formData = new FormData();
-	formData.append('municipio', $('#municipio').val());
+
+function buscarInstituciones(municipio){
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_instituciones.php",
-		contentType: false,
-		processData: false,
-    data: formData,
-		dataType: 'json',
+		dataType: 'JSON',
+    data: {
+    	'municipio': municipio
+    },
 		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data){
+		success: function(data) {
 			if(data.estado == 1){
 				$('#institucion').html(data.opciones);
 				$('#loader').fadeOut();
 			} else {
+				$('#institucion').html(data.opciones);
 				Command: toastr.error( data.mensaje, "Error al cargar las instituciones.", { onHidden : function(){ $('#loader').fadeOut(); } } );
 			}
+		},
+		error: function(data) {
+			$('#loader').fadeOut();
 		}
 	});
 }
+
 function buscarSede(){
 	var formData = new FormData();
 	formData.append('institucion', $('#institucion').val());
@@ -114,16 +111,15 @@ function buscarSede(){
 		}
 	});
 }
-function buscarMeses(){
-	var formData = new FormData();
-	formData.append('sede', $('#sede').val());
+
+function buscarMeses() {
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_meses.php",
-		contentType: false,
-		processData: false,
-    data: formData,
-		dataType: 'json',
+		dataType: 'JSON',
+    data: {
+    	'sede': $('#sede').val()
+    },
 		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
 			if(data.estado == 1){
@@ -132,9 +128,13 @@ function buscarMeses(){
 			} else {
 				Command: toastr.error( data.mensaje, "Error al cargar las instituciones.", { onHidden : function(){ $('#loader').fadeOut(); } } );
 			}
+		},
+		error: function (data) {
+			$('#loader').fadeOut();
 		}
 	});
 }
+
 function buscarSemanas(){
 	var formData = new FormData();
 	formData.append('mes', $('#mes').val());
@@ -156,6 +156,7 @@ function buscarSemanas(){
 		}
 	});
 }
+
 function buscarComplementos(){
 	var formData = new FormData();
 	formData.append('semana', $('#semana').val());
@@ -179,8 +180,8 @@ function buscarComplementos(){
 		}
 	});
 }
+
 function buscarFocalizacion(){
-	console.log('Bucar focalización');
 	$("#observaciones").prop('required',false);
 	$("#foto").prop('required',false);
 	if($('#formNovedadesEjecucion').valid()){
@@ -210,66 +211,41 @@ function buscarFocalizacion(){
 				{ data: 'complemento'},
 				{
 					sortable: false,
-					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D1 = full.D1;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D1" id="'+numDoc+'_D1" value="1" ';
-						if(D1 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
+					render: function ( data, type, full, meta ) {
+						chequeado = (full.D1 == 1) ? 'checked' : '';
+						var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox1" name="'+ full.num_doc +'_D1" id="'+ full.num_doc +'_D1" value="1" '+ chequeado +' ></label></div>';
 						return accion;
 					}
 				},
 				{
 					sortable: false,
 					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D2 = full.D2;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D2" id="'+numDoc+'_D2" value="1" ';
-						if(D2 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
+						chequeado = (full.D2 == 1) ? 'checked' : '';
+						var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox2" name="'+ full.num_doc +'_D2" id="'+ full.num_doc +'_D2" value="1" '+ chequeado +' ></label></div>';
 						return accion;
 					}
 				},
 				{
 					sortable: false,
 					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D3 = full.D3;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D3" id="'+numDoc+'_D3" value="1" ';
-						if(D3 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
+						chequeado = (full.D3 == 1) ? 'checked' : '';
+						var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox3" name="'+ full.num_doc +'_D3" id="'+ full.num_doc +'_D3" value="1" '+ chequeado +' ></label></div>';
 						return accion;
 					}
 				},
 				{
 					sortable: false,
 					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D4 = full.D4;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D4" id="'+numDoc+'_D4" value="1" ';
-						if(D4 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
+						chequeado = (full.D4 == 1) ? 'checked' : '';
+						var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox4" name="'+ full.num_doc +'_D4" id="'+ full.num_doc +'_D4" value="1" '+ chequeado +' ></label></div>';
 						return accion;
 					}
 				},
 				{
 					sortable: false,
 					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D5 = full.D5;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D5" id="'+numDoc+'_D5" value="1" ';
-						if(D5 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
+						chequeado = (full.D5 == 1) ? 'checked' : '';
+						var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox5" name="'+ full.num_doc +'_D5" id="'+ full.num_doc +'_D5" value="1" '+ chequeado +' ></label></div> ';
 						return accion;
 					}
 				}
@@ -293,118 +269,104 @@ function buscarFocalizacion(){
 			"preDrawCallback": function( settings ) {
 				$('#loader').fadeIn();
 			}
-		}).on("draw", function(){ $('#loader').fadeOut(); $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', }); });
-		tablaNoFocalizados = $('.dataTablesNovedadesEjecucionReserva').DataTable({
-			ajax: {
-				method: 'POST',
-				url: 'functions/fn_novedades_ejecucion_no_focalizados_buscar_datatables.php',
-				data:{
-					municipio: $('#municipio').val(),
-					institucion: $('#institucion').val(),
-					sede: $('#sede').val(),
-					mes: $('#mes').val(),
-					semana: $('#semana').val(),
-					tipoComplemento: $('#tipoComplemento').val()
-				}
-			},
-			columns:[
-				{ data: 'Abreviatura'},
-				{ data: 'num_doc'},
-				{ data: 'nombre'},
-				{ data: 'complemento'},
-				{
-					sortable: false,
-					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D1 = full.D1;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D1" id="'+numDoc+'_D1" value="1" ';
-						if(D1 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
-						return accion;
-					}
-				},
-				{
-					sortable: false,
-					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D2 = full.D2;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D2" id="'+numDoc+'_D2" value="1" ';
-						if(D2 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
-						return accion;
-					}
-				},
-				{
-					sortable: false,
-					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D3 = full.D3;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D3" id="'+numDoc+'_D3" value="1" ';
-						if(D3 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
-						return accion;
-					}
-				},
-				{
-					sortable: false,
-					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D4 = full.D4;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D4" id="'+numDoc+'_D4" value="1" ';
-						if(D4 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
-						return accion;
-					}
-				},
-				{
-					sortable: false,
-					"render": function ( data, type, full, meta ) {
-						var numDoc = full.num_doc
-						var D5 = full.D5;
-						var accion = ' <div class="i-checks"><label> <input type="checkbox" name="'+numDoc+'_D5" id="'+numDoc+'_D5" value="1" ';
-						if(D5 == 1){
-							accion = accion + ' checked ';
-						}
-						accion = accion + ' > <i></i></label></div> ';
-						return accion;
-					}
-				}
-			],
-			oLanguage: {
-				sLengthMenu: 'Mostrando _MENU_ registros',
-				sZeroRecords: 'No se encontraron registros',
-				sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
-				sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-				sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-				sSearch:         'Buscar: ',
-				oPaginate:{
-					sFirst:    'Primero',
-					sLast:     'Último',
-					sNext:     'Siguiente',
-					sPrevious: 'Anterior'
-				}
-			},
-			pageLength: 10000,
-			responsive: true,
-			"preDrawCallback": function( settings ) {
-				$('#loader').fadeIn();
-			}
-		}).on("draw", function(){ $('#loader').fadeOut(); $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', }); });
+		}).on("draw", function(){
+			// $('#loader').fadeOut();
+			// $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });
+			buscarSuplentes();
+
+			cantidadDiasFocalizados = tablaFocalizados.data().count() * $('#semana option:selected').data("cantidaddias");
+			cantidadDiasFocalizadosActual = cantidadDiasFocalizados;
+		});
+
 	}
 }
 
+function buscarSuplentes(){
+	tablaNoFocalizados = $('.dataTablesNovedadesEjecucionReserva').DataTable({
+		ajax: {
+			method: 'POST',
+			url: 'functions/fn_novedades_ejecucion_no_focalizados_buscar_datatables.php',
+			data:{
+				mes: $('#mes').val(),
+				sede: $('#sede').val(),
+				semana: $('#semana').val(),
+				municipio: $('#municipio').val(),
+				institucion: $('#institucion').val(),
+				tipoComplemento: $('#tipoComplemento').val()
+			},
+			error: function(data){
+				console.log(data.responseText);
+			}
+		},
+		columns:[
+			{ data: 'abreviatura'},
+			{ data: 'numero_documento'},
+			{ data: 'nombre_suplente'},
+			{ data: 'tipo_complemento'},
+			{
+				sortable: false,
+				"render": function ( data, type, full, meta ) {
+					chequeado = (full.D1 == 1) ? 'checked' : '';
+					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-21" name="'+ full.numero_documento +'_D1" id="'+ full.numero_documento +'_D1" value="1" '+ chequeado +' ></label></div>';
+					return accion;
+				}
+			},
+			{
+				sortable: false,
+				"render": function ( data, type, full, meta ) {
+					chequeado = (full.D2 == 1) ? 'checked' : '';
+					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-22" name="'+ full.numero_documento +'_D2" id="'+ full.numero_documento +'_D2" value="1" '+ chequeado +' ></label></div>';
+					return accion;
+				}
+			},
+			{
+				sortable: false,
+				"render": function ( data, type, full, meta ) {
+					chequeado = (full.D3 == 1) ? 'checked' : '';
+					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-23" name="'+ full.numero_documento +'_D3" id="'+ full.numero_documento +'_D3" value="1" '+ chequeado +' ></label></div>';
+					return accion;
+				}
+			},
+			{
+				sortable: false,
+				"render": function ( data, type, full, meta ) {
+					chequeado = (full.D4 == 1) ? 'checked' : '';
+					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-24" name="'+ full.numero_documento +'_D4" id="'+ full.numero_documento +'_D4" value="1" '+ chequeado +' ></label></div>';
+					return accion;
+				}
+			},
+			{
+				sortable: false,
+				"render": function ( data, type, full, meta ) {
+					chequeado = (full.D5 == 1) ? 'checked' : '';
+					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-25" name="'+ full.numero_documento +'_D5" id="'+ full.numero_documento +'_D5" value="1" '+ chequeado +' ></label></div> ';
+					return accion;
+				}
+			}
+		],
+		oLanguage: {
+			sLengthMenu: 'Mostrando _MENU_ registros',
+			sZeroRecords: 'No se encontraron registros',
+			sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+			sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+			sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+			sSearch:         'Buscar: ',
+			oPaginate:{
+				sFirst:    'Primero',
+				sLast:     'Último',
+				sNext:     'Siguiente',
+				sPrevious: 'Anterior'
+			}
+		},
+		pageLength: 10000,
+		responsive: true,
+	}).on("draw", function(){
+		$('#loader').fadeOut();
+		$('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });
+	});
+}
+
 function guardarNovedad(){
-	console.log('Guardar Novedad');
-	// $("#observaciones").prop('required',true);
-	// $("#foto").prop('required',true);
   if($('#formNovedadesEjecucion').valid()){
 		var formData = new FormData($("#formNovedadesEjecucion")[0]);
 		$.ajax({
@@ -413,18 +375,17 @@ function guardarNovedad(){
 			contentType: false,
 			processData: false,
 	    data: formData,
-			dataType: 'json',
-			beforeSend: function(){ $('#loader').fadeIn(); },
-			success: function(data){
-				if(data.estado == 1){
-					//$('#semana').html(data.opciones);
-					//$('#loader').fadeOut();
+			dataType: 'JSON',
+			beforeSend: function() { $('#loader').fadeIn(); },
+			success: function(data) {
+				if(data.estado == 1) {
 					Command: toastr.success( data.mensaje, "Se ha realizado el registro.", { onHidden : function(){ $('#loader').fadeOut(); location.href="index.php"; } } );
 				} else {
-					Command: toastr.error( data.mensaje, "Error al cargar las instituciones.", { onHidden : function(){ $('#loader').fadeOut(); } } );
+					Command: toastr.error( data.mensaje, "No se ha realizado el registro.", { onHidden : function(){ $('#loader').fadeOut(); } } );
 				}
 			},
-			error: function(data){console.log(data);
+			error: function(data) {
+				console.log(data.responseText);
 	      Command: toastr.error(
 	        "Al parecer existe un error con el servidor. Por favor comuníquese con el adminstrador del sitio InfoPAE.",
 	        "Error al hacer el registro.",
@@ -433,4 +394,24 @@ function guardarNovedad(){
 	    }
 		});
   }
+}
+
+function restarCantidadDias(checkbox){
+	if (cantidadDiasFocalizadosActual > 0) {
+		cantidadDiasFocalizadosActual -= 1;
+	} else {
+		checkbox.iCheck('destroy').prop('checked', true).iCheck({
+			checkboxClass: 'icheckbox_square-green'
+		});
+	}
+}
+
+function sumarCantidadDias(checkbox){
+	if (cantidadDiasFocalizadosActual < cantidadDiasFocalizados) {
+		cantidadDiasFocalizadosActual += 1;
+	} else {
+		checkbox.iCheck('destroy').prop('checked', false).iCheck({
+			checkboxClass: 'icheckbox_square-green'
+		});
+	}
 }
