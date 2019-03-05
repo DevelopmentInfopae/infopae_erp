@@ -59,7 +59,7 @@ $municipio = $_POST['municipio'];
 
 //Dias Semanas
 $consulta = "SELECT * FROM planilla_semanas WHERE ano='$anno' AND mes='$mes' AND DIA BETWEEN $diaInicialSemanaInicial AND $diaFinalSemanaFinal";
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+$resultado = $Link->query($consulta) or die ('Unable to execute query. Linea 62:'. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
 		$diasSemanas[] = $row;
@@ -67,7 +67,7 @@ if($resultado->num_rows >= 1){
 }
 
 //Instituciones
-$consulta = "SELECT DISTINCT s.cod_inst,s.nom_inst,s.cod_mun_sede,u.ciudad,u.Departamento, usu.nombre AS nombre_rector
+$consulta = "SELECT DISTINCT s.cod_inst,s.nom_inst,s.cod_mun_sede,u.ciudad,u.Departamento, usu.nombre AS nombre_rector, usu.num_doc AS documento_rector
 FROM sedes$anno2d s
 INNER JOIN sedes_cobertura AS sc ON (s.cod_inst=sc.cod_inst AND s.cod_Sede=sc.cod_Sede)
 INNER JOIN ubicacion u ON(s.cod_mun_sede=u.codigoDANE) and u.ETC = 0
@@ -75,7 +75,7 @@ INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
 LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
 WHERE sc.ano='$anno' AND sc.mes='$mes' AND s.cod_mun_sede='$municipio'";
 $consulta .= (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND s.cod_inst = '".$_POST["institucion"]."'" : "";
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+$resultado = $Link->query($consulta) or die ('Unable to execute query. Linea 78: '. mysqli_error($Link));
 
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
@@ -268,9 +268,11 @@ if(count($entregasSedes)>0) {
 			$pdf->SetFont('Arial','B',$tamannoFuente);
 			$pdf->Cell(32,5,utf8_decode('NOMBRE RECTOR:'),'R',0,'L',false);
 			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(0,5,utf8_decode($institucion["nombre_rector"]),'R',0,'L',false);
+			$pdf->Cell(110,5,utf8_decode($institucion["nombre_rector"]),'R',0,'L',false);
+			$pdf->SetFont('Arial','B',$tamannoFuente);
+			$pdf->Cell(25,5,utf8_decode('DOC. RECTOR:'),'R',0,'L',false);
 			$pdf->SetX($x);
-			$pdf->Cell(0,5,'',0,5,'C',false);
+			$pdf->Cell(0,5,"",0,5,'C',false);
 
 			$pdf->SetXY($x, $y);
 			$pdf->Cell(0,30,'',1,0,'C',false);

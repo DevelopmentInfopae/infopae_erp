@@ -57,7 +57,7 @@ $institucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? $
 // 2. Trae las insituciones del municipio seleccionado
 $con_ins = (isset($institucion) && $institucion != "") ? " AND s.cod_inst = " . $institucion : "";
 $consulta = " SELECT
-				DISTINCT s.cod_inst, s.nom_inst, s.cod_mun_sede, u.ciudad, u.Departamento, usu.nombre AS nombre_rector
+				DISTINCT s.cod_inst, s.nom_inst, s.cod_mun_sede, u.ciudad, u.Departamento, usu.nombre AS nombre_rector, usu.num_doc AS documento_rector
 			FROM sedes$periodoActual s
 			INNER JOIN sedes_cobertura AS sc ON (s.cod_inst = sc.cod_inst AND s.cod_Sede = sc.cod_Sede)
 			INNER JOIN ubicacion u ON (s.cod_mun_sede = u.codigoDANE) and u.ETC = 0

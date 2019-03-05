@@ -35,7 +35,7 @@
         // Termina hacer registro en la bitacora
 
         //Cargando parametros de la aplicación
-        $consulta = " select * from parametros ";
+        $consulta = "SELECT * FROM parametros;";
         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
         if($resultado->num_rows >= 1){
@@ -49,6 +49,7 @@
         $_SESSION['p_Logo ETC'] = $row['LogoETC'];
         $_SESSION['p_Departamento'] = $row['Departamento'];
         $_SESSION['p_Contrato'] = $row['NumContrato'];
+        $_SESSION["p_Municipio"] = $row["CodMunicipio"];
         //Termina carga de parametros de la aplicación
 
         if($row1["nueva_clave"] == '' || $row1["nueva_clave"] < 1 ){

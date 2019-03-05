@@ -47,7 +47,7 @@
 	$novedades = array();
 
 	// Novedades de Priorización 1
-	$consulta = " SELECT 1 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_priorizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario LIMIT 20";
+	$consulta = " SELECT 1 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_priorizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
 	$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	$indice = 0;
 	$aux = '';
@@ -57,7 +57,6 @@
 			if(isset($novedades[$aux])){
 				$bandera = 0;
 				while ($bandera == 0) {
-                    //$aux = $row['fecha'].$indice;
 					$aux = $indice;
                     if(isset($novedades[$aux])){
 						$indice++;
@@ -110,7 +109,9 @@
 
             <div class="ibox-content inspinia-timeline">
 			<?php
+                $iteracionMaxima = 1;
                 foreach ($novedades as $novedad) {
+                  if ($iteracionMaxima <= 20) {
 				    $tipo = $novedad['tipo'];
 				    if($tipo == 1) {
                         $tipo = 'fa-bank';
@@ -151,6 +152,9 @@
                     <hr>
                 </div>
 			<?php
+                  }
+
+                $iteracionMaxima++;
                 }
             ?>
             </div>

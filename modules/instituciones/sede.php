@@ -5,7 +5,6 @@
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
-
 	$titulo = "Sede";
 	$periodoActual = $_SESSION['periodoActual'];
 	$nomSede = (isset($_POST['nomSede'])) ? mysqli_real_escape_string($Link, $_POST['nomSede']) : '';
@@ -55,7 +54,7 @@
     <h2><?php echo $titulo. ": " .$nomSede; ?></h2>
     <ol class="breadcrumb">
       <li>
-          <a href="<?php echo $baseUrl; ?>">Home</a>
+          <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
       	<a href="<?php echo $baseUrl . '/modules/instituciones/sedes.php'; ?>">Sedes</a>
@@ -304,7 +303,6 @@
 							}
 						}
 					}
-
 					?>
 					<div class="table-responsive">
 						<table class="table table-striped table-hover dataTable-priorizacion">
@@ -321,16 +319,24 @@
 							</thead>
 							<tbody>
 								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-									<tr> <td>Etario <?php echo$i; ?> APS</td> <?php foreach ($semanas as $semana){ ?> <td style="text-align:center;"><?php echo $priorizacion['Etario'.$i.'_APS'][$semana]; ?></td> <?php } ?> <td style="text-align:center;"><?php echo $totalesPriorizacion['Etario'.$i.'_APS']; ?></td> </tr>
+									<tr>
+										<td>Etario <?= $i; ?> APS</td>
+										<?php foreach ($semanas as $semana){ ?>
+											<td style="text-align:center;">
+												<?php echo (isset($priorizacion['Etario'.$i.'_APS'][$semana])) ? $priorizacion['Etario'.$i.'_APS'][$semana] : ""; ?>
+											</td>
+										<?php } ?>
+										<td style="text-align:center;"><?= $totalesPriorizacion['Etario'.$i.'_APS']; ?></td>
+									</tr>
 								<?php } ?>
 
-								<tr> <th>Total APS</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo $priorizacion['APS'][$semana]; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['APS']; ?></th> </tr>
+								<tr> <th>Total APS</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo isset($priorizacion['APS'][$semana]) ? $priorizacion['APS'][$semana] : ""; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['APS']; ?></th> </tr>
 
 								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-									<tr> <td>Etario <?php echo$i; ?> CAJMRI</td> <?php foreach ($semanas as $semana){ ?> <td style="text-align:center;"><?php echo $priorizacion['Etario'.$i.'_CAJMRI'][$semana]; ?></td> <?php } ?> <td style="text-align:center;"><?php echo $totalesPriorizacion['Etario'.$i.'_CAJMRI']; ?></td> </tr>
+									<tr> <td>Etario <?php echo$i; ?> CAJMRI</td> <?php foreach ($semanas as $semana){ ?> <td style="text-align:center;"><?php echo isset($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) ? $priorizacion['Etario'.$i.'_CAJMRI'][$semana] : ""; ?></td> <?php } ?> <td style="text-align:center;"><?php echo $totalesPriorizacion['Etario'.$i.'_CAJMRI']; ?></td> </tr>
 								<?php } ?>
 
-								<tr> <th>Total CAJMRI</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo $priorizacion['CAJMRI'][$semana]; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['CAJMRI']; ?></th> </tr>
+								<tr> <th>Total CAJMRI</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo isset($priorizacion['CAJMRI'][$semana]) ? $priorizacion['CAJMRI'][$semana] : ""; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['CAJMRI']; ?></th> </tr>
 
 								<!-- <?php for ($i=1; $i <= 3 ; $i++) {  ?>
 									<tr> <td>Etario <?php echo$i; ?> CAJTRI</td> <?php foreach ($semanas as $semana){ ?> <td style="text-align:center;"><?php echo $priorizacion['Etario'.$i.'_CAJTRI'][$semana]; ?></td> <?php } ?> <td style="text-align:center;"><?php echo $totalesPriorizacion['Etario'.$i.'_CAJTRI']; ?></td> </tr>
@@ -339,10 +345,10 @@
 								<!-- <tr> <th>Total CAJTRI</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo $priorizacion['CAJTRI'][$semana]; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['CAJTRI']; ?></th> </tr> -->
 
 								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-									<tr> <td>Etario <?php echo$i; ?> CAJMPS</td> <?php foreach ($semanas as $semana){ ?> <td style="text-align:center;"><?php echo $priorizacion['Etario'.$i.'_CAJMPS'][$semana]; ?></td> <?php } ?> <td style="text-align:center;"><?php echo $totalesPriorizacion['Etario'.$i.'_CAJMPS']; ?></td> </tr>
+									<tr> <td>Etario <?php echo$i; ?> CAJMPS</td> <?php foreach ($semanas as $semana){ ?> <td style="text-align:center;"><?php echo isset($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) ? $priorizacion['Etario'.$i.'_CAJMPS'][$semana] : ""; ?></td> <?php } ?> <td style="text-align:center;"><?php echo $totalesPriorizacion['Etario'.$i.'_CAJMPS']; ?></td> </tr>
 								<?php } ?>
 
-								<tr> <th>Total CAJMPS</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo $priorizacion['CAJMPS'][$semana]; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['CAJMPS']; ?></th> </tr>
+								<tr> <th>Total CAJMPS</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo isset($priorizacion['CAJMPS'][$semana]) ? $priorizacion['CAJMPS'][$semana] : ""; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['CAJMPS']; ?></th> </tr>
 
 							</tbody>
 							<tfoot>
@@ -364,45 +370,80 @@
 	</div>
 </div>
 
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground">
+        	<h2>Novedades de priorización</h2>
+          <table class="table table-striped table-hover selectableRows dataTablesNovedadesPriorizacion">
+            <thead>
+              <tr>
+                <th>Municipio</th>
+                <th>Institución</th>
+                <th>Sede</th>
+                <th>Fecha</th>
+                <th>APS</th>
+                <th>CAJMRI</th>
+                <th>CAJMPS</th>
+                <th>Semana</th>
+                <th>Observaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+              <tr>
+								<th>Municipio</th>
+								<th>Institución</th>
+								<th>Sede</th>
+								<th>Fecha</th>
+								<th>APS</th>
+								<th>CAJMRI</th>
+								<th>CAJMPS</th>
+								<th>Semana</th>
+								<th>Observaciones</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOCALIZACIÓN -->
 <div class="wrapper wrapper-content  animated fadeInRight">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="ibox">
-                        <div class="ibox-content">
-							<h2>Focalización</h2>
-                            <div class="clients-list">
-                            <ul class="nav nav-tabs">
-                                <!-- <span class="pull-right small text-muted">1406 Elements</span> -->
-
-
-								<?php
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="ibox">
+        <div class="ibox-content">
+					<h2>Focalización</h2>
+          <div class="clients-list">
+            <ul class="nav nav-tabs">
+							<?php
 								$auxIndice = 1;
 								foreach ($semanas as $semana){
-									?>
-									<li class=" <?php if($auxIndice == 1){echo ' active '; } ?> "><a data-toggle="tab" href="#tab-<?php echo $semana; ?>"><i class="fa fa-child"></i> Sem <?php echo $semana; ?></a></li>
-									<?php
+							?>
+								<li class="<?php if($auxIndice == 1){ echo ' active '; } ?> "><a data-toggle="tab" href="#tab-<?= $semana; ?>"><i class="fa fa-child"></i> Sem <?= $semana; ?></a></li>
+							<?php
 									$auxIndice++;
 								}
-								?>
-
-
-
-
-
-
-                            </ul>
-                            <div class="tab-content">
-								<?php
-								$auxIndice = 1;
-								foreach ($semanas as $semana){ ?>
-									<div id="tab-<?php echo $semana; ?>" class="tab-pane <?php if($auxIndice == 1){echo ' active '; } ?>">
-										<div style="overflow : hidden; height: 100%;">
-											<div class="table-responsive">
-												<table class="table table-striped table-hover dataTable-focalizacion">
-													<thead>
-														<tr>
-															<th>Num doc</th>
-															<th>Tipo doc</th>
+							?>
+            </ul>
+	          <div class="tab-content">
+						<?php
+							$auxIndice = 1;
+							foreach ($semanas as $semana){ ?>
+								<div id="tab-<?= $semana; ?>" class="tab-pane <?php if($auxIndice == 1){ echo ' active '; } ?>">
+								<!-- <div style="overflow : hidden; height: 100%;"> -->
+									<div class="table-responsive">
+										<br>
+										<table class="table table-striped table-hover dataTable-focalizacion" style="width: 100;">
+											<thead>
+												<tr>
+													<th>Num doc</th>
+													<th>Tipo doc</th>
 															<th>Nombre</th>
 															<th>Genero</th>
 															<th>Grado</th>
@@ -413,8 +454,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														<?php
-
+													<?php
 														$consulta = " SELECT f.num_doc, t.Abreviatura AS tipo_doc, CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre, f.genero, g.nombre as grado, f.nom_grupo, jor.nombre as jornada, f.edad, f.Tipo_complemento FROM focalizacion$semana f LEFT JOIN tipodocumento t ON t.id = f.tipo_doc LEFT JOIN grados g ON g.id = f.cod_grado LEFT JOIN jornada jor ON jor.id = f.cod_jorn_est where cod_sede = '$codSede' order by f.nom1 asc ";
 
 														$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -431,9 +471,10 @@
 																<td style="text-align:center;"><?php echo $row['edad']; ?></td>
 																<td style="text-align:center;"><?php echo $row['Tipo_complemento']; ?></td>
 															</tr>
-															<?php }
+													<?php
+															}
 														}
-														?>
+													?>
 													</tbody>
 													<tfoot>
 														<tr>
@@ -451,21 +492,71 @@
 												</table>
 											</div>
 										</div>
-									</div>
-									<?php
-									$auxIndice++;
-								}
-								?>
+									<!-- </div> -->
+						<?php
+								$auxIndice++;
+							}
+						?>
+	          </div>
+					</div>
+      	</div>
+    	</div>
+  	</div>
+	</div>
+</div>
 
-                            </div><!-- /.tab-content -->
-
-						</div><!-- /.clients-list -->
-                        </div>
-                    </div><!-- /.ibox -->
-                </div>
-
-            </div>
+<!-- NOVEDADES DE FOCALIZACIÓN -->
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground">
+          <table class="table table-striped table-hover selectableRows dataTablesNovedadesFocalizacion">
+          	<h2>Novedades de focalización</h2>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Municipio</th>
+                <th>Institución</th>
+                <th>Sede</th>
+                <th>Tipo Doc.</th>
+                <th>Documento</th>
+								<th>Titular</th>
+                <th>Complemento</th>
+                <th>Semana</th>
+                <th>L</th>
+                <th>M</th>
+                <th>X</th>
+                <th>J</th>
+                <th>V</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+              <tr>
+								<th>ID</th>
+								<th>Municipio</th>
+								<th>Institución</th>
+								<th>Sede</th>
+								<th>Tipo Doc.</th>
+								<th>Documento</th>
+								<th>Titular</th>
+								<th>Complemento</th>
+								<th>Semana</th>
+								<th>L</th>
+								<th>M</th>
+								<th>X</th>
+								<th>J</th>
+								<th>V</th>
+              </tr>
+            </tfoot>
+          </table>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 	<!-- Ventana modal confirmar -->
   <div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
@@ -509,23 +600,132 @@
   <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede.js"></script>
   <script>
     $(document).ready(function(){
+			$('#loader').fadeIn();
+
+    	// Evitar el burbujeo del DOM en el control dropbox
+    	$(document).on('click', '.dropdown li:nth-child(3)', function(e) { e.stopPropagation(); });
+
+			// Evento para ver
+			$(document).on('click', '.dataTablesNovedadesPriorizacion tbody td:nth-child(-n+9)', function(){
+				var tr = $(this).closest('tr');
+				var datos = datatables.row(tr).data();
+				$('#formVerNovedad #idNovedad').val(datos.id);
+				$('#formVerNovedad').submit();
+			});
+
+			// Configuración para la tabla de focalizaciones
       $('.dataTable-focalizacion').DataTable({
 				order: [[2,'asc']],
-        scrollY:        "500px",
-        scrollX:        true,
-        scrollCollapse: true,
-	      paging:         false,
-        pageLength: 25,
+        // scrollY:        "600px",
+        // scrollX:        true,
+        // scrollCollapse: true,
+	      paging:         true,
+        pageLength: 10,
         responsive: true,
-        dom: '<"html5buttons"B>lTfgitp',
+        dom: 'l<"inputFiltro"f>tip<"html5buttons"B>',
         buttons: [
           {extend: 'excel', title: 'ExampleFile'}
         ],
+        oLanguage: {
+	        sLengthMenu: 'Mostrando _MENU_ registros',
+	        sZeroRecords: 'No se encontraron registros',
+	        sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+	        sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+	        sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+	        sSearch:         'Buscar: '
+	      }
       });
-    });
 
-    // Evitar el burbujeo del DOM en el control dropbox
-    $(document).on('click', '.dropdown li:nth-child(3)', function(e) { e.stopPropagation(); });
+      // Configuración para la tabla de novedades priorización.
+    	datatables = $('.dataTablesNovedadesPriorizacion').DataTable({
+	      ajax: {
+	        method: 'POST',
+	        url: '../novedades_priorizacion/functions/fn_novedades_priorizacion_buscar_datatables.php',
+	        data: {
+	        	codSede: '<?= $codSede; ?>'
+	        }
+	      },
+	      columns:[
+	        { data: 'municipio'},
+	        { data: 'nom_inst'},
+	        { data: 'nom_sede'},
+	        { data: 'fecha_hora'},
+	        { data: 'APS'},
+	        { data: 'CAJMRI'},
+	        { data: 'CAJMPS'},
+	        { data: 'Semana'},
+	        { data: 'observaciones'}
+	      ],
+	      buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } } ],
+	      dom: 'lr<"inputFiltro"f>tip<"html5buttons"B>',
+	      oLanguage: {
+	        sLengthMenu: 'Mostrando _MENU_ registros',
+	        sZeroRecords: 'No se encontraron registros',
+	        sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+	        sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+	        sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+	        sSearch:         'Buscar: ',
+	        oPaginate:{
+	          sFirst:    'Primero',
+	          sLast:     'Último',
+	          sNext:     'Siguiente',
+	          sPrevious: 'Anterior'
+	        }
+	      },
+	      pageLength: 10,
+	      responsive: true
+	    }).on("draw", function(){ $('#loader').fadeOut(); });
+
+    	// Configuración para la tabla de novedades de focalización.
+	    datatables = $('.dataTablesNovedadesFocalizacion').DataTable({
+	      ajax: {
+	        method: 'POST',
+	        url: '../novedades_ejecucion/functions/fn_novedades_focalizacion_index_buscar_datatables.php',
+	        data: {
+	        	codSede: '<?= $codSede; ?>'
+	        }
+	      },
+	      columns:[
+	        { data: 'id'},
+	        { data: 'municipio'},
+	        { data: 'nom_inst'},
+					{ data: 'nom_sede'},
+	        { data: 'Abreviatura'},
+	        { data: 'num_doc_titular'},
+	        { data: 'nombre'},
+	        { data: 'tipo_complem'},
+	        { data: 'semana'},
+	        { data: 'd1'},
+	        { data: 'd2'},
+	        { data: 'd3'},
+	        { data: 'd4'},
+	        { data: 'd5'}
+	      ],
+	      buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } } ],
+	      dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+	      oLanguage: {
+	        sLengthMenu: 'Mostrando _MENU_ registros',
+	        sZeroRecords: 'No se encontraron registros',
+	        sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+	        sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+	        sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+	        sSearch:         'Buscar: ',
+	        oPaginate:{
+	          sFirst:    'Primero',
+	          sLast:     'Último',
+	          sNext:     'Siguiente',
+	          sPrevious: 'Anterior'
+	        }
+	      },
+	      pageLength: 10,
+	      responsive: true,
+	      "preDrawCallback": function( settings ) {
+	        $('#loader').fadeIn();
+	      }
+	    }).on("draw", function(){
+	    	$('#loader').fadeOut();
+	    });
+    });
   </script>
 
 	<?php mysqli_close($Link); ?>
@@ -574,6 +774,10 @@
 
 	<form action="../titulares_derecho/index.php" method="post" name="formTitularesSede" id="formTitularesSede">
 	  <input type="hidden" name="cod_sede" id="cod_sede" value="">
+	</form>
+
+	<form action="../novedades_priorizacion/novedades_priorizacion_ver.php" method="post" name="formVerNovedad" id="formVerNovedad">
+	  <input type="hidden" name="idNovedad" id="idNovedad">
 	</form>
 
 </body>
