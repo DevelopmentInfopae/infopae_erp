@@ -14,7 +14,7 @@
     <h2>Editar Institución</h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
+        <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
       	<a href="<?php echo $baseUrl . '/modules/instituciones/instituciones.php'; ?>">Instituciones</a>
@@ -75,8 +75,8 @@
 			                <select class="form-control" name="municipio" id="municipio" required>
 			                	<option value="">Seleccione uno</option>
 			                	<?php
-			                    $codigoCiudad = $_SESSION['codCiudad'];
-			                    $consulta2= " SELECT DISTINCT CodigoDANE, Ciudad FROM ubicacion where CodigoDANE LIKE '$codigoCiudad%' order by ciudad asc; ";
+				                	$condicionMunicipio = (isset($_SESSION['p_Municipio']) && $_SESSION['p_Municipio'] != 0) ? "AND CodigoDANE LIKE '". $_SESSION['p_Municipio'] ."%'" : "";
+			                    $consulta2= " SELECT DISTINCT CodigoDANE, Ciudad FROM ubicacion where 1=1 $condicionMunicipio order by ciudad asc; ";
 			                    $resultado2 = $Link->query($consulta2);
 			                    if($resultado2){
 			                      while($registros2 = $resultado2->fetch_assoc()){
@@ -97,8 +97,8 @@
 			                <select class="form-control" name="rector" id="rector" required>
 			                	<option value="">Seleccione uno</option>
 			                	<?php
-			                    $codigoCiudad = $_SESSION['codCiudad'];
-			                    $consulta3= " SELECT num_doc, nombre FROM usuarios WHERE id_perfil = '6' AND cod_mun LIKE '$codigoCiudad%' ORDER BY nombre ASC;";
+			                		$condicionMunicipio = (isset($_SESSION['p_Municipio']) && $_SESSION['p_Municipio'] != 0) ? "AND cod_mun LIKE '". $_SESSION['p_Municipio'] ."%'" : "";
+			                    $consulta3= "SELECT num_doc, nombre FROM usuarios WHERE id_perfil = '6' $condicionMunicipio ORDER BY nombre ASC;";
 			                    $resultado3 = $Link->query($consulta3);
 			                    if($resultado3){
 			                      while($registros3 = $resultado3->fetch_assoc()){

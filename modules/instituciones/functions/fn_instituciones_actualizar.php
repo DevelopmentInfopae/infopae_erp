@@ -9,8 +9,8 @@
 	$nombre = mysqli_real_escape_string($Link, $_POST["nombre"]);
 	$estado = mysqli_real_escape_string($Link, $_POST["estado"]);
 	$telefono = mysqli_real_escape_string($Link, $_POST["telefono"]);
-	$municipio = mysqli_real_escape_string($Link, $_POST["municipio"]);	
-	
+	$municipio = mysqli_real_escape_string($Link, $_POST["municipio"]);
+
 	$consulta1="UPDATE instituciones SET nom_inst='$nombre', cod_mun='$municipio', tel_int='$telefono', email_inst='$email', cc_rector='$rector', estado='$estado' WHERE id = '$id'";
 	$resultado1=$Link->query($consulta1);
 	if($resultado1){

@@ -130,9 +130,9 @@ if ($tipoPlanilla == 5 || $tipoPlanilla == 6) {
 $pdf->SetFont('Arial','B',7);
 $pdf->Cell(65,5,'FIRMA Y NOMBRE RESPONSABLE DEL OPERADOR',0,0,'L',False);
 $pdf->Cell(100,5,'','B',0,'L',False);
-$pdf->Cell(5,5,'',0,0,'L',False);
-$pdf->Cell(76,5,'FIRMA Y NOMBRE RECTOR ESTABLECIMIENTO EDUCATIVO',0,0,'L',False);
-$pdf->Cell(100,5,'','B',1,'L',False);
+$pdf->Cell(2,5,'',0,0,'L',False);
+$pdf->Cell(82,5,'FIRMA, NOMBRE Y DOC. RECTOR ESTABLECIMIENTO EDUCATIVO',0,0,'L',False);
+$pdf->Cell(98,5,'','B',1,'L',False);
 $pdf->Cell(0,5,'',"B",1,'C',False);
 $pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
 $pdf->SetFont('Arial','B',6);

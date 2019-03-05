@@ -20,15 +20,16 @@
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
   if($resultado->num_rows >= 1){
-  	$row = $resultado->fetch_assoc();
-  	$institucionCodigo = $row['codigo_inst'];
-  	$institucionNombre = $row['nom_inst'];
-  	$institucionRector = $row['cc_rector'];
-  	$institucionTel = $row['tel_int'];
-  	$institucionCorreo = $row['email_inst'];
-  	$institucionCodigoDane = $row['cod_mun'];
-  	$institucionMunicipio = $row['municipio'];
+    $row = $resultado->fetch_assoc();
+    $institucionCodigo = $row['codigo_inst'];
+    $institucionNombre = $row['nom_inst'];
+    $institucionRector = $row['cc_rector'];
+    $institucionTel = $row['tel_int'];
+    $institucionCorreo = $row['email_inst'];
+    $institucionCodigoDane = $row['cod_mun'];
+    $institucionMunicipio = $row['municipio'];
   }
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -36,7 +37,7 @@
       <h2><?php echo $institucionNombre; ?></h2>
       <ol class="breadcrumb">
           <li>
-            <a href="<?php echo $baseUrl; ?>">Home</a>
+            <a href="<?php echo $baseUrl; ?>">Inicio</a>
           </li>
 					<?php   if($_SESSION['perfil'] != 6){ ?>
           <li>
