@@ -174,10 +174,10 @@ $pdf->Cell(31.4);
 $pdf->Cell(264,12,utf8_decode(''),1,0,'C',false);
 
 
-$pdf->Ln(16);
+$pdf->Ln(14);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(31.4);
-$pdf->Cell(264,4,utf8_decode('La presente certificación se expide como soporte de pago y con base en el registro diario de Titulares de Derecho, que se diligencia en cada Institución Educativa atendida.'),0,4,'L',false);
+$pdf->MultiCell(264,4,utf8_decode('La presente certificación se expide como soporte de pago y con base en el registro diario de Titulares de Derecho, que se diligencia en cada Institución Educativa atendida. Decreto 1852 de 2015 capitulo 4 artículo 2.3.1.4.4, Resolución 29452 / 2017 capítulo 4 numeral 4.1.2 Aplicación de protocolo de Suplencia reportados en documento adicional a las planillas.'),0,'L',false);
 $pdf->Cell(31.4);
 $pdf->Cell(264,4,utf8_decode(''),0,4,'L',false);
 
