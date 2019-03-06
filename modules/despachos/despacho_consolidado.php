@@ -16,12 +16,6 @@
 	$tablaAnno = $_SESSION['periodoActual'];
 	$tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
 
-// $Link = new mysqli($Hostname, $Username, $Password, $Database);
-// if ($Link->connect_errno) {
-//   echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-// }
-// $Link->set_charset("utf8");
-
 $hoy = date("d/m/Y");
 $fechaDespacho = $hoy;
 
@@ -339,33 +333,23 @@ $total1 = 0;
 $total2 = 0;
 $total3 = 0;
 $totalTotal = 0;
-for ($i=0; $i < count($sedes) ; $i++) {
-
+for ($i=0; $i < /*count($sedes)*/1; $i++) {
   $auxSede = $sedes[$i];
-
-  // $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
-  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."'";
-
+  $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."'";
   // Consulta que busca las coberturas de las diferentes sedes.
-  //echo "<br><br>".$consulta."<br><br>";
-
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
-
-
     while($row = $resultado->fetch_assoc()) {
       $sedeCobertura['cod_sede'] = $row['cod_sede'];
-      $aux1 = "Cobertura_G1";
-      $sedeCobertura['grupo1'] = $row[$aux1];
-      $aux2 = "Cobertura_G2";
-      $sedeCobertura['grupo2'] = $row[$aux2];
-      $aux3 = "Cobertura_G3";
-      $sedeCobertura['grupo3'] = $row[$aux3];
-      $sedeCobertura['total'] = $row[$aux1] + $row[$aux2] + $row[$aux3];
+      $sedeCobertura['grupo1'] = $row["Cobertura_G1"];
+      $sedeCobertura['grupo2'] = $row["Cobertura_G2"];
+      $sedeCobertura['grupo3'] = $row["Cobertura_G3"];
+      $sedeCobertura['total'] = $row["Cobertura_G1"] + $row["Cobertura_G2"] + $row["Cobertura_G3"];
       $sedesCobertura[] = $sedeCobertura;
-      $total1 = $total1 + $row[$aux1];
-      $total2 = $total2 + $row[$aux2];
-      $total3 = $total3 + $row[$aux3];
+
+      $total1 += $row["Cobertura_G1"];
+      $total2 += $row["Cobertura_G2"];
+      $total3 += $row["Cobertura_G3"];
       $totalTotal = $totalTotal +  $sedeCobertura['total'];
     }
 

@@ -598,7 +598,7 @@
 		{
 			// Crear consulta para ingresar datos de focalización[$mes]
 			$conCreFoc = "INSERT INTO focalizacion".$semana."
-		 								(tipo_doc, num_doc, nom1, nom2, ape1, ape2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, Tipo_complemento) VALUES ". trim($conValFoc, ", ");
+		 								(tipo_doc, num_doc, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, Tipo_complemento) VALUES ". trim($conValFoc, ", ");
 			$resCreFoc = $Link->query($conCreFoc) or die("Error al insertar en focalizacion". $semana . ". Linea 607: " . mysqli_error($Link));
 			if (!$resCreFoc)
 			{

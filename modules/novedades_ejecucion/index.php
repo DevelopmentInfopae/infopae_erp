@@ -1,16 +1,16 @@
 <?php
   include '../../header.php';
-  $titulo = 'Usuarios';
+  $titulo = 'Novedades de focalización';
 ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-    <h2>Novedades de focalización</h2>
+    <h2><?= $titulo; ?></h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
+        <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li class="active">
-        <strong>Novedades de focalización</strong>
+        <strong><?= $titulo; ?></strong>
       </li>
     </ol>
   </div><!-- /.col -->
@@ -29,7 +29,7 @@
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
-          <table class="table table-striped table-hover selectableRows dataTablesNovedadesPriorizacion">
+          <table class="table table-striped table-hover selectableRows dataTablesNovedadesFocalizacion">
             <thead>
               <tr>
                 <th>ID</th>
@@ -119,7 +119,7 @@
   $(document).ready(function(){
 		$('#loader').fadeIn();
     // Configuración para la tabla de sedes.
-    datatables = $('.dataTablesNovedadesPriorizacion').DataTable({
+    datatables = $('.dataTablesNovedadesFocalizacion').DataTable({
       ajax: {
         method: 'POST',
         url: 'functions/fn_novedades_focalizacion_index_buscar_datatables.php'
@@ -157,20 +157,11 @@
         }
       },
       pageLength: 10,
-      responsive: true,
-      "preDrawCallback": function( settings ) {
-        $('#loader').fadeIn();
-      }
+      responsive: true
+      // "preDrawCallback": function( settings ) {
+      //   // $('#loader').fadeIn();
+      // }
     }).on("draw", function(){ $('#loader').fadeOut(); $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', }); });
-
-		// Evento para ver
-		$(document).on('click', '.dataTablesNovedadesPriorizacion tbody td:nth-child(-n+8)', function(){
-			console.log('Click en la fila');
-			// var tr = $(this).closest('tr');
-			// var datos = datatables.row( tr ).data();
-			// $('#formVerNovedad #idNovedad').val(datos.id);
-			// $('#formVerNovedad').submit();
-		});
 
 		// Evento para cambiar de estado
 		$(document).on('change', '.dataTablesSedes tbody input[type=checkbox].estadoSede', function(){
@@ -181,7 +172,7 @@
 		});
 
     // Evento para editar
-    $(document).on('click', '.dataTablesNovedadesPriorizacion tbody .editarSede', function(){
+    $(document).on('click', '.dataTablesNovedadesFocalizacion tbody .editarSede', function(){
       var tr = $(this).closest('tr');
       var datos = datatables.row( tr ).data();
       editarSede(datos.codigoSede, datos.nombreSede);
@@ -189,7 +180,7 @@
 
 		// Botón de acciones para la tabla.
     var botonAcciones = '<div class="dropdown pull-right">'+ '<button class="btn btn-primary btn-sm btn-outline" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">'+ 'Acciones <span class="caret"></span>'+ '</button>'+ '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+ '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><i class="fa fa-file-excel-o"></i> Exportar </a></li>' + '</ul>'+ '</div>';
-  $('.containerBtn').html(botonAcciones);
+    $('.containerBtn').html(botonAcciones);
   });
 </script>
 
