@@ -4,18 +4,15 @@ var cantidadDiasFocalizados = 0;
 
 $(document).ready(function(){
 	buscarMunicipios();
+
+	$('#municipio').change(function(){ buscarInstituciones($(this).val()); });
+	$('#institucion').change(function(){ buscarSede($(this).val()); });
+	$('#sede').change(function(){ buscarMeses($(this).val()); });
+	$('#mes').change(function(){ buscarSemanas($(this).val()); });
+	$('#semana').change(function(){ buscarComplementos($(this).val()); });
+
 	$('#btnBuscar').click(function(){ buscarFocalizacion(); });
 	$('.guaradarNovedad').click(function(){ guardarNovedad(); });
-	$('#municipio').change(function(){ buscarInstituciones($(this).val()); });
-
-	$('#institucion').change(function(){
-		var institucion = $(this).val();
-		buscarSede();
-	});
-
-	$('#sede').change(function(){ buscarMeses($(this).val()); });
-	$('#mes').change(function(){ buscarSemanas(); });
-	$('#semana').change(function(){ buscarComplementos(); });
 
 	$(document).on('ifChecked', '.checkbox-header', function () { $('.checkbox'+ $(this).data('columna')).iCheck('check'); });
 	$(document).on('ifUnchecked', '.checkbox-header', function () { $('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); });
@@ -90,9 +87,9 @@ function buscarInstituciones(municipio){
 	});
 }
 
-function buscarSede(){
+function buscarSede(institucion){
 	var formData = new FormData();
-	formData.append('institucion', $('#institucion').val());
+	formData.append('institucion', institucion);
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_sedes.php",
@@ -112,13 +109,13 @@ function buscarSede(){
 	});
 }
 
-function buscarMeses() {
+function buscarMeses(sede) {
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_meses.php",
 		dataType: 'JSON',
     data: {
-    	'sede': $('#sede').val()
+    	'sede': sede
     },
 		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
@@ -135,9 +132,9 @@ function buscarMeses() {
 	});
 }
 
-function buscarSemanas(){
+function buscarSemanas(mes){
 	var formData = new FormData();
-	formData.append('mes', $('#mes').val());
+	formData.append('mes', mes);
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_semanas.php",
@@ -157,9 +154,9 @@ function buscarSemanas(){
 	});
 }
 
-function buscarComplementos(){
+function buscarComplementos(semana){
 	var formData = new FormData();
-	formData.append('semana', $('#semana').val());
+	formData.append('semana', semana);
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_complementos.php",
@@ -182,16 +179,21 @@ function buscarComplementos(){
 }
 
 function buscarFocalizacion(){
+	sumaDias = 0;
 	$("#observaciones").prop('required',false);
 	$("#foto").prop('required',false);
-	if($('#formNovedadesEjecucion').valid()){
+	if ($('#formNovedadesEjecucion').valid()) {
+		$('#loader').fadeIn();
+
 		if(tablaFocalizados !== undefined && $.fn.DataTable.isDataTable('.dataTablesNovedadesEjecucionFocalizados') ){
 			tablaFocalizados.destroy();
 		}
 		if(tablaNoFocalizados !== undefined && $.fn.DataTable.isDataTable('.dataTablesNovedadesEjecucionReserva') ){
 			tablaNoFocalizados.destroy();
 		}
+
 		tablaFocalizados = $('.dataTablesNovedadesEjecucionFocalizados').DataTable({
+			destroy: true,
 			ajax: {
 				method: 'POST',
 				url: 'functions/fn_novedades_ejecucion_buscar_datatables.php',
@@ -202,6 +204,9 @@ function buscarFocalizacion(){
 					mes: $('#mes').val(),
 					semana: $('#semana').val(),
 					tipoComplemento: $('#tipoComplemento').val()
+				},
+				error: function(data) {
+					console.log(data.responseText);
 				}
 			},
 			columns:[
@@ -266,23 +271,28 @@ function buscarFocalizacion(){
 			},
 			pageLength: 10000,
 			responsive: true,
-			"preDrawCallback": function( settings ) {
-				$('#loader').fadeIn();
-			}
+			// preDrawCallback: function( settings ) {
+			// 	$('#loader').fadeIn();
+			// },
+			rowCallback: function( row, data ) {
+    		sumaDias += parseInt(data.sumaDias);
+	    }
 		}).on("draw", function(){
-			// $('#loader').fadeOut();
-			// $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });
 			buscarSuplentes();
 
-			cantidadDiasFocalizados = tablaFocalizados.data().count() * $('#semana option:selected').data("cantidaddias");
-			cantidadDiasFocalizadosActual = cantidadDiasFocalizados;
-		});
+			// $('#loader').fadeOut();
+			// $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });
 
+			cantidadDiasFocalizados = tablaFocalizados.data().count() * $('#semana option:selected').data("cantidaddias");
+			cantidadDiasFocalizadosActual = sumaDias;
+
+		});
 	}
 }
 
 function buscarSuplentes(){
 	tablaNoFocalizados = $('.dataTablesNovedadesEjecucionReserva').DataTable({
+		destroy: true,
 		ajax: {
 			method: 'POST',
 			url: 'functions/fn_novedades_ejecucion_no_focalizados_buscar_datatables.php',

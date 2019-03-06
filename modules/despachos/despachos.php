@@ -21,7 +21,7 @@
   <div class="col-lg-4">
     <div class="title-action">
       <?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-        <a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary">Nuevo</a>
+        <a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo</a>
       <?php } ?>
     </div>
   </div>
@@ -250,7 +250,6 @@
                     $consulta = "SELECT DISTINCT s.cod_inst, s.nom_inst FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE 1=1";
                     $consulta = $consulta." AND s.cod_mun_sede = '$municipio'";
                     $consulta = $consulta." ORDER BY s.nom_inst ASC";
-                    echo $consulta;
 
                     $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                     if($resultado->num_rows >= 1){
@@ -365,7 +364,7 @@
                                 <div class="row">
                                     <div class="col-sm-3 form-group">
                                          <input type="hidden" id="consultar" name="consultar" value="<?php if (isset($_GET['consultar']) && $_GET['consultar'] != '') {echo $_GET['consultar']; } ?>" >
-                                         <button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1" ><strong>Buscar</strong></button>
+                                         <button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1" ><strong><i class="fa fa-search"></i> Buscar</strong></button>
                                     </div>
                                 </div>
 
@@ -531,18 +530,18 @@
 
 
 <hr>
-                <div class="row">
+                <!-- <div class="row">
 
                   <div class="col-xs-6 flexMid">
                     <label for="seleccionarVarios">Seleccionar Todos</label>
-                    <input type="checkbox" name="seleccionarVarios" id="seleccionarVarios">
+                    <input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios">
                   </div>
 
                     <div class="col-xs-6">
 
                             <div class="pull-right dropdown">
 
-                                <!-- <button data-toggle="dropdown" class="dropdown-toggle btn-white" title="Generar Planilla">
+                                <button data-toggle="dropdown" class="dropdown-toggle btn-white" title="Generar Planilla">
                                     <i class="fa fa-file-pdf-o"></i>
                                 </button>
                                 <ul class="dropdown-menu m-t-xs">
@@ -552,7 +551,7 @@
                                     <li><a href="#" onclick="despachos_mixta()">Mixta</a></li>
                                     <li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>
                                     <li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>
-                                </ul> -->
+                                </ul>
 
                                <div class="dropdown pull-right" id="">
                                 <button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button>
@@ -560,8 +559,6 @@
                                   <li><a href="#" onclick="despachos_por_sede()">Individual</a></li>
                                   <li><a href="#" onclick="despachos_kardex()">Kardex</a></li>
                                   <li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>
-                                  <!-- <li><a href="#" onclick="despachos_kardex2()">Kardex 2</a></li> -->
-                                  <!-- <li><a href="#" onclick="despachos_mixta()">Mixta</a></li> -->
                                   <li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>
                                   <li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>
                                   <?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
@@ -582,7 +579,7 @@
                             </div>
                       </div>
 
-                </div>
+                </div> -->
 
 
 
@@ -612,7 +609,10 @@
                             <table class="table table-striped table-bordered table-hover selectableRows" id="box-table-movimientos" >
                                 <thead>
                 <tr>
-                  <th></th>
+                  <th class="text-center">
+                      <label for="seleccionarVarios">Todos</label>
+                    <input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios">
+                  </th>
                   <th>Número</th>
                   <th>Fecha</th>
                   <th>Semana</th>
@@ -630,9 +630,9 @@
 
                 <?php if($resultado->num_rows >= 1){ while($row = $resultado->fetch_assoc()) { ?>
                   <tr>
-                    <td>
+                    <td class="text-center">
 
-                      <input type="checkbox" class="despachos" value="<?php echo $row['Num_doc']; ?>" name="<?php echo $row['Num_doc']; ?>"id="<?php echo $row['Num_doc']; ?>"<?php if($row['estado'] == 0){echo " disabled "; } ?> />
+                      <input type="checkbox" class="i-checks despachos" value="<?php echo $row['Num_doc']; ?>" name="<?php echo $row['Num_doc']; ?>"id="<?php echo $row['Num_doc']; ?>"<?php if($row['estado'] == 0){echo " disabled "; } ?> />
 
                     </td>
 
@@ -773,10 +773,43 @@
     <!-- Custom and plugin javascript -->
     <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 
 
     <script src="<?php echo $baseUrl; ?>/modules/despachos/js/despachos.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
 
+
+            var botonAcciones = '<div class="dropdown pull-right" id="">'+
+                                '<button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button>'+
+                                '<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">'+
+                                  '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>'+
+                                  '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>'+
+                                  '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>'+
+                                  '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>'+
+                                  '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>'+
+                                  '<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>'+
+                                    '<li>'+
+                                      '<a href="#" onclick="editar_despacho()">Editar Despacho</a>'+
+                                    '</li>'+
+                                    '<li>'+
+                                      '<a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a>'+
+                                    '</li>'+
+                                    '<li>'+
+                                      '<a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a>'+
+                                    '</li>'+
+                                  '<?php } ?>'+
+                                '</ul>'+
+                              '</div>';
+            $('.containerBtn').html(botonAcciones);
+
+        });
+    </script>
 
 
     <!-- Page-Level Scripts -->

@@ -20,7 +20,7 @@
 	}
 
 	// Consulta para determinar las columnas de días de consulta por la semana seleccionada.
-	$columnasDiasEntregas_res = "";
+	$columnasDiasEntregas_res = $columnasDiasSuma = "";
 	$consultaPlanillaSemanas = "SELECT * FROM planilla_semanas WHERE semana = '$semana'";
 	$resultadoPlanillaSemanas = $Link->query($consultaPlanillaSemanas) or die("Error al consultar planilla_semanas: ". $Link->error);
 	if($resultadoPlanillaSemanas->num_rows > 0){
@@ -29,6 +29,7 @@
 			foreach ($planilla_dias as $clavePlanillasDias => $valorPlanillasDias) {
 				if ($registroPlanillaSemanas["DIA"] == $valorPlanillasDias) {
 					$columnasDiasEntregas_res .= "e.". $clavePlanillasDias ." AS D". $indiceDia .", ";
+					$columnasDiasSuma .= "e.". $clavePlanillasDias . " + ";
 					$indiceDia++;
 				}
 			}
@@ -36,7 +37,7 @@
 	}
 
 	// Datos del estudiante
-	$consultaNovedad = "SELECT td.Abreviatura, f.num_doc, CONCAT(f.nom1,' ',f.nom2,' ',f.ape1,' ',f.ape2) AS nombre, '$tipoComplemento' AS complemento, ". trim($columnasDiasEntregas_res, ", ") ."
+	$consultaNovedad = "SELECT td.Abreviatura, f.num_doc, CONCAT(f.nom1,' ',f.nom2,' ',f.ape1,' ',f.ape2) AS nombre, '$tipoComplemento' AS complemento, ". trim($columnasDiasEntregas_res, ", ") .", (". trim($columnasDiasSuma, " + ") .") AS sumaDias
 	FROM focalizacion$semana f
 	INNER JOIN entregas_res_$mes". $_SESSION["periodoActual"] ." e ON e.num_doc = f.num_doc AND e.cod_sede = f.cod_sede
 	LEFT JOIN tipodocumento td ON f.tipo_doc = td.id
