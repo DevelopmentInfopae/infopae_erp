@@ -1,16 +1,16 @@
 <?php
   include '../../header.php';
-  $titulo = 'Usuarios';
+  $titulo = 'Novedades de focalización';
 ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-    <h2>Novedades de focalización</h2>
+    <h2><?= $titulo; ?></h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
+        <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li class="active">
-        <strong>Novedades de focalización</strong>
+        <strong><?= $titulo; ?></strong>
       </li>
     </ol>
   </div><!-- /.col -->
@@ -29,9 +29,7 @@
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
-
-
-          <table class="table table-striped table-hover selectableRows dataTablesNovedadesPriorizacion">
+          <table class="table table-striped table-hover selectableRows dataTablesNovedadesFocalizacion">
             <thead>
               <tr>
                 <th>ID</th>
@@ -71,16 +69,11 @@
               </tr>
             </tfoot>
           </table>
-
-
-
         </div>
       </div>
     </div>
   </div>
-
 </div>
-
 
 <div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
   <div class="modal-dialog modal-sm">
@@ -102,12 +95,6 @@
   </div>
 </div>
 
-
-
-
-
-
-
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
@@ -128,29 +115,14 @@
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/js/novedades_ejecucion.js"></script>
 
-
-
-
-
-
-
-
-
-
-
-
 <script>
   $(document).ready(function(){
 		$('#loader').fadeIn();
     // Configuración para la tabla de sedes.
-    datatables = $('.dataTablesNovedadesPriorizacion').DataTable({
+    datatables = $('.dataTablesNovedadesFocalizacion').DataTable({
       ajax: {
         method: 'POST',
-        url: 'functions/fn_novedades_focalizacion_index_buscar_datatables.php',
-        // data:{
-        //   municipio: $('#municipio').val(),
-        //   institucion: $('#institucion').val()
-        // }
+        url: 'functions/fn_novedades_focalizacion_index_buscar_datatables.php'
       },
       columns:[
         { data: 'id'},
@@ -167,30 +139,6 @@
         { data: 'd3'},
         { data: 'd4'},
         { data: 'd5'}
-				// {
-				// 	sortable: false,
-				// 	"render": function ( data, type, full, meta ) {
-				// 		var numDoc = full.num_doc
-				// 		var d5 = full.d5;
-				// 		var accion = ' <div class="i-checks"><label> <input disabled type="checkbox" name="'+numDoc+'_d5" id="'+numDoc+'_d5" value="1" ';
-				// 		if(d5 == 1){
-				// 			accion = accion + ' checked ';
-				// 		}
-				// 		accion = accion + ' > <i></i></label></div> ';
-				// 		return accion;
-				// 	}
-				// }
-
-        // { data: 'codigoInstitucion'},
-        // { data: 'nombreInstitucion'},
-        // { data: 'nombreCoordinador'},
-        // { data: 'nombreJornada'},
-        // { data: 'tipoValidacion'},
-
-
-
-
-        //{ defaultContent: '<div class="btn-group">'+ '<div class="dropdown pull-right">'+ '<button class="btn btn-primary btn-sm" type="button" id="dropDownMenu1" data-toggle="dropdown"  aria-haspopup="true">'+ 'Acciones <span class="caret"></span>'+ '</button>'+ '<ul class="dropdown-menu pull-right" aria-labelledby="dropDownMenu1">'+ '<li>'+ '<a href="#" class="editarSede"><i class="fa fa-pencil fa-lg"></i> Editar</a>'+ '</li>'+ '<li>'+ '<a href="#">'+ 'Estado: &nbsp;'+ '<input type="checkbox" class="estadoSede" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24">'+ '</a>'+ '</li>'+ '</ul>'+ '</div>'+ '</div>'}
       ],
       buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } } ],
       dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
@@ -209,27 +157,11 @@
         }
       },
       pageLength: 10,
-      responsive: true,
-      "preDrawCallback": function( settings ) {
-        $('#loader').fadeIn();
-      }
+      responsive: true
+      // "preDrawCallback": function( settings ) {
+      //   // $('#loader').fadeIn();
+      // }
     }).on("draw", function(){ $('#loader').fadeOut(); $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', }); });
-
-
-//$('#loader').fadeOut();
-
-
-
-
-
-		// Evento para ver
-		$(document).on('click', '.dataTablesNovedadesPriorizacion tbody td:nth-child(-n+8)', function(){
-			console.log('Click en la fila');
-			// var tr = $(this).closest('tr');
-			// var datos = datatables.row( tr ).data();
-			// $('#formVerNovedad #idNovedad').val(datos.id);
-			// $('#formVerNovedad').submit();
-		});
 
 		// Evento para cambiar de estado
 		$(document).on('change', '.dataTablesSedes tbody input[type=checkbox].estadoSede', function(){
@@ -240,7 +172,7 @@
 		});
 
     // Evento para editar
-    $(document).on('click', '.dataTablesNovedadesPriorizacion tbody .editarSede', function(){
+    $(document).on('click', '.dataTablesNovedadesFocalizacion tbody .editarSede', function(){
       var tr = $(this).closest('tr');
       var datos = datatables.row( tr ).data();
       editarSede(datos.codigoSede, datos.nombreSede);
@@ -248,7 +180,7 @@
 
 		// Botón de acciones para la tabla.
     var botonAcciones = '<div class="dropdown pull-right">'+ '<button class="btn btn-primary btn-sm btn-outline" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">'+ 'Acciones <span class="caret"></span>'+ '</button>'+ '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+ '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><i class="fa fa-file-excel-o"></i> Exportar </a></li>' + '</ul>'+ '</div>';
-  $('.containerBtn').html(botonAcciones);
+    $('.containerBtn').html(botonAcciones);
   });
 </script>
 

@@ -1,41 +1,55 @@
 <?php
-require_once '../../../config.php';
-require_once '../../../db/conexion.php';
-$data = [];
-$municipio = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
-$insitucion = (isset($_POST['insitucion']) && $_POST['insitucion'] != '') ? mysqli_real_escape_string($Link, $_POST["insitucion"]) : "";
-$sede = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
-$mes = (isset($_POST['mes']) && $_POST['mes'] != '') ? mysqli_real_escape_string($Link, $_POST["mes"]) : "";
-$semana = (isset($_POST['semana']) && $_POST['semana'] != '') ? mysqli_real_escape_string($Link, $_POST["semana"]) : "";
-$tipoComplemento = (isset($_POST['tipoComplemento']) && $_POST['tipoComplemento'] != '') ? mysqli_real_escape_string($Link, $_POST["tipoComplemento"]) : "";
+	require_once '../../../config.php';
+	require_once '../../../db/conexion.php';
 
-//Array de los días de la semana
-$dias = array();
-$dias['D1'] = 0;
-$dias['D2'] = 0;
-$dias['D3'] = 0;
-$dias['D4'] = 0;
-$dias['D5'] = 0;
+	$data = [];
+	$planilla_dias = [];
+	$mes = (isset($_POST['mes']) && $_POST['mes'] != '') ? mysqli_real_escape_string($Link, $_POST["mes"]) : "";
+	$sede = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
+	$semana = (isset($_POST['semana']) && $_POST['semana'] != '') ? mysqli_real_escape_string($Link, $_POST["semana"]) : "";
+	$municipio = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
+	$insitucion = (isset($_POST['insitucion']) && $_POST['insitucion'] != '') ? mysqli_real_escape_string($Link, $_POST["insitucion"]) : "";
+	$tipoComplemento = (isset($_POST['tipoComplemento']) && $_POST['tipoComplemento'] != '') ? mysqli_real_escape_string($Link, $_POST["tipoComplemento"]) : "";
 
-// Datos del estudiante
-$consultaNovedad = "select td.Abreviatura, f.num_doc, CONCAT(nom1,\" \",nom2,\" \",ape1,\" \",ape2) AS nombre, \"$tipoComplemento\" AS complemento, \"0\" as D1, \"0\" as D2, \"0\" as D3, \"0\" as D4, \"0\" as D5 FROM focalizacion$semana f LEFT JOIN tipodocumento td ON f.tipo_doc = td.id WHERE f.cod_sede = $sede AND f.Tipo_complemento = '$tipoComplemento' AND f.activo = 0";
-$resultadoNovedades = $Link->query($consultaNovedad);
-if($resultadoNovedades->num_rows > 0){
-	while($registrosSedes = $resultadoNovedades->fetch_assoc()) {
-		$registrosSedes['D1'] = $dias['D1'];
-		$registrosSedes['D2'] = $dias['D2'];
-		$registrosSedes['D3'] = $dias['D3'];
-		$registrosSedes['D4'] = $dias['D4'];
-		$registrosSedes['D5'] = $dias['D5'];
-		$data[] = $registrosSedes;
+	// Consulta que retorna los dias de planillas el mes seleccionado.
+	$consultaPlanillaDias = "SELECT D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28, D29, D30, D31  FROM planilla_dias WHERE mes = '$mes';";
+	$resultadoPlanillaDias = $Link->query($consultaPlanillaDias) or die("Error al consultar planilla_dias: ". $Link->error);
+	if ($resultadoPlanillaDias->num_rows > 0) {
+		while ($registroPlanillasDias = $resultadoPlanillaDias->fetch_assoc()) {
+			$planilla_dias = $registroPlanillasDias;
+		}
 	}
-}
 
-$output = [
-	'sEcho' => 1,
-	'iTotalRecords' => count($data),
-	'iTotalDisplayRecords' => count($data),
-	'aaData' => $data
-];
+	// Consulta para determinar las columnas de días de consulta por la semana seleccionada.
+	$columnasDiasEntregas_res = "";
+	$consultaPlanillaSemanas = "SELECT * FROM planilla_semanas WHERE semana = '$semana'";
+	$resultadoPlanillaSemanas = $Link->query($consultaPlanillaSemanas) or die("Error al consultar planilla_semanas: ". $Link->error);
+	if($resultadoPlanillaSemanas->num_rows > 0){
+		$indiceDia = 1;
+		while($registroPlanillaSemanas = $resultadoPlanillaSemanas->fetch_assoc()) {
+			foreach ($planilla_dias as $clavePlanillasDias => $valorPlanillasDias) {
+				if ($registroPlanillaSemanas["DIA"] == $valorPlanillasDias) {
+					$columnasDiasEntregas_res .= "e.". $clavePlanillasDias ." AS D". $indiceDia .", ";
+					$indiceDia++;
+				}
+			}
+		}
+	}
 
-echo json_encode($output);
+	// Consulta que obtiene los datos del titular suplente.
+	$consultaNovedad = "SELECT s.tipo_doc_nom AS abreviatura, s.num_doc AS numero_documento, CONCAT(s.nom1,' ',s.nom2,' ',s.ape1,' ',s.ape2) AS nombre_suplente, '$tipoComplemento' AS tipo_complemento, ". trim($columnasDiasEntregas_res, ", ") ." FROM suplentes s LEFT JOIN entregas_res_$mes". $_SESSION["periodoActual"] ." e ON e.num_doc = s.num_doc AND e.cod_sede = s.cod_sede AND e.tipo_complem = '$tipoComplemento' WHERE s.cod_sede = '$sede' AND s.activo = 1";
+	$resultadoNovedades = $Link->query($consultaNovedad);
+	if($resultadoNovedades->num_rows > 0){
+		while($registrosSedes = $resultadoNovedades->fetch_assoc()) {
+			$data[] = $registrosSedes;
+		}
+	}
+
+	$output = [
+		'sEcho' => 1,
+		'iTotalRecords' => count($data),
+		'iTotalDisplayRecords' => count($data),
+		'aaData' => $data
+	];
+
+	echo json_encode($output);

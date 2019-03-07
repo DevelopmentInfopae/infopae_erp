@@ -235,7 +235,7 @@ function subirArchivoFocalizacion(){
       contentType: false,
       processData: false,
       data: formData,
-      dataType: 'json',
+      dataType: 'JSON',
       beforeSend: function(){ $('#loader').fadeIn(); },
       success: function(data){ console.log(data);
         if(data.estado == 1){
@@ -258,7 +258,8 @@ function subirArchivoFocalizacion(){
           );
         }
       },
-      error: function(data){ console.log(data);
+      error: function(data){
+        console.log(data.responseText);
         $('#loader').fadeOut();
         Command: toastr.error(
           "Al parecer existe un problema en el servidor. Por favor comuníquese con el administrador del sitio InfoPAE.",

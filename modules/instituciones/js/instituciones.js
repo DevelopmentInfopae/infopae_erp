@@ -89,6 +89,7 @@ function actualizarInstitucion(){
       data : datos,
       beforeSend: function(){ $('#loader').fadeIn(); },
       success: function(data){
+        console.log(data);
         if(data.estado = 1){
           Command: toastr.success(
             data.mensaje,
@@ -103,7 +104,8 @@ function actualizarInstitucion(){
           );
         }
       },
-      error: function(data){ console.log(data);
+      error: function(data){
+        console.log(data.responseText);
         Command: toastr.error(
           "Al parecer existe un problema con el servidor. Por favor contactese con el administrador del sitio InfoPae.",
           "Error al guardar",
@@ -129,16 +131,16 @@ function cargarArchivo(){
     success: function(data){ console.log(data);
       if(data.estado == 1){
         Command: toastr.success(
-          data.mensaje, 
-          "Procesado", 
+          data.mensaje,
+          "Procesado",
           {
             onHidden : function(){ $('#loader').fadeOut(); window.open($("#inputBaseUrl").val()+"/modules/instituciones/instituciones.php", "_self") }
           }
         );
       } else {
         Command: toastr.error(
-          data.mensaje, 
-          "Error al procesar", 
+          data.mensaje,
+          "Error al procesar",
           {
             onHidden : function(){ $('#loader').fadeOut(); $('.fileinput').fileinput('reset'); }
           }
@@ -147,8 +149,8 @@ function cargarArchivo(){
     },
     error: function(data){  console.log(data);
       Command: toastr.error(
-        "Existe un error con el archivo. Por favor verifique los datos suministrados. Posiblemente los códigos de instituciones se encuentran duplicados.", 
-        "Error al procesar", 
+        "Existe un error con el archivo. Por favor verifique los datos suministrados. Posiblemente los códigos de instituciones se encuentran duplicados.",
+        "Error al procesar",
         {
           onHidden : function(){ $('#loader').fadeOut(); $('.fileinput').fileinput('reset'); }
         }
@@ -180,16 +182,16 @@ function cambiarEstado(){
     success: function(data){ console.log(data);
       if(data.estado == 1){
         Command: toastr.success(
-          data.mensaje, 
-          "Cambio de estado", 
+          data.mensaje,
+          "Cambio de estado",
           {
             onHidden : function(){ $('#loader').fadeOut(); }
           }
         );
       } else {
         Command: toastr.error(
-          data.mensaje, 
-          "Error al cambiar estado", 
+          data.mensaje,
+          "Error al cambiar estado",
           {
             onHidden : function(){ $('#loader').fadeOut(); }
           }
@@ -198,8 +200,8 @@ function cambiarEstado(){
     },
     error: function(data){console.log(data);
       Command: toastr.error(
-        "Al parecer existe un error con el servidor. Por favor comuníquese con el adminstrador del sitio InfoPAE.", 
-        "Error al cambiar estado", 
+        "Al parecer existe un error con el servidor. Por favor comuníquese con el adminstrador del sitio InfoPAE.",
+        "Error al cambiar estado",
         {
           onHidden : function(){ $('#loader').fadeOut(); }
         }

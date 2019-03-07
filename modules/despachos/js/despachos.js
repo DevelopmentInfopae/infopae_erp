@@ -4,16 +4,20 @@ $(document).ready(function(){
   $('#mesfText').val(mesText);
   $('#mesf').val(mes);
 
-  $('#seleccionarVarios').change(function(){
-    console.log('Cambio el de varios');
-    if ($('#seleccionarVarios').is(':checked')) {
-      $('tbody input[type=checkbox]').prop( "checked", true );
-    }
-    else{
-      $('tbody input[type=checkbox]').prop( "checked", false );
-    }
-  });
+  // $('#seleccionarVarios').change(function(){
+  //   console.log('Cambio el de varios');
+  //   if ($('#seleccionarVarios').is(':checked')) {
+  //     $('tbody input[type=checkbox]').iCheck('checked');
+  //     // $('tbody input[type=checkbox]').prop( "checked", true );
+  //   }
+  //   else{
+  //     $('tbody input[type=checkbox]').iCheck('unchecked');
+  //     // $('tbody input[type=checkbox]').prop( "checked", false );
+  //   }
+  // });
 
+  $(document).on('ifChecked', '#seleccionarVarios', function () { $('tbody input[type=checkbox]').iCheck('check'); });
+  $(document).on('ifUnchecked', '#seleccionarVarios', function () { $('tbody input[type=checkbox]').iCheck('uncheck'); });
 
 
 
@@ -771,6 +775,7 @@ var cantidadDetallados = 0;
 $(document).ready( function () {
   dataset1 = $('#box-table-movimientos').DataTable({
     order: [ 1, 'desc' ],
+    dom: 'lr<"containerBtn"><"inputFiltro"f>tip',
     pageLength: 25,
     lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
     responsive: true,

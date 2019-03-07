@@ -107,9 +107,12 @@ $y1 = $pdf->GetY();
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(32,6,utf8_decode('NOMBRE RECTOR:'),'R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(0,6,utf8_decode($institucion["nombre_rector"]),0,0,'L',false);
-$pdf->SetXY($x1, $y1);
-$pdf->Cell(0,6,'','B',0,'L',false);
+$pdf->Cell(198,6,utf8_decode($institucion["nombre_rector"]),0,0,'L',false);
+// $pdf->SetXY($x1, $y1);
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(23,6,utf8_decode('DOC. RECTOR:'),1,0,"L",false);
+$pdf->SetFont('Arial','',$tamannoFuente);
+$pdf->Cell(0,6,"",'B',0,'L',false);
 $pdf->Ln(6);
 
 $pdf->SetXY($x, $y);

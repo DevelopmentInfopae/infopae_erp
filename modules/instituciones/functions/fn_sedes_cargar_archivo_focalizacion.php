@@ -41,9 +41,8 @@
 	/*****************************************************************************************************/
 	// Validar si ya existe la semana de focalizacion que se desea subir.
 	$consultaFocalizadoSemana = "show tables like 'focalizacion". $semana ."'";
-	$resultadoFocalizadoSemana = $Link->query($consultaFocalizadoSemana);
-	if($resultadoFocalizadoSemana->num_rows > 0)
-	{
+	$resultadoFocalizadoSemana = $Link->query($consultaFocalizadoSemana) or die("Error al buscar la tabla focalizacion". $semana .". Linea 44: ". $Link->error);
+	if($resultadoFocalizadoSemana->num_rows > 0) {
 		$respuestaAJAX = [
 			"estado" => 0,
 			"mensaje" => "No es posible agregar la focalización, debido a que ya existe datos para el mes y la semana seleccionada."
@@ -56,12 +55,10 @@
 	/*****************************************************************************************************/
 	// Valida la cantidad de registros que se desea almacenar contra la cantidad de focalizados en priorización.
 	$rutaArchivo = $_FILES["archivoFocalizacion"]["tmp_name"];
-	$cantidadFilasArchivo = file($rutaArchivo);
 
 	$consultaCantidadFocalizado="SELECT IF(SUM(num_est_focalizados) > 0, SUM(num_est_focalizados), 0) AS 'cantidadFocalizados' FROM sedes_cobertura WHERE semana = '". $semana ."';";
-	$resultadoCantidadFocalizado=$Link->query($consultaCantidadFocalizado);
-	if($resultadoCantidadFocalizado->num_rows == 0)
-	{
+	$resultadoCantidadFocalizado=$Link->query($consultaCantidadFocalizado) or die("Error al consultar sedes_cobertura. Linea 62: ". $Link->error);
+	if($resultadoCantidadFocalizado->num_rows == 0) {
 		$respuestaAJAX = [
 			"estado" => 0,
 			"mensaje" => "No existe ningun estudiante focalizado para la semana seleccionada."
@@ -97,8 +94,7 @@
 	}
 
 	// Se valida si existe el archivo.
-	if (isset($_FILES["archivoFocalizacion"]["name"]) && $_FILES["archivoFocalizacion"]["name"] != "")
-	{
+	if (isset($_FILES["archivoFocalizacion"]["name"]) && $_FILES["archivoFocalizacion"]["name"] != "") {
 		// Obtengo los dias
 		$conDiasMes = "SELECT
 						SUM(
@@ -106,8 +102,7 @@
 						) AS 'cantidadDias'
 					FROM planilla_dias WHERE mes = '". $mes ."';";
 		$resDiasMes = $Link->query($conDiasMes);
-		if($resDiasMes->num_rows > 0)
-		{
+		if($resDiasMes->num_rows > 0) {
 			$regDiasMes = $resDiasMes->fetch_assoc();
 			$camDias = "";
 			$valDias = "";
@@ -119,19 +114,17 @@
 		} // Fin si hay días del mes
 
 		// Si se requiere validación
-		if($validar)
-		{
+		if($validar) {
 			// Declaracion de variables
 			$arrayCodEst = $arrayCodIns = $arrayCodSed =[];
 			$conValCreEnt = $conValFoc = "";
 
 			//Abrimos nuestro archivo
-			$archivo=fopen($rutaArchivo, "r");
+			$archivo=fopen($_FILES["archivoFocalizacion"]["tmp_name"], "r");
 			$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
 
 			// Iteramos el archivo
-			while(($datos = fgetcsv($archivo, null, $separador))==true)
-			{
+			while(($datos = fgetcsv($archivo, null, $separador)) == TRUE) {
 					// Valida que el campo Número documento no este vacio ni nulo.
 					if($datos[1] == "" || is_null($datos[1]))
 					{
@@ -342,7 +335,7 @@
 		{
 			$conValCreEnt = $conValFoc = "";
 			//Abrimos nuestro archivo
-			$archivo=fopen($rutaArchivo, "r");
+			$archivo=fopen($_FILES["archivoFocalizacion"]["tmp_name"], "r");
 			$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
 
 			// Iteramos el archivo
@@ -361,7 +354,7 @@
 		/*****************************************************************************************************/
 		// Consulta que valida si existe la tabla entregas_res_[MES][AÑO] que se desea subir.
 		$consultaEntregaResSemana = "show tables like 'entregas_res_". $mes . $_SESSION["periodoActual"] ."'";
-		$resultadoEntregaResSemana = $Link->query($consultaEntregaResSemana);
+		$resultadoEntregaResSemana = $Link->query($consultaEntregaResSemana) or die("Error al consultar si existe la tabla entregas_res_". $mes . $_SESSION["periodoActual"] ." Linea 364: ". $Link->error);
 		if($resultadoEntregaResSemana->num_rows == 0)
 		{
 			// Se crea la tabla entrega_res
@@ -447,15 +440,13 @@
 														COLLATE='utf8_general_ci'
 														ENGINE=InnoDB
 														AUTO_INCREMENT=0;";
-			$resCreTabEntRes = $Link->query($conCreTabEntRes) or die (mysqli_error($Link));
-			if($resCreTabEntRes)
-			{
+			$resCreTabEntRes = $Link->query($conCreTabEntRes) or die ("Error al crear tabla entregas_res". $mes . $_SESSION["periodoActual"] ." Linea: 450". $Link->error);
+			if($resCreTabEntRes) {
 				// Se ingresa los registros
 				// Declaración variables de consulta.
 				$conCreEnt = "INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ." ( tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". trim($camDias, ", ") .") VALUES ". trim($conValCreEnt, ", ");
-				$resCreEntRes = $Link->query($conCreEnt) or die( mysqli_error($Link) );
-				if (!$resCreEntRes)
-				{
+				$resCreEntRes = $Link->query($conCreEnt) or die("Error al insertar entregas_res". $mes . $_SESSION["periodoActual"] ." Linea: 456". $Link->error);
+				if (!$resCreEntRes) {
 					$respuestaAJAX = [
 						"estado" => 0,
 						"mensaje" => "No fue posible crear datos para entregas_res"
@@ -473,7 +464,7 @@
 			}
 		} else {
 			// Consulta para saber el dia en que comienza la semana seleccionada.
-			$res_dias_semana = $Link->query("SELECT IF(DIA>10,DIA,CONCAT('0',DIA)) AS dia FROM planilla_semanas WHERE MES = '$mes' AND SEMANA = '$semana' ORDER BY DIA LIMIT 1") or die (mysqli_error($Link));
+			$res_dias_semana = $Link->query("SELECT IF(DIA>10,DIA,CONCAT('0',DIA)) AS dia FROM planilla_semanas WHERE MES = '$mes' AND SEMANA = '$semana' ORDER BY DIA LIMIT 1") or die ("Error al consultar planilla_semanas Linea: 476". $Link->error);
 			if ($res_dias_semana->num_rows > 0) {
 				$dia_semana =  $res_dias_semana->fetch_assoc();
 
@@ -482,7 +473,7 @@
 				// Variable para asignar el primer día de la semana.
 				$dia_actual = 1;
 				// Consulta para obtener el primer dia se la semana seleccionada.
-				$res_D = $Link->query("SELECT D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias WHERE mes = '$mes'") or die (mysql($Link));
+				$res_D = $Link->query("SELECT D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias WHERE mes = '$mes'") or die ("Error al consultar planilla_semanas. Linea: 485". $Link->error);
 				if ($res_D->num_rows > 0) {
 					$d = $res_D->fetch_assoc();
 					foreach ($d as $nombre_columna => $dia) {
@@ -496,11 +487,11 @@
 				/***************************** Modificación ************************************************/
 				// Se actualiza a cero (0) las columnas de todos los registros en entregas_res[MES][AÑO], a partir del primer día de la semana seleccionada. Ej: D7.
 				$consulta_actualizacion = "UPDATE entregas_res_". $mes . $_SESSION["periodoActual"] ." SET ". calcularDias($dia_actual, $contador_dia, 0) . " WHERE id > 0";
-				$resultado_actualizacion = $Link->query($consulta_actualizacion) or die (mysqli_error($Link));
+				$resultado_actualizacion = $Link->query($consulta_actualizacion) or die ("Error al actualizar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 499: ". mysqli_error($Link));
 				/**************************************************************************************/
 
 				// Consulta que retorna todos los datos de la tabla entregas_res[MES][AÑO]
-				$res_entregas_res = $Link->query("SELECT id, num_doc, cod_sede, tipo_complem FROM entregas_res_".$mes.$_SESSION["periodoActual"]." WHERE 1") or die (mysqli_error($Link));
+				$res_entregas_res = $Link->query("SELECT id, num_doc, cod_sede, tipo_complem FROM entregas_res_".$mes.$_SESSION["periodoActual"]." WHERE 1") or die ("Error al consultar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 503: ". mysqli_error($Link));
 				if ($res_entregas_res->num_rows > 0) {
 					while ($reg_est_entregas_res = $res_entregas_res->fetch_assoc()) {
 							$estudiantes_entregas_res[$reg_est_entregas_res["num_doc"]][]= $reg_est_entregas_res;
@@ -508,7 +499,7 @@
 				}
 
 				//Abrimos nuestro archivo
-				$archivo=fopen($rutaArchivo, "r");
+				$archivo=fopen($_FILES["archivoFocalizacion"]["tmp_name"], "r");
 				$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
 
 				// Iteramos el archivo
@@ -522,23 +513,23 @@
 							if ($dat_est_ent_res["tipo_complem"] != $datos[36] || $dat_est_ent_res["cod_sede"] != $datos[22]) {
 								if ($existe) {
 									if (count($estudiantes_entregas_res[$datos[1]]) > 1) {
-										$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+										$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die ("Error al actualizar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 525: ". mysqli_error($Link));
 										$existe = true;
 									}
 								} else {
-									$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+									$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die ("Error al actualizar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 529: ". mysqli_error($Link));
 									$existe = false;
 								}
 							} else {
 								if ($existe) {
 									if (count($estudiantes_entregas_res[$datos[1]]) > 1) {
-										$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+										$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die ("Error al actualizar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 535: ". mysqli_error($Link));
 										$existe = false;
 									} else {
-										$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+										$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 0) ." WHERE id = ". $dat_est_ent_res["id"]) or die ("Error al actualizar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 538: ". mysqli_error($Link));
 									}
 								} else {
-									$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 1) ." WHERE id = ". $dat_est_ent_res["id"]) or die (mysqli_error($Link));
+									$Link->query("UPDATE entregas_res_".$mes.$_SESSION["periodoActual"]." SET ". calcularDias($dia_actual, $contador_dia, 1) ." WHERE id = ". $dat_est_ent_res["id"]) or die ("Error al actualizar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 541: ". mysqli_error($Link));
 									$existe = true;
 								}
 								$existe = true;
@@ -546,10 +537,10 @@
 						}
 						// Condición que valida si se necesita agregar nuevo registro.
 						if (!$existe) {
-							$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die (mysqli_error($Link));
+							$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die ("Error al actualizar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 499: ". mysqli_error($Link));
 						}
 					} else {
-						$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die (mysqli_error($Link));
+						$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die ("Error al actualizar en entregas_res_". $mes . $_SESSION["periodoActual"]. ". Linea 543: " .mysqli_error($Link));
 					}
 				}
 			} else {
@@ -607,8 +598,8 @@
 		{
 			// Crear consulta para ingresar datos de focalización[$mes]
 			$conCreFoc = "INSERT INTO focalizacion".$semana."
-		 								(tipo_doc, num_doc, nom1, nom2, ape1, ape2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, Tipo_complemento) VALUES ". trim($conValFoc, ", ");
-			$resCreFoc = $Link->query($conCreFoc) or die( mysqli_error($Link) );
+		 								(tipo_doc, num_doc, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, Tipo_complemento) VALUES ". trim($conValFoc, ", ");
+			$resCreFoc = $Link->query($conCreFoc) or die("Error al insertar en focalizacion". $semana . ". Linea 607: " . mysqli_error($Link));
 			if (!$resCreFoc)
 			{
 				$respuestaAJAX = [

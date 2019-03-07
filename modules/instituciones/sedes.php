@@ -13,7 +13,7 @@
       <h2>Sedes Educativas</h2>
       <ol class="breadcrumb">
           <li>
-              <a href="<?php echo $baseUrl; ?>">Home</a>
+              <a href="<?php echo $baseUrl; ?>">Inicio</a>
           </li>
           <li class="active">
               <strong><?php echo $titulo; ?></strong>
@@ -84,17 +84,15 @@
                       <option value="">Todas</option>
                       <?php
                           $municipio = (isset($_POST["municipio"]) && empty($_POST["municipio"])) ? mysqli_real_escape_string($Link, $_POST["municipio"]) : $municipio_defecto["CodMunicipio"];
-                          $consultaIns = "SELECT codigo_inst AS cod_inst, nom_inst FROM instituciones WHERE cod_mun = '$municipio'";
 
-                          $consultaIns .=" order by codigo_inst asc "; echo $consultaIns;
-
+                          $consultaIns = "SELECT codigo_inst AS cod_inst, nom_inst FROM instituciones WHERE cod_mun = '$municipio' ORDER BY nom_inst ASC";
                           $resultado = $Link->query($consultaIns) or die ('Unable to execute query. '. mysqli_error($Link));
                           if($resultado->num_rows >= 1){
                             while($row = $resultado->fetch_assoc()) { ?>
-                              <option value="<?php echo $row['cod_inst']; ?>" <?php if(isset($_POST["institucion"]) && $_POST["institucion"] == $row['cod_inst'] ){ echo " selected "; }  ?> > <?php echo $row['nom_inst']; ?></option>
+                              <option value="<?= $row['cod_inst']; ?>" <?php if(isset($_POST["institucion"]) && $_POST["institucion"] == $row['cod_inst'] ){ echo " selected "; }  ?> > <?= $row['nom_inst']; ?></option>
                       <?php
-                            }// Termina el while
-                          }//Termina el if que valida que si existan resultados
+                            }
+                          }
                        ?>
                     </select>
                   </div><!-- /.col -->
