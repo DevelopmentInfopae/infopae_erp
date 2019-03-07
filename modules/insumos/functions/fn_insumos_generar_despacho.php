@@ -18,7 +18,7 @@ function obtenerNumDoc($tabla, $Link){
 	}
 }
 
-function calcularCantidad($cins, $sede, $Link){
+function calcularCantidad($cins, $sede, $Link, $mes){
 
 	$consultaParametro = "SELECT CantidadCupos FROM parametros";
 	$resultadoParametro = $Link->query($consultaParametro);
@@ -42,7 +42,7 @@ function calcularCantidad($cins, $sede, $Link){
 
 	$conteoIns = substr($cins, 2, 2);
 	if ($conteoIns == "01") { //cupos
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos FROM sedes_cobertura WHERE cod_sede = '".$sede."'";
+		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND mes = '".$mes."'";
 		$resultadoCupos = $Link->query($consultaCupos);
 		if ($resultadoCupos->num_rows > 0) {
 			if ($cuposInf = $resultadoCupos->fetch_assoc()) {
@@ -290,7 +290,7 @@ foreach ($meses_despachar as $key => $mes) {
 		foreach ($productoDespacho as $keyIns => $producto) {
 			$numItem++;
 			$datos = datosProducto($producto, $sede, $Link);
-			$presentaciones = calcularCantidad($producto, $sede, $Link);
+			$presentaciones = calcularCantidad($producto, $sede, $Link, $mes);
 			$insertinsumosmovdet.="('DESI', '".$sedesNumDoc[$sede]."', '".$numItem."', '".$producto."', '".$DescInsumo[$keyIns]."', '".$presentaciones[6]."', '".$bodega_origen."', '".$sede."', '', '".$datos['uMedida2']."', '".$datos['cantUMedida']."', '1', '".$_SESSION['idUsuario']."', '".$presentaciones[1]."', '".$presentaciones[2]."', '".$presentaciones[3]."', '".$presentaciones[4]."', '".$presentaciones[5]."'), ";
 		}
 	}
