@@ -187,7 +187,7 @@ foreach ($sedes as $key => $sede) {
 		while ($Despacho = $resultadoDespacho->fetch_assoc()) {
 			$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios);
 			$pdf->AddPage();
-		    $pdf->SetFont('Arial','',8);
+		    $pdf->SetFont('Arial','',7);
 		    //PRODUCTOS
 		    $consultaDetalles = "SELECT producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
 		    					INNER JOIN productos".$_SESSION['periodoActual']." as producto ON producto.Codigo = insmovdet.CodigoProducto
@@ -300,8 +300,13 @@ foreach ($sedes as $key => $sede) {
 	}	
 }
 
-$pdf->ln();
+$cy = $pdf->GetY();
 
+if($cy > 150){
+	$pdf->AddPage();
+}
+
+$pdf->ln();
 
   $current_y = $pdf->GetY();
   $current_x = $pdf->GetX();
