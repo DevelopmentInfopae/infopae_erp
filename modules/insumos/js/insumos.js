@@ -503,7 +503,7 @@ function submitDespacho(accion){
                 } else if (data == "0") {
                   Command: toastr.error("Hubo un error al registrar el despacho.", "Ocurrió un error.", {onHidden : function(){ $('#loader').fadeOut();}})
                 } else {
-                  Command: toastr.error("Hubo un error al registrar el despacho.", "Ocurrió un error GARRAFAL.", {onHidden : function(){ console.log(data); }})
+                  Command: toastr.error("Hubo un error al registrar el despacho.", "Ocurrió un Error.", {onHidden : function(){ console.log(data); }})
                   $('#loader').fadeOut();
                 }
                }
