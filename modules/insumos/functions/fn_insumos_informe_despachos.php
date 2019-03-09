@@ -189,7 +189,7 @@ foreach ($sedes as $key => $sede) {
 			$pdf->AddPage();
 		    $pdf->SetFont('Arial','',8);
 		    //PRODUCTOS
-		    $consultaDetalles = "SELECT producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, insmovdet.* FROM $insumosmovdet AS insmovdet
+		    $consultaDetalles = "SELECT producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
 		    					INNER JOIN productos".$_SESSION['periodoActual']." as producto ON producto.Codigo = insmovdet.CodigoProducto
 		     					WHERE insmovdet.Numero = '".$Despacho['Numero']."'";
 		    $resultadoDetalles = $Link->query($consultaDetalles);
@@ -281,8 +281,8 @@ foreach ($sedes as $key => $sede) {
 		    		} else {
 		    			$pdf->Cell(70.75,5,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
 			    		$pdf->Cell(30,5,utf8_decode($detalles['Umedida']),'BR',0,'C');
-			    		$pdf->Cell(30,5,utf8_decode(round($detalles['Cantidad']/1000, 2)),'BR',0,'C');
-			    		$pdf->Cell(12.8,5,utf8_decode( (($detalles['Umedida'] == " x 1 ") ? number_format($detalles['Cantidad'], 0, '', '') : number_format($detalles['CanTotalPresentacion'], 3, '.', ','))) ,'BR',0,'C');
+			    		$pdf->Cell(30,5,utf8_decode(number_format($detalles['CanTotalPresentacion'], 2, '.', ',')),'BR',0,'C');
+			    		$pdf->Cell(12.8,5,utf8_decode((number_format($detalles['NombreUnidad1'] == 'u' ? ceil($detalles['CanTotalPresentacion']) : strpos($detalles['NombreUnidad2'], 'kg') || strpos($detalles['NombreUnidad2'], 'lt') ? ceil($detalles['CanTotalPresentacion']) : $detalles['CanTotalPresentacion'], 2, '.', ','))) ,'BR',0,'C');
 			    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
 			    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
 			    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
@@ -300,5 +300,59 @@ foreach ($sedes as $key => $sede) {
 	}	
 }
 
+$pdf->ln();
 
-	$pdf->Output("INFORME_DESPACHOS_INSUMOS.pdf", "I");
+
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+
+  $pdf->SetXY($current_x, $current_y);
+
+
+  $pdf->Cell(94.3,4,'',1,0,'L',False);
+  $pdf->Cell(94.3,4,'',1,0,'L',False);
+  $pdf->Cell(94.3,4,'',1,0,'L',False);
+  $pdf->ln();
+
+  $pdf->Cell(94.3,12,'',1,0,'L',False);
+  $pdf->Cell(94.3,12,'',1,0,'L',False);
+  $pdf->Cell(94.3,12,'',1,0,'L',False);
+  $pdf->ln();
+
+  $pdf->Cell(94.3,16,'',1,0,'L',False);
+  $pdf->Cell(94.3,16,'',1,0,'L',False);
+  $cy = $pdf->GetY();
+  $cx = $pdf->GetX();
+  $pdf->Cell(94.3,8,'',1,0,'L',False);
+  $pdf->SetXY($cx, $cy+8);
+  $pdf->Cell(94.3,8,'',1,0,'L',False);
+  $pdf->ln();
+
+  $pdf->SetXY($current_x, $current_y);
+
+  $pdf->Cell(94.3,4,'MANIPULADOR',0,0,'C',False);
+  $pdf->Cell(94.3,4,'TRANSPORTADOR',0,0,'C',False);
+  $pdf->Cell(94.3,4,utf8_decode('INSTITUCIÓN EDUCATIVA'),0,0,'C',False);
+  $pdf->ln();
+
+  $pdf->SetXY($current_x, $current_y-0.2);
+
+  $pdf->Cell(94.3,12,'NOMBRE MANIPULADOR (Operador):',0,0,'L',False);
+  $pdf->Cell(94.3,12,'NOMBRE RECIBE (Operador):',0,0,'L',False);
+  $pdf->Cell(94.3,12,'NOMBRE RESPONSABLE INSTITUCION O CENTRO EDUCATIVO:',0,0,'L',False);
+  $pdf->ln();
+
+  $pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
+  $pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
+  $cy = $pdf->GetY();
+  $cx = $pdf->GetX();
+
+  $pdf->SetXY($cx, $cy+2);
+  $pdf->Cell(94.3,8,'CARGO:',0,0,'L',False);
+  $pdf->SetXY($cx, $cy+10);
+  $pdf->Cell(94.3,8,'FIRMA:',0,0,'L',False);
+
+  $pdf->ln();
+
+
+$pdf->Output("INFORME_DESPACHOS_INSUMOS.pdf", "I");

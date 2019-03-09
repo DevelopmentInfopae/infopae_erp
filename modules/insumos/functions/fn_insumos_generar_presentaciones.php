@@ -272,19 +272,24 @@ if($auxAlimento['CantidadUnd3'] > 0){
 		$factorC = 500;
 	} else if (strpos($nombre, " g") || $nombre == "g" || strpos($nombre, " cc") || $nombre == "cc") {
 		$factorC = 1;
+	} else {
+		$factorC = 1;
 	}
 
-	$cantidadNecesaria = $cantidadNecesaria * $factorC;
-	$desp =  $cantidadNecesaria/($auxAlimento['CantidadUnd2']*$factorC);
-	$necesario = ceil($desp);
+	// $cantidadNecesaria = $cantidadNecesaria * $factorC;
+	// $desp =  $cantidadNecesaria/($auxAlimento['CantidadUnd2']*$factorC);
+	// $necesario = ceil($desp);
 
-	$total = $necesario * $auxAlimento['CantidadUnd2'];
+	// $total = $necesario * $auxAlimento['CantidadUnd2'];
 
-	$presentaciones[1] = $necesario;
+	$cantidadNecesaria = ($cantidadNecesaria < 1 ? $cantidadNecesaria * 1000 : $cantidadNecesaria);
+	$cantidadNecesaria = ceil($cantidadNecesaria);
+
+	$presentaciones[1] = $cantidadNecesaria;
 	$presentaciones[2] = 0;
 	$presentaciones[3] = 0;
 	$presentaciones[4] = 0;
-	$presentaciones[5] = $total;
+	$presentaciones[5] = $cantidadNecesaria;
 }
 
 	return $presentaciones;
