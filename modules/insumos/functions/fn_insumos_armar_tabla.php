@@ -45,7 +45,7 @@
 	  			<?php  }
 	  		}
   		} else if ($cod_sede != "") {
-	  		$consultarSedes = "SELECT * FROM $sedes WHERE cod_sede";
+	  		$consultarSedes = "SELECT * FROM $sedes WHERE cod_sede = ".$cod_sede;
 	  		$resultadoSedes = $Link->query($consultarSedes);
 
 	  		if ($resultadoSedes->num_rows > 0) {
