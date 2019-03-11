@@ -214,11 +214,11 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
             </div>
             <div class="col-sm-3">
               <label>Placa</label>
-              <input type="text" name="placa_vehiculo" class="form-control" required>
+              <input type="text" name="placa_vehiculo" class="form-control">
             </div>
             <div class="col-sm-3">
               <label>Conductor</label>
-              <input type="text" name="conductor" class="form-control" required>
+              <input type="text" name="conductor" class="form-control">
             </div>
           </form>
           <div class="col-sm-12" style="padding: 3% 0% 2% 0%;">
