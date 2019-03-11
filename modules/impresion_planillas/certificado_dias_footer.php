@@ -176,40 +176,46 @@ $pdf->Cell(264,12,utf8_decode(''),1,0,'C',false);
 
 $pdf->Ln(14);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(31.4);
-$pdf->MultiCell(264,4,utf8_decode('La presente certificación se expide como soporte de pago y con base en el registro diario de Titulares de Derecho, que se diligencia en cada Institución Educativa atendida. Decreto 1852 de 2015 capitulo 4 artículo 2.3.1.4.4, Resolución 29452 / 2017 capítulo 4 numeral 4.1.2 Aplicación de protocolo de Suplencia reportados en documento adicional a las planillas.'),0,'L',false);
-$pdf->Cell(31.4);
-$pdf->Cell(264,4,utf8_decode(''),0,4,'L',false);
-
+$pdf->MultiCell(0,4,utf8_decode('La presente certificación se expide como soporte de pago y con base en el registro diario de Titulares de Derecho, que se diligencia en cada Institución Educativa atendida. Decreto 1852 de 2015 capitulo 4 artículo 2.3.1.4.4, Resolución 29452 / 2017 capítulo 4 numeral 4.1.2 Aplicación de protocolo de Suplencia reportados en documento adicional a las planillas.'),0,'L',false);
 
 $pdf->Ln(1);
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(31.4);
 $pdf->Cell(50,4,utf8_decode('PARA CONSTANCIA SE FIRMA EN:'),0,0,'L',false);
-$pdf->Cell(30,4,utf8_decode(''),'B',0,'L',false);
+$pdf->Cell(40,4,utf8_decode(''),'B',0,'L',false);
 $pdf->Cell(20,4,utf8_decode(' FECHA: DIA'),0,0,'L',false);
-$pdf->Cell(35,4,utf8_decode(''),'B',0,'L',false);
+$pdf->Cell(40,4,utf8_decode(''),'B',0,'L',false);
 $pdf->Cell(15,4,utf8_decode('DEL AÑO'),0,0,'L',false);
 $pdf->Cell(15,4,utf8_decode(''),'B',0,'L',false);
-
 
 $pdf->Ln(8);
 $x = $pdf->GetX();
 $y = $pdf->GetY();
-$pdf->Cell(31.4);
-$pdf->Cell(264,4,utf8_decode('FIRMA DEL RECTOR'),0,4,'L',false);
-$pdf->Cell(264,4,utf8_decode(''),'B',4,'L',false);
+$pdf->Cell(0,4,utf8_decode('FIRMA DEL RECTOR'),0,4,'L',false);
+$pdf->Cell(0,4,utf8_decode(''),'B',4,'L',false);
 $pdf->Cell(30,4,utf8_decode('NOMBRES Y APELLIDOS DEL RECTOR:'),0,4,'L',false);
 
 $pdf->SetXY($x, $y);
-$pdf->Cell(31.4);
-$pdf->Cell(264,12,utf8_decode(''),1,0,'C',false);
+$pdf->Cell(0, 12, "", 1, 0, 'C', false);
 
 $pdf->Ln(14);
 $x = $pdf->GetX();
 $y = $pdf->GetY();
 $pdf->SetFont('Arial','',$tamannoFuente-1);
-$pdf->Cell(0,4,utf8_decode('Impreso por Software InfoPae'),0,0,'L',false);
-$link = 'http://www.infopae.com.co';
-$pdf->SetXY($x+45, $y);
-$pdf->Write(4,'www.infopae.com.co',$link);
+/*********************************************************/
+// Consulta que retorna los tipo de complementos.
+$texto_convenciones = "";
+$consulta_tipo_complementos = "SELECT CODIGO AS codigo, DESCRIPCION as descripcion FROM tipo_complemento ORDER BY CODIGO";
+$respuesta_tipo_complementos = $Link->query($consulta_tipo_complementos) or die("Error al consultar tipo_complemento: ". $Link->error);
+if ($respuesta_tipo_complementos->num_rows > 0) {
+
+	while($registros_tipo_complementos = $respuesta_tipo_complementos->fetch_assoc()) {
+		$texto_convenciones .= $registros_tipo_complementos["codigo"]. ": ". $registros_tipo_complementos["descripcion"]. " ";
+	}
+}
+$pdf->MultiCell(0,4,utf8_decode($texto_convenciones),0,'L',false);
+/**********************************************************/
+$pdf->SetXY($x+260, $y+4);
+$pdf->Write(4,utf8_decode('Impreso por Software InfoPae'));
+
+$pdf->SetXY($x+300, $y+4);
+$pdf->Write(4,'www.infopae.com.co', 'http://www.infopae.com.co');

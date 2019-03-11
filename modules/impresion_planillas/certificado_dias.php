@@ -138,7 +138,7 @@ $alturaLinea = 4;
 
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(192,192,192);
-$pdf->SetDrawColor(0,0,0);
+$pdf->SetDrawColor(82,86,89);
 
 
 $x1 = $pdf->GetX();

@@ -1,12 +1,16 @@
 var itemsActuales = [];
 var dataset1;
+
 $(document).ready(function(){
+  $(document).on('iCheck', '.i-checks', function (){
+    checkboxClass: 'icheckbox_square-green',
+    radioClass: 'iradio_square-green'
+  })
 
+  $(document).on('ifChecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('check'); });
+  $(document).on('ifUnchecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('uncheck'); });
 
-
-
-
-dataset1 =  $('#box-table-a').DataTable({
+  dataset1 =  $('#box-table-a').DataTable({
     bPaginate: false,
     order: [ 1, 'desc' ],
     pageLength: 25,
@@ -25,26 +29,7 @@ dataset1 =  $('#box-table-a').DataTable({
         sPrevious: 'Anterior'
       }
     }
-    });
-
-
-
-
-
-
-
-
-
-  $('#selectVarios').change(function(){
-    console.log('Cambio el de varios');
-    if ($('#selectVarios').is(':checked')) {
-      $('#box-table-a tbody input[type=checkbox]').prop( "checked", true );
-    }
-    else{
-      $('#box-table-a tbody input[type=checkbox]').prop( "checked", false );
-    }
   });
-
 
 
   $('#proveedorEmpleado').change(function(){
@@ -74,20 +59,6 @@ dataset1 =  $('#box-table-a').DataTable({
     $('#subtipoNm').val(subtipoNm);
   });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   $('#tipoRacion').change(function(){
     var tipo = $(this).val();
     buscar_municipio(tipo);
@@ -105,30 +76,17 @@ dataset1 =  $('#box-table-a').DataTable({
     buscar_institucion(municipio,tipo);
   });
 
-
   $('#institucion').change(function(){
     var institucion = $(this).val();
     var tipo = $('#tipoRacion').val();
     var municipio = $('#municipio').val();
     var semana = $('#semana').val();
     buscar_sede(semana,municipio,tipo,institucion);
-
-
   });
-
-
-
-
-
 
   $('#btnAgregar').click(function(){
     itemsActuales = [];
     $('#selectVarios').prop( "checked", false );
-
-
-
-
-
     var semana = $('#semana').val();
     var tipo = $('#tipoRacion').val();
     var municipio = $('#municipio').val();
@@ -145,21 +103,17 @@ dataset1 =  $('#box-table-a').DataTable({
       $('#tipoRacion').focus();
     }
 
-
     if(municipio == '' && ruta == ''){
       bandera++;
-      alert('Debe seleccionar almenos un municipio ó ruta');
+      alert('Debe seleccionar al menos un municipio ó una ruta');
       $('#municipio').focus();
     }
-
 
     if(bandera == 0){
       $( "#box-table-a tbody input[type=checkbox]" ).each(function(){
         itemsActuales.push($(this).val());
         console.log($(this).val());
       });
-
-
 
       var datos = {"semana":semana, "municipio":municipio, "ruta":ruta, "tipo":tipo,"institucion":institucion,"sede":sede,"consecutivo":consecutivo,"itemsActuales":itemsActuales};
       $.ajax({
@@ -184,11 +138,10 @@ dataset1 =  $('#box-table-a').DataTable({
             reiniciarTabla();
           }
 
-
-
-
-
-          //$('#sede').html(data);
+          $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+          });
         }
       })
       .done(function(){ })
@@ -197,21 +150,11 @@ dataset1 =  $('#box-table-a').DataTable({
         $('#loader').fadeOut();
       });
     }
-
   });
 
-
-
-
-
-
   $('#btnQuitar').click(function(){
-
-
-
+    if ($('#box-table-a tbody input[type=checkbox]').length){
       $('#selectVarios').prop( "checked", false );
-
-
       $( "#box-table-a tbody input:checked" ).each(function(){
         console.log($(this).val());
         $(this).closest('tr').remove();
@@ -221,10 +164,8 @@ dataset1 =  $('#box-table-a').DataTable({
       dataset1.destroy();
       $('#box-table-a tbody').html(tabla);
       reiniciarTabla();
+    }
   });
-
-
-
 });
 
 // Funcion para crear y guardar el despacho.
@@ -302,6 +243,7 @@ function generarDespacho(){
       }
     })
     .done(function(data) {
+      console.log(data);
       $('#debug').html(data);
 
       if (data == 1) {
@@ -339,7 +281,18 @@ function reiniciarTabla(){
         sPrevious: 'Anterior'
       }
     }
-    });// Fin Funcionamiento del report
+    // drawCallback: function(settings) {
+    //     $('.i-checks').iCheck({
+    //      checkboxClass: 'icheckbox_square-green'
+    //     });
+    //   }
+    })
+    /*.on('draw.dt', function() {
+      $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+      });
+    })*/;// Fin Funcionamiento del report
   var anchoTabla = $('#box-table-a').width();
   var anchoTabla = anchoTabla-8;
   $('.fg-toolbar').css({ 'width': anchoTabla });
@@ -364,9 +317,6 @@ function buscar_bodegas(usuario){
   });
 }
 
-
-
-
 function buscar_dias(semana){
   var datos = {"semana":semana};
   $.ajax({
@@ -375,12 +325,15 @@ function buscar_dias(semana){
     data: datos,
     beforeSend: function(){},
     success: function(data){
-      //$('#debug').html(data);
       $('#dias').html(data);
+
+      $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green'
+      });
     }
   });
 }
-
 
 function buscar_proveedor_empleado(subtipo){
   var datos = {"subtipo":subtipo};
@@ -395,7 +348,6 @@ function buscar_proveedor_empleado(subtipo){
       }
     });
 }
-
 
 function buscar_institucion(municipio,tipo){
   var datos = {"municipio":municipio,"tipo":tipo};
@@ -442,21 +394,21 @@ function buscar_municipio(tipo){
 }
 
 function buscar_sede(semana, municipio, tipo, institucion){
-  var datos = {"semana":semana,"municipio":municipio,"tipo":tipo,"institucion":institucion};
     $.ajax({
       type: "POST",
       url: "functions/fn_despacho_buscar_sede.php",
-      data: datos,
+      data: {
+        "semana":semana,
+        "municipio":municipio,
+        "tipo":tipo,
+        "institucion":institucion
+      },
       beforeSend: function(){
         $('#loader').fadeIn();
-      },
-      success: function(data){
-        //$('#debug').html(data);
-        $('#sede').html(data);
       }
     })
-    .done(function(){ })
-    .fail(function(){ })
+    .done(function(data){ $('#sede').html(data); })
+    .fail(function(data){ console.log(data); })
     .always(function(){
       $('#loader').fadeOut();
     });
