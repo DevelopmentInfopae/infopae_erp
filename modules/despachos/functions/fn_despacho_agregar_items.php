@@ -104,7 +104,7 @@ if($resultado->num_rows >= 1){
     $consecutivo++;
     ?>
     <tr>
-      <td><input type="checkbox" value="<?php echo $row['cod_sede']; ?>"/></td>
+      <td class="text-center"><input type="checkbox" class="i-checks" value="<?php echo $row['cod_sede']; ?>"/></td>
       <td><input type="hidden" name="sede<?php echo $consecutivo; ?>" id="sede<?php echo $consecutivo; ?>" value="<?php echo $row['cod_sede']; ?>"><?php echo $row['Ciudad']; ?></td>
       <td><?php echo $row['nom_inst']; ?></td>
       <td><?php echo $row['nom_sede']; ?></td>

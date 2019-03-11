@@ -512,9 +512,17 @@ if(count($entregasSedes)>0) {
 
 			$pdf->Ln(70);
 			$pdf->SetFont('Arial','',$tamannoFuente-1);
-			$pdf->Cell(0,4,utf8_decode('CAJMPS = Complemento Alimentario Jornada Mañana / Complemento Alimentario Jornada Tarde preparado en sitio'),0,4,'L',false);
-			$pdf->Cell(0,4,utf8_decode('APS = Almuerzo preparado en sitio población vulnerable'),0,4,'L',false);
-			$pdf->Cell(0,4,utf8_decode('CAJMRI = complemento alimentario jornada mañana ración industrializada.'),0,4,'L',false);
+			/*********************************************************/
+			// Consulta que retorna los tipo de complementos.
+			$texto_convenciones = "";
+			$consulta_tipo_complementos = "SELECT CODIGO AS codigo, DESCRIPCION as descripcion FROM tipo_complemento ORDER BY CODIGO";
+			$respuesta_tipo_complementos = $Link->query($consulta_tipo_complementos) or die("Error al consultar tipo_complemento: ". $Link->error);
+			if ($respuesta_tipo_complementos->num_rows > 0) {
+				while($registros_tipo_complementos = $respuesta_tipo_complementos->fetch_assoc()) {
+					$pdf->Cell(0,3,utf8_decode($registros_tipo_complementos["codigo"] .": ". $registros_tipo_complementos["descripcion"] .". "),0,4,'L',false);
+				}
+			}
+			/**********************************************************/
 
 		// Tebla población
 			$x = $pdf->GetX();

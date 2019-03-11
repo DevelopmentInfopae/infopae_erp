@@ -1,91 +1,76 @@
 $(document).ready(function(){
+  var cantidadDetallados = 0;
   var mes = $('#mesi').val();
   var mesText = $("#mesi option[value='"+mes+"']").text()
   $('#mesfText').val(mesText);
   $('#mesf').val(mes);
 
-  // $('#seleccionarVarios').change(function(){
-  //   console.log('Cambio el de varios');
-  //   if ($('#seleccionarVarios').is(':checked')) {
-  //     $('tbody input[type=checkbox]').iCheck('checked');
-  //     // $('tbody input[type=checkbox]').prop( "checked", true );
-  //   }
-  //   else{
-  //     $('tbody input[type=checkbox]').iCheck('unchecked');
-  //     // $('tbody input[type=checkbox]').prop( "checked", false );
-  //   }
-  // });
+  $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green' });
 
-  $(document).on('ifChecked', '#seleccionarVarios', function () { $('tbody input[type=checkbox]').iCheck('check'); });
+  $(document).on('ifChecked', '#seleccionarVarios', function () {
+    $('tbody input[type=checkbox]').each(function(){
+      if (!$(this).prop('disabled')) {
+        $(this).iCheck('check');
+      }
+    });
+  });
   $(document).on('ifUnchecked', '#seleccionarVarios', function () { $('tbody input[type=checkbox]').iCheck('uncheck'); });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   $('#municipio').change(function(){
+  $('#municipio').change(function(){
     var tipo = $('#tipoRacion').val();
     var municipio = $(this).val();
     buscar_institucion(municipio,tipo);
   });
 
-
-    $('#institucion').change(function(){
+  $('#institucion').change(function(){
     var institucion = $(this).val();
     var tipo = $('#tipoRacion').val();
     var municipio = $('#municipio').val();
     var semana = $('#semana').val();
     buscar_sede(semana,municipio,tipo,institucion);
-
-
   });
 
+  $( "#btnBuscar" ).click(function(){
+    console.log('Se va  a hacer una busqueda.');
+    $("#pb_annoi").val($("#annoi").val());
+    $("#pb_mesi").val($("#mesi").val());
+    $("#pb_diai").val($("#diai").val());
+    $("#pb_annof").val($("#annof").val());
+    $("#pb_mesf").val($("#mesf").val());
+    $("#pb_diaf").val($("#diaf").val());
+    $('#pb_semana').val($("#semana").val());
+    $("#pb_tipo").val($("#tipo").val());
+    $("#pb_municipio").val($("#municipio").val());
+    $("#pb_institucion").val($("#institucion").val());
+    $("#pb_sede").val($("#sede").val());
+    $("#pb_tipoDespacho").val($("#tipoDespacho").val());
+    $("#pb_ruta").val($("#ruta").val());
+    $("#pb_btnBuscar").val(1);
+    $("#parametrosBusqueda").submit();
+  });
 
-$( "#btnBuscar" ).click(function(){
-  console.log('Se va  a hacer una busqueda.');
-  $("#pb_annoi").val($("#annoi").val());
-  $("#pb_mesi").val($("#mesi").val());
-  $("#pb_diai").val($("#diai").val());
-  $("#pb_annof").val($("#annof").val());
-  $("#pb_mesf").val($("#mesf").val());
-  $("#pb_diaf").val($("#diaf").val());
-  $('#pb_semana').val($("#semana").val());
-  $("#pb_tipo").val($("#tipo").val());
-  $("#pb_municipio").val($("#municipio").val());
-  $("#pb_institucion").val($("#institucion").val());
-  $("#pb_sede").val($("#sede").val());
-  $("#pb_tipoDespacho").val($("#tipoDespacho").val());
-  $("#pb_ruta").val($("#ruta").val());
-  $("#pb_btnBuscar").val(1);
-  $("#parametrosBusqueda").submit();
+  dataset1 = $('#box-table-movimientos').DataTable({
+    order: [ 1, 'desc' ],
+    dom: 'lr<"containerBtn"><"inputFiltro"f>tip',
+    pageLength: 25,
+    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
+    responsive: true,
+    oLanguage: {
+      sLengthMenu: 'Mostrando _MENU_ registros por página',
+      sZeroRecords: 'No se encontraron registros',
+      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+      sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+      sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+      sSearch:         'Buscar: ',
+      oPaginate:{
+        sFirst:    'Primero',
+        sLast:     'Último',
+        sNext:     'Siguiente',
+        sPrevious: 'Anterior'
+      }
+    }
+  });
 });
-
-
-
-
-
-
-});
-
-
-
-
-
-
 
 function buscar_institucion(municipio,tipo){
   console.log('Actualizando lista de instituciones.');
@@ -111,7 +96,6 @@ function buscar_institucion(municipio,tipo){
     });
 }
 
-
 function buscar_sede(semana, municipio, tipo, institucion){
   var datos = {"semana":semana,"municipio":municipio,"tipo":tipo,"institucion":institucion};
     $.ajax({
@@ -132,7 +116,6 @@ function buscar_sede(semana, municipio, tipo, institucion){
       $('#loader').fadeOut();
     });
 }
-
 
 function mesFinal(){
   var mes = $('#mesi').val();
@@ -399,8 +382,6 @@ function despachos_mixta(){
   }
 }
 
-
-
 function despachos_por_sede_fecha_lote(){
 
   //Contando los elementos checked
@@ -427,13 +408,6 @@ function despachos_por_sede_fecha_lote(){
       }
     }
   }); // Termina de revisar cada uno de los elementos que se encuentren checkeados.
-
-
-
-
-
-
-
 
   $("tbody input:checked").each(function(){
     if(bandera == 0){
@@ -481,18 +455,8 @@ function despachos_por_sede_fecha_lote(){
     $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');
-
-
-
-
-
-
-
   }
 }
-
-
-
 
 function despachos_por_sede(){
   //Contando los elementos checked
@@ -558,7 +522,6 @@ function despachos_por_sede(){
   }
 }
 
-
 function despachoPorSede(despacho){
   console.log('Click en una fila.');
   despacho = despacho;
@@ -574,10 +537,6 @@ function despachoPorSede(despacho){
     $('#formDespachoPorSede').submit();
   }
 }
-
-
-
-
 
 function despachos_consolidado(){
   //Contando los elementos checked
@@ -638,20 +597,10 @@ function despachos_consolidado(){
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');
   }
-
-
-
 }
-
-
-
 
 function editar_despacho(){
   console.log('Editar despacho.');
-
-
-
-
   //Contando los elementos checked
   var cant = 0;
   var despacho = 0;
@@ -693,8 +642,6 @@ function editar_despacho(){
 
 function eliminar_despacho(){
   console.log('Se va a eliminar un despacho');
-
-
   //Contando los elementos checked
   var cant = 0;
   var despacho = 0;
@@ -759,54 +706,6 @@ function eliminar_despacho(){
     }
   }// Termina el if si la bandera esta en cero
 }// Termina la función para eliminar despachos.
-
-
-
-
-
-
-
-
-
-
-
-var cantidadDetallados = 0;
-
-$(document).ready( function () {
-  dataset1 = $('#box-table-movimientos').DataTable({
-    order: [ 1, 'desc' ],
-    dom: 'lr<"containerBtn"><"inputFiltro"f>tip',
-    pageLength: 25,
-    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
-    responsive: true,
-    oLanguage: {
-      sLengthMenu: 'Mostrando _MENU_ registros por página',
-      sZeroRecords: 'No se encontraron registros',
-      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-      sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-      sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-      sSearch:         'Buscar: ',
-      oPaginate:{
-        sFirst:    'Primero',
-        sLast:     'Último',
-        sNext:     'Siguiente',
-        sPrevious: 'Anterior'
-      }
-    }
-  });
-});
-
-
-
-
-
-
-
-
-
-
-
-
 
 function despachos_agrupados(){
   var cant = 0;

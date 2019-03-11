@@ -221,7 +221,6 @@ if($existe <= 0){
   }
   $consulta = $consulta." order by ftd.codigo asc ";
 
-
 // Imprimir primera consulta
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
@@ -229,14 +228,34 @@ if($resultado->num_rows >= 1){
   while($row = $resultado->fetch_assoc()) {
     $items[] = $row;
     $menus[] = $row['codigo_menu'];
-    $menusReg[] = $row['MENU'];
+    // $menusReg[] = $row['MENU'];
   }// Termina el while
 }//Termina el if que valida que si existan resultados
 $resultado->close();
 
-$menusReg = array_unique($menusReg);
-sort($menusReg);
-$menusReg = implode(",",$menusReg);
+// $menusReg = array_unique($menusReg);
+// sort($menusReg);
+// $menusReg = implode(",",$menusReg);
+
+
+/*****************************************************************************/
+// Consulta que retorna los menus de los días seleccionados.
+$condicionDias = $menus = "";
+for ($i=0; $i < count($dias) ; $i++) {
+  $condicionDias .= "dia = '". $dias[$i] ."' OR ";
+}
+$consultaMenusDias = "SELECT * FROM planilla_semanas WHERE semana = '$semana' AND (". trim($condicionDias, " OR ") .");";
+$resultadoMenusDias = $Link->query($consultaMenusDias) or die("Error al consultar planilla_semanas. Linea 248: ". $Link->error);
+if ($resultadoMenusDias->num_rows > 0) {
+  while ($resgistroMenusDias = $resultadoMenusDias->fetch_assoc()) {
+    $menus .= $resgistroMenusDias["MENU"] .", ";
+  }
+}
+
+$menusReg = $menus;
+// exit($menus);
+/*****************************************************************************/
+
 
 // Debemos buscar el codigo del alimento sin preparar para obtener el
 // codigo que es y las unidades que le afectan
@@ -394,7 +413,7 @@ for ($i=0; $i < count($sedesCobertura) ; $i++) {
    }
    $consulta = $consulta." ) ";
 
-   $resultado = $Link->query($consulta) or die ('Unable to execute queryasdf. '. mysqli_error($Link));
+   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
    if($resultado->num_rows >= 1){
 
       $bandera++;
