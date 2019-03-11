@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL);
 session_start();
+require_once '../db/conexion.php';
 
 $bandera = 0;
 $actualizar = 0;
@@ -13,7 +14,23 @@ $entregasTotalesMes = array();
 $barrasTotalesSemana = array();
 $entregasTotalesSemana = array();
 
+date_default_timezone_set('America/Bogota');
+$mesActual = date('m');
+$diaActual = date('d');
+$indiceDiaActual = 0;
 
+// Buscar el día actual en planilla dias para saber a que D corresponde
+$consulta = "select * from planilla_dias where mes = \"$mesActual\"";
+$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+if($resultado->num_rows >= 1){
+	$row = $resultado->fetch_assoc();
+	for($iD = 1; $iD <= 22; $iD++){
+		if($row["D$iD"] == $diaActual){
+			$indiceDiaActual = $iD;
+		}
+	}
+}
+//var_dump($indiceDiaActual);
 
 
 // timeOption 1 = semana
@@ -52,15 +69,7 @@ if($actualizar == 0){
 
 if($actualizar == 1 || $bandera > 0){
 	$periodoActual = $_SESSION['periodoActual'];
-
-	require_once '../db/conexion.php';
-	$Link = new mysqli($Hostname, $Username, $Password, $Database);
-	if ($Link->connect_errno) {
-	echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-	}
-	$Link->set_charset("utf8");
-
-	$consulta = " SELECT ps.dia, ps.semana, ps.mes, ps.ano, (SELECT SUM(sc.num_est_focalizados) FROM sedes_cobertura sc WHERE sc.semana = ps.semana) AS cantidad FROM planilla_semanas ps";
+	$consulta = "select ps.dia, ps.semana, ps.mes, ps.ano, (select sum(sc.num_est_focalizados) from sedes_cobertura sc where sc.semana = ps.semana) as cantidad from planilla_semanas ps";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	$cantidadTotal = 0;
 	$mesInicial = 0;
@@ -117,6 +126,9 @@ if($actualizar == 1 || $bandera > 0){
 	    }
 	}
 
+	// Termina de calcular cuanto es lo que se debe entregar
+	// var_dump($barras);
+
 	// Guarda el total de la ultima semana
 	$tiempo = intval($semanaConsecutivo);
 	$cantidad = intval($totalSemana);
@@ -148,9 +160,9 @@ if($actualizar == 1 || $bandera > 0){
 	$consulta = " select * from planilla_dias ";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
-	    while($row = $resultado->fetch_assoc()){
-	    	$meses[] = $row;
-	    }
+		while($row = $resultado->fetch_assoc()){
+			$meses[] = $row;
+		}
 	}
 
 	// Se correra el array para validar hasta donde estan creadas las tablas de entregas res.
@@ -179,13 +191,20 @@ if($actualizar == 1 || $bandera > 0){
 	$entregasTotalesSemana = array();
 	$cantidadTotalMes = 0;
 	$cantidadTotalSemana = 0;
-  $consulta = " select * from planilla_semanas where mes <= $mesesEntregados ";
+	
+	
+	
+	$consulta = " select * from planilla_semanas where mes <= $mesesEntregados ";
 	//echo "<br><br>".$consulta."<br><br>";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
 		while($row = $resultado->fetch_assoc()){
+			
+			//var_dump($row);
 			$semana = $row['SEMANA'];
 			$mes = $row['MES'];
+
+
 			if($mesInicial != $mes && $mesInicial == 0){
 				$mesInicial = $mes;
 				$buscarEntregas = 1;
@@ -197,6 +216,8 @@ if($actualizar == 1 || $bandera > 0){
 				$buscarEntregas = 1;
 				$indiceDia = 1;
 			}
+
+
 			if($semanaInicial != $semana && $semanaInicial == 0){
 				$semanaInicial = $semana;
 			}
@@ -210,14 +231,23 @@ if($actualizar == 1 || $bandera > 0){
 			if($buscarEntregas == 1){
 				// Cuando hay cambio de mes invocamos las entragas realizadas durante el mes
 				$consulta2 = " select ";
-				for ($i = 1 ; $i <= 22 ; $i++) {
+				for ($i = 1 ; $i <= 22 ; $i++){
 					if($i > 1){
 						$consulta2.= " , ";
 					}
-					$consulta2.= " sum(D$i) as D$i ";
+					if($mes == $mesActual){
+						if($i > $indiceDiaActual){
+							$consulta2.= " 0 as D$i ";
+						}else{
+							$consulta2.= " sum(D$i) as D$i ";
+						}
+					}else{
+						$consulta2.= " sum(D$i) as D$i ";
+					}
 				}
 				$consulta2.= " from entregas_res_$mes$periodoActual ";
-				//echo "<br><br>".$consulta2."<br><br>";
+				// echo "<br><br>".$consulta2."<br><br>";
+
 				$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
 				if($resultado2->num_rows >= 1){
 					$entregasMes = $resultado2->fetch_assoc();
@@ -228,10 +258,24 @@ if($actualizar == 1 || $bandera > 0){
 			// Como ya se hizo la búsqueda de las entregas para los días del mes empezamos con la captura de los totales
 			// para las semanas y los meses.
 			//var_dump($entregasMes);
-			$aux = 'D'.$indiceDia;
-			$cantidadTotalMes = $cantidadTotalMes + $entregasMes[$aux];
-			$cantidadTotalSemana = $cantidadTotalSemana + $entregasMes[$aux];
+
+			if($mes >= $mesActual){
+				if($indiceDia <= $indiceDiaActual){
+					$aux = 'D'.$indiceDia;
+					$cantidadTotalMes = $cantidadTotalMes + $entregasMes[$aux];
+					$cantidadTotalSemana = $cantidadTotalSemana + $entregasMes[$aux];
+				}else{
+					break;	
+				}
+			}else{
+				$aux = 'D'.$indiceDia;
+				$cantidadTotalMes = $cantidadTotalMes + $entregasMes[$aux];
+				$cantidadTotalSemana = $cantidadTotalSemana + $entregasMes[$aux];
+			}
 			$indiceDia++;
+
+
+
 		}
 	}
 	$entregasTotalesMes[] = array(intval($mesInicial),intval($cantidadTotalMes));
@@ -254,18 +298,24 @@ if($actualizar == 1 || $bandera > 0){
     }
 
     // Se correra el array para validar hasta donde estan creadas las tablas de entregas res.
-    $mesesEntregados = array();
+		// var_dump($mesConsulta);
+		// var_dump($periodoActual);
+		$mesesEntregados = array();
     foreach ($meses as $mes) {
-        $mesConsulta = $mes['mes'];
-        $consulta = " show tables like 'entregas_res_$mesConsulta$periodoActual' ";
-        $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-        if($resultado->num_rows >= 1){
-            $mesesEntregados[] = $mes['mes'];
-        }
-        else{
-            break;
-        }
-    }
+			$mesConsulta = $mes['mes'];
+			$consulta = " show tables like 'entregas_res_$mesConsulta$periodoActual' ";
+			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+			if($resultado->num_rows >= 1){
+				$mesesEntregados[] = $mes['mes'];
+			}
+			else{
+				break;
+			}
+		}
+		//var_dump($mesesEntregados);
+		
+		// Se obtuvieron los meses en los que hubieron entregas
+
 
     // Array de lo que se deberia ENTREGAR
     $consulta = " select sum(sc.APS) as APS, sum(sc.CAJMRI) as CAJMRI, sum(sc.CAJTRI) as CAJTRI, sum(sc.CAJMPS) as CAJMPS from planilla_semanas ps left join sedes_cobertura sc on ps.semana = sc.semana ";
@@ -279,13 +329,25 @@ if($actualizar == 1 || $bandera > 0){
     $totalesEntregados = array();
     $consulta = "";
     $aux = 0;
-    foreach ($mesesEntregados as $mes) {
-        if($aux > 0){
-            $consulta .= " union ";
-        }
-        $consulta .= " select sum(D1+D2+D3+D4+D5+D6+D7+D8+D9+D10+D11+D12+D13+D14+D15+D16+D17+D18+D19+D20+D21+D22) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual group by tipo_complem ";
-        $aux++;
-    }
+    foreach ($mesesEntregados as $mes){
+			if($aux > 0){
+				$consulta .= " union ";
+			}
+			if($mes == $mesActual){
+				$consulta .= " select sum( ";
+				for($iD = 1; $iD <= $indiceDiaActual; $iD++){
+					if($iD > 1){
+						$consulta .= "+";
+					}
+					$consulta .= "D$iD";
+				}
+				$consulta .= " ) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual group by tipo_complem ";
+			}else{
+				$consulta .= " select sum(D1+D2+D3+D4+D5+D6+D7+D8+D9+D10+D11+D12+D13+D14+D15+D16+D17+D18+D19+D20+D21+D22) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual group by tipo_complem ";
+			}
+			$aux++;
+		}
+		// var_dump($consulta);
 		if($consulta != ''){
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 			if($resultado->num_rows >= 1){
