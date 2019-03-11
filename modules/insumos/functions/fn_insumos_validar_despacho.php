@@ -11,8 +11,12 @@ $productos = json_decode($_POST['productos']);
 
 $condicional = "";
 
+$contadoXManipuladoras = 0;
 foreach ($productos as $key => $producto) {
 	$condicional.= " OR CodigoProducto = '".$producto."' ";
+	if (substr($producto, 0, 4) == "0502") {
+		$contadoXManipuladoras = 1;
+	}
 }
 
 $condicional = trim($condicional, " OR");
@@ -49,7 +53,9 @@ foreach ($meses as $key => $mes) {
 				$tablaErr.="</br><strong>N° ".$valida." </strong> Mes : ".$mesesNom[$mes].", Sede : ".$sedeNombre.".";
 			} else {
 				if ($manipuladoras == 0 || $manipuladoras == "") {
-					$valida++;
+					if ($contadoXManipuladoras != 0) {
+						$valida++;
+					}
 					$tablaErr.="</br>Sede <strong>".$sedeNombre."</strong> sin manipuladoras registradas.";
 				}
 				// echo "Sede : ".$sede." CantEstudi : ".$cantEstudiantes."\n";
@@ -60,7 +66,9 @@ foreach ($meses as $key => $mes) {
 			}
 		} else {
 			if ($manipuladoras == 0 || $manipuladoras == "") {
-				$valida++;
+				if ($contadoXManipuladoras != 0) {
+					$valida++;
+				}
 				$tablaErr.="</br>Sede <strong>".$sedeNombre."</strong> sin manipuladoras registradas.";
 			}
 			// echo "Sede : ".$sede." CantEstudi : ".$cantEstudiantes."\n";
@@ -77,6 +85,6 @@ foreach ($meses as $key => $mes) {
 if ($valida > 0) {
 	echo '{"respuesta" : [{"respuesta" : "1", "coincide" : "'.$tablaErr.'"}]}';
 } else {
-	echo '{"respuesta" : [{"respuesta" : "0"}]}';
+	echo '{"respuesta" : [{"respuesta" : "0", "coincide" : "'.$tablaErr.'"}]}';
 }
 

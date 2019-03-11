@@ -75,7 +75,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','B',8);
 		    $this->Cell(25,4,utf8_decode('OPERADOR: '),'BL',0,'L');
 		    $this->SetFont('Arial','',8);
-		    $this->Cell(160,4,utf8_decode('OPERADOR'),'BR',0,'L');
+		    $this->Cell(160,4,utf8_decode($_SESSION['p_Operador']),'BR',0,'L');
 		    $this->SetFont('Arial','B',8);
 		    $this->Cell(40,4,utf8_decode('FECHA DE ELABORACIÓN: '),'BL',0,'L');
 		    $this->SetFont('Arial','',8);
@@ -302,11 +302,11 @@ foreach ($sedes as $key => $sede) {
 
 $cy = $pdf->GetY();
 
-if($cy > 150){
+if($cy > 155){
 	$pdf->AddPage();
 }
 
-$pdf->ln();
+// $pdf->ln();
 
   $current_y = $pdf->GetY();
   $current_x = $pdf->GetX();

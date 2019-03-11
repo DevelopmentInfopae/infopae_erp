@@ -48,7 +48,7 @@ function calcularCantidad($cins, $sede, $Link){
 			if ($cuposInf = $resultadoCupos->fetch_assoc()) {
 				$cupos = $cuposInf['Cupos'];
 			}
-			$cantidad = ($cupos / $cantCuposCalcular) * $cantxMes;
+			$cantidad = ceil($cupos / $cantCuposCalcular) * $cantxMes;
 		}
 	} else if ($conteoIns == "02") {//manipuladores
 		$consultaManipuladores = "SELECT cantidad_Manipuladora AS manipuladores FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = '".$sede."'";
