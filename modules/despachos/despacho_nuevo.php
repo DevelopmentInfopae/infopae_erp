@@ -161,12 +161,12 @@
 
 
 
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-sm-6 form-group">
                 <input type="checkbox" name="selectVarios" id="selectVarios" value="">
                 <label for="selectVarios">Seleccionar Todos</label>
-              </div><!-- /.col -->
-            </div>
+              </div>
+            </div> -->
 
 
             <div class="table-responsive">
@@ -174,7 +174,9 @@
               <table width="100%" id="box-table-a" class="table table-striped table-bordered table-hover selectableRows" >
             <thead>
               <tr>
-                <th></th>
+                <th class="col-sm-1 text-center">
+                  <input type="checkbox" class="i-checks" name="selectVarios" id="selectVarios" value="">
+                </th>
                 <th>Municipio</th>
                 <th>Institución</th>
                 <th>Sede</th>
@@ -294,6 +296,7 @@
     <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 
 
     <script src="<?php echo $baseUrl; ?>/modules/despachos/js/despacho_nuevo.js"></script>
@@ -306,6 +309,10 @@
   $('.select2').select2({
     width: "resolve"
   });
+
+  <?php if (isset($_GET)) { ?>
+    $('#loader').fadeIn();
+  <?php } ?>
 </script>
 
 <?php mysqli_close($Link); ?>

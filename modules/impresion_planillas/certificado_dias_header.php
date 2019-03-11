@@ -1,7 +1,6 @@
 <?php
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(0,6,'DATOS GENERALES ',0,0,'C',true);
-$pdf->Ln(10);
+$pdf->Cell(0,6,'DATOS GENERALES ',"RLT",1,'C',true);
 
 $x = $pdf->GetX();
 $y = $pdf->GetY();
@@ -10,11 +9,6 @@ $x1 = $pdf->GetX();
 $y1 = $pdf->GetY();
 $pdf->Cell(32,6,'OPERADOR:','R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
-
-
-
-
-
 
 
 $aux = $_SESSION['p_Operador'];
@@ -43,7 +37,6 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 
 
 $aux = $institucion['cod_inst'];
-// var_dump($institucion);
 $pdf->Cell(0,6,$aux,0,0,'L',false);
 $pdf->SetXY($x1, $y1);
 $pdf->Cell(0,6,'','B',0,'L',false);
@@ -92,10 +85,10 @@ $y1 = $pdf->GetY();
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(32,6,utf8_decode('FECHA EJECUCIÓN:'),'R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(15,6,'Desde','R',0,'L',false);
-$pdf->Cell(84,6,utf8_decode($fechas[0]["DIA"]." de ".mesNombre($fechas[0]["MES"])." ". $fechas[0]["ANO"]),'R',0,'L',false);
-$pdf->Cell(15,6,'Hasta','R',0,'L',false);
-$pdf->Cell(84,6,utf8_decode($fechas[1]["DIA"]." de ".mesNombre($fechas[1]["MES"])." ". $fechas[1]["ANO"]),'R',0,'L',false);
+$pdf->Cell(15,6,strtoupper('Desde'),'R',0,'L',false);
+$pdf->Cell(84,6,strtoupper(utf8_decode($fechas[0]["DIA"]." de ".mesNombre($fechas[0]["MES"])." ". $fechas[0]["ANO"])),'R',0,'L',false);
+$pdf->Cell(15,6,strtoupper('Hasta'),'R',0,'L',false);
+$pdf->Cell(84,6,strtoupper(utf8_decode($fechas[1]["DIA"]." de ".mesNombre($fechas[1]["MES"])." ". $fechas[1]["ANO"])),'R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(0,6,'',0,0,'L',false);
 $pdf->SetXY($x1, $y1);
@@ -108,7 +101,6 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(32,6,utf8_decode('NOMBRE RECTOR:'),'R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(198,6,utf8_decode($institucion["nombre_rector"]),0,0,'L',false);
-// $pdf->SetXY($x1, $y1);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(23,6,utf8_decode('DOC. RECTOR:'),1,0,"L",false);
 $pdf->SetFont('Arial','',$tamannoFuente);
@@ -117,15 +109,15 @@ $pdf->Ln(6);
 
 $pdf->SetXY($x, $y);
 $pdf->Cell(0,36,'',1,0,'L',false);
-$pdf->Ln(42);
+$pdf->Ln(38);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(0,6,utf8_decode('CERTIFICACIÓN'),0,0,'C',true);
-$pdf->Ln(10);
+$pdf->Cell(0,6,utf8_decode('CERTIFICACIÓN'),1,0,'C',true);
+$pdf->Ln(6);
 
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(0,6,utf8_decode('El suscrito Rector de la Institución Educativa citada en el encabezado, certifica que se entregaron las siguientes raciones, en las fechas señaladas y de acuerdo con la siguiente distribución: '),0,0,'C',false);
-$pdf->Ln(10);
+$pdf->Ln(8);
 
 
 
@@ -179,7 +171,6 @@ $pdf->Cell(49,8,utf8_decode(''),'R',0,'L',false);
 $pdf->Cell(14,8,utf8_decode(''),'R',0,'L',false);
 $pdf->Cell(232.5,8,utf8_decode(''),'R',0,'L',false);
 $pdf->Cell(16,8,utf8_decode(''),'R',0,'L',false);
-$pdf->Cell(0,8,utf8_decode(''),0,0,'L',false);
+$pdf->Cell(0,8,utf8_decode(''),0,1,'L',false);
 // Termina impresión de cantidades, día con día
-$pdf->Ln(8);
 $pdf->SetFont('Arial','',$tamannoFuente-1);
