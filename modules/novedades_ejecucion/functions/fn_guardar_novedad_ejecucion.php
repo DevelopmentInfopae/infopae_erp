@@ -1,38 +1,39 @@
 <?php
-	require_once '../../../config.php';
-	require_once '../../../db/conexion.php';
-	date_default_timezone_set('America/Bogota');
+require_once '../../../config.php';
+require_once '../../../db/conexion.php';
+date_default_timezone_set('America/Bogota');
 
-	$dias = [];
-	$novedades = [];
-	$focalizados = [];
-	$sinFocalizar = [];
-	$diasPlanilla = [];
-	$novedadesSuplentes = [];
+$dias = [];
+$novedades = [];
+$focalizados = [];
+$sinFocalizar = [];
+$diasPlanilla = [];
+$novedadesSuplentes = [];
 
-	$fecha = date('Y-m-d H:i:s');
-	$usuario = $_SESSION['idUsuario'];
-	$mes = (isset($_POST['mes']) && $_POST['mes'] != '') ? mysqli_real_escape_string($Link, $_POST["mes"]) : "";
-	$sede = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
-	$semana = (isset($_POST['semana']) && $_POST['semana'] != '') ? mysqli_real_escape_string($Link, $_POST["semana"]) : "";
-	$municipio = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
-	$insitucion = (isset($_POST['insitucion']) && $_POST['insitucion'] != '') ? mysqli_real_escape_string($Link, $_POST["insitucion"]) : "";
-	$observaciones = (isset($_POST['observaciones']) && $_POST['observaciones'] != '') ? mysqli_real_escape_string($Link, $_POST["observaciones"]) : "";
-	$tipoComplemento = (isset($_POST['tipoComplemento']) && $_POST['tipoComplemento'] != '') ? mysqli_real_escape_string($Link, $_POST["tipoComplemento"]) : "";
-	$periodoActual = (isset($_SESSION['periodoActual']) && $_SESSION['periodoActual'] != '') ? mysqli_real_escape_string($Link, $_SESSION["periodoActual"]) : "";
+$fecha = date('Y-m-d H:i:s');
+$usuario = $_SESSION['idUsuario'];
+$mes = (isset($_POST['mes']) && $_POST['mes'] != '') ? mysqli_real_escape_string($Link, $_POST["mes"]) : "";
+$sede = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
+$semana = (isset($_POST['semana']) && $_POST['semana'] != '') ? mysqli_real_escape_string($Link, $_POST["semana"]) : "";
+$municipio = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
+$insitucion = (isset($_POST['insitucion']) && $_POST['insitucion'] != '') ? mysqli_real_escape_string($Link, $_POST["insitucion"]) : "";
+$observaciones = (isset($_POST['observaciones']) && $_POST['observaciones'] != '') ? mysqli_real_escape_string($Link, $_POST["observaciones"]) : "";
+$tipoComplemento = (isset($_POST['tipoComplemento']) && $_POST['tipoComplemento'] != '') ? mysqli_real_escape_string($Link, $_POST["tipoComplemento"]) : "";
+$periodoActual = (isset($_SESSION['periodoActual']) && $_SESSION['periodoActual'] != '') ? mysqli_real_escape_string($Link, $_SESSION["periodoActual"]) : "";
 
 	// Consulta que retorna los dias de planillas el mes seleccionado.
-	$consultaPlanillaDias = "SELECT D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28, D29, D30, D31  FROM planilla_dias WHERE mes = '$mes';";
-	$resultadoPlanillaDias = $Link->query($consultaPlanillaDias) or die("Error al consultar planilla_dias: ". $Link->error);
-	if ($resultadoPlanillaDias->num_rows > 0) {
-		while ($registroPlanillasDias = $resultadoPlanillaDias->fetch_assoc()) {
-			$planilla_dias = $registroPlanillasDias;
-		}
+$consultaPlanillaDias = "SELECT D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28, D29, D30, D31  FROM planilla_dias WHERE mes = '$mes';";
+$resultadoPlanillaDias = $Link->query($consultaPlanillaDias) or die("Error al consultar planilla_dias: ". $Link->error);
+if ($resultadoPlanillaDias->num_rows > 0) {
+	while ($registroPlanillasDias = $resultadoPlanillaDias->fetch_assoc()) {
+		$planilla_dias = $registroPlanillasDias;
 	}
+}
 
-	/************************** REGISTRO DE NOVEDADES **************************/
-		/******************************* FOCALIZADOS *******************************/
+/************************** REGISTRO DE NOVEDADES **************************/
+/******************************* FOCALIZADOS *******************************/
 		// Consulta que retorna los datos de los dias de la semana seleccionada.
+		$indiceSemana = 0; // Variable que almacena la cantidad de dias de la semana seleccionada.
 		$columnasDiasEntregas_res = "";
 		$consultaSemana = "SELECT * FROM planilla_semanas WHERE semana = '$semana'";
 		$resultadoSemana = $Link->query($consultaSemana) or die("Error al consultar planilla_semanas: ". $Link->error);
@@ -55,11 +56,18 @@
 					if ($registroSemana['DIA'] == $valorPlanillaDias)	{
 						$diaPlanilla["columna"] = $clavePlanillaDias;
 						$columnasDiasEntregas_res .= "IFNULL(e.". $clavePlanillaDias .", 0) AS D". $diaPlanilla['indiceDias'] .", ";
+						$indiceSemana++;
 					}
 				}
 
 				$diaPlanilla['diaPlanilla'] = $registroSemana['DIA'];
 				$diasPlanilla[] = $diaPlanilla;
+			}
+
+			if ($indiceSemana < 5) {
+				for ($i = $indiceSemana; $i < 5; $i++) {
+					$columnasDiasEntregas_res .=  "0 AS D". ($i+1) .", ";
+				}
 			}
 		}
 
@@ -256,9 +264,9 @@
 
 			exit(json_encode($respuestaAJAX));
 		}
-	/***************************************************************************/
+		/***************************************************************************/
 
-	/************************** REGISTRO DE ENTREGAS ***************************/
+		/************************** REGISTRO DE ENTREGAS ***************************/
 		// Consulta que retorna las semanas de mes seleccionado. Se utiliza para saber la posición de la semana del mes.
 		$consultaSemanasMes = "SELECT DISTINCT SEMANA AS semana FROM planilla_semanas WHERE MES = '$mes'";
 		$resultadoSemanasMes = $Link->query($consultaSemanasMes) or die("Error al consultar en planilla_semanas: ". $Link->error);
@@ -299,7 +307,7 @@
 
 				// Consulta para insertar el registro de suplentes en entregas_res.
 				$consultaInsertarEntregas = "INSERT INTO entregas_res_$mes$periodoActual (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, tipo_complem$semanaMes, tipo_complem, ". trim($columnaDias, ", ") .") SELECT tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, '$tipoComplemento', '$tipoComplemento', ". trim($valoresDias, ", ") ." FROM suplentes WHERE num_doc = $numero_documento";
-		 		$Link->query($consultaInsertarEntregas) or die("Error al insertar en entregas_res_$mes$periodoActual. Linea 302: ". $Link->error);
+				$Link->query($consultaInsertarEntregas) or die("Error al insertar en entregas_res_$mes$periodoActual. Linea 302: ". $Link->error);
 			}
 		}
 
@@ -314,12 +322,12 @@
 		}
 
 		if (!empty($consultaActualizarEntregas)) {
-			$resultadoActualizar = $Link->query($consultaActualizarEntregas) or die("Error al consultar entregas_res_$mes$periodoActual. Linea 323: ". $Link->error);
+			$resultadoActualizar = $Link->multi_query($consultaActualizarEntregas) or die("Error al consultar entregas_res_$mes$periodoActual. Linea 317: ". $Link->error);
 		}
-	/***************************************************************************/
+		/***************************************************************************/
 
-	$respuestaAJAX = [
-		"estado" => 1,
-		"mensaje" => "Se ha realizado correctamente el registro."
-	];
-	echo json_encode($respuestaAJAX);
+		$respuestaAJAX = [
+			"estado" => 1,
+			"mensaje" => "Se ha realizado correctamente el registro."
+		];
+		echo json_encode($respuestaAJAX);
