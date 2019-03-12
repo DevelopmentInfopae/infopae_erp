@@ -1,11 +1,8 @@
 <div class="row">
   <div class="col-sm-12 form-group">
     <h2>Gráfica de resultados</h2>
-	</div> <!-- /.col-sm-12 form-group -->
-</div> <!-- /.row -->
-
-
-
+	</div>
+</div>
 
 <form class="" action="index.html" method="post">
   <div class="row">
@@ -25,47 +22,33 @@
             <option value="9">Jornada Escolar</option>
             <option value="10">Zona Residencia Estudiante</option>
             <select>
-        </div><!-- /.col -->
+        </div>
         <div class="col-sm-1 form-group">
           <button type="button" onclick="graficar_resumida();" class="btn btn-primary">Graficar</button>
-        </div><!-- /.col -->
-      </div><!-- /.row -->
-    </div><!-- /.col -->
-  </div><!-- /.row -->
+        </div>
+      </div>
+    </div>
+  </div>
 </form>
-
-
-
-
-
-
-
-
-
-
-
 
 <div class="row">
   <div class="col-lg-6">
-                      <div class="ibox float-e-margins">
-                          <!-- <div class="ibox-title"> </div> -->
+    <div class="ibox float-e-margins">
+      <div class="ibox-content">
+        <div id="contenedorPie">
+          <canvas id="doughnutChart" height="140"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                          <div class="ibox-content">
-                              <div id="contenedorPie">
-                                  <canvas id="doughnutChart" height="140"></canvas>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-
-                  <div class="col-lg-6">
-                    <div class="ibox float-e-margins">
-                        <!-- <div class="ibox-title"> </div> -->
-                        <div class="ibox-content">
-                            <div id="contenedorBar">
-                                <canvas id="barChart" height="140"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-</div> <!-- /.row -->
+  <div class="col-lg-6">
+    <div class="ibox float-e-margins">
+      <div class="ibox-content">
+        <div id="contenedorBar">
+          <canvas id="barChart" height="140"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

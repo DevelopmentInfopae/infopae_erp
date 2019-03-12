@@ -163,13 +163,13 @@ for ($k=0; $k < count($_POST) ; $k++){
  // Termina la busqueda de los días que corresponden a esta semana de contrato.
 
 
-  /********************** Modificación para cambiar los datos de los 3 campos agregados a la tabla despachos_encMESAÑO **********************/
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Modificación para cambiar los datos de los 3 campos agregados a la tabla despachos_encMESAÑO
   // Bucando la cobertura para la sede en esa semana para el tipo de complementosCantidades
   $cantSedeGrupo1 = 0;
   $cantSedeGrupo2 = 0;
   $cantSedeGrupo3 = 0;
-
-  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3 FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede  = '$codSede' AND  Tipo_Complem = '$modalidad'";
+  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3 FROM despachos_enc$mesAnno WHERE Num_doc = '$despacho';";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
@@ -177,6 +177,7 @@ for ($k=0; $k < count($_POST) ; $k++){
     $cantSedeGrupo2 = $row['Cobertura_G2'];
     $cantSedeGrupo3 = $row['Cobertura_G3'];
   }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // A medida que se recoja la información de los aliemntos se determianra si todos los grupos etarios fueron beneficiados y usaremos las cantidades de las siguientes variables.
   $sedeGrupo1 = 0;

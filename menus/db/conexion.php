@@ -2,7 +2,7 @@
 $Hostname = "pruebas.wappsi.com";
 $Username = "e6y1o9y1_ricardo";
 $Password = "Jm574817";
-$Database = "e6y1o9y1_infopae2018";  
+$Database = "e6y1o9y1_infopae2018";
 */
 
 $Hostname = "www.wappsi.com";

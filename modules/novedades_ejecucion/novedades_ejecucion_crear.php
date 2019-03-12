@@ -23,7 +23,6 @@
 		</div>
 		<div class="col-lg-4">
 			<div class="title-action">
-				<!-- <a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a> <a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a> -->
 				<a href="#" target="_self" class="btn btn-primary guaradarNovedad"><i class="fa fa-check"></i> Guardar</a>
 			</div>
 		</div>
