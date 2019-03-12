@@ -494,7 +494,7 @@ function submitDespacho(accion){
 
               if (data.respuesta[0].coincide.length > 1) {
                 Command: toastr.warning("Se encontró una inconsistencia con las manipuladoras, pero no afecta al despacho.", "Inconsistencia de manipuladoras.", {onHidden : function(){}})
-                $('#errDespachos').html(btn+"<b>Detalles de inconsistencia : </b> </br>"+data.respuesta[0].coincide);
+                $('#errDespachos').html("<b>Detalles de inconsistencia : </b> </br>"+data.respuesta[0].coincide);
                 $('#errDespachos').show();
               }
 
