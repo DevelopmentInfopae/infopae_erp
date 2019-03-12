@@ -1,6 +1,14 @@
 <?php
 include '../config.php';
 require_once '../db/conexion.php';
+
+
+
+
+
+
+
+
 //var_dump($_POST);
 // echo "<br><br><br><br><br><br>";
 
@@ -31,13 +39,25 @@ $barrasTotalesSemana = array();
 $entregas = array();
 $entregasTotalesMes = array();
 $entregasTotalesSemana = array();
-
 $labelsSemanas = array();
-
-
 $bandera = 0;
 
-
+date_default_timezone_set('America/Bogota'); 
+$mesActual = date('m'); 
+$diaActual = date('d'); 
+$indiceDiaActual = 0; 
+// Buscar el día actual en planilla dias para saber a que D corresponde 
+$consulta = "select * from planilla_dias where mes = \"$mesActual\""; 
+$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)); 
+if($resultado->num_rows >= 1){ 
+	$row = $resultado->fetch_assoc(); 
+	for($iD = 1; $iD <= 22; $iD++){ 
+		if($row["D$iD"] == $diaActual){ 
+			$indiceDiaActual = $iD; 
+		} 
+	} 
+} 
+//var_dump($indiceDiaActual); 
 
 
 
@@ -49,9 +69,9 @@ $bandera = 0;
 
 
 if($timeOption == 1){
- 	$rutaArchivo = "arrays_rector_semana.txt";
+ 	$rutaArchivo = "arrays_rector_semana_$codInst.txt";
 }else{
-	$rutaArchivo = "arrays_rector_mes.txt";
+	$rutaArchivo = "arrays_rector_mes_$codInst.txt";
 }
 
 if($actualizar == 0){
@@ -74,21 +94,7 @@ if($actualizar == 0){
 
 if($actualizar == 1 || $bandera > 0){
 	$periodoActual = $_SESSION['periodoActual'];
-
-
-	$Link = new mysqli($Hostname, $Username, $Password, $Database);
-	if ($Link->connect_errno) {
-	echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-	}
-	$Link->set_charset("utf8");
-
 	$consulta = " select ps.dia, ps.semana, ps.mes, ps.ano, (select sum(sc.num_est_focalizados) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_inst = '$codInst') as cantidad from planilla_semanas ps";
-
-
-
-
-
-
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	$cantidadTotal = 0;
 	$mesInicial = 0;
@@ -242,7 +248,15 @@ if($actualizar == 1 || $bandera > 0){
 					if($i > 1){
 						$consulta2.= " , ";
 					}
-					$consulta2.= " sum(D$i) as D$i ";
+					if($mes == $mesActual){ 
+						if($i > $indiceDiaActual){ 
+							$consulta2.= " 0 as D$i "; 
+						}else{ 
+							$consulta2.= " sum(D$i) as D$i "; 
+						} 
+					}else{ 
+						$consulta2.= " sum(D$i) as D$i ";
+					}
 				}
 				$consulta2.= " from entregas_res_$mes$periodoActual ";
 				if($codInst != 0){
@@ -259,9 +273,19 @@ if($actualizar == 1 || $bandera > 0){
 			// Como ya se hizo la búsqueda de las entregas para los días del mes empezamos con la captura de los totales
 			// para las semanas y los meses.
 			//var_dump($entregasMes);
-			$aux = 'D'.$indiceDia;
-			$cantidadTotalMes = $cantidadTotalMes + $entregasMes[$aux];
-			$cantidadTotalSemana = $cantidadTotalSemana + $entregasMes[$aux];
+			if($mes >= $mesActual){ 
+				if($indiceDia <= $indiceDiaActual){
+					$aux = 'D'.$indiceDia; 
+					$cantidadTotalMes = $cantidadTotalMes + $entregasMes[$aux]; 
+					$cantidadTotalSemana = $cantidadTotalSemana + $entregasMes[$aux];
+				}else{ 
+					break;	 
+				} 
+			}else{ 
+				$aux = 'D'.$indiceDia; 
+				$cantidadTotalMes = $cantidadTotalMes + $entregasMes[$aux]; 
+				$cantidadTotalSemana = $cantidadTotalSemana + $entregasMes[$aux]; 
+			} 
 			$indiceDia++;
 		}
 	}
@@ -288,7 +312,8 @@ if($actualizar == 1 || $bandera > 0){
     $mesesEntregados = array();
     foreach ($meses as $mes) {
         $mesConsulta = $mes['mes'];
-        $consulta = " show tables like 'entregas_res_$mesConsulta$periodoActual' ";
+				$consulta = " show tables like 'entregas_res_$mesConsulta$periodoActual' ";
+				// echo "<br>$consulta<br>";
         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
         if($resultado->num_rows >= 1){
             $mesesEntregados[] = $mes['mes'];
@@ -296,7 +321,8 @@ if($actualizar == 1 || $bandera > 0){
         else{
             break;
         }
-    }
+		}
+		// echo "<br><br>Termina de validar la existencia de las tablas.<br><br>";
 
     // Array de lo que se deberia ENTREGAR
     $consulta = " select sum(sc.APS) as APS, sum(sc.CAJMRI) as CAJMRI, sum(sc.CAJTRI) as CAJTRI, sum(sc.CAJMPS) as CAJMPS from planilla_semanas ps left join sedes_cobertura sc on ps.semana = sc.semana ";
@@ -320,14 +346,31 @@ if($actualizar == 1 || $bandera > 0){
     foreach ($mesesEntregados as $mes) {
         if($aux > 0){
             $consulta .= " union ";
-        }
-        $consulta .= " select sum(D1+D2+D3+D4+D5+D6+D7+D8+D9+D10+D11+D12+D13+D14+D15+D16+D17+D18+D19+D20+D21+D22) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual ";
-        if($codInst != 0){
-			$consulta .= " where cod_inst = '$codInst' ";
+				}
+				if($mes == $mesActual){ 
+					$consulta .= " select sum( "; 
+					for($iD = 1; $iD <= $indiceDiaActual; $iD++){ 
+						if($iD > 1){ 
+							$consulta .= "+"; 
+						} 
+						$consulta .= "D$iD"; 
+					} 
+					$consulta .= " ) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual "; 
+					if($codInst != 0){ $consulta .= " where cod_inst = '$codInst' "; }
+					$consulta .= " group by tipo_complem ";
+				}else{ 
+					$consulta .= " select sum(D1+D2+D3+D4+D5+D6+D7+D8+D9+D10+D11+D12+D13+D14+D15+D16+D17+D18+D19+D20+D21+D22) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual ";
+					if($codInst != 0){ $consulta .= " where cod_inst = '$codInst' "; }
+					$consulta .= " group by tipo_complem ";
+				}
+
+      $aux++;
 		}
-		$consulta .= " group by tipo_complem ";
-        $aux++;
-    }
+
+		//echo "<br>$consulta<br>";
+		
+
+
 		if($consulta != ''){
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 			if($resultado->num_rows >= 1){
@@ -419,11 +462,11 @@ if($actualizar == 1 || $bandera > 0){
 
 
 	// Escribiendo archivo plano
-	$file = fopen("arrays_rector_semana.txt", "w");
+	$file = fopen("arrays_rector_semana_$codInst.txt", "w");
 	fwrite($file, json_encode(array("barras"=>$barrasTotalesSemana, "entregas"=>$entregasTotalesSemana, "labels"=>$labelsSemanas, "totales"=>$htmlTotales)) . PHP_EOL);
 	fclose($file);
 
-	$file = fopen("arrays_rector_mes.txt", "w");
+	$file = fopen("arrays_rector_mes_$codInst.txt", "w");
 	fwrite($file, json_encode(array("barras"=>$barrasTotalesMes, "entregas"=>$entregasTotalesMes, "labels"=>$labelsSemanas, "totales"=>$htmlTotales)) . PHP_EOL);
 	fclose($file);
 }
