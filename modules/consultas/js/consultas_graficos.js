@@ -58,6 +58,7 @@ function graficar_resumida (){
     type:'post',
     url:'functions/fn_grafica_resumida.php',
     data:datos,
+    dataType: "HTML",
 		beforeSend: function(){},
 		success: function(data){
 			try {
@@ -106,7 +107,7 @@ function graficar_resumida (){
             labels: obj.titulos,
             datasets: [{
                 data: obj.valores,
-                backgroundColor: ["#a3e1d4","#dedede","#b5b8cf","#5c7f78", "#b9fff0", "#2e403c", "#a6e5d8"]              
+                backgroundColor: ["#a3e1d4","#dedede","#b5b8cf","#5c7f78", "#b9fff0", "#2e403c", "#a6e5d8"]
             }]
         } ;
 
@@ -129,7 +130,10 @@ function graficar_resumida (){
 				$('.debug').append('<br/><br/>');
 				$('.debug').append(data);
 			}
-		}
+		},
+    error: function(data) {
+      console.log(data.responseText);
+    }
   })
 	.done(function(){ })
 	.fail(function(){ })

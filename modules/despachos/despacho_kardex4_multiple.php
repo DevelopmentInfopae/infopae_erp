@@ -13,28 +13,16 @@ $largoNombre = 30;
 $sangria = " - ";
 $tamannoFuente = 6;
 $digitosDecimales = 2;
-
-//var_dump($_POST);
-
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
 
-//require_once 'autenticacion.php';
-
-  $consGrupoEtario = "SELECT * FROM grupo_etario ";
-  $resGrupoEtario = $Link->query($consGrupoEtario);
-  if ($resGrupoEtario->num_rows > 0) {
-    while ($ge = $resGrupoEtario->fetch_assoc()) {
-      $get[] = $ge['DESCRIPCION'];
-    }
+$consGrupoEtario = "SELECT * FROM grupo_etario ";
+$resGrupoEtario = $Link->query($consGrupoEtario);
+if ($resGrupoEtario->num_rows > 0) {
+  while ($ge = $resGrupoEtario->fetch_assoc()) {
+    $get[] = $ge['DESCRIPCION'];
   }
-
-
-$Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-  echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
-$Link->set_charset("utf8");
 
 date_default_timezone_set('America/Bogota');
 $hoy = date("d/m/Y");
@@ -57,8 +45,7 @@ if(isset($_POST['rutaNm']) && $_POST['rutaNm']!= ''){
   $ruta = $_POST['rutaNm'];
 }
 
-//var_dump($_POST);
-$corteDeVariables = 15;
+$corteDeVariables = 16;
 if(isset($_POST['seleccionarVarios'])){
   $corteDeVariables++;
 }
@@ -72,85 +59,55 @@ if(isset($_POST['rutaNm'])){
   $corteDeVariables++;
 }
 
-
-
-// var_dump($_POST);
-
 $_POST = array_slice($_POST, $corteDeVariables);
 $_POST = array_values($_POST);
 
-// var_dump($_POST);
-
 $codesedes = [];
-
-
-
 $annoActual = $tablaAnnoCompleto;
-//var_dump($_POST);
 $despachosRecibidos = $_POST;
 
-
 foreach ($despachosRecibidos as &$valor){
-  //echo "<br>".$valor."<br>";
   $consulta = " SELECT de.*, tc.descripcion , u.Ciudad, tc.jornada, s.nom_inst , s.nom_sede FROM despachos_enc$mesAnno de
                 INNER JOIN sedes$anno  s ON de.cod_Sede = s.cod_sede
                 INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE
                 INNER JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO
                 WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor ";
-  // echo $consulta;
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
     $codesedes[$row['cod_Sede']] = $row['nom_sede'];
   }
-
 }
 
-// var_dump($codesedes);
+//CREACION DEL PDF
+class PDF extends FPDF{
+  function Header(){}
+  function Footer(){}
+}
 
-        class PDF extends FPDF{
-          function Header(){}
-          function Footer(){}
-        }
+$pdf= new PDF('L','mm',array(280,220));
+$pdf->SetMargins(8, 6.31, 8);
+$pdf->SetAutoPageBreak(false,5);
+$pdf->AliasNbPages();
 
-        //CREACION DEL PDF
-        // Creación del objeto de la clase heredada
-
-        $pdf= new PDF('L','mm',array(280,220));
-        $pdf->SetMargins(8, 6.31, 8);
-        $pdf->SetAutoPageBreak(false,5);
-        $pdf->AliasNbPages();
-
-// Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el
-// municipio que lo usaremos en los encabezados de la tabla.
-
+// Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
 foreach ($codesedes as $sedecod => $isset) {
   $despachos = array();
+        $mes = '';
+        $sede = '';
+        $dias = '';
+        $ciclo = '';
+        $nomSede = '';
         $sedes = array();
         $tipos = array();
-        $semanas = array();
-        $municipios = array();
-
-
-
-
-        $semanasMostrar = array();
-        $diasMostrar = array();
         $ciclos = array();
-        $ciclo = '';
-        $sede = '';
-
-
-
-
-        $dias = '';
-        $mes = '';
-
+        $semanas = array();
         $nomInstitucion = '';
-        $nomSede = '';
+        $municipios = array();
+        $diasMostrar = array();
+        $semanasMostrar = array();
 
-        foreach ($despachosRecibidos as &$valor){
-          //echo "<br>".$valor."<br>";
+        foreach ($despachosRecibidos as &$valor) {
           $consulta = " SELECT de.*, tc.descripcion , u.Ciudad, tc.jornada, s.nom_inst , s.nom_sede FROM despachos_enc$mesAnno de
                         INNER JOIN sedes$anno  s ON de.cod_Sede = s.cod_sede
                         INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE
@@ -220,7 +177,7 @@ foreach ($codesedes as $sedecod => $isset) {
             continue;
           }
         }// Termina el For Each de los despachos recibidos
-        //var_dump($despachos);
+
 
         $auxDias = '';
         for ($i=0; $i < count($diasMostrar) ; $i++) {
@@ -282,48 +239,30 @@ foreach ($codesedes as $sedecod => $isset) {
         $totalTotal = 0;
         $banderaTotales = 0;
         for ($i=0; $i < count($sedes) ; $i++) {
-
           $auxSede = $sedes[$i];
-
-          // $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
-          $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '$tipo'";
-
           // Consulta que busca las coberturas de las diferentes sedes.
-          //echo "<br><br>".$consulta."<br><br>";
-
+          $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede, (Cobertura_G1 + Cobertura_G2 + Cobertura_G3) AS SumaCoberturas FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '$tipo' ORDER BY SumaCoberturas DESC LIMIT 1";
+          // echo $consulta . "<br>";
           $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
           if($resultado->num_rows >= 1){
-
             while($row = $resultado->fetch_assoc()) {
               $sedeCobertura['cod_sede'] = $row['cod_sede'];
-              $aux1 = "Cobertura_G1";
-              $sedeCobertura['grupo1'] = $row[$aux1];
-              $aux2 = "Cobertura_G2";
-              $sedeCobertura['grupo2'] = $row[$aux2];
-              $aux3 = "Cobertura_G3";
-              $sedeCobertura['grupo3'] = $row[$aux3];
-              $sedeCobertura['total'] = $row[$aux1] + $row[$aux2] + $row[$aux3];
+              $sedeCobertura['grupo1'] = $row["Cobertura_G1"];
+              $sedeCobertura['grupo2'] = $row["Cobertura_G2"];
+              $sedeCobertura['grupo3'] = $row["Cobertura_G3"];
+              $sedeCobertura['total'] = $row["Cobertura_G1"] + $row["Cobertura_G2"] + $row["Cobertura_G3"];
               $sedesCobertura[] = $sedeCobertura;
 
-
-              //var_dump($row);
-
-
               if($banderaTotales == 0){
-                $total1 = $total1 + $row[$aux1];
-                $total2 = $total2 + $row[$aux2];
-                $total3 = $total3 + $row[$aux3];
+                $total1 = $total1 + $row["Cobertura_G1"];
+                $total2 = $total2 + $row["Cobertura_G2"];
+                $total3 = $total3 + $row["Cobertura_G3"];
                 $totalTotal = $totalTotal +  $sedeCobertura['total'];
                 $banderaTotales++;
               }
-
             }
-
           }
         }
-
-
-
 
         $totalesSedeCobertura  = array(
             "grupo1" => $total1,
@@ -337,7 +276,7 @@ foreach ($codesedes as $sedecod => $isset) {
         $totalGrupo2 = 0;
         $totalGrupo3 = 0;
 
-        // Vamos a buscar los alimentos de los depachos
+        // Vamos a buscar los alimentos de los despachos
         $alimentos = array();
         for ($i=0; $i < count($despachos) ; $i++) {
           $despacho = $despachos[$i];

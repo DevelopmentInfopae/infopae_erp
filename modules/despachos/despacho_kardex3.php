@@ -5,35 +5,16 @@ require('../../fpdf181/fpdf.php');
 require_once '../../db/conexion.php';
 include '../../php/funciones.php';
 
-
-
-//echo "Tiempo de ejecución: ";
-//echo ini_get('max_execution_time');
 set_time_limit (0);
-//echo "<br> Tiempo de ejecución: ";
-//echo ini_get('max_execution_time');
-//echo "<br> Limite de Memoria: ";
-//echo ini_get('memory_limit');
 ini_set('memory_limit','6000M');
-//echo "<br> Limite de Memoria: ";
-//echo ini_get('memory_limit');
-$largoNombre = 28;
-
-$sangria = " - ";
-$tamannoFuente = 7;
-$digitosDecimales = 2;
 date_default_timezone_set('America/Bogota');
 
-//var_dump($_POST);
-//var_dump($_SESSION);
-
-$Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-  echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}
-$Link->set_charset("utf8");
-
 $mesAnno = '';
+$sangria = " - ";
+$largoNombre = 28;
+$tamannoFuente = 7;
+$digitosDecimales = 2;
+
 if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho']) ){
   // Se va a recuperar el mes y el año para las tablaMesAnno
   $mes = $_POST['despachoMesI'];
@@ -78,17 +59,17 @@ if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
   //var_dump($_POST);
 }
 
+//CREACION DEL PDF
 class PDF extends FPDF{
   function Header(){}
   function Footer(){}
 }
 
-//CREACION DEL PDF
-  // Creación del objeto de la clase heredada
-  $pdf= new PDF('L','mm',array(330,215.9));
-  $pdf->SetMargins(8, 6.31, 8);
-  $pdf->SetAutoPageBreak(false,5);
-  $pdf->AliasNbPages();
+// Creación del objeto de la clase heredada
+$pdf= new PDF('L','mm',array(330,215.9));
+$pdf->SetMargins(8, 6.31, 8);
+$pdf->SetAutoPageBreak(false,5);
+$pdf->AliasNbPages();
 
 for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   // Borrando variables array para usarlas en cada uno de los despachos
@@ -102,12 +83,12 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   $aux = $claves[$kDespachos];
   $despacho = $_POST[$aux];
   $consulta = " SELECT de.*, tc.descripcion, s.nom_sede, s.nom_inst, u.Ciudad, td.Descripcion as tipoDespachoNm, tc.jornada
-  FROM despachos_enc$mesAnno de
-  left join sedes$anno s on de.cod_sede = s.cod_sede
-  left join ubicacion u on s.cod_mun_sede = u.CodigoDANE
-  left join tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
-  left join tipo_despacho td on de.TipoDespacho = td.Id
-  WHERE de.Num_Doc = $despacho ";
+                FROM despachos_enc$mesAnno de
+                left join sedes$anno s on de.cod_sede = s.cod_sede
+                left join ubicacion u on s.cod_mun_sede = u.CodigoDANE
+                left join tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
+                left join tipo_despacho td on de.TipoDespacho = td.Id
+                WHERE de.Num_Doc = $despacho ";
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
 
@@ -182,7 +163,7 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   // $consulta = " select Etario1_$modalidad as grupo1, Etario2_$modalidad as grupo2, Etario3_$modalidad as grupo3
   // from sedes_cobertura
   // where semana = '$semana' and cod_sede  = $codSede ";
-  $consulta = "SELECT Cobertura_G1 AS grupo1, Cobertura_G2 AS grupo2, Cobertura_G3 AS grupo3 FROM despachos_enc$mesAnno WHERE semana = '$semana' and cod_sede  = $codSede AND Tipo_Complem = '$tipo'";
+  $consulta = "SELECT Cobertura_G1 AS grupo1, Cobertura_G2 AS grupo2, Cobertura_G3 AS grupo3 FROM despachos_enc$mesAnno WHERE Num_Doc = '$despacho';";
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
   if($resultado->num_rows >= 1){
