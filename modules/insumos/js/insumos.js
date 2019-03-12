@@ -491,6 +491,13 @@ function submitDespacho(accion){
                $('#errDespachos').show();
           } else {
               Command: toastr.info("El proceso de validación y registro de despacho es un poco extenso, por favor espere.", "Aguarde un momento.", {onHidden : function(){}})
+
+              if (data.respuesta[0].coincide.length > 1) {
+                Command: toastr.warning("Se encontró una inconsistencia con las manipuladoras, pero no afecta al despacho.", "Inconsistencia de manipuladoras.", {onHidden : function(){}})
+                $('#errDespachos').html("<b>Detalles de inconsistencia : </b> </br>"+data.respuesta[0].coincide);
+                $('#errDespachos').show();
+              }
+
               datos = $('#formDespachoInsumo').serialize();
               $.ajax({
                type: "POST",
