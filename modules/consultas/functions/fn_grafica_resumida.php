@@ -68,9 +68,9 @@ Agrupamiento de datos:
 10. Zona Residencia Estudiante
 */
 
-    $segmento = 2;
-    $serieSegmento = "Estratos";
-    $consultaSegmento = "es.nombre";
+$segmento = 2;
+$serieSegmento = "Estratos";
+$consultaSegmento = "es.nombre";
 
 if (isset($_POST['segmento'])) {
     $segmento = $_POST['segmento'];
@@ -157,49 +157,24 @@ $Link = new mysqli($Hostname, $Username, $Password, $Database);
 $result = $Link->query($vsql);
 $Link->close();
 
+$valores=array();
+$titulos=array();
+$resultados=0;
 
-    $valores=array();
-    $titulos=array();
-    $resultados=0;
+while($row = $result->fetch_assoc()) {
+    $valores[] = $row['total'];
 
-    while($row = $result->fetch_assoc()) {
-        $valores[] = $row['total'];
+    if($segmento == 10) {
+      $auxZona = $row['consulta'];
+      if ($auxZona == 1) {
+        $auxZona = 'URBANA';
+      } else if ($auxZona == 2) { $auxZona = 'RURAL'; }
 
+      $titulos[] =  $auxZona;
+    } else { $titulos[] = $row['consulta']; }
+  }
 
+    $resultados++;
+}
 
-        if($segmento == 10){
-
-         // 1=Urbana y 2=Rural
-
-          $auxZona = $row['consulta'];
-          if ($auxZona == 1) {
-            $auxZona = 'URBANA';
-          }
-          else if ($auxZona == 2) {
-            $auxZona = 'RURAL';
-          }
-
-
-
-          $titulos[] =  $auxZona;
-
-        }
-        else{
-
-        $titulos[] = $row['consulta'];
-
-
-        }
-
-
-
-
-
-
-        $resultados++;
-    }
-
-//var_dump($serieSegmento);
-//var_dump($titulos);
-//var_dump($valores);
 echo json_encode(array("serieSegmento"=>$serieSegmento,"titulos"=>$titulos,"valores"=>$valores));

@@ -333,9 +333,11 @@ $total1 = 0;
 $total2 = 0;
 $total3 = 0;
 $totalTotal = 0;
-for ($i=0; $i < /*count($sedes)*/1; $i++) {
+
+for ($i=0; $i < count(array_unique($sedes)); $i++) {
   $auxSede = $sedes[$i];
-  $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."'";
+  $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede, (Cobertura_G1 + Cobertura_G2 + Cobertura_G3) sumaCoberturas FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."' ORDER BY sumaCoberturas DESC LIMIT 1";
+  // echo $consulta . "<br>";
   // Consulta que busca las coberturas de las diferentes sedes.
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){

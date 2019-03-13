@@ -34,7 +34,6 @@
             <div class="row">
               <div class="col-sm-3 form-group">
                 <label for="subtipo">Tipo de despacho</label>
-                <!-- Planilla semanas -->
                 <select class="form-control" name="subtipo" id="subtipo">
                   <option value="">Seleccione uno</option>
                   <?php
@@ -44,12 +43,12 @@
                     while($row = $resultado->fetch_assoc()) { ?>
                       <option value="<?php echo $row["Id"]; ?>" <?php  if (isset($_POST['subtipo']) && ($_POST['subtipo'] == $row["Id"]) ) { echo ' selected '; } ?>   ><?php echo $row["Movimiento"]; ?></option>
                       <?php
-                    }// Termina el while
-                  }//Termina el if que valida que si existan resultados
+                    }
+                  }
                   ?>
                 </select>
                 <input type="hidden" id="subtipoNm" name="subtipoNm" value="">
-              </div><!-- /.col -->
+              </div>
               <div class="col-sm-3 form-group">
                 <label for="subtipo">Proveedor / Empleado</label>
                 <select class="form-control" name="proveedorEmpleado" id="proveedorEmpleado">
@@ -60,19 +59,19 @@
               <div class="col-sm-3 form-group">
                 <label for="subtipo">Semana</label>
                 <select class="form-control" name="semana" id="semana">
-                <option value="">Seleccione una</option>
-                <?php
-                $consulta = " select DISTINCT SEMANA from planilla_semanas ";
-                $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-                if($resultado->num_rows >= 1){
-                  while($row = $resultado->fetch_assoc()) { ?>
-                    <option value="<?php echo $row["SEMANA"]; ?>" <?php  if (isset($_POST['semana']) && ($_POST['semana'] == $row["SEMANA"]) ) { echo ' selected '; } ?>   ><?php echo $row["SEMANA"]; ?></option>
-                    <?php
-                  }// Termina el while
-                }//Termina el if que valida que si existan resultados
-                ?>
-              </select>
-              </div><!-- /.col -->
+                  <option value="">Seleccione una</option>
+                  <?php
+                  $consulta = " select DISTINCT SEMANA from planilla_semanas ";
+                  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+                  if($resultado->num_rows >= 1){
+                    while($row = $resultado->fetch_assoc()) { ?>
+                      <option value="<?php echo $row["SEMANA"]; ?>" <?php  if (isset($_POST['semana']) && ($_POST['semana'] == $row["SEMANA"]) ) { echo ' selected '; } ?>   ><?php echo $row["SEMANA"]; ?></option>
+                      <?php
+                    }
+                  }
+                  ?>
+                </select>
+              </div>
               <div class="col-sm-3 form-group">
                 <label for="dias">Días</label>
                 <!-- Planilla semanas -->
@@ -157,17 +156,6 @@
                 <button type="button" id="btnQuitar" class="botonParametro btn btn-primary">-</button>
               </div><!-- /.col -->
             </div><!-- -/.row -->
-
-
-
-
-            <!-- <div class="row">
-              <div class="col-sm-6 form-group">
-                <input type="checkbox" name="selectVarios" id="selectVarios" value="">
-                <label for="selectVarios">Seleccionar Todos</label>
-              </div>
-            </div> -->
-
 
             <div class="table-responsive">
 
