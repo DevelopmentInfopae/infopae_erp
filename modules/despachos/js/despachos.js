@@ -70,6 +70,25 @@ $(document).ready(function(){
       }
     }
   });
+
+  // Configuración del pligin toast
+  toastr.options = {
+    "closeButton": true,
+    "debug": false,
+    "progressBar": true,
+    "preventDuplicates": false,
+    "positionClass": "toast-top-right",
+    "onclick": null,
+    "showDuration": "400",
+    "hideDuration": "1000",
+    "timeOut": "2000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  }
+
 });
 
 function buscar_institucion(municipio,tipo){
@@ -200,12 +219,13 @@ function despachos_kardex(){
 }
 
 function despachos_kardex_multiple(){
-  //Contando los elementos checked
   var cant = 0;
   var despacho = 0;
   var semana = 0;
   var tipo = '';
   var bandera = 0;
+
+  // Ciclo para contar los despachos seleccionados.
   $("tbody input:checked").each(function(){
     if(bandera == 0){
       cant++;
@@ -218,8 +238,7 @@ function despachos_kardex_multiple(){
         else{
           if(semana != $("#semana_"+despacho).val()){
             bandera++;
-            alert('Los despachos seleccionados deben ser de la misma semana');
-
+            Command: toastr.warning('Los despachos seleccionados deben ser de la misma <strong>semana</strong>', 'Advertencia');
           }
         }
       }
@@ -231,7 +250,8 @@ function despachos_kardex_multiple(){
         else{
           if(tipo != $("#tipo_"+despacho).val()){
             bandera++;
-            alert('Los despachos seleccionados deben ser del mismo tipo de ración');
+            Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
+            alert('');
           }
         }
       }
@@ -239,13 +259,12 @@ function despachos_kardex_multiple(){
   });
 
   if(cant == 0){
-    alert('Debe seleccionar al menos un despacho para continuar');
+    Command: toastr.warning('Debe seleccionar al menos un despacho para continuar', 'Advertencia');
     bandera++;
   }
 
   if(bandera == 0){
     $( ".soloJs" ).remove();
-    console.log('Se van a mostrar los despachos por sede');
 
     $('#formDespachos').attr('action', 'despacho_kardex4_multiple.php');
     $('#formDespachos').attr('method', 'post');
@@ -477,8 +496,7 @@ function despachos_por_sede(){
         else{
           if(semana != $("#semana_"+despacho).val()){
             bandera++;
-            alert('Los despachos seleccionados deben ser de la misma semana');
-
+            Command: toastr.warning('Los despachos seleccionados deben ser de la misma <strong>semana</strong>', 'Advertencia');
           }
         }
       }
@@ -490,8 +508,8 @@ function despachos_por_sede(){
         else{
           if(tipo != $("#tipo_"+despacho).val()){
             bandera++;
-            alert('Los despachos seleccionados deben ser del mismo tipo de ración');
-
+            alert('');
+            Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
           }
         }
       }
@@ -499,23 +517,14 @@ function despachos_por_sede(){
   });
 
   if(cant == 0){
-    alert('Debe seleccionar al menos un despacho para continuar');
+    Command: toastr.warning('Debe seleccionar al menos un despacho para continuar', 'Advertencia');
     bandera++;
   }
 
   if(bandera == 0){
     $( ".soloJs" ).remove();
-    console.log('Se van a mostrar los despachos por sede');
 
     $('#formDespachos').attr('action', 'despacho_por_sede.php');
-
-
-
-
-
-
-
-
     $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
     $('#formDespachos').attr('method', 'get');
@@ -524,7 +533,7 @@ function despachos_por_sede(){
 
 function despachoPorSede(despacho){
   console.log('Click en una fila.');
-  despacho = despacho;
+  // despacho = despacho;
   estado = $("#estado_"+despacho).val();
   console.log("Estado del despacho: "+estado);
   if(estado != 0){
@@ -539,13 +548,14 @@ function despachoPorSede(despacho){
 }
 
 function despachos_consolidado(){
-  //Contando los elementos checked
   var cant = 0;
-  var despacho = 0;
-  var semana = 0;
   var tipo = '';
+  var semana = 0;
   var bandera = 0;
-  $("tbody input:checked").each(function(){
+  var despacho = 0;
+
+  // Ciclo para contar los despachos seleccionados.
+  $('tbody input:checked').each(function(){
     if(bandera == 0){
       cant++;
       despacho = $(this).val();
@@ -553,12 +563,10 @@ function despachos_consolidado(){
       if(bandera == 0){
         if(semana == 0){
           semana = $("#semana_"+despacho).val();
-        }
-        else{
+        } else{
           if(semana != $("#semana_"+despacho).val()){
             bandera++;
-            alert('Los despachos seleccionados deben ser de la misma semana');
-
+            Command: toastr.warning('Los despachos seleccionados deben ser de la misma <strong>semana</strong>', "Advertencia");
           }
         }
       }
@@ -570,8 +578,7 @@ function despachos_consolidado(){
         else{
           if(tipo != $("#tipo_"+despacho).val()){
             bandera++;
-            alert('Los despachos seleccionados deben ser del mismo tipo de ración');
-
+            Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
           }
         }
       }
@@ -579,18 +586,15 @@ function despachos_consolidado(){
   });
 
   if(cant == 0){
-    alert('Debe seleccionar al menos un despacho para continuar');
+    Command: toastr.warning('Debe seleccionar al menos un despacho para continuar', 'Advertencia');
     bandera++;
   }
 
   if(bandera == 0){
     $( ".soloJs" ).remove();
-    console.log('Se van a mostrar los despachos consolidados');
-
 
     var rutaSeleccionada = $('#ruta option:selected').text();
     $('#rutaNm').val(rutaSeleccionada);
-
 
     $('#formDespachos').attr('action', 'despacho_consolidado.php');
     $('#formDespachos').attr('method', 'post');
