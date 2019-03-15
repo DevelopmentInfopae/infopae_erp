@@ -67,7 +67,7 @@
   $pdf->SetFont('Arial','B',8);
   $pdf->Cell(8,4.76,utf8_decode('RUTA:'),0,0,'L',False);
   //$pdf->Cell(52,4.76,'',0,0,'L',False);
- 
+
 
 
 
@@ -177,7 +177,7 @@
   $pdf->Cell(57.8,14.1,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y+2.35);
   //$pdf->SetFont('Arial','B',8);
-  
+
 
 
   //$pdf->Cell(57.8,4.7,'SEMANA: '.$auxSemana,0,0,'C',False);
@@ -200,11 +200,11 @@
   $current_x = $pdf->GetX();
   $pdf->Cell(44.7,14.1,'',1,0,'L',False);
   $pdf->SetXY($current_x+2, $current_y+2.35);
-  
+
 
 
    $jm = '';
-   $jt = ''; 
+   $jt = '';
 
    // 2 es la jornada de la mañana
    // 3 es la jornada de la tarde
@@ -222,11 +222,11 @@
 
 
 
-  
+
   $pdf->SetXY($current_x, $current_y+14.1);
   $pdf->Ln(0.8);
 
-  $pdf->SetFont('Arial','B',8);
+  $pdf->SetFont('Arial','B',6.5);
   $pdf->Cell(72.76,15,'ALIMENTO',1,0,'C',False);
   $current_y = $pdf->GetY();
   $current_x = $pdf->GetX();
