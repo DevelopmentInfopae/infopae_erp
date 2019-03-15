@@ -507,16 +507,18 @@ for ($i=1; $i < count($alimentos) ; $i++) {
 for ($i=0; $i < count($alimentosTotales) ; $i++) {
   $alimentoTotal = $alimentosTotales[$i];
   $auxCodigo = $alimentoTotal['codigo'];
-  $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
-  from  fichatecnicadet ftd
-  inner join productos$anno  p on ftd.codigo=p.codigo
-  inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
-  where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' ";
+  $auxDespacho = $alimentoTotal["Num_Doc"];
+  $consulta = "SELECT DISTINCT p.Codigo, p.Descripcion AS Componente, p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5,
+  (SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $auxDespacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida
+              FROM productos$anno p
+              LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
+              INNER JOIN menu_aportes_calynut m ON p.Codigo=m.cod_prod
+              WHERE p.Codigo = $auxCodigo";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
     $alimentoTotal['componente'] = $row['Componente'];
-    $alimentoTotal['presentacion'] = $row['presentacion'];
+    $alimentoTotal['presentacion'] = $row['Umedida'];
     $alimentoTotal['grupo_alim'] = $row['grupo_alim'];
     $alimentoTotal['orden_grupo_alim'] = $row['orden_grupo_alim'];
 
