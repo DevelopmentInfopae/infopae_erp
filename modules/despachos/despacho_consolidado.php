@@ -203,6 +203,7 @@ if (!in_array($row['Semana'], $semanasMostrar, true)) {
       $clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
       if($clave !== false){
         $ciclo = $row['CICLO'];
+        $ciclos[] = $ciclo;
         if($mesInicial != $row['MES']){
           $mesesIniciales++;
           if($mesesIniciales > 1){
@@ -279,13 +280,15 @@ for ($i=0; $i < count($semanasMostrar) ; $i++) {
 }
 
 $auxCiclos = '';
-for ($i=0; $i < count($ciclos) ; $i++) {
-  if($i > 0){
-    $auxCiclos = $auxCiclos.", ";
-  }
-  $auxCiclos = $auxCiclos.$ciclos[$i];
-}
+// var_dump($ciclos);
+// for ($i=0; $i < count($ciclos) ; $i++) {
+//   if($i > 0){
+//     $auxCiclos = $auxCiclos.", ";
+//   }
+//   $auxCiclos = $auxCiclos.$ciclos[$i];
+// }
 
+$auxCiclos = $ciclos[0];
 
 $auxMenus = '';
 for ($i=0; $i < count($menusMostrar) ; $i++) {
