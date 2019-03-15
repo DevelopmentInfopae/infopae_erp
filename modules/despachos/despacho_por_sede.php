@@ -205,25 +205,26 @@ for ($k=0; $k < count($_POST) ; $k++){
   }
 
   for ($i=0; $i < count($alimentos) ; $i++) {
-    $alimento = $alimentos[$i];
-    $auxCodigo = $alimento['codigo'];
+    $auxCodigo = $alimentos[$i]['codigo'];
+    // $auxCodigo = $alimento['codigo'];
 
-    $consulta = " select distinct ftd.codigo, ftd.Componente,
+    $consulta = " SELECT distinct p.Codigo,
+    p.Descripcion AS Componente,
     p.nombreunidad2 presentacion,
     p.cantidadund1 cantidadPresentacion,
-    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida, ( select Cantidad
-
-    from despachos_det$mesAnno
-
-    where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 1 ) as cant_grupo1, ( select Cantidad
-    from despachos_det$mesAnno
-    where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
-
+    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida,
+    (select Cantidad
+      from despachos_det$mesAnno
+      where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 1 ) as cant_grupo1,
+    (select Cantidad
+      from despachos_det$mesAnno
+      where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
     (select Cantidad from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 3) as cant_grupo3,
     (SELECT cantu2 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu2,
     (SELECT cantu3 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu3,
     (SELECT cantu4 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu4,
     (SELECT cantu5 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu5,
+    (SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida,
     (SELECT cantotalpresentacion FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantotalpresentacion,
 
     p.cantidadund2,
@@ -235,28 +236,30 @@ for ($k=0; $k < count($_POST) ; $k++){
     p.nombreunidad4,
     p.nombreunidad5
 
-    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  order by m.orden_grupo_alim ASC, ftd.Componente DESC ";
+    FROM productos$anno p
+    LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
+    INNER JOIN menu_aportes_calynut m ON p.Codigo = m.cod_prod
+    WHERE p.Codigo = $auxCodigo
+    ORDER BY m.orden_grupo_alim ASC, p.Descripcion DESC ";
 
-        // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
-        //echo "<br><br>".$consulta."<br><br>";
+    // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
+    // where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'
+    // echo "<br><br>".$consulta."<br><br>";
 
     $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-
-    $alimento['componente'] = '';
-    $alimento['presentacion'] = '';
-    $alimento['grupo_alim'] = '';
-    $alimento['cant_grupo1'] = 0;
-    $alimento['cant_grupo2'] = 0;
-    $alimento['cant_grupo3'] = 0;
-    $alimento['cant_total'] = 0;
-
-
-
-
     if($resultado->num_rows >= 1){
+      $alimento['cant_total'] = 0;
+      $alimento['cant_grupo1'] = 0;
+      $alimento['cant_grupo2'] = 0;
+      $alimento['cant_grupo3'] = 0;
+      $alimento['grupo_alim'] = '';
+      $alimento['componente'] = '';
+      $alimento['presentacion'] = '';
+
       while($row = $resultado->fetch_assoc()){
+    // var_dump($row);
         $alimento['componente'] = $row['Componente'];
-        $alimento['presentacion'] = $row['presentacion'];
+        $alimento['presentacion'] = $row['Umedida'];
         $alimento['cantidadpresentacion'] = $row['cantidadPresentacion'];
         $alimento['grupo_alim'] = $row['grupo_alim'];
         $alimento['orden_grupo_alim'] = $row['orden_grupo_alim'];
@@ -319,7 +322,7 @@ for ($k=0; $k < count($_POST) ; $k++){
   /*************************************************************/
   /*************************************************************/
   /*************************************************************/
-//  var_dump($alimentos);
+ // var_dump($alimentos);
 unset($sort);
 unset($grupo);
   $sort = array();

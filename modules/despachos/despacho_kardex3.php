@@ -219,33 +219,29 @@ if($resultado->num_rows >= 1){
     $alimento = $alimentos[$i];
     $auxCodigo = $alimento['codigo'];
 
-    $consulta = " select distinct ftd.codigo, ftd.Componente,
+    $consulta = "SELECT distinct p.Codigo,
+    p.Descripcion AS Componente,
     p.nombreunidad2 presentacion,
     p.cantidadund1 cantidadPresentacion,
-
-    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida, ( select Cantidad
-
-    from despachos_det$mesAnno
-
-    where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 1 ) as cant_grupo1, ( select Cantidad
-    from despachos_det$mesAnno
-    where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
-
+    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida,
+    (select Cantidad
+      from despachos_det$mesAnno
+      where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 1 ) as cant_grupo1,
+    (select Cantidad
+      from despachos_det$mesAnno
+      where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
     (select Cantidad from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 3) as cant_grupo3,
-
-   (SELECT cantu2 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu2,
+    (SELECT cantu2 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu2,
     (SELECT cantu3 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu3,
     (SELECT cantu4 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu4,
     (SELECT cantu5 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu5,
+    (SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida,
     (SELECT cantotalpresentacion FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantotalpresentacion,
-
-
     ( SELECT sum(D1) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D1,
     ( SELECT sum(D2) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D2,
     ( SELECT sum(D3) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D3,
     ( SELECT sum(D4) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D4,
     ( SELECT sum(D5) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D5,
-
     p.cantidadund2,
     p.cantidadund3,
     p.cantidadund4,
@@ -255,7 +251,11 @@ if($resultado->num_rows >= 1){
     p.nombreunidad4,
     p.nombreunidad5
 
-    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' order by orden_grupo_alim ASC, ftd.Componente DESC ";
+    FROM productos$anno p
+    LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
+    INNER JOIN menu_aportes_calynut m ON p.Codigo = m.cod_prod
+    WHERE p.Codigo = $auxCodigo
+    ORDER BY m.orden_grupo_alim ASC, p.Descripcion DESC ";
 
 
     // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
@@ -276,7 +276,7 @@ if($resultado->num_rows >= 1){
     if($resultado->num_rows >= 1){
       while($row = $resultado->fetch_assoc()){
         $alimento['componente'] = $row['Componente'];
-        $alimento['presentacion'] = $row['presentacion'];
+        $alimento['presentacion'] = $row['Umedida'];
         $alimento['cantidadpresentacion'] = $row['cantidadPresentacion'];
         $alimento['grupo_alim'] = $row['grupo_alim'];
         $alimento['orden_grupo_alim'] = $row['orden_grupo_alim'];

@@ -427,7 +427,7 @@ for ($i=0; $i < count($despachos) ; $i++) {
   }
   $numero = $despacho['num_doc'];
   //$consulta = " select * from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $numero ";
-  $consulta = " select dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion
+  $consulta = " select dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion, pmd.Numero as Num_Doc
   from despachos_det$mesAnno dd
   left join productosmovdet$mesAnno pmd on dd.Tipo_Doc = pmd.Documento and dd.Num_Doc = pmd.Numero and dd.cod_Alimento = pmd.CodigoProducto
   where dd.Tipo_Doc = 'DES' and dd.Num_Doc = $numero  ";
@@ -449,6 +449,7 @@ for ($i=0; $i < count($despachos) ; $i++) {
     while($row = $resultado->fetch_assoc()){
       $alimento = array();
       $alimento['codigo'] = $row['cod_Alimento'];
+      $alimento['Num_Doc'] = $row['Num_Doc'];
       $auxGrupo = $row['Id_GrupoEtario'];
       $alimento['grupo'.$auxGrupo] = $row['Cantidad'];
 
@@ -516,7 +517,7 @@ for ($i=1; $i < count($alimentos) ; $i++) {
   }
 }
 
-//var_dump($alimentosTotales);
+// var_dump($alimentosTotales);
 
 
 
@@ -530,11 +531,13 @@ for ($i=1; $i < count($alimentos) ; $i++) {
 for ($i=0; $i < count($alimentosTotales) ; $i++) {
   $alimentoTotal = $alimentosTotales[$i];
   $auxCodigo = $alimentoTotal['codigo'];
-  $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion,m.grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
-  from  fichatecnicadet ftd
-  inner join productos$anno  p on ftd.codigo=p.codigo
-  inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
-  where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' ";
+  $auxDespacho = $alimentoTotal["Num_Doc"];
+          $consulta = "SELECT DISTINCT p.Codigo, p.Descripcion AS Componente, p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5,
+            (SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $auxDespacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida
+              FROM productos$anno p
+              LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
+              INNER JOIN menu_aportes_calynut m ON p.Codigo=m.cod_prod
+              WHERE p.Codigo = $auxCodigo";
 
 
 
@@ -545,7 +548,7 @@ for ($i=0; $i < count($alimentosTotales) ; $i++) {
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
     $alimentoTotal['componente'] = $row['Componente'];
-    $alimentoTotal['presentacion'] = $row['presentacion'];
+    $alimentoTotal['presentacion'] = $row['Umedida'];
     $alimentoTotal['grupo_alim'] = $row['grupo_alim'];
 
     $alimentoTotal['nombreunidad2'] = $row['NombreUnidad2'];
@@ -707,9 +710,9 @@ $grupoAlimActual = '';
 
     } else {
       if($item['presentacion'] == 'u'){
-        $aux = round(0+$aux); 
+        $aux = round(0+$aux);
       } else{
-        $aux = number_format($aux, 2, '.', ''); 
+        $aux = number_format($aux, 2, '.', '');
       }
     }
 

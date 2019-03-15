@@ -157,113 +157,83 @@
               </div><!-- /.col -->
             </div><!-- -/.row -->
 
-            <div class="table-responsive">
+            <hr>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="table-responsive">
+                  <table width="100%" id="box-table-a" class="table table-striped table-bordered table-hover selectableRows" >
+                    <thead>
+                      <tr>
+                        <th class="col-sm-1 text-center">
+                          <input type="checkbox" class="i-checks" name="selectVarios" id="selectVarios" value="">
+                        </th>
+                        <th>Municipio</th>
+                        <th>Institución</th>
+                        <th>Sede</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div><!-- /.table-responsive -->
+              </div>
+            </div>
 
-              <table width="100%" id="box-table-a" class="table table-striped table-bordered table-hover selectableRows" >
-            <thead>
-              <tr>
-                <th class="col-sm-1 text-center">
-                  <input type="checkbox" class="i-checks" name="selectVarios" id="selectVarios" value="">
-                </th>
-                <th>Municipio</th>
-                <th>Institución</th>
-                <th>Sede</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3 form-group">
+                <label for="bodegaOrigen">Bodega Origen</label>
+                <select class="form-control" name="bodegaOrigen" id="bodegaOrigen">
+                  <option value="">Seleccione una</option>
+                </select>
+              </div><!-- /.col -->
+              <div class="col-sm-3 form-group">
+                <label for="bodegaDestino">Bodega Destino</label>
+                <input type="text" name="bodegaDestino" id="bodegaDestino" value="Bodega asignada a sede" readonly="readonly" class="form-control">
+              </div><!-- /.col -->
+            </div><!-- -/.row -->
 
-            </div><!-- /.table-responsive -->
-
-
-
-
-        <hr>
-
-        <div class="row">
-          <div class="col-sm-3 form-group">
-              <label for="bodegaOrigen">Bodega Origen</label>
-              <select class="form-control" name="bodegaOrigen" id="bodegaOrigen">
-                <option value="">Seleccione una</option>
-              </select>
-          </div><!-- /.col -->
-          <div class="col-sm-3 form-group">
-            <label for="bodegaDestino">Bodega Destino</label>
-            <input type="text" name="bodegaDestino" id="bodegaDestino" value="Bodega asignada a sede" readonly="readonly" class="form-control">
-          </div><!-- /.col -->
-        </div><!-- -/.row -->
-
-        <div class="row">
-          <div class="col-sm-3 form-group">
-              <label for="tipoTransporte">Tipo Transporte</label>
-              <select class="form-control" name="tipoTransporte" id="tipoTransporte">
-                <option value="">Seleccione uno</option>
-                <?php
-                $consulta = " select * from tipovehiculo order by nombre asc ";
-                $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-                if($resultado->num_rows >= 1){
-                  while($row = $resultado->fetch_assoc()) { ?>
-                    <option value="<?php echo $row["Id"]; ?>" <?php  if (isset($_POST['tipoTransporte']) && ($_POST['tipoTransporte'] == $row["Id"]) ) { echo ' selected '; } ?>   ><?php echo $row["Nombre"]; ?></option>
-                    <?php
-                  }// Termina el while
-                }//Termina el if que valida que si existan resultados
-                ?>
-              </select>
-          </div><!-- /.col -->
-          <div class="col-sm-3 form-group">
-            <label for="placa">Placa</label>
-            <!-- Planilla tipoTransportes -->
-            <input type="text" name="placa" id="placa" value="" class="form-control">
-          </div><!-- /.col -->
-          <div class="col-sm-3 form-group">
-            <label for="conductor">Nombre Conductor</label>
-            <!-- Planilla tipoTransportes -->
-            <input type="text" name="conductor" id="conductor" value="" class="form-control">
-          </div><!-- /.col -->
-        </div><!-- -/.row -->
-
-
-
-
-
-
-
-
-
-
-
+            <div class="row">
+              <div class="col-sm-3 form-group">
+                <label for="tipoTransporte">Tipo Transporte</label>
+                <select class="form-control" name="tipoTransporte" id="tipoTransporte">
+                  <option value="">Seleccione uno</option>
+                  <?php
+                  $consulta = " select * from tipovehiculo order by nombre asc ";
+                  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+                  if($resultado->num_rows >= 1){
+                    while($row = $resultado->fetch_assoc()) { ?>
+                      <option value="<?php echo $row["Id"]; ?>" <?php  if (isset($_POST['tipoTransporte']) && ($_POST['tipoTransporte'] == $row["Id"]) ) { echo ' selected '; } ?>   ><?php echo $row["Nombre"]; ?></option>
+                  <?php
+                    }// Termina el while
+                  }//Termina el if que valida que si existan resultados
+                  ?>
+                </select>
+              </div><!-- /.col -->
+              <div class="col-sm-3 form-group">
+                <label for="placa">Placa</label>
+                <!-- Planilla tipoTransportes -->
+                <input type="text" name="placa" id="placa" value="" class="form-control">
+              </div><!-- /.col -->
+              <div class="col-sm-3 form-group">
+                <label for="conductor">Nombre Conductor</label>
+                <!-- Planilla tipoTransportes -->
+                <input type="text" name="conductor" id="conductor" value="" class="form-control">
+              </div><!-- /.col -->
+            </div><!-- -/.row -->
           </form>
-
-
-
           <div class="listadoFondo">
             <div class="listadoContenedor">
               <div class="listadoCuerpo">
               </div><!-- /.listadoCuerpo -->
             </div><!-- /.listadoContenedor -->
           </div><!-- /.listadoFondo -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
     </div><!-- /.col-lg-12 -->
@@ -271,41 +241,22 @@
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
 
 <?php include '../../footer.php'; ?>
+<!-- Mainly scripts -->
+<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
 
-    <!-- Mainly scripts -->
-    <script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
-    <script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
-    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
-    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
-    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
-    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-
-
-    <script src="<?php echo $baseUrl; ?>/modules/despachos/js/despacho_nuevo.js"></script>
-
-
-
-    <!-- Page-Level Scripts -->
-
-<script type="text/javascript">
-  $('.select2').select2({
-    width: "resolve"
-  });
-
-  <?php if (isset($_GET)) { ?>
-    $('#loader').fadeIn();
-  <?php } ?>
-</script>
+<!-- Custom and plugin javascript -->
+<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/despachos/js/despacho_nuevo.js"></script>
 
 <?php mysqli_close($Link); ?>
-
-
 
 </body>
 </html>
