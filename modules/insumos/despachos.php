@@ -290,7 +290,7 @@
                   LIMIT 2000;";
 }
 
-// echo $consulta;
+echo $consulta;
 ?>
               <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
         </div><!-- /.ibox-content -->
