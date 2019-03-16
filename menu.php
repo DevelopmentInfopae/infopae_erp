@@ -114,9 +114,9 @@
 			<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php"><span class="nav-label">Trazabilidad</span></a> </li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php"><span class="nav-label">Trazabilidad Insumos</span></a> </li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
-			<li><a href="#" class="sinDesarrollar">Bitácora de usuarios</a></li>
-			<li><a href="#" class="sinDesarrollar">Informe CHIP</a></li>
-			<li><a href="#" class="sinDesarrollar">Informe de alimentos ordenados por proveedor</a></li>
+			<li> <a href="#" class="sinDesarrollar">Bitácora de usuarios</a></li>
+			<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
 			<li><a href="#" class="sinDesarrollar">Informe de compras efectuadas al proveedor</a></li>
 		</ul>

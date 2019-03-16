@@ -203,6 +203,7 @@ if (!in_array($row['Semana'], $semanasMostrar, true)) {
       $clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
       if($clave !== false){
         $ciclo = $row['CICLO'];
+        $ciclos[] = $ciclo;
         if($mesInicial != $row['MES']){
           $mesesIniciales++;
           if($mesesIniciales > 1){
@@ -279,13 +280,15 @@ for ($i=0; $i < count($semanasMostrar) ; $i++) {
 }
 
 $auxCiclos = '';
-for ($i=0; $i < count($ciclos) ; $i++) {
-  if($i > 0){
-    $auxCiclos = $auxCiclos.", ";
-  }
-  $auxCiclos = $auxCiclos.$ciclos[$i];
-}
+// var_dump($ciclos);
+// for ($i=0; $i < count($ciclos) ; $i++) {
+//   if($i > 0){
+//     $auxCiclos = $auxCiclos.", ";
+//   }
+//   $auxCiclos = $auxCiclos.$ciclos[$i];
+// }
 
+$auxCiclos = $ciclos[0];
 
 $auxMenus = '';
 for ($i=0; $i < count($menusMostrar) ; $i++) {
@@ -333,9 +336,11 @@ $total1 = 0;
 $total2 = 0;
 $total3 = 0;
 $totalTotal = 0;
-for ($i=0; $i < /*count($sedes)*/1; $i++) {
+
+for ($i=0; $i < count(array_unique($sedes)); $i++) {
   $auxSede = $sedes[$i];
-  $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."'";
+  $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede, (Cobertura_G1 + Cobertura_G2 + Cobertura_G3) sumaCoberturas FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."' ORDER BY sumaCoberturas DESC LIMIT 1";
+  // echo $consulta . "<br>";
   // Consulta que busca las coberturas de las diferentes sedes.
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
@@ -505,16 +510,18 @@ for ($i=1; $i < count($alimentos) ; $i++) {
 for ($i=0; $i < count($alimentosTotales) ; $i++) {
   $alimentoTotal = $alimentosTotales[$i];
   $auxCodigo = $alimentoTotal['codigo'];
-  $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
-  from  fichatecnicadet ftd
-  inner join productos$anno  p on ftd.codigo=p.codigo
-  inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
-  where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' ";
+  $auxDespacho = $alimentoTotal["Num_Doc"];
+  $consulta = "SELECT DISTINCT p.Codigo, p.Descripcion AS Componente, p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5,
+  (SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $auxDespacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida
+              FROM productos$anno p
+              LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
+              INNER JOIN menu_aportes_calynut m ON p.Codigo=m.cod_prod
+              WHERE p.Codigo = $auxCodigo";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
     $alimentoTotal['componente'] = $row['Componente'];
-    $alimentoTotal['presentacion'] = $row['presentacion'];
+    $alimentoTotal['presentacion'] = $row['Umedida'];
     $alimentoTotal['grupo_alim'] = $row['grupo_alim'];
     $alimentoTotal['orden_grupo_alim'] = $row['orden_grupo_alim'];
 

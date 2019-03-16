@@ -5,35 +5,16 @@ require('../../fpdf181/fpdf.php');
 require_once '../../db/conexion.php';
 include '../../php/funciones.php';
 
-
-
-//echo "Tiempo de ejecución: ";
-//echo ini_get('max_execution_time');
 set_time_limit (0);
-//echo "<br> Tiempo de ejecución: ";
-//echo ini_get('max_execution_time');
-//echo "<br> Limite de Memoria: ";
-//echo ini_get('memory_limit');
 ini_set('memory_limit','6000M');
-//echo "<br> Limite de Memoria: ";
-//echo ini_get('memory_limit');
-$largoNombre = 28;
-
-$sangria = " - ";
-$tamannoFuente = 7;
-$digitosDecimales = 2;
 date_default_timezone_set('America/Bogota');
 
-//var_dump($_POST);
-//var_dump($_SESSION);
-
-$Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-  echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}
-$Link->set_charset("utf8");
-
 $mesAnno = '';
+$sangria = " - ";
+$largoNombre = 28;
+$tamannoFuente = 7;
+$digitosDecimales = 2;
+
 if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho']) ){
   // Se va a recuperar el mes y el año para las tablaMesAnno
   $mes = $_POST['despachoMesI'];
@@ -78,17 +59,17 @@ if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
   //var_dump($_POST);
 }
 
+//CREACION DEL PDF
 class PDF extends FPDF{
   function Header(){}
   function Footer(){}
 }
 
-//CREACION DEL PDF
-  // Creación del objeto de la clase heredada
-  $pdf= new PDF('L','mm',array(330,215.9));
-  $pdf->SetMargins(8, 6.31, 8);
-  $pdf->SetAutoPageBreak(false,5);
-  $pdf->AliasNbPages();
+// Creación del objeto de la clase heredada
+$pdf= new PDF('L','mm',array(330,215.9));
+$pdf->SetMargins(8, 6.31, 8);
+$pdf->SetAutoPageBreak(false,5);
+$pdf->AliasNbPages();
 
 for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   // Borrando variables array para usarlas en cada uno de los despachos
@@ -102,12 +83,12 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   $aux = $claves[$kDespachos];
   $despacho = $_POST[$aux];
   $consulta = " SELECT de.*, tc.descripcion, s.nom_sede, s.nom_inst, u.Ciudad, td.Descripcion as tipoDespachoNm, tc.jornada
-  FROM despachos_enc$mesAnno de
-  left join sedes$anno s on de.cod_sede = s.cod_sede
-  left join ubicacion u on s.cod_mun_sede = u.CodigoDANE
-  left join tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
-  left join tipo_despacho td on de.TipoDespacho = td.Id
-  WHERE de.Num_Doc = $despacho ";
+                FROM despachos_enc$mesAnno de
+                left join sedes$anno s on de.cod_sede = s.cod_sede
+                left join ubicacion u on s.cod_mun_sede = u.CodigoDANE
+                left join tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
+                left join tipo_despacho td on de.TipoDespacho = td.Id
+                WHERE de.Num_Doc = $despacho ";
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
 
@@ -182,7 +163,7 @@ for ($kDespachos=0; $kDespachos < count($_POST) ; $kDespachos++) {
   // $consulta = " select Etario1_$modalidad as grupo1, Etario2_$modalidad as grupo2, Etario3_$modalidad as grupo3
   // from sedes_cobertura
   // where semana = '$semana' and cod_sede  = $codSede ";
-  $consulta = "SELECT Cobertura_G1 AS grupo1, Cobertura_G2 AS grupo2, Cobertura_G3 AS grupo3 FROM despachos_enc$mesAnno WHERE semana = '$semana' and cod_sede  = $codSede AND Tipo_Complem = '$tipo'";
+  $consulta = "SELECT Cobertura_G1 AS grupo1, Cobertura_G2 AS grupo2, Cobertura_G3 AS grupo3 FROM despachos_enc$mesAnno WHERE Num_Doc = '$despacho';";
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
   if($resultado->num_rows >= 1){
@@ -238,33 +219,29 @@ if($resultado->num_rows >= 1){
     $alimento = $alimentos[$i];
     $auxCodigo = $alimento['codigo'];
 
-    $consulta = " select distinct ftd.codigo, ftd.Componente,
+    $consulta = "SELECT distinct p.Codigo,
+    p.Descripcion AS Componente,
     p.nombreunidad2 presentacion,
     p.cantidadund1 cantidadPresentacion,
-
-    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida, ( select Cantidad
-
-    from despachos_det$mesAnno
-
-    where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 1 ) as cant_grupo1, ( select Cantidad
-    from despachos_det$mesAnno
-    where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
-
+    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida,
+    (select Cantidad
+      from despachos_det$mesAnno
+      where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 1 ) as cant_grupo1,
+    (select Cantidad
+      from despachos_det$mesAnno
+      where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
     (select Cantidad from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 3) as cant_grupo3,
-
-   (SELECT cantu2 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu2,
+    (SELECT cantu2 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu2,
     (SELECT cantu3 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu3,
     (SELECT cantu4 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu4,
     (SELECT cantu5 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu5,
+    (SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida,
     (SELECT cantotalpresentacion FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantotalpresentacion,
-
-
     ( SELECT sum(D1) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D1,
     ( SELECT sum(D2) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D2,
     ( SELECT sum(D3) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D3,
     ( SELECT sum(D4) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D4,
     ( SELECT sum(D5) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D5,
-
     p.cantidadund2,
     p.cantidadund3,
     p.cantidadund4,
@@ -274,7 +251,11 @@ if($resultado->num_rows >= 1){
     p.nombreunidad4,
     p.nombreunidad5
 
-    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' order by orden_grupo_alim ASC, ftd.Componente DESC ";
+    FROM productos$anno p
+    LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
+    INNER JOIN menu_aportes_calynut m ON p.Codigo = m.cod_prod
+    WHERE p.Codigo = $auxCodigo
+    ORDER BY m.orden_grupo_alim ASC, p.Descripcion DESC ";
 
 
     // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
@@ -295,7 +276,7 @@ if($resultado->num_rows >= 1){
     if($resultado->num_rows >= 1){
       while($row = $resultado->fetch_assoc()){
         $alimento['componente'] = $row['Componente'];
-        $alimento['presentacion'] = $row['presentacion'];
+        $alimento['presentacion'] = $row['Umedida'];
         $alimento['cantidadpresentacion'] = $row['cantidadPresentacion'];
         $alimento['grupo_alim'] = $row['grupo_alim'];
         $alimento['orden_grupo_alim'] = $row['orden_grupo_alim'];

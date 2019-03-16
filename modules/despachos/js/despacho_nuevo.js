@@ -2,11 +2,9 @@ var itemsActuales = [];
 var dataset1;
 
 $(document).ready(function(){
-  $(document).on('iCheck', '.i-checks', function (){
-    checkboxClass: 'icheckbox_square-green',
-    radioClass: 'iradio_square-green'
-  })
+  $('.select2').select2({ width: "resolve" });
 
+  $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green' });
   $(document).on('ifChecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('check'); });
   $(document).on('ifUnchecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('uncheck'); });
 
@@ -15,6 +13,8 @@ $(document).ready(function(){
     order: [ 1, 'desc' ],
     pageLength: 25,
     responsive: true,
+    buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel'/*, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } */} ],
+    dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',
@@ -40,15 +40,17 @@ $(document).ready(function(){
   });
 
   $('#semana').change(function(){
-    var semana = $(this).val();
-    buscar_dias(semana);
+    buscar_dias($(this).val());
+
     $('#tipoRacion').val('');
     $('#municipio').html('<option value="">Seleccione uno</option>');
     $('#institucion').html('<option value="">Todos</option>');
     $('#sede').html('<option value="">Todos</option>');
+
     dataset1.clear();
     dataset1.destroy();
     $('#box-table-a tbody').html('<tr class="odd"> <td class=" sorting_1"></td> <td></td> <td></td> <td></td> </tr>');
+
     reiniciarTabla();
   });
 
@@ -139,8 +141,7 @@ $(document).ready(function(){
           }
 
           $('.i-checks').iCheck({
-            checkboxClass: 'icheckbox_square-green',
-            radioClass: 'iradio_square-green',
+            checkboxClass: 'icheckbox_square-green'
           });
         }
       })
@@ -166,6 +167,24 @@ $(document).ready(function(){
       reiniciarTabla();
     }
   });
+
+  // Configuración del pligin toast
+  toastr.options = {
+    "closeButton": true,
+    "debug": false,
+    "progressBar": true,
+    "preventDuplicates": false,
+    "positionClass": "toast-top-right",
+    "onclick": null,
+    "showDuration": "400",
+    "hideDuration": "1000",
+    "timeOut": "2000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  }
 });
 
 // Funcion para crear y guardar el despacho.
@@ -196,25 +215,25 @@ function generarDespacho(){
 
   // Validaciones para generar el despacho
   if(subtipo == ''){
-    alert('El campo tipo de despacho es obligatorio.');
+    Command: toastr.warning('El campo <strong>tipo de despacho</strong> es obligatorio.', 'Advertencia');
     bandera++;
   } else if (proveedorEmpleado == '') {
-    alert('El campo Proveedor / Empleado es obligatorio.');
+    Command: toastr.warning('El campo <strong>Proveedor / Empleado</strong> es obligatorio.', 'Advertencia');
     bandera++;
   } else if (semana == '') {
-    alert('El campo semana es obligatorio.');
+    Command: toastr.warning('El campo <strong>semana</strong> es obligatorio.', 'Advertencia');
     bandera++;
   } else if (dias.length == 0) {
-    alert('Debe seleccionar al menos un día para el despacho');
+    Command: toastr.warning('Debe seleccionar al menos un <strong>día</strong> para el despacho.', 'Advertencia');
     bandera++;
   } else if (itemsDespacho.length == 0) {
-    alert('Debe agregar al menos una sede para el despacho');
+    Command: toastr.warning('Debe agregar al menos una <strong>sede</strong> para el despacho.', 'Advertencia');
     bandera++;
   } else if (bodegaOrigen == '') {
-    alert('El campo bodega origen es obligatorio');
+    Command: toastr.warning('El campo <strong>bodega origen</strong> es obligatorio.', 'Advertencia');
     bandera++;
   } else if (tipoTransporte == '') {
-    alert('El campo tipo de transporte es obligatorio');
+    Command: toastr.warning('El campo <strong>tipo de transporte</strong> es obligatorio.', 'Advertencia');
     bandera++;
   }
 
@@ -267,6 +286,8 @@ function reiniciarTabla(){
     order: [ 1, 'desc' ],
     pageLength: 25,
     responsive: true,
+    buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel'/*, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } */} ],
+    dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',
@@ -281,18 +302,8 @@ function reiniciarTabla(){
         sPrevious: 'Anterior'
       }
     }
-    // drawCallback: function(settings) {
-    //     $('.i-checks').iCheck({
-    //      checkboxClass: 'icheckbox_square-green'
-    //     });
-    //   }
-    })
-    /*.on('draw.dt', function() {
-      $('.i-checks').iCheck({
-        checkboxClass: 'icheckbox_square-green',
-        radioClass: 'iradio_square-green',
-      });
-    })*/;// Fin Funcionamiento del report
+  });// Fin Funcionamiento del report
+
   var anchoTabla = $('#box-table-a').width();
   var anchoTabla = anchoTabla-8;
   $('.fg-toolbar').css({ 'width': anchoTabla });
@@ -326,11 +337,7 @@ function buscar_dias(semana){
     beforeSend: function(){},
     success: function(data){
       $('#dias').html(data);
-
-      $('.i-checks').iCheck({
-        checkboxClass: 'icheckbox_square-green',
-        radioClass: 'iradio_square-green'
-      });
+      $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green' });
     }
   });
 }
@@ -380,9 +387,6 @@ function buscar_municipio(tipo){
         $('#loader').fadeIn();
       },
       success: function(data){
-
-        //$('#debug').html(data);
-        //console.log(data);
         $('#municipio').html(data);
       }
     })
