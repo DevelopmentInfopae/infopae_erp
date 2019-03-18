@@ -4,11 +4,9 @@
   require_once '../../header.php';
   $periodoActual = $_SESSION['periodoActual'];
 
-  $con_cod_muni = "SELECT CodMunicipio FROM parametros;";
-  $res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
-  if ($res_minicipio->num_rows > 0) {
-    $codigoDANE = $res_minicipio->fetch_array();
-  }
+  $codigoDANE = $_SESSION['p_Municipio'];
+
+  // var_dump($_SESSION);
 ?>
 
 <style type="text/css">
@@ -131,23 +129,17 @@
             <div class="form-group col-sm-3">
               <label>Municipio</label>
               <select class="form-control" name="municipio" id="municipio_desp">
-              <option value="">Seleccione...</option>
                 <?php
-                  $consultarMunicipios = "SELECT
-                ubicacion.CodigoDANE, ubicacion.Ciudad
-                  FROM
-                    insumosmov".$mes.$_SESSION['periodoActual']." AS denc
-                          INNER JOIN
-                      sedes".$_SESSION['periodoActual']." AS sede ON sede.cod_sede = denc.BodegaDestino
-                          INNER JOIN
-                      ubicacion ON ubicacion.CodigoDANE = sede.cod_mun_sede
-                  GROUP BY ubicacion.Ciudad;";
+                  $consultarMunicipios = "SELECT * FROM ubicacion WHERE CodigoDANE LIKE '".$_SESSION['p_CodDepartamento']."%'";
                   $resultadoMunicipios = $Link->query($consultarMunicipios);
-                  if ($resultadoMunicipios->num_rows > 0) {
-                    while ($municipios = $resultadoMunicipios->fetch_assoc()) { ?>
-                      <option value="<?php echo $municipios['CodigoDANE'] ?>" <?php if($codigoDANE["CodMunicipio"] == $municipios["CodigoDANE"]) { echo " selected "; } ?>><?php echo $municipios['Ciudad'] ?></option>
+                  if ($resultadoMunicipios->num_rows > 0) { ?>
+                    <option value="">Seleccione...</option>
+                    <?php while ($municipios = $resultadoMunicipios->fetch_assoc()) { ?>
+                      <option value="<?php echo $municipios['CodigoDANE'] ?>" <?php if($codigoDANE == $municipios["CodigoDANE"]) { echo " selected "; } ?>><?php echo $municipios['Ciudad'] ?></option>
                     <?php }
-                  }
+                  } else { ?>
+                    <option value="<?= $consultarMunicipios ?>">No se encontraron municipios</option>
+                  <?php }
                  ?>
               </select>
             </div>
@@ -200,6 +192,7 @@
                     <th style="width: 14.06%;">Nombre Bodega Origen</th>
                     <th style="width: 14.06%;">Nombre Bodega Destino</th>
                     <th style="width: 15.2%;">Estado</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody id="tBodyTrazabilidad">
@@ -214,6 +207,7 @@
                     <th style="width: 14.06%;">Nombre Bodega Origen</th>
                     <th style="width: 14.06%;">Nombre Bodega Destino</th>
                     <th style="width: 15.2%;">Estado</th>
+                    <th></th>
                   </tr>
                 </tfoot>
               </table>
@@ -226,12 +220,14 @@
     $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
     $consulta = "SELECT
-        pmov.Tipo, pmov.Numero, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino
+        pmov.Tipo, pmov.Numero, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
         FROM insumosmov$numtabla AS pmov
           INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
           INNER JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
           INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
+          INNER JOIN sedes".$_SESSION['periodoActual']." AS sede ON sede.cod_sede = pmov.BodegaDestino
         LIMIT 200;";
+
   } else if (isset($_POST['buscar'])) { //Si hay filtrado
 
     $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual']; //Número MesAño según mes escogido
@@ -239,7 +235,7 @@
     $inners="";//Donde se almacenan los INNERS necesarios para traer datos externos.
 
     if (isset($_POST['ruta_desp']) && $_POST['ruta_desp'] != "") { //SI SE ESCOGIÓ POR RUTA
-      $consultaRutas = "SELECT *, inst.nom_inst, ubicacion.Ciudad FROM rutasedes
+      $consultaRutas = "SELECT *, inst.nom_inst, ubicacion.Ciudad, sede.cod_inst FROM rutasedes
         INNER JOIN sedes".$_SESSION['periodoActual']." AS sede ON sede.cod_sede = rutasedes.cod_Sede
         INNER JOIN instituciones AS inst ON inst.codigo_inst = sede.cod_inst
         INNER JOIN ubicacion ON ubicacion.codigoDANE = inst.cod_mun
@@ -256,19 +252,19 @@
         $condiciones.=")";
       }
     } else { //SI NO SE ESCOGIÓ RUTA
-        if (isset($_POST['municipio']) && $_POST['municipio'] != "") { //Si el usuario especifica municipio, busca las sedes relacionadas que sean del municipio escogido
-          $inners.=" INNER JOIN sedes".$_SESSION['periodoActual']." as sede ON sede.cod_sede = pmov.BodegaDestino ";
-          $condiciones.=" AND sede.cod_mun_sede = '".$_POST['municipio']."' ";
+      if (isset($_POST['municipio']) && $_POST['municipio'] != "") { //Si el usuario especifica municipio, busca las sedes relacionadas que sean del municipio escogido
+        $inners.=" INNER JOIN sedes".$_SESSION['periodoActual']." as sede ON sede.cod_sede = pmov.BodegaDestino ";
+        $condiciones.=" AND sede.cod_mun_sede = '".$_POST['municipio']."' ";
 
-          if (isset($_POST['institucion_desp']) && $_POST['institucion_desp'] != "") {
-              $inners.=" INNER JOIN instituciones as inst ON inst.codigo_inst = sede.cod_inst";
-              $condiciones.=" AND inst.codigo_inst = '".$_POST['institucion_desp']."' ";
-          }
-
-          if (isset($_POST['sede_desp']) && $_POST['sede_desp'] != "") {
-              $condiciones.=" AND sede.cod_sede = '".$_POST['sede_desp']."' ";
-          }
+        if (isset($_POST['institucion_desp']) && $_POST['institucion_desp'] != "") {
+            $inners.=" INNER JOIN instituciones as inst ON inst.codigo_inst = sede.cod_inst";
+            $condiciones.=" AND inst.codigo_inst = '".$_POST['institucion_desp']."' ";
         }
+
+        if (isset($_POST['sede_desp']) && $_POST['sede_desp'] != "") {
+            $condiciones.=" AND sede.cod_sede = '".$_POST['sede_desp']."' ";
+        }
+      }
     }
 
     if (isset($_POST['tipo_documento']) && $_POST['tipo_documento'] != "") { //Si el tipo de documento se especificó
@@ -280,7 +276,7 @@
     }
 
     $consulta = "SELECT
-                     pmov.Tipo, pmov.Numero, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino
+                     pmov.Tipo, pmov.Numero, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
                   FROM
                     insumosmov$numtabla AS pmov
                       INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
@@ -290,7 +286,7 @@
                   LIMIT 2000;";
 }
 
-// echo $consulta;
+echo $consulta;
 ?>
               <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
         </div><!-- /.ibox-content -->
@@ -362,7 +358,15 @@
         { data: 'nomBodegaOrigen'},
         { data: 'nomBodegaDestino'},
         { data: 'Aprobado'},
+        { data: 'cod_inst'},
       ],
+      columnDefs: [
+                    {
+                        "targets": [7],
+                        "visible": false,
+                        "searchable": false
+                    }
+                ],
           /*order: [ 0, 'asc' ],*/
     pageLength: 25,
     lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "TODO"] ],
@@ -385,7 +389,12 @@
     },
     "preDrawCallback": function( settings ) {
         $('#loader').fadeIn();
-      }
+      },
+    'fnRowCallback': function (nRow, aData, iDisplayIndex) {
+                // nRow.id = aData['cod_inst'];
+                // nRow.dataset.cod_inst = aData['cod_inst'];
+                return nRow;
+            },
     }).on("draw", function(){ $('#loader').fadeOut();
   $('.checkDespacho').iCheck({
      checkboxClass: 'icheckbox_square-green '

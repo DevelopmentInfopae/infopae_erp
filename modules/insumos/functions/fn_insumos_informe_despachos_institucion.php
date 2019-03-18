@@ -84,7 +84,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(19,$this->alturaRenglon,utf8_decode('ETC: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    $this->Cell(80,$this->alturaRenglon,utf8_decode($this->dpto),'BR',1,'L'); //DPTO PARAMETRO - REEMPLAZAR
+		    $this->Cell(80,$this->alturaRenglon,utf8_decode(mb_strtoupper($this->dpto)),'BR',1,'L'); //DPTO PARAMETRO - REEMPLAZAR
 
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(32,$this->alturaRenglon,utf8_decode('MUNICIPIO O VEREDA: '),'BL',0,'L');
@@ -149,7 +149,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','B',$this->fontSize);
 
 
-		    $this->Cell(36,15,utf8_decode("Firma"),'TBR',0,'C');
+		    $this->Cell(36,15,utf8_decode("FIRMA MANIPULADORA"),'TBR',0,'C');
 
 
 		    $this->Ln();
@@ -170,7 +170,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 
 foreach ($sedes as $key => $sede) {
 	$consultaSede = "SELECT 
-					    ubicacion.Ciudad, instituciones.nom_inst, sede.*
+					    ubicacion.Ciudad, instituciones.nom_inst, instituciones.codigo_inst, sede.*
 					FROM
 					    $sedeTabla AS sede
 					        INNER JOIN
@@ -261,12 +261,16 @@ foreach ($dataSede as $cod_sede => $sede) {
 
 	foreach ($productos as $id => $producto) {
 		if (isset($productos_sede[$cod_sede][$id])) {
-			$pdf->Cell($espacio_cu,$alturaRenglon,utf8_decode(
-			(number_format($productos_sede[$cod_sede][$id]['NombreUnidad1'] == 'u' ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'kg') || strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'lt') ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : $productos_sede[$cod_sede][$id]['CanTotalPresentacion'], 2, '.', ','))
-			) ,'BR',0,'C');
+			$cantidad = number_format($productos_sede[$cod_sede][$id]['NombreUnidad1'] == 'u' ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'kg') || strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'lt') ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : $productos_sede[$cod_sede][$id]['CanTotalPresentacion'], 2, '.', ',');
+
+			$uP = " (".str_replace(" ", "", $productos_sede[$cod_sede][$id]['Umedida']).")";
+
+			$cantidad.=$uP;
+		
 		} else {
-			$pdf->Cell($espacio_cu,$alturaRenglon,utf8_decode("-") ,'BR',0,'C');
+			$cantidad = "-";
 		}
+		$pdf->Cell($espacio_cu,$alturaRenglon,utf8_decode($cantidad) ,'BR',0,'C');
 	}
 
 	$pdf->Cell(36,$alturaRenglon,"",'BR',0,'C',False);
@@ -325,21 +329,21 @@ if($cy > 155){
 $current_x = $pdf->getX();
 $current_y = $pdf->getY();
 
-$pdf->Cell(150,4,"","TBLR",1,'C',False);
-$pdf->Cell(150,12,"","BLR",1,'C',False);
-$pdf->Cell(150,8,"","BLR",1,'C',False);
-$pdf->Cell(150,8,"","BLR",1,'C',False);
+$pdf->Cell(342,4,"","TBLR",1,'C',False);
+$pdf->Cell(171,8,"","BLR",0,'C',False);
+$pdf->Cell(171,8,"","BR",1,'C',False);
+$pdf->Cell(171,8,"","BLR",0,'C',False);
+$pdf->Cell(171,8,"","BR",1,'C',False);
 
 $pdf->SetXY($current_x, $current_y);
+$pdf->SetFont('Arial','B',7);
+$pdf->Cell(342,4,utf8_decode("INSTITUCIÓN EDUCATIVA"),0,1,'C',False);
 $pdf->SetFont('Arial','',7);
-$pdf->Cell(150,4,utf8_decode("INSTITUCIÓN EDUCATIVA"),0,1,'L',False);
-$pdf->Cell(150,4,utf8_decode("NOMBRE RESPONSABLE INSTITUCION O CENTRO EDUCATIVO:"),0,1,'L',False);
-$pdf->Cell(150,4,utf8_decode(""),0,1,'L',False);
-$pdf->Cell(150,4,utf8_decode("DOCUMENTO:"),0,1,'L',False);
-$pdf->Cell(150,4,utf8_decode("CARGO:"),0,1,'L',False);
-$pdf->Cell(150,4,utf8_decode(""),0,1,'L',False);
-$pdf->Cell(150,4,utf8_decode("FIRMA:"),0,1,'L',False);
-$pdf->Cell(150,4,utf8_decode(""),0,1,'L',False);
+$pdf->Cell(171,4,utf8_decode("NOMBRE RESPONSABLE INSTITUCION O CENTRO EDUCATIVO:"),0,0,'L',False);
+$pdf->Cell(171,4,utf8_decode("DOCUMENTO:"),0,1,'L',False);
+$pdf->Cell(171,4,utf8_decode(""),0,1,'L',False);
+$pdf->Cell(171,4,utf8_decode("CARGO:"),0,0,'L',False);
+$pdf->Cell(171,4,utf8_decode("FIRMA:"),0,1,'L',False);
 
 
 
