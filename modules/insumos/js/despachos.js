@@ -210,20 +210,38 @@ function informeDespachos(num){
 }
 
 function informeDespachosInstitucion(num){
+
 	if (num == 1) {
 		$('#formDespachos').prop('action', 'functions/fn_insumos_informe_despachos_institucion.php');
 		var checks = 0;
-		$('input[name="idDespacho[]"]').each(function(){
-			if ($(this).prop('checked')) {
-				checks++;
+		var inst = 0;
+		var dif_inst = 0;
+
+		$('input[name="idDespacho[]"]:checked').each(function(){
+			checks++;
+			if (inst == 0) {
+				inst = $(this).data('inst');
+			}
+
+			if (inst != $(this).data('inst')) {
+				dif_inst++;
 			}
 		});
 
-		if (checks > 0) {
+		if (checks > 0 && dif_inst == 0) {
 			$('#formDespachos').submit();
 		} else { 
-			Command: toastr.warning("Debe seleccionar al menos un despacho para exportar.", "No hay despacho seleccionados.", {onHidden : function(){
+
+			if (checks == 0) {
+				Command: toastr.warning("Debe seleccionar al menos un despacho para exportar.", "No hay despacho seleccionados.", {onHidden : function(){
 			      				}})
+			}
+
+			if (dif_inst != 0) {
+				Command: toastr.warning("Debe seleccionar sedes de una misma institución.", "Instituciones diferentes.", {onHidden : function(){
+			      				}})
+			}
+			
 		}
 	}
 }
