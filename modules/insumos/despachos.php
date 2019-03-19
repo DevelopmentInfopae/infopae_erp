@@ -185,14 +185,13 @@
              <table class="table" id="tablaTrazabilidad">
                 <thead>
                   <tr>
-                    <th style="width: 12.5%;"></th>
-                    <th style="width: 12.5%;">Tipo Documento</th>
-                    <th style="width: 12.5%; word-wrap: break-word;">Número</th>
-                    <th style="width: 12.5%;">Municipio</th>
-                    <th style="width: 12.5%;">Fecha / Hora</th>
-                    <th style="width: 12.5%;">Nombre Bodega Origen</th>
-                    <th style="width: 12.5%;">Nombre Bodega Destino</th>
-                    <th style="width: 12.5%;">Estado</th>
+                    <th style="width: 11%;"></th>
+                    <th style="width: 17.56%;">Tipo Documento</th>
+                    <th style="width: 14.06%; word-wrap: break-word;">Número</th>
+                    <th style="width: 14.06%;">Fecha / Hora</th>
+                    <th style="width: 14.06%;">Nombre Bodega Origen</th>
+                    <th style="width: 14.06%;">Nombre Bodega Destino</th>
+                    <th style="width: 15.2%;">Estado</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -201,14 +200,13 @@
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th style="width: 12.5%;"></th>
-                    <th style="width: 12.5%;">Tipo Documento</th>
-                    <th style="width: 12.5%; word-wrap: break-word;">Número</th>
-                    <th style="width: 12.5%;">Municipio</th>
-                    <th style="width: 12.5%;">Fecha / Hora</th>
-                    <th style="width: 12.5%;">Nombre Bodega Origen</th>
-                    <th style="width: 12.5%;">Nombre Bodega Destino</th>
-                    <th style="width: 12.5%;">Estado</th>
+                    <th style="width: 11%;"></th>
+                    <th style="width: 17.56%;">Tipo Documento</th>
+                    <th style="width: 14.06%; word-wrap: break-word;">Número</th>
+                    <th style="width: 14.06%;">Fecha / Hora</th>
+                    <th style="width: 14.06%;">Nombre Bodega Origen</th>
+                    <th style="width: 14.06%;">Nombre Bodega Destino</th>
+                    <th style="width: 15.2%;">Estado</th>
                     <th></th>
                   </tr>
                 </tfoot>
@@ -222,13 +220,12 @@
     $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
     $consulta = "SELECT
-        pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
+        pmov.Tipo, pmov.Numero, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
         FROM insumosmov$numtabla AS pmov
           INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
           INNER JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
           INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
           INNER JOIN sedes".$_SESSION['periodoActual']." AS sede ON sede.cod_sede = pmov.BodegaDestino
-          LEFT JOIN ubicacion as u ON u.CodigoDANE = sede.cod_mun_sede
         LIMIT 200;";
 
   } else if (isset($_POST['buscar'])) { //Si hay filtrado
@@ -254,7 +251,6 @@
         $condiciones = trim($condiciones, ' OR');
         $condiciones.=")";
       }
-        $inners.=" INNER JOIN sedes".$_SESSION['periodoActual']." as sede ON sede.cod_sede = pmov.BodegaDestino ";
     } else { //SI NO SE ESCOGIÓ RUTA
       if (isset($_POST['municipio']) && $_POST['municipio'] != "") { //Si el usuario especifica municipio, busca las sedes relacionadas que sean del municipio escogido
         $inners.=" INNER JOIN sedes".$_SESSION['periodoActual']." as sede ON sede.cod_sede = pmov.BodegaDestino ";
@@ -268,9 +264,6 @@
         if (isset($_POST['sede_desp']) && $_POST['sede_desp'] != "") {
             $condiciones.=" AND sede.cod_sede = '".$_POST['sede_desp']."' ";
         }
-      } else {
-        $inners.=" INNER JOIN sedes".$_SESSION['periodoActual']." as sede ON sede.cod_sede = pmov.BodegaDestino ";
-        // $condiciones.=" AND sede.cod_mun_sede = '".$_POST['municipio']."' ";
       }
     }
 
@@ -283,18 +276,17 @@
     }
 
     $consulta = "SELECT
-                     pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
+                     pmov.Tipo, pmov.Numero, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
                   FROM
                     insumosmov$numtabla AS pmov
                       INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
                       INNER JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
                       INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
                       $inners $condiciones
-                      LEFT JOIN ubicacion as u ON u.CodigoDANE = sede.cod_mun_sede
                   LIMIT 2000;";
 }
 
-// echo $consulta;
+echo $consulta;
 ?>
               <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
         </div><!-- /.ibox-content -->
@@ -362,7 +354,6 @@
         { data: 'input'},
         { data: 'Tipo'},
         { data: 'Numero'},
-        { data: 'Ciudad'},
         { data: 'FechaMYSQL'},
         { data: 'nomBodegaOrigen'},
         { data: 'nomBodegaDestino'},

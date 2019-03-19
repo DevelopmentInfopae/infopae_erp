@@ -28,7 +28,7 @@ $Database = "e6y1o9y1_infopae2018";
 $Hostname = "192.254.194.178";
 $Username = "infopae_sylvia";
 $Password = "Sylopez18";
-$Database = "infopae_santander02_2019";
+$Database = "infopae_giron2019";
 
 // $Hostname = "192.254.194.178";
 // $Username = "infopae_sylvia";
