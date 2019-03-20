@@ -186,7 +186,7 @@ $pdf->Cell(22,14,utf8_decode(''),'R',0,'C',False);
 $x = $pdf->GetX();
 $y = $pdf->GetY();
 $pdf->SetXY($x, $y-1.6);
-if ($tipoPlanilla == 5 || $tipoPlanilla == 6) { $anchoDatosNombre = 31.7; } else { $anchoDatosNombre = 28; }
+if ($tipoPlanilla == 5 || $tipoPlanilla == 6) { $anchoDatosNombre = 31.4; } else { $anchoDatosNombre = 28; }
 $pdf->Cell($anchoDatosNombre,14,utf8_decode('1° Nombre'),0,0,'C',False);
 $pdf->SetXY($x, $y+1.6);
 $pdf->Cell($anchoDatosNombre,14,utf8_decode('del Titular'),0,0,'C',False);
@@ -227,10 +227,10 @@ $pdf->Cell($anchoDatosNombre,14,utf8_decode(''),'R',0,'C',False);
 $x = $pdf->GetX();
 $y = $pdf->GetY();
 $pdf->SetXY($x, $y);
-$pdf->RotatedText($x+4.5,$y+12,utf8_decode("Edad"),90);
+$pdf->RotatedText($x+3.5,$y+10,utf8_decode("Edad"),90);
 $pdf->Cell(10,14,utf8_decode(''),0,0,'C',False);
 $pdf->SetXY($x, $y);
-$pdf->Cell(7,14,utf8_decode(''),'R',0,'C',False);
+$pdf->Cell(5,14,utf8_decode(''),'R',0,'C',False);
 
 
 // Condición que oculta o muestra las columnas de sexo y grado.
@@ -246,14 +246,21 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetXY($x, $y);
 	$pdf->RotatedText($x+3.5,$y+10,'Sexo',90);
 	$pdf->Cell(5,14,utf8_decode(''),'R',0,'C',False);
-
-	$x = $pdf->GetX();
-	$y = $pdf->GetY();
-	$pdf->SetXY($x, $y);
-	$pdf->RotatedText($x+3,$y+11,'Grado',90);
-	$pdf->RotatedText($x+6,$y+13,utf8_decode('Educación'),90);
-	$pdf->Cell(7,14,utf8_decode(''),'R',0,'C',False);
 }
+
+$x = $pdf->GetX();
+$y = $pdf->GetY();
+$pdf->SetXY($x, $y);
+$pdf->RotatedText($x+3.5,$y+11,'Grado',90);
+// $pdf->RotatedText($x+6,$y+13,utf8_decode('Educación'),90);
+$pdf->Cell(5,14,utf8_decode(''),'R',0,'C',False);
+
+$x = $pdf->GetX();
+$y = $pdf->GetY();
+$pdf->SetXY($x, $y);
+$pdf->RotatedText($x+5,$y+11,'Grupo',90);
+// $pdf->RotatedText($x+6,$y+13,utf8_decode('Educación'),90);
+$pdf->Cell(8,14,utf8_decode(''),'R',0,'C',False);
 
 
 $x = $pdf->GetX();
@@ -289,7 +296,7 @@ if($tipoPlanilla != 1){
 		$dia++;
 	}
 }else{
-	for($i = 0 ; $i < 25 ; $i++){
+	for($i = 0 ; $i < 24 ; $i++){
 	  $pdf->Cell(6,7,"",'R',0,'C',False);
 	}
 }

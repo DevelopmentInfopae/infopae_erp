@@ -59,7 +59,7 @@
 
                 <div class="col-sm-3 form-group">
                   <label for="mes">Mes</label>
-                  <?php $vsql="SELECT TABLE_NAME as mes FROM information_schema.TABLES WHERE  table_schema = '$Database' AND TABLE_NAME LIKE 'entregas_res_%'"; ?>
+                  <?php $vsql="SELECT TABLE_NAME as mes FROM information_schema.TABLES WHERE  table_schema = '$Database' AND   TABLE_NAME LIKE 'entregas_res_%'"; ?>
                   <select class="form-control" name="mes" id="mes">
                     <option value="">Seleccione uno</option>
                   <?php
@@ -143,11 +143,9 @@
 
                       $municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"];
 
-                      $consulta = " SELECT DISTINCT s.cod_inst, s.nom_inst FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE 1=1";
-                      $consulta = $consulta." AND s.cod_mun_sede = '$municipio'";
-                      $consulta = $consulta." ORDER BY s.nom_inst;";
-
-                      echo $consulta;
+                      $consulta = " SELECT distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
+                      $consulta = $consulta." and s.cod_mun_sede = '$municipio' ";
+                      $consulta = $consulta." order by s.nom_inst asc ";
 
                       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                       if($resultado->num_rows > 0){
