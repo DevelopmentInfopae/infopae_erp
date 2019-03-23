@@ -248,10 +248,11 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['nom2']),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['ape1']),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['ape2']),'R',0,'L',False);
-      $pdf->Cell(7,$alturaLinea,utf8_decode($estudiante["edad"]),'R',0,'C',False);
+      $pdf->Cell(5,$alturaLinea,utf8_decode($estudiante["edad"]),'R',0,'C',False);
       $pdf->Cell(7,$alturaLinea,utf8_decode(($estudiante['etnia'] == $datos_etnia["ID"]) ? "" : "X"),'R',0,'C',False);
       $pdf->Cell(5,$alturaLinea,utf8_decode($estudiante['genero']),'R',0,'C',False);
-      $pdf->Cell(7,$alturaLinea,utf8_decode($estudiante['cod_grado']),'R',0,'C',False);
+      $pdf->Cell(5,$alturaLinea,utf8_decode($estudiante['cod_grado']),'R',0,'C',False);
+      $pdf->Cell(8,$alturaLinea,utf8_decode($estudiante['nom_grupo']),'R',0,'C',False);
       $pdf->Cell(13,$alturaLinea,utf8_decode($tipoComplemento),'R',0,'C',False);
       $dia = $primer_dia;
 
@@ -332,11 +333,13 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
         $pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
         $pdf->Cell(10,$alturaLinea,"",'R',0,'C',False);
         $pdf->Cell(22,$alturaLinea,"",'R',0,'L',False);
-        $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
-        $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
-        $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
-        $pdf->Cell(31.7,$alturaLinea,"",'R',0,'L',False);
-        $pdf->Cell(7,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
         $pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
 
         // Aqui es donde se cambia de acuerdo a la plantilla
@@ -414,11 +417,13 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $pdf->Cell(8,$alturaLinea,utf8_decode($nEstudiante),'R',0,'C',False);
       $pdf->Cell(10,$alturaLinea,utf8_decode($estudiante['tipo_doc_nom']),'R',0,'C',False);
       $pdf->Cell(22,$alturaLinea,utf8_decode($estudiante['num_doc']),'R',0,'L',False);
-      $pdf->Cell(31.7,$alturaLinea,utf8_decode($estudiante['nom1']),'R',0,'L',False);
-      $pdf->Cell(31.7,$alturaLinea,utf8_decode($estudiante['nom2']),'R',0,'L',False);
-      $pdf->Cell(31.7,$alturaLinea,utf8_decode($estudiante['ape1']),'R',0,'L',False);
-      $pdf->Cell(31.7,$alturaLinea,utf8_decode($estudiante['ape2']),'R',0,'L',False);
-      $pdf->Cell(7,$alturaLinea,utf8_decode($estudiante["edad"]),'R',0,'C',False);
+      $pdf->Cell(31.4,$alturaLinea,utf8_decode($estudiante['nom1']),'R',0,'L',False);
+      $pdf->Cell(31.4,$alturaLinea,utf8_decode($estudiante['nom2']),'R',0,'L',False);
+      $pdf->Cell(31.4,$alturaLinea,utf8_decode($estudiante['ape1']),'R',0,'L',False);
+      $pdf->Cell(31.4,$alturaLinea,utf8_decode($estudiante['ape2']),'R',0,'L',False);
+      $pdf->Cell(5,$alturaLinea,utf8_decode($estudiante["edad"]),'R',0,'C',False);
+      $pdf->Cell(5,$alturaLinea,utf8_decode($estudiante["cod_grado"]),'R',0,'C',False);
+      $pdf->Cell(8,$alturaLinea,utf8_decode($estudiante["nom_grupo"]),'R',0,'C',False);
       $pdf->Cell(13,$alturaLinea,utf8_decode($tipoComplemento),'R',0,'C',False);
       $dia = 0;
 
@@ -481,13 +486,14 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
       $pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-      $pdf->Cell(7,$alturaLinea,utf8_decode(''),'R',0,'C',False);
-      $pdf->Cell(7,$alturaLinea,utf8_decode(''),'R',0,'C',False);
       $pdf->Cell(5,$alturaLinea,utf8_decode(''),'R',0,'C',False);
       $pdf->Cell(7,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+      $pdf->Cell(5,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+      $pdf->Cell(5,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+      $pdf->Cell(8,$alturaLinea,utf8_decode(''),'R',0,'C',False);
       $pdf->Cell(13,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 
-      for($j = 0 ; $j < 25 ; $j++){
+      for($j = 0 ; $j < 24 ; $j++){
         $pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
       }
 
