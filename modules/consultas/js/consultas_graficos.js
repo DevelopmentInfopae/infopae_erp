@@ -65,7 +65,6 @@ function graficar_resumida (){
 				var obj = JSON.parse(data);
         var total = 0;
         var total2 = 0;
-        console.log(obj);
 
         barData = {
           labels: obj.titulos,

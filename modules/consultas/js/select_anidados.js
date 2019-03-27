@@ -443,3 +443,34 @@ function enviarForm(){
 
 
  } //Termina la función para envíar el formulario
+
+
+function abrir_ventana_exportar_entregas(){
+  $('#ventana_formulario_exportar_entregas').modal();
+}
+
+function buscarSemanasMesExportar(control){
+  $.ajax({
+    type: "post",
+    url: "functions/fn_sede_buscar_semana_mes.php",
+    data: {"mes": control.val()},
+    dataType: 'html',
+    success: function(data){
+      $('#semana_exportar').html(data);
+    },
+    error: function(data){
+      console.log(data.responseText);
+    }
+  });
+}
+
+
+function exportar_entregas(){
+  if ($('#formulario_exportar_entregas').valid()) {
+    var mes = $('#mes_exportar').val();
+    var semana = $('#semana_exportar').val();
+
+    window.open('functions/fn_sedes_exportar_entregas.php?mes='+mes+'&semana='+semana, '_blank');
+
+  }
+}

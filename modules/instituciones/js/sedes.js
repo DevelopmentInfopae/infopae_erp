@@ -313,6 +313,5 @@ function exportar_priorizacion(){
     var semana = $('#semana_exportar').val();
 
     window.open('functions/fn_sedes_exportar_priorizacion.php?mes='+mes+'&semana='+semana, '_blank');
-
   }
 }
