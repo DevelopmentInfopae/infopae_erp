@@ -1,5 +1,9 @@
 $(document).ready(function(){
 
+  $(document).on('change', '#mes_exportar', function(){ buscarSemanasMesExportar($(this)); });
+  $(document).on('click', '#boton_abri_ventana_exportar_focalizacion', function(){ abrir_ventana_exportar_focalizacion(); });
+  $(document).on('click', '#exportar_focalizacion', function(){ exportar_focalizacion(); });
+
   $('#loader').fadeOut();
    var heights = $(".col-sm-3").map(function() {
         return $(this).height();
@@ -308,3 +312,32 @@ $('#institucion_titular').on('change', function(){
     }
   })
 });
+
+function abrir_ventana_exportar_focalizacion(){
+  $('#ventana_formulario_exportar_focalizacion').modal();
+}
+
+function exportar_focalizacion(){
+  if ($('#formulario_exportar_focalizacion').valid()) {
+    var mes = $('#mes_exportar').val();
+    var semana = $('#semana_exportar').val();
+
+    window.open('functions/fn_titulares_derecho_exportar_focalizacion.php?mes='+mes+'&semana='+semana, '_blank');
+
+  }
+}
+
+function buscarSemanasMesExportar(control){
+  $.ajax({
+    type: "post",
+    url: "functions/fn_titulares_derecho_buscar_semana_mes.php",
+    data: {"mes": control.val()},
+    dataType: 'html',
+    success: function(data){
+      $('#semana_exportar').html(data);
+    },
+    error: function(data){
+      console.log(data.responseText);
+    }
+  });
+}

@@ -10,7 +10,7 @@ $(document).ready(function(){
   $(document).on('click', '#subirArchivoPriorizacion', function(){ subirArchivoPriorizacion(); });
   $(document).on('click', '#subirArchivoFocalizacion', function(){ subirArchivoFocalizacion(); });
   $(document).on('click', '#boton_abri_ventana_exportar_priorizacion', function(){ abrir_ventana_exportar_priorizacion(); });
-  $(document).on('click', '#exportar_priorizacion', function(){ exportar_priorizacion(); })
+  $(document).on('click', '#exportar_priorizacion', function(){ exportar_priorizacion(); });
 	// Configuración del pligin toast
 	toastr.options = {
     "closeButton": true,
