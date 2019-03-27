@@ -175,6 +175,6 @@ while($row = $result->fetch_assoc()) {
   }
 
     $resultados++;
-}
+
 
 echo json_encode(array("serieSegmento"=>$serieSegmento,"titulos"=>$titulos,"valores"=>$valores));
