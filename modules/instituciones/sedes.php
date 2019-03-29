@@ -250,7 +250,7 @@
     <div class="modal-content">
       <div class="modal-header text-info" style="padding: 15px;">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-        <h3><i class="fa fa-upload fa-lg" aria-hidden="true"></i> Importar Priorización  </h3>
+        <h3><i class="fa fa-upload fa-lg" aria-hidden="true"></i> Exportar Priorización  </h3>
       </div>
       <div class="modal-body">
         <form action="" name="formulario_exportar_priorizacion" id="formulario_exportar_priorizacion">
