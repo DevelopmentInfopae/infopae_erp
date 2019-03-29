@@ -677,7 +677,9 @@ $grupoAlimActual = '';
       $pdf->Cell(72.76,5,utf8_decode($aux),1,0,'L',False);
 
       if($item['presentacion'] == 'u'){
-         $aux = round(0+$item['grupo1']);
+         $aux = 0+$item['grupo1'];
+         $aux = number_format($aux, 2, '.', '');
+         // $aux = round(0+$item['grupo1']);
       }else{
          $aux = 0+$item['grupo1'];
          $aux = number_format($aux, 2, '.', '');
@@ -686,7 +688,9 @@ $grupoAlimActual = '';
 
 
     if($item['presentacion'] == 'u'){
-      $aux = round(0+$item['grupo2']);
+      $aux = 0+$item['grupo2'];
+      $aux = number_format($aux, 2, '.', '');
+      // $aux = round(0+$item['grupo2']);
     }else{
       $aux = 0+$item['grupo2'];
       $aux = number_format($aux, 2, '.', '');
@@ -694,7 +698,9 @@ $grupoAlimActual = '';
     $pdf->Cell(13.1,5,utf8_decode($aux),1,0,'C',False);
 
     if($item['presentacion'] == 'u'){
-      $aux = round(0+$item['grupo3']);
+      $aux = 0+$item['grupo3'];
+      $aux = number_format($aux, 2, '.', '');
+      // $aux = round(0+$item['grupo3']);
     }else{
       $aux = 0+$item['grupo3'];
       $aux = number_format($aux, 2, '.', '');
@@ -705,18 +711,7 @@ $grupoAlimActual = '';
 
     $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
 
-    if ((strpos($alimento['componente'], "huevo"))) {
-
-      $aux = ceil($aux);
-
-    } else {
-      if($item['presentacion'] == 'u'){
-        $aux = round(0+$aux);
-      } else{
         $aux = number_format($aux, 2, '.', '');
-      }
-    }
-
 
     $pdf->Cell(13.141,5,($aux),1,0,'C',False);
       //total
@@ -727,6 +722,20 @@ $grupoAlimActual = '';
       $aux = 0+$item['cantotalpresentacion'];
       $aux = number_format($aux, 2, '.', '');
     }
+
+    // var_dump($alimento['componente']);
+    // echo strpos($alimento['componente'], "HUEVO")."<<<< </br>";
+
+      if($item['presentacion'] == 'u'){
+        // $aux = round(0+$aux);
+        if (strpos($alimento['componente'], "HUEVO") == 0) {
+          $aux = ceil($aux);
+        } else {
+          $aux = round($aux);
+        }
+      } else{
+        $aux = number_format($aux, 2, '.', '');
+      }
 
     $pdf->Cell(10.6,5,$aux,1,0,'C',False);
 

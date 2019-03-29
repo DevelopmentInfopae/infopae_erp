@@ -452,7 +452,13 @@ if($resultado->num_rows >= 1){
     $cantTotal = ceil($cantTotal);
   } else {
     if ($alimento['presentacion'] == "u") {
-      $cantTotal = round($cantTotal);
+
+      if (strpos($alimento['componente'], "HUEVO") == 0) {
+        $cantTotal = ceil($cantTotal);
+      } else {
+        $cantTotal = round($cantTotal);
+      }
+        // $cantTotal = round($cantTotal);
     } else {
       $cantTotal = number_format( $cantTotal, $digitosDecimales);
     }
@@ -537,8 +543,9 @@ if($resultado->num_rows >= 1){
           // $pdf->Cell(15.9,4,round($consumoDia),'1',0,'C',False);
           // $consumoDia = number_format($consumoDia, 0, '', '');
           $consumoDia = $alimento['D'.$k];
-          $consumoDia = number_format($consumoDia, 0, '', '');
-          $pdf->Cell(15.9,4,round($consumoDia),'1',0,'C',False);
+          $consumoDia = number_format($consumoDia, $digitosDecimales);
+          // $pdf->Cell(15.9,4,round($consumoDia),'1',0,'C',False);
+          $pdf->Cell(15.9,4,$consumoDia,'1',0,'C',False);
         } else {
           $consumoDia = $alimento['D'.$k];
           $consumoDia = number_format($consumoDia, $digitosDecimales);

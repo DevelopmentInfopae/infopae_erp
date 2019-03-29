@@ -573,7 +573,8 @@ unset($grupo);
 
 
     if($alimento['presentacion'] == 'u'){
-      $aux = round($alimento['cant_grupo1']);
+      $aux = number_format($alimento['cant_grupo1'], 2, '.', '');
+      // $aux = round($alimento['cant_grupo1']);
     }else{
       $aux = 0+$alimento['cant_grupo1'];
       $aux = number_format($aux, 2, '.', '');
@@ -582,7 +583,8 @@ unset($grupo);
 
 
     if($alimento['presentacion'] == 'u'){
-      $aux = round($alimento['cant_grupo2']);
+      $aux = number_format($alimento['cant_grupo2'], 2, '.', '');
+      // $aux = round($alimento['cant_grupo2']);
     }else{
       $aux = 0+$alimento['cant_grupo2'];
       $aux = number_format($aux, 2, '.', '');
@@ -590,7 +592,8 @@ unset($grupo);
     $pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
     if($alimento['presentacion'] == 'u'){
-      $aux = round($alimento['cant_grupo3']);
+      $aux = number_format($alimento['cant_grupo3'], 2, '.', '');
+      // $aux = round($alimento['cant_grupo3']);
     }else{
       $aux = 0+$alimento['cant_grupo3'];
       $aux = number_format($aux, 2, '.', '');
@@ -612,8 +615,8 @@ unset($grupo);
     }
 
     if ($alimento['presentacion'] == 'u') {
-      // $aux = number_format($alimento['cant_total'], 2, '.', '');
-      $aux = round($alimento['cant_total']);
+      $aux = number_format($alimento['cant_total'], 2, '.', '');
+      // $aux = round($alimento['cant_total']);
     } else {
       $aux = number_format($alimento['cant_total'], 2, '.', '');
     }
@@ -631,13 +634,18 @@ unset($grupo);
       //$aux = '';
     }
 
+// var_dump($modalidad);
 
 if(strpos($alimento['componente'], "huevo")){
   $aux = ceil($alimento['cant_total']);
 }else{
 
   if ($alimento['presentacion'] == 'u') {
-    $aux = round(0+$alimento['cant_total']);
+    if (strpos($alimento['componente'], "HUEVO") == 0) {
+      $aux = ceil(0+$alimento['cant_total']);
+    } else {
+      $aux = round(0+$alimento['cant_total']);
+    }
   } else {
     $aux = number_format($alimento['cant_total'], 2, '.', '');
     // $aux = number_format($aux, 0, '.', '');
