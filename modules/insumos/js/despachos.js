@@ -228,17 +228,30 @@ function informeDespachosInstitucion(num){
 			}
 		});
 
-		if (checks > 0 && dif_inst == 0) {
+		// if (checks > 0 && dif_inst == 0) {
+		// 	$('#formDespachos').submit();
+		// } else { 
+
+		// 	if (checks == 0) {
+		// 		Command: toastr.warning("Debe seleccionar al menos un despacho para exportar.", "No hay despacho seleccionados.", {onHidden : function(){
+		// 	      				}})
+		// 	}
+
+		// 	if (dif_inst != 0) {
+		// 		Command: toastr.warning("Debe seleccionar sedes de una misma institución.", "Instituciones diferentes.", {onHidden : function(){
+		// 	      				}})
+		// 	}
+			
+		// }
+
+		if (checks > 0) {
+
 			$('#formDespachos').submit();
+
 		} else { 
 
 			if (checks == 0) {
 				Command: toastr.warning("Debe seleccionar al menos un despacho para exportar.", "No hay despacho seleccionados.", {onHidden : function(){
-			      				}})
-			}
-
-			if (dif_inst != 0) {
-				Command: toastr.warning("Debe seleccionar sedes de una misma institución.", "Instituciones diferentes.", {onHidden : function(){
 			      				}})
 			}
 			
