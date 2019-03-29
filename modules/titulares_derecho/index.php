@@ -19,13 +19,12 @@ $periodoActual = $_SESSION['periodoActual'];
   	</div>
   	<div class="col-lg-4">
 	    <div class="title-action">
-
-	    <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
 	      <button class="btn btn-primary" name="boton_abri_ventana_exportar_focalizacion" id="boton_abri_ventana_exportar_focalizacion"><span class="fa fa-file-excel-o"></span> Exportar</button>
-	      <button class="btn btn-primary" onclick="window.location.href = 'nuevo_titular.php';"><span class="fa fa-plus"></span> Nuevo</button>
-	    <?php endif ?>
+	    	<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
+	      	<button class="btn btn-primary" onclick="window.location.href = 'nuevo_titular.php';"><span class="fa fa-plus"></span> Nuevo</button>
+	    	<?php endif ?>
 	    </div>
-  	</div><!-- /.col -->
+  	</div>
 </div>
 
 
