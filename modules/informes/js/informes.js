@@ -1,11 +1,14 @@
 $(document).ready(function(){
 	cargar_semanas($('#mes').val());
+
 	$(document).on('change', '#mes', function (){ cargar_semanas($(this).val()); });
   $(document).on('change', '#semana_inicial', function (){ cargar_semanas($('#mes').val(), $("option:selected", this).val()); });
   $(document).on('change', '#municipio', function(){ buscar_institucion($(this).val()); });
   $(document).on('change', '#institucion', function(){ buscar_sede($(this).val()); });
   $(document).on('change', '#semana_final, #municipio, #institucion, #sede', function(){ buscar_complemento(); });
-  $(document).on('click', '#boton_buscar', function(){  });
+  $(document).on('click', '#boton_buscar', function(){ validar_formulario_alimentos(); });
+
+  $('#municipio').trigger('change');
 });
 
 function cargar_semanas($mes, $semana = '') {
@@ -85,50 +88,51 @@ function buscar_complemento(){
 }
 
 function validar_formulario_alimentos() {
-	if($('#formulario_alimentos').valid()) {
+	if($('#formulario_buscar_alimentos').valid()) {
 		buscar_alimentos();
 	}
 }
 
 function buscar_alimentos() {
-	$('#tablaTrazabilidad').DataTable({
+	$('#loader').fadeIn();
+
+	$('#tabla_productos').DataTable({
     ajax: {
       method: 'POST',
       url: 'functions/fn_buscar_alimentos.php',
-      dataType: 'HTML',
       data:{
     		mes: $('#mes').val(),
 				sede: $('#sede').val(),
 				municipio: $('#municipio').val(),
 				institucion: $('#institucion').val(),
 				semana_final: $('#semana_final').val(),
-				semana_inicial: $('#semana_inicial').val()
-				// ruta: $('#ruta').val(),
+				semana_inicial: $('#semana_inicial').val(),
+				tipo_complemento: $('#tipo_complemento').val()
       }
     },
     columns:[
-      { data: 'CodigoProducto'},
-      { data: 'Descripcion'},
-      { data: 'Cantidad'},
-      { data: 'CantidadPresentacion'},
-      { data: 'CantU2'},
-      { data: 'Umedida2'},
-      { data: 'CantU3'},
-      { data: 'Umedida3'},
-      { data: 'CantU4'},
-      { data: 'Umedida4'},
-      { data: 'CantU5'},
-      { data: 'Umedida5'},
+      { data: 'codigo_producto'},
+      { data: 'descripcion'},
+      { data: 'cantidad_requerida'},
+      { data: 'cantidad_presentacion'},
+      { data: 'cantidad_unidad_1'},
+      { data: 'nombre_unidad_1'},
+      { data: 'cantidad_unidad_2'},
+      { data: 'nombre_unidad_2'},
+      { data: 'cantidad_unidad_3'},
+      { data: 'nombre_unidad_3'},
+      { data: 'cantidad_unidad_4'},
+      { data: 'nombre_unidad_4'}
     ],
     destroy: true,
     pageLength: 25,
     responsive: true,
-    dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-    buttons : [{extend:'excel', title:'Menus', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11]}}],
+    buttons : [{extend:'excel', title:'Alimentos', className:'btnExportarExcel'}],
+    dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"clear"><"html5buttons"B>',
     oLanguage: {
-      sLengthMenu: 'Mostrando _MENU_ registros por página',
+      sLengthMenu: 'Mostrando _MENU_ registros',
       sZeroRecords: 'No se encontraron registros',
-      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
       sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
       sInfoFiltered: '(Filtrado desde _MAX_ registros)',
       sSearch:         'Buscar: ',
@@ -139,35 +143,10 @@ function buscar_alimentos() {
         sPrevious: 'Anterior'
       }
     },
-    initCompleted: function(){
-    	$('#loader').fadeOut();
-    }
-  })/*.on("draw", function(){
-    $('.checkDespacho').iCheck({ checkboxClass: 'icheckbox_square-green' });
-    $('#selecTodos').on('ifChecked', function(){ $('.checkDespacho').iCheck('check'); });
-    $('#selecTodos').on('ifUnchecked', function(){ $('.checkDespacho').iCheck('uncheck'); });
-    $('.checkDespacho').on('ifChecked', function(){ $('#sede_'+$(this).data('num')).prop('checked', true); });
-    $('.checkDespacho').on('ifUnchecked', function(){ $('#sede_'+$(this).data('num')).prop('checked', false); });
-  })*/;
-
-  var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li></ul></div>';
-  $('.containerBtn').html(btnAcciones);
-	// $.ajax({
-	// 	url: 'functions/buscar_alimentos.php',
-	// 	type: 'POST',
-	// 	dataType: 'HTML',
-	// 	data: {
-
-	// 	},
-	// })
-	// .done(function(data) {
-	// 	console.log("success");
-	// })
-	// .fail(function() {
-	// 	console.log("error");
-	// })
-	// .always(function() {
-	// 	console.log("complete");
-	// });
-
+		initComplete: function() {
+		  var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li></ul></div>';
+		  $('.containerBtn').html(btnAcciones);
+			$('#loader').fadeOut();
+		}
+  });
 }

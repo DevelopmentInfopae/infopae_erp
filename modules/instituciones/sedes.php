@@ -20,14 +20,14 @@
           </li>
       </ol>
   </div>
-  <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
   <div class="col-lg-4">
       <div class="title-action">
-          <a href="#" class="btn btn-primary" name="boton_abri_ventana_exportar_priorizacion" id="boton_abri_ventana_exportar_priorizacion"><i class="fa fa-file-excel-o"></i> Exportar</a>
+        <a href="#" class="btn btn-primary" name="boton_abri_ventana_exportar_priorizacion" id="boton_abri_ventana_exportar_priorizacion"><i class="fa fa-file-excel-o"></i> Exportar</a>
+        <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
           <a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a>
+        <?php } ?>
       </div>
   </div>
-  <?php } ?>
 </div>
 
 <div class="wrapper wrapper-content  animated fadeInRight">
