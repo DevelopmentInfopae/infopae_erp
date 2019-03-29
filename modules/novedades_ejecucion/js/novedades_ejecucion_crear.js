@@ -271,21 +271,14 @@ function buscarFocalizacion(){
 			},
 			pageLength: 10000,
 			responsive: true,
-			// preDrawCallback: function( settings ) {
-			// 	$('#loader').fadeIn();
-			// },
 			rowCallback: function( row, data ) {
     		sumaDias += parseInt(data.sumaDias);
 	    }
 		}).on("draw", function(){
 			buscarSuplentes();
 
-			// $('#loader').fadeOut();
-			// $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });
-
 			cantidadDiasFocalizados = tablaFocalizados.data().count() * $('#semana option:selected').data("cantidaddias");
 			cantidadDiasFocalizadosActual = sumaDias;
-
 		});
 	}
 }

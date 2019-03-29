@@ -75,7 +75,7 @@ for ($i=0; $i < count($prioridades); $i++) {
 		$j++;
 	}
 
-	$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion; //Se añade condición para no contar los estudiantes que ya se contaron en la prioridad anterior.
+	$con_can_est_com = "SELECT COUNT(DISTINCT num_doc) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion ." AND ". trim($sumaCamposEntregasDias, "+ ") ." > 0"; //Se añade condición para no contar los estudiantes que ya se contaron en la prioridad anterior.
 	$res_can_est_com = $Link->query($con_can_est_com) or die (mysql_error($Link));
 	if ($res_can_est_com->num_rows > 0) {
 		while ($reg_can_est_com = $res_can_est_com->fetch_assoc()) {
@@ -127,7 +127,7 @@ foreach ($complementos as $complemento) {
 
 $condicionMayoritaria = " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"]." AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"]." AND " . $prioridades[2]["campo_entregas_res"] . " = " . $prioridades[2]["valor_NA"]." "; //Variable para la condición de búsqueda de estudiantes de población mayoritaria, que no cumplen con ninguna caracterización.
 
-$con_can_est_total = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion. $condicionMayoritaria;
+$con_can_est_total = "SELECT COUNT(DISTINCT num_doc) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion. $condicionMayoritaria ." AND ". trim($sumaCamposEntregasDias, "+ ") ." > 0";
 $res_can_est_total = $Link->query($con_can_est_total) or die (mysql_error($Link));
 if ($res_can_est_total->num_rows > 0) {
 	while ($reg_can_est_total = $res_can_est_total->fetch_assoc()) {
