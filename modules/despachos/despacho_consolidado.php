@@ -774,7 +774,9 @@ $grupoAlimActual = '';
       $pdf->Cell(49,4,utf8_decode($aux),1,0,'L',False);
 
       if($item['presentacion'] == 'u'){
-         $aux = round(0+$item['grupo1']);
+         $aux = 0+$item['grupo1'];
+         $aux = number_format($aux, 2, '.', '');
+         // $aux = round(0+$item['grupo1']);
       }else{
          $aux = 0+$item['grupo1'];
          $aux = number_format($aux, 2, '.', '');
@@ -783,7 +785,9 @@ $grupoAlimActual = '';
 
 
     if($item['presentacion'] == 'u'){
-      $aux = round(0+$item['grupo2']);
+      $aux = 0+$item['grupo2'];
+      $aux = number_format($aux, 2, '.', '');
+      // $aux = round(0+$item['grupo2']);
     }else{
       $aux = 0+$item['grupo2'];
       $aux = number_format($aux, 2, '.', '');
@@ -791,7 +795,9 @@ $grupoAlimActual = '';
     $pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
     if($item['presentacion'] == 'u'){
-      $aux = round(0+$item['grupo3']);
+      $aux = 0+$item['grupo3'];
+      $aux = number_format($aux, 2, '.', '');
+      // $aux = round(0+$item['grupo3']);
     }else{
       $aux = 0+$item['grupo3'];
       $aux = number_format($aux, 2, '.', '');
@@ -832,7 +838,13 @@ $grupoAlimActual = '';
     $pdf->Cell(13.141,4,$aux,1,0,'C',False);
 
     if($item['presentacion'] == 'u'){
-      $aux = round(0+$aux);
+      // var_dump($modalidad);
+      if (strpos($item['componente'], "HUEVO") == 0) {
+        $aux = ceil(0+$aux);
+      } else {
+        $aux = round(0+$aux);
+      }
+      // $aux = round(0+$aux);
     }
     else{
       $aux = number_format($aux, 2, '.', '');

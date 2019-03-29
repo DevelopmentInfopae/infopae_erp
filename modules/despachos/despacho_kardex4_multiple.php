@@ -539,16 +539,21 @@ foreach ($codesedes as $sedecod => $isset) {
               // Unidad de medida
               $pdf->Cell(13.141,4,$item['presentacion'],1,0,'C',False);
               $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
-              if (strpos($item['componente'], "huevo")) {
-                $aux = ceil(0+$aux);
-              } else {
+              
                 if($item['presentacion'] == 'u'){
-                  $aux = round(0+$aux);
+                  if (strpos($item['componente'], "HUEVO") == 0) {
+                    $aux = ceil(0+$aux);
+                  } else {
+                    $aux = round(0+$aux);
+                  }
+                  // $aux = round(0+$aux);
                 }
                 else{
                   $aux = number_format($aux, 2, '.', '');
                 }
-              }
+
+              // var_dump($modalidad);
+
               //TOTAL REQUERIDO
               $pdf->Cell(17.471,4,$aux,1,0,'C',False);
               if($item['cantotalpresentacion'] > 0 ){
@@ -567,8 +572,10 @@ foreach ($codesedes as $sedecod => $isset) {
                 $consumoDia = 0;
                 $consumoDia = $item['d'.$k];
                 if ($item['presentacion'] == "u") {
-                $consumoDia = number_format($consumoDia, 0, '', '');
-                  $pdf->Cell(22,4,round($consumoDia),'1',0,'C',False);
+                  $consumoDia = number_format($consumoDia, $digitosDecimales);
+                  // $consumoDia = number_format($consumoDia, 0, '', '');
+                  // $pdf->Cell(22,4,round($consumoDia),'1',0,'C',False);
+                  $pdf->Cell(22,4,$consumoDia,'1',0,'C',False);
                 } else {
                   $consumoDia = number_format($consumoDia, $digitosDecimales);
                   $pdf->Cell(22,4,$consumoDia,'1',0,'C',False);
