@@ -594,6 +594,8 @@ if(count($entregasSedes)>0) {
 
 				$consultaCantidadComplemento = "SELECT IFNULL(SUM((". trim($camposDiasEntregasDias, "+ ") .")),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "' AND ". $prioridades[$i]["campo_entregas_res"] ." != " . $prioridades[$i]["valor_NA"] . $condicion;
 
+// echo $consultaCantidadComplemento."<br>";
+
 				$resultadoCantidadComplemento = $Link->query($consultaCantidadComplemento) or die (mysqli_error($Link));
 				if ($resultadoCantidadComplemento->num_rows > 0) {
 					while ($registrosCantidadComplemento = $resultadoCantidadComplemento->fetch_assoc()) {
@@ -615,7 +617,8 @@ if(count($entregasSedes)>0) {
 				$columna++;
 			}
 
-			$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion;
+			$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion ." AND ". trim($camposDiasEntregasDias, "+ ") ." > 0";
+			// echo $con_can_est_com ."<br>";
 			$res_can_est_com = $Link->query($con_can_est_com) or die (mysql_error($Link));
 			if ($res_can_est_com->num_rows > 0) {
 				while ($reg_can_est_com = $res_can_est_com->fetch_assoc()) {
@@ -668,7 +671,8 @@ if(count($entregasSedes)>0) {
 
 		$condicionMayoritaria = " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"]." AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"]." AND " . $prioridades[2]["campo_entregas_res"] . " = " . $prioridades[2]["valor_NA"]." "; //Variable para la condición de búsqueda de estudiantes de población mayoritaria, que no cumplen con ninguna caracterización.
 
-		$con_can_est_total = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion.$condicionMayoritaria;
+		$con_can_est_total = "SELECT COUNT(DISTINCT num_doc) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion.$condicionMayoritaria ." AND ". trim($camposDiasEntregasDias, "+ ") ." > 0";
+		// echo $con_can_est_total ."<br>";
 		$res_can_est_total = $Link->query($con_can_est_total) or die (mysql_error($Link));
 		if ($res_can_est_total->num_rows > 0) {
 			while ($reg_can_est_total = $res_can_est_total->fetch_assoc()) {

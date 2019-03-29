@@ -21,7 +21,8 @@ $periodoActual = $_SESSION['periodoActual'];
 	    <div class="title-action">
 
 	    <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
-	      <button class="btn btn-primary" onclick="window.location.href = 'nuevo_titular.php';"><span class="fa fa-plus"></span>  Nuevo</button>
+	      <button class="btn btn-primary" name="boton_abri_ventana_exportar_focalizacion" id="boton_abri_ventana_exportar_focalizacion"><span class="fa fa-file-excel-o"></span> Exportar</button>
+	      <button class="btn btn-primary" onclick="window.location.href = 'nuevo_titular.php';"><span class="fa fa-plus"></span> Nuevo</button>
 	    <?php endif ?>
 	    </div>
   	</div><!-- /.col -->
@@ -234,6 +235,56 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
  </div>
 
 <?php } ?>
+
+<!-- Ventana de formulario de exportación para la priorización -->
+<div class="modal inmodal fade" id="ventana_formulario_exportar_focalizacion" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header text-info" style="padding: 15px;">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3><i class="fa fa-upload fa-lg" aria-hidden="true"></i> Exportar focalización  </h3>
+      </div>
+      <div class="modal-body">
+        <form action="" name="formulario_exportar_focalizacion" id="formulario_exportar_focalizacion">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="mes_exportar">Mes</label>
+                <select class="form-control" name="mes_exportar" id="mes_exportar" required>
+                  <option value="">Selección</option>
+                  <?php
+                    $consultaMes = "SELECT distinct MES AS mes FROM planilla_semanas;";
+                    $resultadoMes = $Link->query($consultaMes);
+                    if($resultadoMes->num_rows > 0){
+                      while($registros = $resultadoMes->fetch_assoc()) {
+                  ?>
+                      <option value="<?= $registros["mes"]; ?>"><?= $registros["mes"]; ?></option>
+                  <?php
+                      }
+                    }
+                  ?>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="semana_exportar">Semana</label>
+                <select class="form-control" name="semana_exportar" id="semana_exportar" required>
+                  <option value="">Selección</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" id="exportar_focalizacion">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <form id="editar_titular" action="editar_titular.php" method="post">
 	<input type="hidden" name="num_doc_editar" id="num_doc_editar">

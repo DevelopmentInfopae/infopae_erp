@@ -21,7 +21,9 @@
     </ol>
   </div>
   <div class="col-lg-4">
-    <div class="title-action"></div>
+    <div class="title-action">
+      <a href="#" class="btn btn-primary" name="boton_abri_ventana_exportar_entregas" id="boton_abri_ventana_exportar_entregas"><i class="fa fa-file-excel-o"></i> Exportar</a>
+    </div>
   </div>
 </div>
 
@@ -273,11 +275,60 @@
             $annoinicial = substr($annoinicial, 2, 2);
             include 'res_resumen.php';
             if (isset($_POST['graficar'])) { include 'res_grafica.php'; }
-            if (isset($_POST['detallar'])) {include 'res_titulares.php'; }
+            if (isset($_POST['detallar'])) { include 'res_titulares.php'; }
           }// Termina el if que valida que se reciban los parametros post
         ?>
 
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ventana de formulario de exportación para la priorización -->
+<div class="modal inmodal fade" id="ventana_formulario_exportar_entregas" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header text-info" style="padding: 15px;">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3><i class="fa fa-upload fa-lg" aria-hidden="true"></i> Exportar ejecución  </h3>
+      </div>
+      <div class="modal-body">
+        <form action="" name="formulario_exportar_entregas" id="formulario_exportar_entregas">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="mes_exportar">Mes</label>
+                <select class="form-control" name="mes_exportar" id="mes_exportar" required>
+                  <option value="">Selección</option>
+                  <?php
+                    $consultaMes = "SELECT distinct MES AS mes FROM planilla_semanas;";
+                    $resultadoMes = $Link->query($consultaMes);
+                    if($resultadoMes->num_rows > 0){
+                      while($registros = $resultadoMes->fetch_assoc()) {
+                  ?>
+                      <option value="<?php echo $registros["mes"]; ?>"><?php echo $registros["mes"]; ?></option>
+                  <?php
+                      }
+                    }
+                  ?>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="semana_exportar">Semana</label>
+                <select class="form-control" name="semana_exportar" id="semana_exportar" required>
+                  <option value="">Selección</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" id="exportar_entregas">Aceptar</button>
       </div>
     </div>
   </div>
@@ -303,6 +354,10 @@
 <script src="<?php echo $baseUrl; ?>/modules/consultas/js/select_anidados.js"></script>
 <script>
   $(document).ready(function () {
+    $(document).on('click', '#boton_abri_ventana_exportar_entregas', function(){ abrir_ventana_exportar_entregas(); });
+    $(document).on('change', '#mes_exportar', function(){ buscarSemanasMesExportar($(this)); });
+    $(document).on('click', '#exportar_entregas', function(){ exportar_entregas(); });
+
     $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });
 
     jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
@@ -346,8 +401,8 @@
   			order: [ 1, 'desc' ],
   			pageLength: 10,
   			responsive: true,
-        buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel'/*, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } */} ],
-        dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+        buttons: [ {extend: 'excel', title: 'Entregas_resumidas', className: 'btnExportarExcel1'/*, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } */} ],
+        dom: 'lr<"containerBtn1"><"inputFiltro"f>tip<"html5buttons"B>',
   			oLanguage: {
   				sLengthMenu: 'Mostrando _MENU_ registros por página',
   				sZeroRecords: 'No se encontraron registros',
@@ -365,6 +420,15 @@
   		});
 
   		var anchoTabla = $('#box-table-dr').width();
+      var botonAcciones = '<div class="dropdown pull-right">'+
+                            '<button class="btn btn-primary btn-sm btn-outline" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">'+
+                              'Acciones <span class="caret"></span>'+
+                            '</button>'+
+                            '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+
+                              '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel1\').click();"><i class="fa fa-file-pdf-o"></i> Exportar </a></li>'+
+                            '</ul>'+
+                          '</div>';
+      $('.containerBtn1').html(botonAcciones);
   	});
 	</script>
 
@@ -374,13 +438,13 @@
     <script src="<?php echo $baseUrl; ?>/modules/consultas/js/consultas_graficos.js"></script>
   <?php } if (isset($_POST['detallar'])) { ?>
     <script type="text/javascript">
-      $(document).ready( function () {
+      $(document).ready(function(){
         $('#box-table-d').DataTable({
           order: [ 1, 'desc' ],
           pageLength: 25,
           responsive: true,
-        buttons: [ {extend: 'excel', title: 'Titulares_de_derechos', className: 'btnExportarExcel'/*, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } */} ],
-          dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+          buttons: [{extend: 'excel', title: 'Titulares_de_derechos', className: 'btnExportarExcel2'/*, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } */}],
+          dom: 'lr<"containerBtn2"><"inputFiltro"f>tip<"html5buttons"B>',
           oLanguage: {
            sLengthMenu: 'Mostrando _MENU_ registros por página',
            sZeroRecords: 'No se encontraron registros',
@@ -394,6 +458,17 @@
              sNext:     'Siguiente',
              sPrevious: 'Anterior'
            }
+          },
+          initComplete: function() {
+            var botonAcciones2 = '<div class="dropdown pull-right">'+
+                            '<button class="btn btn-primary btn-sm btn-outline" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">'+
+                              'Acciones <span class="caret"></span>'+
+                            '</button>'+
+                            '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+
+                              '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel2\').click();"><i class="fa fa-file-pdf-o"></i> Exportar </a></li>'+
+                            '</ul>'+
+                          '</div>';
+            $('.containerBtn2').html(botonAcciones2);
           }
         });
       });

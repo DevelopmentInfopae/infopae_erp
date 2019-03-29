@@ -3,7 +3,7 @@ require_once '../../header.php';
 $titulo = 'Informes de alimentos.';
 
 $periodoActual = $_SESSION['periodoActual'];
-// $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
+$meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -25,132 +25,106 @@ $periodoActual = $_SESSION['periodoActual'];
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
-        <?php
-        $opciones ="";
-        $consultaTablas = "SELECT
-                            table_name AS tabla
-                          FROM
-                            information_schema.tables
-                          WHERE
-                            table_schema = DATABASE() AND table_name like 'insumosmovdet%'";
-        $resultadoTablas = $Link->query($consultaTablas);
-        if ($resultadoTablas->num_rows > 0) {
-          $cnt=0;
-          while ($tabla = $resultadoTablas->fetch_assoc()) {
-            $mes = str_replace("insumosmovdet", "", $tabla['tabla']);
-            $mes = str_replace($_SESSION['periodoActual'], "", $mes);
-
-            $nomMes = $meses[$mes];
-            $opciones.= '<option value="'.$mes.'">'.$nomMes.'</option>';
-
-            if ($cnt == 0) {
-              $cnt++;
-              $mesTablaInicio = $mes;
-            }
-          }
-        } else {
-          echo "<script>location.href='$baseUrl/modules/insumos/despacho_insumo.php';</script>";
-        }
-        ?>
-          <form class="form row" id="formBuscar" method="POST">
-            <div id="fechaDiasDespachos">
-              <div class="form-group col-sm-3">
-                <label>Desde</label>
-                <div class="compositeDate">
-                  <div class="nopadding">
-                    <select name="mes_inicio" id="mes_inicio" class="form-control ">
-                    <?php echo $opciones; ?>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group col-sm-3">
-                <label>Hasta</label>
-                <div class="compositeDate">
-                  <div class="nopadding">
-                    <input type="text" id="nomMesFin" value="Espere..." class="form-control" readonly>
-                    <input type="hidden" name="mes_fin" id="mes_fin" value="01">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-group col-sm-3">
-              <label>Tipo documento</label>
-              <select name="tipo_documento" id="tipo_documento" class="form-control">
-                <option value="">Seleccione uno</option>
-                <?php
-                $consultarTipoDocumento = "SELECT * FROM tipomovimiento";
-                $resultadoTipoDocumento = $Link->query($consultarTipoDocumento);
-                if ($resultadoTipoDocumento->num_rows > 0) {
-                  while ($tdoc = $resultadoTipoDocumento->fetch_assoc()) { ?>
-                    <option value="<?php echo $tdoc['Movimiento'] ?>"><?php echo $tdoc['Movimiento'] ?></option>
-                  <?php }
-                }
-                ?>
-              </select>
-            </div>
-            <div class="form-group col-sm-3">
-              <label>Proveedor/Responsable</label>
-              <select name="proveedor" id="proveedor" class="form-control">
-                <option value="">Seleccione uno</option>
-              </select>
-            </div>
-            <div class="form-group col-sm-3">
-              <label>Rutas</label>
-              <select name="ruta_desp" id="ruta_desp" class="form-control">
-                <option value="">Seleccione una</option>
-                <?php
-                $consultaRutas = "SELECT * FROM rutas";
-                $resultadoRutas = $Link->query($consultaRutas);
-                if ($resultadoRutas->num_rows > 0) {
-                  while ($ruta = $resultadoRutas->fetch_assoc()) { ?>
-                    <option value="<?php echo $ruta['ID']; ?>"><?php echo $ruta['Nombre']; ?></option>
-                  <?php }
-                }
-                ?>
-              </select>
-            </div>
-            <div class="form-group col-sm-3">
-              <label>Municipio</label>
-              <select class="form-control" name="municipio" id="municipio_desp">
-                <option value="">Seleccione...</option>
-                <?php
-                  $consultarMunicipios = "SELECT
-                                            ubicacion.CodigoDANE, ubicacion.Ciudad
-                                          FROM insumosmov".$mes.$_SESSION['periodoActual']." AS denc
-                                          INNER JOIN sedes".$_SESSION['periodoActual']." AS sede ON sede.cod_sede = denc.BodegaDestino
-                                          INNER JOIN ubicacion ON ubicacion.CodigoDANE = sede.cod_mun_sede
-                                          GROUP BY ubicacion.Ciudad;";
-                  $resultadoMunicipios = $Link->query($consultarMunicipios);
-                  if ($resultadoMunicipios->num_rows > 0) {
-                    while ($municipios = $resultadoMunicipios->fetch_assoc()) { ?>
-                      <option value="<?php echo $municipios['CodigoDANE'] ?>"><?php echo $municipios['Ciudad'] ?></option>
-                <?php
+          <form class="form" id="formulario_buscar_alimentos">
+            <div class="row">
+              <div class="col-sm-3 form-group">
+                <label class="control-label" for="mes">Mes</label>
+                <select class="form-control" name="mes" id="mes" required="required">
+                  <option value="">Seleccione</option>
+                  <?php
+                  $consulta_meses = "SELECT DISTINCT MES AS mes FROM planilla_semanas;";
+                  $respuesta_meses = $Link->query($consulta_meses) or die("Error al consultar planilla_semanas: ". $Link->error);
+                  if ($respuesta_meses->num_rows > 0) {
+                    while ($mes = $respuesta_meses->fetch_assoc()) {
+                  ?>
+                    <option value="<?= $mes["mes"]; ?>" <?= ($mes["mes"] == date("m")) ? "selected" : ""; ?>><?= $meses[$mes["mes"]]; ?></option>
+                  <?php
                     }
                   }
-                ?>
-              </select>
+                  ?>
+                </select>
+              </div>
+
+              <div class="col-sm-3 form-group">
+                <label for="semana_inicial">Semana Inicial</label>
+                <select class="form-control" name="semana_inicial" id="semana_inicial" required="required">
+                  <option value="">Seleccione</option>
+                </select>
+              </div>
+
+              <div class="col-sm-3 form-group">
+                <label for="semana_final">Semana Final</label>
+                <select class="form-control" name="semana_final" id="semana_final" required="required">
+                  <option value="">Seleccione</option>
+                </select>
+              </div>
+
+              <div class="col-sm-3 form-group">
+                <label class="control-label" for="ruta">Rutas</label>
+                <select class="form-control" name="ruta" id="ruta">
+                  <option value="">Seleccione</option>
+                  <?php
+                  $consulta_rutas = "SELECT ID AS id, Nombre as nombre FROM rutas ORDER BY Nombre";
+                  $respuesta_rutas = $Link->query($consulta_rutas) or die("Error al consultar rutas: ". $Link->error);
+                  if ($respuesta_rutas->num_rows > 0) {
+                    while ($ruta = $respuesta_rutas->fetch_assoc()) {
+                  ?>
+                  <option value="<?= $ruta["id"]; ?>"><?= $ruta['nombre']; ?></option>
+                  <?php
+                    }
+                  }
+                  ?>
+                </select>
+              </div>
             </div>
-            <div class="form-group col-sm-3">
-              <label>Institución</label>
-              <select name="institucion_desp" id="institucion_desp" class="form-control">
-                <option value="">Seleccione uno</option>
-              </select>
+
+            <div class="row">
+              <div class="form-group col-sm-3">
+                <label class="control-label" for="municipio">Municipio</label>
+                <select class="form-control" name="municipio" id="municipio">
+                  <option value="">Seleccione</option>
+                  <?php
+                  $consulta_municipios = "SELECT CodigoDANE AS codigo, Ciudad AS municipio FROM ubicacion WHERE CodigoDANE LIKE '". $_SESSION["p_CodDepartamento"] ."%' ORDER BY Ciudad";
+                  $respuesta_municipios = $Link->query($consulta_municipios) or die("Error al consultar ubicacion: ". $Link->error);
+                  if ($respuesta_municipios->num_rows > 0) {
+                    while ($municipio = $respuesta_municipios->fetch_assoc()) {
+                  ?>
+                  <option value="<?= $municipio['codigo'] ?>" <?php if ($_SESSION["p_Municipio"] == $municipio["codigo"]) { echo "selected"; } ?>><?= $municipio['municipio'] ?></option>
+                  <?php
+                    }
+                  }
+                  ?>
+                </select>
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label class="control-label" for="institucion">Institución</label>
+                <select class="form-control" name="institucion" id="institucion">
+                  <option value="">Seleccione</option>
+                </select>
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label class="control-label" for="sede">Sede</label>
+                <select class="form-control" name="sede" id="sede">
+                  <option value="">Seleccione</option>
+                </select>
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label class="control-label" for="tipo_complemento">Tipo complemento</label>
+                <select class="form-control" name="tipo_complemento" id="tipo_complemento">
+                  <option value="">Seleccione</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group col-sm-3">
-              <label>Sede</label>
-              <select name="sede_desp" id="sede_desp" class="form-control">
-                <option value="">Seleccione una</option>
-              </select>
+
+            <div class="row">
+              <div class="col-sm-12">
+                <button class="btn btn-primary" name="boton_buscar" id="boton_buscar"><span class="fa fa-search"></span> Buscar</button>
+              </div>
             </div>
-            <input type="hidden" name="buscar" value="1">
           </form>
-          <div class="col-sm-12">
-            <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
-            <?php if (isset($_POST['buscar'])): ?>
-              <button class="btn btn-primary" onclick="location.href='insumos_proveedor.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
-            <?php endif ?>
-          </div>
         </div>
       </div>
     </div>
@@ -279,12 +253,12 @@ $periodoActual = $_SESSION['periodoActual'];
   </div>
 </div>
 
-<form method="POST" action="editar_despacho_insumo.php" id="editar_despacho">
+<!-- <form method="POST" action="editar_despacho_insumo.php" id="editar_despacho">
   <input type="hidden" name="id_despacho" id="id_despacho">
   <input type="hidden" name="mesTabla" id="mesTabla">
-</form>
+</form> -->
 
-<div class="modal inmodal fade" id="modalEliminarDespachos" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+<!-- <div class="modal inmodal fade" id="modalEliminarDespachos" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
  <div class="modal-dialog modal-sm">
    <div class="modal-content">
      <div class="modal-header text-info" id="tipoCabecera" style="padding: 15px;">
@@ -300,7 +274,7 @@ $periodoActual = $_SESSION['periodoActual'];
      </div>
    </div>
  </div>
-</div>
+</div> -->
 
 <?php include '../../footer.php'; ?>
 
@@ -309,7 +283,6 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
 
 <!-- Custom and plugin javascript -->
@@ -322,99 +295,46 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 
 <!-- Section Scripts -->
-<!-- <script src="<?php echo $baseUrl; ?>/modules/insumos/js/despachos.js"></script> -->
+<script src="<?php echo $baseUrl; ?>/modules/informes/js/informes.js"></script>
 <script type="text/javascript">
   console.log('Aplicando Data Table');
-  // dataset1 = $('#tablaTrazabilidad').DataTable({
-  //   ajax: {
-  //     method: 'POST',
-  //     url: 'functions/fn_insumos_obtener_datos_tabla.php',
-  //     data:{
-  //       consulta: $('#consulta').val()
-  //     }
-  //   },
-  //   columns:[
-  //     { data: 'CodigoProducto'},
-  //     { data: 'Descripcion'},
-  //     { data: 'Cantidad'},
-  //     { data: 'CantidadPresentacion'},
-  //     { data: 'CantU2'},
-  //     { data: 'Umedida2'},
-  //     { data: 'CantU3'},
-  //     { data: 'Umedida3'},
-  //     { data: 'CantU4'},
-  //     { data: 'Umedida4'},
-  //     { data: 'CantU5'},
-  //     { data: 'Umedida5'},
-  //   ],
-  //   pageLength: 25,
-  //   responsive: true,
-  //   dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-  //   buttons : [{extend:'excel', title:'Menus', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11]}}],
-  //   oLanguage: {
-  //     sLengthMenu: 'Mostrando _MENU_ registros por página',
-  //     sZeroRecords: 'No se encontraron registros',
-  //     sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-  //     sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-  //     sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-  //     sSearch:         'Buscar: ',
-  //     oPaginate:{
-  //       sFirst:    'Primero',
-  //       sLast:     'Último',
-  //       sNext:     'Siguiente',
-  //       sPrevious: 'Anterior'
-  //     }
-  //   },
-  //   "preDrawCallback": function( settings ) {
-  //     $('#loader').fadeIn();
-  //   }
-  // }).on("draw", function(){
-  //   $('#loader').fadeOut();
-  //   $('.checkDespacho').iCheck({ checkboxClass: 'icheckbox_square-green' });
-  //   $('#selecTodos').on('ifChecked', function(){ $('.checkDespacho').iCheck('check'); });
-  //   $('#selecTodos').on('ifUnchecked', function(){ $('.checkDespacho').iCheck('uncheck'); });
-  //   $('.checkDespacho').on('ifChecked', function(){ $('#sede_'+$(this).data('num')).prop('checked', true); });
-  //   $('.checkDespacho').on('ifUnchecked', function(){ $('#sede_'+$(this).data('num')).prop('checked', false); });
-  // });
 
-  var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li></ul></div>';
-  $('.containerBtn').html(btnAcciones);
 
-  <?php if (isset($_POST['buscar'])): ?>
-    // Código para setear los campos del formulario de búsqueda con los parámetros especificados.
+  // <?php if (isset($_POST['buscar'])): ?>
+  //   // Código para setear los campos del formulario de búsqueda con los parámetros especificados.
 
-    $('#btnBuscar').prop('disabled', true);
-    $('#formBuscar').find('input, textarea, button, select').prop('disabled',true);
+  //   $('#btnBuscar').prop('disabled', true);
+  //   $('#formBuscar').find('input, textarea, button, select').prop('disabled',true);
 
-    $('#mes_inicio').val('<?php echo $_POST['mes_inicio']; ?>').change();
-    $('#mes_fin').val('<?php echo $_POST['mes_fin']; ?>').change();
-  <?php if ($_POST['municipio'] != ""): ?>
-      $('#municipio_desp').val('<?php echo $_POST['municipio']; ?>').change();
-  <?php endif ?>
-  <?php if ($_POST['tipo_documento'] != ""): ?>
-      $('#tipo_documento').val('<?php echo $_POST['tipo_documento']; ?>').change();
-  <?php endif ?>
-  <?php if ($_POST['ruta_desp'] != ""): ?>
-      $('#ruta_desp').val('<?php echo $_POST['ruta_desp']; ?>').change();
-  <?php endif ?>
-    setTimeout(function() {
-    <?php if ($_POST['institucion_desp'] != ""): ?>
-        $('#institucion_desp').val('<?php echo $_POST['institucion_desp']; ?>').change();
-    <?php endif ?>
-    }, 2200);
+  //   $('#mes_inicio').val('<?php echo $_POST['mes_inicio']; ?>').change();
+  //   $('#mes_fin').val('<?php echo $_POST['mes_fin']; ?>').change();
+  // <?php if ($_POST['municipio'] != ""): ?>
+  //     $('#municipio_desp').val('<?php echo $_POST['municipio']; ?>').change();
+  // <?php endif ?>
+  // <?php if ($_POST['tipo_documento'] != ""): ?>
+  //     $('#tipo_documento').val('<?php echo $_POST['tipo_documento']; ?>').change();
+  // <?php endif ?>
+  // <?php if ($_POST['ruta_desp'] != ""): ?>
+  //     $('#ruta_desp').val('<?php echo $_POST['ruta_desp']; ?>').change();
+  // <?php endif ?>
+  //   setTimeout(function() {
+  //   <?php if ($_POST['institucion_desp'] != ""): ?>
+  //       $('#institucion_desp').val('<?php echo $_POST['institucion_desp']; ?>').change();
+  //   <?php endif ?>
+  //   }, 2200);
 
-    setTimeout(function() {
-      <?php if ($_POST['sede_desp'] != ""): ?>
-          $('#sede_desp').val('<?php echo $_POST['sede_desp']; ?>').change();
-      <?php endif ?>
-      <?php if ($_POST['proveedor'] != ""): ?>
-        $('#proveedor').val('<?php echo $_POST['proveedor']; ?>').change();;
-      <?php endif ?>
-      $('#btnBuscar').prop('disabled', false);
-      $('#formBuscar').find('input, textarea, button, select').prop('disabled',false);
-    }, 2800);
+  //   setTimeout(function() {
+  //     <?php if ($_POST['sede_desp'] != ""): ?>
+  //         $('#sede_desp').val('<?php echo $_POST['sede_desp']; ?>').change();
+  //     <?php endif ?>
+  //     <?php if ($_POST['proveedor'] != ""): ?>
+  //       $('#proveedor').val('<?php echo $_POST['proveedor']; ?>').change();;
+  //     <?php endif ?>
+  //     $('#btnBuscar').prop('disabled', false);
+  //     $('#formBuscar').find('input, textarea, button, select').prop('disabled',false);
+  //   }, 2800);
 
-  <?php endif ?>
+  // <?php endif ?>
 </script>
 
 <?php mysqli_close($Link); ?>
