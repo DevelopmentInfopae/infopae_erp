@@ -125,41 +125,13 @@ if ($respuesta_entregas->num_rows > 0){
   }
 
 	$fila = 2;
-	while($registros_entregas = $respuesta_entregas->fetch_assoc()){ var_dump($registros_entregas);
+	while($registros_entregas = $respuesta_entregas->fetch_assoc()){
 		$columna_entregas = "A";
 		foreach ($registros_entregas as $clave_entregas => $valor_entregas) {
 			$archivo->setCellValue($columna_entregas . $fila, $valor_entregas);
 
 			$columna_entregas++;
 		}
-		// $entregas[] = $registros_entregas;
-		// $archivo->setCellValue("A". $fila, $registros_entregas["abreviatura"]);
-		// $archivo->setCellValueExplicit("B". $fila, $registros_entregas["numero_documento"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-		// $archivo->setCellValue("C". $fila, $registros_entregas["primer_apellido"]);
-		// $archivo->setCellValue("D". $fila, $registros_entregas["segundo_apellido"]);
-		// $archivo->setCellValue("E". $fila, $registros_entregas["primer_nombre"]);
-		// $archivo->setCellValue("F". $fila, $registros_entregas["segundo_nombre"]);
-		// $archivo->setCellValue("G". $fila, $registros_entregas["genero"]);
-		// $archivo->setCellValue("H". $fila, $registros_entregas["direccion_residencia"]);
-		// $archivo->setCellValueExplicit("I". $fila, $registros_entregas["telefono"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-		// $archivo->setCellValue("J". $fila, $registros_entregas["fecha_nacimiento"]);
-		// $archivo->setCellValue("K". $fila, $registros_entregas["nombre_estrato"]);
-		// $archivo->setCellValue("L". $fila, $registros_entregas["sisben"]);
-		// $archivo->setCellValue("M". $fila, $registros_entregas["nombre_discapacidad"]);
-		// $archivo->setCellValue("N". $fila, $registros_entregas["nombre_etnia"]);
-		// $archivo->setCellValue("O". $fila, $registros_entregas["nombre_poblacion_victima"]);
-		// $archivo->setCellValueExplicit("P". $fila, $registros_entregas["codigo_institucion"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-		// $archivo->setCellValue("Q". $fila, $registros_entregas["nombre_institucion"]);
-		// $archivo->setCellValueExplicit("R". $fila, $registros_entregas["codigo_sede"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-		// $archivo->setCellValue("S". $fila, $registros_entregas["nombre_sede"]);
-		// $archivo->setCellValueExplicit("T". $fila, $registros_entregas["codigo_municipio"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-		// $archivo->setCellValue("U". $fila, $registros_entregas["nombre_municipio"]);
-		// $archivo->setCellValue("V". $fila, $registros_entregas["grado"]);
-		// $archivo->setCellValue("W". $fila, $registros_entregas["grupo"]);
-		// $archivo->setCellValue("X". $fila, $registros_entregas["jornada"]);
-		// $archivo->setCellValue("Y". $fila, $registros_entregas["edad"]);
-		// $archivo->setCellValue("Z". $fila, $registros_entregas["residencia"]);
-		// $archivo->setCellValue("AA". $fila, $registros_entregas["complemento"]);
 
 		$fila++;
 	}
