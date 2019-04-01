@@ -728,7 +728,7 @@ $grupoAlimActual = '';
 
       if($item['presentacion'] == 'u'){
         // $aux = round(0+$aux);
-        if (strpos($alimento['componente'], "HUEVO") == 0) {
+        if (strpos($alimento['componente'], "HUEVO") !== FALSE) {
           $aux = ceil($aux);
         } else {
           $aux = round($aux);

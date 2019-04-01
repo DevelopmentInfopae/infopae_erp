@@ -541,7 +541,7 @@ foreach ($codesedes as $sedecod => $isset) {
               $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
               
                 if($item['presentacion'] == 'u'){
-                  if (strpos($item['componente'], "HUEVO") == 0) {
+                  if (strpos($item['componente'], "HUEVO") !== FALSE) {
                     $aux = ceil(0+$aux);
                   } else {
                     $aux = round(0+$aux);

@@ -839,7 +839,7 @@ $grupoAlimActual = '';
 
     if($item['presentacion'] == 'u'){
       // var_dump($modalidad);
-      if (strpos($item['componente'], "HUEVO") == 0) {
+      if (strpos($item['componente'], "HUEVO") !== FALSE) {
         $aux = ceil(0+$aux);
       } else {
         $aux = round(0+$aux);
