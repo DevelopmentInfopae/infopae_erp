@@ -448,20 +448,17 @@ if($resultado->num_rows >= 1){
 
   // $cantTotal = number_format( $cantTotal, $digitosDecimales);
 
-  if ($alimento['presentacion'] == 'u') {
-    $cantTotal = ceil($cantTotal);
-  } else {
-    if ($alimento['presentacion'] == "u") {
 
-      if (strpos($alimento['componente'], "HUEVO") == 0) {
-        $cantTotal = ceil($cantTotal);
-      } else {
-        $cantTotal = round($cantTotal);
-      }
-        // $cantTotal = round($cantTotal);
+  if ($alimento['presentacion'] == "u") {
+
+    if (strpos($alimento['componente'], "HUEVO") !== FALSE) {
+      $cantTotal = ceil($cantTotal);
     } else {
-      $cantTotal = number_format( $cantTotal, $digitosDecimales);
+      $cantTotal = round($cantTotal);
     }
+      // $cantTotal = round($cantTotal);
+  } else {
+    $cantTotal = number_format( $cantTotal, $digitosDecimales);
   }
 
  $b = number_format($b, $digitosDecimales);

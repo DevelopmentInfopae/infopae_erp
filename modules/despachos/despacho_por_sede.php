@@ -636,20 +636,16 @@ unset($grupo);
 
 // var_dump($modalidad);
 
-if(strpos($alimento['componente'], "huevo")){
-  $aux = ceil($alimento['cant_total']);
-}else{
-
-  if ($alimento['presentacion'] == 'u') {
-    if (strpos($alimento['componente'], "HUEVO") == 0) {
-      $aux = ceil(0+$alimento['cant_total']);
-    } else {
-      $aux = round(0+$alimento['cant_total']);
-    }
+if ($alimento['presentacion'] == 'u') {
+  if (strpos($alimento['componente'], "HUEVO") !== FALSE) {
+    $aux = ceil(0+$alimento['cant_total']);
+    // echo $alimento['componente']."</br>";
   } else {
-    $aux = number_format($alimento['cant_total'], 2, '.', '');
-    // $aux = number_format($aux, 0, '.', '');
+    $aux = round(0+$alimento['cant_total']);
   }
+} else {
+  $aux = number_format($alimento['cant_total'], 2, '.', '');
+  // $aux = number_format($aux, 0, '.', '');
 }
 
 
