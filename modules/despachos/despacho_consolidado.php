@@ -337,14 +337,16 @@ $total2 = 0;
 $total3 = 0;
 $totalTotal = 0;
 
-for ($i=0; $i < count(array_unique($sedes)); $i++) {
-  $auxSede = $sedes[$i];
+$sede_unicas = array_unique($sedes);
+foreach ($sede_unicas as $key => $sede_unica) {
+  $auxSede = $sede_unica;
+
   $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede, (Cobertura_G1 + Cobertura_G2 + Cobertura_G3) sumaCoberturas FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."' ORDER BY sumaCoberturas DESC LIMIT 1";
-  // echo $consulta . "<br>";
   // Consulta que busca las coberturas de las diferentes sedes.
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     while($row = $resultado->fetch_assoc()) {
+      // var_dump($row);
       $sedeCobertura['cod_sede'] = $row['cod_sede'];
       $sedeCobertura['grupo1'] = $row["Cobertura_G1"];
       $sedeCobertura['grupo2'] = $row["Cobertura_G2"];
@@ -360,6 +362,30 @@ for ($i=0; $i < count(array_unique($sedes)); $i++) {
 
   }
 }
+// for ($i=0; $i < count($sede_unicas); $i++) {
+//   $auxSede = $sede_unicas[$i];
+//   $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede, (Cobertura_G1 + Cobertura_G2 + Cobertura_G3) sumaCoberturas FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."' ORDER BY sumaCoberturas DESC LIMIT 1";
+//   echo $consulta . "<br>";
+//   // Consulta que busca las coberturas de las diferentes sedes.
+//   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+//   if($resultado->num_rows >= 1){
+//     while($row = $resultado->fetch_assoc()) {
+//       // var_dump($row);
+//       $sedeCobertura['cod_sede'] = $row['cod_sede'];
+//       $sedeCobertura['grupo1'] = $row["Cobertura_G1"];
+//       $sedeCobertura['grupo2'] = $row["Cobertura_G2"];
+//       $sedeCobertura['grupo3'] = $row["Cobertura_G3"];
+//       $sedeCobertura['total'] = $row["Cobertura_G1"] + $row["Cobertura_G2"] + $row["Cobertura_G3"];
+//       $sedesCobertura[] = $sedeCobertura;
+
+//       $total1 += $row["Cobertura_G1"];
+//       $total2 += $row["Cobertura_G2"];
+//       $total3 += $row["Cobertura_G3"];
+//       $totalTotal = $totalTotal +  $sedeCobertura['total'];
+//     }
+
+//   }
+// }
 
 $totalesSedeCobertura  = array(
     "grupo1" => $total1,
@@ -434,6 +460,8 @@ for ($i=0; $i < count($despachos) ; $i++) {
 
 // Vamos unificar los alimentos para que no se repitan
 $alimento = $alimentos[0];
+
+// var_dump($totalesSedeCobertura);
 
 if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
 if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
