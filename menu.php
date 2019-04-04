@@ -52,6 +52,7 @@
 		<a href="#"><i class="fa fa-calculator"></i> <span class="nav-label">Dispositivos Biométricos</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php"><span class="nav-label">Dispositivos Biométricos</span></a> </li>
+			<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php"><span class="nav-label">Formato Datos Personales</span></a></li>
 		</ul>
 	</li>
 
