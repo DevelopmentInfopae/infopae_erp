@@ -33,7 +33,7 @@ $consulta_focalizacion = "SELECT
 													INNER JOIN sedes$periodo_actual sed ON sed.cod_inst = foc.cod_inst AND sed.cod_sede = foc.cod_sede
 													INNER JOIN tipodocumento tid ON tid.id = foc.tipo_doc
 													INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede
-													WHERE foc.cod_inst = '268307000035' $condicion_sede
+													WHERE foc.cod_inst = '$institucion' $condicion_sede
 													ORDER BY nom_inst, nom_sede, nom_grupo, nom1, nom2, ape1, ape2;";
 $respuesta_focalizacion = $Link->query($consulta_focalizacion) or die("Error al consultar focalizacion$semana: ". $Link->error);
 if ($respuesta_focalizacion->num_rows > 0)
@@ -47,95 +47,93 @@ if ($respuesta_focalizacion->num_rows > 0)
 
 	class PDF extends FPDF
 	{
-	protected $B = 0;
-	protected $I = 0;
-	protected $U = 0;
-	protected $HREF = '';
+		protected $B = 0;
+		protected $I = 0;
+		protected $U = 0;
+		protected $HREF = '';
 
-	function WriteHTML($html)
-	{
-	    // Intérprete de HTML
-	    $html = str_replace("\n",' ',$html);
-	    $a = preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE);
-	    foreach($a as $i=>$e)
-	    {
-	        if($i%2==0)
-	        {
-	            // Text
-	            if($this->HREF)
-	                $this->PutLink($this->HREF,$e);
-	            else
-	                $this->Write(5,$e);
-	        }
-	        else
-	        {
-	            // Etiqueta
-	            if($e[0]=='/')
-	                $this->CloseTag(strtoupper(substr($e,1)));
-	            else
-	            {
-	                // Extraer atributos
-	                $a2 = explode(' ',$e);
-	                $tag = strtoupper(array_shift($a2));
-	                $attr = array();
-	                foreach($a2 as $v)
-	                {
-	                    if(preg_match('/([^=]*)=["\']?([^"\']*)/',$v,$a3))
-	                        $attr[strtoupper($a3[1])] = $a3[2];
-	                }
-	                $this->OpenTag($tag,$attr);
-	            }
-	        }
-	    }
-	}
+		function WriteHTML($html)
+		{
+		    // Intérprete de HTML
+		    $html = str_replace("\n",' ',$html);
+		    $a = preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE);
+		    foreach($a as $i=>$e)
+		    {
+		        if($i%2==0)
+		        {
+		            // Text
+		            if($this->HREF)
+		                $this->PutLink($this->HREF,$e);
+		            else
+		                $this->Write(5,$e);
+		        }
+		        else
+		        {
+		            // Etiqueta
+		            if($e[0]=='/')
+		                $this->CloseTag(strtoupper(substr($e,1)));
+		            else
+		            {
+		                // Extraer atributos
+		                $a2 = explode(' ',$e);
+		                $tag = strtoupper(array_shift($a2));
+		                $attr = array();
+		                foreach($a2 as $v)
+		                {
+		                    if(preg_match('/([^=]*)=["\']?([^"\']*)/',$v,$a3))
+		                        $attr[strtoupper($a3[1])] = $a3[2];
+		                }
+		                $this->OpenTag($tag,$attr);
+		            }
+		        }
+		    }
+		}
 
-	function OpenTag($tag, $attr)
-	{
-	    // Etiqueta de apertura
-	    if($tag=='B' || $tag=='I' || $tag=='U')
-	        $this->SetStyle($tag,true);
-	    if($tag=='A')
-	        $this->HREF = $attr['HREF'];
-	    if($tag=='BR')
-	        $this->Ln(5);
-	}
+		function OpenTag($tag, $attr)
+		{
+		    // Etiqueta de apertura
+		    if($tag=='B' || $tag=='I' || $tag=='U')
+		        $this->SetStyle($tag,true);
+		    if($tag=='A')
+		        $this->HREF = $attr['HREF'];
+		    if($tag=='BR')
+		        $this->Ln(5);
+		}
 
-	function CloseTag($tag)
-	{
-	    // Etiqueta de cierre
-	    if($tag=='B' || $tag=='I' || $tag=='U')
-	        $this->SetStyle($tag,false);
-	    if($tag=='A')
-	        $this->HREF = '';
-	}
+		function CloseTag($tag)
+		{
+		    // Etiqueta de cierre
+		    if($tag=='B' || $tag=='I' || $tag=='U')
+		        $this->SetStyle($tag,false);
+		    if($tag=='A')
+		        $this->HREF = '';
+		}
 
-	function SetStyle($tag, $enable)
-	{
-	    // Modificar estilo y escoger la fuente correspondiente
-	    $this->$tag += ($enable ? 1 : -1);
-	    $style = '';
-	    foreach(array('B', 'I', 'U') as $s)
-	    {
-	        if($this->$s>0)
-	            $style .= $s;
-	    }
-	    $this->SetFont('',$style);
-	}
+		function SetStyle($tag, $enable)
+		{
+		    // Modificar estilo y escoger la fuente correspondiente
+		    $this->$tag += ($enable ? 1 : -1);
+		    $style = '';
+		    foreach(array('B', 'I', 'U') as $s)
+		    {
+		        if($this->$s>0)
+		            $style .= $s;
+		    }
+		    $this->SetFont('',$style);
+		}
 
-	function PutLink($URL, $txt)
-	{
-	    // Escribir un hiper-enlace
-	    $this->SetTextColor(0,0,255);
-	    $this->SetStyle('U',true);
-	    $this->Write(5,$txt,$URL);
-	    $this->SetStyle('U',false);
-	    $this->SetTextColor(0);
+		function PutLink($URL, $txt)
+		{
+		    // Escribir un hiper-enlace
+		    $this->SetTextColor(0,0,255);
+		    $this->SetStyle('U',true);
+		    $this->Write(5,$txt,$URL);
+		    $this->SetStyle('U',false);
+		    $this->SetTextColor(0);
+		}
 	}
-	}
-
 
 	$pdf = new PDF("P","mm", "Letter");
-	// $pdf->AddPage();
 	$pdf->SetAutoPageBreak(TRUE, 10);
 
 	$pdf->SetTextColor(0,0,0);
@@ -173,6 +171,8 @@ if ($respuesta_focalizacion->num_rows > 0)
 		$pdf->Image($parametros["LogoETC"], 10, $ordenada1, 80);
 		$pdf->Image($parametros["LogoOperador"], 85, $ordenada1-4, 30);
 		$pdf->Image("../../img/logo_infopae.png", 118, $ordenada1-2, 30);
+		// var_dump($rootUrl ."/img/logo_infopae.png");
+
 
 		$pdf->SetLineWidth(0.2);
 		$pdf->Cell(148, 10, "");
@@ -215,5 +215,10 @@ if ($respuesta_focalizacion->num_rows > 0)
 
 		$fila++;
 	}
+
 	$pdf->Output("I", "Autorización_tratamiento_datos_personales");
+}
+else
+{
+	echo "nada";
 }
