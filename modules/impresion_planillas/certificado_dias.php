@@ -163,9 +163,10 @@ if ($resultadoPrioridad->num_rows > 0) {
 }
 
 $totalesPorDia = []; //Array para almacenar total por días.
-$totalDeTotales = 0; //Variable para almacenar el total de todas las sedes.
 
 foreach ($instituciones as $institucion) {
+	$totalDeTotales = 0; //Variable para almacenar el total de todas las sedes.
+
 if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 	$pdf->AddPage();
 	include 'certificado_dias_header.php';
