@@ -111,19 +111,6 @@ foreach ($diasEntregas as $indiceDia => $dias) {
 	$iDias++;
 }
 
-// //TotalesInstitucion
-// $consulta = "SELECT e.cod_inst,e.nom_inst,e.cod_mun_Sede,u.ciudad,u.Departamento, COALESCE (SUM(d1),0) td01, COALESCE (SUM(d2),0) td02, COALESCE (SUM(d3),0) td03, COALESCE (SUM(d4),0) td04, COALESCE (SUM(d5),0) td05, COALESCE (SUM(d6),0) td06, COALESCE (SUM(d7),0) td07, COALESCE (SUM(d8),0) td08, COALESCE (SUM(d9),0) td09, COALESCE (SUM(d10),0) td10, COALESCE (SUM(d11),0) td11, COALESCE (SUM(d12),0) td12, COALESCE (SUM(d13),0) td13, COALESCE (SUM(d14),0) td14, COALESCE (SUM(d15),0) td15, COALESCE (SUM(d16),0) td16, COALESCE (SUM(d17),0) td17, COALESCE (SUM(d18),0)td18, COALESCE (SUM(d19),0) td19, COALESCE (SUM(d20),0) td20, COALESCE (SUM(d21),0) td21, COALESCE (SUM(d22),0) td22, COALESCE (SUM(d23),0) td23, COALESCE (SUM(d24),0) td24, COALESCE (SUM(d25),0) td25, COALESCE (SUM(d26),0) td26, COALESCE (SUM(d27),0) td27, COALESCE (SUM(d28),0) td28, COALESCE (SUM(d29),0) td29, COALESCE (SUM(d30),0) td30, COALESCE (SUM(d31),0) td31
-// FROM entregas_res_$mes$anno2d e
-// INNER JOIN ubicacion u ON e.cod_mun_sede=u.codigodane and u.ETC = 0
-// WHERE e.cod_mun_sede=$municipio
-// GROUP BY e.cod_inst";
-// $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-// if($resultado->num_rows >= 1){
-//   while($row = $resultado->fetch_assoc()){
-//     $TotalesInstitucion[$row['cod_inst']] = $row;
-//   }
-// }
-
 // Fechas inicial y fecha final del mes seleccionado.
 $consulta_fechas = "(SELECT ANO, MES, DIA FROM planilla_semanas WHERE MES = '$mes' AND DIA BETWEEN $diaInicialSemanaInicial AND $diaFinalSemanaFinal ORDER BY SEMANA ASC, DIA ASC LIMIT 1) UNION ALL (SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '$mes' AND DIA BETWEEN $diaInicialSemanaInicial AND $diaFinalSemanaFinal ORDER BY SEMANA DESC, DIA DESC LIMIT 1)";
 $resultado_fechas = $Link->query($consulta_fechas) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -137,9 +124,6 @@ if ($resultado_fechas->num_rows > 0) {
 
 //EntregasSedes
 $entregasSedes = array();
-// $consulta = "SELECT cod_inst,cod_sede,nom_sede, tipo_complem, COALESCE (SUM(d1),0) d01, COALESCE (SUM(d2),0) d02, COALESCE (SUM(d3),0) d03, COALESCE (SUM(d4),0) d04, COALESCE (SUM(d5),0) d05, COALESCE (SUM(d6),0) d06, COALESCE (SUM(d7),0) d07, COALESCE (SUM(d8),0) d08, COALESCE (SUM(d9),0) d09, COALESCE (SUM(d10),0) d10, COALESCE (SUM(d11),0) d11, COALESCE (SUM(d12),0) d12, COALESCE (SUM(d13),0) d13, COALESCE (SUM(d14),0) d14, COALESCE (SUM(d15),0) d15, COALESCE (SUM(d16),0) d16, COALESCE (SUM(d17),0) d17, COALESCE (SUM(d18),0) d18, COALESCE (SUM(d19),0) d19, COALESCE (SUM(d20),0) d20, COALESCE (SUM(d21),0) d21, COALESCE (SUM(d22),0) d22, COALESCE (SUM(d23),0) d23, COALESCE (SUM(d24),0) d24, COALESCE (SUM(d25),0) d25, COALESCE (SUM(d26),0) d26, COALESCE (SUM(d27),0) d27, COALESCE (SUM(d28),0) d28, COALESCE (SUM(d29),0) d29, COALESCE (SUM(d30),0) d30, COALESCE (SUM(d31),0) d31, (d1+d2+d3+d4+d5+d6+d7+d8+d9+d10+d11+d12+d13+d14+d15+d16+d17+d18+d19+d20+d21+d22+d23+d24+d25+d26+d27+d28+d29+d30+d31) numdias
-// 	FROM entregas_res_$mes$anno2d
-// 	WHERE (IFNULL(d1,0)+IFNULL(d2,0)+IFNULL(d3,0)+IFNULL(d4,0)+IFNULL(d5,0)+IFNULL(d6,0)+IFNULL(d7,0)+IFNULL(d8,0)+IFNULL(d9,0)+IFNULL(d10,0)+IFNULL(d11,0)+IFNULL(d12,0)+IFNULL(d13,0)+IFNULL(d14,0)+IFNULL(d15,0)+IFNULL(d16,0)+IFNULL(d17,0)+IFNULL(d18,0)+IFNULL(d19,0)+IFNULL(d20,0)+IFNULL(d21,0)+IFNULL(d22,0)+IFNULL(d23,0)+IFNULL(d24,0)+IFNULL(d25,0)+IFNULL(d26,0)+IFNULL(d27,0)+IFNULL(d28,0)+IFNULL(d29,0)+IFNULL(d30,0)+IFNULL(d31,0))>0 AND cod_mun_sede=$municipio";
 $consulta = "SELECT cod_inst,cod_sede,nom_sede, tipo_complem, ". trim($columnasDiasEntregasDias, ", ") .", (". trim($camposDiasEntregasDias, " + ") .") AS numdias FROM entregas_res_$mes$anno2d WHERE (". trim($columnasCondicionEntregasDias, "+ ") .") > 0 AND cod_mun_sede = $municipio";
 $consulta .= (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND cod_inst = '". $_POST["institucion"] ."'" : "";
 $consulta .= " GROUP BY cod_sede,tipo_complem";
@@ -155,7 +139,8 @@ if($resultado->num_rows >= 1){
 	}
 }
 
-if(count($entregasSedes)>0) {
+if(count($entregasSedes)>0)
+{
 	$consultaSemanasMes = "SELECT DISTINCT SEMANA FROM planilla_semanas WHERE MES = '$mes'";
 	$resultadoSemanasMes = $Link->query($consultaSemanasMes) or die ("Error al consultar planillas_semanas: ". $Link->error);
 	if ($resultadoSemanasMes->num_rows > 0) {
@@ -180,23 +165,25 @@ if(count($entregasSedes)>0) {
 		}
 	}
 
-	// var_dump($posicionesSemanaMes);
-
 	// Se van a separar los dias que corresponden a cada semana
 	$semanaIndice = 0;
 	$numeroSemana = -1;
 
-	foreach ($diasSemanas as $diaSemana){
-		if($semanaIndice != $diaSemana['SEMANA']){
+	foreach ($diasSemanas as $diaSemana)
+	{
+		if($semanaIndice != $diaSemana['SEMANA'])
+		{
 			$semanaIndice = $diaSemana['SEMANA'];
 			$numeroSemana++;
 		}
-		// $diasSemana[$numeroSemana][] = $diaSemana;
+
 		$diasSemana[$posicionesSemanaMes[$numeroSemana]][] = $diaSemana;
 	}
 
-	foreach ($instituciones as $institucion) {
-		if (array_key_exists($institucion['cod_inst'], $entregasSedes)) {
+	foreach ($instituciones as $institucion)
+	{
+		if (array_key_exists($institucion['cod_inst'], $entregasSedes))
+		{
 			$pdf->AddPage();
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFillColor(192,192,192);
@@ -391,10 +378,13 @@ if(count($entregasSedes)>0) {
 
 			$totalesSemanas = array(0,0,0,0,0);
 
-		// Impresión de datos de la tabla.
-			if (array_key_exists($institucion['cod_inst'], $entregasSedes)) {
+			// Impresión de datos de la tabla.
+			if (array_key_exists($institucion['cod_inst'], $entregasSedes))
+			{
 				$entregasSedesInstitucion =  $entregasSedes[$institucion['cod_inst']];
-			} else {
+			}
+			else
+			{
 				$entregasSedesInstitucion = [];
 			}
 
@@ -403,17 +393,23 @@ if(count($entregasSedes)>0) {
 			$lineasTotales = 0;
 			$maxCaracteres = 27;
 
-			foreach ($entregasSedesInstitucion as $entregasSedeInstitucion) {
+			foreach ($entregasSedesInstitucion as $entregasSedeInstitucion)
+			{
 				$lineasTotales++;
 				$aux_x = $pdf->GetX();
 				$aux_y = $pdf->GetY();
-				if($banderaNombres == 0){
+				if($banderaNombres == 0)
+				{
 					$nombre = $entregasSedeInstitucion['nom_sede'];
 					$banderaNombres++;
-				}else{
-					if($nombre != $entregasSedeInstitucion['nom_sede']){
+				}
+				else
+				{
+					if($nombre != $entregasSedeInstitucion['nom_sede'])
+					{
 						$linea = $lineas * 4;
-						if($lineas<= 1){
+						if($lineas<= 1)
+						{
 							$nombre = substr($nombre,0,$maxCaracteres);
 						}
 						$pdf->SetXY($aux_x, $aux_y-$linea);
@@ -421,13 +417,12 @@ if(count($entregasSedes)>0) {
 						$pdf->SetXY($aux_x, $aux_y-$linea);
 						$pdf->Cell(45,$linea,'','B',0,'C',false);
 
-
-
 						$nombre = $entregasSedeInstitucion['nom_sede'];
 						$lineas = 0;
 						$pdf->SetXY($aux_x, $aux_y);
 					}
 				}
+
 				$lineas++;
 
 				$pdf->SetFont('Arial','',$tamannoFuente-1);
@@ -437,25 +432,32 @@ if(count($entregasSedes)>0) {
 				$indice = $indiceDiaInicial-1;
 				$totalSemana = 0;
 
-				for($i = 1; $i <= 5 ; $i++) {
-					if(isset($diasSemana[$i])) {
+				for($i = 1; $i <= 5 ; $i++)
+				{
+					if(isset($diasSemana[$i]))
+					{
 						$total = 0;
 						$indicePrint = 0;
-						foreach ($diasSemana[$i] as $diaSemana) {
-
+						foreach ($diasSemana[$i] as $diaSemana)
+						{
 							$indice++;
 							$res_can_comp = $Link->query("SELECT SUM(D$indice) AS cantidadComplemento FROM entregas_res_$mes$anno2d WHERE cod_inst = '". $entregasSedeInstitucion["cod_inst"] ."' AND cod_sede = '". $entregasSedeInstitucion["cod_sede"] ."' AND tipo_complem = '". $entregasSedeInstitucion["tipo_complem"] ."';") or die (mysqli_error($Link));
-							if ($res_can_comp->num_rows > 0) {
+							if ($res_can_comp->num_rows > 0)
+							{
 								$reg_can_comp = $res_can_comp->fetch_assoc();
 
-								if ($reg_can_comp["cantidadComplemento"] > 0) {
+								if ($reg_can_comp["cantidadComplemento"] > 0)
+								{
 									$indicePrint++;
 								}
 							}
 
-							if($indice < 10){
+							if($indice < 10)
+							{
 								$aux = 'd0'.$indice;
-							} else{
+							}
+							else
+							{
 								$aux = 'd'.$indice;
 							}
 
@@ -465,11 +467,14 @@ if(count($entregasSedes)>0) {
 						}
 						$pdf->Cell(13,4,$total,'R',0,'C',false);
 						$pdf->Cell(10,4,$indicePrint,'R',0,'C',false);
-					}else{
+					}
+					else
+					{
 						$pdf->Cell(13,4,'','R',0,'C',false);
 						$pdf->Cell(10,4,'','R',0,'C',false);
 					}
 				}
+
 				$pdf->Cell(0,4,$totalSemana,0,0,'C',false);
 				$pdf->SetX($aux_x);
 				$pdf->Cell(45);
@@ -504,11 +509,11 @@ if(count($entregasSedes)>0) {
 
 			$pdf->Cell(0,4,$granTotal,0,0,'C',false);
 
-		// Cuadro  exterior tabla
+			// Cuadro  exterior tabla
 			$pdf->SetXY($x, $y);
-		//var_dump($lineasTotales);
+			//var_dump($lineasTotales);
 			$pdf->Cell(0,$lineasTotales*4+15,'',1,0,'C',false);
-		//Termina la tabla de sedes
+			//Termina la tabla de sedes
 
 			$pdf->Ln(70);
 			$pdf->SetFont('Arial','',$tamannoFuente-1);
@@ -524,7 +529,7 @@ if(count($entregasSedes)>0) {
 			}
 			/**********************************************************/
 
-		// Tebla población
+			// Tebla tipos de caracterización.
 			$x = $pdf->GetX();
 			$y = $pdf->GetY();
 			$pdf->Cell(0,8,utf8_decode(''),0,0,'L',true);
@@ -532,17 +537,20 @@ if(count($entregasSedes)>0) {
 			$pdf->SetFont('Arial','B',$tamannoFuente-1);
 			$pdf->Cell(60,8,utf8_decode('DESCRIPCIÓN'),'R',0,'C',false);
 
-		/////////////////////////////////////////////////////////////////////////
+			/////////////////////////////////////////////////////////////////////////
 
 			// Consulta que retorna los complementos que han sido asignados en el transcurso del mes.
+			$complementos = [];
 			$resultadoComplementos = $Link->query("SELECT DISTINCT tipo_complem FROM entregas_res_".$mes.$_SESSION['periodoActual']." WHERE tipo_complem IS NOT NULL;") or die (mysqli_error($Link));
-			if ($resultadoComplementos->num_rows > 0) {
-				while ($registrosComplementos = $resultadoComplementos->fetch_assoc()) {
+			if ($resultadoComplementos->num_rows > 0)
+			{
+				while ($registrosComplementos = $resultadoComplementos->fetch_assoc())
+				{
 					$complementos[] = $registrosComplementos["tipo_complem"];
 				}
 			}
-
-			foreach ($complementos as $complemento) {
+			foreach ($complementos as $complemento)
+			{
 				$aux_x = $pdf->GetX();
 				$aux_y = $pdf->GetY();
 				$pdf->SetFont('Arial','B',$tamannoFuente-1.5);
@@ -550,7 +558,7 @@ if(count($entregasSedes)>0) {
 				$pdf->SetXY($aux_x, $aux_y);
 				$pdf->Cell((104/count($complementos)),8,utf8_decode(''),'R',0,'C',false);
 			}
-		/////////////////////////////////////////////////////////////////////////
+			/////////////////////////////////////////////////////////////////////////
 
 
 			$aux_x = $pdf->GetX();
@@ -567,73 +575,89 @@ if(count($entregasSedes)>0) {
 			$pdf->SetXY($x, $y);
 			$pdf->Ln(8);
 
+			// Consulta que retorna el orden de la prioridad del tipo de pocblación.
+			$prioridades = [];
 			$resultadoPrioridad = $Link->query("SELECT * FROM prioridad_caracterizacion ORDER BY orden") or die(mysql_error($Link));
-			if ($resultadoPrioridad->num_rows > 0) {
-				while ($registrosPrioridad = $resultadoPrioridad->fetch_assoc()) {
+			if ($resultadoPrioridad->num_rows > 0)
+			{
+				while ($registrosPrioridad = $resultadoPrioridad->fetch_assoc())
+				{
 					$prioridades[] = $registrosPrioridad;
 				}
 			}
 
-		$totalEstudiantesEntregas = 0; //Variable para sacar el total de estudiantes contados en todas las características.
-		$totalComplementos1 = $totalComplementos2 = $totalComplementos3 = 0;
-		$condicionInstitucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND cod_inst = '".$_POST["institucion"]."'" : "";
-		for ($i=0; $i < count($prioridades); $i++) {
-			$pdf->SetFont('Arial','',$tamannoFuente-1);
-			$aux_x = $pdf->GetX();
-			$aux_y = $pdf->GetY();
-			$pdf->SetXY($aux_x, $aux_y);
-			$pdf->Cell(60,4,utf8_decode(strtoupper($prioridades[$i]["descripcion"])),'R',0,'L',false);
-			$columna = 1;
-			foreach ($complementos as $complemento) {
-				$condicion = "";
-				if ($i == 1) {
-					$condicion .= " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"];
-				} else if ($i == 2) {
-					$condicion .= " AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"] . " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"];
-				}
-
-				$consultaCantidadComplemento = "SELECT IFNULL(SUM((". trim($camposDiasEntregasDias, "+ ") .")),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "' AND ". $prioridades[$i]["campo_entregas_res"] ." != " . $prioridades[$i]["valor_NA"] . $condicion;
-
-// echo $consultaCantidadComplemento."<br>";
-
-				$resultadoCantidadComplemento = $Link->query($consultaCantidadComplemento) or die (mysqli_error($Link));
-				if ($resultadoCantidadComplemento->num_rows > 0) {
-					while ($registrosCantidadComplemento = $resultadoCantidadComplemento->fetch_assoc()) {
-						$cantidadComplemento = $registrosCantidadComplemento["cantidadComplemento"];
+			$totalEstudiantesEntregas = 0; //Variable para sacar el total de estudiantes contados en todas las características.
+			$totalComplementos1 = $totalComplementos2 = $totalComplementos3 = 0;
+			$condicionInstitucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND cod_inst = '".$_POST["institucion"]."'" : " AND cod_inst = '". $institucion['cod_inst'] ."'";
+			for ($i=0; $i < count($prioridades); $i++)
+			{
+				$pdf->SetFont('Arial','',$tamannoFuente-1);
+				$aux_x = $pdf->GetX();
+				$aux_y = $pdf->GetY();
+				$pdf->SetXY($aux_x, $aux_y);
+				$pdf->Cell(60,4,utf8_decode(strtoupper($prioridades[$i]["descripcion"])),'R',0,'L',false);
+				$columna = 1;
+				foreach ($complementos as $complemento)
+				{
+					$condicion = "";
+					if ($i == 1) {
+						$condicion .= " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"];
+					} else if ($i == 2) {
+						$condicion .= " AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"] . " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"];
 					}
-				} else {
-					$cantidadComplemento = 0;
+
+					$consultaCantidadComplemento = "SELECT IFNULL(SUM((". trim($camposDiasEntregasDias, "+ ") .")),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "' AND ". $prioridades[$i]["campo_entregas_res"] ." != " . $prioridades[$i]["valor_NA"] . $condicion;
+					$resultadoCantidadComplemento = $Link->query($consultaCantidadComplemento) or die (mysqli_error($Link));
+					if ($resultadoCantidadComplemento->num_rows > 0)
+					{
+						while ($registrosCantidadComplemento = $resultadoCantidadComplemento->fetch_assoc())
+						{
+							$cantidadComplemento = $registrosCantidadComplemento["cantidadComplemento"];
+						}
+					}
+					else
+					{
+						$cantidadComplemento = 0;
+					}
+
+					$pdf->Cell((104/count($complementos)),4,$cantidadComplemento,'R',0,'C',false);
+
+					if ($columna == 1)
+					{
+						$totalComplementos1 += $cantidadComplemento;
+					}
+					else if ($columna == 2)
+					{
+						$totalComplementos2 += $cantidadComplemento;
+					}
+					else
+					{
+						$totalComplementos3 += $cantidadComplemento;
+					}
+
+					$columna++;
 				}
 
-				$pdf->Cell((104/count($complementos)),4,$cantidadComplemento,'R',0,'C',false);
-
-				if ($columna == 1) {
-					$totalComplementos1 += $cantidadComplemento;
-				} else if ($columna == 2) {
-					$totalComplementos2 += $cantidadComplemento;
-				} else {
-					$totalComplementos3 += $cantidadComplemento;
+				$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion ." AND ". trim($camposDiasEntregasDias, "+ ") ." > 0";
+				$res_can_est_com = $Link->query($con_can_est_com) or die (mysql_error($Link));
+				if ($res_can_est_com->num_rows > 0)
+				{
+					while ($reg_can_est_com = $res_can_est_com->fetch_assoc())
+					{
+						$can_est_com = $reg_can_est_com["cantidad"];
+						$totalEstudiantesEntregas += $can_est_com;
+					}
 				}
-				$columna++;
+				else
+				{
+					$can_est_com = 0;
+				}
+
+				$pdf->Cell(0,4,$can_est_com,'R',0,'C',false);
+				$pdf->SetXY($aux_x, $aux_y);
+				$pdf->Cell(0,4,utf8_decode(''),'B',0,'L',false);
+				$pdf->Ln(4);
 			}
-
-			$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion ." AND ". trim($camposDiasEntregasDias, "+ ") ." > 0";
-			// echo $con_can_est_com ."<br>";
-			$res_can_est_com = $Link->query($con_can_est_com) or die (mysql_error($Link));
-			if ($res_can_est_com->num_rows > 0) {
-				while ($reg_can_est_com = $res_can_est_com->fetch_assoc()) {
-					$can_est_com = $reg_can_est_com["cantidad"];
-					$totalEstudiantesEntregas += $can_est_com;
-				}
-			} else {
-				$can_est_com = 0;
-			}
-
-			$pdf->Cell(0,4,$can_est_com,'R',0,'C',false);
-			$pdf->SetXY($aux_x, $aux_y);
-			$pdf->Cell(0,4,utf8_decode(''),'B',0,'L',false);
-			$pdf->Ln(4);
-		}
 
 
 
@@ -642,37 +666,47 @@ if(count($entregasSedes)>0) {
 		$pdf->SetXY($aux_x, $aux_y);
 		$pdf->Cell(60,4,utf8_decode('POBLACIÓN MAYORITARIA'),'R',0,'L',false);
 		$columna = 1;
-		foreach ($complementos as $complemento) {
+		foreach ($complementos as $complemento)
+		{
 			$condicion = "";
-			foreach ($prioridades as $prioridad) {
+			foreach ($prioridades as $prioridad)
+			{
 				$condicion .= " AND ". $prioridad["campo_entregas_res"] ." = " . $prioridad["valor_NA"];
 			}
 			$con_can_may = "SELECT IFNULL(SUM((". trim($camposDiasEntregasDias, "+ ") .")),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "'" . $condicion;
 			$res_can_may = $Link->query($con_can_may) or die (mysqli_error($Link));
 			if ($res_can_may->num_rows > 0) {
-				while ($reg_can_may = $res_can_may->fetch_assoc()) {
+				while ($reg_can_may = $res_can_may->fetch_assoc())
+				{
 					$cantidadMayoritaria = $reg_can_may["cantidadComplemento"];
 				}
-			} else {
+			}
+			else
+			{
 				$cantidadMayoritaria = 0;
 			}
 
 			$pdf->Cell((104/count($complementos)),4,$cantidadMayoritaria,'R',0,'C',false);
 
-			if ($columna == 1) {
+			if ($columna == 1)
+			{
 				$totalComplementos1 += $cantidadMayoritaria;
-			} else if ($columna == 2) {
+			}
+			else if ($columna == 2)
+			{
 				$totalComplementos2 += $cantidadMayoritaria;
-			} else {
+			}
+			else
+			{
 				$totalComplementos3 += $cantidadMayoritaria;
 			}
+
 			$columna++;
 		}
 
 		$condicionMayoritaria = " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"]." AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"]." AND " . $prioridades[2]["campo_entregas_res"] . " = " . $prioridades[2]["valor_NA"]." "; //Variable para la condición de búsqueda de estudiantes de población mayoritaria, que no cumplen con ninguna caracterización.
 
 		$con_can_est_total = "SELECT COUNT(DISTINCT num_doc) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion.$condicionMayoritaria ." AND ". trim($camposDiasEntregasDias, "+ ") ." > 0";
-		// echo $con_can_est_total ."<br>";
 		$res_can_est_total = $Link->query($con_can_est_total) or die (mysql_error($Link));
 		if ($res_can_est_total->num_rows > 0) {
 			while ($reg_can_est_total = $res_can_est_total->fetch_assoc()) {
@@ -751,14 +785,14 @@ if(count($entregasSedes)>0) {
 		$pdf->SetXY($x+45, $y);
 		$pdf->Write(4,'www.infopae.com.co',$link);
 	}
-	}//Termina el for de instituciones
+	}
 
 	$pdf->Output();
-} else{
+}
+else
+{
 	echo "<script>alert('No se han encontrado entregas en el mes correspondiente.'); window.close()</script>";
 }
-
-
 
 function mesNombre($mes) {
 	if($mes == 1){
