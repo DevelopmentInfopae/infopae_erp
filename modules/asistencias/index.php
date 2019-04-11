@@ -12,9 +12,9 @@
 	$dia = intval(date("d"));
 	$mes = date("m");
 	$anno = date("Y");
-	$dia = intval("02");
-	$mes = "01";
-	$anno = "2019";
+	// $dia = intval("02");
+	// $mes = "01";
+	// $anno = "2019";
 
 	//Busqueda de la semana actual
 	$semanaActual = "";
@@ -25,6 +25,7 @@
 		$row = $resultado->fetch_assoc();
 		$semanaActual = $row["semana"];
 	}
+	// var_dump($_SESSION);
 	// var_dump($semanaActual);				
 ?>
 
@@ -72,11 +73,11 @@
 					<div class="row">
 						<div class="col-sm-12">
 
-							<h2><?php echo $dia; ?>/<?php echo $mes; ?>/<?php echo $anno; ?></h2>
+							<!-- <h2><?php //echo $dia; ?>/<?php //echo $mes; ?>/<?php //echo $anno; ?></h2> -->
 
-							<p> select ps.* from planilla_semanas ps where ps.dia = "10" and ps.mes = "01" and ps.ano = "2019"<br><br> select * from focalizacion01 f where f.cod_inst = 268307000035 and f.cod_sede = 26830700003501 and f.cod_grado = 9 and f.nom_grupo = 901 and f.tipo_complemento = "CAJMRI"</p>
+							<!-- <p> select ps.* from planilla_semanas ps where ps.dia = "10" and ps.mes = "01" and ps.ano = "2019"<br><br> select * from focalizacion01 f where f.cod_inst = 268307000035 and f.cod_sede = 26830700003501 and f.cod_grado = 9 and f.nom_grupo = 901 and f.tipo_complemento = "CAJMRI"</p> -->
 
-							<form action="" id="formSedes" name="formSedes" method="post">
+							<form action="" id="form_asistencia" name="form_asistencia" method="post">
 								
 
 								<div class="row">
@@ -98,19 +99,7 @@
 									<div class="col-sm-4 form-group">
 										<label for="institucion">Institución</label>
 										<select class="form-control" name="institucion" id="institucion" required>
-											<option value="">Todas</option>
-											<?php
-													$municipio = (isset($_POST["municipio"]) && empty($_POST["municipio"])) ? mysqli_real_escape_string($Link, $_POST["municipio"]) : $municipio_defecto["CodMunicipio"];
-
-													$consultaIns = "SELECT codigo_inst AS cod_inst, nom_inst FROM instituciones WHERE cod_mun = '$municipio' ORDER BY nom_inst ASC";
-													$resultado = $Link->query($consultaIns) or die ('Unable to execute query. '. mysqli_error($Link));
-													if($resultado->num_rows >= 1){
-														while($row = $resultado->fetch_assoc()) { ?>
-															<option value="<?= $row['cod_inst']; ?>" <?php if(isset($_POST["institucion"]) && $_POST["institucion"] == $row['cod_inst'] ){ echo " selected "; }  ?> > <?= $row['nom_inst']; ?></option>
-											<?php
-														}
-													}
-											 ?>
+											<option value="">Todas</option>									
 										</select>
 									</div><!-- /.col -->
 
@@ -123,14 +112,14 @@
 
 									<div class="col-sm-6 form-group">
 										<label for="grado">Grado</label>
-										<select class="form-control" name="grado" id="grado" required>
+										<select class="form-control" name="grado" id="grado">
 											<option value="">Todas</option>
 										</select>
 									</div>
 
 									<div class="col-sm-6 form-group">
 										<label for="grupo">Grupo</label>
-										<select class="form-control" name="grupo" id="grupo" required>
+										<select class="form-control" name="grupo" id="grupo">
 											<option value="">Todas</option>
 										</select>
 									</div>
@@ -163,6 +152,19 @@
 									<table class="table table-striped table-hover selectableRows dataTablesSedes" >
 										<thead>
 											<tr>
+												<th>		<div class="i-checks text-center">
+													
+															<input type="checkbox" class="checkbox-header" checked data-columna="1"/>
+														</div>
+
+
+
+
+
+
+
+
+													</th>
 												<th>Documento</th>
 												<th>Nombre</th>
 												<th>Grado</th>
@@ -172,10 +174,14 @@
 
 										<tfoot>
 											<tr>
+												<th>		<div class="i-checks text-center">
+														
+															<input type="checkbox" class="checkbox-header" checked data-columna="1"/>
+														</div></th>											
 												<th>Documento</th>
 												<th>Nombre</th>
 												<th>Grado</th>
-												<th>Grupo</th>												
+												<th>Grupo</th>	
 											</tr>
 										</tfoot>
 									</table>
@@ -359,6 +365,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias.js"></script>
 
 

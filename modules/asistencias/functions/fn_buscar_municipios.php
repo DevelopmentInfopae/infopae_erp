@@ -3,9 +3,13 @@ require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
 $municipio = '';
+
 if(isset($_POST['municipio']) && $_POST['municipio'] != ''){
     $municipio = $_POST['municipio'];
+}else if(isset($_SESSION['p_Municipio']) && $_SESSION['p_Municipio'] != ''){
+  $municipio = $_SESSION['p_Municipio'];
 }
+
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
 
@@ -17,20 +21,6 @@ if($DepartamentoOperador != ''){
   $consulta = $consulta." AND codigodane LIKE '$DepartamentoOperador%' ";
 }
 $consulta = $consulta." order by ciudad asc ";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));

@@ -1,4 +1,25 @@
+jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
+
 $(document).ready(function(){
+		
+	$('.i-checks').iCheck({
+		checkboxClass: 'icheckbox_square-green',
+		radioClass: 'iradio_square-green',
+	});
+
+	$(document).on('ifChecked', '.checkbox-header', function () { 
+		$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
+		console.log("S");
+	});
+	
+	$(document).on('ifUnchecked', '.checkbox-header', function () { 
+		$('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); 
+		console.log("N");
+	});
+	
+
+
+
 	cargarMunicipios();
 
 	$( "#municipio" ).change(function() {
@@ -12,6 +33,22 @@ $(document).ready(function(){
 	$( "#sede" ).change(function() {
 		cargarGrados();
 	});
+
+	$( "#grado" ).change(function() {
+		cargarGrupos();
+	});
+
+	$('#btnBuscar').click(function(){
+		if($('#form_asistencia').valid()){
+			cargarEstudiantes()
+		}
+	});
+
+
+
+
+
+
 
 	   // $('.bautizado').on('ifChanged', function(event){
     //   if( $(".bautizado:checked").val() == 1 ){
@@ -30,23 +67,52 @@ $(document).ready(function(){
 
 
 function cargarEstudiantes(){
+
+	var semanaActual = $('#semanaActual').val();
+	var sede = $('#sede').val();
+	var grado = $('#grado').val();
+	var grupo = $('#grupo').val();
+
 	datatables = $('.dataTablesSedes').DataTable({
 	ajax: {
-	method: 'POST',
-	url: 'functions/fn_buscar_estudiantes.php',
-	data:{
-		municipio: '0',
-		institucion: '0'
-	}
+		method: 'POST',
+		url: 'functions/fn_buscar_estudiantes.php',
+		data:{
+			semanaActual: semanaActual,
+			sede: sede,
+			grado: grado,
+			grupo: grupo
+		}
 	},
 	columns:[
-	{ data: 'num_doc'},
-	{ data: 'nombre'},
-	{ data: 'grado'},
-	{ data: 'grupo'},
+		{
+			sortable: false,
+			className: "textoCentrado",
+			"render": function ( data, type, full, meta ) {
+				// var id = full.id;
+				var opciones = "<div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header\" checked data-columna=\"1\"/> </div> ";
 
 
+
+
+
+
+
+
+
+
+
+
+				return opciones;
+			}
+		},
+		{ data: 'num_doc'},
+		{ data: 'nombre'},
+		{ data: 'grado'},
+		{ data: 'grupo'}
 	],
+	bSort: false,
+	bPaginate: false,
 	buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } } ],
 	dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
 	oLanguage: {
@@ -63,13 +129,48 @@ function cargarEstudiantes(){
 		sPrevious: 'Anterior'
 	}
 	},
-	pageLength: 10,
+	//pageLength: 10,
 	responsive: true,
 	"preDrawCallback": function( settings ) {
-	$('#loader').fadeIn();
+		$('#loader').fadeIn();
 	}
 	}).on("draw", function(){ $('#loader').fadeOut(); 
-	$('.estadoSede').bootstrapToggle(); 
+		$('.estadoSede').bootstrapToggle(); 
+
+
+
+
+			$('.i-checks').iCheck({
+		checkboxClass: 'icheckbox_square-green',
+		radioClass: 'iradio_square-green',
+	});
+		
+
+
+
+
+
+
+
+
+		//iCheck for checkbox and radio inputs
+        $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+        checkboxClass: 'icheckbox_minimal-blue',
+        radioClass   : 'iradio_minimal-blue'
+        });
+        //Red color scheme for iCheck
+        $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+        checkboxClass: 'icheckbox_minimal-red',
+        radioClass   : 'iradio_minimal-red'
+        });
+        //Flat red color scheme for iCheck
+        $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass   : 'iradio_flat-green'
+        });
+
+
+
 	});	
 }
 
@@ -82,19 +183,20 @@ function cargarMunicipios(){
 		contentType: false,
 		processData: false,
 		//data: formData,
-		beforeSend: function(){ $('.overlay').fadeIn(); },
+		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
 			if(data.estado == 1){
 				$('#municipio').html(data.opciones);
-				$('.overlay').fadeOut();
+				$('#loader').fadeOut();
+				cargarInstituciones();
 			}
 			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('.overlay').fadeOut();}});
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
 			}
 		},
 		error: function(data){
 			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('.overlay').fadeOut();}});
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 		}
 	});
 }
@@ -109,19 +211,20 @@ function cargarInstituciones(){
 		contentType: false,
 		processData: false,
 		data: formData,
-		beforeSend: function(){ $('.overlay').fadeIn(); },
+		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
 			if(data.estado == 1){
 				$('#institucion').html(data.opciones);
-				$('.overlay').fadeOut();
+				$('#loader').fadeOut();
+
 			}
 			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('.overlay').fadeOut();}});
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
 			}
 		},
 		error: function(data){
 			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('.overlay').fadeOut();}});
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 		}
 	});
 }
@@ -136,25 +239,27 @@ function cargarSedes(){
 		contentType: false,
 		processData: false,
 		data: formData,
-		beforeSend: function(){ $('.overlay').fadeIn(); },
+		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
 			if(data.estado == 1){
 				$('#sede').html(data.opciones);
-				$('.overlay').fadeOut();
+				$('#loader').fadeOut();
+
 			}
 			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('.overlay').fadeOut();}});
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
 			}
 		},
 		error: function(data){
 			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('.overlay').fadeOut();}});
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 		}
 	});
 }
 
 function cargarGrados(){
 	var formData = new FormData();
+	formData.append('semanaActual', $('#semanaActual').val());
 	formData.append('sede', $('#sede').val());
 	$.ajax({
 		type: "post",
@@ -163,19 +268,48 @@ function cargarGrados(){
 		contentType: false,
 		processData: false,
 		data: formData,
-		beforeSend: function(){ $('.overlay').fadeIn(); },
+		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
 			if(data.estado == 1){
 				$('#grado').html(data.opciones);
-				$('.overlay').fadeOut();
+				$('#loader').fadeOut();
+
 			}
 			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('.overlay').fadeOut();}});
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
 			}
 		},
 		error: function(data){
 			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('.overlay').fadeOut();}});
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+}
+
+function cargarGrupos(){
+	var formData = new FormData();
+	formData.append('semanaActual', $('#semanaActual').val());
+	formData.append('grado', $('#grado').val());
+	$.ajax({
+		type: "post",
+		url: "functions/fn_buscar_grupos.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			if(data.estado == 1){
+				$('#grupo').html(data.opciones);
+				$('#loader').fadeOut();
+			}
+			else{
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 		}
 	});
 }

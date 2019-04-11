@@ -4,15 +4,42 @@ require_once '../../../config.php';
 
 // Declaración de variables.
 $data = [];
+$semanaActual = "";
+$sede = "";
+$grado = "";
+$grupo = "";
 
-$periodoActual = $_SESSION['periodoActual'];
+$periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
-$institucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? mysqli_real_escape_string($Link, $_POST["institucion"]) : "";
+// var_dump($_POST);
 
-$municipio   = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? ($_POST["municipio"] == "0") ? "" : mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
+$semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
+
+$sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
+
+$grado = (isset($_POST["grado"]) && $_POST["grado"] != "") ? mysqli_real_escape_string($Link, $_POST["grado"]) : "";
+
+$grupo = (isset($_POST["grupo"]) && $_POST["grupo"] != "") ? mysqli_real_escape_string($Link, $_POST["grupo"]) : "";
 
 
-$consulta = "select f.num_doc, concat(f.nom1, \" \", f.nom2, \" \", f.ape1, \" \", f.ape2) as nombre, f.cod_grado as grado, f.nom_grupo as grupo from focalizacion01 f where f.cod_inst = 268307000035 and f.cod_sede = 26830700003501 and f.cod_grado = 9 and f.nom_grupo = 901 and f.tipo_complemento = \"CAJMRI\" ";
+
+
+$consulta = " select f.num_doc, concat(f.ape1, \" \", f.ape2, \" \", f.nom1, \" \", f.nom2) as nombre, f.cod_grado as grado, f.nom_grupo as grupo from focalizacion$semanaActual f where 1=1 ";
+
+if($sede != "" ){
+	$consulta .= " and f.cod_sede = $sede ";
+}
+if($grado != "" ){
+	$consulta .= " and f.cod_grado = $grado ";
+}
+if($grupo != "" ){
+	$consulta .= " and f.nom_grupo = $grupo ";
+}
+$consulta .= " order by f.cod_grado, f.nom_grupo, f.ape1 ";
+
+// echo $consulta;
+
+// $consulta = "select f.num_doc, concat(f.nom1, \" \", f.nom2, \" \", f.ape1, \" \", f.ape2) as nombre, f.cod_grado as grado, f.nom_grupo as grupo from focalizacion$semanActual f where f.cod_inst = 268307000035 and f.cod_sede = 26830700003501 and f.cod_grado = 9 and f.nom_grupo = 901 and f.tipo_complemento = \"CAJMRI\" ";
 
 $resultado = $Link->query($consulta);
 if($resultado->num_rows > 0){
