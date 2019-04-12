@@ -240,21 +240,22 @@ $periodoActual = $_SESSION['periodoActual'];
              <table class="table" id="tablaTrazabilidad">
                 <thead>
                   <tr>
-                    <th style="width: 6.25%;">Tipo Doc</th>
-                    <th style="width: 6.25%; word-wrap: break-word;">Número</th>
-                    <th style="width: 6.25%;">Fecha / Hora</th>
-                    <th style="width: 6.25%;">Responsable / Proveedor</th>
-                    <th style="width: 6.25%;">Nombre Producto / Alimento</th>
-                    <th style="width: 6.25%;">Unidad Medida</th>
-                    <th style="width: 6.25%;">Factor</th>
-                    <th style="width: 6.25%;">Cantidad</th>
-                    <th style="width: 6.25%;">Nombre Bodega Origen</th>
-                    <th style="width: 6.25%;">Nombre Bodega Destino</th>
-                    <th style="width: 6.25%;">Tipo Transp</th>
-                    <th style="width: 6.25%;">Placa</th>
-                    <th style="width: 6.25%;">Conductor</th>
-                    <th style="width: 6.25%;">Lote</th>
-                    <th style="width: 6.25%;">Fecha Vence</th>
+                    <th>Tipo Doc</th>
+                    <th>Número</th>
+                    <th>Fecha / Hora</th>
+                    <th>Responsable / Proveedor</th>
+                    <th>Nombre Producto / Alimento</th>
+                    <th>Unidad Medida</th>
+                    <th>Factor</th>
+                    <th>Cantidad</th>
+                    <th>Nombre Bodega Origen</th>
+                    <th>Nombre Bodega Destino</th>
+                    <th>Tipo Transp</th>
+                    <th>Placa</th>
+                    <th>Conductor</th>
+                    <th>Lote</th>
+                    <th>Fecha Vence</th>
+                    <th>Marca</th>
                   </tr>
                 </thead>
                 <tbody id="tBodyTrazabilidad">
@@ -277,6 +278,7 @@ $periodoActual = $_SESSION['periodoActual'];
                     <th>Conductor</th>
                     <th>Lote</th>
                     <th>Fecha Vence</th>
+                    <th>Marca</th>
                   </tr>
                 </tfoot>
               </table>
@@ -288,7 +290,7 @@ $periodoActual = $_SESSION['periodoActual'];
     $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
     $consulta = "SELECT 
-        pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento
+        pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca
         FROM productosmov$numtabla AS pmov 
           INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero 
           INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen 
@@ -300,7 +302,7 @@ $periodoActual = $_SESSION['periodoActual'];
     $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual']; //Número MesAño según mes escogido
     $condiciones = ""; //Donde se almacenan las condiciones según parámetros
     $inners="";//Donde se almacenan los INNERS necesarios para traer datos externos.
-    $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento  ";
+    $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca";
 
     if (isset($_POST['fecha_de']) && $_POST['fecha_de'] != "") { //Si está seteado el tipo de búsqueda por fecha
       $fecha_de = $_POST['fecha_de'];
@@ -371,9 +373,9 @@ $periodoActual = $_SESSION['periodoActual'];
 
                 if ($condiciones == "") { //Si no hay otros criterios especificados, muestra sólo valores Nombre de producto, Factor, Unidad medida y Cantidad
                   $txtTotales = "--";
-                  $datos =" '".$txtTotales."' as Tipo, '".$txtTotales."' as Numero, '".$txtTotales."' as FechaMYSQL, '".$txtTotales."' as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad,  '".$txtTotales."' as nomBodegaOrigen, '".$txtTotales."' as nomBodegaDestino,  '".$txtTotales."' as TipoTransporte, '".$txtTotales."' as Placa, '".$txtTotales."' as ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento ";
+                  $datos =" '".$txtTotales."' as Tipo, '".$txtTotales."' as Numero, '".$txtTotales."' as FechaMYSQL, '".$txtTotales."' as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad,  '".$txtTotales."' as nomBodegaOrigen, '".$txtTotales."' as nomBodegaDestino,  '".$txtTotales."' as TipoTransporte, '".$txtTotales."' as Placa, '".$txtTotales."' as ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca ";
                 } else { //Si hay criterios, muestra los resultados agrupados
-                  $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento  ";
+                  $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca  ";
                 }
 
                 $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' GROUP BY pmovdet.CodigoProducto ";
@@ -489,6 +491,7 @@ $periodoActual = $_SESSION['periodoActual'];
         { data: 'ResponsableRecibe'},
         { data: 'Lote'},
         { data: 'FechaVencimiento'},
+        { data: 'Marca'},
       ],
           /*order: [ 0, 'asc' ],*/
     pageLength: 25,
