@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="css/custom.css">
+<div class="flagFaltantes" style = "display:none;">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
+
 <?php
 	include '../../header.php';
 	set_time_limit (0);
@@ -12,9 +15,11 @@
 	$dia = intval(date("d"));
 	$mes = date("m");
 	$anno = date("Y");
-	// $dia = intval("02");
-	// $mes = "01";
-	// $anno = "2019";
+
+	$dia = intval("12");
+	$mes = "04";
+	$anno = "2019";
+
 
 	//Busqueda de la semana actual
 	$semanaActual = "";
@@ -30,7 +35,7 @@
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-	<div class="col-lg-12">
+	<div class="col-lg-8">
 			<h2>Asistencias</h2>
 			<ol class="breadcrumb">
 					<li>
@@ -41,20 +46,53 @@
 					</li>
 			</ol>
 	</div>
-	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
-<!-- 	<div class="col-lg-4">
+	<div class="col-lg-4">
 			<div class="title-action">
-					<a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a>
-			</div>
-	</div> -->
+	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+					<!-- <a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a> -->
 	<?php } ?>
+	<button class="btn btn-primary" id="btnRestablecerContadores">Restablecer almacenamiento local</button>
+			</div>
+	</div>
 </div>
 <!-- /.row wrapper de la cabecera de la seccion -->
 
 <div class="wrapper wrapper-content  animated fadeInRight">
 	<div class="row">
 		<div class="col-sm-12">
+
+
+
 			<div class="ibox">
+
+
+
+
+
+                                <div class="ibox-title">
+                                    <h5>Busqueda</h5>
+                                    <div class="ibox-tools">
+                                        <div class="collapse-link">
+                                            <i class="fa fa-chevron-down"></i>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				<!-- <div class="ibox-content" style="display: none;"> -->
 				<div class="ibox-content">
 				<?php
 					$consulta = " select distinct semana from planilla_semanas ";
@@ -147,24 +185,31 @@
 		<div class="row">
 				<div class="col-sm-12">
 						<div class="ibox">
+
+
+
+
+                                <div class="ibox-title">
+                                    <h5>Estudiantes</h5>
+                                    <div class="ibox-tools">
+                                        <div class="collapse-link">
+                                            <i class="fa fa-chevron-down"></i>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+
+
+
+
+
 								<div class="ibox-content">
-									<h2>Estudiantes</h2>
+									<!-- <h2>Estudiantes</h2> -->
 									<table class="table table-striped table-hover selectableRows dataTablesSedes" >
 										<thead>
 											<tr>
-												<th>		<div class="i-checks text-center">
-													
-															<input type="checkbox" class="checkbox-header" checked data-columna="1"/>
-														</div>
-
-
-
-
-
-
-
-
-													</th>
+												<th><div class="i-checks text-center"> <input type="checkbox" class="checkbox-header0" checked data-columna="1"/> </div> </th> 
 												<th>Documento</th>
 												<th>Nombre</th>
 												<th>Grado</th>
@@ -174,10 +219,9 @@
 
 										<tfoot>
 											<tr>
-												<th>		<div class="i-checks text-center">
-														
-															<input type="checkbox" class="checkbox-header" checked data-columna="1"/>
-														</div></th>											
+												<th>
+			<!-- 										<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header0 " checked data-columna="1"/> </div>  -->
+												</th> 
 												<th>Documento</th>
 												<th>Nombre</th>
 												<th>Grado</th>
@@ -185,10 +229,17 @@
 											</tr>
 										</tfoot>
 									</table>
+									<div class="hr-line-dashed"></div>
+									<div class="form-group row">
+										<div class="col-sm-12">
+											<button class="btn btn-primary" type="button" id="btnGuardar">Guardar</button>
+										</div>
+									</div>
 								</div>
 						</div>
 				</div>
 		</div><!-- /.row -->
+
 </div>
 
 <div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">

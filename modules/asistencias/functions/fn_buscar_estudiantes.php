@@ -24,7 +24,7 @@ $grupo = (isset($_POST["grupo"]) && $_POST["grupo"] != "") ? mysqli_real_escape_
 
 
 
-$consulta = " select f.num_doc, concat(f.ape1, \" \", f.ape2, \" \", f.nom1, \" \", f.nom2) as nombre, f.cod_grado as grado, f.nom_grupo as grupo from focalizacion$semanaActual f where 1=1 ";
+$consulta = " select f.tipo_doc, f.num_doc, concat(f.ape1, \" \", f.ape2, \" \", f.nom1, \" \", f.nom2) as nombre, f.cod_grado as grado, f.nom_grupo as grupo from focalizacion$semanaActual f where 1=1 ";
 
 if($sede != "" ){
 	$consulta .= " and f.cod_sede = $sede ";

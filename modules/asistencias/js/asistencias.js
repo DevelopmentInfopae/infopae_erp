@@ -1,25 +1,128 @@
 jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 
+var total = 0;
+var faltan = 0;
+
+var ausentes = [];
+// ausentes["values"] = [0, 1, 2, 3];
+
+
+
+
+// Syntax for SAVING data to localStorage:
+
+// localStorage.setItem("key", "value");
+// Syntax for READING data from localStorage:
+
+// var lastname = localStorage.getItem("key");
+// Syntax for REMOVING data from localStorage:
+
+// localStorage.removeItem("key");
+
 $(document).ready(function(){
-		
+	
+
+	var total = localStorage.getItem("wappsi_total");
+	var faltan = localStorage.getItem("wappsi_faltan");
+	$(".asistenciaFaltantes").html(faltan);
+	$(".asistenciaTotal").html(total);
+	if(faltan > 0){
+		$(".flagFaltantes").slideDown();
+	}else{
+		$(".flagFaltantes").slideUp();
+	}
+	console.log(total);
+	console.log(faltan);
+
+
+	
+	if (localStorage.getItem("wappsi_ausentes") === null) {
+		localStorage.setItem("wappsi_ausentes", JSON.stringify(ausentes));
+	}
+
+	$(".asistenciaFaltantes").html(faltan);
+	$(".asistenciaTotal").html(total);
+
 	$('.i-checks').iCheck({
 		checkboxClass: 'icheckbox_square-green',
 		radioClass: 'iradio_square-green',
 	});
 
+	$(document).on('ifChecked', '.checkbox-header0', function () { 
+		$('.checkbox-header').iCheck('check');
+		$('.checkbox-header0').iCheck('check');
+		console.log("S");
+		faltan = 0;
+		localStorage.setItem("wappsi_faltan", faltan);
+		$(".asistenciaFaltantes").html(faltan);
+
+
+
+		if(faltan > 0){
+			$(".flagFaltantes").slideDown();
+		}else{
+			$(".flagFaltantes").slideUp();
+		}
+
+	});
+	
+	$(document).on('ifUnchecked', '.checkbox-header0', function () { 
+		$('.checkbox-header').iCheck('uncheck');
+		$('.checkbox-header0').iCheck('uncheck');
+		console.log("N");
+		faltan = total;
+		localStorage.setItem("wappsi_faltan", faltan);
+		$(".asistenciaFaltantes").html(faltan);
+
+		if(faltan > 0){
+			$(".flagFaltantes").slideDown();
+		}else{
+			$(".flagFaltantes").slideUp();
+		}
+	});	
+
 	$(document).on('ifChecked', '.checkbox-header', function () { 
 		$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
 		console.log("S");
+		faltan--;
+		localStorage.setItem("wappsi_faltan", faltan);
+		$(".asistenciaFaltantes").html(faltan);
+
+		var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
+		var index = aux.indexOf($(this).val());
+		if (index > -1) {
+			aux.splice(index, 1);
+		}		
+		localStorage.setItem("wappsi_ausentes", JSON.stringify(aux));
+
+
+		if(faltan > 0){
+			$(".flagFaltantes").slideDown();
+		}else{
+			$(".flagFaltantes").slideUp();
+		}
 	});
 	
 	$(document).on('ifUnchecked', '.checkbox-header', function () { 
 		$('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); 
 		console.log("N");
+		faltan++;
+		localStorage.setItem("wappsi_faltan", faltan);
+		$(".asistenciaFaltantes").html(faltan);
+
+		var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
+		aux.push($(this).val());
+		localStorage.setItem("wappsi_ausentes", JSON.stringify(aux));
+
+
+		if(faltan > 0){
+			$(".flagFaltantes").slideDown();
+		}else{
+			$(".flagFaltantes").slideUp();
+		}
+
 	});
 	
-
-
-
 	cargarMunicipios();
 
 	$( "#municipio" ).change(function() {
@@ -44,6 +147,17 @@ $(document).ready(function(){
 		}
 	});
 
+	$('#btnGuardar').click(function(){
+		guardarAsistencia();
+	});		
+
+
+
+	$('#btnRestablecerContadores').click(function(){
+		restablecerContadores();
+	});		
+
+	
 
 
 
@@ -61,9 +175,103 @@ $(document).ready(function(){
     // });
 });
 
+function restablecerContadores(){
+	localStorage.removeItem("wappsi_total");
+	localStorage.removeItem("wappsi_faltan");
+	localStorage.removeItem("wappsi_ausentes");
+	console.log("Borrar almacenamiento local");
+	Command : toastr.success( "Exito!", "Se ha borrado con éxito el almacenamiento local.", { onHidden : function(){}});
+}
+
+function guardarAsistencia(){
+	console.log("Guardar asistencia.");
+	var bandera = 0;	
+	var asistencia = [];
+	var documento = "";
+	var tipoDocumento = "";
+	var semana = $('#semanaActual').val();
+	
+	var formData = new FormData();
+	formData.append('semana', semana);
+	formData.append('sede', $('#sede').val());
+	formData.append('grado', $('#grado').val());
+	formData.append('grupo', $('#grupo').val());
 
 
+	$( ".checkbox-header:checked").each(function(){
+		documento = $(this).val();
+		tipoDocumento = $( this ).attr('tipoDocumento');
+		formData.append('asistencia['+documento+'][documento]', documento);
+		formData.append('asistencia['+documento+'][tipoDocumento]', tipoDocumento);
+		formData.append('asistencia['+documento+'][asistencia]', 1);
+	});	
 
+	$( ".checkbox-header:not(:checked)").each(function(){
+		documento = $(this).val();
+		tipoDocumento = $( this ).attr('tipoDocumento');
+		formData.append('asistencia['+documento+'][documento]', documento);
+		formData.append('asistencia['+documento+'][tipoDocumento]', tipoDocumento);
+		formData.append('asistencia['+documento+'][asistencia]', 0);
+	});
+	// if(asistencia.length <= 0){
+	// 	bandera++;
+	// 	Command:toastr.warning("Debe seleccionar al menos un estudiante.","Alerta!",{onHidden:function(){$('#loader').fadeOut();}});
+	// }
+	if(bandera == 0){
+		console.log("Guardar");
+		$.ajax({
+			type: "post",
+			url: "functions/fn_guardar_asistencia.php",
+			dataType: "json",
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(){ $("#loader").fadeIn(); },
+			success: function(data){
+				if(data.state == 1){
+					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
+					// location.href="URL para redireccionar";
+					}});
+				}else{
+					Command:toastr.error(data.message,"Error al hacer el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});
+				}
+			},
+			error: function(data){
+				console.log(data);
+				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){ $('#loader').fadeOut(); }});
+			}
+		});
+	}
+}
+
+function totalEstudiantesSede(){
+	var formData = new FormData();
+	formData.append('semanaActual', $('#semanaActual').val());
+	formData.append('sede', $('#sede').val());
+	$.ajax({
+		type: "post",
+		url: "functions/fn_buscar_total_estudiantes.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ 
+			//$('#loader').fadeIn();
+			 },
+		success: function(data){
+			if(data.estado == 1){
+				total = data.total;
+				localStorage.setItem("wappsi_total", total);
+				$(".asistenciaTotal").html(total);
+				//$('#loader').fadeOut();
+			}		
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+}
 
 
 function cargarEstudiantes(){
@@ -72,6 +280,18 @@ function cargarEstudiantes(){
 	var sede = $('#sede').val();
 	var grado = $('#grado').val();
 	var grupo = $('#grupo').val();
+	var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
+	console.log(aux);
+
+
+
+
+	if ( $.fn.DataTable.isDataTable( '.dataTablesSedes' ) ) {
+		datatables.destroy();
+
+}
+
+
 
 	datatables = $('.dataTablesSedes').DataTable({
 	ajax: {
@@ -89,19 +309,17 @@ function cargarEstudiantes(){
 			sortable: false,
 			className: "textoCentrado",
 			"render": function ( data, type, full, meta ) {
-				// var id = full.id;
-				var opciones = "<div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header\" checked data-columna=\"1\"/> </div> ";
+				var tipoDocumento = full.tipo_doc;
+				var documento = full.num_doc;
 
+				
+				var index = aux.indexOf(documento);
+				
+				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header\" ";
+				
+				if (index > -1) {}else{opciones = opciones + " checked "; }
 
-
-
-
-
-
-
-
-
-
+				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
 
 				return opciones;
 			}
@@ -134,7 +352,9 @@ function cargarEstudiantes(){
 	"preDrawCallback": function( settings ) {
 		$('#loader').fadeIn();
 	}
-	}).on("draw", function(){ $('#loader').fadeOut(); 
+	}).on("draw", function(){ 
+		$('#loader').fadeOut();
+		totalEstudiantesSede(); 
 		$('.estadoSede').bootstrapToggle(); 
 
 
