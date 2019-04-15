@@ -36,14 +36,14 @@
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-lg-8">
-			<h2>Asistencias</h2>
+			<h2>Seleccionar Repitentes</h2>
 			<ol class="breadcrumb">
-					<li>
-							<a href="<?php echo $baseUrl; ?>">Inicio</a>
-					</li>
-					<li class="active">
-							<strong><?php echo $titulo; ?></strong>
-					</li>
+				<li>
+					<a href="<?php echo $baseUrl; ?>">Inicio</a>
+				</li>
+				<li class="active">
+					<strong><?php echo $titulo; ?></strong>
+				</li>
 			</ol>
 	</div>
 	<div class="col-lg-4">
@@ -57,188 +57,74 @@
 </div>
 <!-- /.row wrapper de la cabecera de la seccion -->
 
+
+
+
+
+<?php
+	$consulta = " select distinct semana from planilla_semanas ";
+	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	if($resultado->num_rows >= 1){
+		while($row = $resultado->fetch_assoc()){
+			$aux = $row['semana'];
+			$consulta2 = " show tables LIKE 'focalizacion$aux' ";
+			$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
+			if($resultado2->num_rows >= 1){
+			 $semanas[] = $aux;
+			}
+		}
+	}
+?>
+
 <div class="wrapper wrapper-content  animated fadeInRight">
 	<div class="row">
 		<div class="col-sm-12">
-
-
-
 			<div class="ibox">
-
-
-
-
-
-                                <div class="ibox-title">
-                                    <h5>Busqueda</h5>
-                                    <div class="ibox-tools">
-                                        <div class="collapse-link">
-                                            <i class="fa fa-chevron-down"></i>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-				<!-- <div class="ibox-content" style="display: none;"> -->
-				<div class="ibox-content">
-				<?php
-					$consulta = " select distinct semana from planilla_semanas ";
-					$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-					if($resultado->num_rows >= 1){
-						while($row = $resultado->fetch_assoc()){
-							$aux = $row['semana'];
-							$consulta2 = " show tables LIKE 'focalizacion$aux' ";
-							$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
-							if($resultado2->num_rows >= 1){
-							 $semanas[] = $aux;
-							}
-						}
-					}
-				?>
-					<div class="row">
-						<div class="col-sm-12">
-
-							<!-- <h2><?php //echo $dia; ?>/<?php //echo $mes; ?>/<?php //echo $anno; ?></h2> -->
-
-							<!-- <p> select ps.* from planilla_semanas ps where ps.dia = "10" and ps.mes = "01" and ps.ano = "2019"<br><br> select * from focalizacion01 f where f.cod_inst = 268307000035 and f.cod_sede = 26830700003501 and f.cod_grado = 9 and f.nom_grupo = 901 and f.tipo_complemento = "CAJMRI"</p> -->
-
-							<form action="" id="form_asistencia" name="form_asistencia" method="post">
-								
-
-								<div class="row">
-
-									<input type="hidden" id="semanaActual" value="<?php echo $semanaActual; ?>">
-									
-
-									<div class="col-sm-4 form-group">
-										<label for="municipio">Municipio</label>
-										<select class="form-control" name="municipio" id="municipio" required>
-											<option value="">Seleccione uno</option>										
-										</select>
-									</div>
-
-
-
-
-
-									<div class="col-sm-4 form-group">
-										<label for="institucion">Institución</label>
-										<select class="form-control" name="institucion" id="institucion" required>
-											<option value="">Todas</option>									
-										</select>
-									</div><!-- /.col -->
-
-									<div class="col-sm-4 form-group">
-										<label for="sede">Sede</label>
-										<select class="form-control" name="sede" id="sede" required>
-											<option value="">Todas</option>
-										</select>
-									</div>                  
-
-									<div class="col-sm-6 form-group">
-										<label for="grado">Grado</label>
-										<select class="form-control" name="grado" id="grado">
-											<option value="">Todas</option>
-										</select>
-									</div>
-
-									<div class="col-sm-6 form-group">
-										<label for="grupo">Grupo</label>
-										<select class="form-control" name="grupo" id="grupo">
-											<option value="">Todas</option>
-										</select>
-									</div>
-
-								</div>
-
-								<div class="hr-line-dashed"></div>
-
-								<div class="form-group row">
-									<div class="col-sm-12">
-										<button class="btn btn-primary" type="button" id="btnBuscar"> <i class="fa fa-search"></i> Buscar</button>
-									</div>
-								</div>
-
-							</form>
+				<div class="ibox-title">
+					<h5>Estudiantes</h5>
+					<div class="ibox-tools">
+						<div class="collapse-link">
+							<i class="fa fa-chevron-down"></i>
 						</div>
 					</div>
 				</div>
+				<div class="ibox-content">
+					<input type="hidden" id="semanaActual" value="<?php echo $semanaActual; ?>">
+					<input type="hidden" id="sede" value="">
+					
+					<table class="table table-striped table-hover selectableRows dataTablesSedes" >
+						<thead>
+							<tr>
+								<th>
+					<!-- 				<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header0" checked data-columna="1"/> </div> --> 
+								</th> 
+								<th>Documento</th>
+								<th>Nombre</th>
+								<th>Grado</th>
+								<th>Grupo</th>
+							</tr>
+						</thead>
+
+						<tfoot>
+							<tr>
+								<th> </th> 
+								<th>Documento</th>
+								<th>Nombre</th>
+								<th>Grado</th>
+								<th>Grupo</th>	
+							</tr>
+						</tfoot>
+					</table>
+				<div class="hr-line-dashed"></div>
+				<div class="form-group row">
+					<div class="col-sm-12">
+						<button class="btn btn-primary" type="button" id="btnGuardar">Guardar</button>
+					</div>
+				</div>
 			</div>
-		</div>
 	</div>
 </div>
-
-<div class="wrapper wrapper-content  animated fadeInRight">
-		<div class="row">
-				<div class="col-sm-12">
-						<div class="ibox">
-
-
-
-
-                                <div class="ibox-title">
-                                    <h5>Estudiantes</h5>
-                                    <div class="ibox-tools">
-                                        <div class="collapse-link">
-                                            <i class="fa fa-chevron-down"></i>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-
-
-
-
-
-
-								<div class="ibox-content">
-									<!-- <h2>Estudiantes</h2> -->
-									<table class="table table-striped table-hover selectableRows dataTablesSedes" >
-										<thead>
-											<tr>
-												<th><div class="i-checks text-center"> <input type="checkbox" class="checkbox-header0" checked data-columna="1"/> </div> </th> 
-												<th>Documento</th>
-												<th>Nombre</th>
-												<th>Grado</th>
-												<th>Grupo</th>
-											</tr>
-										</thead>
-
-										<tfoot>
-											<tr>
-												<th>
-			<!-- 										<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header0 " checked data-columna="1"/> </div>  -->
-												</th> 
-												<th>Documento</th>
-												<th>Nombre</th>
-												<th>Grado</th>
-												<th>Grupo</th>	
-											</tr>
-										</tfoot>
-									</table>
-									<div class="hr-line-dashed"></div>
-									<div class="form-group row">
-										<div class="col-sm-12">
-											<button class="btn btn-primary" type="button" id="btnGuardar">Guardar</button>
-										</div>
-									</div>
-								</div>
-						</div>
-				</div>
-		</div><!-- /.row -->
+</div><!-- /.row -->
 
 </div>
 
@@ -417,7 +303,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_repitentes.js"></script>
 
 
 

@@ -21,7 +21,7 @@ $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 $asistencias = $_POST['asistencia'];
 
 
-$consulta = " delete from Asistencia$mes$anno where Asistencia$mes$anno.mes = \"$mes\"and Asistencia$mes$anno.semana = \"$semana\"and Asistencia$mes$anno.dia = \"$dia\"and Asistencia$mes$anno.num_doc in (select focalizacion$semana.num_doc from focalizacion$semana where focalizacion$semana.cod_sede = \"$sede\" ";
+$consulta = " delete from Asistencia$mes$anno where Asistencia$mes$anno.mes = \"$mes\"and Asistencia$mes$anno.semana = \"$semana\"and Asistencia$mes$anno.dia = \"$dia\" and Asistencia$mes$anno.num_doc in (select focalizacion$semana.num_doc from focalizacion$semana where focalizacion$semana.cod_sede = \"$sede\" ";
 
 if(isset($grado) && $grado != ""){
 	$consulta .= "and focalizacion$semana.cod_grado = \"$grado\" "; 
