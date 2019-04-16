@@ -177,6 +177,6 @@
 	<ul class="nav nav-second-level collapse">
 		<li> <a href="<?php echo $baseUrl; ?>/modules/asistencias"><span class="nav-label">Toma de asistencia</span></a> </li>
 		<li> <a href="<?php echo $baseUrl; ?>/modules/asistencias/repitentes.php"><span class="nav-label">Selección de repitentes</span></a> </li>
-		<li> <a href="<?php echo $baseUrl; ?>/modules/asistencias"><span class="nav-label">Registro de consumos</span></a> </li>
+		<li> <a href="<?php echo $baseUrl; ?>/modules/asistencias/consumo.php"><span class="nav-label">Registro de consumos</span></a> </li>
 	</ul>
 </li>

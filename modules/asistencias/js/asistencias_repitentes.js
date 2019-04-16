@@ -192,23 +192,6 @@ $(document).ready(function(){
 	$('#btnRestablecerContadores').click(function(){
 		restablecerContadores();
 	});		
-
-	
-
-
-
-
-
-
-	   // $('.bautizado').on('ifChanged', function(event){
-    //   if( $(".bautizado:checked").val() == 1 ){
-    //     $('.fechaBautismo').fadeIn('slow');
-    //     $('#fechaBautismo').prop('required','true');
-    //   }else{
-    //     $('.fechaBautismo').fadeOut('fast');
-    //     $('#fechaBautismo').removeAttr('required');
-    //   }
-    // });
 });
 
 
