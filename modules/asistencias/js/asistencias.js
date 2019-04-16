@@ -86,6 +86,7 @@ $(document).ready(function(){
 		}else{
 			$(".flagFaltantes").slideUp();
 		}
+		$(".flagFaltantes").slideDown();
 
 	});
 	

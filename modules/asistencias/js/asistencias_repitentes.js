@@ -3,7 +3,9 @@ var total = 0;
 var faltan = 0;
 var ausentes = [];
 var repitentes = [];
+
 $(document).ready(function(){
+
 	var d = new Date();
 	var month = d.getMonth();
 	var day = d.getDate();
@@ -22,7 +24,29 @@ $(document).ready(function(){
 
 	total = localStorage.getItem("wappsi_total");
 	faltan = localStorage.getItem("wappsi_faltan");
+
+
+	if ( JSON.parse(localStorage.getItem("wappsi_ausentes")) === null) {
+		localStorage.setItem("wappsi_ausentes", JSON.stringify(ausentes));
+	}
+
+	if ( JSON.parse(localStorage.getItem("wappsi_repitentes")) === null) {
+		localStorage.setItem("wappsi_repitentes", JSON.stringify(repitentes));
+	}
+
 	ausentes = JSON.parse(localStorage.getItem("wappsi_ausentes"));
+	repitentes = JSON.parse(localStorage.getItem("wappsi_repitentes"));
+
+	console.log("Repitentes");
+	console.log(repitentes);	
+	console.log("Ausentes");
+	console.log(ausentes);
+
+
+
+
+
+
 	$("#sede").val(localStorage.getItem("wappsi_sede"));
 
 	$(".asistenciaFaltantes").html(faltan);
@@ -36,30 +60,27 @@ $(document).ready(function(){
 	console.log("Total: "+total);
 	console.log("Faltan: "+faltan);
 
-	if (localStorage.getItem("wappsi_ausentes") === null) {
-		localStorage.setItem("wappsi_ausentes", JSON.stringify(ausentes));
-	}
-	if (localStorage.getItem("wappsi_repitentes") === null) {
-		localStorage.setItem("wappsi_repitentes", JSON.stringify(repitentes));
-	}
 
 	cargarRepitentes();
 
 	// Check a cada item
 	$(document).on('ifChecked', '.checkbox-header', function () { 
-		if( (faltan-1) >= 0 ){
+		if( (faltan) > 0 ){
 			$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
 			console.log("S");
 			faltan--;
 			localStorage.setItem("wappsi_faltan", faltan);
 			$(".asistenciaFaltantes").html(faltan);
 
-			var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
-			var index = aux.indexOf($(this).val());
-			if (index > -1) {
-				aux.splice(index, 1);
-			}		
-			localStorage.setItem("wappsi_ausentes", JSON.stringify(aux));
+			var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
+			aux.push($(this).val());
+			console.log(aux);
+			localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
+
+
+
+
+			
 
 
 			if(faltan > 0){
@@ -67,8 +88,18 @@ $(document).ready(function(){
 			}else{
 				$(".flagFaltantes").slideUp();
 			}
+
+
+			if(faltan <= 0){
+				$( ".checkbox-header:not(:checked)").iCheck('disable'); 
+			}
+
+
+
+
 		}
 	});
+
 
 
 
@@ -77,15 +108,22 @@ $(document).ready(function(){
 	
 	// unCheck a cada item
 	$(document).on('ifUnchecked', '.checkbox-header', function () { 
+		console.log("Faltan: "+faltan);
 		$('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); 
 		console.log("N");
 		faltan++;
 		localStorage.setItem("wappsi_faltan", faltan);
 		$(".asistenciaFaltantes").html(faltan);
 
-		var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
-		aux.push($(this).val());
-		localStorage.setItem("wappsi_ausentes", JSON.stringify(aux));
+
+		var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
+			var index = aux.indexOf($(this).val());
+			if (index > -1) {
+				aux.splice(index, 1);
+			}		
+			localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
+
+
 
 
 		if(faltan > 0){
@@ -93,6 +131,14 @@ $(document).ready(function(){
 		}else{
 			$(".flagFaltantes").slideUp();
 		}
+		$(".flagFaltantes").slideDown();
+
+
+
+			if(faltan > 0){
+				$( ".checkbox-header:not(:checked)").iCheck('enable'); 
+			}
+
 	});
 
 
@@ -138,7 +184,7 @@ $(document).ready(function(){
 	});
 
 	$('#btnGuardar').click(function(){
-		guardarAsistencia();
+		guardarRepitentes();
 	});		
 
 
@@ -169,7 +215,8 @@ $(document).ready(function(){
 function cargarRepitentes(){
 	var semanaActual = $('#semanaActual').val();
 	var sede = localStorage.getItem("wappsi_sede");
-	var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
+	var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
+	console.log(aux);
 	//var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
 	//console.log(aux);
 	if ( $.fn.DataTable.isDataTable( '.dataTablesSedes' ) ) {datatables.destroy(); }
@@ -238,10 +285,10 @@ function cargarRepitentes(){
 
 
 
-			$('.i-checks').iCheck({
+		$('.i-checks').iCheck({
 		checkboxClass: 'icheckbox_square-green',
 		radioClass: 'iradio_square-green',
-	});
+		});
 		
 
 
@@ -268,22 +315,11 @@ function cargarRepitentes(){
         });
 
 
+        if(faltan <= 0){$( ".checkbox-header:not(:checked)").iCheck('disable'); }
+
 
 	});	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function restablecerContadores(){
 	localStorage.removeItem("wappsi_total");
@@ -293,45 +329,29 @@ function restablecerContadores(){
 	Command : toastr.success( "Exito!", "Se ha borrado con éxito el almacenamiento local.", { onHidden : function(){}});
 }
 
-function guardarAsistencia(){
+function guardarRepitentes(){
 	console.log("Guardar asistencia.");
 	var bandera = 0;	
-	var asistencia = [];
+	var repitente = [];
 	var documento = "";
 	var tipoDocumento = "";
-	var semana = $('#semanaActual').val();
-	
+	var semana = $('#semanaActual').val();	
 	var formData = new FormData();
 	formData.append('semana', semana);
 	formData.append('sede', $('#sede').val());
-	formData.append('grado', $('#grado').val());
-	formData.append('grupo', $('#grupo').val());
-
 
 	$( ".checkbox-header:checked").each(function(){
 		documento = $(this).val();
 		tipoDocumento = $( this ).attr('tipoDocumento');
-		formData.append('asistencia['+documento+'][documento]', documento);
-		formData.append('asistencia['+documento+'][tipoDocumento]', tipoDocumento);
-		formData.append('asistencia['+documento+'][asistencia]', 1);
+		formData.append('repitente['+documento+'][documento]', documento);
+		formData.append('repitente['+documento+'][tipoDocumento]', tipoDocumento);
 	});	
 
-	$( ".checkbox-header:not(:checked)").each(function(){
-		documento = $(this).val();
-		tipoDocumento = $( this ).attr('tipoDocumento');
-		formData.append('asistencia['+documento+'][documento]', documento);
-		formData.append('asistencia['+documento+'][tipoDocumento]', tipoDocumento);
-		formData.append('asistencia['+documento+'][asistencia]', 0);
-	});
-	// if(asistencia.length <= 0){
-	// 	bandera++;
-	// 	Command:toastr.warning("Debe seleccionar al menos un estudiante.","Alerta!",{onHidden:function(){$('#loader').fadeOut();}});
-	// }
 	if(bandera == 0){
 		console.log("Guardar");
 		$.ajax({
 			type: "post",
-			url: "functions/fn_guardar_asistencia.php",
+			url: "functions/fn_guardar_repitentes.php",
 			dataType: "json",
 			contentType: false,
 			processData: false,
