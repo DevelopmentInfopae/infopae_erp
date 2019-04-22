@@ -10,10 +10,10 @@ $sede = '';
 $semanaActual = '';
 
 if(isset($_POST['semanaActual']) && $_POST['semanaActual'] != ''){
-	$semanaActual = $_POST['semanaActual'];
+	$semanaActual = mysqli_real_escape_string($Link, $_POST['semanaActual']);
 }
 if(isset($_POST['sede']) && $_POST['sede'] != ''){
-	$sede = $_POST['sede'];
+	$sede = mysqli_real_escape_string($Link, $_POST['sede']);
 }
 
 
@@ -21,9 +21,10 @@ if(isset($_POST['sede']) && $_POST['sede'] != ''){
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " select distinct cod_grado from focalizacion$semanaActual where cod_sede = \"$sede\" order by cod_grado asc ";
+$consulta = "SELECT DISTINCT f.cod_grado, g.nombre FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = \"$sede\" ORDER BY f.cod_grado ASC";
 
-// echo $consulta;
+
+//echo $consulta;
 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
@@ -31,7 +32,7 @@ if($resultado->num_rows >= 1){
 		while($row = $resultado->fetch_assoc()){
 				
 				$id = $row["cod_grado"];
-				$valor = $row["cod_grado"];
+				$valor = $row["nombre"];
 				
 				$opciones .= "<option value=\"$id\"";
 				// if($sede == $id){

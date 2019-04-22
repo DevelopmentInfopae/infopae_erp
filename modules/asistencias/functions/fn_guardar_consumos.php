@@ -15,8 +15,22 @@ $semana = mysqli_real_escape_string($Link, $_POST['semana']);
 $dia = intval(date("d"));
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
-$consumieron = $_POST['consumieron'];
-$repitieron = $_POST['repitieron'];
+
+$consumieron = [];
+$repitieron = [];
+
+if(isset($_POST['consumieron'])){
+	$consumieron = $_POST['consumieron'];
+}
+
+if(isset($_POST['repitieron'])){
+	$repitieron = $_POST['repitieron'];
+}
+
+
+
+
+
 $consulta = "";
 
 $tipo_doc = "";

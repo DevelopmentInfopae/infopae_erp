@@ -8,11 +8,17 @@ $periodoActual = $_SESSION['periodoActual'];
 
 $grado = '';
 $semanaActual = '';
+$sede = '';
+
+
 if(isset($_POST['semanaActual']) && $_POST['semanaActual'] != ''){
-		$semanaActual = $_POST['semanaActual'];
+		$semanaActual = mysqli_real_escape_string($Link, $_POST['semanaActual']);
 }
 if(isset($_POST['grado']) && $_POST['grado'] != ''){
-		$grado = $_POST['grado'];
+		$grado = mysqli_real_escape_string($Link, $_POST['grado']);
+}
+if(isset($_POST['sede']) && $_POST['sede'] != ''){
+	$sede = mysqli_real_escape_string($Link, $_POST['sede']);
 }
 
 
@@ -22,7 +28,8 @@ $opciones = "<option value=\"\">Seleccione uno</option>";
 
 
 if($grado != ""){
-	$consulta = "select distinct nom_grupo from focalizacion$semanaActual where cod_grado = $grado order by nom_grupo asc ";
+	$consulta = "select distinct nom_grupo from focalizacion$semanaActual where cod_grado = $grado and cod_sede = \"$sede\"order by nom_grupo asc "; 
+
 	// echo $consulta;
 
 	$resultado = $Link->query($consulta) or die ('No se pudieron cargar los grupos. '.$consulta. mysqli_error($Link));

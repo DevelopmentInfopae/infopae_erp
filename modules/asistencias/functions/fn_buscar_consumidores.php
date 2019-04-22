@@ -19,8 +19,7 @@ $semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") 
 
 $sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
 
-$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, f.cod_grado AS grado, f.nom_grupo AS grupo, a.* FROM focalizacion$semanaActual f left join Asistencia$mes$anno a on a.tipo_doc = f.tipo_doc and a.num_doc = f.num_doc WHERE 1 = 1 AND f.cod_sede = $sede and a.asistencia = 1 and a.dia = \"$dia\" and a.mes = \"$mes\"ORDER BY f.cod_grado , f.nom_grupo , f.ape1 "; 
-
+$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, g.nombre AS grado, f.nom_grupo AS grupo, a.* FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado left join Asistencia$mes$anno a on a.tipo_doc = f.tipo_doc and a.num_doc = f.num_doc WHERE 1 = 1 AND f.cod_sede = $sede and a.asistencia = 1 and a.dia = \"$dia\" and a.mes = \"$mes\"ORDER BY f.cod_grado , f.nom_grupo , f.ape1 ";
 //echo $consulta;
 
 $resultado = $Link->query($consulta);

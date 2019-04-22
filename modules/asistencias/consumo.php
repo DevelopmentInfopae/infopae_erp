@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="css/custom.css">
-<div class="flagFaltantes" style = "display:none;">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
+<div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
 
 <?php
 	include '../../header.php';
@@ -35,7 +35,7 @@
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-	<div class="col-lg-8">
+	<div class="col-xs-8">
 			<h2>Registro de entregas</h2>
 			<ol class="breadcrumb">
 				<li>
@@ -46,13 +46,14 @@
 				</li>
 			</ol>
 	</div>
-	<div class="col-lg-4">
-			<div class="title-action">
+	<div class="col-xs-4">
+		<div class="title-action">
+			<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
+		</div>
 	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
 					<!-- <a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a> -->
 	<?php } ?>
 	<!-- <button class="btn btn-primary" id="btnRestablecerContadores">Restablecer almacenamiento local</button> -->
-			</div>
 	</div>
 </div>
 <!-- /.row wrapper de la cabecera de la seccion -->
@@ -91,34 +92,39 @@
 				<div class="ibox-content">
 					<input type="hidden" id="semanaActual" value="<?php echo $semanaActual; ?>">
 					<input type="hidden" id="sede" value="">
-					
-					<table class="table table-striped table-hover selectableRows dataTablesSedes" >
-						<thead>
-							<tr>
-								<th>Documento</th>
-								<th>Nombre</th>
-								<th>Grado</th>
-								<th>Grupo</th>
-								<th>Consumió</th>
-								<th>Repitió</th>
-							</tr>
-						</thead>
 
-						<tfoot>
-							<tr>
-								<th>Documento</th>
-								<th>Nombre</th>
-								<th>Grado</th>
-								<th>Grupo</th>	
-								<th>Consumió</th>
-								<th>Repitió</th>
-							</tr>
-						</tfoot>
-					</table>
+
+					<div class="table-responsive table-asistencia">
+						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
+							<thead>
+								<tr>
+									<th>Documento</th>
+									<th>Nombre</th>
+									<th>Grado</th>
+									<th>Grupo</th>
+									<th>Consumió</th>
+									<th>Repitió</th>
+								</tr>
+							</thead>
+
+							<tfoot>
+								<tr>
+									<th>Documento</th>
+									<th>Nombre</th>
+									<th>Grado</th>
+									<th>Grupo</th>	
+									<th>Consumió</th>
+									<th>Repitió</th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					
+
 				<div class="hr-line-dashed"></div>
 				<div class="form-group row">
 					<div class="col-sm-12">
-						<button class="btn btn-primary" type="button" id="btnGuardar">Guardar</button>
+						<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
 					</div>
 				</div>
 			</div>

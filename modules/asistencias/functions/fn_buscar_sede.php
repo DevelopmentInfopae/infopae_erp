@@ -2,12 +2,12 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
-$periodoActual = $_SESSION['periodoActual'];
+$periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
 
 $institucion = '';
 if(isset($_POST['institucion']) && $_POST['institucion'] != ''){
-		$institucion = $_POST['institucion'];
+		$institucion = mysqli_real_escape_string($Link, $_POST['institucion']);
 }
 $opciones = "<option value=\"\">Seleccione uno</option>";
 

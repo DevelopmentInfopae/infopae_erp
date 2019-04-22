@@ -24,7 +24,7 @@ $grupo = (isset($_POST["grupo"]) && $_POST["grupo"] != "") ? mysqli_real_escape_
 
 
 
-$consulta = " select f.tipo_doc, f.num_doc, concat(f.ape1, \" \", f.ape2, \" \", f.nom1, \" \", f.nom2) as nombre, f.cod_grado as grado, f.nom_grupo as grupo from focalizacion$semanaActual f where 1=1 ";
+$consulta = " select f.tipo_doc, f.num_doc, concat(f.ape1, \" \", f.ape2, \" \", f.nom1, \" \", f.nom2) as nombre, g.nombre as grado, f.nom_grupo as grupo from focalizacion$semanaActual f left join grados g on g.id = f.cod_grado where 1=1 ";
 
 if($sede != "" ){
 	$consulta .= " and f.cod_sede = $sede ";
@@ -37,7 +37,7 @@ if($grupo != "" ){
 }
 $consulta .= " order by f.cod_grado, f.nom_grupo, f.ape1 ";
 
-// echo $consulta;
+//echo $consulta;
 
 // $consulta = "select f.num_doc, concat(f.nom1, \" \", f.nom2, \" \", f.ape1, \" \", f.ape2) as nombre, f.cod_grado as grado, f.nom_grupo as grupo from focalizacion$semanActual f where f.cod_inst = 268307000035 and f.cod_sede = 26830700003501 and f.cod_grado = 9 and f.nom_grupo = 901 and f.tipo_complemento = \"CAJMRI\" ";
 

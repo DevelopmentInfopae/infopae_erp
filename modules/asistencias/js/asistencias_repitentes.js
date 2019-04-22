@@ -183,7 +183,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$('#btnGuardar').click(function(){
+	$('.btnGuardar').click(function(){
 		guardarRepitentes();
 	});		
 
@@ -235,7 +235,7 @@ function cargarRepitentes(){
 		{ data: 'num_doc'},
 		{ data: 'nombre'},
 		{ data: 'grado'},
-		{ data: 'grupo'}
+		{ data: 'grupo',className: "text-center"}
 	],
 	bSort: false,
 	bPaginate: false,
@@ -323,12 +323,19 @@ function guardarRepitentes(){
 	formData.append('semana', semana);
 	formData.append('sede', $('#sede').val());
 
+	var cantidadRepitentes = 0;
 	$( ".checkbox-header:checked").each(function(){
 		documento = $(this).val();
 		tipoDocumento = $( this ).attr('tipoDocumento');
 		formData.append('repitente['+documento+'][documento]', documento);
 		formData.append('repitente['+documento+'][tipoDocumento]', tipoDocumento);
+		cantidadRepitentes++;
 	});	
+
+	if(cantidadRepitentes <= 0){
+		bandera++;
+		Command:toastr.warning("Debe seleccionar al menos un estudiante para que repita.","Alerta!",{onHidden:function(){$('#loader').fadeOut();}});
+	}
 
 	if(bandera == 0){
 		console.log("Guardar");

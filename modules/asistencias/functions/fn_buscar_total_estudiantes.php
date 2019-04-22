@@ -6,10 +6,10 @@ $semanaActual = "";
 $sede = "";
 $total = "";
 if(isset($_POST['semanaActual']) && $_POST['semanaActual'] != ''){
-		$semanaActual = $_POST['semanaActual'];
+		$semanaActual = mysqli_real_escape_string($Link, $_POST['semanaActual']);
 }
 if(isset($_POST['sede']) && $_POST['sede'] != ''){
-		$sede = $_POST['sede'];
+		$sede = mysqli_real_escape_string($Link, $_POST['sede']);
 }
 
 $consulta = " select count(distinct num_doc) as total from focalizacion$semanaActual where cod_sede = \"$sede\" ";

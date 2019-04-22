@@ -5,9 +5,9 @@ require_once '../../../config.php';
 $municipio = '';
 
 if(isset($_POST['municipio']) && $_POST['municipio'] != ''){
-    $municipio = $_POST['municipio'];
+    $municipio = mysqli_real_escape_string($Link, $_POST['municipio']);
 }else if(isset($_SESSION['p_Municipio']) && $_SESSION['p_Municipio'] != ''){
-  $municipio = $_SESSION['p_Municipio'];
+  $municipio = mysqli_real_escape_string($Link, $_SESSION['p_Municipio']);
 }
 
 $opciones = "<option value=\"\">Seleccione uno</option>";

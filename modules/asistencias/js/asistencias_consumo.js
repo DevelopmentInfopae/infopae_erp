@@ -77,7 +77,7 @@ $(document).ready(function(){
 
 	cargarEstudiantes();
 
-	$('#btnGuardar').click(function(){
+	$('.btnGuardar').click(function(){
 		guardarEntregas();
 	});	
 
@@ -231,7 +231,7 @@ function cargarEstudiantes(){
 		{ data: 'num_doc'},
 		{ data: 'nombre'},
 		{ data: 'grado'},
-		{ data: 'grupo'},
+		{ data: 'grupo',className: "text-center"},
 		{
 			sortable: false,
 			className: "textoCentrado",

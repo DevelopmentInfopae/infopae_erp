@@ -49,11 +49,12 @@ $(document).ready(function(){
 
 	$(".asistenciaFaltantes").html(faltan);
 	$(".asistenciaTotal").html(total);
-	if(faltan > 0){
-		$(".flagFaltantes").slideDown();
-	}else{
-		$(".flagFaltantes").slideUp();
-	}
+
+
+
+
+
+
 	console.log(total);
 	console.log(faltan);
 
@@ -81,12 +82,6 @@ $(document).ready(function(){
 
 
 
-		if(faltan > 0){
-			$(".flagFaltantes").slideDown();
-		}else{
-			$(".flagFaltantes").slideUp();
-		}
-		$(".flagFaltantes").slideDown();
 
 	});
 	
@@ -98,11 +93,7 @@ $(document).ready(function(){
 		localStorage.setItem("wappsi_faltan", faltan);
 		$(".asistenciaFaltantes").html(faltan);
 
-		if(faltan > 0){
-			$(".flagFaltantes").slideDown();
-		}else{
-			$(".flagFaltantes").slideUp();
-		}
+
 	});	
 
 	$(document).on('ifChecked', '.checkbox-header', function () { 
@@ -120,11 +111,7 @@ $(document).ready(function(){
 		localStorage.setItem("wappsi_ausentes", JSON.stringify(aux));
 
 
-		if(faltan > 0){
-			$(".flagFaltantes").slideDown();
-		}else{
-			$(".flagFaltantes").slideUp();
-		}
+
 	});
 	
 	$(document).on('ifUnchecked', '.checkbox-header', function () { 
@@ -139,11 +126,7 @@ $(document).ready(function(){
 		localStorage.setItem("wappsi_ausentes", JSON.stringify(aux));
 
 
-		if(faltan > 0){
-			$(".flagFaltantes").slideDown();
-		}else{
-			$(".flagFaltantes").slideUp();
-		}
+
 
 	});
 	
@@ -172,7 +155,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$('#btnGuardar').click(function(){
+	$('.btnGuardar').click(function(){
 		guardarAsistencia();
 	});		
 
@@ -205,6 +188,7 @@ function guardarAsistencia(){
 	formData.append('grado', $('#grado').val());
 	formData.append('grupo', $('#grupo').val());
 
+	var cantidadAsistentes = 0;
 
 	$( ".checkbox-header:checked").each(function(){
 		documento = $(this).val();
@@ -212,6 +196,7 @@ function guardarAsistencia(){
 		formData.append('asistencia['+documento+'][documento]', documento);
 		formData.append('asistencia['+documento+'][tipoDocumento]', tipoDocumento);
 		formData.append('asistencia['+documento+'][asistencia]', 1);
+		cantidadAsistentes++;
 	});	
 
 	$( ".checkbox-header:not(:checked)").each(function(){
@@ -221,10 +206,17 @@ function guardarAsistencia(){
 		formData.append('asistencia['+documento+'][tipoDocumento]', tipoDocumento);
 		formData.append('asistencia['+documento+'][asistencia]', 0);
 	});
-	// if(asistencia.length <= 0){
-	// 	bandera++;
-	// 	Command:toastr.warning("Debe seleccionar al menos un estudiante.","Alerta!",{onHidden:function(){$('#loader').fadeOut();}});
-	// }
+
+
+
+
+	if(cantidadAsistentes <= 0){
+		bandera++;
+		Command:toastr.warning("Debe asistir almenos un estudiante.","Alerta!",{onHidden:function(){$('#loader').fadeOut();}});
+	}
+
+
+
 	if(bandera == 0){
 		console.log("Guardar");
 		$.ajax({
@@ -318,11 +310,8 @@ function cargarEstudiantes(){
 			className: "textoCentrado",
 			"render": function ( data, type, full, meta ) {
 				var tipoDocumento = full.tipo_doc;
-				var documento = full.num_doc;
-
-				
-				var index = aux.indexOf(documento);
-				
+				var documento = full.num_doc;				
+				var index = aux.indexOf(documento);				
 				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header\" ";
 				
 				if (index > -1) {}else{opciones = opciones + " checked "; }
@@ -335,7 +324,7 @@ function cargarEstudiantes(){
 		{ data: 'num_doc'},
 		{ data: 'nombre'},
 		{ data: 'grado'},
-		{ data: 'grupo'}
+		{ data: 'grupo',className: "text-center"}
 	],
 	bSort: false,
 	bPaginate: false,
@@ -518,6 +507,7 @@ function cargarGrupos(){
 	var formData = new FormData();
 	formData.append('semanaActual', $('#semanaActual').val());
 	formData.append('grado', $('#grado').val());
+	formData.append('sede', $('#sede').val());
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_grupos.php",
