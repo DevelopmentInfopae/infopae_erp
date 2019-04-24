@@ -196,6 +196,7 @@ $(document).ready(function(){
 
 
 function cargarRepitentes(){
+	var dibujado = 0;
 	var semanaActual = $('#semanaActual').val();
 	var sede = localStorage.getItem("wappsi_sede");
 	var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
@@ -258,10 +259,15 @@ function cargarRepitentes(){
 	//pageLength: 10,
 	responsive: true,
 	"preDrawCallback": function( settings ) {
-		$('#loader').fadeIn();
+		if(dibujado == 0){
+			$('#loader').fadeIn();
+		}
 	}
 	}).on("draw", function(){ 
-		$('#loader').fadeOut();
+		if(dibujado == 0){
+			$('#loader').fadeOut();
+			dibujado++;
+		}
 		totalEstudiantesSede(); 
 		$('.estadoSede').bootstrapToggle(); 
 

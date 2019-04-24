@@ -276,6 +276,8 @@ function totalEstudiantesSede(){
 
 function cargarEstudiantes(){
 
+	var dibujado = 0;
+
 	var semanaActual = $('#semanaActual').val();
 	var sede = $('#sede').val();
 	var grado = $('#grado').val();
@@ -347,10 +349,17 @@ function cargarEstudiantes(){
 	//pageLength: 10,
 	responsive: true,
 	"preDrawCallback": function( settings ) {
-		$('#loader').fadeIn();
+		if(dibujado == 0){
+			$('#loader').fadeIn();
+		}
+
 	}
 	}).on("draw", function(){ 
-		$('#loader').fadeOut();
+		if(dibujado == 0){
+			$('#loader').fadeOut();
+			dibujado++;	
+		}
+		
 		totalEstudiantesSede(); 
 		$('.estadoSede').bootstrapToggle(); 
 
