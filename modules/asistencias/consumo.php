@@ -77,6 +77,8 @@
 	}
 ?>
 
+<?php include "filtro.php"  ?>
+
 <div class="wrapper wrapper-content  animated fadeInRight">
 	<div class="row">
 		<div class="col-sm-12">
@@ -98,22 +100,26 @@
 						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
 							<thead>
 								<tr>
+									<th>Asistencia</th>
 									<th>Documento</th>
 									<th>Nombre</th>
 									<th>Grado</th>
 									<th>Grupo</th>
 									<th>Consumió</th>
+									<th>Repite</th>
 									<th>Repitió</th>
 								</tr>
 							</thead>
 
 							<tfoot>
 								<tr>
+									<th>Asistencia</th>
 									<th>Documento</th>
 									<th>Nombre</th>
 									<th>Grado</th>
 									<th>Grupo</th>	
 									<th>Consumió</th>
+									<th>Repite</th>
 									<th>Repitió</th>
 								</tr>
 							</tfoot>
@@ -309,6 +315,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_consumo.js?v=20190423"></script>
 
 

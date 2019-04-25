@@ -4,6 +4,16 @@ var faltan = 0;
 var ausentes = [];
 var repitentes = [];
 
+for (x=0; x<=localStorage.length-1; x++)  {  
+  clave = localStorage.key(x); 
+  //document.write("La clave " + clave + "contiene el valor " + localStorage.getItem(clave) + "<br />");  
+  console.log("La clave " + clave + " contiene el valor " + localStorage.getItem(clave));  
+}
+
+console.log(localStorage.getItem("wappsi_sede"));
+
+
+
 $(document).ready(function(){
 
 	var d = new Date();
@@ -11,15 +21,19 @@ $(document).ready(function(){
 	var day = d.getDate();
 	console.log("Hoy es "+day+" de "+month);
 
-	if(day != localStorage.getItem("wappsi_dia_actual") && month != localStorage.getItem("wappsi_mes_actual")){
-		localStorage.setItem("wappsi_dia_actual", day);
-		localStorage.setItem("wappsi_mes_actual", month);
-		localStorage.setItem("wappsi_sede", "");
-		localStorage.removeItem("wappsi_total");
-		localStorage.removeItem("wappsi_faltan");
-		localStorage.removeItem("wappsi_ausentes");
-		localStorage.removeItem("wappsi_repitentes")
+	if(day != localStorage.getItem("wappsi_dia_actual") || month != localStorage.getItem("wappsi_mes_actual")){
+		console.log("Se estaba trabajndo  "+localStorage.getItem("wappsi_dia_actual")+" de "+localStorage.getItem("wappsi_mes_actual"));
 		console.log("Borrar almacenamiento local");
+		// localStorage.setItem("wappsi_dia_actual", day);
+		// localStorage.setItem("wappsi_mes_actual", month);
+		// localStorage.setItem("wappsi_institucion", "");
+		// localStorage.setItem("wappsi_sede", "");
+		// localStorage.removeItem("wappsi_total");
+		// localStorage.removeItem("wappsi_faltan");
+		// localStorage.removeItem("wappsi_ausentes");
+		// localStorage.removeItem("wappsi_repitentes");
+		// localStorage.removeItem("wappsi_no_consumieron");
+		// localStorage.removeItem("wappsi_no_repitieron");
 	}
 
 	total = localStorage.getItem("wappsi_total");
@@ -51,11 +65,7 @@ $(document).ready(function(){
 
 	$(".asistenciaFaltantes").html(faltan);
 	$(".asistenciaTotal").html(total);
-	if(faltan > 0){
-		$(".flagFaltantes").slideDown();
-	}else{
-		$(".flagFaltantes").slideUp();
-	}
+
 
 	console.log("Total: "+total);
 	console.log("Faltan: "+faltan);
@@ -167,12 +177,6 @@ $(document).ready(function(){
 
 
 
-
-	$( "#sede" ).change(function() {
-		localStorage.setItem("wappsi_sede", $("#sede").val());
-		cargarGrados();
-	});
-
 	$( "#grado" ).change(function() {
 		cargarGrupos();
 	});
@@ -198,6 +202,16 @@ $(document).ready(function(){
 function cargarRepitentes(){
 	var dibujado = 0;
 	var semanaActual = $('#semanaActual').val();
+
+
+ console.log(localStorage.getItem("wappsi_sede"));
+
+
+
+
+
+
+
 	var sede = localStorage.getItem("wappsi_sede");
 	var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
 	console.log(aux);

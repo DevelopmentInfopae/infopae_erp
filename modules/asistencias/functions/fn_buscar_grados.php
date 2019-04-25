@@ -24,7 +24,7 @@ $opciones = "<option value=\"\">Seleccione uno</option>";
 $consulta = "SELECT DISTINCT f.cod_grado, g.nombre FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = \"$sede\" ORDER BY f.cod_grado ASC";
 
 
-//echo $consulta;
+// echo $consulta;
 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){

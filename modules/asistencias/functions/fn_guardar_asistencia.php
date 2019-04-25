@@ -14,11 +14,24 @@ $sede = mysqli_real_escape_string($Link, $_POST['sede']);
 $semana = mysqli_real_escape_string($Link, $_POST['semana']);
 $grado = mysqli_real_escape_string($Link, $_POST['grado']);
 $grupo = mysqli_real_escape_string($Link, $_POST['grupo']);
+$banderaRegistros = mysqli_real_escape_string($Link, $_POST['banderaRegistros']);
+
 
 $dia = intval(date("d"));
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
 $asistencias = $_POST['asistencia'];
+
+
+
+if(banderaRegistros == 0){
+	//Insertar no habria necesidad de borrar
+}else if(banderaRegistros == 1){
+	//Actualizar las asistencias esto con el fin de no perder registros de consumo
+
+	//Si una asistencia = 0, se iguala a 0 que repite, si consumio o si repitió. 
+ }
+
 
 
 $consulta = " delete from Asistencia$mes$anno where Asistencia$mes$anno.mes = \"$mes\"and Asistencia$mes$anno.semana = \"$semana\"and Asistencia$mes$anno.dia = \"$dia\" and Asistencia$mes$anno.num_doc in (select focalizacion$semana.num_doc from focalizacion$semana where focalizacion$semana.cod_sede = \"$sede\" ";
