@@ -24,16 +24,16 @@ $(document).ready(function(){
 	if(day != localStorage.getItem("wappsi_dia_actual") || month != localStorage.getItem("wappsi_mes_actual")){
 		console.log("Se estaba trabajndo  "+localStorage.getItem("wappsi_dia_actual")+" de "+localStorage.getItem("wappsi_mes_actual"));
 		console.log("Borrar almacenamiento local");
-		// localStorage.setItem("wappsi_dia_actual", day);
-		// localStorage.setItem("wappsi_mes_actual", month);
-		// localStorage.setItem("wappsi_institucion", "");
-		// localStorage.setItem("wappsi_sede", "");
-		// localStorage.removeItem("wappsi_total");
-		// localStorage.removeItem("wappsi_faltan");
-		// localStorage.removeItem("wappsi_ausentes");
-		// localStorage.removeItem("wappsi_repitentes");
-		// localStorage.removeItem("wappsi_no_consumieron");
-		// localStorage.removeItem("wappsi_no_repitieron");
+		localStorage.setItem("wappsi_dia_actual", day);
+		localStorage.setItem("wappsi_mes_actual", month);
+		localStorage.setItem("wappsi_institucion", "");
+		localStorage.setItem("wappsi_sede", "");
+		localStorage.removeItem("wappsi_total");
+		localStorage.removeItem("wappsi_faltan");
+		localStorage.removeItem("wappsi_ausentes");
+		localStorage.removeItem("wappsi_repitentes");
+		localStorage.removeItem("wappsi_no_consumieron");
+		localStorage.removeItem("wappsi_no_repitieron");
 	}
 
 	total = localStorage.getItem("wappsi_total");

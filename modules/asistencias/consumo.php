@@ -140,6 +140,31 @@
 
 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
@@ -153,150 +178,20 @@
 			<div class="modal-footer">
 				<input type="hidden" id="codigoACambiar">
 				<input type="hidden" id="estadoACambiar">
-				<button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstado();">Cancelar</button>
-				<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="cambiarEstado();">Aceptar</button>
+				<button type="button" class="btn btn-primary btn-outline btn-sm btnNo" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary btn-sm btnSi" data-dismiss="modal">Aceptar</button>
 			</div>
 		</div>
 	</div>
 </div>
 
-<!-- Ventana formulari para la priorización -->
-<div class="modal inmodal fade" id="ventanaFormularioPri" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header text-info" style="padding: 15px;">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-				<h3><i class="fa fa-upload fa-lg" aria-hidden="true"></i> Importar Priorización  </h3>
-			</div>
-			<div class="modal-body">
-				<form action="" name="frmSubirArchivoPriorizacion" id="frmSubirArchivoPriorizacion">
-					<div class="row">
-						<div class="col-md-4">
-							<div class="form-group">
-								<label for="mes">Mes</label>
-								<select class="form-control" name="mes" id="mes" required>
-									<option value="">Selección</option>
-									<?php
-										$consultaMes = "SELECT distinct MES AS mes FROM planilla_semanas;";
-										$resultadoMes = $Link->query($consultaMes);
-										if($resultadoMes->num_rows > 0){
-											while($registros = $resultadoMes->fetch_assoc()) {
-									?>
-											<option value="<?php echo $registros["mes"]; ?>"><?php echo $registros["mes"]; ?></option>
-									<?php
-											}
-										}
-									?>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<label for="mes">Semana</label>
-								<select class="form-control" name="semana" id="semana" required>
-									<option value="">Selección</option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-10">
-							<div class="form-group">
-								<label for="archivoPriorizacion">Archivo</label>
-								<div class="fileinput fileinput-new input-group" data-provides="fileinput">
-									<div class="form-control" data-trigger="fileinput">
-										<i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span>
-									</div>
-									<span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Seleccionar archivo</span><span class="fileinput-exists">Cambiar</span>
-										<input type="file" name="archivoPriorizacion" id="archivoPriorizacion" accept=".csv, .xlsx" required>
-									</span>
-									<a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Borrar</a>
-								</div>
-								<label for="archivoPriorizacion" class="error" style="display: none;"></label>
-							</div>
-							<label class="text-warning">Para mayor eficacia es mejor subir el archivo con extensión .CSV </label>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal">Cancelar</button>
-				<button type="button" class="btn btn-primary btn-sm" id="subirArchivoPriorizacion">Aceptar</button>
-			</div>
-		</div>
-	</div>
-</div>
 
-<!-- Ventana formulari para la focalización -->
-<div class="modal inmodal fade" id="ventanaFormularioFoc" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header text-info" style="padding: 15px;">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-				<h3><i class="fa fa-upload fa-lg" aria-hidden="true"></i> Importar Focalización  </h3>
-			</div>
-			<div class="modal-body">
-				<form action="" name="frmSubirArchivoFocalizacion" id="frmSubirArchivoFocalizacion">
-					<div class="row">
-						<div class="col-md-4">
-							<div class="form-group">
-								<label for="mesFocalizacion">Mes</label>
-								<select class="form-control" name="mesFocalizacion" id="mesFocalizacion" required>
-									<option value="">Selección</option>
-									<?php
-										$consultaMes = "SELECT distinct MES AS mes FROM planilla_semanas;";
-										$resultadoMes = $Link->query($consultaMes);
-										if($resultadoMes->num_rows > 0){
-											while($registros = $resultadoMes->fetch_assoc()) {
-									?>
-											<option value="<?php echo $registros["mes"]; ?>"><?php echo $registros["mes"]; ?></option>
-									<?php
-											}
-										}
-									?>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<label for="semanaFocalizacion">Semana</label>
-								<select class="form-control" name="semanaFocalizacion" id="semanaFocalizacion" required>
-									<option value="">Selección</option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-10">
-							<div class="form-group">
-								<label for="archivoFocalizacion">Archivo</label>
-								<div class="fileinput fileinput-new input-group" data-provides="fileinput">
-									<div class="form-control" data-trigger="fileinput">
-										<i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span>
-									</div>
-									<span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Seleccionar archivo</span><span class="fileinput-exists">Cambiar</span>
-										<input type="file" name="archivoFocalizacion" id="archivoFocalizacion" accept=".csv" required>
-									</span>
-									<a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Borrar</a>
-								</div>
-								<label for="archivoFocalizacion" class="error" style="display: none;"></label>
-							</div>
-							<label class="text-warning">Para mayor eficacia es mejor subir el archivo con extensión .CSV </label>
-						</div>
-						<div class="col-md-2">
-							<label for="archivoFocalizacion">Validar</label>
-							<input type="checkbox" name="validar" id="validar" data-toggle="toggle" data-on="si" data-off="no" checked>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal" onclick="$('#ventanaFormularioFoc').on('hidden.bs.modal', function (e) { $('#frmSubirArchivoFocalizacion')[0].reset(); })">Cancelar</button>
-				<button type="button" class="btn btn-primary btn-sm" id="subirArchivoFocalizacion">Aceptar</button>
-			</div>
-		</div>
-	</div>
-</div>
+<form action="">
+	<input type="hidden" name="asistenteTramite" id="asistenteTramite" value = "">
+	<input type="hidden" name="tipoDocumentoAsistenteTramite" id="tipoDocumentoAsistenteTramite" value = "">
+	<input type="hidden" name="valorActualizacion" id="valorActualizacion" value = "">
+</form>
+
 
 <?php include '../../footer.php'; ?>
 

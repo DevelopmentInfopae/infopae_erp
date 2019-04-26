@@ -24,67 +24,75 @@ $asistencias = $_POST['asistencia'];
 
 
 
-if(banderaRegistros == 0){
+if($banderaRegistros == 0){
 	//Insertar no habria necesidad de borrar
-}else if(banderaRegistros == 1){
-	//Actualizar las asistencias esto con el fin de no perder registros de consumo
-
-	//Si una asistencia = 0, se iguala a 0 que repite, si consumio o si repitió. 
- }
-
-
-
-$consulta = " delete from Asistencia$mes$anno where Asistencia$mes$anno.mes = \"$mes\"and Asistencia$mes$anno.semana = \"$semana\"and Asistencia$mes$anno.dia = \"$dia\" and Asistencia$mes$anno.num_doc in (select focalizacion$semana.num_doc from focalizacion$semana where focalizacion$semana.cod_sede = \"$sede\" ";
-
-if(isset($grado) && $grado != ""){
-	$consulta .= "and focalizacion$semana.cod_grado = \"$grado\" "; 
-}
-
-if(isset($grupo) && $grupo != ""){
-	$consulta .= "and focalizacion$semana.nom_grupo = \"$grupo\"";
-}
-$consulta .= " ) ";
-
-
-//echo $consulta; 
-$result = $Link->query($consulta) or die ('Delete'. mysqli_error($Link));
-
-
-
-
-
-$consulta = " insert into Asistencia$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values ";
-$aux = 0;
-foreach ($asistencias as $asistencia){
-	if($aux > 0){
-		$consulta .= " , ";
+	$consulta = " insert into Asistencia$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values ";
+	$aux = 0;
+	foreach ($asistencias as $asistencia){
+		if($aux > 0){
+			$consulta .= " , ";
+		}
+		$consulta .= " ( ";
+		$auxField = mysqli_real_escape_string($Link, $asistencia["tipoDocumento"]);
+		$consulta .= " \"$auxField\", ";	
+		$auxField = mysqli_real_escape_string($Link, $asistencia["documento"]);
+		$consulta .= " \"$auxField\", ";
+		$consulta .= " \"$fecha\", ";
+		$consulta .= " \"$mes\", ";
+		$consulta .= " \"$semana\", ";
+		$consulta .= " \"$dia\", ";
+		$auxField = mysqli_real_escape_string($Link, $asistencia["asistencia"]);
+		$consulta .= " $auxField, ";
+		$consulta .= " $id_usuario ";
+		$consulta .= " ) ";
+		$aux++;
 	}
-	$consulta .= " ( ";
-	$auxField = mysqli_real_escape_string($Link, $asistencia["tipoDocumento"]);
-	$consulta .= " \"$auxField\", ";	
-	$auxField = mysqli_real_escape_string($Link, $asistencia["documento"]);
-	$consulta .= " \"$auxField\", ";
-	$consulta .= " \"$fecha\", ";
-	$consulta .= " \"$mes\", ";
-	$consulta .= " \"$semana\", ";
-	$consulta .= " \"$dia\", ";
-	$auxField = mysqli_real_escape_string($Link, $asistencia["asistencia"]);
-	$consulta .= " $auxField, ";
-	$consulta .= " $id_usuario ";
-	$consulta .= " ) ";
-	$aux++;
-}
-//echo $consulta;
-$result = $Link->query($consulta) or die ('Insert error'. mysqli_error($Link));
-if($result){
-	$resultadoAJAX = array(
-		"state" => 1,
-		"message" => "El registro se ha realizado con éxito.",
-  	);
-}else{
-	$resultadoAJAX = array(
-		"state" => 2,
-		"message" => "Error al hacer el registro.",
-  	);
+	//echo $consulta;
+	$result = $Link->query($consulta) or die ('Insert error'. mysqli_error($Link));
+	if($result){
+		$resultadoAJAX = array(
+			"state" => 1,
+			"message" => "El registro se ha realizado con éxito.",
+		);
+	}else{
+		$resultadoAJAX = array(
+			"state" => 2,
+			"message" => "Error al hacer el registro.",
+		);
+	}
+}else if($banderaRegistros == 1){
+	//Actualizar las asistencias esto con el fin de no perder registros de consumo
+	//Si una asistencia = 0, se iguala a 0 que repite, si consumio o si repitió. 
+	$consulta = "";
+	foreach ($asistencias as $asistencia){
+
+		$tipo_doc = mysqli_real_escape_string($Link, $asistencia["tipoDocumento"]);
+		$num_doc = mysqli_real_escape_string($Link, $asistencia["documento"]);
+		$asistenciaVal = mysqli_real_escape_string($Link, $asistencia["asistencia"]);
+
+		$consulta .= " update Asistencia$mes$anno set asistencia = $asistenciaVal  ";
+
+		if($asistenciaVal == 0){
+			$consulta .= " , repite = 0, consumio = 0, repitio = 0 ";	
+		}
+		$consulta .= " where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and id_usuario = $id_usuario and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; "; 
+
+	}
+
+	//echo $consulta;
+
+	$result = $Link->multi_query($consulta) or die ('Insert error'. mysqli_error($Link));
+	if($result){
+		$resultadoAJAX = array(
+			"state" => 1,
+			"message" => "El registro se ha realizado con éxito.",
+	  	);
+	}else{
+		$resultadoAJAX = array(
+			"state" => 2,
+			"message" => "Error al hacer el registro.",
+	  	);
+	}
+
 }
 echo json_encode($resultadoAJAX);

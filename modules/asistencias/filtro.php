@@ -27,25 +27,34 @@
 									<div class="col-sm-4 form-group">
 										<label for="institucion">Institución</label>
 										<select class="form-control" name="institucion" id="institucion" required>
-											<option value="">Todas</option>									
+											<option value="">Seleccione una</option>									
 										</select>
 									</div>
 
 									<div class="col-sm-4 form-group">
 										<label for="sede">Sede</label>
 										<select class="form-control" name="sede" id="sede" required>
-											<option value="">Todas</option>
+											<option value="">Seleccione una</option>
 										</select>
 									</div>                  
 
-									<div class="col-sm-6 form-group">
+<!-- 									<div class="col-sm-4 form-group">
+										<label for="nivel">Nivel</label>
+										<select class="form-control" name="nivel" id="nivel" required>
+											<option value="">Seleccione uno</option>
+											<option value="">Primaria</option>
+											<option value="">Secundaria</option>
+										</select>
+									</div>	 -->								
+
+									<div class="col-sm-4 form-group">
 										<label for="grado">Grado</label>
 										<select class="form-control" name="grado" id="grado" required>
 											<option value="">Todas</option>
 										</select>
 									</div>
 
-									<div class="col-sm-6 form-group">
+									<div class="col-sm-4 form-group">
 										<label for="grupo">Grupo</label>
 										<select class="form-control" name="grupo" id="grupo">
 											<option value="">Todas</option>

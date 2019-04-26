@@ -65,8 +65,12 @@ $(document).ready(function(){
 
 	$("#sede").val(localStorage.getItem("wappsi_sede"));
 
-	$(".asistenciaFaltantes").html(faltan);
-	$(".asistenciaTotal").html(total);
+	// $(".asistenciaFaltantes").html(faltan);
+	// $(".asistenciaTotal").html(total);
+
+
+	$(".asistenciaFaltantes").html(0);
+	$(".asistenciaTotal").html(0);
 
 	
 
@@ -83,6 +87,26 @@ $(document).ready(function(){
 		if($('#form_asistencia').valid()){
 			cargarEstudiantes()
 		}
+	});
+
+	$('#ventanaConfirmar .btnNo').click(function(){
+		var aux = $("#asistenteTramite").val();
+		aux = ".checkbox-header-asistencia."+aux;
+		
+		//console.log(aux);
+		// Cambiar de estado un check recien cambiado.
+		$(aux).iCheck('destroy');
+		if( $(aux).prop('checked') ) {
+			$(aux).prop( "checked", false );
+		}else{
+			$(aux).prop( "checked", true );
+		}
+		$(aux).parent().iCheck({checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });	
+
+	});
+
+	$('#ventanaConfirmar .btnSi').click(function(){
+		actualizarAsistencia();
 	});
 
 
@@ -102,7 +126,7 @@ $(document).ready(function(){
 		guardarEntregas();
 	});	
 
-		// Check a cada item de la columna Consumió
+	// Check a cada item de la columna Consumió
 	$(document).on('ifChecked', '.checkbox-header-consume', function () { 
 		if( (faltan) > 0 ){
 			$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
@@ -128,6 +152,9 @@ $(document).ready(function(){
 
 			if(faltan <= 0){
 				$( ".checkbox-header-repite:not(:checked)").iCheck('disable'); 
+			}else{
+				aux = $(this).val();
+				$( ".checkbox-header-repite."+aux).iCheck('enable'); 	
 			}
 		}
 	});
@@ -169,6 +196,22 @@ $(document).ready(function(){
 		if(faltan > 0){
 			$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
 		}
+
+
+		aux = $(this).val();
+		$( ".checkbox-header-repite."+aux).iCheck('uncheck'); 
+		$( ".checkbox-header-repite."+aux).iCheck('disable'); 
+
+
+
+
+
+
+
+
+
+
+
 	});
 
 	// Check a cada item de la columna Repitió
@@ -225,6 +268,43 @@ $(document).ready(function(){
 		}
 	});
 
+	// Check a cada item de la columna Asistencia
+	$(document).on('ifChecked', '.checkbox-header-asistencia', function () { 
+		console.log("Check en un elemento de asistencia.");
+		$('#asistenteTramite').val($(this).val());
+		$('#tipoDocumentoAsistenteTramite').val($(this).attr('tipoDocumento'));
+		$('#valorActualizacion').val(1);
+		$('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>que desea hacer cambios en los registros de la asistencia</strong> para este estudiante? ');
+  		$('#ventanaConfirmar').modal();
+	});
+	
+	// unCheck a cada item de la columna Asistencia
+	$(document).on('ifUnchecked', '.checkbox-header-asistencia', function () { 
+		console.log("unCheck en un elemento de asistencia.");
+		$('#asistenteTramite').val($(this).val());
+		$('#tipoDocumentoAsistenteTramite').val($(this).attr('tipoDocumento'));
+		$('#valorActualizacion').val(0);
+		$('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>que desea hacer cambios en los registros de la asistencia</strong> para este estudiante? ');
+  		$('#ventanaConfirmar').modal();
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
 
 
@@ -277,10 +357,10 @@ function cargarEstudiantes(){
 				
 
 				
-				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-consume "+documento+"\" ";
+				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-asistencia "+documento+"\" ";
 				
 				if (asistencia == 1) { opciones = opciones + " checked "; }
-				else { opciones = opciones + " disabled "; }
+				// else { opciones = opciones + " disabled "; }
 
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
 
@@ -298,6 +378,7 @@ function cargarEstudiantes(){
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
 				var asistencia = full.asistencia; 
+				var consumio = full.consumio; 
 
 				
 				var index = auxConsumieron.indexOf(documento);
@@ -307,6 +388,7 @@ function cargarEstudiantes(){
 				if (asistencia != 1) { opciones = opciones + " disabled "; }else{
 					if (index > -1) {opciones = opciones + " checked ";}
 				}
+				if (consumio == 1) { opciones = opciones + " checked "; }
 
 
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
@@ -314,23 +396,16 @@ function cargarEstudiantes(){
 				return opciones;
 			}
 		},	
-				{
+		{
 			sortable: false,
 			className: "textoCentrado",
 			"render": function ( data, type, full, meta ) {
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
 				var asistencia = full.asistencia; 
-
-				
 				var opciones = ""; 
 				var index = auxRepitentes.indexOf(documento);
-				if (index > -1) {
-					opciones = "Si"; 
-				}else{
-					opciones = "No"; 
-				}
-				
+				if (index > -1) {opciones = "Si"; }else{opciones = "No"; }
 				return opciones;
 			}
 		},		
@@ -340,21 +415,12 @@ function cargarEstudiantes(){
 			"render": function ( data, type, full, meta ) {
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
-				var asistencia = full.asistencia; 
-
-				
-				var index = auxRepitieron.indexOf(documento);
-
-
-				
-				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite "+documento+"\" ";
-				
-				if (asistencia != 1) { opciones = opciones + " disabled "; }else{
-					if (index > -1) {opciones = opciones + " checked ";}
-				}
-
+				var repitio = full.repitio;				
+				var index = auxRepitieron.indexOf(documento);				
+				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite "+documento+"\" ";				
+				if (repitio == 1) { opciones = opciones + " checked "; }		
+				else{opciones = opciones + " disabled "; }				
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
-
 				return opciones;
 			}
 		}
@@ -472,6 +538,7 @@ function guardarEntregas(){
 				if(data.state == 1){
 					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
 					// location.href="URL para redireccionar";
+					location.reload();
 					}});
 				}else{
 					Command:toastr.error(data.message,"Error al hacer el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});
@@ -492,4 +559,54 @@ function restablecerContadores(){
 	console.log("Borrar almacenamiento local");
 	Command : toastr.success( "Exito!", "Se ha borrado con éxito el almacenamiento local.", { onHidden : function(){}});
 }
+
+function actualizarAsistencia(){
+	console.log("Actualizar asistencia de estudiante.");
+	var formData = new FormData();
+	formData.append('semana', $('#semanaActual').val());
+	formData.append('sede', $('#sede').val());
+	formData.append('documento', $('#asistenteTramite').val());
+	formData.append('tipoDocumento', $('#tipoDocumentoAsistenteTramite').val());
+	formData.append('valor', $('#valorActualizacion').val());
+	$.ajax({
+		type: "post",
+		url: "functions/fn_actualizar_asistencia_estudiante.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $("#loader").fadeIn(); },
+		success: function(data){
+			if(data.state == 1){
+				Command : toastr.success( data.message, "Actualización del registro exitosa", { onHidden : function(){ $('#loader').fadeOut();
+				// location.href="URL para redireccionar";
+				aux = $('#asistenteTramite').val();
+				if($('#valorActualizacion').val() == 0){
+					$( ".checkbox-header-consume."+aux).iCheck('uncheck'); 
+					$( ".checkbox-header-consume."+aux).iCheck('disable'); 
+					$( ".checkbox-header-repite."+aux).iCheck('uncheck'); 
+					$( ".checkbox-header-repite."+aux).iCheck('disable'); 
+
+
+
+				}else{
+					$( ".checkbox-header-consume."+aux).iCheck('enable'); 
+				}
+				}});
+			}else{
+				Command:toastr.error(data.message,"Error al actualizar el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});
+			}
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){ $('#loader').fadeOut(); }});
+		}
+	});
+}
+
+
+
+	
+
+
 

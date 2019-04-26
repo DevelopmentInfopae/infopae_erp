@@ -4,14 +4,13 @@ require_once '../../../config.php';
 
 $periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
-
 $institucion = '';
 if(isset($_POST['institucion']) && $_POST['institucion'] != ''){
 		$institucion = mysqli_real_escape_string($Link, $_POST['institucion']);
 }
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " select * from sedes$periodoActual where cod_inst = \"$institucion\" ";
+$consulta = " select * from sedes$periodoActual where tipo_validacion = \"Tablet\" and cod_inst = \"$institucion\" ";
 $consulta = $consulta." order by nom_sede asc ";
 
 // echo $consulta;

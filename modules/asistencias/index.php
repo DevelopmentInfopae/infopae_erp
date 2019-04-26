@@ -119,7 +119,11 @@
 										<table class="table table-striped table-hover selectableRows dataTablesSedes" >
 											<thead>
 												<tr>
-													<th><div class="i-checks text-center"> <input type="checkbox" class="checkbox-header0" checked data-columna="1"/> </div> </th> 
+													<th>
+												<!-- 		<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header0" checked data-columna="1"/> </div>  -->
+
+
+													</th> 
 													<th>Documento</th>
 													<th>Nombre</th>
 													<th>Grado</th>

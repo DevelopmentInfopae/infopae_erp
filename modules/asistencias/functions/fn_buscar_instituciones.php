@@ -8,7 +8,7 @@ if(isset($_POST['municipio']) && $_POST['municipio'] != ''){
 }
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " select * from instituciones where cod_mun = \"$municipio\" ";
+$consulta = " select * from instituciones where cod_mun = \"$municipio\" and codigo_inst in (select cod_inst from sedes19 where tipo_validacion = \"Tablet\" and cod_mun_sede = \"$municipio\") ";
 $consulta = $consulta." order by nom_inst asc ";
 
 // echo $consulta;

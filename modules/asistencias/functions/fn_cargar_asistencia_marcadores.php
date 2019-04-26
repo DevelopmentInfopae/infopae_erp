@@ -24,6 +24,11 @@ where a.dia = $dia and f.cod_sede = '$sede'";
 
 // echo "<br>$consulta<br>";
 
+$resultadoAJAX = array(
+	"estado" => 0,
+	"mensaje" => "Se ha presentado un error."
+);
+
 $resultado = $Link->query($consulta);
 if($resultado){
 	if($resultado->num_rows > 0){

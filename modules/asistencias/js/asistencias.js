@@ -36,8 +36,8 @@ $(document).ready(function(){
 	var total = localStorage.getItem("wappsi_total");
 	var faltan = localStorage.getItem("wappsi_faltan");
 
-	$(".asistenciaFaltantes").html(faltan);
-	$(".asistenciaTotal").html(total);
+	// $(".asistenciaFaltantes").html(faltan);
+	// $(".asistenciaTotal").html(total);
 
 	console.log("Total: "+total);
 	console.log("Faltan: "+faltan);
@@ -46,8 +46,8 @@ $(document).ready(function(){
 		localStorage.setItem("wappsi_ausentes", JSON.stringify(ausentes));
 	}
 
-	$(".asistenciaFaltantes").html(faltan);
-	$(".asistenciaTotal").html(total);
+	// $(".asistenciaFaltantes").html(faltan);
+	// $(".asistenciaTotal").html(total);
 
 	$('.i-checks').iCheck({
 		checkboxClass: 'icheckbox_square-green',
@@ -152,7 +152,7 @@ function guardarAsistencia(){
 	formData.append('sede', $('#sede').val());
 	formData.append('grado', $('#grado').val());
 	formData.append('grupo', $('#grupo').val());
-	ormData.append('banderaRegistros', $('#banderaRegistros').val());
+	formData.append('banderaRegistros', $('#banderaRegistros').val());
 
 	var cantidadAsistentes = 0;
 
@@ -272,7 +272,7 @@ function cargarEstudiantes(){
 					}
 				}else{
 					if (index > -1) {}else{
-						//opciones = opciones + " checked "; 
+						opciones = opciones + " checked "; 
 					}
 				} 
 
