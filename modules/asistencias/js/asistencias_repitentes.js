@@ -63,15 +63,21 @@ $(document).ready(function(){
 
 	$("#sede").val(localStorage.getItem("wappsi_sede"));
 
-	$(".asistenciaFaltantes").html(faltan);
-	$(".asistenciaTotal").html(total);
+	// $(".asistenciaFaltantes").html(faltan);
+	// $(".asistenciaTotal").html(total);
 
 
 	console.log("Total: "+total);
 	console.log("Faltan: "+faltan);
 
 
-	cargarRepitentes();
+
+	$('#btnBuscar').click(function(){
+		if($('#form_asistencia').valid()){
+			cargarRepitentes();
+		}
+	});
+
 
 	// Check a cada item
 	$(document).on('ifChecked', '.checkbox-header', function () { 
@@ -92,12 +98,6 @@ $(document).ready(function(){
 
 			
 
-
-			if(faltan > 0){
-				$(".flagFaltantes").slideDown();
-			}else{
-				$(".flagFaltantes").slideUp();
-			}
 
 
 			if(faltan <= 0){
@@ -136,12 +136,7 @@ $(document).ready(function(){
 
 
 
-		if(faltan > 0){
-			$(".flagFaltantes").slideDown();
-		}else{
-			$(".flagFaltantes").slideUp();
-		}
-		$(".flagFaltantes").slideDown();
+
 
 
 
@@ -181,11 +176,7 @@ $(document).ready(function(){
 		cargarGrupos();
 	});
 
-	$('#btnBuscar').click(function(){
-		if($('#form_asistencia').valid()){
-			cargarEstudiantes()
-		}
-	});
+
 
 	$('.btnGuardar').click(function(){
 		guardarRepitentes();
@@ -202,17 +193,7 @@ $(document).ready(function(){
 function cargarRepitentes(){
 	var dibujado = 0;
 	var semanaActual = $('#semanaActual').val();
-
-
- console.log(localStorage.getItem("wappsi_sede"));
-
-
-
-
-
-
-
-	var sede = localStorage.getItem("wappsi_sede");
+	var sede = $('#sede').val();
 	var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
 	console.log(aux);
 	//var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
@@ -234,14 +215,17 @@ function cargarRepitentes(){
 			"render": function ( data, type, full, meta ) {
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
+				var repite = full.repite;
 
 				
 				var index = aux.indexOf(documento);
 				
 				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header\" ";
 				
-				if (index > -1) { opciones = opciones + " checked "; }else{ }
-
+				//if (index > -1) { opciones = opciones + " checked "; }else{ }
+				
+				if(repite == 1){opciones = opciones + " checked "; }
+				
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
 
 				return opciones;
@@ -280,6 +264,7 @@ function cargarRepitentes(){
 	}).on("draw", function(){ 
 		if(dibujado == 0){
 			$('#loader').fadeOut();
+			actualizarMarcadores(0);
 			dibujado++;
 		}
 		totalEstudiantesSede(); 
@@ -349,8 +334,21 @@ function guardarRepitentes(){
 		tipoDocumento = $( this ).attr('tipoDocumento');
 		formData.append('repitente['+documento+'][documento]', documento);
 		formData.append('repitente['+documento+'][tipoDocumento]', tipoDocumento);
+		formData.append('repitente['+documento+'][repite]', 1);
 		cantidadRepitentes++;
 	});	
+
+	$( ".checkbox-header:not(:checked)").each(function(){
+		documento = $(this).val();
+		tipoDocumento = $( this ).attr('tipoDocumento');
+		formData.append('repitente['+documento+'][documento]', documento);
+		formData.append('repitente['+documento+'][tipoDocumento]', tipoDocumento);
+		formData.append('repitente['+documento+'][repite]', 0);
+	});
+
+
+
+
 
 	if(cantidadRepitentes <= 0){
 		bandera++;
@@ -371,6 +369,7 @@ function guardarRepitentes(){
 				if(data.state == 1){
 					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
 					// location.href="URL para redireccionar";
+					location.reload();
 					}});
 				}else{
 					Command:toastr.error(data.message,"Error al hacer el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});

@@ -100,7 +100,7 @@
 
 
                                 <div class="ibox-title">
-                                    <h5>Estudiantes</h5>
+                                    <h5>Estudiantes <span class="editando">Editando!</span></h5> 
                                     <div class="ibox-tools">
                                         <div class="collapse-link">
                                             <i class="fa fa-chevron-down"></i>
@@ -344,8 +344,8 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias.js?20190423"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias.js?v=20190426"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190426"></script>
 
 
 

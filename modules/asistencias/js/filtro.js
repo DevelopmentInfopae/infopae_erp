@@ -15,11 +15,17 @@ $(document).ready(function(){
 
 	$( "#sede" ).change(function() {
 		localStorage.setItem("wappsi_sede", $("#sede").val());
+		cargarNiveles();
+	});
+
+	$( "#nivel" ).change(function() {
 		cargarGrados();
 	});
 
 	$( "#grado" ).change(function() {
-		cargarGrupos();
+		if($('#grupo').length){
+			cargarGrupos();
+		}
 	});
 
 });
@@ -101,7 +107,39 @@ function cargarSedes(){
 				$('#sede').val(localStorage.getItem("wappsi_sede"));
 				localStorage.setItem("wappsi_institucion", $("#institucion").val());
 				if($('#sede').val() != ""){
-					cargarGrados()
+					cargarNiveles()
+				}
+				$('#loader').fadeOut();
+
+			}
+			else{
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+}
+
+function cargarNiveles(){
+	var formData = new FormData();
+	formData.append('semanaActual', $('#semanaActual').val());
+	formData.append('sede', $('#sede').val());
+	$.ajax({
+		type: "post",
+		url: "functions/fn_buscar_niveles.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			if(data.estado == 1){
+				$('#nivel').html(data.opciones);
+				if($('#nivel').val() != ""){
+					cargarGrados();
 				}
 				$('#loader').fadeOut();
 
@@ -118,9 +156,11 @@ function cargarSedes(){
 }
 
 function cargarGrados(){
+	console.log("Función Cargar Grados");
 	var formData = new FormData();
 	formData.append('semanaActual', $('#semanaActual').val());
 	formData.append('sede', $('#sede').val());
+	formData.append('nivel', $('#nivel').val());
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_grados.php",
@@ -133,7 +173,9 @@ function cargarGrados(){
 			if(data.estado == 1){
 				$('#grado').html(data.opciones);
 				if($('#grado').val() != ""){
-					cargarGrupos();
+					if($('#grupo').length){
+						cargarGrupos();
+					}
 				}
 				$('#loader').fadeOut();
 
@@ -236,9 +278,11 @@ function actualizarMarcadores(flagConsumo){
 			if(data.estado == 1){
 				//console.log(data.asistencia);
 				var aux = [];
+				console.log("Actualización de marcadores !!!");
 				for (var i = 0; i < data.asistencia.length; i+=1) {
   					//console.log(data.asistencia[i]);
   					aux = data.asistencia[i];
+  					// console.log(aux);
   					if(aux['asistencia'] == 0){
 						reg_faltan++;
 						reg_ausentes.push(aux['num_doc']);
@@ -246,6 +290,7 @@ function actualizarMarcadores(flagConsumo){
   					else{ 
 
   						if(aux['repite'] == 1){
+  							reg_faltan--;
 							reg_repitentes.push(aux['num_doc']);
 						}  						
 

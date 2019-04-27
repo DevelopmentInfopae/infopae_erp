@@ -3,12 +3,10 @@ require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
 $periodoActual = $_SESSION['periodoActual'];
-
 // var_dump($_POST);
 
 $sede = '';
 $semanaActual = '';
-$nivel = '';
 
 if(isset($_POST['semanaActual']) && $_POST['semanaActual'] != ''){
 	$semanaActual = mysqli_real_escape_string($Link, $_POST['semanaActual']);
@@ -16,45 +14,30 @@ if(isset($_POST['semanaActual']) && $_POST['semanaActual'] != ''){
 if(isset($_POST['sede']) && $_POST['sede'] != ''){
 	$sede = mysqli_real_escape_string($Link, $_POST['sede']);
 }
-if(isset($_POST['nivel']) && $_POST['nivel'] != ''){
-	$nivel = mysqli_real_escape_string($Link, $_POST['nivel']);
-}
-
-// Niveles
-// 1. Primaria
-// 2. Secundaria
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = "SELECT DISTINCT f.cod_grado, g.nombre FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = \"$sede\" ";
+$consulta = "select distinct  min(f.cod_grado) as min, max(f.cod_grado) as max from focalizacion13 f where f.cod_sede = \"$sede\" order by f.cod_grado asc ";
 
-if($nivel == 1){
-	$consulta .= " and f.cod_grado < \"6\" ";
-}else if($nivel == 2){
-	$consulta .= " and f.cod_grado > \"5\" ";
-}
-$consulta .= " ORDER BY f.cod_grado ASC ";
-
-
-
-// echo $consulta;
+//echo $consulta;
 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
-		$respuesta = 1;
-		while($row = $resultado->fetch_assoc()){
-				
-				$id = $row["cod_grado"];
-				$valor = $row["nombre"];
-				
-				$opciones .= "<option value=\"$id\"";
-				// if($sede == $id){
-				// 		$opciones .= " selected ";
-				// }
-				$opciones .= ">";
-				$opciones .= "$valor</option>";
-		}
-}if($resultado){
+	$row = $resultado->fetch_assoc();
+	$min = $row['min'];
+	$max = $row['max'];
+
+	if($min < 6){
+		// Tiene primaria
+		$opciones .= "<option value=\"1\">Primaria</option>";
+	}
+	if($max > 5){
+		// Tiene bachillerato
+		$opciones .= "<option value=\"2\">Secundaria</option>";
+	}
+
+}
+if($resultado){
 		$resultadoAJAX = array(
 			"estado" => 1,
 			"mensaje" => "Se ha cargado con exito.",

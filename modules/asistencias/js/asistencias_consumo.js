@@ -329,6 +329,7 @@ function cargarEstudiantes(){
 
 	var semanaActual = $('#semanaActual').val();
 	var sede = $('#sede').val();
+	var nivel = $('#nivel').val();
 	var grado = $('#grado').val();
 	var grupo = $('#grupo').val();
 
@@ -341,6 +342,7 @@ function cargarEstudiantes(){
 		data:{
 			semanaActual: semanaActual,
 			sede: sede,
+			nivel: nivel,
 			grado: grado,
 			grupo: grupo
 		}

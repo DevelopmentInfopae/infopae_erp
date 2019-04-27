@@ -77,6 +77,18 @@
 	}
 ?>
 
+
+
+
+
+
+<?php
+	$ventanaRepitentes = 1; 
+	include "filtro.php"  
+?>
+
+
+
 <div class="wrapper wrapper-content  animated fadeInRight">
 	<div class="row">
 		<div class="col-sm-12">
@@ -332,7 +344,8 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_repitentes.js?v=20190423"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_repitentes.js?v=20190426"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190426"></script>
 
 
 

@@ -17,3 +17,9 @@
 .table-asistencia td, .table-asistencia th {
 	font-size: 12px;
 }
+
+.editando{
+	color: orange;
+	display: none;
+	margin-left: 10px;
+}

@@ -6,16 +6,19 @@ require_once '../../../config.php';
 $data = [];
 $semanaActual = "";
 $sede = "";
+$nivel = "";
 $grado = "";
 $grupo = "";
 
 $periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
-// var_dump($_POST);
+//var_dump($_POST);
 
 $semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
 
 $sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
+
+$nivel = (isset($_POST["nivel"]) && $_POST["nivel"] != "") ? mysqli_real_escape_string($Link, $_POST["nivel"]) : "";
 
 $grado = (isset($_POST["grado"]) && $_POST["grado"] != "") ? mysqli_real_escape_string($Link, $_POST["grado"]) : "";
 
@@ -34,6 +37,13 @@ if($banderaRegistros == 0){
 	if($sede != "" ){
 		$consulta .= " and f.cod_sede = $sede ";
 	}
+
+	if($nivel == 1 ){
+		$consulta .= " and f.cod_grado < \"6\" ";
+	} else if($nivel == 2 ){
+		$consulta .= " and f.cod_grado > \"5\" ";
+	}
+
 	if($grado != "" ){
 		$consulta .= " and f.cod_grado = $grado ";
 	}
@@ -50,6 +60,8 @@ if($banderaRegistros == 0){
 	}
 
 }
+
+//echo "<br><br>$consulta<br><br>";
 
 $output = [
   'sEcho' => 1,

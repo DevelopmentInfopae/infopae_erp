@@ -10,6 +10,13 @@ $consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.no
 if($sede != "" ){
 	$consulta .= " and f.cod_sede = $sede ";
 }
+
+if($nivel == 1 ){
+	$consulta .= " and f.cod_grado < \"6\" ";
+} else if($nivel == 2 ){
+	$consulta .= " and f.cod_grado > \"5\" ";
+}
+	
 if($grado != "" ){
 	$consulta .= " and f.cod_grado = $grado ";
 }

@@ -33,8 +33,8 @@ $(document).ready(function(){
 		localStorage.removeItem("wappsi_no_repitieron");
 	}	
 
-	var total = localStorage.getItem("wappsi_total");
-	var faltan = localStorage.getItem("wappsi_faltan");
+	// var total = localStorage.getItem("wappsi_total");
+	// var faltan = localStorage.getItem("wappsi_faltan");
 
 	// $(".asistenciaFaltantes").html(faltan);
 	// $(".asistenciaTotal").html(total);
@@ -79,7 +79,13 @@ $(document).ready(function(){
 	});	
 
 	$(document).on('ifChecked', '.checkbox-header', function () { 
-		$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
+		$('.checkbox'+ $(this).data('columna')).iCheck('check');
+		console.log("Check fataban: "+faltan);
+
+
+
+
+
 		console.log("S");
 		faltan--;
 		localStorage.setItem("wappsi_faltan", faltan);
@@ -218,6 +224,7 @@ function cargarEstudiantes(){
 
 	var semanaActual = $('#semanaActual').val();
 	var sede = $('#sede').val();
+	var nivel = $('#nivel').val();
 	var grado = $('#grado').val();
 	var grupo = $('#grupo').val();
 	var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
@@ -240,8 +247,9 @@ function cargarEstudiantes(){
 		data:{
 			semanaActual: semanaActual,
 			sede: sede,
+			nivel: nivel,
 			grado: grado,
-			grupo: grupo
+			grupo: grupo,
 		}
 	},
 
@@ -323,10 +331,14 @@ function cargarEstudiantes(){
 			console.log("Bandera Registros: "+banderaRegistros);
 			$("#banderaRegistros").val(banderaRegistros);
 			actualizarMarcadores(0);
-
-
-
 			dibujado++;	
+			if(banderaRegistros == 1){
+				$(".editando").fadeIn();
+				$(".btnGuardar").html("Actualizar");				
+			}else{
+				$(".editando").fadeOut();
+				$(".btnGuardar").html("Guardar");
+			}
 		}
 		
 		totalEstudiantesSede(); 
