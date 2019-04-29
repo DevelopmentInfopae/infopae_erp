@@ -156,7 +156,7 @@ if ($respuesta_focalizacion->num_rows > 0)
 		$nombre_departamento = strtoupper($focalizado["Departamento"]);
 		$nombre_sede = strtoupper($focalizado["nom_sede"]);
 		$nombre_institucion = strtoupper($focalizado["nom_inst"]);
-		$nombre_estudiante = strtoupper($focalizado["nom1"] . (($focalizado["nom2"] != "null") ? " ". $focalizado["nom2"] ." " : "") . $focalizado["ape1"] . (($focalizado["ape2"] != "null") ? " ". $focalizado["ape2"] ." " : ""));
+		$nombre_estudiante = strtoupper($focalizado["nom1"] . (($focalizado["nom2"] != "null") ? " ". $focalizado["nom2"] ." " : " ") . $focalizado["ape1"] . (($focalizado["ape2"] != "null") ? " ". $focalizado["ape2"] ."" : ""));
 
 		if (($fila % 2) == 0)
 		{
@@ -192,7 +192,7 @@ if ($respuesta_focalizacion->num_rows > 0)
 
 		$pdf->SetFont("Arial", "", 12);
 		$pdf->SetTextColor(0, 0, 0);
-		$pdf->WriteHTML(utf8_decode("En cumplimiento de la Ley 1581 de 2012 y actuando como representante legal del menor <b>". $nombre_estudiante ."</b>, identificado con <b>". $abreviatura_documento ." # ". $numero_documento ."</b>, quién se encuentra focalizado como beneficiario del <b>Programa de Alimentación Escolar PAE</b> de la sede educativa <b>". $nombre_sede ."</b> del grupo <b>". $nombre_grupo ."</b> perteneciente a <b>". $nombre_institucion . "</b> del municipio de ". $nombre_municipio ." (". $nombre_departamento .") para la vigencia ". $año_contrato ." <b>AUTORIZO</b> espresamente la toma de la huella dactilar y el tratamiento de los datos sensibles. Así mismo, he  sido informado que la finalidad del uso de los datos será exclusivamente para la validación de identidad y el control diario en la entrega del complemento alimentario, cuyo responsable del tratamiento de datos será el operados del contrato PAE #". $numero_contrato ." ". $nombre_contrato ." identificado con NIT ". $nit .". "));
+		$pdf->WriteHTML(utf8_decode("En cumplimiento de la Ley 1581 de 2012 y actuando como representante legal del menor <b>". $nombre_estudiante ."</b>, identificado con <b>". $abreviatura_documento ." # ". $numero_documento ."</b>, quién se encuentra focalizado como beneficiario del <b>Programa de Alimentación Escolar PAE</b> de la sede educativa <b>". $nombre_sede ."</b> del grupo <b>". $nombre_grupo ."</b> perteneciente a <b>". $nombre_institucion . "</b> del municipio de ". $nombre_municipio ." (". $nombre_departamento .") para la vigencia ". $año_contrato ." <b>AUTORIZO</b> expresamente la toma de la huella dactilar y el tratamiento de los datos sensibles. Así mismo, he  sido informado que la finalidad del uso de los datos será exclusivamente para la validación de identidad y el control diario en la entrega del complemento alimentario, cuyo responsable del tratamiento de datos será el operados del contrato PAE #". $numero_contrato ." ". $nombre_contrato ." identificado con NIT ". $nit .". "));
 		$pdf->Ln(10);
 
 		$ordenada = $pdf->GetY();
