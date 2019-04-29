@@ -119,7 +119,7 @@ $pdf->Ln(1);
 $pdf->SetTextColor(0,0,0);
 $pdf->Cell(0,30,'',1,36,'C',False);
 
-if ($tipoPlanilla == 5 || $tipoPlanilla == 6) {
+if ($tipoPlanilla == 5 || $tipoPlanilla == 6 || $tipoPlanilla == 7) {
 	$pdf->SetXY($x, $y+1);
 } else {
 	$pdf->SetXY($x, $y+23);

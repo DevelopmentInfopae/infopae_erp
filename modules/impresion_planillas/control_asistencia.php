@@ -203,24 +203,48 @@
   <div class="col-sm-12">
     <h3>Parámetros de Consulta</h3>
   </div>
-</div><!-- /.row -->
+</div>
 
 <div class="row">
-  <div class="col-sm-2 form-group">
+  <div class="col-sm-12 form-group">
     <div class="i-checks">
       <label>
-        <input type="radio" value="1" name="tipoPlanilla"> <i></i> Vacia
+        <input type="radio" value="1" name="tipoPlanilla"> Vacia  &nbsp;&nbsp;&nbsp;
+      </label>
+
+      <label>
+        <input type="radio" value="2" name="tipoPlanilla"> <i></i> Blanco  &nbsp;&nbsp;&nbsp;
+      </label>
+
+      <label>
+        <input type="radio" value="3" name="tipoPlanilla"> <i></i> Programada  &nbsp;&nbsp;&nbsp;
+      </label>
+
+      <label>
+        <input type="radio" value="4" name="tipoPlanilla"> <i></i> Diligenciada  &nbsp;&nbsp;&nbsp;
+      </label>
+
+      <label>
+        <input type="radio" value="5" name="tipoPlanilla"> <i></i> Novedades  &nbsp;&nbsp;&nbsp;
+      </label>
+
+      <label>
+        <input type="radio" value="7" name="tipoPlanilla"> <i></i> Novedades diligeciada  &nbsp;&nbsp;&nbsp;
+      </label>
+
+      <label>
+        <input type="radio" value="6" name="tipoPlanilla"> <i></i> Suplentes  &nbsp;&nbsp;&nbsp;
       </label>
     </div>
-  </div><!-- /.col -->
+  </div>
 
-  <div class="col-sm-2 form-group">
+  <!-- <div class="col-sm-1 form-group">
     <div class="i-checks">
       <label>
         <input type="radio" value="2" name="tipoPlanilla"> <i></i> Blanco
       </label>
     </div>
-  </div><!-- /.col -->
+  </div>
 
   <div class="col-sm-2 form-group">
     <div class="i-checks">
@@ -228,7 +252,7 @@
         <input type="radio" value="3" name="tipoPlanilla"> <i></i> Programada
       </label>
     </div>
-  </div><!-- /.col -->
+  </div>
 
   <div class="col-sm-2 form-group">
     <div class="i-checks">
@@ -236,7 +260,7 @@
         <input type="radio" value="4" name="tipoPlanilla"> <i></i> Diligenciada
       </label>
     </div>
-  </div><!-- /.col -->
+  </div>
 
   <div class="col-sm-2 form-group">
     <div class="i-checks">
@@ -244,7 +268,15 @@
         <input type="radio" value="5" name="tipoPlanilla"> <i></i> Novedades
       </label>
     </div>
-  </div><!-- /.col -->
+  </div>
+
+  <div class="col-sm-2 form-group">
+    <div class="i-checks">
+      <label>
+        <input type="radio" value="7" name="tipoPlanilla"> <i></i> Novedades diligeciada
+      </label>
+    </div>
+  </div>
 
   <div class="col-sm-2 form-group">
     <div class="i-checks">
@@ -252,8 +284,8 @@
         <input type="radio" value="6" name="tipoPlanilla"> <i></i> Suplentes
       </label>
     </div>
-  </div><!-- /.col -->
-</div><!-- /.row -->
+  </div> -->
+</div>
 
 <div class="row">
   <div class="col-sm-3 form-group">

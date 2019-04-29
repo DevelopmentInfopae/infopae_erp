@@ -47,7 +47,6 @@ if($mes < 10){
 
 
 //Primera consulta: los dias de la s entregas
-// $consulta = "SELECT ID,ANO,MES,D1 AS D01,D2 AS D02,D3 AS D03,D4 AS D04,D5 AS D05,D6 AS D06,D7 AS D07,D8 AS D08,D9 AS D09,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias where ano='$anno' AND mes='$mes'";
 $consulta = "SELECT ID, ANO, MES, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias where ano='$anno' AND mes='$mes'";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if ($resultado->num_rows >= 1) {
@@ -171,13 +170,11 @@ include '../../php/funciones.php';
 $lineas = 25;
 $alturaLinea = 4;
 
-if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
-  // $consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, D1 AS 'D01',D2 AS D02,D3 AS D03,D4 AS D04,D5 AS D05,D6 AS D06,D7 AS D07,D8 AS D08,D9 AS D09,D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31
-  // FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento'";
-  // if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' "; }
+if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
+{
   $consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, ". trim($dia_consulta, ", ") ."
   FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento'";
-  if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' "; }
+  if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' AND tipo = 'F'"; }
   $consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
   // echo $consulta;
   $resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
@@ -198,7 +195,6 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
   foreach ($estudiantes as $estudiantesSede) {
     // Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
     $codigoSede = $estudiantesSede[0]['cod_sede'];
-    // $consulta = "SELECT count(id) AS titulares, sum(IFNULL(D1,0)+IFNULL(D2,0)+IFNULL(D3,0)+IFNULL(D4,0)+IFNULL(D5,0)+IFNULL(D6,0)+IFNULL(D7,0)+IFNULL(D8,0)+IFNULL(D9,0)+IFNULL(D10,0)+IFNULL(D11,0)+IFNULL(D12,0)+IFNULL(D13,0)+IFNULL(D14,0)+IFNULL(D15,0)+IFNULL(D16,0)+IFNULL(D17,0)+IFNULL(D18,0)+IFNULL(D19,0)+IFNULL(D20,0)+IFNULL(D21,0)+IFNULL(D22,0)+IFNULL(D23,0)+IFNULL(D24,0)+IFNULL(D25,0)+IFNULL(D26,0)+IFNULL(D27,0)+IFNULL(D28,0)+IFNULL(D29,0)+IFNULL(D30,0)+IFNULL(D31,0)) AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
     $consulta = "SELECT count(id) AS titulares, sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
     $resultado = $Link->query($consulta) or die ('Unable to execute query. <br>'.$consulta.'<br>'. mysqli_error($Link));
     if($resultado->num_rows > 0) {
@@ -302,32 +298,37 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 
         include 'planillas_footer_v2.php';
   }
-} else if ($tipoPlanilla == 5) {
-    foreach ($sedes as $sede) {
-        $linea = 1;
-        $lineas = 25;
-        // $alturaLinea = 4.5;
-        $codigoSede = $sede['cod_sede'];
-        $pdf->AddPage();
-        $pdf->SetTextColor(0,0,0);
-        $pdf->SetFillColor(255,255,255);
-        $pdf->SetDrawColor(0,0,0);
+}
+else if ($tipoPlanilla == 5)
+{
+  foreach ($sedes as $sede)
+  {
+      $linea = 1;
+      $lineas = 25;
+      $codigoSede = $sede['cod_sede'];
+      $pdf->AddPage();
+      $pdf->SetTextColor(0,0,0);
+      $pdf->SetFillColor(255,255,255);
+      $pdf->SetDrawColor(0,0,0);
 
-        include 'planillas_header_v2.php';
-        $pdf->SetLineWidth(.05);
+      include 'planillas_header_v2.php';
+      $pdf->SetLineWidth(.05);
 
-        for($i = 0 ; $i < 25 ; $i++) {
-            if($linea > $lineas){
-            $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-            $pdf->Ln(7);
-            $alturaCuadroFilas = $alturaLinea * ($linea-1);
-            $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
-            include 'planillas_footer_v2.php';
-            $pdf->AddPage();
-            include 'planillas_header_v2.php';
-            $pdf->SetFont('Arial','',$tamannoFuente);
-            $linea = 1;
+      for($i = 0 ; $i < 25 ; $i++)
+      {
+        if($linea > $lineas)
+        {
+          $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
+          $pdf->Ln(7);
+          $alturaCuadroFilas = $alturaLinea * ($linea-1);
+          $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
+          include 'planillas_footer_v2.php';
+          $pdf->AddPage();
+          include 'planillas_header_v2.php';
+          $pdf->SetFont('Arial','',$tamannoFuente);
+          $linea = 1;
         }
+
         $x = $pdf->GetX();
         $y = $pdf->GetY();
         $pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
@@ -343,25 +344,28 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
         $pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
 
         // Aqui es donde se cambia de acuerdo a la plantilla
-        for($j = 0 ; $j < 24 ; $j++){
-            $pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+        for($j = 0 ; $j < 24 ; $j++)
+        {
+          $pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
         }
         // Termina donde se cambia de acuerdo a la plantilla
         $pdf->SetXY($x, $y);
         $pdf->Cell(0,$alturaLinea,'','B',1);
         $linea++;
-        }
+      }
 
-        $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-        $pdf->Ln(7);
-        $alturaCuadroFilas = $alturaLinea * ($linea-1);
-        $pdf->Cell(0,$alturaCuadroFilas,"",1,0,'R',False);
+      $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
+      $pdf->Ln(7);
+      $alturaCuadroFilas = $alturaLinea * ($linea-1);
+      $pdf->Cell(0,$alturaCuadroFilas,"",1,0,'R',False);
 
-        include 'planillas_footer_v2.php';
-    }
-} else if ($tipoPlanilla == 6) {
+      include 'planillas_footer_v2.php';
+  }
+}
+else if ($tipoPlanilla == 6)
+{
   $consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo
-  FROM suplentes WHERE cod_inst=$institucion /*AND tipo_complem='$tipoComplemento'*/";
+  FROM suplentes WHERE cod_inst=$institucion /*AND tipo_complem='$tipoComplemento'*";
   if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' "; }
   $consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
@@ -378,9 +382,8 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
     echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
   }
 
-
-
-  foreach ($estudiantes as $estudiantesSede) {
+  foreach ($estudiantes as $estudiantesSede)
+  {
     $linea = 1;
     $pagina = 1;
     $codigoSede = $estudiantesSede[0]['cod_sede'];
@@ -397,9 +400,11 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
     //Inicia impresión de estudiantes de la sede
     $nEstudiante = 0;
     $pdf->SetFont('Arial','',$tamannoFuente);
-    foreach ($estudiantesSede as $estudiante) {
+    foreach ($estudiantesSede as $estudiante)
+    {
       $nEstudiante++;
-      if($linea > $lineas) {
+      if($linea > $lineas)
+      {
         $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
         $pdf->Ln(7);
         $alturaCuadroFilas = $alturaLinea * ($linea-1);
@@ -427,25 +432,101 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
       $pdf->Cell(13,$alturaLinea,utf8_decode($tipoComplemento),'R',0,'C',False);
       $dia = 0;
 
-            // Aqui es donde se cambia de acuerdo a la plantilla
-            $entregasEstudiante = 0;
-            for($j = 0 ; $j < 24 ; $j++) {
-              $pdf->Cell(6,$alturaLinea,utf8_decode(' '),'R',0,'C',False);
-            }
-            $pdf->SetTextColor(0,0,0);
-            $pdf->SetXY($x, $y);
-            $pdf->Cell(0,$alturaLinea,'','B',1);
-            $linea++;
-        }
-        //Termina impresión de estudiantes de la sede
-        $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-        $pdf->Ln(7);
-        $alturaCuadroFilas = $alturaLinea * ($linea-1);
-        $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
-
-        include 'planillas_footer_v2.php';
+      // Aqui es donde se cambia de acuerdo a la plantilla
+      $entregasEstudiante = 0;
+      for($j = 0 ; $j < 24 ; $j++) {
+        $pdf->Cell(6,$alturaLinea,utf8_decode(' '),'R',0,'C',False);
       }
-} else {
+      $pdf->SetTextColor(0,0,0);
+      $pdf->SetXY($x, $y);
+      $pdf->Cell(0,$alturaLinea,'','B',1);
+      $linea++;
+    }
+
+    //Termina impresión de estudiantes de la sede
+    $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
+    $pdf->Ln(7);
+    $alturaCuadroFilas = $alturaLinea * ($linea-1);
+    $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
+
+    include 'planillas_footer_v2.php';
+  }
+}
+else if ($tipoPlanilla == 7)
+{
+  foreach ($sedes as $sede)
+  {
+    $codigoSede = $sede['cod_sede'];
+    $consulta_suplente_repitentes_sede = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND cod_sede = '$codigoSede' AND (tipo = 'S' OR tipo = 'R') AND tipo_complem='$tipoComplemento' ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
+    $respuesta_suplente_repitentes_sede = $Link->query($consulta_suplente_repitentes_sede) or die("Error al consultar suplentes y repitentes en entregas_res_$mes$anno2d: ". $Link->error);
+    if ($respuesta_suplente_repitentes_sede->num_rows > 0)
+    {
+      $linea = 1;
+      $lineas = 25;
+      $codigoSede = $sede['cod_sede'];
+      $pdf->AddPage();
+      $pdf->SetTextColor(0,0,0);
+      $pdf->SetFillColor(255,255,255);
+      $pdf->SetDrawColor(0,0,0);
+
+      include 'planillas_header_v2.php';
+      $pdf->SetLineWidth(.05);
+
+      while($suplente_repitente_sede = $respuesta_suplente_repitentes_sede->fetch_assoc())
+      {
+        if($linea > $lineas)
+        {
+          $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
+          $pdf->Ln(7);
+          $alturaCuadroFilas = $alturaLinea * ($linea-1);
+          $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
+          include 'planillas_footer_v2.php';
+          $pdf->AddPage();
+          include 'planillas_header_v2.php';
+          $pdf->SetFont('Arial','',$tamannoFuente);
+          $linea = 1;
+        }
+
+        $x = $pdf->GetX();
+        $y = $pdf->GetY();
+        $pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(10,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(22,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
+        $pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
+        $pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
+
+        // Aqui es donde se cambia de acuerdo a la plantilla
+        for($j = 0 ; $j < 24 ; $j++)
+        {
+          $pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+        }
+        // Termina donde se cambia de acuerdo a la plantilla
+        $pdf->SetXY($x, $y);
+        $pdf->Cell(0,$alturaLinea,'','B',1);
+        $linea++;
+      }
+
+      $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
+      $pdf->Ln(7);
+      $alturaCuadroFilas = $alturaLinea * ($linea-1);
+      $pdf->Cell(0,$alturaCuadroFilas,"",1,0,'R',False);
+
+      include 'planillas_footer_v2.php';
+    }
+    else
+    {
+      echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
+    }
+  }
+}
+else
+{
     // Cuando piden la planilla vacia
     $pdf->AddPage();
     $pdf->SetTextColor(0,0,0);
@@ -511,7 +592,8 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 
 $pdf->Output();
 
-function mesNombre($mes){
+function mesNombre($mes)
+{
   if($mes == 1){
     return 'Enero';
   }
