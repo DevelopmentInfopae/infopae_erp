@@ -1,6 +1,3 @@
-<link rel="stylesheet" href="css/custom.css">
-<div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
-
 <?php
 	include '../../header.php';
 	set_time_limit (0);
@@ -33,6 +30,9 @@
 	// var_dump($_SESSION);
 	// var_dump($semanaActual);				
 ?>
+
+<link rel="stylesheet" href="css/custom.css">
+<div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
@@ -79,7 +79,7 @@
 
 <?php include "filtro.php"  ?>
 
-<div class="wrapper wrapper-content  animated fadeInRight">
+<div class="wrapper wrapper-content  animated fadeInRight registroConsumo" style="display: none">
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="ibox">
@@ -105,9 +105,15 @@
 									<th>Nombre</th>
 									<th>Grado</th>
 									<th>Grupo</th>
-									<th>Consumió</th>
+									<th style="text-align: center;">
+										Consumió
+										<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header-consumio-all" data-columna="1"/> </div> 		
+									</th>
 									<th>Repite</th>
-									<th>Repitió</th>
+									<th>
+										Repitió
+										<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header-repitio-all" data-columna="1"/> </div> 
+									</th>
 								</tr>
 							</thead>
 

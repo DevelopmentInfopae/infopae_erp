@@ -1,6 +1,3 @@
-<link rel="stylesheet" href="css/custom.css">
-<div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
-
 <?php
 	include '../../header.php';
 	set_time_limit (0);
@@ -33,6 +30,11 @@
 	// var_dump($_SESSION);
 	// var_dump($semanaActual);				
 ?>
+
+<link rel="stylesheet" href="css/custom.css">
+<div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
+
+
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
@@ -344,8 +346,8 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias.js?v=20190426"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190426"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias.js?v=20190429"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190429"></script>
 
 
 

@@ -220,7 +220,7 @@ function cargarRepitentes(){
 				
 				var index = aux.indexOf(documento);
 				
-				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header\" ";
+				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite\" ";
 				
 				//if (index > -1) { opciones = opciones + " checked "; }else{ }
 				

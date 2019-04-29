@@ -203,6 +203,7 @@ function guardarAsistencia(){
 				if(data.state == 1){
 					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
 					// location.href="URL para redireccionar";
+					location.reload();
 					}});
 				}else{
 					Command:toastr.error(data.message,"Error al hacer el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});

@@ -326,6 +326,11 @@ function actualizarMarcadores(flagConsumo){
 				localStorage.setItem("wappsi_consumieron", JSON.stringify(reg_consumieron));
 				localStorage.setItem("wappsi_repitieron", JSON.stringify(reg_repitieron));
 
+				// Habilitar los checkbox de los que podrian repetir
+				if(faltan > 0){
+					$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
+				}
+
 				if(flagConsumo == 1){
 					faltan = total;
 					faltan = faltan - reg_consumieron.length;

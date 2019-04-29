@@ -14,6 +14,9 @@ $(document).ready(function(){
 	var day = d.getDate();
 	console.log("Hoy es "+day+" de "+month);
 
+	$('.checkbox-header-consumio-all').iCheck({checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });	
+	$('.checkbox-header-repitio-all').iCheck({checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });	
+
 	if(day != localStorage.getItem("wappsi_dia_actual") || month != localStorage.getItem("wappsi_mes_actual")){
 		console.log("Se estaba trabajndo  "+localStorage.getItem("wappsi_dia_actual")+" de "+localStorage.getItem("wappsi_mes_actual"));
 		console.log("Borrar almacenamiento local");
@@ -126,8 +129,66 @@ $(document).ready(function(){
 		guardarEntregas();
 	});	
 
+
+
+
+
+	// Check todos consumieron
+	$(document).on('ifChecked', '.checkbox-header-consumio-all', function () { 
+		console.log("Check todos consumieron.");
+		$('.checkbox-header-consume:enabled').iCheck('check');
+	});	
+
+	// unCheck todos consumieron
+	$(document).on('ifUnchecked', '.checkbox-header-consumio-all', function () { 
+		console.log("Check todos consumieron.");
+		$('.checkbox-header-consume').iCheck('uncheck');
+		$( ".checkbox-header-repite").iCheck('uncheck'); 
+		$( ".checkbox-header-repite").iCheck('disable'); 
+	});
+
+	// Check todos repitio
+	$(document).on('ifChecked', '.checkbox-header-repitio-all', function () { 
+		console.log("Check todos repitieron.");
+		// $('.checkbox-header-repite:enabled').iCheck('check');
+		$( ".checkbox-header-repite:enabled" ).each(function( index ) {
+			aux = $(this).parent();
+			aux = $(aux).parent();
+			aux = $(aux).parent();
+			aux = $(aux).prev();
+			aux = $(aux).text();
+			//console.log(aux);
+			if(aux == "Si"){
+				$(this).iCheck('check');
+			}
+  			//console.log( index + ": " + $( this ).text() );
+		});
+	});	
+
+	// unCheck todos repitio
+	$(document).on('ifUnchecked', '.checkbox-header-repitio-all', function () { 
+		console.log("Check todos repitieron.");
+		$('.checkbox-header-repite').iCheck('uncheck');
+	});
+
+
+		// $('#asistenteTramite').val($(this).val());
+		// $('#tipoDocumentoAsistenteTramite').val($(this).attr('tipoDocumento'));
+		// $('#valorActualizacion').val(1);
+		// $('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>que desea hacer cambios en los registros de la asistencia</strong> para este estudiante? ');
+  		// 		$('#ventanaConfirmar').modal();	
+	// checkbox-header-repitio-all
+
+
+
+
+
+
+
+
 	// Check a cada item de la columna Consumió
 	$(document).on('ifChecked', '.checkbox-header-consume', function () { 
+		console.log("Check en un elemento de consumio.");
 		if( (faltan) > 0 ){
 			$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
 			console.log("S");
@@ -144,11 +205,7 @@ $(document).ready(function(){
 			console.log(aux);
 			localStorage.setItem("wappsi_no_consumieron", JSON.stringify(aux));	
 
-			if(faltan > 0){
-				$(".flagFaltantes").slideDown();
-			}else{
-				$(".flagFaltantes").slideUp();
-			}
+
 
 			if(faltan <= 0){
 				$( ".checkbox-header-repite:not(:checked)").iCheck('disable'); 
@@ -187,11 +244,7 @@ $(document).ready(function(){
 		localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
 
 
-		if(faltan > 0){
-			$(".flagFaltantes").slideDown();
-		}else{
-			$(".flagFaltantes").slideUp();
-		}
+
 
 		if(faltan > 0){
 			$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
@@ -201,17 +254,6 @@ $(document).ready(function(){
 		aux = $(this).val();
 		$( ".checkbox-header-repite."+aux).iCheck('uncheck'); 
 		$( ".checkbox-header-repite."+aux).iCheck('disable'); 
-
-
-
-
-
-
-
-
-
-
-
 	});
 
 	// Check a cada item de la columna Repitió
@@ -228,11 +270,7 @@ $(document).ready(function(){
 			console.log(aux);
 			localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
 
-			if(faltan > 0){
-				$(".flagFaltantes").slideDown();
-			}else{
-				$(".flagFaltantes").slideUp();
-			}
+	
 
 			if(faltan <= 0){
 				$( ".checkbox-header-repite:not(:checked)").iCheck('disable'); 
@@ -257,11 +295,7 @@ $(document).ready(function(){
 		}		
 		localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
 
-		if(faltan > 0){
-			$(".flagFaltantes").slideDown();
-		}else{
-			$(".flagFaltantes").slideUp();
-		}
+		
 
 		if(faltan > 0){
 			$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
@@ -287,6 +321,9 @@ $(document).ready(function(){
 		$('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>que desea hacer cambios en los registros de la asistencia</strong> para este estudiante? ');
   		$('#ventanaConfirmar').modal();
 	});
+
+
+
 
 
 
@@ -453,6 +490,7 @@ function cargarEstudiantes(){
 		}
 	}
 	}).on("draw", function(){ 
+		$('.registroConsumo').slideDown();
 		if(dibujado == 0){
 			$('#loader').fadeOut();
 			dibujado++;
