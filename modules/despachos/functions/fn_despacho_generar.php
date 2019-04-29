@@ -146,6 +146,7 @@ if($existe <= 0){
   `CantU4` decimal(28,8) DEFAULT '0.00000000',
   `CantU5` decimal(28,8) DEFAULT '0.00000000',
   `CanTotalPresentacion` decimal(28,8) DEFAULT '0.00000000',
+  `Marca` VARCHAR(100) DEFAULT NULL,
   PRIMARY KEY (`Id`) ) ";
   $result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 }
