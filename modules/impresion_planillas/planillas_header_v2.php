@@ -186,7 +186,7 @@ $pdf->Cell(22,14,utf8_decode(''),'R',0,'C',False);
 $x = $pdf->GetX();
 $y = $pdf->GetY();
 $pdf->SetXY($x, $y-1.6);
-if ($tipoPlanilla == 5 || $tipoPlanilla == 6) { $anchoDatosNombre = 31.4; } else { $anchoDatosNombre = 28; }
+if ($tipoPlanilla == 5 || $tipoPlanilla == 6 || $tipoPlanilla == 7) { $anchoDatosNombre = 31.4; } else { $anchoDatosNombre = 28; }
 $pdf->Cell($anchoDatosNombre,14,utf8_decode('1° Nombre'),0,0,'C',False);
 $pdf->SetXY($x, $y+1.6);
 $pdf->Cell($anchoDatosNombre,14,utf8_decode('del Titular'),0,0,'C',False);

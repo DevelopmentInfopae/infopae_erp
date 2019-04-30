@@ -2,11 +2,14 @@
 $titulo = 'Editar Suplente';
 require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
-if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
+if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
+{
+  $codigo_municipio = $_SESSION['p_Municipio'];
+  $codigo_departamento = $_SESSION['p_CodDepartamento'];
 ?>
 <style type="text/css">
   .wizard .content{
-    min-height: 40em;
+    min-height: 32em;
     overflow-y: auto;
   }
   #loader{
@@ -37,22 +40,26 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
             <div class="ibox float-e-margins">
                 <div class="ibox-content contentBackground">
                 <?php
-                    if (isset($_POST['numDoc'])) {
-                        $resultadoBuscarSuplente = $Link->query("SELECT * FROM suplentes WHERE num_doc = '".$_POST['numDoc']."'");
-                        if ($resultadoBuscarSuplente->num_rows > 0) {
-                            while($registroBuscarSuplente = $resultadoBuscarSuplente->fetch_assoc()) {
-                                $suplente = $registroBuscarSuplente;
-                            }
-                        }
-                        // var_dump($suplente);
-                    ?>
+                  if (isset($_POST['id_suplente']))
+                  {
+                    $consulta_suplente = "SELECT * FROM suplentes". $_POST['semana'] ." WHERE id = '".$_POST['id_suplente']."'";
+                    $resultadoBuscarSuplente = $Link->query($consulta_suplente);
+                    if ($resultadoBuscarSuplente->num_rows > 0)
+                    {
+                      while($registroBuscarSuplente = $resultadoBuscarSuplente->fetch_assoc())
+                      {
+                        $suplente = $registroBuscarSuplente;
+                      }
+                    }
+                  ?>
                     <form class="form row" id="formSuplentesEditar">
                         <div>
                             <h3>Datos del estudiante</h3>
                             <section>
+                              <div class="row">
                                 <div class="form-group col-sm-3">
                                     <label>Tipo de documento</label>
-                                    <select name="tipo_doc" id="tipo_doc" class="form-control" required>
+                                    <select name="tipo_doc" id="tipo_doc" class="form-control" readonly required>
                                         <option value="">Seleccione...</option>
                                         <?php
                                             $tiposdocumento = [];
@@ -85,6 +92,8 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                     <label>Segundo nombre</label>
                                     <input type="text" name="nom2" value="<?php echo $suplente['nom2'] ?>" class="form-control">
                                 </div>
+                              </div>
+                              <div class="row">
                                 <div class="form-group col-sm-3">
                                     <label>Primer apellido</label>
                                     <input type="text" name="ape1" value="<?php echo $suplente['ape1'] ?>" class="form-control" required>
@@ -105,9 +114,11 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <label>Teléfono</label>
-                                    <input type="number" name="telefono" value="<?php echo $suplente['telefono'] ?>" class="form-control" min="0" required>
+                                    <input type="number" name="telefono" value="<?php echo $suplente['telefono'] ?>" class="form-control" min="0">
                                     <label for="telefono" class="error"></label>
                                 </div>
+                              </div>
+                              <div class="row">
                                 <div class="form-group col-sm-3">
                                     <label>Fecha de nacimiento</label>
                                     <input type="date" name="fecha_nac" class="form-control" max="<?php echo date('Y-m-d') ?>" value="<?php echo $suplente['fecha_nac'] ?>" required>
@@ -138,19 +149,12 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                 <div class="form-group col-sm-3">
                                     <label>Ciudad de residencia</label>
                                     <select name="cod_mun_res" class="form-control" required>
-                                        <option value="">Seleccione...</option>
+                                        <option value="">seleccione</option>
                                     <?php
                                         $consultaMunicipios = "SELECT DISTINCT ubicacion.CodigoDANE, ubicacion.Ciudad
-                                                FROM ubicacion, parametros
+                                                FROM ubicacion
                                                 WHERE
                                                     ubicacion.ETC = 0
-                                                    AND ubicacion.CodigoDane LIKE CONCAT(parametros.CodDepartamento, '%')
-                                                    AND EXISTS(SELECT DISTINCT
-                                                                cod_mun
-                                                            FROM
-                                                                instituciones
-                                                            WHERE
-                                                                cod_mun = ubicacion.CodigoDANE)
                                                 ORDER BY ubicacion.Ciudad ASC";
                                         $resultadoMunicipios = $Link->query($consultaMunicipios);
                                         if ($resultadoMunicipios->num_rows > 0) {
@@ -164,6 +168,8 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                     </select>
                                     <label for="cod_mun_res" class="error"></label>
                                 </div>
+                              </div>
+                              <div class="row">
                                 <div class="form-group col-sm-3">
                                     <label>Estrato</label>
                                     <select name="cod_estrato" class="form-control" required>
@@ -204,12 +210,14 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                     </div>
                                     <label for="estado" class="error"></label>
                                 </div>
-                                <div class="col-sm-12">
+                              </div>
+                                <!-- <div class="col-sm-12">
                                     <em id="errorEst" style="display: none; font-size: 120%;"> <b>Nota : </b>Ya ha sido registrado un estudiante con el número de documento especificado en <b><span id="semanasErr"></span></b>.</em>
-                                </div>
+                                </div> -->
                             </section>
                             <h3>Información especial</h3>
                             <section>
+                              <div class="row">
                                 <div class="form-group col-sm-3">
                                     <label>Puntaje SISBÉN</label>
                                     <input type="number" name="sisben" class="form-control" value="<?php echo $suplente['sisben'] ?>"  step="0.00001" min="0" required>
@@ -266,28 +274,33 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                     </select>
                                     <label for="cod_pob_victima" class="error"></label>
                                 </div>
+                              </div>
                             </section>
                             <h3>Información académica</h3>
                             <section>
+                              <div class="row">
                                 <div class="form-group col-sm-3">
-                                        <label>Municipio</label>
-                                        <select name="cod_mun" id="cod_mun" class="form-control select2" onchange="obtenerInstituciones(this.value)" style="width: 100%;" required>
-                                            <option value="">Seleccione...</option>
-                                            <?php
-                                                $resultadoMunicipio = $Link->query("SELECT ubicacion.* FROM ubicacion WHERE CodigoDANE like CONCAT((SELECT CodDepartamento FROM parametros), '%') ORDER BY Ciudad");
-                                                if ($resultadoMunicipio->num_rows > 0) {
-                                                    while ($municipio = $resultadoMunicipio->fetch_assoc()) { ?>
-                                                        <option value="<?= $municipio['CodigoDANE'] ?>" <?= (isset($suplente) && $suplente["cod_mun_inst"] == $municipio["CodigoDANE"]) ? "selected" : "";?>><?= $municipio['Ciudad'] ?></option>
-                                            <?php
-                                                    }
-                                                }
-                                            ?>
-                                        </select>
-                                        <label for="cod_inst" class="error"></label>
-                                    </div>
+                                  <label>Municipio</label>
+                                    <select name="cod_mun" id="cod_mun" class="form-control select2" onchange="obtenerInstituciones(this.value)" style="width: 100%;" disabled required>
+                                      <option value="">seleccione</option>
+                                      <?php
+                                        $consulta_municipios = "SELECT ubicacion.* FROM ubicacion WHERE CodigoDANE like '$codigo_departamento%'";
+                                        if ($codigo_municipio != 0) { $consulta_municipios .= " AND CodigoDANE = '$codigo_municipio'"; }
+                                        $consulta_municipios .= " ORDER BY Ciudad";
+                                        $resultadoMunicipio = $Link->query($consulta_municipios);
+                                        if ($resultadoMunicipio->num_rows > 0) {
+                                          while ($municipio = $resultadoMunicipio->fetch_assoc()) { ?>
+                                            <option value="<?= $municipio['CodigoDANE'] ?>" <?= (isset($suplente) && $suplente["cod_mun_inst"] == $municipio["CodigoDANE"]) ? "selected" : "";?>><?= $municipio['Ciudad'] ?></option>
+                                      <?php
+                                          }
+                                        }
+                                      ?>
+                                    </select>
+                                    <label for="cod_inst" class="error"></label>
+                                </div>
                                 <div class="form-group col-sm-3">
                                     <label>Institución</label>
-                                    <select name="cod_inst" id="cod_inst" class="form-control select2" onchange="obtenerSedes(this)" style="width: 100%;" required>
+                                    <select name="cod_inst" id="cod_inst" class="form-control select2" onchange="obtenerSedes(this)" style="width: 100%;" disabled required>
                                     <?php
                                         $consultarInstitucion = "SELECT instituciones.* FROM instituciones, parametros WHERE cod_mun like CONCAT(parametros.CodDepartamento, '%') AND cod_mun = '".$suplente["cod_mun_inst"]."' AND EXISTS(SELECT cod_inst FROM sedes".$_SESSION['periodoActual']." as sedes WHERE sedes.cod_inst = instituciones.codigo_inst) ORDER BY nom_inst ASC";
                                         echo $consultarInstitucion;
@@ -306,7 +319,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <label>Sede</label>
-                                    <select name="cod_sede" id="cod_sede" class="form-control select2" onchange="obtenerNombreSede();" style="width: 100%;" required>
+                                    <select name="cod_sede" id="cod_sede" class="form-control select2" onchange="obtenerNombreSede();" style="width: 100%;" disabled required>
                                     <?php
                                         $consultaInstParametros = "SELECT DISTINCT cod_sede, nom_sede FROM sedes".$_SESSION['periodoActual']." WHERE cod_inst = '".$suplente['cod_inst']."' ORDER BY nom_sede ASC";
                                         $resultado = $Link->query($consultaInstParametros);
@@ -339,6 +352,8 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                     </select>
                                     <label for="cod_grado" class="error"></label>
                                 </div>
+                              </div>
+                              <div class="row">
                                 <div class="form-group col-sm-3">
                                     <label>Grupo</label>
                                     <input type="text" name="nom_grupo" value="<?= $suplente['nom_grupo'] ?>" class="form-control" required>
@@ -369,8 +384,10 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                                     </select>
                                     <label for="repitente" class="error"></label>
                                 </div>
+                              </div>
                             </section>
                         </div>
+                        <input type="hidden" name="semana" id="semana" value="<?= $_POST['semana']; ?>">
                         <input type="hidden" name="id" id="id" value="<?= $suplente["id"];?>">
                     </form>
                 <?php
