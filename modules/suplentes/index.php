@@ -100,7 +100,26 @@
 							<div class="col-sm-3">
 								<label>Sede</label>
 								<select name="sede" id="sede" class="form-control select2" required>
-									<option value="">Seleccione...</option>
+									<option value="">seleccione</option>
+									<?php
+									if (isset($_POST['sede']))
+									{
+										$periodo_actual = $_SESSION['periodoActual'];
+										$codigo_municipio = $Link->real_escape_string($_POST['municipio']);
+
+										$consulta_sedes = "SELECT DISTINCT cod_sede AS codigo, nom_sede AS nombre FROM sedes$periodo_actual WHERE cod_inst = '$codigo_municipio' ORDER BY nom_sede ASC";
+										$respuesta_sedes = $Link->query($consulta_sedes) or die('Error al consultar las sedes: '. $Link->error);
+										if ($respuesta_sedes->num_rows > 0)
+										{
+											while ($sede = $respuesta_sedes->fetch_assoc())
+											{
+									?>
+										  	<option value="<?= $sede['codigo'] ?>" <?php if(isset($_POST['sede']) && $_POST['sede'] == $sede['codigo']){ echo "selected"; } ?>><?= $sede['nombre'] ?></option>
+									<?php
+											}
+										}
+									}
+									?>
 								</select>
 								<label for="sede" class="error"></label>
 							</div>
@@ -119,7 +138,6 @@
 											while($semana = $resultado_semanas->fetch_assoc())
 											{
 												$nombre_semana = str_replace('suplentes', '', $semana["tabla"]);
-												echo ($nombre_semana);
 									?>
 												<option value="<?= $nombre_semana; ?>" <?php if(isset($_POST['semana']) && $_POST['semana'] == $nombre_semana){ echo " selected "; } ?>><?= $nombre_semana; ?></option>
 									<?php
@@ -150,7 +168,7 @@
           <div class="row">
           	<div class="col-sm-12">
             	<div class="table-responsive">
-                <table class="table table-striped table-hover" id="tabla_suplentes">
+                <table class="table table-striped table-hover" id="tabla_suplentes" style="cursor: pointer;">
 									<thead>
 										<tr>
 											<th>Num doc</th>
@@ -222,8 +240,8 @@
             <div class="col-sm-12">
               <div class="form-group">
                 <label for="mes">Semana</label>
-                <select class="form-control" name="semana" id="semana_modal" required>
-                  <option value="">Selección</option>
+                <select class="form-control" name="semana_modal" id="semana_modal" required>
+                  <option value="">seleccione</option>
                 </select>
               </div>
             </div>
@@ -231,17 +249,16 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <label for="archivoPriorizacion">Archivo</label>
-                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-                  <div class="form-control" data-trigger="fileinput">
-                    <i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span>
-                  </div>
-                  <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">seleccione</span><span class="fileinput-exists">Cambiar</span>
-                    <input type="file" name="archivoPriorizacion" id="archivoPriorizacion" accept=".csv, .xlsx" required>
-                  </span>
-                  <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Borrar</a>
+                <label for="archivo_suplentes">Archivo</label>
+                <div class="input-group">
+	                <div class="fileinput fileinput-new" data-provides="fileinput">
+								    <span class="btn btn-default btn-file"><span class="fileinput-new">seleccione</span>
+								    <span class="fileinput-exists">cambiar</span><input type="file" name="archivo_suplentes" id="archivo_suplentes" accept=".csv" required="required" /></span>
+								    <span class="fileinput-filename"></span>
+								    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none; vertical-align: middle;">×</a>
+									</div>
                 </div>
-                <label for="archivoPriorizacion" class="error" style="display: none;"></label>
+                <label for="archivo_suplentes" class="error" style="display: none;"></label>
               </div>
               <label class="text-warning">Para mayor eficacia es mejor subir el archivo con extensión .CSV </label>
             </div>
@@ -274,44 +291,14 @@
 <script src="<?= $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
 <script src="<?= $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?= $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
 <!-- Section Scripts -->
 
 <script src="<?= $baseUrl; ?>/modules/suplentes/js/suplentes.js"></script>
 
-<!-- Page-Level Scripts -->
-<script>
-		$(document).ready(function() {
-			// $(document).on('click', '.subir_suplentes', function() { $('#ventana_subir_suplentes').modal(); });
-
-	  // 	dataset1 = $('#tablaSuplentes').DataTable({
-	  //   	pageLength: 25,
-	  //   	responsive: true,
-	  //   	dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-	  //   	buttons : [{extend:'excel', title:'Suplentes', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7]}}],
-	  //   	oLanguage: {
-	  //     		sLengthMenu: 'Mostrando _MENU_ registros por página',
-	  //     		sZeroRecords: 'No se encontraron registros',
-	  //     		sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-	  //     		sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-	  //     		sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-	  //     		sSearch:         'Buscar: ',
-	  //     		oPaginate:{
-	  //       		sFirst:    'Primero',
-	  //       		sLast:     'Último',
-	  //       		sNext:     'Siguiente',
-	  //       		sPrevious: 'Anterior'
-	  //     		}
-	  //   	}
-	  //   }).on("draw", function(){jQuery('.estadoEst').bootstrapToggle();});
-
-	  //  	var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li><li><a class="subir_suplentes"><span class="fa fa-upload"></span> Importar</a></li></ul></div>';
-
-	  // 	$('.containerBtn').html(btnAcciones);
-		});
-</script>
-
-<form id="editar_suplente" action="editar_suplente.php" method="post">
-	<input type="hidden" name="numDoc" id="numDoc">
+<form id="formulario_editar_suplente" action="editar_suplente.php" method="post">
+	<input type="hidden" name="id_suplente" id="id_suplente">
+	<input type="hidden" name="semana" id="semana">
 </form>
 
 <form action="ver_suplente.php" method="post" name="verSuplente" id="verSuplente">

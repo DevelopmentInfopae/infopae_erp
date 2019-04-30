@@ -1,11 +1,11 @@
-<option value="">Seleccione...</option>
+<option value="">seleccione</option>
 <?php
 	require_once '../../../config.php';
 	require_once '../../../db/conexion.php';
 
-	$municipio = $_POST['cod_mun'];
+	$municipio = $Link->real_escape_string($_POST['codigo_municipio']);
 
-	$consulta = "SELECT * FROM instituciones WHERE cod_mun = '".$municipio."' ORDER BY nom_inst ASC;";
+	$consulta = "SELECT * FROM instituciones WHERE cod_mun = '$municipio' ORDER BY nom_inst ASC;";
 	$resultado = $Link->query($consulta);
 	if ($resultado->num_rows > 0) {
 		while ($mun = $resultado->fetch_assoc()) { ?>
