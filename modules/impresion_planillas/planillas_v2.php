@@ -364,21 +364,42 @@ else if ($tipoPlanilla == 5)
 }
 else if ($tipoPlanilla == 6)
 {
-  $consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo
-  FROM suplentes WHERE cod_inst=$institucion /*AND tipo_complem='$tipoComplemento'*";
-  if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' "; }
-  $consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
+  // Consultar las semana seleccionadas
+  $consulta_semana = "SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES = '$mes' AND DIA <= '$diaFinalSemanaFinal';";
+  $respuesta_semana = $Link->query($consulta_semana) or die("Error al consulta planilla_semanas: ". $Link->error);
+  if ($respuesta_semana->num_rows == 0)
+  {
+    echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
+    exit();
+  }
+
+  $consulta_suplentes = '';
+  $parametro_sede_suplente = '';
+  if($sedeParametro != '') { $parametro_sede_suplente = " AND cod_sede = '$sedeParametro' "; }
+
+  while ($semana_suplente = $respuesta_semana->fetch_assoc())
+  {
+    $numero_semana = $semana_suplente['semana'];
+    $consulta_suplentes .= "(SELECT
+                          id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo
+                        FROM suplentes$numero_semana
+                        WHERE cod_inst = '$institucion' $parametro_sede_suplente) UNION ALL ";
+  }
+  $consulta_suplentes_general = "SELECT * FROM (". trim($consulta_suplentes, "UNION ALL ") .") AS TG GROUP BY num_doc, cod_sede ORDER BY cod_sede, cod_grado, nom_grupo, ape1, ape2, nom1, nom2";
+
+  $respuesta_suplentes = $Link->query(trim($consulta_suplentes_general, 'UNION ALL ')) or die ('Error al consultar suplentes: '. $Link->error);
 
   $codigo = '';
-  if($resultado->num_rows > 0) {
-    while($row = $resultado->fetch_assoc()) {
-      if($codigo != $row['cod_sede']) {
-        $codigo = $row['cod_sede'];
-      }
-      $estudiantes[$codigo][] = $row;
+  if($respuesta_suplentes->num_rows > 0)
+  {
+    while($suplentes = $respuesta_suplentes->fetch_assoc())
+    {
+      if($codigo != $suplentes['cod_sede']) { $codigo = $suplentes['cod_sede']; }
+      $estudiantes[$codigo][] = $suplentes;
     }
-  } else {
+  }
+  else
+  {
     echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
   }
 

@@ -122,7 +122,15 @@
     datatables = $('.dataTablesNovedadesFocalizacion').DataTable({
       ajax: {
         method: 'POST',
-        url: 'functions/fn_novedades_focalizacion_index_buscar_datatables.php'
+        url: 'functions/fn_novedades_focalizacion_index_buscar_datatables.php',
+        success: function(data)
+        {
+          console.log(data);
+        },
+        error: function(data)
+        {
+          console.log(data.responseText);
+        }
       },
       columns:[
         { data: 'id'},

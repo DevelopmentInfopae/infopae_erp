@@ -28,53 +28,73 @@ $( document ).ready(function() {
 		buscar_complemento(institucion, sede, mes);
 	});
 
-	$('#btnBuscar').click(function(){
-		//Validaciones
-		var bandera = 0;
-		if( $('#municipio').val() == '' ){
-			bandera++;
-			alert('Debe seleccionar un municipio');
-			$('#municipio').focus();
-		} else if($('#mes').val() == '') {
-			bandera++;
-			alert('Debe seleccionar un mes');
-			$('#mes').focus();
-		} else if ($('#semana_inicial').val() == '') {
-			bandera++;
-			alert('Debe seleccionar la semana Inicial');
-			$('#semana_inicial').focus();
-		} else if ($('#semana_final').val() == '') {
-			bandera++;
-			alert('Debe seleccionar la semana final');
-			$('#semana_final').focus();
-		} else if( $('#institucion').val() == '' ) {
-			bandera++;
-			alert('Debe seleccionar una institucion');
-			$('#institucion').focus();
-		} /*else if( $('#sede').val() == '' ) {
-			bandera++;
-			alert('Debe seleccionar una sede');
-			$('#sede').focus();
-		} */else if($('#tipo').val() == '') {
-			bandera++;
-			alert('Debe seleccionar un tipo de complemento');
-			$('#tipo').focus();
-		} else {
-			var tipoPlanilla = $('input[name="tipoPlanilla"]:checked').val();
-			if (tipoPlanilla == null){
-				bandera++;
-				alert('Debe seleccionar un tipo de planilla');
-				$('input[name="tipoPlanilla"]').focus();
-			}
-		}
+	$('#btnBuscar').click(function()
+	{
+		imprimir_planilla();
+		// var bandera = 0;
+		// if( $('#municipio').val() == '' )
+		// {
+		// 	bandera++;
+		// 	alert('Debe seleccionar un municipio');
+		// 	$('#municipio').focus();
+		// }
+		// else if($('#mes').val() == '')
+		// {
+		// 	bandera++;
+		// 	alert('Debe seleccionar un mes');
+		// 	$('#mes').focus();
+		// }
+		// else if ($('#semana_inicial').val() == '')
+		// {
+		// 	bandera++;
+		// 	alert('Debe seleccionar la semana Inicial');
+		// 	$('#semana_inicial').focus();
+		// }
+		// else if ($('#semana_final').val() == '')
+		// {
+		// 	bandera++;
+		// 	alert('Debe seleccionar la semana final');
+		// 	$('#semana_final').focus();
+		// }
+		// else if( $('#institucion').val() == '' )
+		// {
+		// 	bandera++;
+		// 	alert('Debe seleccionar una institucion');
+		// 	$('#institucion').focus();
+		// }
+		// else if($('#tipo').val() == '')
+		// {
+		// 	bandera++;
+		// 	alert('Debe seleccionar un tipo de complemento');
+		// 	$('#tipo').focus();
+		// }
+		// else
+		// {
+		// 	var tipoPlanilla = $('input[name="tipoPlanilla"]:checked').val();
+		// 	if (tipoPlanilla == null){
+		// 		bandera++;
+		// 		alert('Debe seleccionar un tipo de planilla');
+		// 		$('input[name="tipoPlanilla"]').focus();
+		// 	}
+		// }
 
-
-
-		if(bandera == 0){
-			$('#formPlanillas').submit();
-		}
+		// if(bandera == 0) { $('#form_planillas').submit(); }
 	});
+
+  jQuery.extend(jQuery.validator.messages, { required: "Campo obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 });
+
+function imprimir_planilla()
+{
+	var SUPLENTE = 6;
+	tipo_complemento = $('input[name="tipoPlanilla"]:checked').val();
+	if (tipo_complemento == SUPLENTE) { $('#tipo').removeAttr('required'); } else { $('#tipo').prop('required', true); }
+
+	if ($('#form_planillas').valid())
+	{
+		$('#form_planillas').submit();
+	}
+}
 
 // Método AJAX para cargar combo con las semanas del mes seleccionado.
 function cargarSemanas($mes, $diainicialSemanaAnterior = '') {
@@ -178,6 +198,5 @@ function buscar_complemento(institucion, sede, mes) {
       success: function(data) { $('#tipo').html(data); }
     })
     .always(function() { $('#loader').fadeOut(); });
-
     //se añade el valor del mes escogido, para buscar en tabla entregas_res correspondiente al mes
 }

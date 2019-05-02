@@ -19,7 +19,7 @@
 	if ($res_sem->num_rows > 0) {
 		while ($reg_sem = $res_sem->fetch_assoc()) {
 ?>
-	<option value="<?= $reg_sem["ID"]; ?>" data-diainicial="<?= $reg_sem["dia_inicial"]; ?>" data-diafinal="<?= $reg_sem["dia_final"]; ?>"> <?= "SEMANA ". $reg_sem["SEMANA"]; ?> </option>
+	<option value="<?= $reg_sem["SEMANA"]; ?>" data-diainicial="<?= $reg_sem["dia_inicial"]; ?>" data-diafinal="<?= $reg_sem["dia_final"]; ?>"> <?= "SEMANA ". $reg_sem["SEMANA"]; ?> </option>
 <?php
 		}
 	}
