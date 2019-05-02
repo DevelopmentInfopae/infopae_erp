@@ -9,6 +9,13 @@
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li><a href="<?php echo $baseUrl; ?>/modules/consultas/consulta_resumida_entregas.php">Consulta resumida</a></li>
+			<li>
+				<a href="#" id="damian">Impresión de planillas<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/control_asistencia.php">Control de asistencia</a> </li>
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados.php">Certificados por institución</a> </li>
+				</ul>
+			</li>
 		</ul>
 	</li>
 <?php } ?>

@@ -71,7 +71,7 @@ while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == T
 	{
 		$respuesta_ajax = [
 			'success' => 0,
-			'message' => 'El Número de documento ingresado ya se encuentra focalizado.<br><strong>Registro número: '. $fila
+			'message' => 'El Número de documento ingresado ya se encuentra focalizado.<br><strong>Registro número: '. $registro[1]
 		];
 		echo json_encode($respuesta_ajax);
 		exit();
