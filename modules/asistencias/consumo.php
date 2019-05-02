@@ -47,8 +47,9 @@
 			</ol>
 	</div>
 	<div class="col-xs-4">
-		<div class="title-action">
+		<div class="title-action registroConsumo" style="display: none">
 			<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
+			<!--<button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button>-->
 		</div>
 	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
 					<!-- <a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a> -->
@@ -137,6 +138,7 @@
 				<div class="form-group row">
 					<div class="col-sm-12">
 						<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
+						<!--<button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button>-->
 					</div>
 				</div>
 			</div>
@@ -191,6 +193,37 @@
 	</div>
 </div>
 
+<div class="modal inmodal fade" id="ventanaSellar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header text-info" style="padding: 15px;">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+				<h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
+			</div>
+			<div class="modal-body">
+					<p class="text-center"></p>
+			</div>
+			<div class="modal-footer">
+				<input type="hidden" id="codigoACambiar">
+				<input type="hidden" id="estadoACambiar">
+				<button type="button" class="btn btn-primary btn-outline btn-sm btnNoSellar" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary btn-sm btnSiSellar" data-dismiss="modal">Aceptar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 <form action="">
 	<input type="hidden" name="asistenteTramite" id="asistenteTramite" value = "">
@@ -217,7 +250,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190426"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_consumo.js?v=20190426"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_consumo.js?v=20190430"></script>
 
 
 

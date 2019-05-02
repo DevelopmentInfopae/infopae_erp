@@ -348,7 +348,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_repitentes.js?v=20190426"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190426"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190430"></script>
 
 
 

@@ -92,6 +92,18 @@ $(document).ready(function(){
 		}
 	});
 
+
+	$('.btnSellar').click(function(){
+		if($('#form_asistencia').valid()){
+			sellarAsistencia();
+		}
+	});
+
+	$('#ventanaSellar .btnSiSellar').click(function(){
+		sellarAsistencia(1);
+	});
+
+
 	$('#ventanaConfirmar .btnNo').click(function(){
 		var aux = $("#asistenteTramite").val();
 		aux = ".checkbox-header-asistencia."+aux;
@@ -215,6 +227,11 @@ $(document).ready(function(){
 			}
 		}
 	});
+
+
+
+
+
 	
 	// unCheck a cada item de la columna Consumió
 	$(document).on('ifUnchecked', '.checkbox-header-consume', function () { 
@@ -246,9 +263,9 @@ $(document).ready(function(){
 
 
 
-		if(faltan > 0){
-			$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
-		}
+		// if(faltan > 0){
+		// 	$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
+		// }
 
 
 		aux = $(this).val();
@@ -297,9 +314,9 @@ $(document).ready(function(){
 
 		
 
-		if(faltan > 0){
-			$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
-		}
+		// if(faltan > 0){
+		// 	$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
+		// }
 	});
 
 	// Check a cada item de la columna Asistencia
@@ -321,27 +338,6 @@ $(document).ready(function(){
 		$('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>que desea hacer cambios en los registros de la asistencia</strong> para este estudiante? ');
   		$('#ventanaConfirmar').modal();
 	});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 });
 
 
@@ -454,12 +450,18 @@ function cargarEstudiantes(){
 			"render": function ( data, type, full, meta ) {
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
-				var repitio = full.repitio;				
-				var index = auxRepitieron.indexOf(documento);				
-				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite "+documento+"\" ";				
-				if (repitio == 1) { opciones = opciones + " checked "; }		
-				else{opciones = opciones + " disabled "; }				
-				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
+				var asistencia = full.asistencia; 
+				var consumio = full.consumio; 			
+				var repitio = full.repitio;	
+				var index = auxRepitieron.indexOf(documento);	
+				var opciones = "";			
+				opciones += " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite "+documento+"\" ";		
+				if (asistencia == 1 && consumio == 1 && repitio == 1){
+					opciones += " checked ";
+				}else{
+					opciones += " disabled ";	
+				}
+				opciones += " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
 				return opciones;
 			}
 		}
@@ -645,6 +647,40 @@ function actualizarAsistencia(){
 }
 
 
+function sellarAsistencia(flag){
+	if(flag != 1){
+		console.log('Despliegue de modal para confirmar Sellar asistencia');
+		$('#ventanaSellar .modal-body p').html('¿Esta seguro de <strong>sellar la asistencia,</strong>? ya no se permitirá hacer más modificaciones');
+  		$('#ventanaSellar').modal();
+	}else{
+		console.log('Inicia Sellar asistencia');
+		var formData = new FormData();
+		formData.append('semana', $('#semanaActual').val());
+		formData.append('sede', $('#sede').val());
+
+
+		$.ajax({
+			type: "post",
+			url: "functions/fn_sellar_asistencia.php",
+			dataType: "json",
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(){ $("#loader").fadeIn(); },
+			success: function(data){
+				if(data.state == 1){
+					Command : toastr.success( data.message, "Actualización del registro exitosa", { onHidden : function(){ $('#loader').fadeOut(); /* location.href="URL para redireccionar"; */ }});
+				}else{
+					Command:toastr.error(data.message,"Error al actualizar el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});
+				}
+			},
+			error: function(data){
+				console.log(data);
+				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){ $('#loader').fadeOut(); }});
+			}
+		});
+	}
+}
 
 	
 

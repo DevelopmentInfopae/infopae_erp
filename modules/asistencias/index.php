@@ -347,7 +347,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias.js?v=20190429"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190429"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190430"></script>
 
 
 

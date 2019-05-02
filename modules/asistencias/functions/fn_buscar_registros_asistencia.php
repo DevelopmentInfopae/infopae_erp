@@ -30,10 +30,13 @@ $consulta .= " order by f.cod_grado, f.nom_grupo, f.ape1 ";
 
 $resultado = $Link->query($consulta);
 
-if($resultado->num_rows > 0){
-	$banderaRegistros++;
-	while($row = $resultado->fetch_assoc()) {
-	$data[] = $row;
+if($resultado){
+	if($resultado->num_rows > 0){
+		$banderaRegistros++;
+		while($row = $resultado->fetch_assoc()) {
+		$data[] = $row;
+		}
 	}
 }
+
 

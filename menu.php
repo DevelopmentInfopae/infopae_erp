@@ -1,6 +1,23 @@
-<li class="active">
-	<a href="<?php echo $baseUrl; ?>"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
-</li>
+<?php if($_SESSION['perfil'] != 8){ ?>
+	<li class="active">
+		<a href="<?php echo $baseUrl; ?>"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
+	</li>
+<?php } else { ?>
+	<li class="active">
+		<a href="<?= $baseUrl; ?>/modules/asistencias"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
+	</li>
+<?php } ?>
+
+
+
+
+
+
+
+
+
+
+
 
 <?php if($_SESSION['perfil'] == 6){ ?>
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/institucion.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Mi institución</span></a> </li>
@@ -172,12 +189,16 @@
 <?php } ?>
 
 
-<li>
-	<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Asistencias</span><span class="fa arrow"></span></a>
-	<ul class="nav nav-second-level collapse">
 
-		<li> <a href="<?= $baseUrl; ?>/modules/asistencias">Toma de asistencia</a> </li>
-		<li> <a href="<?= $baseUrl; ?>/modules/asistencias/repitentes.php"> Selección de repitentes </a> </li>
-		<li> <a href="<?= $baseUrl; ?>/modules/asistencias/consumo.php"> Registro de consumos </a> </li>
-	</ul>
-</li>
+
+<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 ){ ?>
+	<li>
+		<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Asistencias</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+
+			<li> <a href="<?= $baseUrl; ?>/modules/asistencias">Toma de asistencia</a> </li>
+			<li> <a href="<?= $baseUrl; ?>/modules/asistencias/repitentes.php"> Selección de repitentes </a> </li>
+			<li> <a href="<?= $baseUrl; ?>/modules/asistencias/consumo.php"> Registro de consumos </a> </li>
+		</ul>
+	</li>
+<?php } ?>

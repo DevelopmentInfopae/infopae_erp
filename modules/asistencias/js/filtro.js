@@ -327,7 +327,7 @@ function actualizarMarcadores(flagConsumo){
 				localStorage.setItem("wappsi_repitieron", JSON.stringify(reg_repitieron));
 
 				// Habilitar los checkbox de los que podrian repetir
-				if(faltan > 0){
+				if(faltan > 0 && flagConsumo != 1){
 					$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
 				}
 
