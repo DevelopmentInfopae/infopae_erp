@@ -24,9 +24,7 @@ $grado = (isset($_POST["grado"]) && $_POST["grado"] != "") ? mysqli_real_escape_
 
 $grupo = (isset($_POST["grupo"]) && $_POST["grupo"] != "") ? mysqli_real_escape_string($Link, $_POST["grupo"]) : "";
 
-
 $banderaRegistros = 0;
-
 include "fn_buscar_registros_asistencia.php"; 
 
 if($banderaRegistros == 0){

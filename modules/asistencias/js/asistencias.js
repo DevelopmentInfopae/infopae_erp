@@ -2,7 +2,7 @@ var banderaRegistros = "";
 var total = 0;
 var faltan = 0;
 var ausentes = [];
-
+var datatables = null;
 // for (x=0; x<=localStorage.length-1; x++)  {  
 //   clave = localStorage.key(x); 
 //   //document.write("La clave " + clave + "contiene el valor " + localStorage.getItem(clave) + "<br />");  
@@ -122,11 +122,33 @@ $(document).ready(function(){
 
 	$('#btnBuscar').click(function(){
 		if($('#form_asistencia').valid()){
-			cargarEstudiantes()
+			validarAsistenciaSellada();
 		}
 	});
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	$('.btnGuardar').click(function(){
+		datatables.search('').draw();
 		guardarAsistencia();
 	});		
 
@@ -216,6 +238,51 @@ function guardarAsistencia(){
 		});
 	}
 }
+
+
+
+
+
+
+	function validarAsistenciaSellada(){
+		console.log("Validación de sistencia Sellada");
+		var formData = new FormData();
+		formData.append('semanaActual', $('#semanaActual').val());
+		formData.append('sede', $('#sede').val());
+		$.ajax({
+			type: "post",
+			url: "functions/fn_validar_asistencia_no_sellada.php",
+			dataType: "json",
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(){ $('#loader').fadeIn(); },
+			success: function(data){
+				console.log(data);
+				if(data.estado == 1){
+					Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
+
+				}
+				else{
+					$('#loader').fadeOut();
+					cargarEstudiantes();
+				}		
+			},
+			error: function(data){
+				console.log(data);
+				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		});
+	}
+
+
+
+
+
+
+
+
+
 
 
 

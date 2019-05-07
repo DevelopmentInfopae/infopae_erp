@@ -9,6 +9,12 @@
 
 	date_default_timezone_set('America/Bogota');
 	$fecha = date("Y-m-d H:i:s");
+	$cacheBusting = date("YmdHis");
+
+
+
+
+
 	$dia = intval(date("d"));
 	$mes = date("m");
 	$anno = date("Y");
@@ -31,7 +37,7 @@
 	// var_dump($semanaActual);				
 ?>
 
-<link rel="stylesheet" href="css/custom.css">
+<link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
 <div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
 
 
@@ -94,56 +100,43 @@
 <?php include "filtro.php"  ?>
 
 <div class="wrapper wrapper-content  animated fadeInRight">
-		<div class="row">
-				<div class="col-sm-12">
-						<div class="ibox">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-title">
+					<h5>Estudiantes <span class="editando">Editando!</span></h5> 
+					<div class="ibox-tools">
+						<div class="collapse-link">
+							<i class="fa fa-chevron-down"></i>
+						</div>
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="table-responsive table-asistencia">
+						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
+							<thead>
+								<tr>
+									<th>
+										<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header0" checked data-columna="1"/> </div>
+									</th> 
+									<th>Documento</th>
+									<th>Nombre</th>
+									<th>Grado</th>
+									<th>Grupo</th>
+								</tr>
+							</thead>
 
-
-
-
-                                <div class="ibox-title">
-                                    <h5>Estudiantes <span class="editando">Editando!</span></h5> 
-                                    <div class="ibox-tools">
-                                        <div class="collapse-link">
-                                            <i class="fa fa-chevron-down"></i>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-
-
-
-
-
-
-								<div class="ibox-content">
-									<div class="table-responsive table-asistencia">
-										<table class="table table-striped table-hover selectableRows dataTablesSedes" >
-											<thead>
-												<tr>
-													<th>
-												<!-- 		<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header0" checked data-columna="1"/> </div>  -->
-
-
-													</th> 
-													<th>Documento</th>
-													<th>Nombre</th>
-													<th>Grado</th>
-													<th>Grupo</th>
-												</tr>
-											</thead>
-
-											<tfoot>
-												<tr>
-													<th> </th> 
-													<th>Documento</th>
-													<th>Nombre</th>
-													<th>Grado</th>
-													<th>Grupo</th>	
-												</tr>
-											</tfoot>
-										</table>
-									</div>
+							<tfoot>
+								<tr>
+									<th> </th> 
+									<th>Documento</th>
+									<th>Nombre</th>
+									<th>Grado</th>
+									<th>Grupo</th>	
+								</tr>
+							</tfoot>
+						</table>
+					</div>
 										
 
 
@@ -346,8 +339,8 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias.js?v=20190429"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190430"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
 
 
 

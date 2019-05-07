@@ -6,6 +6,10 @@ require_once '../../../config.php';
 $data = [];
 $semanaActual = "";
 $sede = "";
+$nivel = "";
+$grado = "";
+$grupo = "";
+
 $fecha = date("Y-m-d H:i:s");
 $anno = date("y"); 
 $mes = date("m");
@@ -19,7 +23,47 @@ $semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") 
 
 $sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
 
-$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, g.nombre AS grado, f.nom_grupo AS grupo, a.* FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado left join Asistencia$mes$anno a on a.tipo_doc = f.tipo_doc and a.num_doc = f.num_doc WHERE 1 = 1 AND f.cod_sede = $sede and a.asistencia = 1 and a.dia = \"$dia\" and a.mes = \"$mes\" ORDER BY f.cod_grado , f.nom_grupo , f.ape1 ";
+$nivel = (isset($_POST["nivel"]) && $_POST["nivel"] != "") ? mysqli_real_escape_string($Link, $_POST["nivel"]) : "";
+
+$grado = (isset($_POST["grado"]) && $_POST["grado"] != "") ? mysqli_real_escape_string($Link, $_POST["grado"]) : "";
+
+$grupo = (isset($_POST["grupo"]) && $_POST["grupo"] != "") ? mysqli_real_escape_string($Link, $_POST["grupo"]) : "";
+
+
+
+
+
+
+
+
+
+$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, g.nombre AS grado, f.nom_grupo AS grupo, a.* FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado left join Asistencia_det$mes$anno a on a.tipo_doc = f.tipo_doc and a.num_doc = f.num_doc WHERE 1 = 1 AND f.cod_sede = $sede and a.asistencia = 1 and a.dia = \"$dia\" and a.mes = \"$mes\" ";
+if($nivel == 1 ){
+	$consulta .= " and f.cod_grado < \"6\" ";
+} else if($nivel == 2 ){
+	$consulta .= " and f.cod_grado > \"5\" ";
+}
+if($grado != "" ){
+	$consulta .= " and f.cod_grado = $grado ";
+}
+if($grupo != "" ){
+	$consulta .= " and f.nom_grupo = $grupo ";
+}
+$consulta .= " ORDER BY f.cod_grado , f.nom_grupo , f.ape1 ";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //echo $consulta;
 

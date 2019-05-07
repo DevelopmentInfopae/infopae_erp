@@ -30,6 +30,10 @@ $(document).ready(function(){
 
 });
 
+
+
+
+
 function cargarMunicipios(){
 	//formData.append('municipio', $('#municipio').val());
 	$.ajax({

@@ -40,6 +40,7 @@
 
 
 									<?php if(!isset($ventanaRepitentes) || $ventanaRepitentes == 0){ ?>
+									<?php } ?>
 
 										<div class="col-sm-4 form-group">
 											<label for="nivel">Nivel</label>
@@ -63,7 +64,6 @@
 											</select>
 										</div>
 										
-									<?php } ?>
 
 
 								</div>

@@ -6,8 +6,11 @@ var ausentes = [];
 var repitentes = [];
 var noConsumieron = [];
 var noRepitieron =[];
+var datatables = null;
+
 
 $(document).ready(function(){
+
 
 	var d = new Date();
 	var month = d.getMonth();
@@ -88,7 +91,7 @@ $(document).ready(function(){
 
 	$('#btnBuscar').click(function(){
 		if($('#form_asistencia').valid()){
-			cargarEstudiantes()
+			validarAsistenciaSellada();			
 		}
 	});
 
@@ -138,6 +141,8 @@ $(document).ready(function(){
 
 
 	$('.btnGuardar').click(function(){
+		$("#loader").fadeIn();
+		datatables.search('').draw();
 		guardarEntregas();
 	});	
 
@@ -225,6 +230,9 @@ $(document).ready(function(){
 				aux = $(this).val();
 				$( ".checkbox-header-repite."+aux).iCheck('enable'); 	
 			}
+
+
+
 		}
 	});
 
@@ -339,6 +347,47 @@ $(document).ready(function(){
   		$('#ventanaConfirmar').modal();
 	});
 });
+
+
+	function validarAsistenciaSellada(){
+		console.log("Validación de sistencia Sellada");
+		var formData = new FormData();
+		formData.append('semanaActual', $('#semanaActual').val());
+		formData.append('sede', $('#sede').val());
+		$.ajax({
+			type: "post",
+			url: "functions/fn_validar_asistencia_no_sellada.php",
+			dataType: "json",
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(){ $('#loader').fadeIn(); },
+			success: function(data){
+				console.log(data);
+				if(data.estado == 1){
+					Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
+
+				}
+				else{
+					$('#loader').fadeOut();
+					cargarEstudiantes();
+				}		
+			},
+			error: function(data){
+				console.log(data);
+				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		});
+	}
+
+
+
+
+
+
+
+
+
 
 
 function cargarEstudiantes(){
@@ -456,11 +505,19 @@ function cargarEstudiantes(){
 				var index = auxRepitieron.indexOf(documento);	
 				var opciones = "";			
 				opciones += " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite "+documento+"\" ";		
+			
+				
 				if (asistencia == 1 && consumio == 1 && repitio == 1){
 					opciones += " checked ";
-				}else{
-					opciones += " disabled ";	
 				}
+
+
+				if (asistencia == 0 || consumio == 0){
+					opciones += " disabled ";			
+				}
+
+
+
 				opciones += " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
 				return opciones;
 			}
@@ -557,7 +614,14 @@ function guardarEntregas(){
 		tipoDocumento = $( this ).attr('tipoDocumento');
 		formData.append('consumieron['+documento+'][documento]', documento);
 		formData.append('consumieron['+documento+'][tipoDocumento]', tipoDocumento);
-	});	
+	});
+
+	$( ".checkbox-header-consume:unchecked").each(function(){
+		documento = $(this).val();
+		tipoDocumento = $( this ).attr('tipoDocumento');
+		formData.append('noConsumieron['+documento+'][documento]', documento);
+		formData.append('noConsumieron['+documento+'][tipoDocumento]', tipoDocumento);
+	});		
 
 	$( ".checkbox-header-repite:checked").each(function(){
 		documento = $(this).val();

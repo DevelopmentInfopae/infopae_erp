@@ -9,6 +9,9 @@
 
 	date_default_timezone_set('America/Bogota');
 	$fecha = date("Y-m-d H:i:s");
+	$cacheBusting = date("YmdHis");
+
+
 	$dia = intval(date("d"));
 	$mes = date("m");
 	$anno = date("Y");
@@ -31,7 +34,7 @@
 	// var_dump($semanaActual);				
 ?>
 
-<link rel="stylesheet" href="css/custom.css">
+<link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
 <div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -49,7 +52,7 @@
 	<div class="col-xs-4">
 		<div class="title-action registroConsumo" style="display: none">
 			<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
-			<!--<button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button>-->
+			<button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button>
 		</div>
 	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
 					<!-- <a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a> -->
@@ -138,7 +141,7 @@
 				<div class="form-group row">
 					<div class="col-sm-12">
 						<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
-						<!--<button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button>-->
+						<!-- <button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button> -->
 					</div>
 				</div>
 			</div>
@@ -249,8 +252,8 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=20190426"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_consumo.js?v=20190430"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_consumo.js?v=<?= $cacheBusting; ?>"></script>
 
 
 

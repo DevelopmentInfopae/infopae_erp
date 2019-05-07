@@ -3,6 +3,7 @@ var total = 0;
 var faltan = 0;
 var ausentes = [];
 var repitentes = [];
+var datatables = null;
 
 for (x=0; x<=localStorage.length-1; x++)  {  
   clave = localStorage.key(x); 
@@ -74,9 +75,32 @@ $(document).ready(function(){
 
 	$('#btnBuscar').click(function(){
 		if($('#form_asistencia').valid()){
-			cargarRepitentes();
+			vvalidarAsistenciaSellada();			
 		}
 	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	// Check a cada item
@@ -179,6 +203,7 @@ $(document).ready(function(){
 
 
 	$('.btnGuardar').click(function(){
+		datatables.search('').draw();
 		guardarRepitentes();
 	});		
 
@@ -190,10 +215,57 @@ $(document).ready(function(){
 });
 
 
+	function validarAsistenciaSellada(){
+		console.log("Validación de sistencia Sellada");
+		var formData = new FormData();
+		formData.append('semanaActual', $('#semanaActual').val());
+		formData.append('sede', $('#sede').val());
+		$.ajax({
+			type: "post",
+			url: "functions/fn_validar_asistencia_no_sellada.php",
+			dataType: "json",
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(){ $('#loader').fadeIn(); },
+			success: function(data){
+				console.log(data);
+				if(data.estado == 1){
+					Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
+
+				}
+				else{
+					$('#loader').fadeOut();
+					cargarRepitentes();
+				}		
+			},
+			error: function(data){
+				console.log(data);
+				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		});
+	}
+
+
+
+
+
+
+
+
+
+
 function cargarRepitentes(){
 	var dibujado = 0;
 	var semanaActual = $('#semanaActual').val();
 	var sede = $('#sede').val();
+	var nivel = $('#nivel').val();
+	var grado = $('#grado').val();
+	var grupo = $('#grupo').val();
+
+
+
+
 	var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
 	console.log(aux);
 	//var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
@@ -205,7 +277,10 @@ function cargarRepitentes(){
 		url: 'functions/fn_buscar_repitentes.php',
 		data:{
 			semanaActual: semanaActual,
-			sede: sede
+			sede: sede,
+			nivel: nivel,
+			grado: grado,
+			grupo: grupo,
 		}
 	},
 	columns:[

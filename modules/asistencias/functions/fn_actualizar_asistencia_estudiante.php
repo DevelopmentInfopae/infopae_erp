@@ -20,10 +20,10 @@ $dia = intval(date("d"));
 
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
-$consulta = " update Asistencia$mes$anno set asistencia = $valor, repite = 0, consumio = 0, repitio = 0 where Asistencia$mes$anno.mes = \"$mes\" and Asistencia$mes$anno.semana = \"$semana\" and Asistencia$mes$anno.dia = \"$dia\" and Asistencia$mes$anno.num_doc  = \"$documento\" and Asistencia$mes$anno.tipo_doc  = \"$tipoDocumento\"";
+$consulta = " update Asistencia_det$mes$anno set asistencia = $valor, repite = 0, consumio = 0, repitio = 0 where Asistencia_det$mes$anno.mes = \"$mes\" and Asistencia_det$mes$anno.semana = \"$semana\" and Asistencia_det$mes$anno.dia = \"$dia\" and Asistencia_det$mes$anno.num_doc  = \"$documento\" and Asistencia_det$mes$anno.tipo_doc  = \"$tipoDocumento\"";
 $result = $Link->query($consulta) or die ('Actualización de asistencia'.$consulta. mysqli_error($Link));
 if($result && $Link->affected_rows <= 0 ){
-	$consulta = " insert into Asistencia$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values (\"$tipoDocumento\", \"$documento\", \"$fecha\", \"$mes\", \"$semana\", \"$dia\", \"$valor\", \"$id_usuario\" ) ";
+	$consulta = " insert into Asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values (\"$tipoDocumento\", \"$documento\", \"$fecha\", \"$mes\", \"$semana\", \"$dia\", \"$valor\", \"$id_usuario\" ) ";
 	$result = $Link->query($consulta) or die ('Inserción de asistencia'.$consulta. mysqli_error($Link));
 }
 if($result){
