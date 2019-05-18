@@ -1,6 +1,6 @@
 <?php
 // COMPRUEBA QUE EL USUARIO ESTA AUTENTIFICADO
-if (!isset($_SESSION["autentificado"]) || $_SESSION["autentificado"]!="SI" || ( $_SESSION["perfil"]!=0 && $_SESSION["perfil"]!=1 && $_SESSION["perfil"]!=5 && $_SESSION["perfil"]!=6 ) ) {
+if (!isset($_SESSION["autentificado"]) || $_SESSION["autentificado"]!="SI" || ( $_SESSION["perfil"]!=0 && $_SESSION["perfil"]!=1 && $_SESSION["perfil"]!=5 && $_SESSION["perfil"]!=6 && $_SESSION["perfil"]!=8 ) ) {
 //si no existe, envio a la pÃ¡gina para loguearse.
 header("Location: $baseUrl/login.php");
 exit();
