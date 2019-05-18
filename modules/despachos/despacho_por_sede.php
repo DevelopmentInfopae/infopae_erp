@@ -163,13 +163,13 @@ for ($k=0; $k < count($_POST) ; $k++){
  // Termina la busqueda de los días que corresponden a esta semana de contrato.
 
 
-  /********************** Modificación para cambiar los datos de los 3 campos agregados a la tabla despachos_encMESAÑO **********************/
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Modificación para cambiar los datos de los 3 campos agregados a la tabla despachos_encMESAÑO
   // Bucando la cobertura para la sede en esa semana para el tipo de complementosCantidades
   $cantSedeGrupo1 = 0;
   $cantSedeGrupo2 = 0;
   $cantSedeGrupo3 = 0;
-
-  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3 FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede  = '$codSede' AND  Tipo_Complem = '$modalidad'";
+  $consulta = "SELECT Cobertura_G1, Cobertura_G2, Cobertura_G3 FROM despachos_enc$mesAnno WHERE Num_doc = '$despacho';";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
@@ -177,6 +177,7 @@ for ($k=0; $k < count($_POST) ; $k++){
     $cantSedeGrupo2 = $row['Cobertura_G2'];
     $cantSedeGrupo3 = $row['Cobertura_G3'];
   }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // A medida que se recoja la información de los aliemntos se determianra si todos los grupos etarios fueron beneficiados y usaremos las cantidades de las siguientes variables.
   $sedeGrupo1 = 0;
@@ -204,25 +205,26 @@ for ($k=0; $k < count($_POST) ; $k++){
   }
 
   for ($i=0; $i < count($alimentos) ; $i++) {
-    $alimento = $alimentos[$i];
-    $auxCodigo = $alimento['codigo'];
+    $auxCodigo = $alimentos[$i]['codigo'];
+    // $auxCodigo = $alimento['codigo'];
 
-    $consulta = " select distinct ftd.codigo, ftd.Componente,
+    $consulta = " SELECT distinct p.Codigo,
+    p.Descripcion AS Componente,
     p.nombreunidad2 presentacion,
     p.cantidadund1 cantidadPresentacion,
-    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida, ( select Cantidad
-
-    from despachos_det$mesAnno
-
-    where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 1 ) as cant_grupo1, ( select Cantidad
-    from despachos_det$mesAnno
-    where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
-
+    m.grupo_alim, m.orden_grupo_alim, ftd.UnidadMedida,
+    (select Cantidad
+      from despachos_det$mesAnno
+      where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 1 ) as cant_grupo1,
+    (select Cantidad
+      from despachos_det$mesAnno
+      where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 2 ) as cant_grupo2,
     (select Cantidad from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $despacho and cod_Alimento = $auxCodigo and Id_GrupoEtario = 3) as cant_grupo3,
     (SELECT cantu2 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu2,
     (SELECT cantu3 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu3,
     (SELECT cantu4 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu4,
     (SELECT cantu5 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu5,
+    (SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida,
     (SELECT cantotalpresentacion FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantotalpresentacion,
 
     p.cantidadund2,
@@ -234,28 +236,30 @@ for ($k=0; $k < count($_POST) ; $k++){
     p.nombreunidad4,
     p.nombreunidad5
 
-    from fichatecnicadet ftd inner join productos$anno p on ftd.codigo=p.codigo inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'  order by m.orden_grupo_alim ASC, ftd.Componente DESC ";
+    FROM productos$anno p
+    LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
+    INNER JOIN menu_aportes_calynut m ON p.Codigo = m.cod_prod
+    WHERE p.Codigo = $auxCodigo
+    ORDER BY m.orden_grupo_alim ASC, p.Descripcion DESC ";
 
-        // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
-        //echo "<br><br>".$consulta."<br><br>";
+    // CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
+    // where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'
+    // echo "<br><br>".$consulta."<br><br>";
 
     $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-
-    $alimento['componente'] = '';
-    $alimento['presentacion'] = '';
-    $alimento['grupo_alim'] = '';
-    $alimento['cant_grupo1'] = 0;
-    $alimento['cant_grupo2'] = 0;
-    $alimento['cant_grupo3'] = 0;
-    $alimento['cant_total'] = 0;
-
-
-
-
     if($resultado->num_rows >= 1){
+      $alimento['cant_total'] = 0;
+      $alimento['cant_grupo1'] = 0;
+      $alimento['cant_grupo2'] = 0;
+      $alimento['cant_grupo3'] = 0;
+      $alimento['grupo_alim'] = '';
+      $alimento['componente'] = '';
+      $alimento['presentacion'] = '';
+
       while($row = $resultado->fetch_assoc()){
+    // var_dump($row);
         $alimento['componente'] = $row['Componente'];
-        $alimento['presentacion'] = $row['presentacion'];
+        $alimento['presentacion'] = $row['Umedida'];
         $alimento['cantidadpresentacion'] = $row['cantidadPresentacion'];
         $alimento['grupo_alim'] = $row['grupo_alim'];
         $alimento['orden_grupo_alim'] = $row['orden_grupo_alim'];
@@ -318,7 +322,7 @@ for ($k=0; $k < count($_POST) ; $k++){
   /*************************************************************/
   /*************************************************************/
   /*************************************************************/
-//  var_dump($alimentos);
+ // var_dump($alimentos);
 unset($sort);
 unset($grupo);
   $sort = array();
@@ -569,7 +573,8 @@ unset($grupo);
 
 
     if($alimento['presentacion'] == 'u'){
-      $aux = round($alimento['cant_grupo1']);
+      $aux = number_format($alimento['cant_grupo1'], 2, '.', '');
+      // $aux = round($alimento['cant_grupo1']);
     }else{
       $aux = 0+$alimento['cant_grupo1'];
       $aux = number_format($aux, 2, '.', '');
@@ -578,7 +583,8 @@ unset($grupo);
 
 
     if($alimento['presentacion'] == 'u'){
-      $aux = round($alimento['cant_grupo2']);
+      $aux = number_format($alimento['cant_grupo2'], 2, '.', '');
+      // $aux = round($alimento['cant_grupo2']);
     }else{
       $aux = 0+$alimento['cant_grupo2'];
       $aux = number_format($aux, 2, '.', '');
@@ -586,7 +592,8 @@ unset($grupo);
     $pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
     if($alimento['presentacion'] == 'u'){
-      $aux = round($alimento['cant_grupo3']);
+      $aux = number_format($alimento['cant_grupo3'], 2, '.', '');
+      // $aux = round($alimento['cant_grupo3']);
     }else{
       $aux = 0+$alimento['cant_grupo3'];
       $aux = number_format($aux, 2, '.', '');
@@ -608,8 +615,8 @@ unset($grupo);
     }
 
     if ($alimento['presentacion'] == 'u') {
-      // $aux = number_format($alimento['cant_total'], 2, '.', '');
-      $aux = round($alimento['cant_total']);
+      $aux = number_format($alimento['cant_total'], 2, '.', '');
+      // $aux = round($alimento['cant_total']);
     } else {
       $aux = number_format($alimento['cant_total'], 2, '.', '');
     }
@@ -627,17 +634,18 @@ unset($grupo);
       //$aux = '';
     }
 
+// var_dump($modalidad);
 
-if(strpos($alimento['componente'], "huevo")){
-  $aux = ceil($alimento['cant_total']);
-}else{
-
-  if ($alimento['presentacion'] == 'u') {
-    $aux = round(0+$alimento['cant_total']);
+if ($alimento['presentacion'] == 'u') {
+  if (strpos($alimento['componente'], "HUEVO") !== FALSE) {
+    $aux = ceil(0+$alimento['cant_total']);
+    // echo $alimento['componente']."</br>";
   } else {
-    $aux = number_format($alimento['cant_total'], 2, '.', '');
-    // $aux = number_format($aux, 0, '.', '');
+    $aux = round(0+$alimento['cant_total']);
   }
+} else {
+  $aux = number_format($alimento['cant_total'], 2, '.', '');
+  // $aux = number_format($aux, 0, '.', '');
 }
 
 

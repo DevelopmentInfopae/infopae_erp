@@ -28,6 +28,11 @@
 		while($registroPlanillaSemanas = $resultadoPlanillaSemanas->fetch_assoc()) {
 			foreach ($planilla_dias as $clavePlanillasDias => $valorPlanillasDias) {
 				if ($registroPlanillaSemanas["DIA"] == $valorPlanillasDias) {
+					if ($registroPlanillaSemanas["NOMDIAS"] == "lunes"){ $indiceDia = 1; }
+					if ($registroPlanillaSemanas["NOMDIAS"] == "martes"){ $indiceDia = 2; }
+					if ($registroPlanillaSemanas["NOMDIAS"] == "miercoles"){ $indiceDia = 3; }
+					if ($registroPlanillaSemanas["NOMDIAS"] == "jueves"){ $indiceDia = 4; }
+					if ($registroPlanillaSemanas["NOMDIAS"] == "viernes"){ $indiceDia = 5; }
 					$columnasDiasEntregas_res .= "e.". $clavePlanillasDias ." AS D". $indiceDia .", ";
 					$columnasDiasSuma .= "e.". $clavePlanillasDias . " + ";
 					$indiceDia++;
@@ -36,11 +41,13 @@
 		}
 	}
 
+	// echo $columnasDiasEntregas_res;
+
 	// Datos del estudiante
 	$consultaNovedad = "SELECT td.Abreviatura, f.num_doc, CONCAT(f.nom1,' ',f.nom2,' ',f.ape1,' ',f.ape2) AS nombre, '$tipoComplemento' AS complemento, ". trim($columnasDiasEntregas_res, ", ") .", (". trim($columnasDiasSuma, " + ") .") AS sumaDias
 	FROM focalizacion$semana f
-	INNER JOIN entregas_res_$mes". $_SESSION["periodoActual"] ." e ON e.num_doc = f.num_doc AND e.cod_sede = f.cod_sede
-	LEFT JOIN tipodocumento td ON f.tipo_doc = td.id
+	INNER JOIN entregas_res_$mes". $_SESSION["periodoActual"] ." e ON e.num_doc = f.num_doc AND e.cod_sede = f.cod_sede  AND e.tipo_complem = f.Tipo_complemento
+	INNER JOIN tipodocumento td ON f.tipo_doc = td.id
 	WHERE f.cod_sede = $sede AND f.Tipo_complemento = '$tipoComplemento' AND f.activo = 1";
 
 	$resultadoNovedades = $Link->query($consultaNovedad);

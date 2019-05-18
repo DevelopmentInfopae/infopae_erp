@@ -20,15 +20,15 @@
           </li>
       </ol>
   </div>
-  <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
   <div class="col-lg-4">
       <div class="title-action">
+        <a href="#" class="btn btn-primary" name="boton_abri_ventana_exportar_priorizacion" id="boton_abri_ventana_exportar_priorizacion"><i class="fa fa-file-excel-o"></i> Exportar</a>
+        <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
           <a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a>
+        <?php } ?>
       </div>
   </div>
-  <?php } ?>
 </div>
-<!-- /.row wrapper de la cabecera de la seccion -->
 
 <div class="wrapper wrapper-content  animated fadeInRight">
   <div class="row">
@@ -239,6 +239,55 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary btn-sm" id="subirArchivoPriorizacion">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ventana de formulario de exportación para la priorización -->
+<div class="modal inmodal fade" id="ventana_formulario_exportar_priorizacion" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header text-info" style="padding: 15px;">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3><i class="fa fa-upload fa-lg" aria-hidden="true"></i> Exportar Priorización  </h3>
+      </div>
+      <div class="modal-body">
+        <form action="" name="formulario_exportar_priorizacion" id="formulario_exportar_priorizacion">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="mes_exportar">Mes</label>
+                <select class="form-control" name="mes_exportar" id="mes_exportar" required>
+                  <option value="">Selección</option>
+                  <?php
+                    $consultaMes = "SELECT distinct MES AS mes FROM planilla_semanas;";
+                    $resultadoMes = $Link->query($consultaMes);
+                    if($resultadoMes->num_rows > 0){
+                      while($registros = $resultadoMes->fetch_assoc()) {
+                  ?>
+                      <option value="<?php echo $registros["mes"]; ?>"><?php echo $registros["mes"]; ?></option>
+                  <?php
+                      }
+                    }
+                  ?>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="semana_exportar">Semana</label>
+                <select class="form-control" name="semana_exportar" id="semana_exportar" required>
+                  <option value="">Selección</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" id="exportar_priorizacion">Aceptar</button>
       </div>
     </div>
   </div>

@@ -26,6 +26,13 @@
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li><a href="<?php echo $baseUrl; ?>/modules/consultas/consulta_resumida_entregas.php">Consulta resumida</a></li>
+			<li>
+				<a href="#" id="damian">Impresión de planillas<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/control_asistencia.php">Control de asistencia</a> </li>
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados.php">Certificados por institución</a> </li>
+				</ul>
+			</li>
 		</ul>
 	</li>
 <?php } ?>
@@ -69,6 +76,7 @@
 		<a href="#"><i class="fa fa-calculator"></i> <span class="nav-label">Dispositivos Biométricos</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php"><span class="nav-label">Dispositivos Biométricos</span></a> </li>
+			<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php"><span class="nav-label">Formato Datos Personales</span></a></li>
 		</ul>
 	</li>
 
@@ -131,9 +139,9 @@
 			<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php"><span class="nav-label">Trazabilidad</span></a> </li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php"><span class="nav-label">Trazabilidad Insumos</span></a> </li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
-			<li><a href="#" class="sinDesarrollar">Bitácora de usuarios</a></li>
-			<li><a href="#" class="sinDesarrollar">Informe CHIP</a></li>
-			<li><a href="#" class="sinDesarrollar">Informe de alimentos ordenados por proveedor</a></li>
+			<li> <a href="#" class="sinDesarrollar">Bitácora de usuarios</a></li>
+			<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
 			<li><a href="#" class="sinDesarrollar">Informe de compras efectuadas al proveedor</a></li>
 		</ul>

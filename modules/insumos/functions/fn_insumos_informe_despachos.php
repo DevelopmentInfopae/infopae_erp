@@ -296,68 +296,71 @@ foreach ($sedes as $key => $sede) {
 		    		}
 		    	}
 		    }
+
+			$cy = $pdf->GetY();
+
+			if($cy > 155){
+			$pdf->AddPage();
+			}
+
+			// $pdf->ln();
+
+			$current_y = $pdf->GetY();
+			$current_x = $pdf->GetX();
+
+			$pdf->SetXY($current_x, $current_y);
+
+
+			$pdf->Cell(94.3,4,'',1,0,'L',False);
+			$pdf->Cell(94.3,4,'',1,0,'L',False);
+			$pdf->Cell(94.3,4,'',1,0,'L',False);
+			$pdf->ln();
+
+			$pdf->Cell(94.3,12,'',1,0,'L',False);
+			$pdf->Cell(94.3,12,'',1,0,'L',False);
+			$pdf->Cell(94.3,12,'',1,0,'L',False);
+			$pdf->ln();
+
+			$pdf->Cell(94.3,16,'',1,0,'L',False);
+			$pdf->Cell(94.3,16,'',1,0,'L',False);
+			$cy = $pdf->GetY();
+			$cx = $pdf->GetX();
+			$pdf->Cell(94.3,8,'',1,0,'L',False);
+			$pdf->SetXY($cx, $cy+8);
+			$pdf->Cell(94.3,8,'',1,0,'L',False);
+			$pdf->ln();
+
+			$pdf->SetXY($current_x, $current_y);
+
+			$pdf->Cell(94.3,4,'MANIPULADOR',0,0,'C',False);
+			$pdf->Cell(94.3,4,'TRANSPORTADOR',0,0,'C',False);
+			$pdf->Cell(94.3,4,utf8_decode('INSTITUCIÓN EDUCATIVA'),0,0,'C',False);
+			$pdf->ln();
+
+			$pdf->SetXY($current_x, $current_y-0.2);
+
+			$pdf->Cell(94.3,12,'NOMBRE MANIPULADOR (Operador):',0,0,'L',False);
+			$pdf->Cell(94.3,12,'NOMBRE RECIBE (Operador):',0,0,'L',False);
+			$pdf->Cell(94.3,12,'NOMBRE RESPONSABLE INSTITUCION O CENTRO EDUCATIVO:',0,0,'L',False);
+			$pdf->ln();
+
+			$pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
+			$pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
+			$cy = $pdf->GetY();
+			$cx = $pdf->GetX();
+
+			$pdf->SetXY($cx, $cy+2);
+			$pdf->Cell(94.3,8,'CARGO:',0,0,'L',False);
+			$pdf->SetXY($cx, $cy+10);
+			$pdf->Cell(94.3,8,'FIRMA:',0,0,'L',False);
+
+			$pdf->ln();
+			
 		}
 	}	
 }
 
-$cy = $pdf->GetY();
 
-if($cy > 155){
-	$pdf->AddPage();
-}
-
-// $pdf->ln();
-
-  $current_y = $pdf->GetY();
-  $current_x = $pdf->GetX();
-
-  $pdf->SetXY($current_x, $current_y);
-
-
-  $pdf->Cell(94.3,4,'',1,0,'L',False);
-  $pdf->Cell(94.3,4,'',1,0,'L',False);
-  $pdf->Cell(94.3,4,'',1,0,'L',False);
-  $pdf->ln();
-
-  $pdf->Cell(94.3,12,'',1,0,'L',False);
-  $pdf->Cell(94.3,12,'',1,0,'L',False);
-  $pdf->Cell(94.3,12,'',1,0,'L',False);
-  $pdf->ln();
-
-  $pdf->Cell(94.3,16,'',1,0,'L',False);
-  $pdf->Cell(94.3,16,'',1,0,'L',False);
-  $cy = $pdf->GetY();
-  $cx = $pdf->GetX();
-  $pdf->Cell(94.3,8,'',1,0,'L',False);
-  $pdf->SetXY($cx, $cy+8);
-  $pdf->Cell(94.3,8,'',1,0,'L',False);
-  $pdf->ln();
-
-  $pdf->SetXY($current_x, $current_y);
-
-  $pdf->Cell(94.3,4,'MANIPULADOR',0,0,'C',False);
-  $pdf->Cell(94.3,4,'TRANSPORTADOR',0,0,'C',False);
-  $pdf->Cell(94.3,4,utf8_decode('INSTITUCIÓN EDUCATIVA'),0,0,'C',False);
-  $pdf->ln();
-
-  $pdf->SetXY($current_x, $current_y-0.2);
-
-  $pdf->Cell(94.3,12,'NOMBRE MANIPULADOR (Operador):',0,0,'L',False);
-  $pdf->Cell(94.3,12,'NOMBRE RECIBE (Operador):',0,0,'L',False);
-  $pdf->Cell(94.3,12,'NOMBRE RESPONSABLE INSTITUCION O CENTRO EDUCATIVO:',0,0,'L',False);
-  $pdf->ln();
-
-  $pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
-  $pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
-  $cy = $pdf->GetY();
-  $cx = $pdf->GetX();
-
-  $pdf->SetXY($cx, $cy+2);
-  $pdf->Cell(94.3,8,'CARGO:',0,0,'L',False);
-  $pdf->SetXY($cx, $cy+10);
-  $pdf->Cell(94.3,8,'FIRMA:',0,0,'L',False);
-
-  $pdf->ln();
 
 
 $pdf->Output("INFORME_DESPACHOS_INSUMOS.pdf", "I");

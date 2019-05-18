@@ -1,13 +1,16 @@
 $(document).ready(function(){
+
 	$('#municipio').change(function(){ buscarInstitucion($(this).val()); });
 	$('#btnBuscar').click(function() { buscarSedes();	});
   $(document).on('click', '#importarPriorizacion', function(){ $('#ventanaFormularioPri').modal(); });
   $(document).on('click', '#importarFocalizacion', function(){ $('#ventanaFormularioFoc').modal(); });
   $(document).on('change', '#mes', function(){ buscarSemanasMes($(this)); });
+  $(document).on('change', '#mes_exportar', function(){ buscarSemanasMesExportar($(this)); });
   $(document).on('change', '#mesFocalizacion', function(){ buscarSemanasMesFoc($(this)); });
   $(document).on('click', '#subirArchivoPriorizacion', function(){ subirArchivoPriorizacion(); });
   $(document).on('click', '#subirArchivoFocalizacion', function(){ subirArchivoFocalizacion(); });
-
+  $(document).on('click', '#boton_abri_ventana_exportar_priorizacion', function(){ abrir_ventana_exportar_priorizacion(); });
+  $(document).on('click', '#exportar_priorizacion', function(){ exportar_priorizacion(); });
 	// Configuración del pligin toast
 	toastr.options = {
     "closeButton": true,
@@ -28,7 +31,7 @@ $(document).ready(function(){
 });
 
 function crearSede(){
-    window.open('sede_crear.php', '_self');
+  window.open('sede_crear.php', '_self');
 }
 
 function editarSede(codigoSede, nombreSede){
@@ -39,19 +42,19 @@ function editarSede(codigoSede, nombreSede){
 
 function buscarInstitucion(municipio){
 	$.ajax({
-	  type: "post",
-	  url: "functions/fn_buscar_instituciones.php",
-	  data: {"municipio":municipio},
-	  beforeSend: function(){ $('#loader').fadeIn(); },
-	  success: function(data){
-	  	$('#loader').fadeOut();
-	    $('#institucion').html(data);
-	  },
-	  error: function(data){
-	  	$('#loader').fadeOut();
-	  	console.log(data);
-	  }
-	});
+   type: "post",
+   url: "functions/fn_buscar_instituciones.php",
+   data: {"municipio":municipio},
+   beforeSend: function(){ $('#loader').fadeIn(); },
+   success: function(data){
+    $('#loader').fadeOut();
+    $('#institucion').html(data);
+  },
+  error: function(data){
+    $('#loader').fadeOut();
+    console.log(data);
+  }
+});
 }
 
 function buscarSedes(){
@@ -71,25 +74,25 @@ function cargarArchivo(){
     dataType: 'json',
     beforeSend: function(){ $('#loader').fadeIn(); },
     success: function(data){ console.log(data);
-       if(data.estado == 1){
-        Command: toastr.success(
-          data.mensaje,
-          "Proceso realizado", { onHidden : function(){ $('#loader').fadeOut(); window.open($("#inputBaseUrl").val()+"/modules/instituciones/sedes.php", "_self"); } }
+     if(data.estado == 1){
+      Command: toastr.success(
+        data.mensaje,
+        "Proceso realizado", { onHidden : function(){ $('#loader').fadeOut(); window.open($("#inputBaseUrl").val()+"/modules/instituciones/sedes.php", "_self"); } }
         );
-      } else {
-        Command: toastr.error(
-          data.mensaje,
-          "Error en el proceso", { onHidden : function(){ $('#loader').fadeOut(); } }
-        );
-      }
-    },
-    error: function(data){ console.log(data);
-    	Command: toastr.error(
+    } else {
+      Command: toastr.error(
         data.mensaje,
         "Error en el proceso", { onHidden : function(){ $('#loader').fadeOut(); } }
-      );
+        );
     }
-  });
+  },
+  error: function(data){ console.log(data);
+   Command: toastr.error(
+    data.mensaje,
+    "Error en el proceso", { onHidden : function(){ $('#loader').fadeOut(); } }
+    );
+ }
+});
 }
 
 function confirmarCambioEstado(codigoSede, estado){
@@ -127,12 +130,12 @@ function cambiarEstado(){
         Command: toastr.success(
           data.mensaje,
           "Cambio de estado", { onHidden : function(){ $('#loader').fadeOut(); } }
-        );
+          );
       } else {
         Command: toastr.error(
           data.mensaje,
           "Error al cambiar estado", { onHidden : function(){ $('#loader').fadeOut(); } }
-        );
+          );
       }
     },
     error: function(data){console.log(data);
@@ -140,7 +143,7 @@ function cambiarEstado(){
         "Al parecer existe un error con el servidor. Por favor comuníquese con el adminstrador del sitio InfoPAE.",
         "Error al cambiar estado",
         { onHidden : function(){ $('#loader').fadeOut(); } }
-      );
+        );
     }
   });
 }
@@ -149,17 +152,28 @@ function buscarSemanasMes(control){
   $.ajax({
     type: "post",
     url: "functions/fn_sede_buscar_semana_mes.php",
-    data: {"mes": $('#mes').val()},
+    data: {"mes": control.val()},
     dataType: 'html',
-    beforeSend: function(){ $('#loader').fadeIn(); },
     success: function(data){
-      $('#loader').fadeOut();
       $('#semana').html(data);
-      $('#semanaFocalizacion').html(data);
     },
     error: function(data){
-      $('#loader').fadeOut();
-      console.log(data);
+      console.log(data.responseText);
+    }
+  });
+}
+
+function buscarSemanasMesExportar(control){
+  $.ajax({
+    type: "post",
+    url: "functions/fn_sede_buscar_semana_mes.php",
+    data: {"mes": control.val()},
+    dataType: 'html',
+    success: function(data){
+      $('#semana_exportar').html(data);
+    },
+    error: function(data){
+      console.log(data.responseText);
     }
   });
 }
@@ -202,12 +216,12 @@ function subirArchivoPriorizacion(){
           Command: toastr.success(
             data.mensaje,
             "Cambio de estado", { onHidden : function(){ $('#loader').fadeOut(); } }
-          );
+            );
         } else {
           Command: toastr.error(
             data.mensaje,
             "Error al subir datos", { onHidden : function(){ $('#loader').fadeOut(); } }
-          );
+            );
         }
       },
       error: function(data){ console.log(data);
@@ -215,7 +229,7 @@ function subirArchivoPriorizacion(){
         Command: toastr.error(
           "Al parecer existe un problema en el servidor. Por favor comuníquese con el administrador del sitio InfoPAE.",
           "Error al subir datos", { onHidden : function(){ $('#loader').fadeOut(); } }
-        );
+          );
       }
     });
   }
@@ -250,12 +264,12 @@ function subirArchivoFocalizacion(){
                 }
               }
             }
-          );
+            );
         } else {
           Command: toastr.error(
             data.mensaje,
             "Error al subir datos", { onHidden : function(){ $('#loader').fadeOut(); } }
-          );
+            );
         }
       },
       error: function(data){
@@ -264,14 +278,13 @@ function subirArchivoFocalizacion(){
         Command: toastr.error(
           "Al parecer existe un problema en el servidor. Por favor comuníquese con el administrador del sitio InfoPAE.",
           "Error al subir datos", { onHidden : function(){ $('#loader').fadeOut(); } }
-        );
+          );
       }
     });
   }
 }
 
-function generarInformeFocalizacion()
-{
+function generarInformeFocalizacion(){
   window.open('functions/fn_sede_generar_informe.php?semana='+$('#semanaFocalizacion').val(), '_blank');
 }
 
@@ -288,4 +301,17 @@ function verInfraestructurasSede(codigoSede){
 function verTitularesSede(codigoSede){
   $('#formTitularesSede #cod_sede').val(codigoSede);
   $('#formTitularesSede').submit();
+}
+
+function abrir_ventana_exportar_priorizacion(){
+  $('#ventana_formulario_exportar_priorizacion').modal();
+}
+
+function exportar_priorizacion(){
+  if ($('#formulario_exportar_priorizacion').valid()) {
+    var mes = $('#mes_exportar').val();
+    var semana = $('#semana_exportar').val();
+
+    window.open('functions/fn_sedes_exportar_priorizacion.php?mes='+mes+'&semana='+semana, '_blank');
+  }
 }

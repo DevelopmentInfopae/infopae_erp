@@ -695,6 +695,7 @@
     <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 
 
     <script src="<?php echo $baseUrl; ?>/modules/despachos/js/despachos.js"></script>

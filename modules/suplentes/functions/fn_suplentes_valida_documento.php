@@ -5,7 +5,7 @@
 	$semanas = "";
 	$num_doc = $_POST['num_doc'];
 
-	$resultado_focalizacion = $Link->query("SELECT table_name AS nombre_tabla FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name like 'focalizacion%' ");
+	$resultado_focalizacion = $Link->query("SELECT table_name AS nombre_tabla FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name like 'suplentes%' ");
 	if ($resultado_focalizacion->num_rows > 0) {
 		while ($registro_focalizacion = $resultado_focalizacion->fetch_assoc()) {
 			$resultado_estudiante = $Link->query("SELECT * FROM ".$registro_focalizacion['nombre_tabla']." WHERE num_doc = ".$num_doc.";");

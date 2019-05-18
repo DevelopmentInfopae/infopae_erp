@@ -203,6 +203,7 @@ if (!in_array($row['Semana'], $semanasMostrar, true)) {
       $clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
       if($clave !== false){
         $ciclo = $row['CICLO'];
+        $ciclos[] = $ciclo;
         if($mesInicial != $row['MES']){
           $mesesIniciales++;
           if($mesesIniciales > 1){
@@ -279,13 +280,15 @@ for ($i=0; $i < count($semanasMostrar) ; $i++) {
 }
 
 $auxCiclos = '';
-for ($i=0; $i < count($ciclos) ; $i++) {
-  if($i > 0){
-    $auxCiclos = $auxCiclos.", ";
-  }
-  $auxCiclos = $auxCiclos.$ciclos[$i];
-}
+// var_dump($ciclos);
+// for ($i=0; $i < count($ciclos) ; $i++) {
+//   if($i > 0){
+//     $auxCiclos = $auxCiclos.", ";
+//   }
+//   $auxCiclos = $auxCiclos.$ciclos[$i];
+// }
 
+$auxCiclos = $ciclos[0];
 
 $auxMenus = '';
 for ($i=0; $i < count($menusMostrar) ; $i++) {
@@ -333,13 +336,17 @@ $total1 = 0;
 $total2 = 0;
 $total3 = 0;
 $totalTotal = 0;
-for ($i=0; $i < /*count($sedes)*/1; $i++) {
-  $auxSede = $sedes[$i];
-  $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."'";
+
+$sede_unicas = array_unique($sedes);
+foreach ($sede_unicas as $key => $sede_unica) {
+  $auxSede = $sede_unica;
+
+  $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede, (Cobertura_G1 + Cobertura_G2 + Cobertura_G3) sumaCoberturas FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."' ORDER BY sumaCoberturas DESC LIMIT 1";
   // Consulta que busca las coberturas de las diferentes sedes.
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     while($row = $resultado->fetch_assoc()) {
+      // var_dump($row);
       $sedeCobertura['cod_sede'] = $row['cod_sede'];
       $sedeCobertura['grupo1'] = $row["Cobertura_G1"];
       $sedeCobertura['grupo2'] = $row["Cobertura_G2"];
@@ -355,6 +362,30 @@ for ($i=0; $i < /*count($sedes)*/1; $i++) {
 
   }
 }
+// for ($i=0; $i < count($sede_unicas); $i++) {
+//   $auxSede = $sede_unicas[$i];
+//   $consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede, (Cobertura_G1 + Cobertura_G2 + Cobertura_G3) sumaCoberturas FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."' ORDER BY sumaCoberturas DESC LIMIT 1";
+//   echo $consulta . "<br>";
+//   // Consulta que busca las coberturas de las diferentes sedes.
+//   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+//   if($resultado->num_rows >= 1){
+//     while($row = $resultado->fetch_assoc()) {
+//       // var_dump($row);
+//       $sedeCobertura['cod_sede'] = $row['cod_sede'];
+//       $sedeCobertura['grupo1'] = $row["Cobertura_G1"];
+//       $sedeCobertura['grupo2'] = $row["Cobertura_G2"];
+//       $sedeCobertura['grupo3'] = $row["Cobertura_G3"];
+//       $sedeCobertura['total'] = $row["Cobertura_G1"] + $row["Cobertura_G2"] + $row["Cobertura_G3"];
+//       $sedesCobertura[] = $sedeCobertura;
+
+//       $total1 += $row["Cobertura_G1"];
+//       $total2 += $row["Cobertura_G2"];
+//       $total3 += $row["Cobertura_G3"];
+//       $totalTotal = $totalTotal +  $sedeCobertura['total'];
+//     }
+
+//   }
+// }
 
 $totalesSedeCobertura  = array(
     "grupo1" => $total1,
@@ -429,6 +460,8 @@ for ($i=0; $i < count($despachos) ; $i++) {
 
 // Vamos unificar los alimentos para que no se repitan
 $alimento = $alimentos[0];
+
+// var_dump($totalesSedeCobertura);
 
 if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
 if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
@@ -505,16 +538,18 @@ for ($i=1; $i < count($alimentos) ; $i++) {
 for ($i=0; $i < count($alimentosTotales) ; $i++) {
   $alimentoTotal = $alimentosTotales[$i];
   $auxCodigo = $alimentoTotal['codigo'];
-  $consulta = " select distinct ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
-  from  fichatecnicadet ftd
-  inner join productos$anno  p on ftd.codigo=p.codigo
-  inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
-  where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento' ";
+  $auxDespacho = $alimentoTotal["Num_Doc"];
+  $consulta = "SELECT DISTINCT p.Codigo, p.Descripcion AS Componente, p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5,
+  (SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $auxDespacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida
+              FROM productos$anno p
+              LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
+              INNER JOIN menu_aportes_calynut m ON p.Codigo=m.cod_prod
+              WHERE p.Codigo = $auxCodigo";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $row = $resultado->fetch_assoc();
     $alimentoTotal['componente'] = $row['Componente'];
-    $alimentoTotal['presentacion'] = $row['presentacion'];
+    $alimentoTotal['presentacion'] = $row['Umedida'];
     $alimentoTotal['grupo_alim'] = $row['grupo_alim'];
     $alimentoTotal['orden_grupo_alim'] = $row['orden_grupo_alim'];
 
@@ -767,7 +802,9 @@ $grupoAlimActual = '';
       $pdf->Cell(49,4,utf8_decode($aux),1,0,'L',False);
 
       if($item['presentacion'] == 'u'){
-         $aux = round(0+$item['grupo1']);
+         $aux = 0+$item['grupo1'];
+         $aux = number_format($aux, 2, '.', '');
+         // $aux = round(0+$item['grupo1']);
       }else{
          $aux = 0+$item['grupo1'];
          $aux = number_format($aux, 2, '.', '');
@@ -776,7 +813,9 @@ $grupoAlimActual = '';
 
 
     if($item['presentacion'] == 'u'){
-      $aux = round(0+$item['grupo2']);
+      $aux = 0+$item['grupo2'];
+      $aux = number_format($aux, 2, '.', '');
+      // $aux = round(0+$item['grupo2']);
     }else{
       $aux = 0+$item['grupo2'];
       $aux = number_format($aux, 2, '.', '');
@@ -784,7 +823,9 @@ $grupoAlimActual = '';
     $pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
     if($item['presentacion'] == 'u'){
-      $aux = round(0+$item['grupo3']);
+      $aux = 0+$item['grupo3'];
+      $aux = number_format($aux, 2, '.', '');
+      // $aux = round(0+$item['grupo3']);
     }else{
       $aux = 0+$item['grupo3'];
       $aux = number_format($aux, 2, '.', '');
@@ -825,7 +866,13 @@ $grupoAlimActual = '';
     $pdf->Cell(13.141,4,$aux,1,0,'C',False);
 
     if($item['presentacion'] == 'u'){
-      $aux = round(0+$aux);
+      // var_dump($modalidad);
+      if (strpos($item['componente'], "HUEVO") !== FALSE) {
+        $aux = ceil(0+$aux);
+      } else {
+        $aux = round(0+$aux);
+      }
+      // $aux = round(0+$aux);
     }
     else{
       $aux = number_format($aux, 2, '.', '');

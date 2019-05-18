@@ -1,4 +1,4 @@
-<?php 
+<?php
   require_once '../../../config.php';
   require_once '../../../db/conexion.php';
 
@@ -12,7 +12,7 @@
   	while ($datos = $respuesta->fetch_assoc()) {
       $num++;
       if (isset($datos['Id'])) {
-        $datos['input'] = "<input type='checkbox' class='checkDespacho' value='".$datos['Id']."' name='idDespacho[]' data-num='$num'><input type='checkbox' value='".$datos['BodegaDestino']."' id='sede_$num' name='sedes[]' style='display:none;'>";
+        $datos['input'] = "<input type='checkbox' class='checkDespacho' value='".$datos['Id']."' name='idDespacho[]' data-num='$num' data-inst='".$datos['cod_inst']."'><input type='checkbox' value='".$datos['BodegaDestino']."' id='sede_$num' name='sedes[]' style='display:none;'>";
       }
       if (isset($datos['Aprobado'])) {
         if ($datos['Aprobado'] == "0") {
