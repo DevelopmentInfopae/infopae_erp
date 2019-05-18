@@ -7,7 +7,26 @@ require_once '../../../config.php';
 
 $fecha = date("Y-m-d H:i:s");
 $anno = date("y"); 
-$mes = date("m");
+
+
+
+
+if( isset($_POST["mes"]) && $_POST["mes"] != "" ){
+	$mes = $_POST["mes"];
+}else{
+	$mes = date("m");
+}
+
+if( isset($_POST["dia"]) && $_POST["dia"] != "" ){
+	$dia = $_POST["dia"];
+}else{
+	$dia = intval(date("d"));
+}
+
+
+
+
+
 
 
 $sede = mysqli_real_escape_string($Link, $_POST['sede']);
@@ -17,7 +36,6 @@ $grupo = mysqli_real_escape_string($Link, $_POST['grupo']);
 $banderaRegistros = mysqli_real_escape_string($Link, $_POST['banderaRegistros']);
 
 
-$dia = intval(date("d"));
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
 $asistencias = $_POST['asistencia'];
@@ -47,7 +65,11 @@ if($banderaRegistros == 0){
 		$consulta .= " ) ";
 		$aux++;
 	}
+	
+
 	//echo $consulta;
+	
+
 	$result = $Link->query($consulta) or die ('Insert error'. mysqli_error($Link));
 	if($result){
 		$resultadoAJAX = array(
@@ -79,7 +101,9 @@ if($banderaRegistros == 0){
 
 	}
 
+	
 	//echo $consulta;
+
 
 	$result = $Link->multi_query($consulta) or die ('Insert error'. mysqli_error($Link));
 	if($result){

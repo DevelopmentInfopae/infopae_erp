@@ -10,8 +10,39 @@ $grado = "";
 $grupo = "";
 $fecha = date("Y-m-d H:i:s");
 $anno = date("y"); 
-$mes = date("m");
-$dia = intval(date("d"));
+
+
+
+
+if(isset($_POST["mes"]) && $_POST["mes"] != ""){
+	$mes = mysqli_real_escape_string($Link, $_POST["mes"]);
+}else{
+	$mes = date("m");
+}
+
+
+
+
+
+
+if(isset($_POST["dia"]) && $_POST["dia"] != ""){
+	$dia = mysqli_real_escape_string($Link, $_POST["dia"]);
+}else{
+	$dia = intval(date("d"));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 $periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 

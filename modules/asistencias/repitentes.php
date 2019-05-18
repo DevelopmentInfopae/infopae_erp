@@ -10,13 +10,14 @@
 	date_default_timezone_set('America/Bogota');
 	$fecha = date("Y-m-d H:i:s");
 	$cacheBusting = date("YmdHis");
+	
+
+
 	$dia = intval(date("d"));
 	$mes = date("m");
 	$anno = date("Y");
 
-	$dia = intval("12");
-	$mes = "04";
-	$anno = "2019";
+
 
 
 	//Busqueda de la semana actual
@@ -348,8 +349,8 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_repitentes.js?v=<?= $cacheBusting; ?>"></script>
 <script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/asistencias_repitentes.js?v=<?= $cacheBusting; ?>"></script>
 
 
 

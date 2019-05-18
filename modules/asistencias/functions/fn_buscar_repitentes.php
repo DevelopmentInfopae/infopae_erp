@@ -4,6 +4,10 @@ require_once '../../../config.php';
 
 // Declaración de variables.
 $data = [];
+
+$mes = "";
+$dia = "";
+
 $semanaActual = "";
 $sede = "";
 $nivel = "";
@@ -12,8 +16,22 @@ $grupo = "";
 
 $fecha = date("Y-m-d H:i:s");
 $anno = date("y"); 
-$mes = date("m");
-$dia = intval(date("d"));
+
+
+
+if(isset($_POST["mes"]) && $_POST["mes"] != ""){
+	$mes = mysqli_real_escape_string($Link, $_POST["mes"]);
+}else{
+	$mes = date("m");
+}
+
+if(isset($_POST["dia"]) && $_POST["dia"] != ""){
+	$dia = mysqli_real_escape_string($Link, $_POST["dia"]);
+}else{
+	$dia = intval(date("d"));
+}
+
+
 
 $periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
@@ -53,6 +71,7 @@ $consulta .= " ORDER BY f.cod_grado , f.nom_grupo , f.ape1 ";
 
 
 
+//echo "<br><br>$consulta<br><br>";
 
 
 
@@ -65,7 +84,6 @@ $consulta .= " ORDER BY f.cod_grado , f.nom_grupo , f.ape1 ";
 
 
 
-//echo $consulta;
 
 $resultado = $Link->query($consulta);
 if($resultado){

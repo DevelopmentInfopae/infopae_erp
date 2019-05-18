@@ -4,6 +4,16 @@ $(document).ready(function(){
 
 	cargarMunicipios();
 
+	$( "#mes" ).change(function() {
+		localStorage.setItem("wappsi_mes", $("#mes").val());
+		cargarSemanas();
+	});
+
+	$( "#semana" ).change(function() {
+		localStorage.setItem("wappsi_semana", $("#semana").val());
+		cargarDias();
+	});
+
 	$( "#municipio" ).change(function() {
 		cargarInstituciones();
 	});	
@@ -27,12 +37,73 @@ $(document).ready(function(){
 			cargarGrupos();
 		}
 	});
-
 });
 
+function cargarDias(){
+	var formData = new FormData();
+	formData.append('mes', $('#mes').val());
+	formData.append('semana', $('#semana').val());
+	$.ajax({
+		type: "post",
+		url: "functions/fn_buscar_dias.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			if(data.estado == 1){
+				$('#dia').html(data.opciones);
+				$('#dia').val(localStorage.getItem("wappsi_dia"));
+				localStorage.setItem("wappsi_dia", $("#dia").val());
+				// if($('#semana').val() != ""){
+				// 	cargarDias()
+				// }
+				$('#loader').fadeOut();
+			}
+			else{
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+}
 
+function cargarSemanas(){
+	var formData = new FormData();
+	formData.append('mes', $('#mes').val());
 
-
+	$.ajax({
+		type: "post",
+		url: "functions/fn_buscar_semanas.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			if(data.estado == 1){
+				$('#semana').html(data.opciones);
+				$('#semana').val(localStorage.getItem("wappsi_semana"));
+				localStorage.setItem("wappsi_semana", $("#semana").val());
+				if($('#semana').val() != ""){
+					cargarDias()
+				}
+				$('#loader').fadeOut();
+			}
+			else{
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+}
 
 function cargarMunicipios(){
 	//formData.append('municipio', $('#municipio').val());
@@ -129,7 +200,13 @@ function cargarSedes(){
 
 function cargarNiveles(){
 	var formData = new FormData();
-	formData.append('semanaActual', $('#semanaActual').val());
+	
+	if($('#semana').val() != "" && $('#semana').val() != null){
+		formData.append('semanaActual', $('#semana').val());
+	}else{
+		formData.append('semanaActual', $('#semanaActual').val());
+	}
+
 	formData.append('sede', $('#sede').val());
 	$.ajax({
 		type: "post",
@@ -162,9 +239,16 @@ function cargarNiveles(){
 function cargarGrados(){
 	console.log("Función Cargar Grados");
 	var formData = new FormData();
-	formData.append('semanaActual', $('#semanaActual').val());
+
+	if($('#semana').val() != "" && $('#semana').val() != null){
+		formData.append('semanaActual', $('#semana').val());
+	}else{
+		formData.append('semanaActual', $('#semanaActual').val());
+	}
+
 	formData.append('sede', $('#sede').val());
 	formData.append('nivel', $('#nivel').val());
+
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_grados.php",
@@ -198,7 +282,14 @@ function cargarGrados(){
 function cargarGrupos(){
 	console.log("Función Cargar Grupos");
 	var formData = new FormData();
-	formData.append('semanaActual', $('#semanaActual').val());
+
+
+	if($('#semana').val() != "" && $('#semana').val() != null){
+		formData.append('semanaActual', $('#semana').val());
+	}else{
+		formData.append('semanaActual', $('#semanaActual').val());
+	}
+
 	formData.append('grado', $('#grado').val());
 	formData.append('sede', $('#sede').val());
 	$.ajax({
@@ -227,7 +318,13 @@ function cargarGrupos(){
 
 function totalEstudiantesSede(){
 	var formData = new FormData();
-	formData.append('semanaActual', $('#semanaActual').val());
+
+	if($('#semana').val() != "" && $('#semana').val() != null){
+		formData.append('semanaActual', $('#semana').val());
+	}else{
+		formData.append('semanaActual', $('#semanaActual').val());
+	}
+	
 	formData.append('sede', $('#sede').val());
 	$.ajax({
 		type: "post",
@@ -266,7 +363,38 @@ function actualizarMarcadores(flagConsumo){
 	reg_repitieron =[];
 
 	var formData = new FormData();
-	formData.append('semanaActual', $('#semanaActual').val());
+
+
+
+	if($('#dia').val() != "" && $('#dia').val() != null){
+		formData.append('dia', $('#dia').val());
+	}
+
+	if($('#mes').val() != "" && $('#mes').val() != null){
+		formData.append('mes', $('#mes').val());
+	}
+
+
+
+
+
+
+	if($('#semana').val() != "" && $('#semana').val() != null){
+		formData.append('semanaActual', $('#semana').val());
+	}else{
+		formData.append('semanaActual', $('#semanaActual').val());
+	}
+
+
+
+
+
+
+
+
+
+
+
 	formData.append('sede', $('#sede').val());
 	$.ajax({
 		type: "post",

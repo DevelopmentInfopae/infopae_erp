@@ -6,13 +6,27 @@ require_once '../../../config.php';
 //var_dump($_SESSION);
 
 $fecha = date("Y-m-d H:i:s");
-$anno = date("y"); 
-$mes = date("m");
+$anno = date("y");
+
+
+if(isset($_POST['mes']) && $_POST['mes'] != ""){
+	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
+}else{
+	$mes = date("m");
+}
+
+if(isset($_POST['dia']) && $_POST['dia'] != ""){
+	$dia = mysqli_real_escape_string($Link, $_POST['dia']);
+}else{
+	$dia = intval(date("d"));
+}
+
+
+
 
 
 $sede = mysqli_real_escape_string($Link, $_POST['sede']);
 $semana = mysqli_real_escape_string($Link, $_POST['semana']);
-$dia = intval(date("d"));
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
 $repitentes = $_POST['repitente'];

@@ -8,6 +8,10 @@ var noConsumieron = [];
 var noRepitieron =[];
 var datatables = null;
 
+localStorage.removeItem("wappsi_ausentes");
+localStorage.removeItem("wappsi_repitentes");
+localStorage.removeItem("wappsi_no_consumieron");
+localStorage.removeItem("wappsi_no_repitieron");
 
 $(document).ready(function(){
 
@@ -103,7 +107,7 @@ $(document).ready(function(){
 	});
 
 	$('#ventanaSellar .btnSiSellar').click(function(){
-		sellarAsistencia(1);
+		guardarEntregas(1);
 	});
 
 
@@ -253,10 +257,14 @@ $(document).ready(function(){
 		localStorage.setItem("wappsi_faltan", faltan);
 		$(".asistenciaFaltantes").html(faltan);
 
+
+		// localStorage.removeItem("wappsi_no_consumieron");
+		// console.log(localStorage.getItem("wappsi_no_consumieron"));		
 		var aux = JSON.parse(localStorage.getItem("wappsi_no_consumieron"));
 		aux.push($(this).val());
 		console.log(aux);
 		localStorage.setItem("wappsi_no_consumieron", JSON.stringify(aux));
+
 
 		// Si este estudiante que no consume esta entre los repitentes, hay que quitarlo de la lista de repitentes.
 
@@ -348,54 +356,38 @@ $(document).ready(function(){
 	});
 });
 
+function validarAsistenciaSellada(){
+	console.log("Validación de sistencia Sellada");
+	var formData = new FormData();
+	formData.append('semanaActual', $('#semanaActual').val());
+	formData.append('sede', $('#sede').val());
+	$.ajax({
+		type: "post",
+		url: "functions/fn_validar_asistencia_no_sellada.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			console.log(data);
+			if(data.estado == 1){
+				Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
 
-	function validarAsistenciaSellada(){
-		console.log("Validación de sistencia Sellada");
-		var formData = new FormData();
-		formData.append('semanaActual', $('#semanaActual').val());
-		formData.append('sede', $('#sede').val());
-		$.ajax({
-			type: "post",
-			url: "functions/fn_validar_asistencia_no_sellada.php",
-			dataType: "json",
-			contentType: false,
-			processData: false,
-			data: formData,
-			beforeSend: function(){ $('#loader').fadeIn(); },
-			success: function(data){
-				console.log(data);
-				if(data.estado == 1){
-					Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
-
-				}
-				else{
-					$('#loader').fadeOut();
-					cargarEstudiantes();
-				}		
-			},
-			error: function(data){
-				console.log(data);
-				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 			}
-		});
-	}
-
-
-
-
-
-
-
-
-
-
+			else{
+				$('#loader').fadeOut();
+				cargarEstudiantes();
+			}		
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+}
 
 function cargarEstudiantes(){
-
-
-
-
-
 	var dibujado = 0;
 	var sede = localStorage.getItem("wappsi_sede");
 
@@ -409,7 +401,36 @@ function cargarEstudiantes(){
 
 	var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
 
-	var semanaActual = $('#semanaActual').val();
+	
+
+	var mes = "";
+	var semanaActual = "";
+	var dia = "";
+
+	if($('#dia').val() != "" && $('#dia').val() != null){
+		dia = $("#dia").val();	
+	}
+
+	if($('#mes').val() != "" && $('#mes').val() != null){
+		mes = $("#mes").val();	
+	}	
+
+	if($('#semana').val() != "" && $('#semana').val() != null){
+		semanaActual = $("#semana").val();	
+	}else{
+		semanaActual = $('#semanaActual').val();
+	}	
+	
+
+
+
+
+
+
+
+
+
+
 	var sede = $('#sede').val();
 	var nivel = $('#nivel').val();
 	var grado = $('#grado').val();
@@ -422,6 +443,8 @@ function cargarEstudiantes(){
 		method: 'POST',
 		url: 'functions/fn_buscar_consumidores.php',
 		data:{
+			mes: mes,
+			dia: dia,
 			semanaActual: semanaActual,
 			sede: sede,
 			nivel: nivel,
@@ -461,19 +484,16 @@ function cargarEstudiantes(){
 			"render": function ( data, type, full, meta ) {
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
-				var asistencia = full.asistencia; 
+				var asistencia = full.asistencia;			
 				var consumio = full.consumio; 
 
 				
-				var index = auxConsumieron.indexOf(documento);
+
 				
 				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-consume "+documento+"\" ";
 				
-				if (asistencia != 1) { opciones = opciones + " disabled "; }else{
-					if (index > -1) {opciones = opciones + " checked ";}
-				}
+				if (asistencia != 1) { opciones = opciones + " disabled "; }
 				if (consumio == 1) { opciones = opciones + " checked "; }
-
 
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
 
@@ -484,12 +504,17 @@ function cargarEstudiantes(){
 			sortable: false,
 			className: "textoCentrado",
 			"render": function ( data, type, full, meta ) {
-				var tipoDocumento = full.tipo_doc;
-				var documento = full.num_doc;
-				var asistencia = full.asistencia; 
+				// var tipoDocumento = full.tipo_doc;
+				// var documento = full.num_doc;
+				// var asistencia = full.asistencia;
+				// var index = auxRepitentes.indexOf(documento);
+				// if (index > -1) {opciones = "Si"; }else{opciones = "No"; }
+				
+
+				var repite = full.repite; 
 				var opciones = ""; 
-				var index = auxRepitentes.indexOf(documento);
-				if (index > -1) {opciones = "Si"; }else{opciones = "No"; }
+				if (repite == 1) {opciones = "Si"; }else{opciones = "No"; }
+
 				return opciones;
 			}
 		},		
@@ -598,14 +623,42 @@ function cargarEstudiantes(){
 	});	
 }
 
-function guardarEntregas(){
+function guardarEntregas(flagSellar){
 	console.log("Guardar asistencia.");
 	var bandera = 0;	
 	var repitente = [];
 	var documento = "";
 	var tipoDocumento = "";
-	var semana = $('#semanaActual').val();	
+
+	var mes = "";
+	var semana = "";
+	var dia = "";
+
+	if($("#mes").val() != "" && $("#mes").val() != null){
+		mes = $("#mes").val();
+	}
+
+
+	if($("#semana").val() != "" && $("#semana").val() != null){
+		semana = $("#semana").val();
+	}else{
+		semana = $('#semanaActual').val();	
+	}
+	
+	if($("#dia").val() != "" && $("#dia").val() != null){
+		dia = $("#dia").val();
+	}
+
+
+
+
+
+
+
 	var formData = new FormData();
+
+	formData.append('mes', mes);
+	formData.append('dia', dia);
 	formData.append('semana', semana);
 	formData.append('sede', $('#sede').val());
 
@@ -642,10 +695,23 @@ function guardarEntregas(){
 			beforeSend: function(){ $("#loader").fadeIn(); },
 			success: function(data){
 				if(data.state == 1){
-					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
-					// location.href="URL para redireccionar";
-					location.reload();
-					}});
+
+
+					if(flagSellar == 1){
+						sellarAsistencia(1);
+					}else{
+						Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
+						// location.href="URL para redireccionar";
+						location.reload();
+						}});
+					}
+
+
+
+
+
+
+
 				}else{
 					Command:toastr.error(data.message,"Error al hacer el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});
 				}
@@ -668,8 +734,36 @@ function restablecerContadores(){
 
 function actualizarAsistencia(){
 	console.log("Actualizar asistencia de estudiante.");
+	var mes = "";
+	var semana = "";
+	var dia = "";
+
+	if($("#mes").val() != "" && $("#mes").val() != null){
+		mes = $("#mes").val();
+	}
+
+	if($("#semana").val() != "" && $("#semana").val() != null){
+		semana = $("#semana").val();
+	}else{
+		semana = $('#semanaActual').val();
+	}
+
+	if($("#dia").val() != "" && $("#dia").val() != null){
+		dia = $("#dia").val();
+	}
+
+
+
+
+
+
+
+
+
 	var formData = new FormData();
-	formData.append('semana', $('#semanaActual').val());
+	formData.append('mes', mes);
+	formData.append('semana', semana);
+	formData.append('dia', dia);
 	formData.append('sede', $('#sede').val());
 	formData.append('documento', $('#asistenteTramite').val());
 	formData.append('tipoDocumento', $('#tipoDocumentoAsistenteTramite').val());
@@ -718,8 +812,39 @@ function sellarAsistencia(flag){
   		$('#ventanaSellar').modal();
 	}else{
 		console.log('Inicia Sellar asistencia');
+
+
+
+
+
+		var mes = "";
+		var semana = "";
+		var dia = "";
+
+		if( $("#mes").val() != "" && $("#mes").val() != null ){
+			mes = $("#mes").val();
+		}
+
+		if( $("#semana").val() != "" && $("#semana").val() != null ){
+			semana = $("#semana").val();
+		}else{
+			semana =  $('#semanaActual').val();
+		}
+
+		if( $("#dia").val() != "" && $("#dia").val() != null ){
+			dia = $("#dia").val();
+		}
+
+
+
+
+
 		var formData = new FormData();
-		formData.append('semana', $('#semanaActual').val());
+		formData.append('mes', mes);
+		formData.append('semana', semana);
+		formData.append('dia', dia);
+
+
 		formData.append('sede', $('#sede').val());
 
 
@@ -733,7 +858,10 @@ function sellarAsistencia(flag){
 			beforeSend: function(){ $("#loader").fadeIn(); },
 			success: function(data){
 				if(data.state == 1){
-					Command : toastr.success( data.message, "Actualización del registro exitosa", { onHidden : function(){ $('#loader').fadeOut(); /* location.href="URL para redireccionar"; */ }});
+					Command : toastr.success( data.message, "Actualización del registro exitosa", { onHidden : function(){ 
+					$('#loader').fadeOut(); 
+					location.reload();
+				/* location.href="URL para redireccionar"; */ }});
 				}else{
 					Command:toastr.error(data.message,"Error al actualizar el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});
 				}

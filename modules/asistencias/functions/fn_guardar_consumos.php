@@ -2,17 +2,31 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
-// var_dump($_POST);
+//var_dump($_POST);
 //var_dump($_SESSION);
 
 $fecha = date("Y-m-d H:i:s");
 $anno = date("y"); 
-$mes = date("m");
+
+if(isset($_POST["mes"]) && $_POST["mes"] != ""){
+	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
+}else{
+	$mes = date("m");
+}
+
+
+if(isset($_POST["dia"]) && $_POST["dia"] != ""){
+	$dia = mysqli_real_escape_string($Link, $_POST['dia']);
+}else{
+	$dia = intval(date("d"));
+}
+
+
 
 
 $sede = mysqli_real_escape_string($Link, $_POST['sede']);
 $semana = mysqli_real_escape_string($Link, $_POST['semana']);
-$dia = intval(date("d"));
+
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
 
@@ -32,13 +46,12 @@ if(isset($_POST['noConsumieron'])){
 if(isset($_POST['repitieron'])){
 	$repitieron = $_POST['repitieron'];
 }
-
+//var_dump($repitieron);
 
 
 
 
 $consulta = "";
-
 $tipo_doc = "";
 $num_doc = "";
 
@@ -54,8 +67,11 @@ foreach ($consumieron as $consumio){
 		$consulta .= " , repitio = 1 ";
 	}
 
-	$consulta .= " where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and asistencia = 1 
+	$consulta .= " where mes = \"$mes\" and dia = \"$dia\" and asistencia = 1 
 	and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; ";
+
+	// $consulta .= " where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and asistencia = 1 
+	// and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; ";
 }
 
 foreach ($noConsumieron as $noConsumio){
@@ -65,9 +81,11 @@ foreach ($noConsumieron as $noConsumio){
 
 	$consulta .= " update Asistencia_det$mes$anno set consumio = 0 ";	
 	$consulta .= " , repitio = 0 ";
-	$consulta .= " where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and asistencia = 1 
+	$consulta .= " where mes = \"$mes\" and dia = \"$dia\" and asistencia = 1 
 
 	and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; ";
+	// $consulta .= " where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and asistencia = 1
+	// and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; ";
 }
 
 

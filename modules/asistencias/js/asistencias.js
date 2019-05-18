@@ -169,14 +169,39 @@ function restablecerContadores(){
 
 function guardarAsistencia(){
 	console.log("Guardar asistencia.");
+
+	var mes = "";
+	var semana = "";
+	var dia = "";
+
+
 	var bandera = 0;	
 	var asistencia = [];
 	var documento = "";
 	var tipoDocumento = "";
-	var semana = $('#semanaActual').val();
+
+	if($('#mes').val() != "" && $('#mes').val() != null){
+		mes = $('#mes').val();
+	}	
+
+	if($('#semana').val() != "" && $('#semana').val() != null){
+		semana = $('#semana').val();
+	}else{
+		semana = $('#semanaActual').val();
+	}
+
+	if($('#dia').val() != "" && $('#dia').val() != null){
+		dia = $('#dia').val();
+	}	
+
+
 	
 	var formData = new FormData();
+	
+	formData.append('mes', mes);
 	formData.append('semana', semana);
+	formData.append('dia', dia);
+
 	formData.append('sede', $('#sede').val());
 	formData.append('grado', $('#grado').val());
 	formData.append('grupo', $('#grupo').val());
@@ -205,8 +230,8 @@ function guardarAsistencia(){
 
 
 	if(cantidadAsistentes <= 0){
-		bandera++;
-		Command:toastr.warning("Debe asistir almenos un estudiante.","Alerta!",{onHidden:function(){$('#loader').fadeOut();}});
+		// bandera++;
+		// Command:toastr.warning("Debe asistir almenos un estudiante.","Alerta!",{onHidden:function(){$('#loader').fadeOut();}});
 	}
 
 
@@ -239,56 +264,45 @@ function guardarAsistencia(){
 	}
 }
 
+function validarAsistenciaSellada(){
+	console.log("Validación de sistencia Sellada");
+	var formData = new FormData();
+	formData.append('semanaActual', $('#semanaActual').val());
+	formData.append('sede', $('#sede').val());
+	$.ajax({
+		type: "post",
+		url: "functions/fn_validar_asistencia_no_sellada.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			console.log(data);
+			if(data.estado == 1){
+				Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
 
-
-
-
-
-	function validarAsistenciaSellada(){
-		console.log("Validación de sistencia Sellada");
-		var formData = new FormData();
-		formData.append('semanaActual', $('#semanaActual').val());
-		formData.append('sede', $('#sede').val());
-		$.ajax({
-			type: "post",
-			url: "functions/fn_validar_asistencia_no_sellada.php",
-			dataType: "json",
-			contentType: false,
-			processData: false,
-			data: formData,
-			beforeSend: function(){ $('#loader').fadeIn(); },
-			success: function(data){
-				console.log(data);
-				if(data.estado == 1){
-					Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
-
-				}
-				else{
-					$('#loader').fadeOut();
-					cargarEstudiantes();
-				}		
-			},
-			error: function(data){
-				console.log(data);
-				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 			}
-		});
-	}
-
-
-
-
-
-
-
-
-
-
-
-
+			else{
+				$('#loader').fadeOut();
+				cargarEstudiantes();
+			}		
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+}
 
 function cargarEstudiantes(){
 	var dibujado = 0;
+
+
+	var mes = $('#mes').val();
+	var semana = $('#semana').val();
+	var dia = $('#dia').val();
+
 
 	var semanaActual = $('#semanaActual').val();
 	var sede = $('#sede').val();
@@ -313,6 +327,10 @@ function cargarEstudiantes(){
 		method: 'POST',
 		url: 'functions/fn_buscar_estudiantes.php',
 		data:{
+			mes: mes,
+			semana: semana,
+			dia: dia,
+
 			semanaActual: semanaActual,
 			sede: sede,
 			nivel: nivel,
@@ -447,10 +465,4 @@ function cargarEstudiantes(){
 
 
 	});	
-
-
-
-
 }
-
-

@@ -7,16 +7,39 @@ require_once '../../../config.php';
 
 $fecha = date("Y-m-d H:i:s");
 $anno = date("y"); 
-$mes = date("m");
+
+
+
+
+if(isset($_POST["mes"]) && $_POST["mes"] != ""){
+	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
+} else{
+	$mes = date("m");
+}
+
+
+$semana = mysqli_real_escape_string($Link, $_POST['semana']);
+
+
+if(isset($_POST["dia"]) && $_POST["dia"] != ""){
+	$dia = mysqli_real_escape_string($Link, $_POST['dia']);
+} else{
+	$dia = intval(date("d"));
+}
+
+
+
+
+
+
+
 
 $sede = mysqli_real_escape_string($Link, $_POST['sede']);
-$semana = mysqli_real_escape_string($Link, $_POST['semana']);
 
 $documento = mysqli_real_escape_string($Link, $_POST['documento']); 
 $tipoDocumento = mysqli_real_escape_string($Link, $_POST['tipoDocumento']); 
 $valor = mysqli_real_escape_string($Link, $_POST['valor']); 
 
-$dia = intval(date("d"));
 
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 

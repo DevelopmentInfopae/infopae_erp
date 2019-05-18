@@ -19,15 +19,13 @@
 	$mes = date("m");
 	$anno = date("Y");
 
-	$dia = intval("12");
-	$mes = "04";
-	$anno = "2019";
+
 
 
 	//Busqueda de la semana actual
 	$semanaActual = "";
 	$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
-	// var_dump($consulta);				
+	//var_dump($consulta);				
 	$resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
 		$row = $resultado->fetch_assoc();

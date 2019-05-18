@@ -16,9 +16,7 @@
 	$mes = date("m");
 	$anno = date("Y");
 
-	$dia = intval("12");
-	$mes = "04";
-	$anno = "2019";
+
 
 
 	//Busqueda de la semana actual

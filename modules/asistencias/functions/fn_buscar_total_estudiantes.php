@@ -5,9 +5,28 @@ require_once '../../../config.php';
 $semanaActual = "";
 $sede = "";
 $total = "";
-if(isset($_POST['semanaActual']) && $_POST['semanaActual'] != ''){
+
+
+
+
+if(isset($_POST['semana']) && $_POST['semana'] != ''){
+	$semanaActual = mysqli_real_escape_string($Link, $_POST['semana']);
+}else{
+	if(isset($_POST['semanaActual']) && $_POST['semanaActual'] != ''){
 		$semanaActual = mysqli_real_escape_string($Link, $_POST['semanaActual']);
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
 if(isset($_POST['sede']) && $_POST['sede'] != ''){
 		$sede = mysqli_real_escape_string($Link, $_POST['sede']);
 }

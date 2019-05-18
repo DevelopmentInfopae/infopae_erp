@@ -4,6 +4,12 @@ require_once '../../../config.php';
 
 // Declaración de variables.
 $data = [];
+
+$mes = "";
+$semana = "";
+$dia = "";
+
+
 $semanaActual = "";
 $sede = "";
 $nivel = "";
@@ -14,7 +20,12 @@ $periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
 //var_dump($_POST);
 
-$semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
+
+if(isset($_POST["semana"]) && $_POST["semana"] != ""){
+	$semanaActual = mysqli_real_escape_string($Link, $_POST["semana"]);
+}else{
+	$semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
+}
 
 $sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
 
@@ -25,6 +36,7 @@ $grado = (isset($_POST["grado"]) && $_POST["grado"] != "") ? mysqli_real_escape_
 $grupo = (isset($_POST["grupo"]) && $_POST["grupo"] != "") ? mysqli_real_escape_string($Link, $_POST["grupo"]) : "";
 
 $banderaRegistros = 0;
+
 include "fn_buscar_registros_asistencia.php"; 
 
 if($banderaRegistros == 0){
@@ -49,6 +61,8 @@ if($banderaRegistros == 0){
 		$consulta .= " and f.nom_grupo = $grupo ";
 	}
 	$consulta .= " order by f.cod_grado, f.nom_grupo, f.ape1 ";
+	
+	// echo "<br><br>$consulta<br><br>";
 
 	$resultado = $Link->query($consulta);
 	if($resultado->num_rows > 0){
@@ -59,7 +73,6 @@ if($banderaRegistros == 0){
 
 }
 
-//echo "<br><br>$consulta<br><br>";
 
 $output = [
   'sEcho' => 1,

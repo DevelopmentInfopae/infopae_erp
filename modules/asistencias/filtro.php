@@ -17,6 +17,46 @@
 							<form action="" id="form_asistencia" name="form_asistencia" method="post">
 								<div class="row">
 
+
+									<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+										
+										<div class="col-sm-4 form-group">
+											<label for="mes">Mes</label>
+											<select class="form-control" name="mes" id="mes" required>
+												<option value="">Seleccione uno</option>
+												<option value="01">Enero</option>									
+												<option value="02">Febrero</option>									
+												<option value="03">Marzo</option>									
+												<option value="04">Abril</option>									
+												<option value="05">Mayo</option>									
+												<option value="06">Junio</option>									
+												<option value="07">Julio</option>									
+												<option value="08">Agosto</option>									
+												<option value="09">Septiembre</option>									
+												<option value="10">Octubre</option>									
+												<option value="11">Noviembre</option>									
+												<option value="12">Diciembre</option>									
+											</select>
+										</div>
+
+										<div class="col-sm-4 form-group">
+											<label for="semana">Semana</label>
+											<select class="form-control" name="semana" id="semana" required>
+												<option value="">Seleccione uno</option>									
+											</select>
+										</div>
+
+										<div class="col-sm-4 form-group">
+											<label for="dia">Día</label>
+											<select class="form-control" name="dia" id="dia" required>
+												<option value="">Seleccione uno</option>									
+											</select>
+										</div>
+
+									<?php } ?>
+
+
+
 									<div class="col-sm-4 form-group">
 										<label for="municipio">Municipio</label>
 										<select class="form-control" name="municipio" id="municipio" required>

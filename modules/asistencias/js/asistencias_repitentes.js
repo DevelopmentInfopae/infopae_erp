@@ -1,9 +1,14 @@
 jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
+
+
+
 var total = 0;
 var faltan = 0;
 var ausentes = [];
 var repitentes = [];
 var datatables = null;
+
+
 
 for (x=0; x<=localStorage.length-1; x++)  {  
   clave = localStorage.key(x); 
@@ -12,8 +17,6 @@ for (x=0; x<=localStorage.length-1; x++)  {
 }
 
 console.log(localStorage.getItem("wappsi_sede"));
-
-
 
 $(document).ready(function(){
 
@@ -75,7 +78,7 @@ $(document).ready(function(){
 
 	$('#btnBuscar').click(function(){
 		if($('#form_asistencia').valid()){
-			vvalidarAsistenciaSellada();			
+			validarAsistenciaSellada();			
 		}
 	});
 
@@ -214,50 +217,61 @@ $(document).ready(function(){
 	});		
 });
 
+function validarAsistenciaSellada(){
+	console.log("Validación de sistencia Sellada");
+	var formData = new FormData();
+	formData.append('semanaActual', $('#semanaActual').val());
+	formData.append('sede', $('#sede').val());
+	$.ajax({
+		type: "post",
+		url: "functions/fn_validar_asistencia_no_sellada.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			console.log(data);
+			if(data.estado == 1){
+				Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
 
-	function validarAsistenciaSellada(){
-		console.log("Validación de sistencia Sellada");
-		var formData = new FormData();
-		formData.append('semanaActual', $('#semanaActual').val());
-		formData.append('sede', $('#sede').val());
-		$.ajax({
-			type: "post",
-			url: "functions/fn_validar_asistencia_no_sellada.php",
-			dataType: "json",
-			contentType: false,
-			processData: false,
-			data: formData,
-			beforeSend: function(){ $('#loader').fadeIn(); },
-			success: function(data){
-				console.log(data);
-				if(data.estado == 1){
-					Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
-
-				}
-				else{
-					$('#loader').fadeOut();
-					cargarRepitentes();
-				}		
-			},
-			error: function(data){
-				console.log(data);
-				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 			}
-		});
+			else{
+				$('#loader').fadeOut();
+				cargarRepitentes();
+			}		
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+}
+
+function cargarRepitentes(){
+	var dibujado = 0;
+
+	if($('#mes').val() != "" && $('#mes').val() != null ){
+		var mes = $('#mes').val();
+	}else{
+		var mes = "";
+	}
+
+	if($('#mes').val() != "" && $('#mes').val() != null ){
+		var dia = $('#dia').val();
+	}else{
+		var dia = "";
 	}
 
 
 
+	if($('#semana').val() != "" && $('#semana').val() != null ){
+		var semanaActual = $('#semana').val();
+	}else{
+		var semanaActual = $('#semanaActual').val();
+	}
 
 
-
-
-
-
-
-function cargarRepitentes(){
-	var dibujado = 0;
-	var semanaActual = $('#semanaActual').val();
 	var sede = $('#sede').val();
 	var nivel = $('#nivel').val();
 	var grado = $('#grado').val();
@@ -276,6 +290,8 @@ function cargarRepitentes(){
 		method: 'POST',
 		url: 'functions/fn_buscar_repitentes.php',
 		data:{
+			mes: mes,
+			dia: dia,
 			semanaActual: semanaActual,
 			sede: sede,
 			nivel: nivel,
@@ -398,8 +414,44 @@ function guardarRepitentes(){
 	var repitente = [];
 	var documento = "";
 	var tipoDocumento = "";
-	var semana = $('#semanaActual').val();	
+
+
+
+	var mes = "";
+	var dia = "";
+
+	if($('#mes').val() != "" && $('#mes').val() != null){
+		var mes = $('#mes').val();	
+	}
+
+	if($('#dia').val() != "" && $('#dia').val() != null){
+		var dia = $('#dia').val();	
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	if($('#semana').val() != "" && $('#semana').val() != null){
+		var semana = $('#semana').val();	
+	}else{
+		var semana = $('#semanaActual').val();	
+	}
+
+
 	var formData = new FormData();
+	formData.append('mes', mes);
+	formData.append('dia', dia);
 	formData.append('semana', semana);
 	formData.append('sede', $('#sede').val());
 
@@ -457,356 +509,3 @@ function guardarRepitentes(){
 		});
 	}
 }
-
-function totalEstudiantesSede(){
-	var formData = new FormData();
-	formData.append('semanaActual', $('#semanaActual').val());
-	formData.append('sede', $('#sede').val());
-	$.ajax({
-		type: "post",
-		url: "functions/fn_buscar_total_estudiantes.php",
-		dataType: "json",
-		contentType: false,
-		processData: false,
-		data: formData,
-		beforeSend: function(){ 
-			//$('#loader').fadeIn();
-			 },
-		success: function(data){
-			if(data.estado == 1){
-				total = data.total;
-				localStorage.setItem("wappsi_total", total);
-				$(".asistenciaTotal").html(total);
-				//$('#loader').fadeOut();
-			}		
-		},
-		error: function(data){
-			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
-		}
-	});
-}
-
-
-
-function cargarMunicipios(){
-	//formData.append('municipio', $('#municipio').val());
-	$.ajax({
-		type: "post",
-		url: "functions/fn_buscar_municipios.php",
-		dataType: "json",
-		contentType: false,
-		processData: false,
-		//data: formData,
-		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data){
-			if(data.estado == 1){
-				$('#municipio').html(data.opciones);
-				$('#loader').fadeOut();
-				cargarInstituciones();
-			}
-			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
-			}
-		},
-		error: function(data){
-			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
-		}
-	});
-}
-
-function cargarInstituciones(){
-	var formData = new FormData();
-	formData.append('municipio', $('#municipio').val());
-	$.ajax({
-		type: "post",
-		url: "functions/fn_buscar_instituciones.php",
-		dataType: "json",
-		contentType: false,
-		processData: false,
-		data: formData,
-		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data){
-			if(data.estado == 1){
-				$('#institucion').html(data.opciones);
-				$('#loader').fadeOut();
-
-			}
-			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
-			}
-		},
-		error: function(data){
-			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
-		}
-	});
-}
-
-function cargarSedes(){
-	var formData = new FormData();
-	formData.append('institucion', $('#institucion').val());
-	$.ajax({
-		type: "post",
-		url: "functions/fn_buscar_sede.php",
-		dataType: "json",
-		contentType: false,
-		processData: false,
-		data: formData,
-		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data){
-			if(data.estado == 1){
-				$('#sede').html(data.opciones);
-				$('#loader').fadeOut();
-
-			}
-			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
-			}
-		},
-		error: function(data){
-			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
-		}
-	});
-}
-
-function cargarGrados(){
-	var formData = new FormData();
-	formData.append('semanaActual', $('#semanaActual').val());
-	formData.append('sede', $('#sede').val());
-	$.ajax({
-		type: "post",
-		url: "functions/fn_buscar_grados.php",
-		dataType: "json",
-		contentType: false,
-		processData: false,
-		data: formData,
-		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data){
-			if(data.estado == 1){
-				$('#grado').html(data.opciones);
-				$('#loader').fadeOut();
-
-			}
-			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
-			}
-		},
-		error: function(data){
-			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
-		}
-	});
-}
-
-function cargarGrupos(){
-	var formData = new FormData();
-	formData.append('semanaActual', $('#semanaActual').val());
-	formData.append('grado', $('#grado').val());
-	$.ajax({
-		type: "post",
-		url: "functions/fn_buscar_grupos.php",
-		dataType: "json",
-		contentType: false,
-		processData: false,
-		data: formData,
-		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data){
-			if(data.estado == 1){
-				$('#grupo').html(data.opciones);
-				$('#loader').fadeOut();
-			}
-			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
-			}
-		},
-		error: function(data){
-			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
-		}
-	});
-}
-
-// semanaActual
-
-
-
-
-
-
-
-
-	// { data: 'nombreSede'},
-	// 		{ data: 'codigoInstitucion'},
-	// 		{ data: 'nombreInstitucion'},
-	// 		{ data: 'nombreCoordinador'},
-	// 		{ data: 'nombreJornada'},
-	// 		{ data: 'tipoValidacion'},
-	// 		{defaultContent: '<div class="btn-group">'+ '<div class="dropdown pull-right">'+ '<button class="btn btn-primary btn-sm" type="button" id="dropDownMenu1" data-toggle="dropdown"  aria-haspopup="true">'+ 'Acciones <span class="caret"></span>'+ '</button>'+ '<ul class="dropdown-menu pull-right" aria-labelledby="dropDownMenu1">'+ '<li>'+ '<a href="#" class="editarSede"><i class="fa fa-pencil fa-lg"></i> Editar</a>'+ '</li>'+ '<li>'+ '<a href="#" class="verDispositivos"><i class="fa fa-eye fa-lg"></i> Ver dispositivos</a>'+ '</li>'+ '<li>'+ '<a href="#" class="verInfraestructura"><i class="fa fa-bank fa-lg"></i> Ver Infraestructura</a>'+ '</li>'+ '<li>'+ '<a href="#" class="verTitulares"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>'+ '</li>'+ '<li class="divider"></li>'+ '<li>'+ '<a href="#">'+ 'Estado: &nbsp;'+ '<input type="checkbox" class="estadoSede" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24">'+ '</a>'+ '</li>'+ '</ul>'+ '</div>'+ '</div>'}
-
-
-
-
-
-
-
-
-
-
-
-	// $(document).ready(function(){
-	//   // Configuración para la tabla de sedes.
-	//   datatables = $('.dataTablesSedes').DataTable({
-	//     ajax: {
-	//       method: 'POST',
-	//       url: 'functions/fn_sedes_buscar_dataTables.php',
-	//       data:{
-	//         municipio: '<?= ((isset($_POST["municipio"]) && $_POST["municipio"] != "") ? $_POST["municipio"] : $municipio_defecto["CodMunicipio"]); ?>',
-	//         institucion: '<?= (isset($_POST["institucion"]) ? $_POST["institucion"] : ""); ?>'
-	//       }
-	//     },
-	//     columns:[
-	//       { data: 'codigoSede'},
-	//       { data: 'nombreSede'},
-	//       { data: 'codigoInstitucion'},
-	//       { data: 'nombreInstitucion'},
-	//       { data: 'nombreCoordinador'},
-	//       { data: 'nombreJornada'},
-	//       { data: 'tipoValidacion'},
-	//       <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
-	//       { defaultContent: '<div class="btn-group">'+
-	//                                     '<div class="dropdown pull-right">'+
-	//                                       '<button class="btn btn-primary btn-sm" type="button" id="dropDownMenu1" data-toggle="dropdown"  aria-haspopup="true">'+
-	//                                         'Acciones <span class="caret"></span>'+
-	//                                       '</button>'+
-	//                                       '<ul class="dropdown-menu pull-right" aria-labelledby="dropDownMenu1">'+
-	//                                         '<li>'+
-	//                                           '<a href="#" class="editarSede"><i class="fa fa-pencil fa-lg"></i> Editar</a>'+
-	//                                         '</li>'+
-	//                                         '<li>'+
-	//                                           '<a href="#" class="verDispositivos"><i class="fa fa-eye fa-lg"></i> Ver dispositivos</a>'+
-	//                                         '</li>'+
-	//                                         '<li>'+
-	//                                           '<a href="#" class="verInfraestructura"><i class="fa fa-bank fa-lg"></i> Ver Infraestructura</a>'+
-	//                                         '</li>'+
-	//                                         '<li>'+
-	//                                           '<a href="#" class="verTitulares"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>'+
-	//                                         '</li>'+
-	//                                         '<li class="divider"></li>'+
-	//                                         '<li>'+
-	//                                           '<a href="#">'+
-	//                                             'Estado: &nbsp;'+
-	//                                             '<input type="checkbox" class="estadoSede" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24">'+
-	//                                           '</a>'+
-	//                                         '</li>'+
-	//                                       '</ul>'+
-	//                                     '</div>'+
-	//                                   '</div>'}
-	//       <?php } ?>
-	//     ],
-	//     buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } } ],
-	//     dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
-	//     oLanguage: {
-	//       sLengthMenu: 'Mostrando _MENU_ registros',
-	//       sZeroRecords: 'No se encontraron registros',
-	//       sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
-	//       sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-	//       sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-	//       sSearch:         'Buscar: ',
-	//       oPaginate:{
-	//         sFirst:    'Primero',
-	//         sLast:     'Último',
-	//         sNext:     'Siguiente',
-	//         sPrevious: 'Anterior'
-	//       }
-	//     },
-	//     pageLength: 10,
-	//     responsive: true,
-	//     "preDrawCallback": function( settings ) {
-	//       $('#loader').fadeIn();
-	//     }
-	//   }).on("draw", function(){ $('#loader').fadeOut(); $('.estadoSede').bootstrapToggle(); });
-
-	//   // Evento para editar sede
-	//   $(document).on('click', '.dataTablesSedes tbody .editarSede', function(){
-	//     var tr = $(this).closest('tr');
-	//     var datos = datatables.row( tr ).data();
-	//     editarSede(datos.codigoSede, datos.nombreSede);
-	//   });
-	//   // Evento para cambiar de estado a la sede
-	//   $(document).on('change', '.dataTablesSedes tbody input[type=checkbox].estadoSede', function(){
-	//     var tr = $(this).closest('tr');
-	//     var datos = datatables.row( tr ).data();
-	//     confirmarCambioEstado(datos.codigoSede, datos.estadoSede);
-	//   });
-	//   // Evento para ver la sede
-	//   $(document).on('click', '.dataTablesSedes tbody td:nth-child(-n+7)', function(){
-	//     var tr = $(this).closest('tr');
-	//     var datos = datatables.row( tr ).data();
-	//     $('#formVerSede #codSede').val(datos.codigoSede);
-	//     $('#formVerSede #nomSede').val(datos.nombreSede);
-	//     $('#formVerSede #nomInst').val(datos.nombreInstitucion);
-	//     $('#formVerSede').submit();
-	//   });
-
-	//   // Evento para ver dispositivos de la sede
-	//   $(document).on('click', '.dataTablesSedes tbody .verDispositivos', function(){
-	//     var tr = $(this).closest('tr');
-	//     var datos = datatables.row( tr ).data();
-	//     verDispositivosSede(datos.codigoSede);
-	//   });
-	//   // Evento para ver dispositivos de la sede
-	//   $(document).on('click', '.dataTablesSedes tbody .verInfraestructura', function(){
-	//     var tr = $(this).closest('tr');
-	//     var datos = datatables.row( tr ).data();
-	//     verInfraestructurasSede(datos.codigoSede);
-	//   });
-	//   // Evento para ver dispositivos de la sede
-	//   $(document).on('click', '.dataTablesSedes tbody .verTitulares', function(){
-	//     var tr = $(this).closest('tr');
-	//     var datos = datatables.row( tr ).data();
-	//     verTitularesSede(datos.codigoSede);
-	//   });
-
-	//   // Evitar el burbujeo del DOM en el control dropbox
-	//   $(document).on('click', '.dropdown li:nth-child(6)', function(e) { e.stopPropagation(); });
-
-	//   // Configuración para la validación del formulario de búsqueda de sedes.
-	//   jQuery.extend(jQuery.validator.messages, { required: "Campo obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
-
-	//   <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
-	//   // Botón de acciones para la tabla.
-	//   var botonAcciones = '<div class="dropdown pull-right">'+
-	//                     '<button class="btn btn-primary btn-sm btn-outline" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">'+
-	//                       'Acciones <span class="caret"></span>'+
-	//                     '</button>'+
-	//                     '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+
-	//                       '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><i class="fa fa-file-pdf-o"></i> Exportar </a></li>'+
-	//                       '<li class="divider"></li>'+
-	//                       '<li>'+
-	//                         '<a class="fileinput fileinput-new" data-provides="fileinput">'+
-	//                           '<span class="btn-file">'+
-	//                             '<i class="fa fa-upload"></i> '+
-	//                             '<span class="fileinput-new">Importar sedes</span>'+
-	//                             '<span class="fileinput-exists">Cambiar</span>'+
-	//                             '<input type="file" name="archivoSede" id="archivoSede" onchange="if(!this.value.length) return false; cargarArchivo();" accept=".csv, .xlsx">'+
-	//                           '</span> '+
-	//                           '<span class="fileinput-filename center-block"></span>'+
-	//                           '<span href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</span>'+
-	//                         '</a>'+
-	//                       '</li>'+
-	//                       '<li><a href="#" id="importarPriorizacion"><i class="fa fa-upload"></i> Importar priorización</a></li>'+
-	//                       '<li><a href="#" id="importarFocalizacion"><i class="fa fa-upload"></i> Importar focalización</a></li>'+
-	//                       '<li class="divider"></li>'+
-	//                       '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla sedes.CSV</a></li>'+
-	//                       '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.xlsx" dowload> <i class="fa fa-download"></i> Descarga plantilla sedes.XLSX </a></li>'+
-	//                       '<li><a href="'+ $('#inputBaseUrl').val() +'/download/priorizacion/Plantilla_Priorizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla priorización .CSV</a></li>'+
-	//                       '<li><a href="'+ $('#inputBaseUrl').val() +'/download/focalizacion/Plantilla_Focalizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla focalización .CSV</a></li>'+
-	//                       '<ul>'+
-	//                     '</ul>'+
-	//                   '</div>';
-	// $('.containerBtn').html(botonAcciones);
-	// <?php } ?>
-	// });
