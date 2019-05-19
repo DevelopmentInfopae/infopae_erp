@@ -55,7 +55,17 @@ $grupo = (isset($_POST["grupo"]) && $_POST["grupo"] != "") ? mysqli_real_escape_
 
 
 
-$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, g.nombre AS grado, f.nom_grupo AS grupo, a.* FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado left join Asistencia_det$mes$anno a on a.tipo_doc = f.tipo_doc and a.num_doc = f.num_doc WHERE 1 = 1 AND f.cod_sede = $sede and a.asistencia = 1 and a.dia = \"$dia\" and a.mes = \"$mes\" ";
+$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, g.nombre AS grado, f.nom_grupo AS grupo, a.*, r.num_doc AS favorito FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado left join Asistencia_det$mes$anno a on a.tipo_doc = f.tipo_doc and a.num_doc = f.num_doc left join repitentesfavoritos r ON r.num_doc = f.num_doc AND r.tipo_doc = f.tipo_doc WHERE 1 = 1 AND f.cod_sede = $sede and a.asistencia = 1 and a.dia = \"$dia\" and a.mes = \"$mes\" ";
+
+
+
+
+
+
+
+
+
+
 if($nivel == 1 ){
 	$consulta .= " and f.cod_grado < \"6\" ";
 } else if($nivel == 2 ){
@@ -67,7 +77,7 @@ if($grado != "" ){
 if($grupo != "" ){
 	$consulta .= " and f.nom_grupo = $grupo ";
 }
-$consulta .= " ORDER BY f.cod_grado , f.nom_grupo , f.ape1 ";
+$consulta .= " ORDER BY r.num_doc desc, f.cod_grado asc , f.nom_grupo asc , f.ape1 asc ";
 
 
 

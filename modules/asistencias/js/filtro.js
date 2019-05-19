@@ -4,6 +4,21 @@ $(document).ready(function(){
 
 	cargarMunicipios();
 
+	if(localStorage.getItem("wappsi_mes") != null){
+		$( "#mes" ).val(localStorage.getItem("wappsi_mes"));
+		cargarSemanas();	
+	}
+
+	if(localStorage.getItem("wappsi_dia") != null){
+		$( "#dia" ).val(localStorage.getItem("wappsi_dia"));
+	}
+
+
+
+
+
+
+
 	$( "#mes" ).change(function() {
 		localStorage.setItem("wappsi_mes", $("#mes").val());
 		cargarSemanas();
@@ -12,6 +27,10 @@ $(document).ready(function(){
 	$( "#semana" ).change(function() {
 		localStorage.setItem("wappsi_semana", $("#semana").val());
 		cargarDias();
+	});
+
+	$( "#dia" ).change(function() {
+		localStorage.setItem("wappsi_dia", $("#dia").val());
 	});
 
 	$( "#municipio" ).change(function() {

@@ -17,7 +17,7 @@ if(isset($_POST['sede']) && $_POST['sede'] != ''){
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = "select distinct  min(f.cod_grado) as min, max(f.cod_grado) as max from focalizacion13 f where f.cod_sede = \"$sede\" order by f.cod_grado asc ";
+$consulta = "select distinct  min(f.cod_grado) as min, max(f.cod_grado) as max from focalizacion$semanaActual f where f.cod_sede = \"$sede\" order by f.cod_grado asc ";
 
 //echo $consulta;
 
