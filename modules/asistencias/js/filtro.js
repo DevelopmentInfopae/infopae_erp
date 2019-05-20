@@ -249,8 +249,11 @@ function cargarNiveles(){
 			}
 		},
 		error: function(data){
+			console.log("Error");
+			console.log("Puede que no este la tabla de focalización para la semana actual o elegida en el filtro.");
 			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+			$("#sede").val("");
+			//Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 		}
 	});
 }

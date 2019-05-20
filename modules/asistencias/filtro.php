@@ -18,7 +18,7 @@
 								<div class="row">
 
 
-									<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+									<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0 || $_SESSION["perfil"] == 5 || $_SESSION["perfil"] == 6) { ?>
 										
 										<div class="col-sm-4 form-group">
 											<label for="mes">Mes</label>

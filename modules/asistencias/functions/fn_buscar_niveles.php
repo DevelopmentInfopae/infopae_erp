@@ -21,7 +21,7 @@ $consulta = "select distinct  min(f.cod_grado) as min, max(f.cod_grado) as max f
 
 //echo $consulta;
 
-$resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
+$resultado = $Link->query($consulta) or die ('No se pudieron cargar los niveles. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$row = $resultado->fetch_assoc();
 	$min = $row['min'];
