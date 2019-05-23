@@ -8,9 +8,18 @@ $institucion = '';
 if(isset($_POST['institucion']) && $_POST['institucion'] != ''){
 		$institucion = mysqli_real_escape_string($Link, $_POST['institucion']);
 }
+
+if(isset($_POST['validacion']) && $_POST['validacion'] != ''){
+	$validacion = mysqli_real_escape_string($Link, $_POST['validacion']);
+}else{
+	$validacion = "Tablet";	
+}
+
+
+
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " select * from sedes$periodoActual where tipo_validacion = \"Tablet\" and cod_inst = \"$institucion\" ";
+$consulta = " select * from sedes$periodoActual where tipo_validacion = \"$validacion\" and cod_inst = \"$institucion\" ";
 $consulta = $consulta." order by nom_sede asc ";
 
 // echo $consulta;

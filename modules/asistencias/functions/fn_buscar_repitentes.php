@@ -80,7 +80,6 @@ if($grupo != "" ){
 $consulta .= " ORDER BY r.num_doc desc, f.cod_grado asc , f.nom_grupo asc , f.ape1 asc ";
 
 
-
 //echo "<br><br>$consulta<br><br>";
 
 

@@ -30,9 +30,21 @@ $municipio = '';
 if(isset($_POST['municipio']) && $_POST['municipio'] != ''){
 		$municipio = mysqli_real_escape_string($Link, $_POST['municipio']);
 }
+if(isset($_POST['validacion']) && $_POST['validacion'] != ''){
+	$validacion = mysqli_real_escape_string($Link, $_POST['validacion']);
+}else{
+	$validacion = "Tablet";	
+}
+
+
+
+
+
+
+
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " select * from instituciones where cod_mun = \"$municipio\" and codigo_inst in (select cod_inst from sedes19 where tipo_validacion = \"Tablet\" and cod_mun_sede = \"$municipio\") ";
+$consulta = " select * from instituciones where cod_mun = \"$municipio\" and codigo_inst in (select cod_inst from sedes19 where tipo_validacion = \"$validacion\" and cod_mun_sede = \"$municipio\") ";
 
 if($institucionRector != ""){
 	$consulta.= " and codigo_inst = \"$institucionRector\" ";

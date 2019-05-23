@@ -152,8 +152,13 @@ function cargarMunicipios(){
 }
 
 function cargarInstituciones(){
+	console.log("Cargar Instituciones.");
 	var formData = new FormData();
 	formData.append('municipio', $('#municipio').val());
+	if($('#validacion').val() != null){
+		console.log($('#validacion').val());
+		formData.append('validacion', $('#validacion').val());
+	}
 
 	$.ajax({
 		type: "post",
@@ -166,6 +171,7 @@ function cargarInstituciones(){
 		success: function(data){
 			if(data.estado == 1){
 				$('#institucion').html(data.opciones);
+				
 				$('#institucion').val(localStorage.getItem("wappsi_institucion"));
 				localStorage.setItem("wappsi_institucion", $("#institucion").val());
 				if($('#institucion').val() != ""){
@@ -185,8 +191,13 @@ function cargarInstituciones(){
 }
 
 function cargarSedes(){
+	console.log("Cargar Sedes.");
 	var formData = new FormData();
 	formData.append('institucion', $('#institucion').val());
+	if($('#validacion').val() != null){
+		console.log($('#validacion').val());
+		formData.append('validacion', $('#validacion').val());
+	}
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_sede.php",

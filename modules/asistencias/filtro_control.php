@@ -4,7 +4,7 @@
 			<div class="ibox">
 
 				<div class="ibox-title">
-					<h5>Busqueda</h5>
+					<h5>Busqueda por fecha</h5>
 					<div class="ibox-tools">
 						<div class="collapse-link"> <i class="fa fa-chevron-down"></i> </div>
 					</div>
@@ -14,11 +14,20 @@
 					<div class="row">
 						<div class="col-sm-12">
 
-							<form action="" id="form_asistencia" name="form_asistencia" method="post">
+							<form action="" id="form_control_asistencia" name="form_control_asistencia" method="get">
+								<input type="hidden" name="validacion" id="validacion" value="<?= $validacion; ?>">
+
+
+
+
+
+
+
+
 								<div class="row">
 
 
-									<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+									<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0  || $_SESSION["perfil"] == 3) { ?>
 										
 										<div class="col-sm-4 form-group">
 											<label for="mes">Mes</label>
@@ -66,14 +75,14 @@
 
 									<div class="col-sm-4 form-group">
 										<label for="institucion">Institución</label>
-										<select class="form-control" name="institucion" id="institucion" required>
+										<select class="form-control" name="institucion" id="institucion" >
 											<option value="">Seleccione una</option>									
 										</select>
 									</div>
 
 									<div class="col-sm-4 form-group">
 										<label for="sede">Sede</label>
-										<select class="form-control" name="sede" id="sede" required>
+										<select class="form-control" name="sede" id="sede" >
 											<option value="">Seleccione una</option>
 										</select>
 									</div>  
@@ -91,7 +100,7 @@
 
 								<div class="form-group row">
 									<div class="col-sm-12">
-										<button class="btn btn-primary" type="button" id="btnBuscar"> <i class="fa fa-search"></i> Buscar</button>
+										<button class="btn btn-primary" type="button" id="btnBuscarControl"> <i class="fa fa-search"></i> Buscar</button>
 									</div>
 								</div>
 

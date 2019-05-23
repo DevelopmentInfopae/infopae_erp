@@ -11,14 +11,48 @@
 	$fecha = date("Y-m-d H:i:s");
 	$cacheBusting = date("YmdHis");
 
-
-
-
-
 	$dia = intval(date("d"));
 	$mes = date("m");
 	$anno = date("Y");
 	$anno2d = date("y");
+
+
+
+
+	$validacion = "tablet";
+	$semanaActual = "";
+	$municipio = "";
+	$institucion = "";
+	$sede = "";
+
+	if(isset($_GET['mes']) && $_GET['mes'] != ''){
+		$mes = mysqli_real_escape_string($Link, $_GET['mes']);
+	}
+	if(isset($_GET['semana']) && $_GET['semana'] != ''){
+		$semanaActual = mysqli_real_escape_string($Link, $_GET['semana']);
+	}else{
+		//Busqueda de la semana actual
+		$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
+		//var_dump($consulta);				
+		$resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
+		if($resultado->num_rows >= 1){
+			$row = $resultado->fetch_assoc();
+			$semanaActual = $row["semana"];
+		}
+		//var_dump($semanaActual);
+	}
+	if(isset($_GET['dia']) && $_GET['dia'] != ''){
+		$dia = mysqli_real_escape_string($Link, $_GET['dia']);
+	}	
+	if(isset($_GET['municipio']) && $_GET['municipio'] != ''){
+		$municipio = mysqli_real_escape_string($Link, $_GET['municipio']);
+	}	
+	if(isset($_GET['institucion']) && $_GET['institucion'] != ''){
+		$institucion = mysqli_real_escape_string($Link, $_GET['institucion']);
+	}
+	if(isset($_GET['sede']) && $_GET['sede'] != ''){
+		$sede = mysqli_real_escape_string($Link, $_GET['sede']);
+	}
 
 
 
@@ -60,7 +94,7 @@
 
 
 
-
+<?php include "filtro_control.php"; ?>
 
 
 
@@ -79,21 +113,30 @@
 
 			<div class="sedes">
 				<?php
-					//Busqueda de la semana actual
-					$semanaActual = "";
-					$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
-					//var_dump($consulta);				
-					$resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
-					if($resultado->num_rows >= 1){
-						$row = $resultado->fetch_assoc();
-						$semanaActual = $row["semana"];
-					}
-					//var_dump($semanaActual);
-					$semanaActual = 17;	
-					$dia = 13;
+					
+
+
+
+
+
+
+
 
 					// Consulta que recorre todas las sedes validadas con tableta y trae si estan selladas, total de estudiantes y total entregado.
 					$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join Asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$anno2d s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
+						if($municipio != ""){
+							$consulta .= " and s.cod_mun_sede = \"$municipio\" ";	
+						}
+						if($institucion != ""){
+							$consulta .= " and s.cod_inst = \"$institucion\" ";	
+						}
+						if($sede != ""){
+							$consulta .= " and s.cod_sede = \"$sede\" ";	
+						}
+
+
+
+
 					//echo $consulta;
 					$resultado = $Link->query($consulta) or die ('Carga de sedes:<br>'.$consulta.'<br>'. mysqli_error($Link));
 					if($resultado->num_rows >= 1){
@@ -137,7 +180,7 @@
 									<div class="grupos">
 										<?php
 											// Detalle de lo entregado en cada uno de los grupos
-											$consulta2 = "SELECT f.cod_grado, g.nombre, f.nom_grupo , count(num_doc) AS total ,(SELECT sum(a.consumio + a.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join Asistencia_det$mes$anno2d a ON f2.tipo_doc = a.tipo_doc AND f2.num_doc = a.num_doc WHERE f2.cod_sede = $codSede AND a.consumio IS not NULL AND f2.nom_grupo = f.nom_grupo GROUP BY f2.nom_grupo ) AS entregado FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = $codSede GROUP BY nom_grupo "; 
+											$consulta2 = "SELECT f.cod_grado, g.nombre, f.nom_grupo , count(num_doc) AS total ,(SELECT sum(a.consumio + a.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join Asistencia_det$mes$anno2d a ON f2.tipo_doc = a.tipo_doc AND f2.num_doc = a.num_doc WHERE f2.cod_sede = $codSede AND a.consumio IS not NULL and a.dia = \"$dia\" AND f2.nom_grupo = f.nom_grupo GROUP BY f2.nom_grupo ) AS entregado FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = $codSede GROUP BY nom_grupo "; 
 											//echo $consulta2;
 
 											$resultado2 = $Link->query($consulta2) or die ('Detalle de cada uno de los grupos:<br>'.$consulta2.'<br>'. mysqli_error($Link));
@@ -223,7 +266,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<!-- <script src="<?php //echo $baseUrl; ?>/modules/asistencias/js/asistencias.js?v=<?= $cacheBusting; ?>"></script> -->
-<!-- <script src="<?php //echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script> -->
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/control_tablets.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
 </body>
 </html>
