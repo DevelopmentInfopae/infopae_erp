@@ -69,7 +69,7 @@
 	<div class="col-xs-4">
 		<div class="title-action registroConsumo" style="display: none">
 			<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
-			<button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button>
+			<button class="btn btn-primary btnSellar" type="button">Guardar Definitivamente</button>
 		</div>
 	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
 					<!-- <a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a> -->

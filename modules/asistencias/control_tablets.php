@@ -96,12 +96,10 @@
 
 <?php include "filtro_control.php"; ?>
 
-
-
-
-<div class="wrapper wrapper-content  animated fadeInRight">
-	<div class="row">
-		<div class="col-sm-12">
+<?php if( count($_GET) > 0) { ?>
+	<div class="wrapper wrapper-content  animated fadeInRight">
+		<div class="row">
+			<div class="col-sm-12">
 
 
 
@@ -111,9 +109,9 @@
 
 
 
-			<div class="sedes">
-				<?php
-					
+				<div class="sedes">
+					<?php
+						
 
 
 
@@ -122,133 +120,133 @@
 
 
 
-					// Consulta que recorre todas las sedes validadas con tableta y trae si estan selladas, total de estudiantes y total entregado.
-					$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join Asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$anno2d s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
-						if($municipio != ""){
-							$consulta .= " and s.cod_mun_sede = \"$municipio\" ";	
-						}
-						if($institucion != ""){
-							$consulta .= " and s.cod_inst = \"$institucion\" ";	
-						}
-						if($sede != ""){
-							$consulta .= " and s.cod_sede = \"$sede\" ";	
-						}
-
-
-
-
-					//echo $consulta;
-					$resultado = $Link->query($consulta) or die ('Carga de sedes:<br>'.$consulta.'<br>'. mysqli_error($Link));
-					if($resultado->num_rows >= 1){
-						while($row = $resultado->fetch_assoc()){
-							$codSede = $row["cod_sede"]; 
-							$nombreSede = $row["nom_sede"]; 
-							$sellado = $row["sellado"]; 
-							$total = $row["total"]; 
-							$entregado = $row["entregado"]; 
-							//var_dump($sellado);
-							if($entregado == null || $entregado == ""){
-								$entregado = 0;
+						// Consulta que recorre todas las sedes validadas con tableta y trae si estan selladas, total de estudiantes y total entregado.
+						$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join Asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$anno2d s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
+							if($municipio != ""){
+								$consulta .= " and s.cod_mun_sede = \"$municipio\" ";	
 							}
-							$porcentaje = ($entregado / $total) * 100;
-							$claseSede = "text-rojo";
-							if($sellado == 2){
-								$claseSede = "text-verde";
-							} else if($entregado > 0){
-								$claseSede = "text-naranja";
+							if($institucion != ""){
+								$consulta .= " and s.cod_inst = \"$institucion\" ";	
 							}
+							if($sede != ""){
+								$consulta .= " and s.cod_sede = \"$sede\" ";	
+							}
+						//echo $consulta;
 
-						?>
-							<div class="ibox">
-								<div class="ibox-title">
-									<h5><i class="fa fa-circle <?= $claseSede ?>"></i><?= $nombreSede ?></h5> 					
-									<div class="ibox-tools">
-										<div class="headerTools">
-											<div class="headerToolsTotal">
-												<h2 class="no-margins"> <span class="entregado"><?= $entregado ?></span> / <span class="total"><?= $total ?></span></h2>
-												<div class="progress progress-mini">
-													<div style="width: <?= $porcentaje ?>%;" class="progress-bar"></div>
+
+
+
+						$resultado = $Link->query($consulta) or die ('Carga de sedes:<br>'.$consulta.'<br>'. mysqli_error($Link));
+						if($resultado->num_rows >= 1){
+							while($row = $resultado->fetch_assoc()){
+								$codSede = $row["cod_sede"]; 
+								$nombreSede = $row["nom_sede"]; 
+								$sellado = $row["sellado"]; 
+								$total = $row["total"]; 
+								$entregado = $row["entregado"]; 
+								//var_dump($sellado);
+								if($entregado == null || $entregado == ""){
+									$entregado = 0;
+								}
+								$porcentaje = ($entregado / $total) * 100;
+								$claseSede = "text-rojo";
+								if($sellado == 2){
+									$claseSede = "text-verde";
+								} else if($entregado > 0){
+									$claseSede = "text-naranja";
+								}
+
+							?>
+								<div class="ibox">
+									<div class="ibox-title">
+										<h5><i class="fa fa-circle <?= $claseSede ?>"></i><?= $nombreSede ?></h5> 					
+										<div class="ibox-tools">
+											<div class="headerTools">
+												<div class="headerToolsTotal">
+													<h2 class="no-margins"> <span class="entregado"><?= $entregado ?></span> / <span class="total"><?= $total ?></span></h2>
+													<div class="progress progress-mini">
+														<div style="width: <?= $porcentaje ?>%;" class="progress-bar"></div>
+													</div>
 												</div>
-											</div>
-											<div class="collapse-link">
-												<i class="fa fa-chevron-down"></i>
+												<div class="collapse-link">
+													<i class="fa fa-chevron-down"></i>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="ibox-content">
-									<div class="grupos">
-										<?php
-											// Detalle de lo entregado en cada uno de los grupos
-											$consulta2 = "SELECT f.cod_grado, g.nombre, f.nom_grupo , count(num_doc) AS total ,(SELECT sum(a.consumio + a.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join Asistencia_det$mes$anno2d a ON f2.tipo_doc = a.tipo_doc AND f2.num_doc = a.num_doc WHERE f2.cod_sede = $codSede AND a.consumio IS not NULL and a.dia = \"$dia\" AND f2.nom_grupo = f.nom_grupo GROUP BY f2.nom_grupo ) AS entregado FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = $codSede GROUP BY nom_grupo "; 
-											//echo $consulta2;
+									<div class="ibox-content">
+										<div class="grupos">
+											<?php
+												// Detalle de lo entregado en cada uno de los grupos
+												$consulta2 = "SELECT f.cod_grado, g.nombre, f.nom_grupo , count(num_doc) AS total ,(SELECT sum(a.consumio + a.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join Asistencia_det$mes$anno2d a ON f2.tipo_doc = a.tipo_doc AND f2.num_doc = a.num_doc WHERE f2.cod_sede = $codSede AND a.consumio IS not NULL and a.dia = \"$dia\" AND f2.nom_grupo = f.nom_grupo GROUP BY f2.nom_grupo ) AS entregado FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = $codSede GROUP BY nom_grupo "; 
+												//echo $consulta2;
 
-											$resultado2 = $Link->query($consulta2) or die ('Detalle de cada uno de los grupos:<br>'.$consulta2.'<br>'. mysqli_error($Link));
-											if($resultado2->num_rows >= 1){
-												while($row2 = $resultado2->fetch_assoc()){
-													$nomGrado = $row2['nombre'];	
-													$nomGrupo = $row2['nom_grupo'];	
-													$totalGrupo = $row2['total'];	
-													$entregadoGrupo = $row2['entregado'];	
-													if($entregadoGrupo == null || $entregadoGrupo == ""){
-														$entregadoGrupo = 0;
-													}
-													$porcentaje = ($entregadoGrupo / $totalGrupo) * 100;
-													$claseGrupo = "text-rojo";
-													if($sellado == 2){
-														$claseGrupo = "text-verde";
-													} else if($entregadoGrupo > 0){
-														$claseGrupo = "text-naranja";
-													}
-										?>
-													<div class="grupo">
-														<div class="grupoLeft">
-															<i class="fa fa-circle <?= $claseGrupo ?>"></i>
-															<p><?= $nomGrado ?> - <?= $nomGrupo ?></p>	
-														</div>
-														<div class="grupoRight">
-															<p><?= $entregadoGrupo ?> / <?= $totalGrupo ?> </p>	
-															<div class="progress progress-mini">
-													<div style="width: <?= $porcentaje ?>%;" class="progress-bar"></div>
-												</div>
-														</div>
-
-
-
+												$resultado2 = $Link->query($consulta2) or die ('Detalle de cada uno de los grupos:<br>'.$consulta2.'<br>'. mysqli_error($Link));
+												if($resultado2->num_rows >= 1){
+													while($row2 = $resultado2->fetch_assoc()){
+														$nomGrado = $row2['nombre'];	
+														$nomGrupo = $row2['nom_grupo'];	
+														$totalGrupo = $row2['total'];	
+														$entregadoGrupo = $row2['entregado'];	
+														if($entregadoGrupo == null || $entregadoGrupo == ""){
+															$entregadoGrupo = 0;
+														}
+														$porcentaje = ($entregadoGrupo / $totalGrupo) * 100;
+														$claseGrupo = "text-rojo";
+														if($sellado == 2){
+															$claseGrupo = "text-verde";
+														} else if($entregadoGrupo > 0){
+															$claseGrupo = "text-naranja";
+														}
+											?>
+														<div class="grupo">
+															<div class="grupoLeft">
+																<i class="fa fa-circle <?= $claseGrupo ?>"></i>
+																<p><?= $nomGrado ?> - <?= $nomGrupo ?></p>	
+															</div>
+															<div class="grupoRight">
+																<p><?= $entregadoGrupo ?> / <?= $totalGrupo ?> </p>	
+																<div class="progress progress-mini">
+														<div style="width: <?= $porcentaje ?>%;" class="progress-bar"></div>
 													</div>
-										<?php 
-												}
-											} 
-										?>
-										
+															</div>
+
+
+
+														</div>
+											<?php 
+													}
+												} 
+											?>
+											
+										</div>
 									</div>
 								</div>
-							</div>
-						<?php
+							<?php
+							}
 						}
-					}
-				?>
+					?>
+				</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		</div>
-	</div><!-- /.row -->
-</div>
-
+		</div><!-- /.row -->
+	</div>
+<?php } ?>
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->

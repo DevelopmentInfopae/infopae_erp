@@ -469,6 +469,7 @@ function cargarEstudiantes(){
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
 				var asistencia = full.asistencia; 
+				asistencia = 1;
 
 				
 
@@ -501,7 +502,7 @@ function cargarEstudiantes(){
 				
 				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-consume "+documento+"\" ";
 				
-				if (asistencia != 1) { opciones = opciones + " disabled "; }
+				//if (asistencia != 1) { opciones = opciones + " disabled "; }
 				if (consumio == 1) { opciones = opciones + " checked "; }
 
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
@@ -696,7 +697,7 @@ function guardarEntregas(flagSellar){
 		console.log("Guardar");
 		$.ajax({
 			type: "post",
-			url: "functions/fn_guardar_consumos.php",
+			url: "functions/fn_guardar_consumos_biometricos.php",
 			dataType: "json",
 			contentType: false,
 			processData: false,
