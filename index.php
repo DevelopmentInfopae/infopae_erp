@@ -39,65 +39,66 @@
 
 <?php
 	// Bitacora / Actividades de usuarios
-	$consulta = " SELECT b.*, ba.descripciones, u.nombre, u.foto FROM bitacora b left join bitacora_acciones ba on ba.id = b.tipo_accion left join usuarios u on b.usuario = u.id ORDER BY b.id DESC LIMIT 20 ";
-	//echo $consulta;
-	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+    $resultado = null;
+	// $consulta = " SELECT b.*, ba.descripciones, u.nombre, u.foto FROM bitacora b left join bitacora_acciones ba on ba.id = b.tipo_accion left join usuarios u on b.usuario = u.id ORDER BY b.id DESC LIMIT 20 ";
+	// //echo $consulta;
+	// $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
 	//Novidades
 	$novedades = array();
 
 	// Novedades de Priorización 1
-	$consulta = " SELECT 1 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_priorizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
-	$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-	$indice = 0;
-	$aux = '';
-	if($resultado2->num_rows >= 1){
-		while($row = $resultado2->fetch_assoc()){
-			$aux = $row['fecha_hora'];
-			if(isset($novedades[$aux])){
-				$bandera = 0;
-				while ($bandera == 0) {
-					$aux = $indice;
-                    if(isset($novedades[$aux])){
-						$indice++;
-					}
-					else{
-						$indice = 0;
-						$bandera = 1;
-					}
-				}
-			}
-			$novedades[$aux] = $row;
-			$aux = '';
-		}
-	}
+	// $consulta = " SELECT 1 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_priorizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
+	// $resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	// $indice = 0;
+	// $aux = '';
+	// if($resultado2->num_rows >= 1){
+	// 	while($row = $resultado2->fetch_assoc()){
+	// 		$aux = $row['fecha_hora'];
+	// 		if(isset($novedades[$aux])){
+	// 			$bandera = 0;
+	// 			while ($bandera == 0) {
+	// 				$aux = $indice;
+ //                    if(isset($novedades[$aux])){
+	// 					$indice++;
+	// 				}
+	// 				else{
+	// 					$indice = 0;
+	// 					$bandera = 1;
+	// 				}
+	// 			}
+	// 		}
+	// 		$novedades[$aux] = $row;
+	// 		$aux = '';
+	// 	}
+	// }
 
 	// Novedades de Focalización 2
-	$consulta = " SELECT 2 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_focalizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
-	$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-	$indice = 0;
-	$aux = '';
-	if($resultado2->num_rows >= 1){
-		while($row = $resultado2->fetch_assoc()){
-			$aux = $row['fecha_hora'];
-			if(isset($novedades[$aux])){
-				$bandera = 0;
-				while ($bandera == 0) {
-					$aux = $row['fecha_hora'].$indice;
-					if(isset($novedades[$aux])){
-						$indice++;
-					}
-					else{
-						$indice = 0;
-						$bandera = 1;
-					}
-				}
-			}
-			$novedades[$aux] = $row;
-			$aux = '';
-		}
-	}
-	krsort($novedades);
+	// $consulta = " SELECT 2 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_focalizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
+	// $resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	// $indice = 0;
+	// $aux = '';
+	// if($resultado2->num_rows >= 1){
+	// 	while($row = $resultado2->fetch_assoc()){
+	// 		$aux = $row['fecha_hora'];
+	// 		if(isset($novedades[$aux])){
+	// 			$bandera = 0;
+	// 			while ($bandera == 0) {
+	// 				$aux = $row['fecha_hora'].$indice;
+	// 				if(isset($novedades[$aux])){
+	// 					$indice++;
+	// 				}
+	// 				else{
+	// 					$indice = 0;
+	// 					$bandera = 1;
+	// 				}
+	// 			}
+	// 		}
+	// 		$novedades[$aux] = $row;
+	// 		$aux = '';
+	// 	}
+	// }
+	// krsort($novedades);
 ?>
 
 <div class="row">
@@ -171,7 +172,7 @@
                 <div>
                     <div class="feed-activity-list">
 						<?php
-							if($resultado->num_rows >= 1){
+							if($resultado && $resultado->num_rows >= 1){
 							    while($row = $resultado->fetch_assoc()){
                                     $aux = $row['foto'];
                                     $aux = substr( $aux, 5);
