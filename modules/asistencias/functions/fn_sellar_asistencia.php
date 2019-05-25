@@ -41,7 +41,15 @@ if(isset($_POST['dia']) && $_POST['dia'] != ""){
 
 // Representación numérica del día de la semana
 // 0 (para domingo) hasta 6 (para sábado)
-$diaSemana = date("w");
+// $diaSemana = date("w");
+$fechaConsulta = "$annoCompleto-$mes-$dia";
+$fechaConsulta = strtotime($fechaConsulta);
+$diaSemana = date("w", $fechaConsulta);
+
+
+
+
+
 
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
@@ -78,6 +86,8 @@ else if($primerDia == 'sabado'){
 }
 
 $indice = $primerDia;
+
+
 $consecutivo = 1;
 if($indice != $diaSemana){
 	while($indice != $diaSemana){
