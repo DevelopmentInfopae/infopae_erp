@@ -50,14 +50,14 @@ $consulta_focalizacion = "SELECT
 	if(foc.zona_res_est = 1, 'Urbano', 'Rural') AS residencia,
 	foc.Tipo_complemento AS complemento
 FROM focalizacion$semana foc
-INNER JOIN tipodocumento tdc ON tdc.id = foc.tipo_doc
-INNER JOIN estrato est ON est.id = foc.cod_estrato
-INNER JOIN discapacidades dis ON dis.id = foc.cod_discap
-INNER JOIN etnia etn ON etn.id = foc.etnia
-INNER JOIN pobvictima pvc ON pvc.id = foc.cod_pob_victima
-INNER JOIN sedes$periodo_actual sed ON sed.cod_sede = foc.cod_sede
-INNER JOIN jornada jor ON jor.id = foc.cod_jorn_est
-INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede;";
+LEFT JOIN tipodocumento tdc ON tdc.id = foc.tipo_doc
+LEFT JOIN estrato est ON est.id = foc.cod_estrato
+LEFT JOIN discapacidades dis ON dis.id = foc.cod_discap
+LEFT JOIN etnia etn ON etn.id = foc.etnia
+LEFT JOIN pobvictima pvc ON pvc.id = foc.cod_pob_victima
+LEFT JOIN sedes$periodo_actual sed ON sed.cod_sede = foc.cod_sede
+LEFT JOIN jornada jor ON jor.id = foc.cod_jorn_est
+LEFT JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede;";
 $respuesta_focalizacion = $Link->query($consulta_focalizacion) or die("Error al consultar focalizacion$semana: ". $Link->error);
 
 if ($respuesta_focalizacion->num_rows > 0){

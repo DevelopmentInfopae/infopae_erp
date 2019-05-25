@@ -31,24 +31,8 @@
 	$cod_estrato = (isset($_POST['cod_estrato'])) ? $_POST['cod_estrato'] : "";
 	$abreviatura = (isset($_POST['abreviatura'])) ? $_POST['abreviatura'] : "";
 	$cod_jorn_est = (isset($_POST['cod_jorn_est'])) ? $_POST['cod_jorn_est'] : "";
+	$semana = isset($_POST['semana']) ? $Link->real_escape_string($_POST['semana']) : '';
 	$cod_pob_victima = (isset($_POST['cod_pob_victima'])) ? $_POST['cod_pob_victima'] : "";
-
-	// Consulta que retorna la cantidad de tablas con el nombre "Focalización".
-    $tablas_focalizacion = [];
-    $resultado_focalizacion = $Link->query("SELECT table_name AS nombre_tabla FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name like 'focalizacion%';");
-	if ($resultado_focalizacion->num_rows > 0) {
-		while ($registro_focalizacion = $resultado_focalizacion->fetch_assoc()) {
-			$resultado_estudiante = $Link->query("SELECT * FROM ".$registro_focalizacion['nombre_tabla']." WHERE num_doc = '".$num_doc."';");
-			if ($resultado_estudiante->num_rows > 0) {
-				$respuestaAJAX = [
-					"success" => 0,
-					"message" => "No es posible crear el suplente debido a que se encuentra focalizado en la semana ". substr($registro_focalizacion['nombre_tabla'], 12, 2)
-				];
-				echo json_encode($respuestaAJAX);
-				exit;
-			}
-		}
-	}
 
 	// Algoritmo para calcular la esdad del estudiante suplente.
 	$date1 = new DateTime($fecha_nac);
@@ -57,21 +41,24 @@
 	$edad = $diff->y;
 
 	// Consulta utilizada para insertar un nuevo estudiante como suplente.
-	$nuevo_suplente = "UPDATE suplentes SET tipo_doc = '$tipo_doc', num_doc = '$num_doc', tipo_doc_nom = '$abreviatura', ape1 = '$ape1', ape2 = '$ape2', nom1 = '$nom1', nom2 = '$nom2', genero = '$genero', dir_res = '$dir_res', cod_mun_res = '$cod_mun_res', telefono = '$telefono', cod_mun_nac = '$cod_mun_nac', fecha_nac = '$fecha_nac', cod_estrato = '$cod_estrato', sisben = '$sisben', cod_discap = '$cod_discap', etnia = '$etnia', cod_pob_victima = '$cod_pob_victima', cod_sede = '$cod_sede', cod_inst = '$cod_inst', cod_mun_inst = '$cod_mun', cod_mun_sede = '$cod_mun', nom_sede = '$nom_sede', nom_inst = '$nom_inst', cod_grado = '$cod_grado', nom_grupo = '$nom_grupo', cod_jorn_est = '$cod_jorn_est', repitente = '$repitente', edad = '$edad', zona_res_est = '$sector', activo = '$estado' WHERE id = '$id'";
+	$nuevo_suplente = "UPDATE suplentes$semana SET ape1 = '$ape1', ape2 = '$ape2', nom1 = '$nom1', nom2 = '$nom2', genero = '$genero', dir_res = '$dir_res', cod_mun_res = '$cod_mun_res', telefono = '$telefono', cod_mun_nac = '$cod_mun_nac', fecha_nac = '$fecha_nac', cod_estrato = '$cod_estrato', sisben = '$sisben', cod_discap = '$cod_discap', etnia = '$etnia', cod_pob_victima = '$cod_pob_victima', cod_grado = '$cod_grado', nom_grupo = '$nom_grupo', cod_jorn_est = '$cod_jorn_est', repitente = '$repitente', edad = '$edad', zona_res_est = '$sector', activo = '$estado' WHERE id = '$id'";
 
 	// Condición que verifica si la consulta se ejecutó exitosamente.
-	if ($Link->query($nuevo_suplente) === TRUE) {
+	if ($Link->query($nuevo_suplente) === TRUE)
+	{
 		$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '48', 'Ingresó el suplente con número de identificación <strong>".$num_doc."	</strong>')";
 		$Link->query($sqlBitacora);
 
 		$respuestaAJAX = [
 			"success" => 1,
-			"message" => "El estudiante con número de identificación <strong>". $num_doc ."</strong> fue actualizado como suplente exitosamente."
+			"message" => "El suplente fue actualizado exitosamente.". $nuevo_suplente
 		];
-	} else {
+	}
+	else
+	{
 		$respuestaAJAX = [
 			"success" => 0,
-			"message" => "El estudiante con número de identificación <strong>". $num_doc ."</strong> No pudo ser actualizado como suplente exitosamente."
+			"message" => "No fue posible actualizar el suplente.". $nuevo_suplente
 		];
 	}
 

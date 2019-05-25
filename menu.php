@@ -1,6 +1,27 @@
-<li class="active">
-	<a href="<?php echo $baseUrl; ?>"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
-</li>
+<?php if( $_SESSION['perfil'] != 8 && $_SESSION['perfil'] != 3 ){ ?>
+	<li class="active">
+		<a href="<?php echo $baseUrl; ?>"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
+	</li>
+<?php } else if($_SESSION['perfil'] == 8) { ?>
+	<li class="active">
+		<a href="<?= $baseUrl; ?>/modules/asistencias"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
+	</li>
+<?php } else if($_SESSION['perfil'] == 3) { ?>
+	<li class="active">
+		<a href="<?= $baseUrl; ?>/modules/asistencias/control_tablets.php"><i class="fa fa-home"></i> <span class="nav-label">Inicio</span></a>
+	</li>
+<?php } ?>
+
+
+
+
+
+
+
+
+
+
+
 
 <?php if($_SESSION['perfil'] == 6){ ?>
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/institucion.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Mi institución</span></a> </li>
@@ -9,6 +30,13 @@
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li><a href="<?php echo $baseUrl; ?>/modules/consultas/consulta_resumida_entregas.php">Consulta resumida</a></li>
+			<li>
+				<a href="#" id="damian">Impresión de planillas<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/control_asistencia.php">Control de asistencia</a> </li>
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados.php">Certificados por institución</a> </li>
+				</ul>
+			</li>
 		</ul>
 	</li>
 <?php } ?>
@@ -168,6 +196,33 @@
 			<li><a href="<?= $baseUrl; ?>/modules/grados">Grados</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/jornadas">Jornada</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/poblacion_victima">Población victima</a></li>
+		</ul>
+	</li>
+<?php } ?>
+
+
+
+
+<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 || $_SESSION['perfil'] == 5 || $_SESSION['perfil'] == 6 ){ ?>
+	<li>
+		<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Asistencias</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+
+			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 ){ ?>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias">Toma de asistencia</a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/repitentes.php"> Selección de repitentes </a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/consumo.php"> Registro de consumos </a> </li>
+			<?php } ?>
+
+			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5  || $_SESSION['perfil'] == 6 ){ ?>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/informe_asistencia.php"> Informe de asistencia </a> </li>
+			<?php } ?>
+
+			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 3 ){ ?>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/control_tablets.php"> Control de toma de asistencias </a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/control_biometrico.php"> Control del registro biometrico </a> </li>
+			<?php } ?>
+
 		</ul>
 	</li>
 <?php } ?>

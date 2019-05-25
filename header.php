@@ -48,8 +48,6 @@
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/select2/select2.min.css" rel="stylesheet">
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
-
-
     <link href="<?php echo $baseUrl; ?>/theme/css/style.css" rel="stylesheet">
 
 </head>
