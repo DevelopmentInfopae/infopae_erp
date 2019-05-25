@@ -30,6 +30,7 @@ $semana = mysqli_real_escape_string($Link, $_POST['semana']);
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
 $repitentes = $_POST['repitente'];
+
 $consulta = "";
 
 $tipo_doc = "";
@@ -41,6 +42,21 @@ foreach ($repitentes as $repitente){
 	$tipo_doc = mysqli_real_escape_string($Link, $repitente["tipoDocumento"]);
 	$num_doc = mysqli_real_escape_string($Link, $repitente["documento"]);
 	$repite = mysqli_real_escape_string($Link, $repitente["repite"]);
+
+	$favorito = "";
+	if(isset($repitente["favorito"]) && $repitente["favorito"] != ""){
+		$favorito = mysqli_real_escape_string($Link, $repitente["favorito"]);
+		//echo $favorito;
+		if($favorito == 0){
+			$consulta .= " delete from repitentesfavoritos where tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; ";
+		} else if($favorito == 1){
+			$consulta .= " insert into repitentesfavoritos ( tipo_doc, num_doc ) values ( \"$tipo_doc\" , \"$num_doc\" ); ";
+		} 
+	}
+
+
+
+
 
 	$consulta .= " update Asistencia_det$mes$anno set repite = \"$repite\" where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and asistencia = 1 and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; ";
 }

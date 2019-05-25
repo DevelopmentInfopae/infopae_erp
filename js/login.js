@@ -41,6 +41,9 @@ function doLogin() {
                 } else if (i==8) {
                     console.log("Auxiliar Asistencia"); 
                     window.location = "modules/asistencias/index.php";
+                } else if (i==3) {
+                    console.log("Auxiliar"); 
+                    window.location = "modules/asistencias/control_tablets.php";
                 } else if (i=="-1") {
                     alert('Usuario o contraseña incorrectos ');
                 } else if (i=='nueva_clave') {

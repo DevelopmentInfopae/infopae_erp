@@ -107,7 +107,7 @@ $(document).ready(function(){
 
 
 	// Check a cada item
-	$(document).on('ifChecked', '.checkbox-header', function () { 
+	$(document).on('ifChecked', '.checkbox-header-repite', function () { 
 		if( (faltan) > 0 ){
 			$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
 			console.log("S");
@@ -144,7 +144,7 @@ $(document).ready(function(){
 
 	
 	// unCheck a cada item
-	$(document).on('ifUnchecked', '.checkbox-header', function () { 
+	$(document).on('ifUnchecked', '.checkbox-header-repite', function () { 
 		console.log("Faltan: "+faltan);
 		$('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); 
 		console.log("N");
@@ -325,7 +325,40 @@ function cargarRepitentes(){
 		{ data: 'num_doc'},
 		{ data: 'nombre'},
 		{ data: 'grado'},
-		{ data: 'grupo',className: "text-center"}
+		{ data: 'grupo',className: "text-center"},
+		{
+			sortable: false,
+			className: "textoCentrado",
+			"render": function ( data, type, full, meta ) {
+				var tipoDocumento = full.tipo_doc;
+				var documento = full.num_doc;
+				var repite = full.repite;
+				var favorito = full.favorito;
+
+				
+				var index = aux.indexOf(documento);
+				
+				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-favorito\" ";
+				
+				//if (index > -1) { opciones = opciones + " checked "; }else{ }
+				
+				if(favorito != null){
+					opciones = opciones + " checked favorito=\"1\" "; 
+				}else{
+					opciones = opciones + " favorito=\"0\" ";	
+				}
+
+
+
+
+
+
+				
+				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
+
+				return opciones;
+			}
+		}
 	],
 	bSort: false,
 	bPaginate: false,
@@ -456,7 +489,7 @@ function guardarRepitentes(){
 	formData.append('sede', $('#sede').val());
 
 	var cantidadRepitentes = 0;
-	$( ".checkbox-header:checked").each(function(){
+	$( ".checkbox-header-repite:checked").each(function(){
 		documento = $(this).val();
 		tipoDocumento = $( this ).attr('tipoDocumento');
 		formData.append('repitente['+documento+'][documento]', documento);
@@ -465,13 +498,33 @@ function guardarRepitentes(){
 		cantidadRepitentes++;
 	});	
 
-	$( ".checkbox-header:not(:checked)").each(function(){
+	$( ".checkbox-header-repite:not(:checked)").each(function(){
 		documento = $(this).val();
 		tipoDocumento = $( this ).attr('tipoDocumento');
 		formData.append('repitente['+documento+'][documento]', documento);
 		formData.append('repitente['+documento+'][tipoDocumento]', tipoDocumento);
 		formData.append('repitente['+documento+'][repite]', 0);
 	});
+
+	// Favoritos
+	// Nuevos favoritos
+	console.log("Los Favoritos:");
+	$(".checkbox-header-favorito[favorito='0']:checked").each(function(){
+		documento = $(this).val();
+		tipoDocumento = $( this ).attr('tipoDocumento');
+		formData.append('repitente['+documento+'][favorito]', 1);
+		//console.log(documento+" Favorito: "+1);
+	});
+	// Dejan de ser favoritos
+	$(".checkbox-header-favorito[favorito='1']:not(:checked)").each(function(){
+		documento = $(this).val();
+		tipoDocumento = $( this ).attr('tipoDocumento');
+		formData.append('repitente['+documento+'][favorito]', 0);
+		//console.log(documento+" Favorito: "+0);
+	});
+	//bandera++;
+
+
 
 
 

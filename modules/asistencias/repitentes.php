@@ -122,6 +122,7 @@
 									<th>Nombre</th>
 									<th>Grado</th>
 									<th>Grupo</th>
+									<th>Favorito</th>
 								</tr>
 							</thead>
 
@@ -132,6 +133,7 @@
 									<th>Nombre</th>
 									<th>Grado</th>
 									<th>Grupo</th>	
+									<th>Favorito</th>
 								</tr>
 							</tfoot>
 						</table>

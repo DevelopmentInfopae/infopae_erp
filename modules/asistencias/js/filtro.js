@@ -4,6 +4,21 @@ $(document).ready(function(){
 
 	cargarMunicipios();
 
+	if(localStorage.getItem("wappsi_mes") != null){
+		$( "#mes" ).val(localStorage.getItem("wappsi_mes"));
+		cargarSemanas();	
+	}
+
+	if(localStorage.getItem("wappsi_dia") != null){
+		$( "#dia" ).val(localStorage.getItem("wappsi_dia"));
+	}
+
+
+
+
+
+
+
 	$( "#mes" ).change(function() {
 		localStorage.setItem("wappsi_mes", $("#mes").val());
 		cargarSemanas();
@@ -12,6 +27,10 @@ $(document).ready(function(){
 	$( "#semana" ).change(function() {
 		localStorage.setItem("wappsi_semana", $("#semana").val());
 		cargarDias();
+	});
+
+	$( "#dia" ).change(function() {
+		localStorage.setItem("wappsi_dia", $("#dia").val());
 	});
 
 	$( "#municipio" ).change(function() {
@@ -133,8 +152,13 @@ function cargarMunicipios(){
 }
 
 function cargarInstituciones(){
+	console.log("Cargar Instituciones.");
 	var formData = new FormData();
 	formData.append('municipio', $('#municipio').val());
+	if($('#validacion').val() != null){
+		console.log($('#validacion').val());
+		formData.append('validacion', $('#validacion').val());
+	}
 
 	$.ajax({
 		type: "post",
@@ -147,6 +171,7 @@ function cargarInstituciones(){
 		success: function(data){
 			if(data.estado == 1){
 				$('#institucion').html(data.opciones);
+				
 				$('#institucion').val(localStorage.getItem("wappsi_institucion"));
 				localStorage.setItem("wappsi_institucion", $("#institucion").val());
 				if($('#institucion').val() != ""){
@@ -166,8 +191,13 @@ function cargarInstituciones(){
 }
 
 function cargarSedes(){
+	console.log("Cargar Sedes.");
 	var formData = new FormData();
 	formData.append('institucion', $('#institucion').val());
+	if($('#validacion').val() != null){
+		console.log($('#validacion').val());
+		formData.append('validacion', $('#validacion').val());
+	}
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_sede.php",
@@ -230,8 +260,11 @@ function cargarNiveles(){
 			}
 		},
 		error: function(data){
+			console.log("Error");
+			console.log("Puede que no este la tabla de focalización para la semana actual o elegida en el filtro.");
 			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+			$("#sede").val("");
+			//Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 		}
 	});
 }
