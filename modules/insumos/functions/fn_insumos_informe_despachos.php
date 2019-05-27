@@ -51,8 +51,12 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		// $nom_inst=""; 
 		// $nom_sede="";
 
-		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios){
+		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes){
 			$this->fecha = $fecha;
+			setlocale(LC_TIME, 'es');
+			$fecha = DateTime::createFromFormat('!m', $mes);
+			$mes = ucfirst(strftime("%B", $fecha->getTimestamp())); // marzo
+			$this->mes = $mes;
 			$this->dpto = $dpto;
 			$this->dataSede = $dataSede;
 			$this->Ciudad = $this->dataSede['Ciudad'];
@@ -77,9 +81,9 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','',8);
 		    $this->Cell(160,4,utf8_decode($_SESSION['p_Operador']),'BR',0,'L');
 		    $this->SetFont('Arial','B',8);
-		    $this->Cell(40,4,utf8_decode('FECHA DE ELABORACIÓN: '),'BL',0,'L');
+		    $this->Cell(40,4,utf8_decode('MES: '),'BL',0,'C');
 		    $this->SetFont('Arial','',8);
-		    $this->Cell(58,4,utf8_decode($this->fecha),'BR',1,'L'); //FECHA DE ELABORACIÓN DEL DESPACHO - REEMPLAZAR
+		    $this->Cell(58,4,utf8_decode($this->mes),'BR',1,'L'); //FECHA DE ELABORACIÓN DEL DESPACHO - REEMPLAZAR
 		    $this->SetFont('Arial','B',8);
 		    $this->Cell(14.1,4,utf8_decode('ETC: '),'BL',0,'L');
 		    $this->SetFont('Arial','',8);
@@ -185,7 +189,7 @@ foreach ($sedes as $key => $sede) {
 	$resultadoDespacho = $Link->query($consultaDespacho);
 	if ($resultadoDespacho->num_rows > 0) {
 		while ($Despacho = $resultadoDespacho->fetch_assoc()) {
-			$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios);
+			$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios,$tablaMes);
 			$pdf->AddPage();
 		    $pdf->SetFont('Arial','',7);
 		    //PRODUCTOS
