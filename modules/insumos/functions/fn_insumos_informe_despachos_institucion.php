@@ -41,8 +41,12 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	class PDF extends FPDF
 	{
 
-		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho){
+		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho, $mes){
 			$this->fecha = $fecha;
+			setlocale(LC_TIME, 'es');
+			$fecha = DateTime::createFromFormat('!m', $mes);
+			$mes = ucfirst(strftime("%B", $fecha->getTimestamp())); // marzo
+			$this->mes = $mes;
 			$this->dpto = $dpto;
 			$this->sedes = $sedes;
 			$this->productos = $productos;
@@ -68,9 +72,9 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','',$this->fontSize);
 		    $this->Cell(120,$this->alturaRenglon,utf8_decode($_SESSION['p_Operador']),'BR',0,'L');
 		    $this->SetFont('Arial','B',$this->fontSize);
-		    $this->Cell(40,$this->alturaRenglon,utf8_decode('FECHA DE ELABORACIÓN: '),'BL',0,'L');
+		    $this->Cell(40,$this->alturaRenglon,utf8_decode('MES: '),'BL',0,'C');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    $this->Cell(58,$this->alturaRenglon,utf8_decode($this->fecha),'BR',0,'L'); //FECHA DE ELABORACIÓN DEL DESPACHO - REEMPLAZAR
+		    $this->Cell(58,$this->alturaRenglon,utf8_decode($this->mes),'BR',0,'L'); //FECHA DE ELABORACIÓN DEL DESPACHO - REEMPLAZAR
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(19,$this->alturaRenglon,utf8_decode('ETC: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
@@ -251,7 +255,7 @@ $alturaRenglon = 6;
 
 foreach ($dataInst as $cod_inst => $sedes) {
 
-	$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, $maxEstudiantes[$cod_inst], $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst]);
+	$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, $maxEstudiantes[$cod_inst], $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMes);
 	$pdf->AddPage();
 	$pdf->SetFont('Arial','',$fontSize);
 
