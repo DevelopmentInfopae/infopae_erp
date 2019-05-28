@@ -307,8 +307,6 @@ if($tipoPlanilla != 1){
 
 $x = $pdf->GetX();
 $y = $pdf->GetY();
-$xCuadroFilas = $pdf->GetX();
-$yCuadroFilas = $pdf->GetY();
 
 $pdf->SetXY($x, $y-1.6);
 $pdf->Cell(0,7,utf8_decode('Total'),0,0,'C',False);
@@ -317,3 +315,6 @@ $pdf->Cell(0,7,utf8_decode('días'),0,0,'C',False);
 
 $pdf->SetXY($x, $y);
 $pdf->Ln(7);
+
+$xCuadroFilas = $pdf->GetX();
+$yCuadroFilas = $pdf->GetY();
