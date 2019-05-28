@@ -253,7 +253,7 @@
 	      </div> -->
 	    </form>
 	  </div><!-- /.row -->
-	</div><!-- /.wrapper wrapper-content animated fadeInRight -->
+	</div>
 
 
 	<div class="modal fade" id="myModal" role="dialog">

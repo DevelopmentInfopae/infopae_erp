@@ -363,7 +363,7 @@ function buscarSuplentes(){
 		},
 		pageLength: 10000,
 		responsive: true,
-	}).on("draw", function(){
+	}).on("draw", function() {
 		$('#loader').fadeOut();
 		$('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });
 	});
