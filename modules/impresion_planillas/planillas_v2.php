@@ -229,7 +229,6 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
       $nEstudiante++;
       if($linea > $lineas) {
         $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-        $pdf->Ln(7);
         $alturaCuadroFilas = $alturaLinea * ($linea-1);
         $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
         include 'planillas_footer_v2.php';
@@ -297,7 +296,6 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
 
         //Termina impresión de estudiantes de la sede
         $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-        $pdf->Ln(7);
         $alturaCuadroFilas = $alturaLinea * ($linea-1);
         $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
 
@@ -324,7 +322,6 @@ else if ($tipoPlanilla == 5)
         if($linea > $lineas)
         {
           $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-          $pdf->Ln(7);
           $alturaCuadroFilas = $alturaLinea * ($linea-1);
           $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
           include 'planillas_footer_v2.php';
@@ -360,7 +357,6 @@ else if ($tipoPlanilla == 5)
       }
 
       $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-      $pdf->Ln(7);
       $alturaCuadroFilas = $alturaLinea * ($linea-1);
       $pdf->Cell(0,$alturaCuadroFilas,"",1,0,'R',False);
 
@@ -592,7 +588,6 @@ else
       $nEstudiante++;
       if($linea > $lineas){
         $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-        $pdf->Ln(7);
         $alturaCuadroFilas = $alturaLinea * ($linea-1);
         $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
         include 'planillas_footer_v2.php';
@@ -627,7 +622,6 @@ else
     }
     //Termina impresión de estudiantes de la sede
     $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-    $pdf->Ln(7);
     $alturaCuadroFilas = $alturaLinea * ($linea-1);
     $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
     include 'planillas_footer_v2.php';
