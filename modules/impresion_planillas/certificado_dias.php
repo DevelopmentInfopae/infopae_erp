@@ -162,9 +162,10 @@ if ($resultadoPrioridad->num_rows > 0) {
 	}
 }
 
-$totalesPorDia = []; //Array para almacenar total por días.
 
-foreach ($instituciones as $institucion) {
+foreach ($instituciones as $institucion)
+{
+	$totalesPorDia = []; //Array para almacenar total por días.
 	$totalDeTotales = 0; //Variable para almacenar el total de todas las sedes.
 
 if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
