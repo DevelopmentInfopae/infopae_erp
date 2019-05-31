@@ -124,146 +124,148 @@
 			$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
 
 			// Iteramos el archivo
-			while(($datos = fgetcsv($archivo, null, $separador)) == TRUE) {
-					// Valida que el campo Número documento no este vacio ni nulo.
-					if($datos[1] == "" || is_null($datos[1]))
-					{
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Número documento</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($result);
-			  	}
+			while(($datos = fgetcsv($archivo, null, $separador)) == TRUE)
+			{
+				// Valida que el campo Número documento no este vacio ni nulo.
+				if($datos[1] == "" || is_null($datos[1]))
+				{
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Número documento</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($result);
+					exit();
+		  	}
 
-					// Valida que el campo Tipo documento no este vacio ni nulo.
-					if($datos[0] == "" || is_null($datos[0])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Tipo documento</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo Tipo documento no este vacio ni nulo.
+				if($datos[0] == "" || is_null($datos[0])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Tipo documento</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo genero no este vacio ni nulo.
-					if($datos[7] == "" || is_null($datos[7])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>genero</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo genero no este vacio ni nulo.
+				if($datos[7] == "" || is_null($datos[7])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>genero</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo Código estrato no esté vacio ni nulo.
-					if($datos[13] == "" || is_null($datos[13])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código estrato</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo Código estrato no esté vacio ni nulo.
+				if($datos[13] == "" || is_null($datos[13])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código estrato</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo discapacidad no esté vacio ni nulo.
-					if($datos[15] == "" || is_null($datos[15])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código discapacidad</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo discapacidad no esté vacio ni nulo.
+				if($datos[15] == "" || is_null($datos[15])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código discapacidad</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo etnia no esté vacio ni nulo.
-					if($datos[16] == "" || is_null($datos[16])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Étnia</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo etnia no esté vacio ni nulo.
+				if($datos[16] == "" || is_null($datos[16])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Étnia</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo resguardo no esté vacio ni nulo.
-					if($datos[17] == "" || is_null($datos[17])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Resguardo</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo resguardo no esté vacio ni nulo.
+				if($datos[17] == "" || is_null($datos[17])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Resguardo</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo población victima no esté vacio ni nulo.
-					if($datos[18] == "" || is_null($datos[18])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Población victima</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo población victima no esté vacio ni nulo.
+				if($datos[18] == "" || is_null($datos[18])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Población victima</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo Código institución no esté vacio ni nulo.
-					if($datos[23] == "" || is_null($datos[23])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código institución</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo Código institución no esté vacio ni nulo.
+				if($datos[23] == "" || is_null($datos[23])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código institución</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo Código sede no esté vacio ni nulo.
-					if($datos[24] == "" || is_null($datos[24])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código sede</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo Código sede no esté vacio ni nulo.
+				if($datos[24] == "" || is_null($datos[24])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código sede</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo Código grado no esté vacio ni nulo.
-					if($datos[27] == "" || is_null($datos[27])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código grado</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo Código grado no esté vacio ni nulo.
+				if($datos[27] == "" || is_null($datos[27])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código grado</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo Código jornada no esté vacio ni nulo.
-					if($datos[29] == "" || is_null($datos[29])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código jornada</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo Código jornada no esté vacio ni nulo.
+				if($datos[29] == "" || is_null($datos[29])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código jornada</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo Edad no esté vacio ni nulo.
-					if($datos[32] == "" || is_null($datos[32])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Edad</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo Edad no esté vacio ni nulo.
+				if($datos[32] == "" || is_null($datos[32])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Edad</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
-					// Valida que el campo Zona residencia no esté vacio ni nulo.
-					if($datos[33] == "" || is_null($datos[33])){
-						$respuestaAJAX = [
-							"estado" => 0,
-							"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Zona residencia</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-						];
-						echo json_encode($respuestaAJAX);
-				  	exit();
-					}
+				// Valida que el campo Zona residencia no esté vacio ni nulo.
+				if($datos[33] == "" || is_null($datos[33])){
+					$respuestaAJAX = [
+						"estado" => 0,
+						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Zona residencia</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
+					];
+					echo json_encode($respuestaAJAX);
+			  	exit();
+				}
 
 				$arrayCodIns[] = $datos[21];
 				$arrayCodSed[] = $datos[22];
@@ -434,7 +436,7 @@
 														D28 VARCHAR(45) NULL DEFAULT '0',
 														D29 VARCHAR(45) NULL DEFAULT '0',
 														D30 VARCHAR(45) NULL DEFAULT '0',
-														D31 VARCHAR(45) NULL DEFAULT '0'
+														D31 VARCHAR(45) NULL DEFAULT '0',
 														PRIMARY KEY (id),
 														INDEX Acel_est1 (num_doc, cod_jorn_est, cod_grado, cod_pob_victima, cod_inst, cod_discap) USING BTREE
 														)
@@ -465,7 +467,7 @@
 			}
 		} else {
 			// Consulta para saber el dia en que comienza la semana seleccionada.
-			$res_dias_semana = $Link->query("SELECT IF(DIA>10,DIA,CONCAT('0',DIA)) AS dia FROM planilla_semanas WHERE MES = '$mes' AND SEMANA = '$semana' ORDER BY DIA LIMIT 1") or die ("Error al consultar planilla_semanas Linea: 476". $Link->error);
+			$res_dias_semana = $Link->query("SELECT IF(DIA>9,DIA,CONCAT('0',DIA)) AS dia FROM planilla_semanas WHERE MES = '$mes' AND SEMANA = '$semana' ORDER BY DIA LIMIT 1") or die ("Error al consultar planilla_semanas Linea: 476". $Link->error);
 			if ($res_dias_semana->num_rows > 0) {
 				$dia_semana =  $res_dias_semana->fetch_assoc();
 
@@ -617,7 +619,7 @@
 			{
 				$respuestaAJAX = [
 					"estado"  => 0,
-					"mensaje" => "No fue posible crear datos parafocalización."
+					"mensaje" => "No fue posible crear datos para focalización."
 				];
 			}
 			else
