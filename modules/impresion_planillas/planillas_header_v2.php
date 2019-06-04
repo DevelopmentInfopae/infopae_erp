@@ -47,10 +47,10 @@ if ($tipoPlanilla != 6)
 {
 	foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas obtenidas para cambiar la tabla de priorización, ej : priorizacion01, priorizacion02, etc
 		//obtenemos el total de priorizaciones por complemento seleccionado de la semana en turno, luego lo multiplicamos por el número de días que tiene la semana en turno.
-		$consTotalEntregado = "SELECT DISTINCT SEMANA AS SM, COUNT(DIA) AS dias_semana,
+		$consTotalEntregado = "SELECT DISTINCT SEMANA AS SM, MES AS MS, COUNT(DIA) AS dias_semana,
 							(
 								(SELECT SUM(".$tipoComplemento.") FROM priorizacion".$semana." WHERE cod_sede = '".$codigoSede."') *
-							    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM)
+							    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM AND MES = MS)
 							) AS total_entregas
 							FROM planilla_semanas WHERE SEMANA = '".$semana."';";
 		// echo $consTotalEntregado;
