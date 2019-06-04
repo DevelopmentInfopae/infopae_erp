@@ -54,6 +54,11 @@
 		$sede = mysqli_real_escape_string($Link, $_GET['sede']);
 	}
 
+	$mesTablaAsistencia = $mes;
+	$annoTablaAsistencia = $anno2d;
+	include 'functions/fn_validar_existencias_tablas.php';
+
+
 
 
 

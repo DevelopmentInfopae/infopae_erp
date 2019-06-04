@@ -66,7 +66,9 @@ $grupo = (isset($_POST["grupo"]) && $_POST["grupo"] != "") ? mysqli_real_escape_
 
 
 
-
+$mesTablaAsistencia = $mes;
+$annoTablaAsistencia = $anno;
+include 'fn_validar_existencias_tablas.php';
 
 
 

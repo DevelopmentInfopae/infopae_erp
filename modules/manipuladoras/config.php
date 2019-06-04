@@ -1,15 +1,15 @@
 <?php
 //http://localhost/caterin2018
 $tituloProyecto = 'Infopae 2019'; 
-$baseUrl = 'http://190.240.28.157';
+//$baseUrl = 'localhost';
 $rootUrl = $_SERVER['DOCUMENT_ROOT'];
-//$baseUrl = 'http://localhost:8888/caterin2018';
+$baseUrl = 'http://181.206.47.103';
 
 
-$nodeUrl = 'http://190.240.28.157:8080';
+$nodeUrl = 'http://181.206.47.103:8080';
 
 
 // Año del contrato, este valor es utilizado en las tablas que tienen como
 // parte de su nombre el año del periodo del contrato
-$periodoActualCompleto = 2018;
+$periodoActualCompleto = 2019;
 $_SESSION['periodoActualCompleto'] = $periodoActualCompleto;

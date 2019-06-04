@@ -127,10 +127,7 @@ $(document).ready(function(){
 
 
 
-			if(faltan <= 0){
-				$( ".checkbox-header:not(:checked)").iCheck('disable'); 
-			}
-
+			// if(faltan <= 0){$( ".checkbox-header:not(:checked)").iCheck('disable'); }
 
 
 
@@ -427,7 +424,7 @@ function cargarRepitentes(){
         });
 
 
-        if(faltan <= 0){$( ".checkbox-header:not(:checked)").iCheck('disable'); }
+        //if(faltan <= 0){$( ".checkbox-header:not(:checked)").iCheck('disable'); }
 
 
 	});	

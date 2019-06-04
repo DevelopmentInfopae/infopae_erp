@@ -40,6 +40,10 @@ $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
 $asistencias = $_POST['asistencia'];
 
+$mesTablaAsistencia = $mes;
+$annoTablaAsistencia = $anno;
+include 'fn_validar_existencias_tablas.php';
+
 
 
 if($banderaRegistros == 0){

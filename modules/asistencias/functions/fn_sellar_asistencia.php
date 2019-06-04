@@ -31,7 +31,9 @@ if(isset($_POST['dia']) && $_POST['dia'] != ""){
 
 
 
-
+$mesTablaAsistencia = $mes;
+$annoTablaAsistencia = $anno;
+include 'fn_validar_existencias_tablas.php';
 
 
 
