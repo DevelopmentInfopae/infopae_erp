@@ -60,7 +60,9 @@ $(document).ready(function(){
 
 function convertirArchivo(nombre, dispositivo){
   console.log('LLamando a node');
-  var ruta = $('#ruta').val(); 
+   var ruta = $('#ruta').val(); 
+  console.log(ruta);
+  //var ruta = "http://127.0.0.1:8080"; 
   var datos = {
     "nombre":nombre,
     "dispositivo":dispositivo,
@@ -91,7 +93,7 @@ function convertirArchivo(nombre, dispositivo){
     console.log('Fail convertirArchivo');
   })
   .always(function(){
-    console.log('Always convertirArchivo');
+    //console.log('Always convertirArchivo');
   }); 
   // Termina Ajax
 }

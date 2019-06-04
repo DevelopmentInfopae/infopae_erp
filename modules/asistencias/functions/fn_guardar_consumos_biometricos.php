@@ -51,7 +51,7 @@ if(isset($_POST['repitieron'])){
 
 
 
-$consulta = "";
+
 $tipo_doc = "";
 $num_doc = "";
 

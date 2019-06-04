@@ -58,6 +58,14 @@
 	}
 
 
+
+
+
+	$mesTablaAsistencia = $mes;
+	$annoTablaAsistencia = $anno2d;
+	include 'functions/fn_validar_existencias_tablas.php';
+
+
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">

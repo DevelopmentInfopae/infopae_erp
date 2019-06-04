@@ -31,11 +31,27 @@ $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
 $repitentes = $_POST['repitente'];
 
-$consulta = "";
 
 $tipo_doc = "";
 $num_doc = "";
 $repite = "";
+
+
+
+$mesTablaAsistencia = $mes;
+$annoTablaAsistencia = $anno;
+include 'fn_validar_existencias_tablas.php';
+
+
+
+
+
+
+
+
+
+$consulta = "";
+
 
 foreach ($repitentes as $repitente){
 
@@ -64,7 +80,7 @@ foreach ($repitentes as $repitente){
 //echo $consulta;
 
 
-$result = $Link->multi_query($consulta) or die ('Insert error'. mysqli_error($Link));
+$result = $Link->multi_query($consulta) or die ("Insert error<br><br>$consulta<br><br>".mysqli_error($Link));
 if($result){
 	$resultadoAJAX = array(
 		"state" => 1,
