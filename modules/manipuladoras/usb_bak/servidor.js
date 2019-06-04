@@ -9,25 +9,33 @@ http.createServer(function (req, res){
 	res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
 	res.setHeader('Access-Control-Allow-Headers', '*');
 
-
 	if(url.parse(req.url,true)){
-		
 		var query = url.parse(req.url,true).query;
-	    var parametros = JSON.stringify(query);
-	    var objectValue = JSON.parse(parametros);
-	    var nombre = objectValue['nombre'];
-	    var dispositivo = objectValue['dispositivo'];
-	    var nombreExcel = nombre.toLowerCase();
-		res.writeHead(200,{'Content-type': 'text/html'});
-		
-		
-		//Proceso para generar el archivo de Excel
-		var backup2xls = require('anviz-backup2xls');
-		backup2xls(dispositivo+'/'+nombre+'.KQ', dispositivo+'/'+nombreExcel+'.xlsx');
-		console.log('Se ha creado el archivo'+nombreExcel+'.xlsx');
+		var parametros = JSON.stringify(query);
+		var objectValue = JSON.parse(parametros);
+
+		// 	Los 2 parametros que llegan por el ajax son el 
+		//	nombre del archivo y el dispositivo al que corresponde
+		var nombre = objectValue['nombre']; 
+		var dispositivo = objectValue['dispositivo'];
 
 
-		//Proceso para generar el archivo CSV
+		if(nombre != undefined && nombre != "" && dispositivo != undefined && dispositivo != ""){
+			
+			console.log('Iniciando servicio.');
+			console.log(nombre);
+			console.log(dispositivo);
+
+		    var nombreExcel = nombre.toLowerCase();
+			res.writeHead(200,{'Content-type': 'text/html'});
+			
+			
+			//Proceso para generar el archivo de Excel
+			var backup2xls = require('anviz-backup2xls');
+			backup2xls(dispositivo+'/'+nombre+'.KQ', dispositivo+'/'+nombreExcel+'.xlsx');
+			console.log('Se ha creado el archivo'+nombreExcel+'.xlsx');
+
+			//Proceso para generar el archivo CSV
 			var xlsx = require('node-xlsx');
 			var fs = require('fs');
 			var obj = xlsx.parse(dispositivo+'/'+nombreExcel+'.xlsx'); // parses a file
@@ -60,12 +68,12 @@ http.createServer(function (req, res){
 			    }
 			    console.log('Se ha creado el archivo'+nombreExcel+'.csv');
 			});
-		//Termina el proceso para generar el archivo CSV
-
+			//Termina el proceso para generar el archivo CSV
+		}
 
 		res.write('1');
-
 	}
+	
 	res.end();
 }).listen(port);
 console.log('El servidor esta corriendo en el puerto '+port);

@@ -51,9 +51,23 @@ if(isset($_POST['repitieron'])){
 
 
 
-$consulta = "";
+
 $tipo_doc = "";
 $num_doc = "";
+
+
+
+
+
+
+
+$mesTablaAsistencia = $mes;
+$annoTablaAsistencia = $anno;
+include 'fn_validar_existencias_tablas.php';
+
+
+
+
 
 $consulta = "";
 foreach ($consumieron as $consumio){

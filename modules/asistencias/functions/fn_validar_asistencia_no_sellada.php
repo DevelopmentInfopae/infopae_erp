@@ -24,6 +24,25 @@ if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){
 	$anno = date("y"); 
 	$mes = date("m");
 	$dia = intval(date("d"));
+
+
+
+
+
+
+	$mesTablaAsistencia = $mes;
+	$annoTablaAsistencia = $anno;
+	include 'fn_validar_existencias_tablas.php';
+
+
+
+
+
+
+
+
+
+
 	$consulta = "select * from asistencia_enc$mes$anno where estado = \"2\" and mes = \"$mes\" and semana = \"$semanaActual\" and dia = \"$dia\" and cod_sede = \"$sede\"";
 	$resultado = $Link->query($consulta);
 	if($resultado->num_rows > 0){

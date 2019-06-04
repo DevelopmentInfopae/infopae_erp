@@ -43,6 +43,17 @@ $valor = mysqli_real_escape_string($Link, $_POST['valor']);
 
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
+
+
+
+$mesTablaAsistencia = $mes;
+$annoTablaAsistencia = $anno;
+include 'fn_validar_existencias_tablas.php';
+
+
+
+
+
 $consulta = " update Asistencia_det$mes$anno set asistencia = $valor, repite = 0, consumio = 0, repitio = 0 where Asistencia_det$mes$anno.mes = \"$mes\" and Asistencia_det$mes$anno.semana = \"$semana\" and Asistencia_det$mes$anno.dia = \"$dia\" and Asistencia_det$mes$anno.num_doc  = \"$documento\" and Asistencia_det$mes$anno.tipo_doc  = \"$tipoDocumento\"";
 $result = $Link->query($consulta) or die ('Actualización de asistencia'.$consulta. mysqli_error($Link));
 if($result && $Link->affected_rows <= 0 ){
