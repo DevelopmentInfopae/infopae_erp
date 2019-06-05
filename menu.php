@@ -132,7 +132,15 @@
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Novedades</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li><a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/index.php">Priorización</a></li>
-			<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/index.php">Focalización</a></li>
+			<!-- <li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/index.php">Focalización</a></li> -->
+			<li>
+				<a href="#"><span class="nav-label">Focalización</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/index.php">Titulares</a></li>
+					<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/suplentes.php">Suplentes</a></li>
+					<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/repitentes.php">Repitentes</a></li>
+				</ul>
+			</li>
 		</ul>
 	</li>
 

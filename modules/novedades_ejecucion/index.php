@@ -29,79 +29,38 @@
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
     <div class="col-sm-12">
-      <form class="form" method="post" name="formulario_buscar_novedades" id="formulario_buscar_novedades">
-        <div class="ibox">
-          <div class="ibox-content">
+      <div class="ibox">
+        <div class="ibox-content">
+          <form class="form" method="post" name="formulario_buscar_novedades" id="formulario_buscar_novedades">
             <div class="row">
-              <div class="col-sm-4 form-group" required>
-                <label for="municipio">Municipio</label>
-                <select class="form-control select2" name="municipio" id="municipio" required>
-                  <option value="">seleccione</option>
-                  <?php
-                    $parametro_municipio = (! empty($codigo_municipio)) ? "AND CodigoDANE = '$codigo_municipio'" : "";
-                    $consulta_municipios = "SELECT CodigoDANE AS codigo, Ciudad AS nombre FROM ubicacion WHERE CodigoDANE LIKE '$codigo_departamento%' $parametro_municipio ORDER BY Ciudad ASC;";
-                    $respuesta_consulta_municipios = $Link->query($consulta_municipios) or die('Error al consultar municipios: '. $Link->error);
-                    if (! empty($respuesta_consulta_municipios->num_rows))
-                    {
-                      while($municipio = $respuesta_consulta_municipios->fetch_object())
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="municipio">Municipio *</label>
+                  <select class="form-control select2" name="municipio" id="municipio" required="required">
+                    <option value="">seleccione</option>
+                    <?php
+                      $parametro_municipio = (! empty($codigo_municipio)) ? "AND CodigoDANE = '$codigo_municipio'" : "";
+                      $consulta_municipios = "SELECT CodigoDANE AS codigo, Ciudad AS nombre FROM ubicacion WHERE CodigoDANE LIKE '$codigo_departamento%' $parametro_municipio ORDER BY Ciudad ASC;";
+                      $respuesta_consulta_municipios = $Link->query($consulta_municipios) or die('Error al consultar municipios: '. $Link->error);
+                      if (! empty($respuesta_consulta_municipios->num_rows))
                       {
-                        $codigo = $municipio->codigo;
-                        $nombre = $municipio->nombre;
-                        $seleccion = ($codigo == $codigo_municipio) ? 'selected' : '';
-                        echo '<option value="'. $codigo .'" '. $seleccion .'>'. $nombre .'</option>';
+                        while($municipio = $respuesta_consulta_municipios->fetch_object())
+                        {
+                          $codigo = $municipio->codigo;
+                          $nombre = $municipio->nombre;
+                          $seleccion = ($codigo == $codigo_municipio) ? 'selected' : '';
+                          echo '<option value="'. $codigo .'" '. $seleccion .'>'. $nombre .'</option>';
+                        }
                       }
-                    }
-                  ?>
-                </select>
-                <label class="error" for="municipio"></label>
+                    ?>
+                  </select>
+                  <label class="error" style="display: none" for="municipio"></label>
+                </div>
               </div>
+
               <div class="col-sm-4 form-group">
-                <label for="mes">Mes</label>
-                <select class="form-control select2" name="mes" id="mes" required>
-                  <option value="">seleccione</option>
-                  <?php
-                    $consulta_meses = "SELECT DISTINCT(MES) AS codigo,
-                                        CASE MES
-                                          WHEN '01' THEN 'Enero'
-                                            WHEN '02' THEN 'Febrero'
-                                            WHEN '03' THEN 'Marzo'
-                                            WHEN '04' THEN 'Abril'
-                                            WHEN '05' THEN 'Mayo'
-                                            WHEN '06' THEN 'Junio'
-                                            WHEN '07' THEN 'Julio'
-                                            WHEN '08' THEN 'Agosto'
-                                            WHEN '09' THEN 'Septiembre'
-                                            WHEN '10' THEN 'Octubre'
-                                            WHEN '11' THEN 'Noviembre'
-                                            ELSE 'Diciembre'
-                                        END AS nombre FROM planilla_semanas;";
-                    $respuesta_consulta_meses = $Link->query($consulta_meses) or die('Error al consultar meses: '. $Link->error);
-                    if (! empty($respuesta_consulta_meses->num_rows))
-                    {
-                      while ($mes = $respuesta_consulta_meses->fetch_object())
-                      {
-                        $codigo = $mes->codigo;
-                        $nombre = $mes->nombre;
-                        echo '<option value="'. $codigo .'">'. $nombre .'</option>';
-                      }
-                    }
-                  ?>
-                </select>
-                <label class="error" for="mes"></label>
-              </div>
-              <div class="col-sm-4 form-group">
-                <label for="semana">Semana</label>
-                <select class="form-control select2" name="semana" id="semana" required>
-                  <option value="">seleccione</option>
-                </select>
-                <div id="semana"> </div>
-                <label class="error" for="semana"></label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-4 form-group">
-                <label for="institucion">Institución</label>
-                <select class="form-control select2" name="institucion" id="institucion" required>
+                <label for="institucion">Institución *</label>
+                <select class="form-control select2" name="institucion" id="institucion" required="required">
                   <option value="">seleccione</option>
                   <?php
                     $consulta_instituciones = "SELECT codigo_inst AS codigo, nom_inst AS nombre FROM instituciones WHERE cod_mun = '". $codigo_municipio ."' ORDER BY nom_inst";
@@ -117,41 +76,91 @@
                     }
                   ?>
                 </select>
-                <label class="error" for="institucion"></label>
+                <label class="error" style="display: none" for="institucion"></label>
               </div>
+
               <div class="col-sm-4 form-group">
                 <label for="sede">Sede</label>
-                <select class="form-control select2" name="sede" id="sede">
+                <select class="form-control select2" name="sede" id="sede" required="required">
                   <option value="">seleccione</option>
                 </select>
-                <label class="error" for="sede"></label>
+                <label class="error" style="display: none;" for="sede"></label>
               </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="mes">Mes *</label>
+                  <select class="form-control select2" name="mes" id="mes" required="required">
+                    <option value="">seleccione</option>
+                    <!-- <?php
+                      // $consulta_meses = "SELECT DISTINCT(MES) AS codigo,
+                      //                     CASE MES
+                      //                       WHEN '01' THEN 'Enero'
+                      //                         WHEN '02' THEN 'Febrero'
+                      //                         WHEN '03' THEN 'Marzo'
+                      //                         WHEN '04' THEN 'Abril'
+                      //                         WHEN '05' THEN 'Mayo'
+                      //                         WHEN '06' THEN 'Junio'
+                      //                         WHEN '07' THEN 'Julio'
+                      //                         WHEN '08' THEN 'Agosto'
+                      //                         WHEN '09' THEN 'Septiembre'
+                      //                         WHEN '10' THEN 'Octubre'
+                      //                         WHEN '11' THEN 'Noviembre'
+                      //                         ELSE 'Diciembre'
+                      //                     END AS nombre FROM planilla_semanas;";
+                      // $respuesta_consulta_meses = $Link->query($consulta_meses) or die('Error al consultar meses: '. $Link->error);
+                      // if (! empty($respuesta_consulta_meses->num_rows))
+                      // {
+                      //   while ($mes = $respuesta_consulta_meses->fetch_object())
+                      //   {
+                      //     $codigo = $mes->codigo;
+                      //     $nombre = $mes->nombre;
+                      //     echo '<option value="'. $codigo .'">'. $nombre .'</option>';
+                      //   }
+                      // }
+                    ?> -->
+                  </select>
+                  <label class="error" style="display: none" for="mes"></label>
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="semana">Semana *</label>
+                  <select class="form-control select2" name="semana" id="semana" required="required">
+                    <option value="">seleccione</option>
+                  </select>
+                  <label class="error" style="display: none;" for="semana"></label>
+                </div>
+              </div>
+
               <div class="col-sm-4 form-group">
-                <label for="tipo_complemento">Tipo complemento</label>
-                <select class="form-control select2" name="tipo_complemento" id="tipo_complemento" required>
+                <label for="tipo_complemento">Tipo complemento *</label>
+                <select class="form-control select2" name="tipo_complemento" id="tipo_complemento" required="required">
                   <option value="">seleccione</option>
                 </select>
-                <label class="error" for="tipo_complemento"></label>
+                <label class="error" style="display: none;" for="tipo_complemento"></label>
               </div>
             </div>
+
             <div class="row">
               <div class="col-sm-4 form-group">
                 <button class="btn btn-primary" type="button" id="boton_buscar_novedades" name="boton_buscar_novedades" value="1"><i class="fa fa-search"></i>  Buscar</button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Seccion de filtros -->
-<div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
     <div class="col-lg-12">
-      <div class="ibox float-e-margins">
-        <div class="ibox-content contentBackground">
+      <div class="ibox">
+        <div class="ibox-content">
           <table class="table table-striped table-hover selectableRows tabla_novedades_focalizacion">
             <thead>
               <tr>

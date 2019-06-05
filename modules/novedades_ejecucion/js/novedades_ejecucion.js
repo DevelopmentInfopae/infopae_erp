@@ -3,14 +3,14 @@ $(document).ready(function() {
 
     jQuery.extend(jQuery.validator.messages, { required: "Campo obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 
-		$(document).on('change', '#mes', function() { buscar_semana_mes(); });
-		$(document).on('change', '#institucion', function() { buscar_sedes_insitucion(); buscar_complementos(); });
-		$(document).on('change', '#sede', function() { buscar_complementos(); });
-		$(document).on('change', '#semana', function() { buscar_complementos(); });
+		$(document).on('change', '#mes', function() { buscar_semana_mes($(this).val()); });
+		$(document).on('change', '#sede', function() { buscar_meses_sede($(this).val()); });
+		$(document).on('change', '#semana', function() { buscar_complementos($(this).val()); });
+		$(document).on('change', '#institucion', function() { buscar_sedes_institucion(); });
 		$(document).on('click', '#boton_buscar_novedades', function() { validar_campos_formulario(); });
 });
 
-function buscar_sedes_insitucion()
+function buscar_sedes_institucion()
 {
 	institucion = $('#institucion').val();
 	$.ajax({
@@ -30,58 +30,84 @@ function buscar_sedes_insitucion()
 	});
 }
 
-function buscar_semana_mes()
+function buscar_meses_sede(sede)
 {
-	mes = $('#mes').val();
-
 	$.ajax({
-		url: 'functions/fn_buscar_semanas.php',
-		type: 'POST',
-		dataType: 'HTML',
-		data: {'mes': mes},
-	})
-	.done(function(data) {
-		$('#semana').html(data);
-		$('#semana').select('val', '');
-	})
-	.fail(function(data) {
-		console.log(data.responseText);
+		type: "POST",
+		url: "functions/fn_buscar_meses.php",
+		dataType: 'JSON',
+    data: {
+    	'sede': sede
+    },
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			if(data.estado == 1){
+				$('#mes').html(data.opciones);
+				$('#loader').fadeOut();
+			} else {
+				Command: toastr.error( data.mensaje, "Error al cargar las instituciones.", { onHidden : function(){ $('#loader').fadeOut(); } } );
+			}
+		},
+		error: function (data) {
+			$('#loader').fadeOut();
+		}
 	});
+
+	$('#mes').select2('val', '');
 }
 
-function buscar_complementos()
+function buscar_semana_mes(mes)
 {
-	sede = $('#sede').val();
-	semana = $('#semana').val();
-	institucion = $('#institucion').val();
-
-	if (semana != '')
-	{
-		$.ajax({
-			url: 'functions/fn_buscar_complementos.php',
-			type: 'POST',
-			dataType: 'HTML',
-			data: {
-				'sede': sede,
-				'semana': semana,
-				'institucion': institucion
-			},
-		})
-		.done(function(data)
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_buscar_semanas.php",
+		dataType: 'HTML',
+    data: {
+    	'mes': mes
+    },
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data)
 		{
-			$('#tipo_complemento').html(data);
-			$('#tipo_complemento').select2('val', '');
-		})
-		.fail(function(data)
+			$('#semana').html(data);
+			$('#loader').fadeOut();
+		},
+		error: function(data)
 		{
 			console.log(data.responseText);
-		});
-	}
-	else
-	{
-		Command: toastr.warning('Debe seleccionar la semana para obtener los tipos de complementos', 'Mensaje de advertencia.');
-	}
+			$('#loader').fadeOut();
+		}
+	});
+
+	$('#semana').select2('val', '');
 }
+
+function buscar_complementos(semana)
+{
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_buscar_complementos.php",
+		dataType: 'HTML',
+    data: {
+    	'semana': semana,
+    	'mes': $('#mes').val(),
+    	'institucion': $('#institucion').val()
+    },
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data)
+		{
+			$('#tipo_complemento').html(data);
+			$('#loader').fadeOut();
+		},
+		error: function(data)
+		{
+			console.log(data.responseText);
+			$('#loader').fadeOut();
+		}
+	});
+
+	$('#tipo_complemento').select2('val', '');
+}
+
 
 function validar_campos_formulario()
 {
@@ -93,6 +119,7 @@ function validar_campos_formulario()
 
 function buscar_novedades()
 {
+	mes = $('#mes').val();
 	sede = $('#sede').val();
 	semana = $('#semana').val();
 	institucion = $('#institucion').val();
@@ -101,21 +128,22 @@ function buscar_novedades()
 	$('.tabla_novedades_focalizacion').DataTable({
     ajax: {
       method: 'POST',
-      url: 'functions/fn_novedades_focalizacion_index_buscar_datatables.php',
-      data{
+      url: 'functions/fn_novedades_focalizacion_buscar.php',
+      data: {
+      	'mes': mes,
       	'sede': sede,
       	'semana': semana,
-      	'instituciones': instituciones,
+      	'institucion': institucion,
       	'tipo_complemento': tipo_complemento
-      },
-      success: function(data)
-      {
-        console.log(data);
-      },
-      error: function(data)
-      {
-        console.log(data.responseText);
       }
+      // success: function(data)
+      // {
+      //   console.log(data);
+      // },
+      // error: function(data)
+      // {
+      //   console.log(data.responseText);
+      // }
     },
     columns:[
       { data: 'id'},
@@ -135,6 +163,7 @@ function buscar_novedades()
     ],
     buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } } ],
     dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+		lengthMenu:[[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Todo']],
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros',
       sZeroRecords: 'No se encontraron registros',
@@ -149,7 +178,8 @@ function buscar_novedades()
         sPrevious: 'Anterior'
       }
     },
-    pageLength: 10,
+    destroy: true,
+    pageLength: 25,
     responsive: true,
     initComplete: function(settings, json)
     {
@@ -157,22 +187,6 @@ function buscar_novedades()
         $('#loader').fadeOut();
       }
     }).on("draw", function(){ $('#loader').fadeOut(); $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', }); });
-
-		// Evento para cambiar de estado
-		$(document).on('change', '.dataTablesSedes tbody input[type=checkbox].estadoSede', function(){
-			var tr = $(this).closest('tr');
-			var datos = datatables.row( tr ).data();
-
-			confirmarCambioEstado(datos.codigoSede, datos.estadoSede);
-		});
-
-    // Evento para editar
-    $(document).on('click', '.dataTablesNovedadesFocalizacion tbody .editarSede', function(){
-      var tr = $(this).closest('tr');
-      var datos = datatables.row( tr ).data();
-
-      editarSede(datos.codigoSede, datos.nombreSede);
-    });
 
 		// Botón de acciones para la tabla.
     var botonAcciones = '<div class="dropdown pull-right">'+ '<button class="btn btn-primary btn-sm btn-outline" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">'+ 'Acciones <span class="caret"></span>'+ '</button>'+ '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+ '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><i class="fa fa-file-excel-o"></i> Exportar </a></li>' + '</ul>'+ '</div>';
