@@ -55,6 +55,7 @@
 	$pdf->AliasNbPages();
 	$pdf->SetDrawColor(188,188,188);
 
+
 	$pdf->Image("../../../img/logo_simbolo_infopae2.png",15,8,18);
 	$pdf->SetFont('Arial','B',11);
 	$pdf->Cell(30,15,'','TRBL',0,'C');
@@ -106,5 +107,4 @@
 		}
 	}
 
-	// $pdf->MultiCell(40,10, $conPri);
 	$pdf->Output('I', 'Informe_diferencias_titulares.fpd');

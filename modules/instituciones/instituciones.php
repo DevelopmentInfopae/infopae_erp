@@ -28,7 +28,6 @@
   </div>
   <?php } ?>
 </div>
-<!-- /.row wrapper de la cabecera de la seccion -->
 
 <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
@@ -66,22 +65,6 @@
                                           <li>
                                             <a href="#" onclick="editarInstitucion('<?php echo $row["codigo_inst"]; ?>', '<?php echo $row["nom_inst"]; ?>');"><i class="fa fa-pencil fa-lg"></i> Editar</a>
                                           </li>
-                                          <!-- <li>
-                                            <a href="#" class="verDispositivos" data-codigoinstitucion="<?php echo $row["codigo_inst"]; ?>"><i class="fa fa-eye fa-lg"></i> Ver dispositivos</a>
-                                          </li>
-                                          <li>
-                                            <a href="#" class="verInfraestructura" data-codigoinstitucion="<?php echo $row["codigo_inst"]; ?>"><i class="fa fa-bank fa-lg"></i> Ver Infraestructura</a>
-                                          </li>
-                                          <li>
-                                            <a href="#" class="verTitulares" data-codigoinstitucion="<?php echo $row["codigo_inst"]; ?>"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>
-                                          </li>
-                                          <li class="divider"></li>
-                                          <li>
-                                            <a href="#">
-                                              Estado: &nbsp;
-                                              <input type="checkbox" id="inputEstadoIntitucion<?php echo $row["id"]; ?>" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24" <?php if($row["estadoInstitucion"] == 1){ echo "checked"; } ?> onchange="confirmarCambioEstado(<?php echo $row["id"]; ?>, this.checked);">
-                                            </a>
-                                          </li> -->
                                         </ul>
                                       </div>
                                     </div>
