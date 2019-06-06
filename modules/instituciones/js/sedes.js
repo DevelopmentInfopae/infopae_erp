@@ -235,7 +235,8 @@ function subirArchivoPriorizacion(){
   }
 }
 
-function subirArchivoFocalizacion(){
+function subirArchivoFocalizacion()
+{
   if($('#frmSubirArchivoFocalizacion').valid()){
     var formData = new FormData();
     formData.append('mes', $('#mesFocalizacion').val());
@@ -284,7 +285,8 @@ function subirArchivoFocalizacion(){
   }
 }
 
-function generarInformeFocalizacion(){
+function generarInformeFocalizacion()
+{
   window.open('functions/fn_sede_generar_informe.php?semana='+$('#semanaFocalizacion').val(), '_blank');
 }
 

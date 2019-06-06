@@ -1,6 +1,9 @@
 <?php
   include '../../header.php';
   $titulo = 'Novedades de focalización';
+
+  $codigo_municipio = $_SESSION['p_Municipio'];
+  $codigo_departamento = $_SESSION['p_CodDepartamento'];
 ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
@@ -13,23 +16,152 @@
         <strong><?= $titulo; ?></strong>
       </li>
     </ol>
-  </div><!-- /.col -->
+  </div>
   <div class="col-lg-4">
     <div class="title-action">
 			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
 				<a href="#" class="btn btn-primary" onclick="crearNovedadPriorizacion();"><i class="fa fa-plus"></i> Nuevo </a>
 			<?php } ?>
-		</div><!-- /.title-action -->
-  </div><!-- /.col -->
-</div><!-- /.row -->
+		</div>
+  </div>
+</div>
 
-<!-- Seccion de filtros -->
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
+    <div class="col-sm-12">
+      <div class="ibox">
+        <div class="ibox-content">
+          <form class="form" method="post" name="formulario_buscar_novedades" id="formulario_buscar_novedades">
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="municipio">Municipio *</label>
+                  <select class="form-control select2" name="municipio" id="municipio" required="required">
+                    <option value="">seleccione</option>
+                    <?php
+                      $parametro_municipio = (! empty($codigo_municipio)) ? "AND CodigoDANE = '$codigo_municipio'" : "";
+                      $consulta_municipios = "SELECT CodigoDANE AS codigo, Ciudad AS nombre FROM ubicacion WHERE CodigoDANE LIKE '$codigo_departamento%' $parametro_municipio ORDER BY Ciudad ASC;";
+                      $respuesta_consulta_municipios = $Link->query($consulta_municipios) or die('Error al consultar municipios: '. $Link->error);
+                      if (! empty($respuesta_consulta_municipios->num_rows))
+                      {
+                        while($municipio = $respuesta_consulta_municipios->fetch_object())
+                        {
+                          $codigo = $municipio->codigo;
+                          $nombre = $municipio->nombre;
+                          $seleccion = ($codigo == $codigo_municipio) ? 'selected' : '';
+                          echo '<option value="'. $codigo .'" '. $seleccion .'>'. $nombre .'</option>';
+                        }
+                      }
+                    ?>
+                  </select>
+                  <label class="error" style="display: none" for="municipio"></label>
+                </div>
+              </div>
+
+              <div class="col-sm-4 form-group">
+                <label for="institucion">Institución *</label>
+                <select class="form-control select2" name="institucion" id="institucion" required="required">
+                  <option value="">seleccione</option>
+                  <?php
+                    $consulta_instituciones = "SELECT codigo_inst AS codigo, nom_inst AS nombre FROM instituciones WHERE cod_mun = '". $codigo_municipio ."' ORDER BY nom_inst";
+                    $respuesta_consulta_instituciones = $Link->query($consulta_instituciones) or die ('Error al consultar instituciones: '. $Link->error);
+                    if(! empty($respuesta_consulta_instituciones->num_rows))
+                    {
+                      while($institucion = $respuesta_consulta_instituciones->fetch_object())
+                      {
+                        $codigo = $institucion->codigo;
+                        $nombre = $institucion->nombre;
+                        echo '<option value="'. $codigo .'">'. $nombre .'</option>';
+                      }
+                    }
+                  ?>
+                </select>
+                <label class="error" style="display: none" for="institucion"></label>
+              </div>
+
+              <div class="col-sm-4 form-group">
+                <label for="sede">Sede</label>
+                <select class="form-control select2" name="sede" id="sede" required="required">
+                  <option value="">seleccione</option>
+                </select>
+                <label class="error" style="display: none;" for="sede"></label>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="mes">Mes *</label>
+                  <select class="form-control select2" name="mes" id="mes" required="required">
+                    <option value="">seleccione</option>
+                    <!-- <?php
+                      // $consulta_meses = "SELECT DISTINCT(MES) AS codigo,
+                      //                     CASE MES
+                      //                       WHEN '01' THEN 'Enero'
+                      //                         WHEN '02' THEN 'Febrero'
+                      //                         WHEN '03' THEN 'Marzo'
+                      //                         WHEN '04' THEN 'Abril'
+                      //                         WHEN '05' THEN 'Mayo'
+                      //                         WHEN '06' THEN 'Junio'
+                      //                         WHEN '07' THEN 'Julio'
+                      //                         WHEN '08' THEN 'Agosto'
+                      //                         WHEN '09' THEN 'Septiembre'
+                      //                         WHEN '10' THEN 'Octubre'
+                      //                         WHEN '11' THEN 'Noviembre'
+                      //                         ELSE 'Diciembre'
+                      //                     END AS nombre FROM planilla_semanas;";
+                      // $respuesta_consulta_meses = $Link->query($consulta_meses) or die('Error al consultar meses: '. $Link->error);
+                      // if (! empty($respuesta_consulta_meses->num_rows))
+                      // {
+                      //   while ($mes = $respuesta_consulta_meses->fetch_object())
+                      //   {
+                      //     $codigo = $mes->codigo;
+                      //     $nombre = $mes->nombre;
+                      //     echo '<option value="'. $codigo .'">'. $nombre .'</option>';
+                      //   }
+                      // }
+                    ?> -->
+                  </select>
+                  <label class="error" style="display: none" for="mes"></label>
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="semana">Semana *</label>
+                  <select class="form-control select2" name="semana" id="semana" required="required">
+                    <option value="">seleccione</option>
+                  </select>
+                  <label class="error" style="display: none;" for="semana"></label>
+                </div>
+              </div>
+
+              <div class="col-sm-4 form-group">
+                <label for="tipo_complemento">Tipo complemento *</label>
+                <select class="form-control select2" name="tipo_complemento" id="tipo_complemento" required="required">
+                  <option value="">seleccione</option>
+                </select>
+                <label class="error" style="display: none;" for="tipo_complemento"></label>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-4 form-group">
+                <button class="btn btn-primary" type="button" id="boton_buscar_novedades" name="boton_buscar_novedades" value="1"><i class="fa fa-search"></i>  Buscar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
     <div class="col-lg-12">
-      <div class="ibox float-e-margins">
-        <div class="ibox-content contentBackground">
-          <table class="table table-striped table-hover selectableRows dataTablesNovedadesFocalizacion">
+      <div class="ibox">
+        <div class="ibox-content">
+          <table class="table table-striped table-hover selectableRows tabla_novedades_focalizacion">
             <thead>
               <tr>
                 <th>ID</th>
@@ -102,7 +234,6 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
 
 <!-- Custom and plugin javascript -->
@@ -111,86 +242,11 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/js/novedades_ejecucion.js"></script>
-
-<script>
-  $(document).ready(function(){
-		$('#loader').fadeIn();
-    // Configuración para la tabla de sedes.
-    datatables = $('.dataTablesNovedadesFocalizacion').DataTable({
-      ajax: {
-        method: 'POST',
-        url: 'functions/fn_novedades_focalizacion_index_buscar_datatables.php',
-        success: function(data)
-        {
-          console.log(data);
-        },
-        error: function(data)
-        {
-          console.log(data.responseText);
-        }
-      },
-      columns:[
-        { data: 'id'},
-        { data: 'municipio'},
-        { data: 'nom_inst'},
-				{ data: 'nom_sede'},
-        { data: 'Abreviatura'},
-        { data: 'num_doc_titular'},
-        { data: 'nombre'},
-        { data: 'tipo_complem'},
-        { data: 'semana'},
-        { data: 'd1'},
-        { data: 'd2'},
-        { data: 'd3'},
-        { data: 'd4'},
-        { data: 'd5'}
-      ],
-      buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } } ],
-      dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
-      oLanguage: {
-        sLengthMenu: 'Mostrando _MENU_ registros',
-        sZeroRecords: 'No se encontraron registros',
-        sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
-        sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-        sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-        sSearch:         'Buscar: ',
-        oPaginate:{
-          sFirst:    'Primero',
-          sLast:     'Último',
-          sNext:     'Siguiente',
-          sPrevious: 'Anterior'
-        }
-      },
-      pageLength: 10,
-      responsive: true
-      // "preDrawCallback": function( settings ) {
-      //   // $('#loader').fadeIn();
-      // }
-    }).on("draw", function(){ $('#loader').fadeOut(); $('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', }); });
-
-		// Evento para cambiar de estado
-		$(document).on('change', '.dataTablesSedes tbody input[type=checkbox].estadoSede', function(){
-			var tr = $(this).closest('tr');
-			var datos = datatables.row( tr ).data();
-			alert('Hola');
-			confirmarCambioEstado(datos.codigoSede, datos.estadoSede);
-		});
-
-    // Evento para editar
-    $(document).on('click', '.dataTablesNovedadesFocalizacion tbody .editarSede', function(){
-      var tr = $(this).closest('tr');
-      var datos = datatables.row( tr ).data();
-      editarSede(datos.codigoSede, datos.nombreSede);
-    });
-
-		// Botón de acciones para la tabla.
-    var botonAcciones = '<div class="dropdown pull-right">'+ '<button class="btn btn-primary btn-sm btn-outline" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">'+ 'Acciones <span class="caret"></span>'+ '</button>'+ '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+ '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><i class="fa fa-file-excel-o"></i> Exportar </a></li>' + '</ul>'+ '</div>';
-    $('.containerBtn').html(botonAcciones);
-  });
-</script>
 
 <form action="novedades_priorizacion_ver.php" method="post" name="formVerNovedad" id="formVerNovedad">
   <input type="hidden" name="idNovedad" id="idNovedad">

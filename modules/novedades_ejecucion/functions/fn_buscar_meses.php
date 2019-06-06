@@ -4,7 +4,7 @@
 	require_once '../../../php/funciones.php';
 
 	$sede = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
-	$opciones = '<option value="">Seleccione una</option>';
+	$opciones = '<option value="">seleccione</option>';
 
   $consulta = "SELECT DISTINCT sc.mes FROM sedes_cobertura sc WHERE sc.cod_sede = '$sede' ORDER BY sc.mes ASC";
   $resultado = $Link->query($consulta);
