@@ -111,13 +111,16 @@ if($indice != $diaSemana){
 
 // TODO
 //Buscando el consecutivo del día actual dentro del mes.
-$consulta = " select * from planilla_dias where mes = \"$mes\" and ano = \"$annoCompleto\" ";
-// echo $consulta;
+
+$consulta = " select D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28, D29, D30, D31 from planilla_dias where mes = \"$mes\" and ano = \"$annoCompleto\" "; 
+
+//echo $consulta;
 $result = $Link->query($consulta) or die ('Leyendo planilla dias.'.$consulta. mysqli_error($Link));
 $row = $result->fetch_assoc();
 $diaIndice = array_search($dia, $row);
+//var_dump($diaIndice);
 //echo array_search($dia, $row);
-// var_dump($row);
+//var_dump($row);
 
 
 
@@ -138,7 +141,7 @@ $consultaConsumo = "";
 
 $consulta = " select a.*, f.Tipo_complemento as complemento from Asistencia_det$mes$anno a left join focalizacion$semana f on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc where a.mes = \"$mes\" and a.semana = \"$semana\" and a.dia = \"$dia\" and f.cod_sede = \"$sede\" ";
 
-//echo "<br>$consulta<br>";
+echo "<br>$consulta<br>";
 
 
 $result = $Link->query($consulta) or die ('Actualización de asistencia'.$consulta. mysqli_error($Link));
@@ -262,7 +265,7 @@ while($row = $result->fetch_assoc()){
 
 
 	$consultaConsumo = " update entregas_res_$mes$anno set $diaIndice = \"$consumio\" where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" ";
-	$resultConsumo = $Link->query($consultaConsumo) or die ('Entregas'.$consultaConsumo. mysqli_error($Link));
+	$resultConsumo = $Link->query($consultaConsumo) or die ('Error al actualizar Entregas Res<br>'.$consultaConsumo. mysqli_error($Link));
 
 
 
