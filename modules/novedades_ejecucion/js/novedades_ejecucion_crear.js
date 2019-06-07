@@ -1,5 +1,30 @@
 $(document).ready(function()
 {
+	// Configuración inicial del plugin select2.
+	$('select').select2();
+
+	// Configuración inicial del plugin toastr.
+	toastr.options = {
+		"closeButton": true,
+		"debug": false,
+		"progressBar": true,
+		"preventDuplicates": false,
+		"positionClass": "toast-top-right",
+		"onclick": null,
+		"showDuration": "400",
+		"hideDuration": "1000",
+		"timeOut": "2000",
+		"extendedTimeOut": "1000",
+		"showEasing": "swing",
+		"hideEasing": "linear",
+		"showMethod": "fadeIn",
+		"hideMethod": "fadeOut"
+	}
+
+	// Configuración inicial del plugin jquery validator.
+	jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
+
+
 	$('#municipio_hidden').val($('#municipio').val());
 
 	_tablaFocalizados = '';
@@ -73,28 +98,6 @@ $(document).ready(function()
 			restarCantidadDias($(this));
 		}
 	});
-
-	jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
-
-	// Configuración inicial del plugin toastr.
-	toastr.options = {
-		"closeButton": true,
-		"debug": false,
-		"progressBar": true,
-		"preventDuplicates": false,
-		"positionClass": "toast-top-right",
-		"onclick": null,
-		"showDuration": "400",
-		"hideDuration": "1000",
-		"timeOut": "2000",
-		"extendedTimeOut": "1000",
-		"showEasing": "swing",
-		"hideEasing": "linear",
-		"showMethod": "fadeIn",
-		"hideMethod": "fadeOut"
-	}
-
-	$('select').select2();
 });
 
 function buscarMunicipios()
@@ -283,12 +286,43 @@ function buscar_dias_semanas()
 		$('#contenedor_tabla_focalizados').fadeIn();
 		$('.tabla_focalizacion thead tr, .tabla_focalizacion tfoot tr').html(data);
 
-		buscar_focalizacion();
+		buscar_priorizacion();
 	})
 	.fail(function(data)
 	{
 		$('#loader').fadeOut()
 		console.log(data);
+	});
+}
+
+function buscar_priorizacion()
+{
+	$.ajax({
+		url: 'functions/fn_novedades_ejecucion_buscar_priorizacion.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {
+			mes: $('#mes').val(),
+			sede: $('#sede').val(),
+			semana: $('#semana').val(),
+			tipo_complemento: $('#tipoComplemento').val()
+		},
+	})
+	.done(function(data) {
+		if (data == 0)
+		{
+			Command: toastr.error('No existe priorización según los filtros seleccionados.', 'Error de proceso', { onHidden: function() { location.reload(); } });
+		}
+		else
+		{
+			_cantidadDiasFocalizados = parseInt(data);
+			$('#total_priorizacion').html(_cantidadDiasFocalizados);
+
+			buscar_focalizacion();
+		}
+	})
+	.fail(function(data) {
+		Command: toastr.error('Al parecer existe un problema. Por favor comuníquese con el administrador del sistema.', 'Error de proceso', { onHidden: function() { console.log(data.responseText); $('#loader').fadeOut(); } });
 	});
 }
 
@@ -308,6 +342,14 @@ function buscar_focalizacion()
 				semana: $('#semana').val(),
 				tipoComplemento: $('#tipoComplemento').val()
 			}
+			// success: function(data)
+			// {
+			// 	console.log(data);
+			// },
+			// error: function(data)
+			// {
+			// 	console.log(data.responseText);
+			// }
 		},
 		columns:[
 			{ data: 'abreviatura_documento'},
@@ -370,8 +412,8 @@ function buscar_focalizacion()
 				}
 			});
 
-			_cantidadDiasFocalizados = total_suma_dias;
-			_cantidadDiasFocalizadosActual = total_suma_dias;
+			_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
+			$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 		}
 	});
 }
@@ -382,11 +424,14 @@ function sumarCantidadDias(checkbox)
 	{
 		_cantidadDiasFocalizadosActual += 1;
 		checkbox.prop('checked', true);
+
 	}
 	else
 	{
 		checkbox.prop('checked', false);
 	}
+
+	$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 }
 
 function restarCantidadDias(checkbox)
@@ -400,6 +445,8 @@ function restarCantidadDias(checkbox)
 	{
 		checkbox.prop('checked', true);
 	}
+
+	$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 }
 
 function guardarNovedad()
