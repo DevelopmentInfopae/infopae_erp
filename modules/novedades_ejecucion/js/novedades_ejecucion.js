@@ -3,12 +3,42 @@ $(document).ready(function() {
 
     jQuery.extend(jQuery.validator.messages, { required: "Campo obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 
+		$(document).on('change', '#municipio', function() { buscar_instituciones($(this).val()); });
 		$(document).on('change', '#mes', function() { buscar_semana_mes($(this).val()); });
 		$(document).on('change', '#sede', function() { buscar_meses_sede($(this).val()); });
 		$(document).on('change', '#semana', function() { buscar_complementos($(this).val()); });
 		$(document).on('change', '#institucion', function() { buscar_sedes_institucion(); });
 		$(document).on('click', '#boton_buscar_novedades', function() { validar_campos_formulario(); });
 });
+
+function buscar_instituciones(municipio)
+{
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_buscar_instituciones.php",
+		dataType: 'JSON',
+    data: {
+    	'municipio': municipio
+    },
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data)
+		{
+			if(data.estado == 1)
+			{
+				$('#institucion').html(data.opciones);
+				$('#loader').fadeOut();
+			} else {
+				$('#institucion').html(data.opciones);
+				Command: toastr.error( data.mensaje, "Error al cargar las instituciones.", { onHidden : function(){ $('#loader').fadeOut(); } } );
+			}
+		},
+		error: function(data) {
+			$('#loader').fadeOut();
+		}
+	});
+
+	$('#institucion').select2('val', '');
+}
 
 function buscar_sedes_institucion()
 {

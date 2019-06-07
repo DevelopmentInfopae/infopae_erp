@@ -24,7 +24,7 @@
 
 	// Consulta para determinar las columnas de días de consulta por la semana seleccionada.
 	$columnasDiasEntregas_res = $columnasDiasSuma = "";
-	$consultaPlanillaSemanas = "SELECT DIA as dia FROM planilla_semanas WHERE semana = '$semana'";
+	$consultaPlanillaSemanas = "SELECT DIA as dia FROM planilla_semanas WHERE SEMANA = '$semana' AND MES ='$mes'";
 	$resultadoPlanillaSemanas = $Link->query($consultaPlanillaSemanas) or die("Error al consultar planilla_semanas: ". $Link->error);
 	if($resultadoPlanillaSemanas->num_rows > 0)
 	{

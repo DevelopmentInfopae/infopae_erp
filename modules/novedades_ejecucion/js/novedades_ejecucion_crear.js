@@ -296,7 +296,7 @@ function buscar_focalizacion()
 {
 	total_suma_dias = 0;
 
-	_tablaFocalizados = $('.tabla_focalizacion').DataTable({
+	$('.tabla_focalizacion').DataTable({
 		ajax: {
 			method: 'POST',
 			url: 'functions/fn_novedades_ejecucion_buscar_focalizacion.php',
@@ -308,14 +308,6 @@ function buscar_focalizacion()
 				semana: $('#semana').val(),
 				tipoComplemento: $('#tipoComplemento').val()
 			}
-			// success: function(data)
-			// {
-			// 	console.log(data);
-			// },
-			// error: function(data)
-			// {
-			// 	console.log(data.responseText);
-			// }
 		},
 		columns:[
 			{ data: 'abreviatura_documento'},
@@ -342,8 +334,7 @@ function buscar_focalizacion()
 				sPrevious: 'Anterior'
 			}
 		},
-		buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } } ],
-		dom: 'r<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+		dom: 'r<"containerBtn"><"inputFiltro"f>tip',
 		MenuLength: [[-1], ['Todo']],
 		destroy: true,
 		responsive: true,
@@ -384,92 +375,6 @@ function buscar_focalizacion()
 		}
 	});
 }
-
-// function buscarSuplentes(){
-// 	_tablaNoFocalizados = $('.dataTablesNovedadesEjecucionReserva').DataTable({
-// 		destroy: true,
-// 		ajax: {
-// 			method: 'POST',
-// 			url: 'functions/fn_novedades_ejecucion_no_focalizados_buscar_datatables.php',
-// 			data:{
-// 				mes: $('#mes').val(),
-// 				sede: $('#sede').val(),
-// 				semana: $('#semana').val(),
-// 				municipio: $('#municipio').val(),
-// 				institucion: $('#institucion').val(),
-// 				tipoComplemento: $('#tipoComplemento').val()
-// 			},
-// 			error: function(data){
-// 				console.log(data.responseText);
-// 			}
-// 		},
-// 		columns:[
-// 			{ data: 'abreviatura'},
-// 			{ data: 'numero_documento'},
-// 			{ data: 'nombre_suplente'},
-// 			{ data: 'tipo_complemento'},
-// 			{
-// 				sortable: false,
-// 				"render": function ( data, type, full, meta ) {
-// 					chequeado = (full.D1 == 1) ? 'checked' : '';
-// 					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-21" name="'+ full.numero_documento +'_D1" id="'+ full.numero_documento +'_D1" value="1" '+ chequeado +' ></label></div>';
-// 					return accion;
-// 				}
-// 			},
-// 			{
-// 				sortable: false,
-// 				"render": function ( data, type, full, meta ) {
-// 					chequeado = (full.D2 == 1) ? 'checked' : '';
-// 					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-22" name="'+ full.numero_documento +'_D2" id="'+ full.numero_documento +'_D2" value="1" '+ chequeado +' ></label></div>';
-// 					return accion;
-// 				}
-// 			},
-// 			{
-// 				sortable: false,
-// 				"render": function ( data, type, full, meta ) {
-// 					chequeado = (full.D3 == 1) ? 'checked' : '';
-// 					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-23" name="'+ full.numero_documento +'_D3" id="'+ full.numero_documento +'_D3" value="1" '+ chequeado +' ></label></div>';
-// 					return accion;
-// 				}
-// 			},
-// 			{
-// 				sortable: false,
-// 				"render": function ( data, type, full, meta ) {
-// 					chequeado = (full.D4 == 1) ? 'checked' : '';
-// 					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-24" name="'+ full.numero_documento +'_D4" id="'+ full.numero_documento +'_D4" value="1" '+ chequeado +' ></label></div>';
-// 					return accion;
-// 				}
-// 			},
-// 			{
-// 				sortable: false,
-// 				"render": function ( data, type, full, meta ) {
-// 					chequeado = (full.D5 == 1) ? 'checked' : '';
-// 					var accion = '<div class="i-checks text-center"><label><input type="checkbox" class="checkbox-25" name="'+ full.numero_documento +'_D5" id="'+ full.numero_documento +'_D5" value="1" '+ chequeado +' ></label></div> ';
-// 					return accion;
-// 				}
-// 			}
-// 		],
-// 		oLanguage: {
-// 			sLengthMenu: 'Mostrando _MENU_ registros',
-// 			sZeroRecords: 'No se encontraron registros',
-// 			sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
-// 			sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-// 			sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-// 			sSearch:         'Buscar: ',
-// 			oPaginate:{
-// 				sFirst:    'Primero',
-// 				sLast:     'Último',
-// 				sNext:     'Siguiente',
-// 				sPrevious: 'Anterior'
-// 			}
-// 		},
-// 		pageLength: 10000,
-// 		responsive: true,
-// 	}).on("draw", function() {
-// 		$('#loader').fadeOut();
-// 		$('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green', });
-// 	});
-// }
 
 function sumarCantidadDias(checkbox)
 {
