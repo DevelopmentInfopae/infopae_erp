@@ -141,7 +141,7 @@ $consultaConsumo = "";
 
 $consulta = " select a.*, f.Tipo_complemento as complemento from Asistencia_det$mes$anno a left join focalizacion$semana f on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc where a.mes = \"$mes\" and a.semana = \"$semana\" and a.dia = \"$dia\" and f.cod_sede = \"$sede\" ";
 
-echo "<br>$consulta<br>";
+//echo "<br>$consulta<br>";
 
 
 $result = $Link->query($consulta) or die ('Actualización de asistencia'.$consulta. mysqli_error($Link));
