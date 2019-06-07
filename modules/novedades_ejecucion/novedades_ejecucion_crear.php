@@ -7,6 +7,9 @@
 
 	$titulo = "Nueva novedad de focalización";
 ?>
+	<link rel="stylesheet" href="css/custom.css">
+	<div class="flagFaltantes">Faltan <span id="complementos_faltantes">0</span> de <span id="total_priorizacion">0</span> </div>
+
 	<div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 		<div class="col-lg-8">
 			<h2><?= $titulo; ?></h2>
