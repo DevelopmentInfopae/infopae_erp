@@ -74,7 +74,7 @@ foreach ($repitentes as $repitente){
 
 
 
-	$consulta .= " update Asistencia_det$mes$anno set repite = \"$repite\" where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and asistencia = 1 and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; ";
+	$consulta .= " update asistencia_det$mes$anno set repite = \"$repite\" where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and asistencia = 1 and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; ";
 }
 
 //echo $consulta;
