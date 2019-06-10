@@ -139,9 +139,9 @@ $diaIndice = array_search($dia, $row);
 $consulta = "";
 $consultaConsumo = "";
 
-$consulta = " select a.*, f.Tipo_complemento as complemento from Asistencia_det$mes$anno a left join focalizacion$semana f on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc where a.mes = \"$mes\" and a.semana = \"$semana\" and a.dia = \"$dia\" and f.cod_sede = \"$sede\" ";
+$consulta = " select a.*, f.Tipo_complemento as complemento from asistencia_det$mes$anno a left join focalizacion$semana f on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc where a.mes = \"$mes\" and a.semana = \"$semana\" and a.dia = \"$dia\" and f.cod_sede = \"$sede\" ";
 
-echo "<br>$consulta<br>";
+//echo "<br>$consulta<br>";
 
 
 $result = $Link->query($consulta) or die ('Actualización de asistencia'.$consulta. mysqli_error($Link));
@@ -320,7 +320,7 @@ echo json_encode($resultadoAJAX);
 
 
 
-// $consulta = " update Asistencia_det$mes$anno set asistencia = $valor, repite = 0, consumio = 0, repitio = 0 where Asistencia_det$mes$anno.mes = \"$mes\" and Asistencia_det$mes$anno.semana = \"$semana\" and Asistencia_det$mes$anno.dia = \"$dia\" and Asistencia_det$mes$anno.num_doc  = \"$documento\" and Asistencia_det$mes$anno.tipo_doc  = \"$tipoDocumento\"";
+// $consulta = " update asistencia_det$mes$anno set asistencia = $valor, repite = 0, consumio = 0, repitio = 0 where asistencia_det$mes$anno.mes = \"$mes\" and asistencia_det$mes$anno.semana = \"$semana\" and asistencia_det$mes$anno.dia = \"$dia\" and asistencia_det$mes$anno.num_doc  = \"$documento\" and asistencia_det$mes$anno.tipo_doc  = \"$tipoDocumento\"";
 
 
 
@@ -329,7 +329,7 @@ echo json_encode($resultadoAJAX);
 
 
 // if($result && $Link->affected_rows <= 0 ){
-// 	$consulta = " insert into Asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values (\"$tipoDocumento\", \"$documento\", \"$fecha\", \"$mes\", \"$semana\", \"$dia\", \"$valor\", \"$id_usuario\" ) ";
+// 	$consulta = " insert into asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values (\"$tipoDocumento\", \"$documento\", \"$fecha\", \"$mes\", \"$semana\", \"$dia\", \"$valor\", \"$id_usuario\" ) ";
 // 	$result = $Link->query($consulta) or die ('Inserción de asistencia'.$consulta. mysqli_error($Link));
 // }
 // 
