@@ -342,14 +342,6 @@ function buscar_focalizacion()
 				semana: $('#semana').val(),
 				tipoComplemento: $('#tipoComplemento').val()
 			}
-			// success: function(data)
-			// {
-			// 	console.log(data);
-			// },
-			// error: function(data)
-			// {
-			// 	console.log(data.responseText);
-			// }
 		},
 		columns:[
 			{ data: 'abreviatura_documento'},

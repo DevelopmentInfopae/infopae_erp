@@ -25,7 +25,7 @@
   <div class="col-lg-4">
     <div class="title-action">
 			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-				<a href="#" class="btn btn-primary disabled" id="boton_guardar_novedades_suplentes"><i class="fa fa-check"></i> Guardar</a>
+				<a href="#" class="btn btn-primary disabled boton_guardar_novedades_suplentes"><i class="fa fa-check"></i> Guardar</a>
 			<?php } ?>
 		</div>
   </div>
@@ -135,20 +135,34 @@
 
       <div class="ibox" id="contenedor_tabla_novedades_suplentes" style="display: none;">
         <div class="ibox-content">
-          <table class="table table-striped table-hover selectableRows tabla_novedades_suplentes">
-            <thead>
-              <tr>
+          <form id="formulario_guardar_novedades_suplentes">
+            <table class="table table-striped table-hover selectableRows tabla_novedades_suplentes">
+              <thead>
+                <tr>
 
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-              <tr>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+              <tfoot>
+                <tr>
 
-              </tr>
-            </tfoot>
-          </table>
+                </tr>
+              </tfoot>
+            </table>
+
+            <div class="row">
+              <div class="col-sm-12">
+                <input type="hidden" name="mes_hidden" id="mes_hidden">
+                <input type="hidden" name="sede_hidden" id="sede_hidden">
+                <input type="hidden" name="semana_hidden" id="semana_hidden">
+                <input type="hidden" name="municipio_hidden" id="municipio_hidden">
+                <input type="hidden" name="institucion_hidden" id="institucion_hidden">
+                <input type="hidden" name="tipo_complemento_hidden" id="tipo_complemento_hidden">
+                <button type="button" class="btn btn-primary pull-right disabled boton_guardar_novedades_suplentes"><i class="fa fa-check"></i> Guardar</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

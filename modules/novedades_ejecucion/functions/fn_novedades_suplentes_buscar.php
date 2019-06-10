@@ -62,6 +62,7 @@
 																WHERE
 															    sup.cod_sede='$sede'
 															    AND e.tipo_complem = '$tipo_complemento'
+															    AND e.tipo='S'
 
 																UNION ALL
 
