@@ -261,7 +261,6 @@ function calcular_priorizacion_dias()
 	{
 		if (data.estado == 1)
 		{
-			console.log(data.datos);
 			sessionStorage.setItem("datos_focalizacion", data.datos);
 			buscar_dias_semanas();
 		}
@@ -326,7 +325,7 @@ function buscar_novedades_suplentes()
       	'tipo_complemento': tipo_complemento
       }
       // ,success:function(data){console.log(data);}
-      // ,error:function(data){console.log(data);}
+      // ,error:function(data){console.log(data.responseText);}
     },
     columns:[
       { data: 'abreviatura_documento'},
@@ -581,7 +580,7 @@ function guardar_novedades_suplentes()
 	$.ajax({
 		url: 'functions/fn_novedades_suplentes_guardar.php',
 		type: 'POST',
-		dataType: 'HTML',
+		dataType: 'JSON',
 		data: formData,
 		contentType: false,
 		processData: false,
@@ -592,13 +591,17 @@ function guardar_novedades_suplentes()
 	})
 	.done(function(data)
 	{
-		console.log(data);
-		$('#loader').fadeOut();
+		if (data.estado == 1)
+		{
+			Command: toastr.success(data.mensaje, 'Proceso Exitoso.', { onHidden: function() { $('#loader').fadeOut(); location.reload(); }});
+		}
+		else
+		{
+			Command: toastr.error(data.mensaje, 'Error de proceso.', { onHidden: function() { console.log(data); $('#loader').fadeOut(); }});
+		}
 	})
 	.fail(function(data)
 	{
-		console.log("error");
+		Command: toastr.error('Al parecer existe un error en el sistema. Por favor comuníquese con el adminstrodor del sistema.', 'Error de proceso.', { onHidden: function() { console.log(data.responseText); $('#loader').fadeOut(); }});
 	});
-
-
 }
