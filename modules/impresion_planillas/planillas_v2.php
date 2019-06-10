@@ -178,8 +178,8 @@ $alturaLinea = 4;
 if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
 {
   $consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, ". trim($dia_consulta, ", ") ."
-  FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento'";
-  if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro' AND tipo = 'F'"; }
+  FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento' AND tipo = 'F'";
+  if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro'"; }
   $consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
   // echo $consulta;
   $resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
