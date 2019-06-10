@@ -35,7 +35,7 @@
 			{
 				if ($registroPlanillaSemanas["dia"] == $valorPlanillasDias)
 				{
-					$columnasDiasEntregas_res .= "! ISNULL(e.". $clavePlanillasDias .") AS D". $indiceDia .", ";
+					$columnasDiasEntregas_res .= "IFNULL(e.". $clavePlanillasDias .", 0) AS D". $indiceDia .", ";
 					$columnasDiasSuplentes .= " 0 AS D". $indiceDia .", ";
 					$indiceDia++;
 				}
