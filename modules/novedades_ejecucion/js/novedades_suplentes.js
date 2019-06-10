@@ -33,11 +33,16 @@ $(document).ready(function()
   _cantidadDiasFocalizados = 0;
 	_cantidadDiasFocalizadosActual = 0;
 
+	$('#municipio_hidden').val($('#municipio').val());
+
 	$(document).on('change', '#mes', function() { buscar_semana_mes($(this).val()); });
 	$(document).on('change', '#sede', function() { buscar_meses_sede($(this).val()); });
-	$(document).on('change', '#semana', function() { buscar_complementos($(this).val()); });
 	$(document).on('change', '#institucion', function() { buscar_sedes_institucion(); });
+	$(document).on('change', '#semana', function() { buscar_complementos($(this).val()); });
+	$(document).on('change', '#municipio', function(){ buscar_instituciones($(this).val()); });
 	$(document).on('click', '#boton_buscar_novedades_suplentes', function() { validar_campos_filtros(); });
+	$(document).on('click', '.boton_guardar_novedades_suplentes', function() { guardar_novedades_suplentes(); });
+	$(document).on('change', '#tipo_complemento', function() { $('#tipo_complemento_hidden').val($(this).val()); });
 
 	$(document).on('click', '.checkbox-header', function()
 	{
@@ -80,10 +85,15 @@ $(document).ready(function()
     {
     	$('input[name="checkbox-header_'+$(this).data('columna')+'"]').prop('checked', false);
     }
+
+    validar_columnas();
 	});
 
 	$(document).on('change', '.checkbox1, .checkbox2, .checkbox3, .checkbox4, .checkbox5', function()
 	{
+		nombre_clase_checkbox =  $(this).prop('class');
+		posicion_columna_checbox = nombre_clase_checkbox.replace("checkbox", "");
+
 		if($(this).is(':checked'))
 		{
 			sumarCantidadDias($(this));
@@ -91,19 +101,35 @@ $(document).ready(function()
 		else
 		{
 			restarCantidadDias($(this));
-
-			nombre_clase_checkbox =  $(this).prop('class');
-			posicion_columna_checbox = nombre_clase_checkbox.replace("checkbox", "");
-
-			if (posicion_columna_checbox == 2)
-			{
-				_total_focalizados_D2 - 1;
-			}
 		}
 
 		validar_columnas();
 	});
 });
+
+function buscar_instituciones(municipio)
+{
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_buscar_instituciones.php",
+		dataType: 'JSON',
+		data: { 'municipio': municipio },
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			if(data.estado == 1){
+				$('#institucion').html(data.opciones);
+				$('#loader').fadeOut();
+			} else {
+				Command: toastr.error( data.mensaje, "Error al cargar los municipios.", { onHidden : function(){ $('#institucion').html(data.opciones); $('#loader').fadeOut(); } } );
+			}
+		},
+		error: function (data){
+			console.log(data.responseText);
+		}
+	});
+
+	$('#municipio_hidden').val(municipio);
+}
 
 function buscar_sedes_institucion()
 {
@@ -118,12 +144,14 @@ function buscar_sedes_institucion()
 	.done(function(data)
 	{
 		$('#sede').html(data);
-		$('#sede').select2('val', '');
 	})
 	.fail(function(data)
 	{
 		console.log(data.responseText);
 	});
+
+	$('#sede').select2('val', '');
+	$('#institucion_hidden').val(institucion);
 }
 
 function buscar_meses_sede(sede)
@@ -150,6 +178,7 @@ function buscar_meses_sede(sede)
 	});
 
 	$('#mes').select2('val', '');
+	$('#sede_hidden').val(sede);
 }
 
 function buscar_semana_mes(mes)
@@ -175,6 +204,7 @@ function buscar_semana_mes(mes)
 	});
 
 	$('#semana').select2('val', '');
+	$('#mes_hidden').val(mes);
 }
 
 function buscar_complementos(semana)
@@ -203,6 +233,7 @@ function buscar_complementos(semana)
 	});
 
 	$('#tipo_complemento').select2('val', '');
+	$('#semana_hidden').val(semana);
 }
 
 function validar_campos_filtros()
@@ -230,12 +261,13 @@ function calcular_priorizacion_dias()
 	{
 		if (data.estado == 1)
 		{
+			console.log(data.datos);
 			sessionStorage.setItem("datos_focalizacion", data.datos);
 			buscar_dias_semanas();
 		}
 		else
 		{
-			Command: toastr.error(data.mensaje, 'Error de proceso', { onHidden: function(){ location.reload(); } });
+			Command: toastr.error(data.mensaje, 'Error de proceso');
 		}
 	})
 	.fail(function(data)
@@ -293,6 +325,8 @@ function buscar_novedades_suplentes()
       	'institucion': institucion,
       	'tipo_complemento': tipo_complemento
       }
+      // ,success:function(data){console.log(data);}
+      // ,error:function(data){console.log(data);}
     },
     columns:[
       { data: 'abreviatura_documento'},
@@ -329,33 +363,26 @@ function buscar_novedades_suplentes()
 				var contador = 0;
 
 				$('.checkbox'+ $(this).data('columna')).each(function() {
-					if ($(this).is(':checked'))
-					{
-						contador++;
-					}
+					if ($(this).is(':checked')) { contador++; }
 				});
 
-				if (contador > 0)
-				{
-					$(this).prop('checked', true);
-				}
-				else
-				{
-					$(this).prop('checked', false);
-				}
+				if (contador > 0) { $(this).prop('checked', true); }
+				else { $(this).prop('checked', false); }
 			});
 
 			var datos_focalizacion = JSON.parse(sessionStorage.getItem("datos_focalizacion"));
-			_total_focalizados_D1 = datos_focalizacion.total_D1;
-			_total_focalizados_D2 = datos_focalizacion.total_D2;
-			_total_focalizados_D3 = datos_focalizacion.total_D3;
-			_total_focalizados_D4 = datos_focalizacion.total_D4;
-			_total_focalizados_D5 = datos_focalizacion.total_D5;
-			_total_priorizado_dia = datos_focalizacion.total_priorizado_dia;
-			_cantidadDiasFocalizados = datos_focalizacion.total_priorizado_semana;
+
+			_total_focalizados_D1 = parseInt(datos_focalizacion.total_D1);
+			_total_focalizados_D2 = parseInt(datos_focalizacion.total_D2);
+			_total_focalizados_D3 = parseInt(datos_focalizacion.total_D3);
+			_total_focalizados_D4 = parseInt(datos_focalizacion.total_D4);
+			_total_focalizados_D5 = parseInt(datos_focalizacion.total_D5);
+			_total_priorizado_dia = parseInt(datos_focalizacion.total_priorizado_dia);
+			_cantidadDiasFocalizados = parseInt(datos_focalizacion.total_priorizado_semana);
 
 			validar_columnas();
 
+			$('.boton_guardar_novedades_suplentes').removeClass('disabled');
       $('#loader').fadeOut();
     }
   });
@@ -363,11 +390,10 @@ function buscar_novedades_suplentes()
 
 function validar_columnas()
 {
-	total_actual_focalizado = parseInt(_total_focalizados_D1) + parseInt(_total_focalizados_D2) + parseInt(_total_focalizados_D3) + parseInt(_total_focalizados_D4) + parseInt(_total_focalizados_D5);
-	_cantidadDiasFocalizadosActual = total_actual_focalizado;
+	_cantidadDiasFocalizadosActual = _total_focalizados_D1 + _total_focalizados_D2 + _total_focalizados_D3 + _total_focalizados_D4 + _total_focalizados_D5;
 
 	$('#total_complementos').html(_cantidadDiasFocalizados);
-	$('#complementos_faltantes').html(total_actual_focalizado);
+	$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 
 	if(_total_focalizados_D1 >= _total_priorizado_dia)
 	{
@@ -379,7 +405,14 @@ function validar_columnas()
 				$(this).prop('disabled', true);
 			}
 		});
-
+	}
+	else
+	{
+		$('input[name="checkbox-header_1"]').prop('disabled', false);
+		$('.checkbox1').each(function()
+		{
+			$(this).prop('disabled', false);
+		});
 	}
 
 	if(_total_focalizados_D2 >= _total_priorizado_dia)
@@ -392,8 +425,16 @@ function validar_columnas()
 				$(this).prop('disabled', true);
 			}
 		});
-
 	}
+	else
+	{
+		$('input[name="checkbox-header_2"]').prop('disabled', false);
+		$('.checkbox2').each(function()
+		{
+			$(this).prop('disabled', false);
+		});
+	}
+
 
 	if(_total_focalizados_D3 >= _total_priorizado_dia)
 	{
@@ -404,6 +445,14 @@ function validar_columnas()
 			{
 				$(this).prop('disabled', true);
 			}
+		});
+	}
+	else
+	{
+		$('input[name="checkbox-header_3"]').prop('disabled', false);
+		$('.checkbox3').each(function()
+		{
+			$(this).prop('disabled', false);
 		});
 	}
 
@@ -418,6 +467,14 @@ function validar_columnas()
 			}
 		});
 	}
+	else
+	{
+		$('input[name="checkbox-header_4"]').prop('disabled', false);
+		$('.checkbox4').each(function()
+		{
+			$(this).prop('disabled', false);
+		});
+	}
 
 	if(_total_focalizados_D5 >= _total_priorizado_dia)
 	{
@@ -430,6 +487,14 @@ function validar_columnas()
 			}
 		});
 	}
+	else
+	{
+		$('input[name="checkbox-header_5"]').prop('disabled', false);
+		$('.checkbox5').each(function()
+		{
+			$(this).prop('disabled', false);
+		});
+	}
 }
 
 function sumarCantidadDias(checkbox)
@@ -438,6 +503,30 @@ function sumarCantidadDias(checkbox)
 	{
 		_cantidadDiasFocalizadosActual += 1;
 		checkbox.prop('checked', true);
+
+		nombre_clase_checkbox =  checkbox.prop('class');
+		posicion_columna_checbox = nombre_clase_checkbox.replace("checkbox", "");
+
+ 		if (posicion_columna_checbox == 1)
+ 		{
+ 			if (_total_focalizados_D1 < _total_priorizado_dia) { _total_focalizados_D1 += 1; }
+ 		}
+		if (posicion_columna_checbox == 2)
+ 		{
+ 			if (_total_focalizados_D2 < _total_priorizado_dia) { _total_focalizados_D2 += 1; }
+ 		}
+ 		if (posicion_columna_checbox == 3)
+ 		{
+ 			if (_total_focalizados_D3 < _total_priorizado_dia) { _total_focalizados_D2 += 1; }
+ 		}
+ 		if (posicion_columna_checbox == 4)
+ 		{
+ 			if (_total_focalizados_D4 < _total_priorizado_dia) { _total_focalizados_D4 += 1; }
+ 		}
+ 		if (posicion_columna_checbox == 5)
+ 		{
+ 			if (_total_focalizados_D5 < _total_priorizado_dia) { _total_focalizados_D5 += 1; }
+ 		}
 	}
 	else
 	{
@@ -453,15 +542,63 @@ function restarCantidadDias(checkbox)
 	{
 		_cantidadDiasFocalizadosActual -= 1;
 		checkbox.prop('checked', false);
+
+		nombre_clase_checkbox =  checkbox.prop('class');
+		posicion_columna_checbox = nombre_clase_checkbox.replace("checkbox", "");
+
+ 		if (posicion_columna_checbox == 1)
+ 		{
+ 			if (_total_focalizados_D1 > 0) { _total_focalizados_D1 -= 1; }
+ 		}
+		if (posicion_columna_checbox == 2)
+ 		{
+ 			if (_total_focalizados_D2 > 0) { _total_focalizados_D2 -= 1; }
+ 		}
+ 		if (posicion_columna_checbox == 3)
+ 		{
+ 			if (_total_focalizados_D3 > 0) { _total_focalizados_D2 -= 1; }
+ 		}
+ 		if (posicion_columna_checbox == 4)
+ 		{
+ 			if (_total_focalizados_D4 > 0) { _total_focalizados_D4 -= 1; }
+ 		}
+ 		if (posicion_columna_checbox == 5)
+ 		{
+ 			if (_total_focalizados_D5 > 0) { _total_focalizados_D5 -= 1; }
+ 		}
 	}
 	else
 	{
 		checkbox.prop('checked', true);
 	}
+
 	$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 }
 
-function crearNovedadPriorizacion()
+function guardar_novedades_suplentes()
 {
-  window.open('novedades_ejecucion_crear.php', '_self');
+	var formData = new FormData($("#formulario_guardar_novedades_suplentes")[0]);
+	$.ajax({
+		url: 'functions/fn_novedades_suplentes_guardar.php',
+		type: 'POST',
+		dataType: 'HTML',
+		data: formData,
+		contentType: false,
+		processData: false,
+		beforeSend: function()
+		{
+			$('#loader').fadeIn();
+		}
+	})
+	.done(function(data)
+	{
+		console.log(data);
+		$('#loader').fadeOut();
+	})
+	.fail(function(data)
+	{
+		console.log("error");
+	});
+
+
 }
