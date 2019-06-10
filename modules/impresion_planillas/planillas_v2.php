@@ -181,7 +181,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
   FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento' AND tipo = 'F'";
   if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro'"; }
   $consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
-  // echo $consulta;
+
   $resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
 
   $codigo = '';
