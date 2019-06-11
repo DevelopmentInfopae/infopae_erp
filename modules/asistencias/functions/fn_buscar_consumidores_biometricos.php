@@ -40,7 +40,12 @@ $grupo = (isset($_POST["grupo"]) && $_POST["grupo"] != "") ? mysqli_real_escape_
 // si hay que hacer registros, crear el encabezado con estado 1
 $consulta = " select * from asistencia_enc$mes$anno where mes = \"$mes\" and dia = \"$dia\" and cod_sede = \"$sede\" ";
 $resultado = $Link->query($consulta);
+
+$banderaCamposLector = 0;
+
+
 if($resultado->num_rows < 1){
+	$banderaCamposLector++;
 	$consulta = " insert into asistencia_enc$mes$anno ( mes, semana, dia, estado, cod_sede ) values ( \"$mes\", \"$semanaActual\", \"$dia\", \"1\", \"$sede\" ) ";
 	$Link->query($consulta) or die ('Insert cabecera asistencia'. mysqli_error($Link));
 	// Actualizando la tabla de asistencia_det si el registro no esta insertar.
@@ -103,47 +108,18 @@ if($resultado->num_rows < 1){
 
 
 
-			
-
-		
 
 
+$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, g.nombre AS grado, f.nom_grupo AS grupo, ";
+
+if($banderaCamposLector > 0){
+	$consulta .= " 1 as asistencia ";
+}else{
+	$consulta .= " a.asistencia ";	
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, g.nombre AS grado, f.nom_grupo AS grupo, a.asistencia, a.repite, a.consumio, a.repitio FROM focalizacion$semanaActual f LEFT JOIN grados g ON g.id = f.cod_grado left join asistencia_det$mes$anno a on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc and a.dia = $dia WHERE 1 = 1  ";
-
+$consulta .= " , a.repite, a.consumio, a.repitio FROM focalizacion$semanaActual f LEFT JOIN grados g ON g.id = f.cod_grado left join asistencia_det$mes$anno a on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc and a.dia = $dia WHERE 1 = 1  ";
 if($sede != "" ){
 	$consulta .= " and f.cod_sede = $sede ";
 }
