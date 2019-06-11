@@ -7,6 +7,9 @@
 
 	$titulo = "Nueva novedad de focalización";
 ?>
+	<link rel="stylesheet" href="css/custom.css">
+	<div class="flagFaltantes">Faltan <span id="complementos_faltantes">0</span> de <span id="total_priorizacion">0</span> </div>
+
 	<div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 		<div class="col-lg-8">
 			<h2><?= $titulo; ?></h2>
@@ -142,66 +145,6 @@
 						</table>
 						<input type="hidden" id="cantidad_columnas_tabla">
 					</div>
-
-					<!-- <h2>Suplentes</h2>
-					<div class="table-responsive">
-						<table class="table table-striped table-hover selectableRows dataTablesNovedadesEjecucionReserva">
-							<thead>
-								<tr>
-									<th>Documento</th>
-									<th>Numero</th>
-									<th>Nombre titular de derecho</th>
-									<th>Complemento</th>
-									<th>
-										<div class="i-checks text-center">
-											<p>L</p>
-											<input type="checkbox" class="checkbox-header-2" data-columna="1"/>
-										</div>
-									</th>
-									<th>
-										<div class="i-checks text-center">
-											<p>M</p>
-											<input type="checkbox" class="checkbox-header-2" data-columna="2"/>
-										</div>
-									</th>
-									<th>
-										<div class="i-checks text-center">
-											<p>X</p>
-											<input type="checkbox" class="checkbox-header-2" data-columna="3"/>
-										</div>
-									</th>
-									<th>
-										<div class="i-checks text-center">
-											<p>J</p>
-											<input type="checkbox" class="checkbox-header-2" data-columna="4"/>
-										</div>
-									</th>
-									<th>
-										<div class="i-checks text-center">
-											<p>V</p>
-											<input type="checkbox" class="checkbox-header-2" data-columna="5"/>
-										</div>
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-							<tfoot>
-								<tr>
-									<th>Documento</th>
-									<th>Numero</th>
-									<th>Nombre titular de derecho</th>
-									<th>Complemento</th>
-									<th class="text-center">L</th>
-									<th class="text-center">M</th>
-									<th class="text-center">X</th>
-									<th class="text-center">J</th>
-									<th class="text-center">V</th>
-								</tr>
-							</tfoot>
-						</table>
-					</div> -->
-
         </div>
       </div>
 
@@ -247,24 +190,6 @@
 			</form>
   	</div>
 	</div>
-
-
-	<!-- <div class="modal fade" id="myModal" role="dialog">
-	  <div class="modal-dialog modal-sm">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal">&times;</button>
-	        <h4 class="modal-title">Modal Header</h4>
-	      </div>
-	      <div class="modal-body">
-	        <p>This is a small modal.</p>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	      </div>
-	    </div>
-	  </div>
-	</div> -->
 
 	<?php include '../../footer.php'; ?>
 

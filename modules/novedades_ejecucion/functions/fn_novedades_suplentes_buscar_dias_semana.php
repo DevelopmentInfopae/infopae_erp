@@ -1,7 +1,6 @@
 <th>Documento</th>
 <th>Numero</th>
-<th>Nombre titular de derecho</th>
-<th>Complemento</th>
+<th>Nombre suplente</th>
 <?php
 	require_once '../../../config.php';
 	require_once '../../../db/conexion.php';
@@ -16,11 +15,11 @@
 		while($registro_dias_semana = $respuesta_dias_semana->fetch_object())
 		{
 			$dia = $registro_dias_semana->dia;
-			echo '<th>
+			echo '<th class="text-center">
 							<div>'. $dia .'</div>
 							<div class="checkbox checkbox-success" style="padding-left: 7px;">
 								<input type="checkbox" class="checkbox-header" name="checkbox-header_'.$columna.'" id="checkbox-header_'.$columna.'" data-columna="'. $columna .'" checked/>
-								<label for="checkbox-header_'.$columna.'"</label>
+								<label for="checkbox-header_'.$columna.'"></label>
 							</div>
 						</th>';
 			$columna++;

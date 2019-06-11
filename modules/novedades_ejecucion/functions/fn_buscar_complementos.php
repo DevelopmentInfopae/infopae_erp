@@ -14,7 +14,7 @@
 	{
 		$parametro_sedes = (! empty($sede)) ? "AND cod_sede = '$sede'" : "";
 		$parametro_institucion = (! empty($institucion)) ? "AND cod_inst = '$institucion'" : "";
-		$consulta_complementos = "SELECT distinct f.Tipo_complemento AS tipo_complemento FROM focalizacion$semana f WHERE 1 = 1 $parametro_institucion $parametro_sedes ORDER BY Tipo_complemento ASC";
+		$consulta_complementos = "SELECT DISTINCT f.Tipo_complemento AS tipo_complemento FROM focalizacion$semana f WHERE 1 = 1 $parametro_institucion $parametro_sedes ORDER BY Tipo_complemento ASC";
 		$respuesta_consulta_complementos = $Link->query($consulta_complementos) or die('Error al consultar los complementos: '. $Link->error);
 		if(! empty($respuesta_consulta_complementos->num_rows))
 		{
