@@ -448,102 +448,102 @@ function validar_columnas()
 
 	if(_total_focalizados_D1 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_1"]').prop('readonly', true);
+		$('input[name="checkbox-header_1"]').prop('disabled', true);
 		$('.checkbox1').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('readonly', true);
+				$(this).prop('disabled', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_1"]').prop('readonly', false);
+		$('input[name="checkbox-header_1"]').prop('disabled', false);
 		$('.checkbox1').each(function()
 		{
-			$(this).prop('readonly', false);
+			$(this).prop('disabled', false);
 		});
 	}
 
 	if(_total_focalizados_D2 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_2"]').prop('readonly', true);
+		$('input[name="checkbox-header_2"]').prop('disabled', true);
 		$('.checkbox2').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('readonly', true);
+				$(this).prop('disabled', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_2"]').prop('readonly', false);
+		$('input[name="checkbox-header_2"]').prop('disabled', false);
 		$('.checkbox2').each(function()
 		{
-			$(this).prop('readonly', false);
+			$(this).prop('disabled', false);
 		});
 	}
 
 
 	if(_total_focalizados_D3 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_3"]').prop('readonly', true);
+		$('input[name="checkbox-header_3"]').prop('disabled', true);
 		$('.checkbox3').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('readonly', true);
+				$(this).prop('disabled', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_3"]').prop('readonly', false);
+		$('input[name="checkbox-header_3"]').prop('disabled', false);
 		$('.checkbox3').each(function()
 		{
-			$(this).prop('readonly', false);
+			$(this).prop('disabled', false);
 		});
 	}
 
 	if(_total_focalizados_D4 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_4"]').prop('readonly', true);
+		$('input[name="checkbox-header_4"]').prop('disabled', true);
 		$('.checkbox4').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('readonly', true);
+				$(this).prop('disabled', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_4"]').prop('readonly', false);
+		$('input[name="checkbox-header_4"]').prop('disabled', false);
 		$('.checkbox4').each(function()
 		{
-			$(this).prop('readonly', false);
+			$(this).prop('disabled', false);
 		});
 	}
 
 	if(_total_focalizados_D5 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_5"]').prop('readonly', true);
+		$('input[name="checkbox-header_5"]').prop('disabled', true);
 		$('.checkbox5').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('readonly', true);
+				$(this).prop('disabled', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_5"]').prop('readonly', false);
+		$('input[name="checkbox-header_5"]').prop('disabled', false);
 		$('.checkbox5').each(function()
 		{
-			$(this).prop('readonly', false);
+			$(this).prop('disabled', false);
 		});
 	}
 }
@@ -560,23 +560,23 @@ function sumarCantidadDias(checkbox)
 
  		if (posicion_columna_checbox == 1)
  		{
- 			if (_total_focalizados_D1 < _total_priorizado_dia) { _total_focalizados_D1 += 1; }
+ 			if (_total_focalizados_D1 < _total_priorizado_dia) { _total_focalizados_D1 += 1; } else { checkbox.prop('checked', false); }
  		}
 		if (posicion_columna_checbox == 2)
  		{
- 			if (_total_focalizados_D2 < _total_priorizado_dia) { _total_focalizados_D2 += 1; }
+ 			if (_total_focalizados_D2 < _total_priorizado_dia) { _total_focalizados_D2 += 1; } else { checkbox.prop('checked', false); }
  		}
  		if (posicion_columna_checbox == 3)
  		{
- 			if (_total_focalizados_D3 < _total_priorizado_dia) { _total_focalizados_D3 += 1; }
+ 			if (_total_focalizados_D3 < _total_priorizado_dia) { _total_focalizados_D3 += 1; } else { checkbox.prop('checked', false); }
  		}
  		if (posicion_columna_checbox == 4)
  		{
- 			if (_total_focalizados_D4 < _total_priorizado_dia) { _total_focalizados_D4 += 1; }
+ 			if (_total_focalizados_D4 < _total_priorizado_dia) { _total_focalizados_D4 += 1; } else { checkbox.prop('checked', false); }
  		}
  		if (posicion_columna_checbox == 5)
  		{
- 			if (_total_focalizados_D5 < _total_priorizado_dia) { _total_focalizados_D5 += 1; }
+ 			if (_total_focalizados_D5 < _total_priorizado_dia) { _total_focalizados_D5 += 1; } else { checkbox.prop('checked', false); }
  		}
 	}
 	else
