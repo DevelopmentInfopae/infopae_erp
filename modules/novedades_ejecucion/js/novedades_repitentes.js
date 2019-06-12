@@ -40,8 +40,8 @@ $(document).ready(function()
 	$(document).on('change', '#institucion', function() { buscar_sedes_institucion(); });
 	$(document).on('change', '#semana', function() { buscar_complementos($(this).val()); });
 	$(document).on('change', '#municipio', function(){ buscar_instituciones($(this).val()); });
-	$(document).on('click', '#boton_buscar_novedades_suplentes', function() { validar_campos_filtros(); });
-	$(document).on('click', '.boton_guardar_novedades_suplentes', function() { guardar_novedades_suplentes(); });
+	$(document).on('click', '#boton_buscar_novedades_repitentes', function() { validar_campos_filtros(); });
+	$(document).on('click', '.boton_guardar_novedades_repitentes', function() { guardar_novedades_repitentes(); });
 	$(document).on('change', '#tipo_complemento', function() { $('#tipo_complemento_hidden').val($(this).val()); });
 
 	$(document).on('click', '.checkbox-header', function()
@@ -238,7 +238,7 @@ function buscar_complementos(semana)
 
 function validar_campos_filtros()
 {
-	if ($('#formulario_buscar_novedades_suplentes').valid())
+	if ($('#formulario_buscar_novedades_repitentes').valid())
 	{
 		calcular_priorizacion_dias();
 	}
@@ -247,7 +247,7 @@ function validar_campos_filtros()
 function calcular_priorizacion_dias()
 {
 	$.ajax({
-		url: 'functions/fn_novedades_suplentes_calcular_priorizacion.php',
+		url: 'functions/fn_novedades_repitentes_calcular_priorizacion.php',
 		type: 'POST',
 		dataType: 'JSON',
 		data: {
@@ -264,6 +264,10 @@ function calcular_priorizacion_dias()
 			sessionStorage.setItem("datos_focalizacion", data.datos);
 			buscar_dias_semanas();
 		}
+		else if (data.estado == 2)
+		{
+			Command: toastr.warning(data.mensaje, 'Advertencia');
+		}
 		else
 		{
 			Command: toastr.error(data.mensaje, 'Error de proceso');
@@ -277,7 +281,6 @@ function calcular_priorizacion_dias()
 
 function buscar_dias_semanas()
 {
-
 	$.ajax({
 		url: 'functions/fn_novedades_suplentes_buscar_dias_semana.php',
 		type: 'POST',
@@ -296,7 +299,7 @@ function buscar_dias_semanas()
 		$('#contenedor_tabla_novedades_suplentes').fadeIn();
 		$('.tabla_novedades_suplentes thead tr, .tabla_novedades_suplentes tfoot tr').html(data);
 
-		buscar_novedades_suplentes();
+		buscar_focalizados();
 	})
 	.fail(function(data)
 	{
@@ -305,8 +308,9 @@ function buscar_dias_semanas()
 	});
 }
 
-function buscar_novedades_suplentes()
+function buscar_focalizados()
 {
+	total_suma_dias = 0;
 	mes = $('#mes').val();
 	sede = $('#sede').val();
 	semana = $('#semana').val();
@@ -316,7 +320,7 @@ function buscar_novedades_suplentes()
 	$('.tabla_novedades_suplentes').DataTable({
     ajax: {
       method: 'POST',
-      url: 'functions/fn_novedades_suplentes_buscar.php',
+      url: 'functions/fn_novedades_repitentes_buscar.php',
       data: {
       	'mes': mes,
       	'sede': sede,
@@ -329,13 +333,13 @@ function buscar_novedades_suplentes()
     },
     columns:[
       { data: 'abreviatura_documento'},
-      { data: 'numero_documento'},
+      { data: 'numero_documento', className: 'columna_numero_documento'},
       { data: 'nombre'},
-      { data: 'D1', className: 'text-center'},
-      { data: 'D2', className: 'text-center'},
-      { data: 'D3', className: 'text-center'},
-      { data: 'D4', className: 'text-center'},
-      { data: 'D5', className: 'text-center'}
+      { data: 'maximo_D1', className: 'text-center'},
+      { data: 'maximo_D2', className: 'text-center'},
+      { data: 'maximo_D3', className: 'text-center'},
+      { data: 'maximo_D4', className: 'text-center'},
+      { data: 'maximo_D5', className: 'text-center'}
     ],
     dom: 'r<"containerBtn"><"inputFiltro"f>tip',
     oLanguage: {
@@ -355,8 +359,15 @@ function buscar_novedades_suplentes()
     destroy: true,
     pageLength: -1,
     responsive: true,
+    rowCallback: function(row, data)
+		{
+  		total_suma_dias += parseInt(data.suma_total_dias);
+    },
     initComplete: function(settings, json)
     {
+    	// Método para buscar repitentes y verificar su validación.
+    	buscar_repitentes();
+
 			$('.checkbox-header').each(function()
 			{
 				var contador = 0;
@@ -370,6 +381,7 @@ function buscar_novedades_suplentes()
 			});
 
 			var datos_focalizacion = JSON.parse(sessionStorage.getItem("datos_focalizacion"));
+			console.log(datos_focalizacion);
 
 			_total_focalizados_D1 = (typeof datos_focalizacion.total_D1 != "undefined") ? parseInt(datos_focalizacion.total_D1) : 0;
 			_total_focalizados_D2 = (typeof datos_focalizacion.total_D2 != "undefined") ? parseInt(datos_focalizacion.total_D2) : 0;
@@ -381,10 +393,50 @@ function buscar_novedades_suplentes()
 
 			validar_columnas();
 
-			$('.boton_guardar_novedades_suplentes').removeClass('disabled');
+			$('.boton_guardar_novedades_repitentes').removeClass('disabled');
       $('#loader').fadeOut();
     }
   });
+}
+
+function buscar_repitentes()
+{
+	mes = $('#mes').val();
+	sede = $('#sede').val();
+	semana = $('#semana').val();
+	institucion = $('#institucion').val();
+	tipo_complemento = $('#tipo_complemento').val();
+
+	$.ajax({
+		url: 'functions/fn_novedades_repitentes_buscar_repitentes.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {
+			'mes': mes,
+    	'sede': sede,
+    	'semana': semana,
+    	'institucion': institucion,
+    	'tipo_complemento': tipo_complemento
+		},
+	})
+	.done(function(data)
+	{
+		if (typeof data !== 'undefined' && data.length > 0)
+		{
+			for (var i = 0; i < data.length; i++)
+			{
+				if (typeof data !== 'undefined' && data[i].D1 == 1) { $('#'+ data[i].num_doc +'_D1').prop('checked', true); }
+				if (typeof data !== 'undefined' && data[i].D2 == 1) { $('#'+ data[i].num_doc +'_D2').prop('checked', true); }
+				if (typeof data !== 'undefined' && data[i].D3 == 1) { $('#'+ data[i].num_doc +'_D3').prop('checked', true); }
+				if (typeof data !== 'undefined' && data[i].D4 == 1) { $('#'+ data[i].num_doc +'_D4').prop('checked', true); }
+				if (typeof data !== 'undefined' && data[i].D5 == 1) { $('#'+ data[i].num_doc +'_D5').prop('checked', true); }
+			}
+		}
+	})
+	.fail(function(data)
+	{
+		Command: toastr.error('Al parecer existe un problema en el sistema. Por favor comuníquese con el administrador.', 'Error', { onHidden: function() { console.log(data.responseText); } });
+	});
 }
 
 function validar_columnas()
@@ -396,102 +448,102 @@ function validar_columnas()
 
 	if(_total_focalizados_D1 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_1"]').prop('disabled', true);
+		$('input[name="checkbox-header_1"]').prop('readonly', true);
 		$('.checkbox1').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('disabled', true);
+				$(this).prop('readonly', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_1"]').prop('disabled', false);
+		$('input[name="checkbox-header_1"]').prop('readonly', false);
 		$('.checkbox1').each(function()
 		{
-			$(this).prop('disabled', false);
+			$(this).prop('readonly', false);
 		});
 	}
 
 	if(_total_focalizados_D2 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_2"]').prop('disabled', true);
+		$('input[name="checkbox-header_2"]').prop('readonly', true);
 		$('.checkbox2').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('disabled', true);
+				$(this).prop('readonly', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_2"]').prop('disabled', false);
+		$('input[name="checkbox-header_2"]').prop('readonly', false);
 		$('.checkbox2').each(function()
 		{
-			$(this).prop('disabled', false);
+			$(this).prop('readonly', false);
 		});
 	}
 
 
 	if(_total_focalizados_D3 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_3"]').prop('disabled', true);
+		$('input[name="checkbox-header_3"]').prop('readonly', true);
 		$('.checkbox3').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('disabled', true);
+				$(this).prop('readonly', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_3"]').prop('disabled', false);
+		$('input[name="checkbox-header_3"]').prop('readonly', false);
 		$('.checkbox3').each(function()
 		{
-			$(this).prop('disabled', false);
+			$(this).prop('readonly', false);
 		});
 	}
 
 	if(_total_focalizados_D4 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_4"]').prop('disabled', true);
+		$('input[name="checkbox-header_4"]').prop('readonly', true);
 		$('.checkbox4').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('disabled', true);
+				$(this).prop('readonly', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_4"]').prop('disabled', false);
+		$('input[name="checkbox-header_4"]').prop('readonly', false);
 		$('.checkbox4').each(function()
 		{
-			$(this).prop('disabled', false);
+			$(this).prop('readonly', false);
 		});
 	}
 
 	if(_total_focalizados_D5 >= _total_priorizado_dia)
 	{
-		$('input[name="checkbox-header_5"]').prop('disabled', true);
+		$('input[name="checkbox-header_5"]').prop('readonly', true);
 		$('.checkbox5').each(function()
 		{
 			if (! $(this).is(':checked'))
 			{
-				$(this).prop('disabled', true);
+				$(this).prop('readonly', true);
 			}
 		});
 	}
 	else
 	{
-		$('input[name="checkbox-header_5"]').prop('disabled', false);
+		$('input[name="checkbox-header_5"]').prop('readonly', false);
 		$('.checkbox5').each(function()
 		{
-			$(this).prop('disabled', false);
+			$(this).prop('readonly', false);
 		});
 	}
 }
@@ -574,23 +626,20 @@ function restarCantidadDias(checkbox)
 	$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 }
 
-function guardar_novedades_suplentes()
+function guardar_novedades_repitentes()
 {
-	var formData = new FormData($("#formulario_guardar_novedades_suplentes")[0]);
+	var formData = new FormData($("#formulario_guardar_novedades_repitentes")[0]);
 	$.ajax({
-		url: 'functions/fn_novedades_suplentes_guardar.php',
+		url: 'functions/fn_novedades_repitentes_guardar.php',
 		type: 'POST',
 		dataType: 'JSON',
 		data: formData,
 		contentType: false,
 		processData: false,
-		beforeSend: function()
-		{
-			$('#loader').fadeIn();
-		}
+		beforeSend: function() { $('#loader').fadeIn(); }
 	})
 	.done(function(data)
-	{
+	{console.log(data);
 		if (data.estado == 1)
 		{
 			Command: toastr.success(data.mensaje, 'Proceso Exitoso.', { onHidden: function() { $('#loader').fadeOut(); location.reload(); }});
