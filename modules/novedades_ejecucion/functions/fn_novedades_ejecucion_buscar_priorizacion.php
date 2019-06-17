@@ -7,10 +7,10 @@
 	$mes = (isset($_POST['mes']) && $_POST['mes'] != '') ? mysqli_real_escape_string($Link, $_POST["mes"]) : "";
 	$sede = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
 	$semana = (isset($_POST['semana']) && $_POST['semana'] != '') ? mysqli_real_escape_string($Link, $_POST["semana"]) : "";
-	$tipoComplemento = (isset($_POST['tipoComplemento']) && $_POST['tipoComplemento'] != '') ? mysqli_real_escape_string($Link, $_POST["tipoComplemento"]) : "";
+	$tipo_complemento = (isset($_POST['tipo_complemento']) && $_POST['tipo_complemento'] != '') ? mysqli_real_escape_string($Link, $_POST["tipo_complemento"]) : "";
 
 	$consulta_priorizacion = "SELECT
-													    CAJMRI * (SELECT COUNT(DIA) FROM planilla_semanas WHERE MES='$mes' AND SEMANA='$semana') AS total_priorizacion
+													    $tipo_complemento * (SELECT COUNT(DIA) FROM planilla_semanas WHERE MES='$mes' AND SEMANA='$semana') AS total_priorizacion
 														FROM
 													    priorizacion$semana
 														WHERE

@@ -76,6 +76,24 @@
     $total_priorizacion_dia->total_priorizado_semana = $total_priorizado;
   }
 
+  $total_dia_1 = (isset($total_priorizacion_dia->{'total_D1'}) ? $total_priorizacion_dia->{'total_D1'} : 0);
+  $total_dia_2 = (isset($total_priorizacion_dia->{'total_D2'}) ? $total_priorizacion_dia->{'total_D2'} : 0);
+  $total_dia_3 = (isset($total_priorizacion_dia->{'total_D3'}) ? $total_priorizacion_dia->{'total_D3'} : 0);
+  $total_dia_4 = (isset($total_priorizacion_dia->{'total_D4'}) ? $total_priorizacion_dia->{'total_D4'} : 0);
+  $total_dia_5 = (isset($total_priorizacion_dia->{'total_D5'}) ? $total_priorizacion_dia->{'total_D5'} : 0);
+  $suma_total_dias = $total_dia_1 + $total_dia_2 + $total_dia_3 + $total_dia_4 + $total_dia_5;
+
+  if ($suma_total_dias >= $total_priorizacion_dia->total_priorizado_semana)
+  {
+    $respuesta_ajax = [
+      'estado'=>2,
+      'mensaje'=>'La focalización se encuentra completa. Por favor cambie los filtros de búsqueda.',
+      'datos'=> json_encode($total_priorizacion_dia)
+    ];
+    echo json_encode($respuesta_ajax);
+    exit();
+  }
+
   $respuesta_ajax = [
     'estado'=>1,
     'datos'=> json_encode($total_priorizacion_dia)
