@@ -306,7 +306,9 @@ function buscar_priorizacion()
 			sede: $('#sede').val(),
 			semana: $('#semana').val(),
 			tipo_complemento: $('#tipoComplemento').val()
-		},
+		}
+		// ,success: function (data) { console.log(data); }
+		// ,error: function(data){ console.log(data.responseText); }
 	})
 	.done(function(data) {
 		if (data == 0)

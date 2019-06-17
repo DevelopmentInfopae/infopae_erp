@@ -264,6 +264,10 @@ function calcular_priorizacion_dias()
 			sessionStorage.setItem("datos_focalizacion", data.datos);
 			buscar_dias_semanas();
 		}
+		else if (data.estado == 2)
+		{
+			Command: toastr.warning(data.mensaje, 'Error de proceso');
+		}
 		else
 		{
 			Command: toastr.error(data.mensaje, 'Error de proceso');
@@ -277,7 +281,6 @@ function calcular_priorizacion_dias()
 
 function buscar_dias_semanas()
 {
-
 	$.ajax({
 		url: 'functions/fn_novedades_suplentes_buscar_dias_semana.php',
 		type: 'POST',
@@ -369,7 +372,7 @@ function buscar_novedades_suplentes()
 				else { $(this).prop('checked', false); }
 			});
 
-			var datos_focalizacion = JSON.parse(sessionStorage.getItem("datos_focalizacion"));
+			var datos_focalizacion = JSON.parse(sessionStorage.getItem("datos_focalizacion")); console.log(datos_focalizacion);
 
 			_total_focalizados_D1 = (typeof datos_focalizacion.total_D1 != "undefined") ? parseInt(datos_focalizacion.total_D1) : 0;
 			_total_focalizados_D2 = (typeof datos_focalizacion.total_D2 != "undefined") ? parseInt(datos_focalizacion.total_D2) : 0;
