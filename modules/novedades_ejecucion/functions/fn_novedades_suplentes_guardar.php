@@ -217,7 +217,7 @@
 		if ($respuesta_suplente_entrega->num_rows > 0)
 		{
 			$suplente_entrega = $respuesta_suplente_entrega->fetch_assoc();
-			$consulta_actualizar_suplente_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (id, $insertar_columnas_dias) VALUES (". $suplente_entrega['id'] .", $D1, $D2, $D3, $D4, $D5) ON DUPLICATE KEY $actualizar_columnas_dias";
+			$consulta_actualizar_suplente_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (id, $insertar_columnas_dias) VALUES (". $suplente_entrega['id'] .", $D1, $D2, $D3, $D4, $D5) ON DUPLICATE KEY UPDATE $actualizar_columnas_dias";
 			$respuesta_actualizar_suplente_entrega = $Link->query($consulta_actualizar_suplente_entrega) or die('Error al actualizar suplente en entregas: '. $Link->error);
 			if ($respuesta_actualizar_suplente_entrega === FALSE)
 			{
