@@ -4,8 +4,6 @@
 
   $codigo_municipio = $_SESSION['p_Municipio'];
   $codigo_departamento = $_SESSION['p_CodDepartamento'];
-
-
 ?>
 <link rel="stylesheet" href="css/custom.css">
 <div class="flagFaltantes"><span id="complementos_faltantes">0</span> de <span id="total_complementos">0</span> </div>

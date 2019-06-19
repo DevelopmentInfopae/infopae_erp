@@ -1,6 +1,8 @@
 <th>Documento</th>
 <th>Numero</th>
 <th>Nombre suplente</th>
+<th>Grado</th>
+<th>Grupo</th>
 <?php
 	require_once '../../../config.php';
 	require_once '../../../db/conexion.php';

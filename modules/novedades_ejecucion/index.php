@@ -95,33 +95,6 @@
                   <label for="mes">Mes *</label>
                   <select class="form-control select2" name="mes" id="mes" required="required">
                     <option value="">seleccione</option>
-                    <!-- <?php
-                      // $consulta_meses = "SELECT DISTINCT(MES) AS codigo,
-                      //                     CASE MES
-                      //                       WHEN '01' THEN 'Enero'
-                      //                         WHEN '02' THEN 'Febrero'
-                      //                         WHEN '03' THEN 'Marzo'
-                      //                         WHEN '04' THEN 'Abril'
-                      //                         WHEN '05' THEN 'Mayo'
-                      //                         WHEN '06' THEN 'Junio'
-                      //                         WHEN '07' THEN 'Julio'
-                      //                         WHEN '08' THEN 'Agosto'
-                      //                         WHEN '09' THEN 'Septiembre'
-                      //                         WHEN '10' THEN 'Octubre'
-                      //                         WHEN '11' THEN 'Noviembre'
-                      //                         ELSE 'Diciembre'
-                      //                     END AS nombre FROM planilla_semanas;";
-                      // $respuesta_consulta_meses = $Link->query($consulta_meses) or die('Error al consultar meses: '. $Link->error);
-                      // if (! empty($respuesta_consulta_meses->num_rows))
-                      // {
-                      //   while ($mes = $respuesta_consulta_meses->fetch_object())
-                      //   {
-                      //     $codigo = $mes->codigo;
-                      //     $nombre = $mes->nombre;
-                      //     echo '<option value="'. $codigo .'">'. $nombre .'</option>';
-                      //   }
-                      // }
-                    ?> -->
                   </select>
                   <label class="error" style="display: none" for="mes"></label>
                 </div>
@@ -147,8 +120,8 @@
             </div>
 
             <div class="row">
-              <div class="col-sm-4 form-group">
-                <button class="btn btn-primary" type="button" id="boton_buscar_novedades" name="boton_buscar_novedades" value="1"><i class="fa fa-search"></i>  Buscar</button>
+              <div class="col-sm-12 form-group">
+                <button class="btn btn-primary pull-right" type="button" id="boton_buscar_novedades" name="boton_buscar_novedades" value="1"><i class="fa fa-search"></i>  Buscar</button>
               </div>
             </div>
           </form>
