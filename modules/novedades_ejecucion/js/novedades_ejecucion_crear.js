@@ -349,6 +349,8 @@ function buscar_focalizacion()
 			{ data: 'abreviatura_documento'},
 			{ data: 'numero_documento'},
 			{ data: 'nombre'},
+			{ data: 'grado'},
+			{ data: 'grupo'},
 			{ data: 'complemento'},
 			{ data: 'D1', className: 'text-center', orderable: false},
 			{ data: 'D2', className: 'text-center', orderable: false},
@@ -356,6 +358,7 @@ function buscar_focalizacion()
 			{ data: 'D4', className: 'text-center', orderable: false},
 			{ data: 'D5', className: 'text-center', orderable: false}
 		],
+		order: [[3, 'asc'], [4, 'asc'], [2, 'asc']],
 		oLanguage: {
 			sLengthMenu: 'Mostrando _MENU_ registros',
 			sZeroRecords: 'No se encontraron registros',

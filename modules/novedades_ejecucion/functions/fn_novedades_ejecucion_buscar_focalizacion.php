@@ -52,6 +52,8 @@
 														e.num_doc AS numero_documento,
 														e.tipo_complem AS complemento,
 														CONCAT(e.nom1,' ',e.nom2,' ',e.ape1,' ',e.ape2) AS nombre,
+														f.cod_grado AS grado,
+														f.nom_grupo AS grupo,
 														$columnasDiasEntregas_res,
 														($columnasDiasSuma) AS suma_dias
 													FROM entregas_res_$mes$perido_actual e

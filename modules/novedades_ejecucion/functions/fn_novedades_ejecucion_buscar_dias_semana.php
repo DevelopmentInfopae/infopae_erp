@@ -2,6 +2,8 @@
 <th>Numero</th>
 <th>Nombre titular de derecho</th>
 <th>Complemento</th>
+<th>Grado</th>
+<th>Grupo</th>
 <?php
 	require_once '../../../config.php';
 	require_once '../../../db/conexion.php';
