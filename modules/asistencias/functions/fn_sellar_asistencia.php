@@ -149,6 +149,7 @@ $result = $Link->query($consulta) or die ('Actualización de asistencia'.$consul
 
 $aux = 0;
 $repitentes = 0;
+$entregas = 0;
 
 
 
@@ -158,14 +159,6 @@ $repitentes = 0;
 $consultaConsumo = " update entregas_res_$mes$anno set $diaIndice = \"0\" where cod_Sede = \"$sede\"";
 //echo "<br><br>$consultaConsumo<br><br>";
 $resultConsumo = $Link->query($consultaConsumo) or die ('Error al actualizar Entregas Res<br>'.$consultaConsumo. mysqli_error($Link));
-
-
-
-
-
-
-
-
 
 while($row = $result->fetch_assoc()){
 	//$aux++;
@@ -286,57 +279,60 @@ while($row = $result->fetch_assoc()){
 
 
 	//Tiene que actualizar solo a los tipo F asi como los que repiten son tipo R
-
-
-	$consultaConsumo = " update entregas_res_$mes$anno set $diaIndice = \"$consumio\" where tipo = \"F\" and tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" ";
 	
-	//echo "<br><br>$consultaConsumo<br><br>";
+	if($consumio == 1){
+		$entregas++;
+		$consultaConsumo = " update entregas_res_$mes$anno set $diaIndice = \"$consumio\" where tipo = \"F\" and tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" ";
+		//echo "<br><br>$consultaConsumo<br><br>";
+		$resultConsumo = $Link->query($consultaConsumo) or die ('Error al actualizar Entregas Res<br>'.$consultaConsumo. mysqli_error($Link));
+		//echo "<br>".$Link->affected_rows;	
+
+		$consultaEntregasRepitio = "";
+		$consultaRepite = "";
 	
-	$resultConsumo = $Link->query($consultaConsumo) or die ('Error al actualizar Entregas Res<br>'.$consultaConsumo. mysqli_error($Link));
-
-
-
-
-	$consultaEntregasRepitio = "";
-	$consultaRepite = "";
-
-	if($repitio == 1){
-		$repitentes++;
-		$consultaEntregasRepitio = " select * from entregas_res_$mes$anno where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and tipo = \"R\" "; 
-
-
-		//echo "$consultaEntregasRepitio<br>";
-
-		$resultadoEntregasRepitio = $Link->query($consultaEntregasRepitio) or die ('No se pudieron cargar los grupos. '.$consultaEntregasRepitio. mysqli_error($Link));
-		
-		
-		
-		
-		if($resultadoEntregasRepitio->num_rows >= 1){
-			$consultaRepite = " update entregas_res_$mes$anno set $diaIndice = 1 where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and tipo = \"R\" ";
-
-			//echo "$consultaRepite<br>";
-
-
-			$resultRepite = $Link->query($consultaRepite) or die ('Actualizando repite en entregas'.$consultaRepite. mysqli_error($Link));
-
-		}else{
-			$consultaRepite = " insert into entregas_res_$mes$anno (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, $diaIndice) select tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo,  \"R\" as tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, \"1\" as $diaIndice from  entregas_res_$mes$anno WHERE tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" ";
-
-			//echo "$consultaRepite<br>";
-
-			$resultRepite = $Link->query($consultaRepite) or die ('Insertando registro en entregas de titular que repite'.$consultaRepite. mysqli_error($Link));
+		if($repitio == 1){
+			//$entregas++;
+			$repitentes++;
+			$consultaEntregasRepitio = " select * from entregas_res_$mes$anno where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and tipo = \"R\" "; 
+	
+	
+			//echo "$consultaEntregasRepitio<br>";
+	
+			$resultadoEntregasRepitio = $Link->query($consultaEntregasRepitio) or die ('No se pudieron cargar los grupos. '.$consultaEntregasRepitio. mysqli_error($Link));
+			
+			
+			
+			
+			if($resultadoEntregasRepitio->num_rows >= 1){
+				$consultaRepite = " update entregas_res_$mes$anno set $diaIndice = 1 where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and tipo = \"R\" ";
+	
+				//echo "$consultaRepite<br>";
+	
+	
+				$resultRepite = $Link->query($consultaRepite) or die ('Actualizando repite en entregas'.$consultaRepite. mysqli_error($Link));
+	
+			}else{
+				$consultaRepite = " insert into entregas_res_$mes$anno (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, $diaIndice) select tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo,  \"R\" as tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, \"1\" as $diaIndice from  entregas_res_$mes$anno WHERE tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" ";
+	
+				//echo "$consultaRepite<br>";
+	
+				$resultRepite = $Link->query($consultaRepite) or die ('Insertando registro en entregas de titular que repite'.$consultaRepite. mysqli_error($Link));
+			}
 		}
+
 	}
-
-
-
-
-
-
-
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
+var_dump($entregas);
 //var_dump($repitentes);
 
 
@@ -370,20 +366,3 @@ if($bandera == 0){
   	);
 }
 echo json_encode($resultadoAJAX);
-
-
-
-
-// $consulta = " update asistencia_det$mes$anno set asistencia = $valor, repite = 0, consumio = 0, repitio = 0 where asistencia_det$mes$anno.mes = \"$mes\" and asistencia_det$mes$anno.semana = \"$semana\" and asistencia_det$mes$anno.dia = \"$dia\" and asistencia_det$mes$anno.num_doc  = \"$documento\" and asistencia_det$mes$anno.tipo_doc  = \"$tipoDocumento\"";
-
-
-
-// $result = $Link->query($consulta) or die ('Actualización de asistencia'.$consulta. mysqli_error($Link));
-
-
-
-// if($result && $Link->affected_rows <= 0 ){
-// 	$consulta = " insert into asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values (\"$tipoDocumento\", \"$documento\", \"$fecha\", \"$mes\", \"$semana\", \"$dia\", \"$valor\", \"$id_usuario\" ) ";
-// 	$result = $Link->query($consulta) or die ('Inserción de asistencia'.$consulta. mysqli_error($Link));
-// }
-// 
