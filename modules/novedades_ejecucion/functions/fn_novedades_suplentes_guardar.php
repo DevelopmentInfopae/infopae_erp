@@ -98,6 +98,7 @@
 													    ) AS TG
 															GROUP BY TG.numero_documento
 															ORDER BY TG.nombre ASC";
+  // echo $consulta_suplentes; exit();
 	$respuesta_suplentes = $Link->query($consulta_suplentes) or die('Error al consultar suplentes: '. $Link->error);
 	if ($respuesta_suplentes->num_rows > 0)
 	{
@@ -106,63 +107,78 @@
 			$cambio_detectado = 0;
 			$numero_documento = $registro_suplentes['numero_documento'];
 
-			if($registro_suplentes['D1'] == 1){
-				if(!isset($_POST[$numero_documento.'_D1'])){
-					$cambio_detectado++;
-					$registro_suplentes['D1'] = 0;
-				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D1'])){
-					$cambio_detectado++;
-					$registro_suplentes['D1'] = 1;
-				}
-			}
-
-			if($registro_suplentes['D2'] == 1){
-				if(!isset($_POST[$numero_documento.'_D2'])){
-					$cambio_detectado++;
-					$registro_suplentes['D2'] = 0;
-				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D2'])){
-					$cambio_detectado++;
-					$registro_suplentes['D2'] = 1;
+			if(isset($registro_suplentes['D1']))
+			{
+				if($registro_suplentes['D1'] == 1){
+					if(!isset($_POST[$numero_documento.'_D1'])){
+						$cambio_detectado++;
+						$registro_suplentes['D1'] = 0;
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D1'])){
+						$cambio_detectado++;
+						$registro_suplentes['D1'] = 1;
+					}
 				}
 			}
 
-			if($registro_suplentes['D3'] == 1){
-				if(!isset($_POST[$numero_documento.'_D3'])){
-					$cambio_detectado++;
-					$registro_suplentes['D3'] = 0;
-				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D3'])){
-					$cambio_detectado++;
-					$registro_suplentes['D3'] = 1;
-				}
-			}
-
-			if($registro_suplentes['D4'] == 1){
-				if(!isset($_POST[$numero_documento.'_D4'])){
-					$cambio_detectado++;
-					$registro_suplentes['D4'] = 0;
-				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D4'])){
-					$cambio_detectado++;
-					$registro_suplentes['D4'] = 1;
+			if(isset($registro_suplentes['D2']))
+			{
+				if($registro_suplentes['D2'] == 1){
+					if(!isset($_POST[$numero_documento.'_D2'])){
+						$cambio_detectado++;
+						$registro_suplentes['D2'] = 0;
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D2'])){
+						$cambio_detectado++;
+						$registro_suplentes['D2'] = 1;
+					}
 				}
 			}
 
-			if($registro_suplentes['D5'] == 1){
-				if(!isset($_POST[$numero_documento.'_D5'])){
-					$cambio_detectado++;
-					$registro_suplentes['D5'] = 0;
+			if(isset($registro_suplentes['D3']))
+			{
+				if($registro_suplentes['D3'] == 1){
+					if(!isset($_POST[$numero_documento.'_D3'])){
+						$cambio_detectado++;
+						$registro_suplentes['D3'] = 0;
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D3'])){
+						$cambio_detectado++;
+						$registro_suplentes['D3'] = 1;
+					}
 				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D5'])){
-					$cambio_detectado++;
-					$registro_suplentes['D5'] = 1;
+			}
+
+			if(isset($registro_suplentes['D4']))
+			{
+				if($registro_suplentes['D4'] == 1){
+					if(!isset($_POST[$numero_documento.'_D4'])){
+						$cambio_detectado++;
+						$registro_suplentes['D4'] = 0;
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D4'])){
+						$cambio_detectado++;
+						$registro_suplentes['D4'] = 1;
+					}
+				}
+			}
+
+			if(isset($registro_suplentes['D5']))
+			{
+				if($registro_suplentes['D5'] == 1){
+					if(!isset($_POST[$numero_documento.'_D5'])){
+						$cambio_detectado++;
+						$registro_suplentes['D5'] = 0;
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D5'])){
+						$cambio_detectado++;
+						$registro_suplentes['D5'] = 1;
+					}
 				}
 			}
 
@@ -172,6 +188,8 @@
 			}
 		}
 	}
+
+	// var_dump($novedades_suplentes); exit();
 
 	if (empty($novedades_suplentes))
 	{
@@ -204,11 +222,14 @@
 	// Iteración para identificar si se agrega o actualiza el suplente en entregas.
 	foreach ($novedades_suplentes as $suplente)
 	{
-		$D1 = $suplente['D1'];
-		$D2 = $suplente['D2'];
-		$D3 = $suplente['D3'];
-		$D4 = $suplente['D4'];
-		$D5 = $suplente['D5'];
+		$campos_actualizar_entregas = "";
+
+		if (isset($suplente['D1'])) { $campos_actualizar_entregas .= ", ". $suplente['D1']; }
+		if (isset($suplente['D2'])) { $campos_actualizar_entregas .= ", ". $suplente['D2']; }
+		if (isset($suplente['D3'])) { $campos_actualizar_entregas .= ", ". $suplente['D3']; }
+		if (isset($suplente['D4'])) { $campos_actualizar_entregas .= ", ". $suplente['D4']; }
+		if (isset($suplente['D5'])) { $campos_actualizar_entregas .= ", ". $suplente['D5']; }
+
 		$numero_documento = $suplente['numero_documento'];
 		$tipo_documento = $suplente['tipo_documento'];
 
@@ -217,7 +238,7 @@
 		if ($respuesta_suplente_entrega->num_rows > 0)
 		{
 			$suplente_entrega = $respuesta_suplente_entrega->fetch_assoc();
-			$consulta_actualizar_suplente_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (id, $insertar_columnas_dias) VALUES (". $suplente_entrega['id'] .", $D1, $D2, $D3, $D4, $D5) ON DUPLICATE KEY UPDATE $actualizar_columnas_dias";
+			$consulta_actualizar_suplente_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (id, $insertar_columnas_dias) VALUES (". $suplente_entrega['id'] . $campos_actualizar_entregas .") ON DUPLICATE KEY UPDATE $actualizar_columnas_dias";
 			$respuesta_actualizar_suplente_entrega = $Link->query($consulta_actualizar_suplente_entrega) or die('Error al actualizar suplente en entregas: '. $Link->error);
 			if ($respuesta_actualizar_suplente_entrega === FALSE)
 			{
