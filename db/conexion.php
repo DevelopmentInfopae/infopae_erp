@@ -1,12 +1,12 @@
 <?php
 
-$Hostname = "192.254.194.178";
+$Hostname = "localhost";
 
-$Username = "infopae_sylvia";
+$Username = "root";
 
-$Password = "Sylopez18";
+$Password = "root";
 
-$Database = "infopae_infopae2019";
+$Database = "infopae_2019";
 
 
 
