@@ -52,6 +52,8 @@
 	$consulta_repitentes = "SELECT
 	 											    f.*,
 	 											    CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre,
+	 											    f.cod_grado AS grado,
+            								f.nom_grupo AS grupo,
 	 											    e.tipo_doc_nom,
 	 													$columnas_dias_entregas,
 	 													($columnas_suma_dias) AS suma_dias

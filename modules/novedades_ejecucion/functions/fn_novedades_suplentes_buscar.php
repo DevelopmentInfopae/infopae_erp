@@ -53,6 +53,8 @@
 															    sup.tipo_doc_nom AS abreviatura_documento,
 				  												sup.num_doc AS numero_documento,
 				  												CONCAT(sup.nom1,' ',sup.nom2,' ',sup.ape1,' ',sup.ape2) AS nombre,
+				  												sup.cod_grado AS grado,
+            											sup.nom_grupo AS grupo,
 															    $columnasDiasEntregas_res
 																FROM
 															    suplentes$semana sup
@@ -70,6 +72,8 @@
 															    sup.tipo_doc_nom AS abreviatura_documento,
 															    sup.num_doc AS numero_documento,
 															    CONCAT(sup.nom1, ' ', sup.nom2, ' ', sup.ape1, ' ', sup.ape2) AS nombre,
+															    sup.cod_grado AS grado,
+            											sup.nom_grupo AS grupo,
 																	$columnasDiasSuplentes
 																FROM
 															    suplentes$semana sup
@@ -77,7 +81,8 @@
 															    sup.cod_sede = '$sede'
 													    ) AS TG
 															GROUP BY TG.numero_documento
-															ORDER BY TG.nombre ASC";
+															ORDER BY TG.grado ASC, TG.grupo ASC, TG.nombre ASC";
+	// echo $consulta_suplentes; exit();
 	$resultado_suplentes = $Link->query($consulta_suplentes) or die("Error al consultar novedades_suplentes: ". $Link->error);
   if($resultado_suplentes->num_rows > 0)
   {

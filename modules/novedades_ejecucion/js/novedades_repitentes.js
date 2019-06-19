@@ -335,12 +335,15 @@ function buscar_focalizados()
       { data: 'abreviatura_documento'},
       { data: 'numero_documento', className: 'columna_numero_documento'},
       { data: 'nombre'},
+      { data: 'grado'},
+      { data: 'grupo'},
       { data: 'maximo_D1', className: 'text-center'},
       { data: 'maximo_D2', className: 'text-center'},
       { data: 'maximo_D3', className: 'text-center'},
       { data: 'maximo_D4', className: 'text-center'},
       { data: 'maximo_D5', className: 'text-center'}
     ],
+    order: [[3, 'asc'], [4, 'asc'], [2, 'asc']],
     dom: 'r<"containerBtn"><"inputFiltro"f>tip',
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros',

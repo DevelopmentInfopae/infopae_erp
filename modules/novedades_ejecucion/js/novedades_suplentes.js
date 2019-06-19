@@ -334,12 +334,15 @@ function buscar_novedades_suplentes()
       { data: 'abreviatura_documento'},
       { data: 'numero_documento'},
       { data: 'nombre'},
+      { data: 'grado'},
+      { data: 'grupo'},
       { data: 'D1', className: 'text-center'},
       { data: 'D2', className: 'text-center'},
       { data: 'D3', className: 'text-center'},
       { data: 'D4', className: 'text-center'},
       { data: 'D5', className: 'text-center'}
     ],
+    order: [[ 3, 'asc'], [ 4, 'asc'], [ 2, 'asc' ]],
     dom: 'r<"containerBtn"><"inputFiltro"f>tip',
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros',
