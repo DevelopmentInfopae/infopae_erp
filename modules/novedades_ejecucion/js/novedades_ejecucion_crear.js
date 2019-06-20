@@ -306,7 +306,9 @@ function buscar_priorizacion()
 			sede: $('#sede').val(),
 			semana: $('#semana').val(),
 			tipo_complemento: $('#tipoComplemento').val()
-		},
+		}
+		// ,success: function (data) { console.log(data); }
+		// ,error: function(data){ console.log(data.responseText); }
 	})
 	.done(function(data) {
 		if (data == 0)
@@ -347,6 +349,8 @@ function buscar_focalizacion()
 			{ data: 'abreviatura_documento'},
 			{ data: 'numero_documento'},
 			{ data: 'nombre'},
+			{ data: 'grado'},
+			{ data: 'grupo'},
 			{ data: 'complemento'},
 			{ data: 'D1', className: 'text-center', orderable: false},
 			{ data: 'D2', className: 'text-center', orderable: false},
@@ -354,6 +358,7 @@ function buscar_focalizacion()
 			{ data: 'D4', className: 'text-center', orderable: false},
 			{ data: 'D5', className: 'text-center', orderable: false}
 		],
+		order: [[3, 'asc'], [4, 'asc'], [2, 'asc']],
 		oLanguage: {
 			sLengthMenu: 'Mostrando _MENU_ registros',
 			sZeroRecords: 'No se encontraron registros',

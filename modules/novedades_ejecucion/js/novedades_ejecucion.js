@@ -166,11 +166,11 @@ function buscar_novedades()
       	'institucion': institucion,
       	'tipo_complemento': tipo_complemento
       }
-      // success: function(data)
+      // ,success: function(data)
       // {
       //   console.log(data);
-      // },
-      // error: function(data)
+      // }
+      // ,error: function(data)
       // {
       //   console.log(data.responseText);
       // }
