@@ -554,11 +554,11 @@ function cargarEstudiantes(){
 				var asistencia = full.asistencia; 
 				var consumio = full.consumio; 			
 				var repitio = full.repitio;	
-				var index = auxRepitieron.indexOf(documento);	
+				//var index = auxRepitieron.indexOf(documento);	
 				var opciones = "";			
 				opciones += " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite "+documento+"\" ";		
 			
-				
+				console.log(documento+" "+asistencia+" - "+consumio);
 				if (asistencia == 1 && consumio == 1 && repitio == 1){
 					opciones += " checked ";
 				}
@@ -717,7 +717,7 @@ function guardarEntregas(flagSellar){
 		console.log("Guardar");
 		$.ajax({
 			type: "post",
-			url: "functions/fn_guardar_consumos_biometricos.php",
+			url: "functions/fn_guardar_consumos.php",
 			dataType: "json",
 			contentType: false,
 			processData: false,
