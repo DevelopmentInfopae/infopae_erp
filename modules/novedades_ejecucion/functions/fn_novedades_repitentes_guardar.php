@@ -48,14 +48,9 @@
 			{
 				if ($registroPlanillaSemanas["dia"] == $valorPlanillasDias)
 				{
-					// $columnas_dias_entregas .= "e.". $clavePlanillasDias ." AS D". $indiceDia .", ";
 					$columnas_dias_entregas .= "IF((SELECT ".$clavePlanillasDias." FROM entregas_res_$mes$periodo_actual es WHERE es.cod_sede = '$sede' AND es.tipo_complem = '$tipo_complemento' AND es.tipo = 'R' AND es.num_doc = f.num_doc) = 1, 1, 0) AS D".$indiceDia.", ";
 
-
-
 					$columnas_suma_dias .= "e.". $clavePlanillasDias . " + ";
-					// $columnasDiasEntregas_res .= "IFNULL(e.". $clavePlanillasDias .", 0) AS D". $indiceDia .", ";
-					// $columnasDiasSuplentes .= " 0 AS D". $indiceDia .", ";
 					$insertar_columnas_dias .= $clavePlanillasDias .", ";
 					$actualizar_columnas_dias .= $clavePlanillasDias . " = VALUES (".$clavePlanillasDias."), ";
 					$actualizar_columnas_dias_novedad .= "d". $indiceDia ." = VALUES (d". $indiceDia ."), ";
@@ -68,13 +63,9 @@
 	// Datos del estudiante
 	$columnas_suma_dias = trim($columnas_suma_dias, "+ ");
 	$columnas_dias_entregas = trim($columnas_dias_entregas, ", ");
-	// $columnasDiasSuma = trim($columnasDiasSuma, " + ");
-	// $columnasDiasSuplentes = trim($columnasDiasSuplentes, ", ");
 	$insertar_columnas_dias = trim($insertar_columnas_dias, ", ");
-	// $columnasDiasEntregas_res = trim($columnasDiasEntregas_res, ", ");
 	$actualizar_columnas_dias = trim($actualizar_columnas_dias, ", ");
 	$actualizar_columnas_dias_novedad = trim($actualizar_columnas_dias_novedad, ", ");
-	// var_dump($_POST['numero_documentos']); exit();
 
   $consulta_repitentes = "SELECT
 	 											    f.*,
@@ -97,7 +88,6 @@
 	 											    f.cod_sede = '$sede'
 	 								        AND f.Tipo_complemento = '$tipo_complemento'
 	 								        AND e.tipo='F'";
-	 								       // echo($consulta_repitentes); exit();
 
 	$respuesta_repitentes = $Link->query($consulta_repitentes) or die('Error al consultar suplentes: '. $Link->error);
 	if ($respuesta_repitentes->num_rows > 0)
