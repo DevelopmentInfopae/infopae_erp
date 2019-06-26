@@ -90,73 +90,15 @@
 	 												FROM
 	 											    focalizacion$semana f
 	 												INNER JOIN
-	 													entregas_res_$mes$periodo_actual e ON e.num_doc = f.num_doc AND e.tipo_complem = f.Tipo_complemento
+	 													entregas_res_$mes$periodo_actual e ON e.num_doc = f.num_doc AND e.tipo_complem = f.Tipo_complemento AND e.cod_sede = f.cod_sede
 	 												INNER JOIN
 	 													sedes$periodo_actual s ON s.cod_sede = e.cod_sede
 	 												WHERE
 	 											    f.cod_sede = '$sede'
 	 								        AND f.Tipo_complemento = '$tipo_complemento'
 	 								        AND e.tipo='F'";
+	 								       // echo($consulta_repitentes); exit();
 
-	// $consulta_repitentes = "SELECT
- //  												 	*
- //  													-- MAX(D1) AS maximo_D1,
-	// 											   --  MAX(D2) AS maximo_D2,
-	// 											   --  MAX(D3) AS maximo_D3,
-	// 											   --  MAX(D4) AS maximo_D4,
-	// 											   --  MAX(D5) AS maximo_D5,
-	// 											   --  SUM(suma_dias) AS suma_total_dias
- //  												FROM
-	// 												(
- //  													(SELECT
-	// 												    f.*,
-	// 												    CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre,
-	// 												    e.tipo_doc_nom,
-													    // s.cod_mun_sede,
-													    // s.cod_sede AS codigo_sede,
-    													// s.cod_inst AS codigo_inst,
-													    // s.nom_sede,
-													    // s.nom_inst,
-	// 														$columnas_dias_entregas,
-	// 														($columnas_suma_dias) AS suma_dias
-	// 													FROM
-	// 												    focalizacion$semana f
-	// 													INNER JOIN
-	// 														entregas_res_$mes$periodo_actual e ON e.num_doc = f.num_doc AND e.tipo_complem = f.Tipo_complemento
-	// 													INNER JOIN
-	// 														sedes$periodo_actual s ON s.cod_sede = e.cod_sede
-	// 													WHERE
-	// 												    f.cod_sede = '$sede'
-	// 									        AND f.Tipo_complemento = '$tipo_complemento'
-	// 									        AND e.tipo='R')
-
-	// 									        UNION ALL
-
-	// 													(SELECT
-	// 												    f.*,
-	// 												    CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre,
-	// 												    e.tipo_doc_nom,
-	// 												    s.cod_mun_sede,
-	// 												    s.cod_sede,
-	// 												    s.cod_inst,
-	// 												    s.nom_sede,
-	// 												    s.nom_inst,
-	// 														$columnas_dias_entregas,
-	// 														($columnas_suma_dias) AS suma_dias
-	// 													FROM
-	// 												    focalizacion$semana f
-	// 													INNER JOIN
-	// 														entregas_res_$mes$periodo_actual e ON e.num_doc = f.num_doc AND e.tipo_complem = f.Tipo_complemento
-	// 													INNER JOIN
-	// 														sedes$periodo_actual s ON s.cod_sede = e.cod_sede
-	// 													WHERE
-	// 												    f.cod_sede = '$sede'
-	// 									        AND f.Tipo_complemento = '$tipo_complemento'
-	// 									        AND e.tipo='F')
-	// 							        	) AS TG
-	// 												GROUP BY TG.num_doc
-	// 												ORDER BY TG.nombre";
-// echo $consulta_repitentes; exit();
 	$respuesta_repitentes = $Link->query($consulta_repitentes) or die('Error al consultar suplentes: '. $Link->error);
 	if ($respuesta_repitentes->num_rows > 0)
 	{
@@ -165,64 +107,99 @@
 			$cambio_detectado = 0;
 			$numero_documento = $registro_repitentes['num_doc'];
 
-			if($registro_repitentes['D1'] == '1'){
-				if(!isset($_POST[$numero_documento.'_D1'])){
-					$cambio_detectado++;
-					$registro_repitentes['D1'] = '0';
-				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D1'])){
-					$cambio_detectado++;
-					$registro_repitentes['D1'] = '1';
-				}
-			}
-
-			if($registro_repitentes['D2'] == '1'){
-				if(!isset($_POST[$numero_documento.'_D2'])){
-					$cambio_detectado++;
-					$registro_repitentes['D2'] = '0';
-				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D2'])){
-					$cambio_detectado++;
-					$registro_repitentes['D2'] = '1';
+			if (isset($_POST[$numero_documento.'_D1']))
+			{
+				if($registro_repitentes['D1'] == '1'){
+					if(!isset($_POST[$numero_documento.'_D1'])){
+						$cambio_detectado++;
+						$registro_repitentes['D1'] = '0';
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D1'])){
+						$cambio_detectado++;
+						$registro_repitentes['D1'] == '1';
+					}
 				}
 			}
-
-			if($registro_repitentes['D3'] == '1'){
-				if(!isset($_POST[$numero_documento.'_D3'])){
-					$cambio_detectado++;
-					$registro_repitentes['D3'] = '0';
-				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D3'])){
-					$cambio_detectado++;
-					$registro_repitentes['D3'] = '1';
-				}
+			else
+			{
+				$registro_repitentes['D1'] = $registro_repitentes['D1'];
 			}
 
-			if($registro_repitentes['D4'] == '1'){
-				if(!isset($_POST[$numero_documento.'_D4'])){
-					$cambio_detectado++;
-					$registro_repitentes['D4'] = '0';
-				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D4'])){
-					$cambio_detectado++;
-					$registro_repitentes['D4'] = '1';
+			if (isset($_POST[$numero_documento.'_D2']))
+			{
+				if($registro_repitentes['D2'] == '1'){
+					if(!isset($_POST[$numero_documento.'_D2'])){
+						$cambio_detectado++;
+						$registro_repitentes['D2'] = '0';
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D2'])){
+						$cambio_detectado++;
+						$registro_repitentes['D2'] = '1';
+					}
 				}
 			}
+			else
+			{
+				$registro_repitentes['D2'] = $registro_repitentes['D2'];
+			}
 
-			if($registro_repitentes['D5'] == '1'){
-				if(!isset($_POST[$numero_documento.'_D5'])){
-					$cambio_detectado++;
-					$registro_repitentes['D5'] = '0';
+			if (isset($_POST[$numero_documento.'_D3']))
+			{
+				if($registro_repitentes['D3'] == '1'){
+					if(!isset($_POST[$numero_documento.'_D3'])){
+						$cambio_detectado++;
+						$registro_repitentes['D3'] = '0';
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D3'])){
+						$cambio_detectado++;
+						$registro_repitentes['D3'] = '1';
+					}
 				}
-			}else{
-				if(isset($_POST[$numero_documento.'_D5'])){
-					$cambio_detectado++;
-					$registro_repitentes['D5'] = '1';
+			}
+			else
+			{
+				$registro_repitentes['D3'] = $registro_repitentes['D3'];
+			}
+
+			if (isset($_POST[$numero_documento.'_D4']))
+			{
+				if($registro_repitentes['D4'] == '1'){
+					if(!isset($_POST[$numero_documento.'_D4'])){
+						$cambio_detectado++;
+						$registro_repitentes['D4'] = '0';
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D4'])){
+						$cambio_detectado++;
+						$registro_repitentes['D4'] = '1';
+					}
 				}
+			}
+			else
+			{
+				$registro_repitentes['D4'] = $registro_repitentes['D4'];
+			}
+
+			if (isset($_POST[$numero_documento.'_D5']))
+			{
+				if($registro_repitentes['D5'] == '1'){
+					if(!isset($_POST[$numero_documento.'_D5'])){
+						$cambio_detectado++;
+						$registro_repitentes['D5'] = '0';
+					}
+				}else{
+					if(isset($_POST[$numero_documento.'_D5'])){
+						$cambio_detectado++;
+						$registro_repitentes['D5'] = '1';
+					}
+				}
+			}
+			else
+			{
+				$registro_repitentes['D5'] = $registro_repitentes['D5'];
 			}
 
 			if ($cambio_detectado > 0)
@@ -231,7 +208,6 @@
 			}
 		}
 	}
-
 
 	if (empty($novedades_repitentes))
 	{
@@ -278,7 +254,7 @@
 	// Iteración para validar si se requiere insertar o actualizar un repitente.
 	$insertar = $actualizar = 0;
 	$consulta_actualizar_repitente_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (id, $insertar_columnas_dias) VALUES ";
-	$consulta_insertar_repitentes_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, tipo, $semana_tipo_complemento, tipo_complem, $insertar_columnas_dias)VALUES ";
+	$consulta_insertar_repitentes_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, tipo, $semana_tipo_complemento, tipo_complem, $insertar_columnas_dias) VALUES ";
 	foreach ($novedades_repitentes as $novedad_repitente)
 	{
 		if(in_array($novedad_repitente["num_doc"], $documentos_repitentes))
