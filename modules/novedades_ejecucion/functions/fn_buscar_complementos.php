@@ -1,29 +1,27 @@
+<option value="">seleccione</option>
 <?php
-require_once '../../../config.php';
-require_once '../../../db/conexion.php';
+	require_once '../../../config.php';
+	require_once '../../../db/conexion.php';
 
-$semana = (isset($_POST['semana']) && $_POST['semana'] != '') ? mysqli_real_escape_string($Link, $_POST["semana"]) : "";
-$opciones = "<option value=\"\">Seleccione una</option>";
-$respuestaAJAX = [
-	"estado" => 0,
-	"mensaje" => "No se encontró focalización para esta semana."
-];
+	$sede = (isset($_POST['sede']) && ! empty($_POST['sede'])) ? $Link->real_escape_string($_POST['sede']) : '';
+	$semana = (isset($_POST['semana']) && ! empty($_POST['semana'])) ? $Link->real_escape_string($_POST["semana"]) : '';
+	$institucion = (isset($_POST['institucion']) && ! empty($_POST['institucion'])) ? $Link->real_escape_string($_POST['institucion']) : '';
 
-//Revisar si la tabla existencia
-$resultado = $Link->query("show tables like 'focalizacion$semana'");
-if($resultado->num_rows > 0){
-	$consulta = "SELECT distinct f.Tipo_complemento FROM focalizacion$semana f ORDER BY Tipo_complemento asc";
-	$resultado = $Link->query($consulta);
-	if($resultado->num_rows > 0){
-		while($row = $resultado->fetch_assoc()) {
-			$tipoComplemento = $row['Tipo_complemento'];
-			$opciones .= " <option value=\"$tipoComplemento\">$tipoComplemento</option> ";
+	//Revisar si la tabla existencia
+	$consulta_focalizacion = "SHOW TABLES LIKE 'focalizacion$semana'";
+	$respuesta_consulta_focalizado = $Link->query($consulta_focalizacion) or die('Error al consultar la focalización: '. $Link->error);
+	if(! empty($respuesta_consulta_focalizado->num_rows))
+	{
+		$parametro_sedes = (! empty($sede)) ? "AND cod_sede = '$sede'" : "";
+		$parametro_institucion = (! empty($institucion)) ? "AND cod_inst = '$institucion'" : "";
+		$consulta_complementos = "SELECT DISTINCT f.Tipo_complemento AS tipo_complemento FROM focalizacion$semana f WHERE 1 = 1 $parametro_institucion $parametro_sedes ORDER BY Tipo_complemento ASC";
+		$respuesta_consulta_complementos = $Link->query($consulta_complementos) or die('Error al consultar los complementos: '. $Link->error);
+		if(! empty($respuesta_consulta_complementos->num_rows))
+		{
+			while($complementos = $respuesta_consulta_complementos->fetch_object())
+			{
+				$tipo_complemento = $complementos->tipo_complemento;
+				echo '<option value="'. $tipo_complemento .'">'. $tipo_complemento .'</option>';
+			}
 		}
-		$respuestaAJAX = [
-			"estado" => 1,
-			"opciones" => $opciones,
-			"mensaje" => "Instituciones cargados correctamente."
-		];
 	}
-}
-echo json_encode($respuestaAJAX);

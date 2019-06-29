@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 require_once '../../../fpdf181/fpdf.php';
@@ -45,18 +45,18 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	class PDF extends FPDF
 	{
 
-		// $fecha=""; 
-		// $dpto=""; 
-		// $Ciudad=""; 
-		// $nom_inst=""; 
+		// $fecha="";
+		// $dpto="";
+		// $Ciudad="";
+		// $nom_inst="";
 		// $nom_sede="";
 
 		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes){
 			$this->fecha = $fecha;
-			setlocale(LC_TIME, 'es');
-			$fecha = DateTime::createFromFormat('!m', $mes);
-			$mes = ucfirst(strftime("%B", $fecha->getTimestamp())); // marzo
-			$this->mes = $mes;
+			// setlocale(LC_TIME, 'es_CO');
+			// $fecha = DateTime::createFromFormat('!m', $mes);
+			// $mes = ucfirst(strftime("%B", $fecha->getTimestamp())); // marzo
+			$this->mes = mesNombre($mes);
 			$this->dpto = $dpto;
 			$this->dataSede = $dataSede;
 			$this->Ciudad = $this->dataSede['Ciudad'];
@@ -149,7 +149,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	$pdf->SetMargins(7, 7);
 
 foreach ($sedes as $key => $sede) {
-	$consultaSede = "SELECT 
+	$consultaSede = "SELECT
 					    ubicacion.Ciudad, instituciones.nom_inst, sede.*
 					FROM
 					    $sedeTabla AS sede
@@ -199,7 +199,7 @@ foreach ($sedes as $key => $sede) {
 		    $resultadoDetalles = $Link->query($consultaDetalles);
 		    if ($resultadoDetalles->num_rows > 0) {
 		    	while ($detalles = $resultadoDetalles->fetch_assoc()) {
-		    		
+
 		    		if ($detalles['CantU3'] != 0 || $detalles['CantU4'] != 0 || $detalles['CantU5'] != 0) { //SI SE DIERON MÁS PRESENTACIONES
 		    			$pdf->Cell(70.75,5,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
 			    		$pdf->Cell(30,5,utf8_decode($detalles['Umedida']),'BR',0,'C');
@@ -359,12 +359,53 @@ foreach ($sedes as $key => $sede) {
 			$pdf->Cell(94.3,8,'FIRMA:',0,0,'L',False);
 
 			$pdf->ln();
-			
+
 		}
-	}	
+	}
 }
 
 
 
 
 $pdf->Output("INFORME_DESPACHOS_INSUMOS.pdf", "I");
+
+
+function mesNombre($mes)
+{
+  if($mes == 1){
+    return 'Enero';
+  }
+  else if($mes == 2){
+    return 'Febrero';
+  }
+  else if($mes == 3){
+    return 'Marzo';
+  }
+  else if($mes == 4){
+    return 'Abril';
+  }
+  else if($mes == 5){
+    return 'Mayo';
+  }
+  else if($mes == 6){
+    return 'Junio';
+  }
+  else if($mes == 7){
+    return 'Julio';
+  }
+  else if($mes == 8){
+    return 'Agosto';
+  }
+  else if($mes == 9){
+    return 'Septiembre';
+  }
+  else if($mes == 10){
+    return 'Octubre';
+  }
+  else if($mes == 11){
+    return 'Noviembre';
+  }
+  else if($mes == 12){
+    return 'Diciembre';
+  }
+}

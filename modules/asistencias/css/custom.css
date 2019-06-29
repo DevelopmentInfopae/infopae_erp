@@ -82,3 +82,7 @@
 .headerToolsActions{
 	margin-right: 10px;
 }
+
+#loader{
+	position: fixed;
+}

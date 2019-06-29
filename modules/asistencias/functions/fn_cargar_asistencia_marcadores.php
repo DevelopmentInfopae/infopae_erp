@@ -41,7 +41,7 @@ if(isset($_POST['dia']) && $_POST['dia'] != ""){
 
 
 
-$consulta = "select a.* from Asistencia_det$mes$anno a 
+$consulta = "select a.* from asistencia_det$mes$anno a 
 left join focalizacion$semanaActual f on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc
 where a.dia = $dia and f.cod_sede = '$sede'";
 

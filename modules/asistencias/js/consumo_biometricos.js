@@ -13,7 +13,14 @@ localStorage.removeItem("wappsi_repitentes");
 localStorage.removeItem("wappsi_no_consumieron");
 localStorage.removeItem("wappsi_no_repitieron");
 
+	
+
+
 $(document).ready(function(){
+
+	
+
+
 	var sedeP = $("#sedeP").val();
 	var institucionP = $("#institucionP").val();
 	console.log(sedeP);
@@ -116,6 +123,7 @@ $(document).ready(function(){
 	});
 
 	$('#ventanaSellar .btnSiSellar').click(function(){
+		$("#loader").fadeIn(); 
 		guardarEntregas(1);
 	});
 
@@ -363,6 +371,10 @@ $(document).ready(function(){
 		$('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>que desea hacer cambios en los registros de la asistencia</strong> para este estudiante? ');
   		$('#ventanaConfirmar').modal();
 	});
+
+
+
+	
 });
 
 function validarAsistenciaSellada(){
@@ -469,7 +481,12 @@ function cargarEstudiantes(){
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
 				var asistencia = full.asistencia; 
-				asistencia = 1;
+				//console.log("Asistencia "+documento+" => "+asistencia);
+				if(asistencia == null){
+					asistencia = 1;
+				}
+
+
 
 				
 
@@ -537,11 +554,11 @@ function cargarEstudiantes(){
 				var asistencia = full.asistencia; 
 				var consumio = full.consumio; 			
 				var repitio = full.repitio;	
-				var index = auxRepitieron.indexOf(documento);	
+				//var index = auxRepitieron.indexOf(documento);	
 				var opciones = "";			
 				opciones += " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite "+documento+"\" ";		
 			
-				
+				console.log(documento+" "+asistencia+" - "+consumio);
 				if (asistencia == 1 && consumio == 1 && repitio == 1){
 					opciones += " checked ";
 				}
@@ -634,6 +651,9 @@ function cargarEstudiantes(){
 }
 
 function guardarEntregas(flagSellar){
+	
+
+
 	console.log("Guardar asistencia.");
 	var bandera = 0;	
 	var repitente = [];
@@ -697,7 +717,7 @@ function guardarEntregas(flagSellar){
 		console.log("Guardar");
 		$.ajax({
 			type: "post",
-			url: "functions/fn_guardar_consumos_biometricos.php",
+			url: "functions/fn_guardar_consumos.php",
 			dataType: "json",
 			contentType: false,
 			processData: false,
@@ -884,7 +904,7 @@ function sellarAsistencia(flag){
 	}
 }
 
-	
+
 
 
 

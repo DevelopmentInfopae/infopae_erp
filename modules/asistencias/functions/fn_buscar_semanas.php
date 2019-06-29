@@ -14,10 +14,10 @@ $consulta = " select distinct(SEMANA) as semana from planilla_semanas where mes 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$respuesta = 1;
-	while($row = $resultado->fetch_assoc()){				
+	while($row = $resultado->fetch_assoc()){
 		$id = $row["semana"];
 		$valor = $row["semana"];
-		
+
 		$opciones .= "<option value=\"$id\"";
 		$opciones .= ">";
 		$opciones .= "$valor</option>";

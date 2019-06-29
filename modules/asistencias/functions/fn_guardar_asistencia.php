@@ -40,11 +40,15 @@ $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
 $asistencias = $_POST['asistencia'];
 
+$mesTablaAsistencia = $mes;
+$annoTablaAsistencia = $anno;
+include 'fn_validar_existencias_tablas.php';
+
 
 
 if($banderaRegistros == 0){
 	//Insertar no habria necesidad de borrar
-	$consulta = " insert into Asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values ";
+	$consulta = " insert into asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values ";
 	$aux = 0;
 	foreach ($asistencias as $asistencia){
 		if($aux > 0){
@@ -92,7 +96,7 @@ if($banderaRegistros == 0){
 		$num_doc = mysqli_real_escape_string($Link, $asistencia["documento"]);
 		$asistenciaVal = mysqli_real_escape_string($Link, $asistencia["asistencia"]);
 
-		$consulta .= " update Asistencia_det$mes$anno set asistencia = $asistenciaVal  ";
+		$consulta .= " update asistencia_det$mes$anno set asistencia = $asistenciaVal  ";
 
 		if($asistenciaVal == 0){
 			$consulta .= " , repite = 0, consumio = 0, repitio = 0 ";	

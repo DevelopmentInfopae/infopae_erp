@@ -527,7 +527,7 @@ function cargarEstudiantes(){
 				var asistencia = full.asistencia; 
 				var consumio = full.consumio; 			
 				var repitio = full.repitio;	
-				var index = auxRepitieron.indexOf(documento);	
+				//var index = auxRepitieron.indexOf(documento);	
 				var opciones = "";			
 				opciones += " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite "+documento+"\" ";		
 			
@@ -535,6 +535,10 @@ function cargarEstudiantes(){
 				if (asistencia == 1 && consumio == 1 && repitio == 1){
 					opciones += " checked ";
 				}
+
+
+				console.log("Validndo si se desactiva repite");
+				console.log(asistencia+" / "+consumio);
 
 
 				if (asistencia == 0 || consumio == 0){

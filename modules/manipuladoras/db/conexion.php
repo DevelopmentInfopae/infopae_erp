@@ -1,8 +1,8 @@
 <?php
-$Hostname = "www.wappsi.com";
-$Username = "e6y1o9y1_sylvia";
+$Hostname = "192.254.194.178";
+$Username = "infopae_sylvia";
 $Password = "Sylopez18";
-$Database = "e6y1o9y1_infopae2018";
+$Database = "infopae_infopae2019";
 
 // $Hostname = "localhost";
 // $Username = "root";

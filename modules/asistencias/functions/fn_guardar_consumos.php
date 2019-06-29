@@ -51,20 +51,37 @@ if(isset($_POST['repitieron'])){
 
 
 
-$consulta = "";
+
 $tipo_doc = "";
 $num_doc = "";
 
+
+
+
+
+
+
+$mesTablaAsistencia = $mes;
+$annoTablaAsistencia = $anno;
+include 'fn_validar_existencias_tablas.php';
+
+
+
+
+
 $consulta = "";
 foreach ($consumieron as $consumio){
+	$repitio = 0;
 
 	$tipo_doc = mysqli_real_escape_string($Link, $consumio["tipoDocumento"]);
 	$num_doc = mysqli_real_escape_string($Link, $consumio["documento"]);
 
-	$consulta .= " update Asistencia_det$mes$anno set consumio = 1 ";	
+	$consulta .= " update asistencia_det$mes$anno set consumio = 1 ";	
 
 	if(isset($repitieron[$num_doc])){
 		$consulta .= " , repitio = 1 ";
+	}else{
+		$consulta .= " , repitio = 0 ";
 	}
 
 	$consulta .= " where mes = \"$mes\" and dia = \"$dia\" and asistencia = 1 
@@ -79,7 +96,7 @@ foreach ($noConsumieron as $noConsumio){
 	$tipo_doc = mysqli_real_escape_string($Link, $noConsumio["tipoDocumento"]);
 	$num_doc = mysqli_real_escape_string($Link, $noConsumio["documento"]);
 
-	$consulta .= " update Asistencia_det$mes$anno set consumio = 0 ";	
+	$consulta .= " update asistencia_det$mes$anno set consumio = 0 ";	
 	$consulta .= " , repitio = 0 ";
 	$consulta .= " where mes = \"$mes\" and dia = \"$dia\" and asistencia = 1 
 

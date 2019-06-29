@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 require_once '../../../fpdf181/fpdf.php';
@@ -43,10 +43,10 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 
 		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho, $mes){
 			$this->fecha = $fecha;
-			setlocale(LC_TIME, 'es');
-			$fecha = DateTime::createFromFormat('!m', $mes);
-			$mes = ucfirst(strftime("%B", $fecha->getTimestamp())); // marzo
-			$this->mes = $mes;
+			// setlocale(LC_TIME, 'es');
+			// $fecha = DateTime::createFromFormat('!m', $mes);
+			// $mes = ucfirst(strftime("%B", $fecha->getTimestamp())); // marzo
+			$this->mes = mesNombre($mes);
 			$this->dpto = $dpto;
 			$this->sedes = $sedes;
 			$this->productos = $productos;
@@ -163,7 +163,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	$pdf->SetMargins(7, 7);
 
 foreach ($sedes as $key => $sede) {
-	$consultaSede = "SELECT 
+	$consultaSede = "SELECT
 					    ubicacion.Ciudad, instituciones.nom_inst, sede.*
 					FROM
 					    $sedeTabla AS sede
@@ -240,7 +240,7 @@ foreach ($sedes as $key => $sede) {
 		    	}
 		    }
 		}
-	}	
+	}
 }
 
 // var_dump($dataInst);
@@ -280,7 +280,7 @@ foreach ($dataInst as $cod_inst => $sedes) {
 				$uP = " (".str_replace(" ", "", $productos_sede[$cod_sede][$id]['Umedida']).")";
 
 				$cantidad.=$uP;
-			
+
 			} else {
 				$cantidad = "-";
 			}
@@ -323,3 +323,43 @@ foreach ($dataInst as $cod_inst => $sedes) {
 
 
 $pdf->Output("INFORME_DESPACHOS_INSUMOS.pdf", "I");
+
+function mesNombre($mes)
+{
+  if($mes == 1){
+    return 'Enero';
+  }
+  else if($mes == 2){
+    return 'Febrero';
+  }
+  else if($mes == 3){
+    return 'Marzo';
+  }
+  else if($mes == 4){
+    return 'Abril';
+  }
+  else if($mes == 5){
+    return 'Mayo';
+  }
+  else if($mes == 6){
+    return 'Junio';
+  }
+  else if($mes == 7){
+    return 'Julio';
+  }
+  else if($mes == 8){
+    return 'Agosto';
+  }
+  else if($mes == 9){
+    return 'Septiembre';
+  }
+  else if($mes == 10){
+    return 'Octubre';
+  }
+  else if($mes == 11){
+    return 'Noviembre';
+  }
+  else if($mes == 12){
+    return 'Diciembre';
+  }
+}
