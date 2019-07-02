@@ -332,7 +332,7 @@ while($row = $result->fetch_assoc()){
 	
 	
 }
-var_dump($entregas);
+//var_dump($entregas);
 //var_dump($repitentes);
 
 

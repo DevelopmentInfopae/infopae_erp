@@ -1,9 +1,11 @@
 <?php
   include '../../header.php';
-  $titulo = 'Novedades de suplentes';
+  $titulo = 'Novedades de repitentes';
 
   $codigo_municipio = $_SESSION['p_Municipio'];
   $codigo_departamento = $_SESSION['p_CodDepartamento'];
+
+
 ?>
 <link rel="stylesheet" href="css/custom.css">
 <div class="flagFaltantes"><span id="complementos_faltantes">0</span> de <span id="total_complementos">0</span> </div>
@@ -23,7 +25,7 @@
   <div class="col-lg-4">
     <div class="title-action">
 			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-				<a href="#" class="btn btn-primary disabled boton_guardar_novedades_suplentes"><i class="fa fa-check"></i> Guardar</a>
+				<a href="#" class="btn btn-primary disabled boton_guardar_novedades_repitentes"><i class="fa fa-check"></i> Guardar</a>
 			<?php } ?>
 		</div>
   </div>
@@ -34,7 +36,7 @@
     <div class="col-sm-12">
       <div class="ibox">
         <div class="ibox-content">
-          <form class="form" method="post" name="formulario_buscar_novedades_suplentes" id="formulario_buscar_novedades_suplentes">
+          <form class="form" method="post" name="formulario_buscar_novedades_repitentes" id="formulario_buscar_novedades_repitentes">
             <div class="row">
               <div class="col-sm-4">
                 <div class="form-group">
@@ -124,7 +126,7 @@
 
             <div class="row">
               <div class="col-sm-12 form-group">
-                <button class="btn btn-primary pull-right" type="button" id="boton_buscar_novedades_suplentes"><i class="fa fa-search"></i> Buscar</button>
+                <button class="btn btn-primary pull-right" type="button" id="boton_buscar_novedades_repitentes"><i class="fa fa-search"></i> Buscar</button>
               </div>
             </div>
           </form>
@@ -133,7 +135,7 @@
 
       <div class="ibox" id="contenedor_tabla_novedades_suplentes" style="display: none;">
         <div class="ibox-content">
-          <form id="formulario_guardar_novedades_suplentes">
+          <form id="formulario_guardar_novedades_repitentes">
             <table class="table table-striped table-hover selectableRows tabla_novedades_suplentes">
               <thead>
                 <tr>
@@ -157,7 +159,7 @@
                 <input type="hidden" name="municipio_hidden" id="municipio_hidden">
                 <input type="hidden" name="institucion_hidden" id="institucion_hidden">
                 <input type="hidden" name="tipo_complemento_hidden" id="tipo_complemento_hidden">
-                <button type="button" class="btn btn-primary pull-right disabled boton_guardar_novedades_suplentes"><i class="fa fa-check"></i> Guardar</button>
+                <button type="button" class="btn btn-primary pull-right disabled boton_guardar_novedades_repitentes"><i class="fa fa-check"></i> Guardar</button>
               </div>
             </div>
           </form>
@@ -184,7 +186,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/js/novedades_suplentes.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/js/novedades_repitentes.js"></script>
 
 </body>
 </html>

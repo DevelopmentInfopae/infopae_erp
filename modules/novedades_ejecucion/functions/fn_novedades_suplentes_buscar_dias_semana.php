@@ -1,13 +1,16 @@
 <th>Documento</th>
 <th>Numero</th>
 <th>Nombre suplente</th>
+<th>Grado</th>
+<th>Grupo</th>
 <?php
 	require_once '../../../config.php';
 	require_once '../../../db/conexion.php';
 
+	$mes = (isset($_POST['mes']) && ! empty($_POST['mes'])) ? $Link->real_escape_string($_POST["mes"]) : "";
 	$semana = (isset($_POST['semana']) && ! empty($_POST['semana'])) ? $Link->real_escape_string($_POST["semana"]) : "";
 
-	$consulta_dias_semana = "SELECT IF(LENGTH(DIA) > 1, DIA, CONCAT('0', DIA)) AS dia FROM planilla_semanas WHERE semana = '$semana';";
+	$consulta_dias_semana = "SELECT IF(LENGTH(DIA) > 1, DIA, CONCAT('0', DIA)) AS dia FROM planilla_semanas WHERE MES='$mes' AND semana = '$semana';";
 	$respuesta_dias_semana = $Link->query($consulta_dias_semana) or die('Error al consultar dias_semana:'. $Link->error);
 	if ($respuesta_dias_semana->num_rows > 0)
 	{

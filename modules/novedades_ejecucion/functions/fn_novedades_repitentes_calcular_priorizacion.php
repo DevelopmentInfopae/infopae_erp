@@ -9,19 +9,6 @@
   $semana = (isset($_POST['semana']) && ! empty($_POST['semana'])) ? $Link->real_escape_string($_POST['semana']) : '';
   $tipo_complemento = (isset($_POST['tipo_complemento']) && !empty($_POST['tipo_complemento'])) ? $Link->real_escape_string($_POST['tipo_complemento']) : '';
 
-  $consulta_tabla_suplente_existe = "SHOW TABLES LIKE '%suplentes$semana%'";
-  $respuesta_tabla_suplente_existe = $Link->query($consulta_tabla_suplente_existe) or die('Error al consultar suplentes$semana: '. $Link->error);
-  if ($respuesta_tabla_suplente_existe->num_rows == 0)
-  {
-    $respuesta_ajax = [
-      'estado'=>0,
-      'mensaje'=>'No existe suplentes para la semana seleccionada'
-    ];
-    echo json_encode($respuesta_ajax);
-    exit();
-  }
-
-
   // Consulta que retorna los dias de planillas el mes seleccionado.
   $consultaPlanillaDias = "SELECT D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28, D29, D30, D31  FROM planilla_dias WHERE mes = '$mes';";
   $resultadoPlanillaDias = $Link->query($consultaPlanillaDias) or die("Error al consultar planilla_dias: ". $Link->error);
