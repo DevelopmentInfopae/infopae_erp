@@ -563,12 +563,9 @@ function cargarEstudiantes(){
 					opciones += " checked ";
 				}
 
-
 				if (asistencia == 0 || consumio == 0){
 					opciones += " disabled ";			
 				}
-
-
 
 				opciones += " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
 				return opciones;
