@@ -223,6 +223,8 @@
 	foreach ($novedades_suplentes as $suplente)
 	{
 		$campos_actualizar_entregas = "";
+		$tipo_documento = $suplente['tipo_documento'];
+		$numero_documento = $suplente['numero_documento'];
 
 		if (isset($suplente['D1'])) { $campos_actualizar_entregas .= ", ". $suplente['D1']; }
 		if (isset($suplente['D2'])) { $campos_actualizar_entregas .= ", ". $suplente['D2']; }
@@ -230,16 +232,16 @@
 		if (isset($suplente['D4'])) { $campos_actualizar_entregas .= ", ". $suplente['D4']; }
 		if (isset($suplente['D5'])) { $campos_actualizar_entregas .= ", ". $suplente['D5']; }
 
-		$numero_documento = $suplente['numero_documento'];
-		$tipo_documento = $suplente['tipo_documento'];
 
 		$consulta_suplente_entrega = "SELECT id, num_doc FROM entregas_res_$mes$periodo_actual WHERE num_doc='$numero_documento' AND cod_sede='$sede' AND tipo_complem='$tipo_complemento' AND tipo='S';";
 		$respuesta_suplente_entrega = $Link->query($consulta_suplente_entrega) or die('Error al consultar entregas_res_$mes$periodo_actual: '. $Link->error);
-		if ($respuesta_suplente_entrega->num_rows > 0)
+
+		if ($respuesta_suplente_entrega->num_rows == 0)
 		{
 			$suplente_entrega = $respuesta_suplente_entrega->fetch_assoc();
 			$consulta_actualizar_suplente_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (id, $insertar_columnas_dias) VALUES (". $suplente_entrega['id'] . $campos_actualizar_entregas .") ON DUPLICATE KEY UPDATE $actualizar_columnas_dias";
 			$respuesta_actualizar_suplente_entrega = $Link->query($consulta_actualizar_suplente_entrega) or die('Error al actualizar suplente en entregas: '. $Link->error);
+			// echo $consulta_actualizar_suplente_entrega; exit();
 			if ($respuesta_actualizar_suplente_entrega === FALSE)
 			{
 				$respuesta_ajax = [
@@ -253,8 +255,16 @@
 		}
 		else
 		{
+			$campo_insertar_entregas = "";
 			$id_disp_est = (! is_null($suplente['id_disp_est'])) ? $suplente['id_disp_est'] : 0;
 			$des_dept_nom = (! is_null($suplente['des_dept_nom'])) ? $suplente['des_dept_nom'] : 0;
+
+			if (isset($suplente['D1'])) { $campo_insertar_entregas .= ", ". $suplente['D1']; }
+			if (isset($suplente['D2'])) { $campo_insertar_entregas .= ", ". $suplente['D2']; }
+			if (isset($suplente['D3'])) { $campo_insertar_entregas .= ", ". $suplente['D3']; }
+			if (isset($suplente['D4'])) { $campo_insertar_entregas .= ", ". $suplente['D4']; }
+			if (isset($suplente['D5'])) { $campo_insertar_entregas .= ", ". $suplente['D5']; }
+
 
 			$consulta_insertar_suplente_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (
 				tipo_doc,
@@ -338,9 +348,9 @@
 				'".$suplente['activo']."',
 				'S',
 				'".$tipo_complemento."',
-				'".$tipo_complemento."',
-				$D1, $D2, $D3, $D4, $D5);";
+				'".$tipo_complemento."' $campo_insertar_entregas);";
 			$respuesta_insertar_suplente_entrega = $Link->query($consulta_insertar_suplente_entrega) or die('Error al insertar suplentes a entregas: '. $Link->error);
+			// echo $consulta_insertar_suplente_entrega; exit();
 			if ($respuesta_insertar_suplente_entrega === FALSE)
 			{
 				$respuesta_ajax = [
@@ -353,7 +363,14 @@
 			}
 		}
 
+		$D1 = (! isset($suplente['D1'])) ? 0 : $suplente['D1'];
+		$D2 = (! isset($suplente['D2'])) ? 0 : $suplente['D2'];
+		$D3 = (! isset($suplente['D3'])) ? 0 : $suplente['D3'];
+		$D4 = (! isset($suplente['D4'])) ? 0 : $suplente['D4'];
+		$D5 = (! isset($suplente['D5'])) ? 0 : $suplente['D5'];
+
 		$consulta_insertar_novedad = "INSERT INTO novedades_focalizacion (id_usuario, fecha_hora, cod_sede, tipo_doc_titular, num_doc_titular, tipo_complem, semana, d1, d2, d3, d4, d5, tiponovedad) VALUES ('".$usuario."', '".$fecha."', '".$sede."', '".$tipo_documento."', '".$numero_documento."', '".$tipo_complemento."', '".$semana."', '".$D1."', '".$D2."', '".$D3."', '".$D4."', '".$D5."', '5')";
+		// echo $consulta_insertar_novedad; exit();
 		$respuesta_insertar_novedad = $Link->query($consulta_insertar_novedad) or die("Error al insertar novedades_focalizacion: ". $Link->error);
 		if ($respuesta_insertar_novedad === FALSE)
 		{
