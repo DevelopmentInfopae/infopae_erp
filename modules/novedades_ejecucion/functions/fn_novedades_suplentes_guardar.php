@@ -35,7 +35,7 @@
 	}
 
 	// Consulta para determinar las columnas de días de consulta por la semana seleccionada.
-	$columnasDiasEntregas_res = $columnasDiasSuma = $columnasDiasSuplentes = $insertar_columnas_dias = $actualizar_columnas_dias = "";
+	$columnasDiasEntregas_res = $columnasDiasSuma = $columnasDiasSuplentes = $insertar_columnas_dias = $actualizar_columnas_dias = $columnas_dias_tabla_general = "";
 	$consultaPlanillaSemanas = "SELECT DIA as dia FROM planilla_semanas WHERE semana = '$semana'";
 	$resultadoPlanillaSemanas = $Link->query($consultaPlanillaSemanas) or die("Error al consultar planilla_semanas: ". $Link->error);
 	if($resultadoPlanillaSemanas->num_rows > 0)
@@ -47,10 +47,11 @@
 			{
 				if ($registroPlanillaSemanas["dia"] == $valorPlanillasDias)
 				{
-					$columnasDiasEntregas_res .= "IFNULL(e.". $clavePlanillasDias .", 0) AS D". $indiceDia .", ";
+					$columnasDiasEntregas_res .= "IFNULL(e.". $clavePlanillasDias .", 0) AS D". $indiceDia ."i, ";
 					$columnasDiasSuplentes .= " 0 AS D". $indiceDia .", ";
 					$insertar_columnas_dias .= $clavePlanillasDias .", ";
 					$actualizar_columnas_dias .= $clavePlanillasDias . ' = VALUES ('.$clavePlanillasDias.'), ';
+					$columnas_dias_tabla_general .= "MAX(TG.D".$indiceDia."i) AS D".$indiceDia.", ";
 					$indiceDia++;
 				}
 			}
@@ -63,8 +64,9 @@
 	$insertar_columnas_dias = trim($insertar_columnas_dias, ", ");
 	$columnasDiasEntregas_res = trim($columnasDiasEntregas_res, ", ");
 	$actualizar_columnas_dias = trim($actualizar_columnas_dias, ", ");
+	$columnas_dias_tabla_general = trim($columnas_dias_tabla_general, ", ");
 
-  $consulta_suplentes = "SELECT * FROM (
+  $consulta_suplentes = "SELECT TG.*, $columnas_dias_tabla_general FROM (
 																SELECT
 																	sup.tipo_doc AS tipo_documento,
 															    sup.tipo_doc_nom AS abreviatura_documento,
