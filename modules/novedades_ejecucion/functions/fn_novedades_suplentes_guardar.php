@@ -236,7 +236,7 @@
 		$consulta_suplente_entrega = "SELECT id, num_doc FROM entregas_res_$mes$periodo_actual WHERE num_doc='$numero_documento' AND cod_sede='$sede' AND tipo_complem='$tipo_complemento' AND tipo='S';";
 		$respuesta_suplente_entrega = $Link->query($consulta_suplente_entrega) or die('Error al consultar entregas_res_$mes$periodo_actual: '. $Link->error);
 
-		if ($respuesta_suplente_entrega->num_rows == 0)
+		if ($respuesta_suplente_entrega->num_rows > 0)
 		{
 			$suplente_entrega = $respuesta_suplente_entrega->fetch_assoc();
 			$consulta_actualizar_suplente_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (id, $insertar_columnas_dias) VALUES (". $suplente_entrega['id'] . $campos_actualizar_entregas .") ON DUPLICATE KEY UPDATE $actualizar_columnas_dias";
