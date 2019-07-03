@@ -343,7 +343,7 @@ function buscar_novedades_suplentes()
       { data: 'D5', className: 'text-center'}
     ],
     order: [[ 3, 'asc'], [ 4, 'asc'], [ 2, 'asc' ]],
-    dom: 'r<"containerBtn"><"inputFiltro"f>tip',
+    dom: 'r<"containerBtn">tip',
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros',
       sZeroRecords: 'No se encontraron registros',
