@@ -242,8 +242,8 @@
 		{
 			$suplente_entrega = $respuesta_suplente_entrega->fetch_assoc();
 			$consulta_actualizar_suplente_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (id, $insertar_columnas_dias) VALUES (". $suplente_entrega['id'] . $campos_actualizar_entregas .") ON DUPLICATE KEY UPDATE $actualizar_columnas_dias";
-			$respuesta_actualizar_suplente_entrega = $Link->query($consulta_actualizar_suplente_entrega) or die('Error al actualizar suplente en entregas: '. $Link->error);
 			// echo $consulta_actualizar_suplente_entrega; exit();
+			$respuesta_actualizar_suplente_entrega = $Link->query($consulta_actualizar_suplente_entrega) or die('Error al actualizar suplente en entregas: '. $Link->error);
 			if ($respuesta_actualizar_suplente_entrega === FALSE)
 			{
 				$respuesta_ajax = [
@@ -351,8 +351,8 @@
 				'S',
 				'".$tipo_complemento."',
 				'".$tipo_complemento."' $campo_insertar_entregas);";
-			$respuesta_insertar_suplente_entrega = $Link->query($consulta_insertar_suplente_entrega) or die('Error al insertar suplentes a entregas: '. $Link->error);
 			// echo $consulta_insertar_suplente_entrega; exit();
+			$respuesta_insertar_suplente_entrega = $Link->query($consulta_insertar_suplente_entrega) or die('Error al insertar suplentes a entregas: '. $Link->error);
 			if ($respuesta_insertar_suplente_entrega === FALSE)
 			{
 				$respuesta_ajax = [
