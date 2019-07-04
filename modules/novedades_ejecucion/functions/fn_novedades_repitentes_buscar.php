@@ -76,8 +76,8 @@
       $numero_documento = $registros_repitentes['num_doc'];
 			$abreviatura_documento = $registros_repitentes['tipo_doc_nom'];
 
-			$registros_repitentes['numero_documento'] = $numero_documento . '<input type="hidden" name="numero_documentos[]" value="'.$numero_documento.'"/>';
-			$registros_repitentes['abreviatura_documento'] = $abreviatura_documento . '<input type="hidden" name="abreviatura_documentos[]" value="'.$abreviatura_documento.'" />';
+			$registros_repitentes['numero_documento'] = $numero_documento /*. '<input type="hidden" name="numero_documentos[]" value="'.$numero_documento.'"/>'*/;
+			$registros_repitentes['abreviatura_documento'] = $abreviatura_documento /*. '<input type="hidden" name="abreviatura_documentos[]" value="'.$abreviatura_documento.'" />'*/;
 
 
 			$registros_repitentes['maximo_D1'] = (isset($registros_repitentes['D1']) && $registros_repitentes['D1'] == '1') ? '<div class="checkbox checkbox-success"><input type="checkbox" class="checkbox1" name="'.$numero_documento.'_D1" id="'.$numero_documento.'_D1" value="1"><label for="'.$numero_documento.'_D1"></label></div>' : '';
