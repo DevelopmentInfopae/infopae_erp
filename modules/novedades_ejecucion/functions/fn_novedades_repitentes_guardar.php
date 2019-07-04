@@ -15,7 +15,7 @@
 	$usuario = $_SESSION['idUsuario'];
 	$periodo_actual = $_SESSION['periodoActual'];
 	$mes = (isset($_POST['mes_hidden']) &&  !empty($_POST['mes_hidden'])) ? $Link->real_escape_string($_POST["mes_hidden"]) : "";
-	$sede = (isset($_POST['sede_hidden']) && ! empty($_POST['sede_hidden'])) ? $Link->real_escape_string($_POST["sede_hidden"]) : "";
+	$sede = (isset($_POST['sede_hidden']) && ! empty($_POST['sede_hidden'])) ? $_POST["sede_hidden"] : "";
 	$semana = (isset($_POST['semana_hidden']) && ! empty($_POST['semana_hidden'])) ? $Link->real_escape_string($_POST["semana_hidden"]) : "";
 	$municipio = (isset($_POST['municipio_hidden']) && ! empty($_POST['municipio_hidden'])) ? $Link->real_escape_string($_POST["municipio_hidden"]) : "";
 	$institucion = (isset($_POST['institucion_hidden']) && ! empty($_POST['institucion_hidden'])) ? $Link->real_escape_string($_POST["institucion_hidden"]) : "";
@@ -89,6 +89,7 @@
 	 								        AND f.Tipo_complemento = '$tipo_complemento'
 	 								        AND e.tipo='F'";
 
+
 	$respuesta_repitentes = $Link->query($consulta_repitentes) or die('Error al consultar suplentes: '. $Link->error);
 	if ($respuesta_repitentes->num_rows > 0)
 	{
@@ -107,13 +108,9 @@
 				}else{
 					if(isset($_POST[$numero_documento.'_D1'])){
 						$cambio_detectado++;
-						$registro_repitentes['D1'] == '1';
+						$registro_repitentes['D1'] = '1';
 					}
 				}
-			}
-			else
-			{
-				$registro_repitentes['D1'] = $registro_repitentes['D1'];
 			}
 
 			if (isset($_POST[$numero_documento.'_D2']))
@@ -130,10 +127,6 @@
 					}
 				}
 			}
-			else
-			{
-				$registro_repitentes['D2'] = $registro_repitentes['D2'];
-			}
 
 			if (isset($_POST[$numero_documento.'_D3']))
 			{
@@ -148,10 +141,6 @@
 						$registro_repitentes['D3'] = '1';
 					}
 				}
-			}
-			else
-			{
-				$registro_repitentes['D3'] = $registro_repitentes['D3'];
 			}
 
 			if (isset($_POST[$numero_documento.'_D4']))
@@ -168,10 +157,6 @@
 					}
 				}
 			}
-			else
-			{
-				$registro_repitentes['D4'] = $registro_repitentes['D4'];
-			}
 
 			if (isset($_POST[$numero_documento.'_D5']))
 			{
@@ -186,10 +171,6 @@
 						$registro_repitentes['D5'] = '1';
 					}
 				}
-			}
-			else
-			{
-				$registro_repitentes['D5'] = $registro_repitentes['D5'];
 			}
 
 			if ($cambio_detectado > 0)
@@ -209,6 +190,8 @@
 		echo json_encode($respuesta_ajax);
 		exit();
 	}
+
+	// var_dump($novedades_repitentes); exit();
 
 	// Consulta para saber la posición de la semana seleccionada en el mes.
 	$consulta_semanas_mes = "SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES='$mes';";
@@ -315,7 +298,7 @@
 	{
 		$consulta_actualizar_repitente_entrega = trim($consulta_actualizar_repitente_entrega, ", ");
 		$consulta_actualizar_repitente_entrega .= " ON DUPLICATE KEY UPDATE $actualizar_columnas_dias";
-		// echo $consulta_actualizar_repitente_entrega; exit();
+		echo $consulta_actualizar_repitente_entrega; exit();
 		$respuesta_actualizar_repitente_entrega = $Link->query($consulta_actualizar_repitente_entrega) or die('Error al actualizar repitente en entregas: '. $Link->error. ' '. $consulta_actualizar_repitente_entrega);
 		if ($respuesta_actualizar_repitente_entrega === FALSE)
 		{
@@ -332,7 +315,7 @@
 	if (! empty($insertar))
 	{
 	  $consulta_insertar_repitentes_entrega = trim($consulta_insertar_repitentes_entrega, ", ");
-	  // echo $consulta_insertar_repitentes_entrega; exit();
+	  echo $consulta_insertar_repitentes_entrega; exit();
 		$respuesta_insertar_repitentes_entrega = $Link->query($consulta_insertar_repitentes_entrega) or die('Error al insertar repitentes a entregas: '. $Link->error);
 		if ($respuesta_insertar_repitentes_entrega === FALSE)
 		{
@@ -393,7 +376,7 @@
 	{
 		$consulta_actualizar_novedad = trim($consulta_actualizar_novedad, ", ");
 		$consulta_actualizar_novedad .= " ON DUPLICATE KEY UPDATE $actualizar_columnas_dias_novedad";
-		// echo $consulta_actualizar_novedad; exit();
+		echo $consulta_actualizar_novedad; exit();
 		$respuesta_insertar_novedad = $Link->query($consulta_actualizar_novedad) or die("Error al actualizar novedades_focalizacion: ". $Link->error);
 		if ($respuesta_insertar_novedad === FALSE)
 		{
@@ -410,7 +393,7 @@
 	if(! empty($insertar_novedad))
 	{
 		$consulta_insertar_novedad = trim($consulta_insertar_novedad, ", ");
-		// echo $consulta_insertar_novedad; exit();
+		echo $consulta_insertar_novedad; exit();
 		$respuesta_insertar_novedad = $Link->query($consulta_insertar_novedad) or die("Error al insertar novedades_focalizacion: ". $Link->error);
 		if ($respuesta_insertar_novedad === FALSE)
 		{
