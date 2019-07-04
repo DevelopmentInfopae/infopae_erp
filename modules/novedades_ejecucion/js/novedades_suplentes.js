@@ -583,6 +583,7 @@ function restarCantidadDias(checkbox)
 function guardar_novedades_suplentes()
 {
 	var formData = new FormData($("#formulario_guardar_novedades_suplentes")[0]);
+
 	$.ajax({
 		url: 'functions/fn_novedades_suplentes_guardar.php',
 		type: 'POST',
@@ -590,10 +591,7 @@ function guardar_novedades_suplentes()
 		data: formData,
 		contentType: false,
 		processData: false,
-		beforeSend: function()
-		{
-			$('#loader').fadeIn();
-		}
+		beforeSend: function() { $('#loader').fadeIn(); }
 	})
 	.done(function(data)
 	{
