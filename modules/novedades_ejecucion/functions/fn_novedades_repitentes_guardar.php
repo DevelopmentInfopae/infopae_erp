@@ -36,7 +36,7 @@
 	}
 
 	// Consulta para determinar las columnas de días de consulta por la semana seleccionada.
-	$columnas_dias_entregas = $columnas_suma_dias = $insertar_columnas_dias = $actualizar_columnas_dias = $actualizar_columnas_dias_novedad = "";
+	$columnas_dias_entregas = $columnas_suma_dias = $insertar_columnas_dias = $actualizar_columnas_dias = $actualizar_columnas_dias_novedad = $columnas_actualizar_novedades = "";
 	$consultaPlanillaSemanas = "SELECT DIA as dia FROM planilla_semanas WHERE semana = '$semana'";
 	$resultadoPlanillaSemanas = $Link->query($consultaPlanillaSemanas) or die("Error al consultar planilla_semanas: ". $Link->error);
 	if($resultadoPlanillaSemanas->num_rows > 0)
@@ -54,6 +54,7 @@
 					$insertar_columnas_dias .= $clavePlanillasDias .", ";
 					$actualizar_columnas_dias .= $clavePlanillasDias . " = VALUES (".$clavePlanillasDias."), ";
 					$actualizar_columnas_dias_novedad .= "d". $indiceDia ." = VALUES (d". $indiceDia ."), ";
+					$columnas_actualizar_novedades .= "d". $indiceDia .", ";
 
 					$indiceDia++;
 				}
@@ -67,6 +68,7 @@
 	$insertar_columnas_dias = trim($insertar_columnas_dias, ", ");
 	$actualizar_columnas_dias = trim($actualizar_columnas_dias, ", ");
 	$actualizar_columnas_dias_novedad = trim($actualizar_columnas_dias_novedad, ", ");
+	$columnas_actualizar_novedades = trim($columnas_actualizar_novedades, ", ");
 
   $consulta_repitentes = "SELECT
 	 											    f.*,
@@ -344,31 +346,33 @@
 		}
 	}
 
-	$consulta_actualizar_novedad = "INSERT INTO novedades_focalizacion (id, d1, d2, d3, d4, d5) VALUES ";
-	$consulta_insertar_novedad = "INSERT INTO novedades_focalizacion (id_usuario, fecha_hora, cod_sede, tipo_doc_titular, num_doc_titular, tipo_complem, semana, d1, d2, d3, d4, d5, tiponovedad) VALUES ";
+	$consulta_actualizar_novedad = "INSERT INTO novedades_focalizacion (id, $columnas_actualizar_novedades) VALUES ";
+	$consulta_insertar_novedad = "INSERT INTO novedades_focalizacion (id_usuario, fecha_hora, cod_sede, tipo_doc_titular, num_doc_titular, tipo_complem, semana, $columnas_actualizar_novedades, tiponovedad) VALUES ";
 	foreach ($novedades_repitentes as $novedad_repitente)
 	{
+		$datos_actualizar_novedades = "";
 		if (in_array($novedad_repitente['num_doc'], $documentos_novedades_focalizacion))
 		{
 			$id = $novedades_focalizacion[$novedad_repitente['num_doc']]['id'];
-			$D1 = $novedad_repitente['D1'];
-			$D2 = $novedad_repitente['D2'];
-			$D3 = $novedad_repitente['D3'];
-			$D4 = $novedad_repitente['D4'];
-			$D5 = $novedad_repitente['D5'];
 
-			$consulta_actualizar_novedad .= "('". $id ."', $D1, $D2, $D3, $D4, $D5), ";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D1'])) ? ", ". $novedad_repitente['D1'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D2'])) ? ", ". $novedad_repitente['D2'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D3'])) ? ", ". $novedad_repitente['D3'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D4'])) ? ", ". $novedad_repitente['D4'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D5'])) ? ", ". $novedad_repitente['D5'] : "";
+
+			$consulta_actualizar_novedad .= "('". $id ."'$datos_actualizar_novedades), ";
 			$actualizar_novedad ++;
 		}
 		else
 		{
-			$D1 = $novedad_repitente['D1'];
-			$D2 = $novedad_repitente['D2'];
-			$D3 = $novedad_repitente['D3'];
-			$D4 = $novedad_repitente['D4'];
-			$D5 = $novedad_repitente['D5'];
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D1'])) ? ", ". $novedad_repitente['D1'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D2'])) ? ", ". $novedad_repitente['D2'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D3'])) ? ", ". $novedad_repitente['D3'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D4'])) ? ", ". $novedad_repitente['D4'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D5'])) ? ", ". $novedad_repitente['D5'] : "";
 
-			$consulta_insertar_novedad .= "('".$usuario."', '".$fecha."', '".$sede."', '".$novedad_repitente['tipo_doc']."', '".$novedad_repitente['num_doc']."', '".$tipo_complemento."', '".$semana."', '".$D1."', '".$D2."', '".$D3."', '".$D4."', '".$D5."', '6'), ";
+			$consulta_insertar_novedad .= "('".$usuario."', '".$fecha."', '".$sede."', '".$novedad_repitente['tipo_doc']."', '".$novedad_repitente['num_doc']."', '".$tipo_complemento."', '".$semana."'$datos_actualizar_novedades, '6'), ";
 			$insertar_novedad ++;
 		}
 	}
