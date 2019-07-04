@@ -54,6 +54,7 @@
 					$insertar_columnas_dias .= $clavePlanillasDias .", ";
 					$actualizar_columnas_dias .= $clavePlanillasDias . " = VALUES (".$clavePlanillasDias."), ";
 					$actualizar_columnas_dias_novedad .= "d". $indiceDia ." = VALUES (d". $indiceDia ."), ";
+
 					$indiceDia++;
 				}
 			}
@@ -191,8 +192,6 @@
 		exit();
 	}
 
-	// var_dump($novedades_repitentes); exit();
-
 	// Consulta para saber la posición de la semana seleccionada en el mes.
 	$consulta_semanas_mes = "SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES='$mes';";
 	$respuesta_semanas_mes = $Link->query($consulta_semanas_mes) or die('Error al consultar planillas semanas: '. $Link->error);
@@ -230,24 +229,25 @@
 	$consulta_insertar_repitentes_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, tipo, $semana_tipo_complemento, tipo_complem, $insertar_columnas_dias) VALUES ";
 	foreach ($novedades_repitentes as $novedad_repitente)
 	{
+		$datos_actualizar_entregas = "";
 		if(in_array($novedad_repitente["num_doc"], $documentos_repitentes))
 		{
-			$D1 = $novedad_repitente['D1'];
-			$D2 = $novedad_repitente['D2'];
-			$D3 = $novedad_repitente['D3'];
-			$D4 = $novedad_repitente['D4'];
-			$D5 = $novedad_repitente['D5'];
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D1']) ? ", ".$novedad_repitente['D1'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D2']) ? ", ".$novedad_repitente['D2'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D3']) ? ", ".$novedad_repitente['D3'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D4']) ? ", ".$novedad_repitente['D4'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D5']) ? ", ".$novedad_repitente['D5'] : '');
 
-			$consulta_actualizar_repitente_entrega .= "(". $repitentes_entregas[$novedad_repitente["num_doc"]]['id'] .", $D1, $D2, $D3, $D4, $D5), ";
+			$consulta_actualizar_repitente_entrega .= "(". $repitentes_entregas[$novedad_repitente["num_doc"]]['id'] ."$datos_actualizar_entregas), ";
 			$actualizar ++;
 		}
 		else
 		{
-			$D1 = $novedad_repitente['D1'];
-			$D2 = $novedad_repitente['D2'];
-			$D3 = $novedad_repitente['D3'];
-			$D4 = $novedad_repitente['D4'];
-			$D5 = $novedad_repitente['D5'];
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D1']) ? ", ".$novedad_repitente['D1'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D2']) ? ", ".$novedad_repitente['D2'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D3']) ? ", ".$novedad_repitente['D3'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D4']) ? ", ".$novedad_repitente['D4'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D5']) ? ", ".$novedad_repitente['D5'] : '');
 
 			$consulta_insertar_repitentes_entrega .= "
 			(
@@ -287,8 +287,7 @@
 				'".$novedad_repitente['activo']."',
 				'R',
 				'".$tipo_complemento."',
-				'".$tipo_complemento."',
-				$D1, $D2, $D3, $D4, $D5), ";
+				'".$tipo_complemento."'$datos_actualizar_entregas), ";
 
 			$insertar++;
 		}

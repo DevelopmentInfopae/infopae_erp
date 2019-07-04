@@ -448,7 +448,7 @@
 				// Se ingresa los registros
 				// Declaración variables de consulta.
 				$conCreEnt = "INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ." ( tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". trim($camDias, ", ") .") VALUES ". trim($conValCreEnt, ", ");
-				$resCreEntRes = $Link->query($conCreEnt) or die("Error al insertar entregas_res". $mes . $_SESSION["periodoActual"] ." Linea: 456". $Link->error);
+				$resCreEntRes = $Link->query($conCreEnt) or die("Error al insertar entregas_res". $mes . $_SESSION["periodoActual"] ." Linea: 450". $Link->error);
 				if (!$resCreEntRes) {
 					$respuestaAJAX = [
 						"estado" => 0,
