@@ -102,8 +102,8 @@
       $numero_documento = $registros_suplentes['numero_documento'];
 			$abreviatura_documento = $registros_suplentes['abreviatura_documento'];
 
-			$registros_suplentes['numero_documento'] = $numero_documento . '<input type="hidden" name="numero_documentos[]" value="'.$numero_documento.'"/>';
-			$registros_suplentes['abreviatura_documento'] = $abreviatura_documento . '<input type="hidden" name="abreviatura_documentos[]" value="'.$abreviatura_documento.'" />';
+			$registros_suplentes['numero_documento'] = $numero_documento /*. '<input type="hidden" name="numero_documentos[]" value="'.$numero_documento.'"/>'*/;
+			$registros_suplentes['abreviatura_documento'] = $abreviatura_documento /*. '<input type="hidden" name="abreviatura_documentos[]" value="'.$abreviatura_documento.'" />'*/;
 
 			$chequeado = (isset($registros_suplentes['D1']) && $registros_suplentes['D1'] == 1) ? 'checked' : '';
 			$registros_suplentes['D1'] = (isset($registros_suplentes['D1'])) ? '<div class="checkbox checkbox-success"><input type="checkbox" class="checkbox1" name="'.$numero_documento.'_D1" id="'.$numero_documento.'_D1" value="1" '.$chequeado.'><label for="'.$numero_documento.'_D1"></label></div>' : '';
