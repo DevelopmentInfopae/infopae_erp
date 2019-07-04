@@ -298,7 +298,7 @@
 	{
 		$consulta_actualizar_repitente_entrega = trim($consulta_actualizar_repitente_entrega, ", ");
 		$consulta_actualizar_repitente_entrega .= " ON DUPLICATE KEY UPDATE $actualizar_columnas_dias";
-		echo $consulta_actualizar_repitente_entrega; exit();
+		// echo $consulta_actualizar_repitente_entrega; exit();
 		$respuesta_actualizar_repitente_entrega = $Link->query($consulta_actualizar_repitente_entrega) or die('Error al actualizar repitente en entregas: '. $Link->error. ' '. $consulta_actualizar_repitente_entrega);
 		if ($respuesta_actualizar_repitente_entrega === FALSE)
 		{
@@ -315,7 +315,7 @@
 	if (! empty($insertar))
 	{
 	  $consulta_insertar_repitentes_entrega = trim($consulta_insertar_repitentes_entrega, ", ");
-	  echo $consulta_insertar_repitentes_entrega; exit();
+	  // echo $consulta_insertar_repitentes_entrega; exit();
 		$respuesta_insertar_repitentes_entrega = $Link->query($consulta_insertar_repitentes_entrega) or die('Error al insertar repitentes a entregas: '. $Link->error);
 		if ($respuesta_insertar_repitentes_entrega === FALSE)
 		{
@@ -376,7 +376,7 @@
 	{
 		$consulta_actualizar_novedad = trim($consulta_actualizar_novedad, ", ");
 		$consulta_actualizar_novedad .= " ON DUPLICATE KEY UPDATE $actualizar_columnas_dias_novedad";
-		echo $consulta_actualizar_novedad; exit();
+		// echo $consulta_actualizar_novedad; exit();
 		$respuesta_insertar_novedad = $Link->query($consulta_actualizar_novedad) or die("Error al actualizar novedades_focalizacion: ". $Link->error);
 		if ($respuesta_insertar_novedad === FALSE)
 		{
@@ -393,7 +393,7 @@
 	if(! empty($insertar_novedad))
 	{
 		$consulta_insertar_novedad = trim($consulta_insertar_novedad, ", ");
-		echo $consulta_insertar_novedad; exit();
+		// echo $consulta_insertar_novedad; exit();
 		$respuesta_insertar_novedad = $Link->query($consulta_insertar_novedad) or die("Error al insertar novedades_focalizacion: ". $Link->error);
 		if ($respuesta_insertar_novedad === FALSE)
 		{
