@@ -141,7 +141,7 @@ function cargarSemanas($mes, $diainicialSemanaAnterior = '') {
 		}
 	})
 	.fail(function(data) {
-		console.log(data);
+		console.log(data.responseText);
 	});
 }
 
