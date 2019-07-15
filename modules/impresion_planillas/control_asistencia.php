@@ -219,6 +219,10 @@
                     </label>
 
                     <label>
+                      <input type="radio" value="8" name="tipoPlanilla" required="required"> <i></i> Novedades programadas  &nbsp;&nbsp;&nbsp;
+                    </label>
+
+                    <label>
                       <input type="radio" value="6" name="tipoPlanilla" required="required"> <i></i> Suplentes  &nbsp;&nbsp;&nbsp;
                     </label>
                   </div>
