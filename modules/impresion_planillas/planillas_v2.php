@@ -467,7 +467,6 @@ else if ($tipoPlanilla == 6)
 
     //Termina impresión de estudiantes de la sede
     $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-    $pdf->Ln(7);
     $alturaCuadroFilas = $alturaLinea * ($linea-1);
     $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
 
