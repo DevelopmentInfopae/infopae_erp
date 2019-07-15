@@ -285,10 +285,10 @@ while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == T
 	$tipo_documento = $registro[0];
 	$numero_documento = $registro[1];
 	$tipo_documento_nombre = $registro[2];
-	$primer_apellido = utf8_decode($registro[3]);
-	$segundo_apellido = utf8_decode($registro[4]);
-	$primer_nombre = utf8_decode($registro[5]);
-	$segundo_nombre = utf8_decode($registro[6]);
+	$primer_apellido = utf8_encode($registro[3]);
+	$segundo_apellido = utf8_encode($registro[4]);
+	$primer_nombre = utf8_encode($registro[5]);
+	$segundo_nombre = utf8_encode($registro[6]);
 	$genero = $registro[7];
 	$direccion_residencia = $registro[8];
 	$codigo_municipio_residencia = $registro[9];
@@ -307,8 +307,8 @@ while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == T
 	$codigo_sede = $registro[22];
 	$codigo_municipio_institucion = $registro[23];
 	$codigo_municipio_sede = $registro[24];
-	$nombre_sede = utf8_decode($registro[25]);
-	$nombre_institucion = utf8_decode($registro[26]);
+	$nombre_sede = utf8_encode($registro[25]);
+	$nombre_institucion = utf8_encode($registro[26]);
 	$grado = $registro[27];
 	$grupo = $registro[28];
 	$jornada = $registro[29];
