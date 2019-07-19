@@ -15,14 +15,14 @@
 	$usuario = $_SESSION['idUsuario'];
 	$periodo_actual = $_SESSION['periodoActual'];
 	$mes = (isset($_POST['mes_hidden']) &&  !empty($_POST['mes_hidden'])) ? $Link->real_escape_string($_POST["mes_hidden"]) : "";
-	$sede = (isset($_POST['sede_hidden']) && ! empty($_POST['sede_hidden'])) ? $Link->real_escape_string($_POST["sede_hidden"]) : "";
+	$sede = (isset($_POST['sede_hidden']) && ! empty($_POST['sede_hidden'])) ? $_POST["sede_hidden"] : "";
 	$semana = (isset($_POST['semana_hidden']) && ! empty($_POST['semana_hidden'])) ? $Link->real_escape_string($_POST["semana_hidden"]) : "";
 	$municipio = (isset($_POST['municipio_hidden']) && ! empty($_POST['municipio_hidden'])) ? $Link->real_escape_string($_POST["municipio_hidden"]) : "";
 	$institucion = (isset($_POST['institucion_hidden']) && ! empty($_POST['institucion_hidden'])) ? $Link->real_escape_string($_POST["institucion_hidden"]) : "";
 	$observaciones = (isset($_POST['observaciones']) && ! empty($_POST['observaciones'])) ? $Link->real_escape_string($_POST["observaciones"]) : "";
-	$numero_documentos = (isset($_POST['numero_documentos']) && ! empty($_POST['numero_documentos'])) ? $_POST['numero_documentos']: "";
+	// $numero_documentos = (isset($_POST['numero_documentos']) && ! empty($_POST['numero_documentos'])) ? $_POST['numero_documentos']: "";
 	$tipo_complemento = (isset($_POST['tipo_complemento_hidden']) && ! empty($_POST['tipo_complemento_hidden'])) ? $Link->real_escape_string($_POST["tipo_complemento_hidden"]) : "";
-	$abreviatura_documentos = (isset($_POST['abreviatura_documentos']) && ! empty($_POST['abreviatura_documentos'])) ? $_POST['abreviatura_documentos'] : "";
+	// $abreviatura_documentos = (isset($_POST['abreviatura_documentos']) && ! empty($_POST['abreviatura_documentos'])) ? $_POST['abreviatura_documentos'] : "";
 
 	// Consulta que retorna los dias de planillas el mes seleccionado.
 	$consultaPlanillaDias = "SELECT D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28, D29, D30, D31  FROM planilla_dias WHERE mes = '$mes';";
@@ -36,7 +36,7 @@
 	}
 
 	// Consulta para determinar las columnas de días de consulta por la semana seleccionada.
-	$columnas_dias_entregas = $columnas_suma_dias = $insertar_columnas_dias = $actualizar_columnas_dias = $actualizar_columnas_dias_novedad = "";
+	$columnas_dias_entregas = $columnas_suma_dias = $insertar_columnas_dias = $actualizar_columnas_dias = $actualizar_columnas_dias_novedad = $columnas_actualizar_novedades = "";
 	$consultaPlanillaSemanas = "SELECT DIA as dia FROM planilla_semanas WHERE semana = '$semana'";
 	$resultadoPlanillaSemanas = $Link->query($consultaPlanillaSemanas) or die("Error al consultar planilla_semanas: ". $Link->error);
 	if($resultadoPlanillaSemanas->num_rows > 0)
@@ -54,6 +54,8 @@
 					$insertar_columnas_dias .= $clavePlanillasDias .", ";
 					$actualizar_columnas_dias .= $clavePlanillasDias . " = VALUES (".$clavePlanillasDias."), ";
 					$actualizar_columnas_dias_novedad .= "d". $indiceDia ." = VALUES (d". $indiceDia ."), ";
+					$columnas_actualizar_novedades .= "d". $indiceDia .", ";
+
 					$indiceDia++;
 				}
 			}
@@ -66,6 +68,7 @@
 	$insertar_columnas_dias = trim($insertar_columnas_dias, ", ");
 	$actualizar_columnas_dias = trim($actualizar_columnas_dias, ", ");
 	$actualizar_columnas_dias_novedad = trim($actualizar_columnas_dias_novedad, ", ");
+	$columnas_actualizar_novedades = trim($columnas_actualizar_novedades, ", ");
 
   $consulta_repitentes = "SELECT
 	 											    f.*,
@@ -89,6 +92,7 @@
 	 								        AND f.Tipo_complemento = '$tipo_complemento'
 	 								        AND e.tipo='F'";
 
+
 	$respuesta_repitentes = $Link->query($consulta_repitentes) or die('Error al consultar suplentes: '. $Link->error);
 	if ($respuesta_repitentes->num_rows > 0)
 	{
@@ -107,13 +111,9 @@
 				}else{
 					if(isset($_POST[$numero_documento.'_D1'])){
 						$cambio_detectado++;
-						$registro_repitentes['D1'] == '1';
+						$registro_repitentes['D1'] = '1';
 					}
 				}
-			}
-			else
-			{
-				$registro_repitentes['D1'] = $registro_repitentes['D1'];
 			}
 
 			if (isset($_POST[$numero_documento.'_D2']))
@@ -130,10 +130,6 @@
 					}
 				}
 			}
-			else
-			{
-				$registro_repitentes['D2'] = $registro_repitentes['D2'];
-			}
 
 			if (isset($_POST[$numero_documento.'_D3']))
 			{
@@ -148,10 +144,6 @@
 						$registro_repitentes['D3'] = '1';
 					}
 				}
-			}
-			else
-			{
-				$registro_repitentes['D3'] = $registro_repitentes['D3'];
 			}
 
 			if (isset($_POST[$numero_documento.'_D4']))
@@ -168,10 +160,6 @@
 					}
 				}
 			}
-			else
-			{
-				$registro_repitentes['D4'] = $registro_repitentes['D4'];
-			}
 
 			if (isset($_POST[$numero_documento.'_D5']))
 			{
@@ -187,10 +175,6 @@
 					}
 				}
 			}
-			else
-			{
-				$registro_repitentes['D5'] = $registro_repitentes['D5'];
-			}
 
 			if ($cambio_detectado > 0)
 			{
@@ -198,6 +182,8 @@
 			}
 		}
 	}
+
+	// var_dump($novedades_repitentes); exit();
 
 	if (empty($novedades_repitentes))
 	{
@@ -247,24 +233,25 @@
 	$consulta_insertar_repitentes_entrega = "INSERT INTO entregas_res_$mes$periodo_actual (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, tipo, $semana_tipo_complemento, tipo_complem, $insertar_columnas_dias) VALUES ";
 	foreach ($novedades_repitentes as $novedad_repitente)
 	{
+		$datos_actualizar_entregas = "";
 		if(in_array($novedad_repitente["num_doc"], $documentos_repitentes))
 		{
-			$D1 = $novedad_repitente['D1'];
-			$D2 = $novedad_repitente['D2'];
-			$D3 = $novedad_repitente['D3'];
-			$D4 = $novedad_repitente['D4'];
-			$D5 = $novedad_repitente['D5'];
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D1']) ? ", ".$novedad_repitente['D1'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D2']) ? ", ".$novedad_repitente['D2'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D3']) ? ", ".$novedad_repitente['D3'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D4']) ? ", ".$novedad_repitente['D4'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D5']) ? ", ".$novedad_repitente['D5'] : '');
 
-			$consulta_actualizar_repitente_entrega .= "(". $repitentes_entregas[$novedad_repitente["num_doc"]]['id'] .", $D1, $D2, $D3, $D4, $D5), ";
+			$consulta_actualizar_repitente_entrega .= "(". $repitentes_entregas[$novedad_repitente["num_doc"]]['id'] ."$datos_actualizar_entregas), ";
 			$actualizar ++;
 		}
 		else
 		{
-			$D1 = $novedad_repitente['D1'];
-			$D2 = $novedad_repitente['D2'];
-			$D3 = $novedad_repitente['D3'];
-			$D4 = $novedad_repitente['D4'];
-			$D5 = $novedad_repitente['D5'];
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D1']) ? ", ".$novedad_repitente['D1'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D2']) ? ", ".$novedad_repitente['D2'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D3']) ? ", ".$novedad_repitente['D3'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D4']) ? ", ".$novedad_repitente['D4'] : '');
+			$datos_actualizar_entregas .= (isset($novedad_repitente['D5']) ? ", ".$novedad_repitente['D5'] : '');
 
 			$consulta_insertar_repitentes_entrega .= "
 			(
@@ -304,8 +291,7 @@
 				'".$novedad_repitente['activo']."',
 				'R',
 				'".$tipo_complemento."',
-				'".$tipo_complemento."',
-				$D1, $D2, $D3, $D4, $D5), ";
+				'".$tipo_complemento."'$datos_actualizar_entregas), ";
 
 			$insertar++;
 		}
@@ -360,31 +346,33 @@
 		}
 	}
 
-	$consulta_actualizar_novedad = "INSERT INTO novedades_focalizacion (id, d1, d2, d3, d4, d5) VALUES ";
-	$consulta_insertar_novedad = "INSERT INTO novedades_focalizacion (id_usuario, fecha_hora, cod_sede, tipo_doc_titular, num_doc_titular, tipo_complem, semana, d1, d2, d3, d4, d5, tiponovedad) VALUES ";
+	$consulta_actualizar_novedad = "INSERT INTO novedades_focalizacion (id, $columnas_actualizar_novedades) VALUES ";
+	$consulta_insertar_novedad = "INSERT INTO novedades_focalizacion (id_usuario, fecha_hora, cod_sede, tipo_doc_titular, num_doc_titular, tipo_complem, semana, $columnas_actualizar_novedades, tiponovedad) VALUES ";
 	foreach ($novedades_repitentes as $novedad_repitente)
 	{
+		$datos_actualizar_novedades = "";
 		if (in_array($novedad_repitente['num_doc'], $documentos_novedades_focalizacion))
 		{
 			$id = $novedades_focalizacion[$novedad_repitente['num_doc']]['id'];
-			$D1 = $novedad_repitente['D1'];
-			$D2 = $novedad_repitente['D2'];
-			$D3 = $novedad_repitente['D3'];
-			$D4 = $novedad_repitente['D4'];
-			$D5 = $novedad_repitente['D5'];
 
-			$consulta_actualizar_novedad .= "('". $id ."', $D1, $D2, $D3, $D4, $D5), ";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D1'])) ? ", ". $novedad_repitente['D1'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D2'])) ? ", ". $novedad_repitente['D2'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D3'])) ? ", ". $novedad_repitente['D3'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D4'])) ? ", ". $novedad_repitente['D4'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D5'])) ? ", ". $novedad_repitente['D5'] : "";
+
+			$consulta_actualizar_novedad .= "('". $id ."'$datos_actualizar_novedades), ";
 			$actualizar_novedad ++;
 		}
 		else
 		{
-			$D1 = $novedad_repitente['D1'];
-			$D2 = $novedad_repitente['D2'];
-			$D3 = $novedad_repitente['D3'];
-			$D4 = $novedad_repitente['D4'];
-			$D5 = $novedad_repitente['D5'];
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D1'])) ? ", ". $novedad_repitente['D1'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D2'])) ? ", ". $novedad_repitente['D2'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D3'])) ? ", ". $novedad_repitente['D3'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D4'])) ? ", ". $novedad_repitente['D4'] : "";
+			$datos_actualizar_novedades .= (isset($novedad_repitente['D5'])) ? ", ". $novedad_repitente['D5'] : "";
 
-			$consulta_insertar_novedad .= "('".$usuario."', '".$fecha."', '".$sede."', '".$novedad_repitente['tipo_doc']."', '".$novedad_repitente['num_doc']."', '".$tipo_complemento."', '".$semana."', '".$D1."', '".$D2."', '".$D3."', '".$D4."', '".$D5."', '6'), ";
+			$consulta_insertar_novedad .= "('".$usuario."', '".$fecha."', '".$sede."', '".$novedad_repitente['tipo_doc']."', '".$novedad_repitente['num_doc']."', '".$tipo_complemento."', '".$semana."'$datos_actualizar_novedades, '6'), ";
 			$insertar_novedad ++;
 		}
 	}
