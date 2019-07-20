@@ -36,7 +36,7 @@ if ($resultadoFichaTecnica->num_rows > 0) {
 									<tr>
 										<th>Producto</th>
 										<th class="text-center">Unidad de medida</th>
-										<th class="text-center">Cantidad</th>
+										<!-- <th class="text-center">Cantidad</th> -->
 										<th class="text-center">Peso Bruto</th>
 										<th class="text-center">Peso Neto</th>
 									</tr>
@@ -50,16 +50,22 @@ if ($resultadoFichaTecnica->num_rows > 0) {
 			                            	<input type="text" class="form-control" name="" id=""  value="<?= $fichatecnicadet['Componente']; ?>" readonly>
 			                            </td> 
 			                            <td class="datoPreparado">
-			                              <input type="text" class="form-control text-center" name="unidadMedidaProducto[<?php echo $cntFTD ?>]" id="unidadMedidaProducto<?php echo $cntFTD ?>"  value="<?php echo $fichatecnicadet['UnidadMedida']; ?>" readonly>
+			                              <input type="text" class="form-control text-center" name="unidadMedidaProducto[<?php echo $cntFTD ?>]" id=""  value="<?php echo $fichatecnicadet['UnidadMedida']; ?>" readonly>
+			                            </td>
+
+
+
+			       <!--                      <td class="datoPreparado">
+			                              <input type="number" min="0" class="form-control text-center" name="" id=""  value="<?php //echo $fichatecnicadet['Cantidad']; ?>" onchange="cambiarPesos(this, <?php //echo $cntFTD ?>);" step=".0001" readonly>
+			                            </td> -->
+
+
+
+			                            <td class="datoPreparado">
+			                              <input type="number" min="0" class="form-control text-center" name="" id="" value="<?php echo $fichatecnicadet['PesoBruto']; ?>" step=".0001" readonly>
 			                            </td>
 			                            <td class="datoPreparado">
-			                              <input type="number" min="0" class="form-control text-center" name="cantidadProducto[<?php echo $cntFTD ?>]" id="cantidadProducto<?php echo $cntFTD ?>"  value="<?php echo $fichatecnicadet['Cantidad']; ?>" onchange="cambiarPesos(this, <?php echo $cntFTD ?>);" step=".0001" readonly>
-			                            </td>
-			                            <td class="datoPreparado">
-			                              <input type="number" min="0" class="form-control text-center" name="pesoBrutoProducto[<?php echo $cntFTD ?>]" id="pesoBrutoProducto<?php echo $cntFTD ?>" value="<?php echo $fichatecnicadet['PesoBruto']; ?>" step=".0001" readonly>
-			                            </td>
-			                            <td class="datoPreparado">
-			                            	<input type="number" min="0" class="form-control text-center" name="pesoNetoProducto[<?php echo $cntFTD ?>]" id="pesoNetoProducto<?php echo $cntFTD ?>" value="<?php echo $fichatecnicadet['PesoNeto']; ?>" step=".0001" readonly> 
+			                            	<input type="number" min="0" class="form-control text-center" name="" id="" value="<?php echo $fichatecnicadet['PesoNeto']; ?>" step=".0001" readonly> 
 			                          	</td>
 			                            
 
@@ -107,12 +113,12 @@ if ($resultadoFichaTecnica->num_rows > 0) {
 							<h5>Ajuste a la preparación</h5> 
 						</div>
 						<div class="ibox-content">
-								<table class="table">
+								<table class="table tablaAjuste">
 								<thead>
 									<tr>
 										<th>Producto</th>
 										<th class="datoPreparado">Unidad de medida</th>
-										<th class="datoPreparado">Cantidad</th>
+										<!-- <th class="datoPreparado">Cantidad</th> -->
 										<th class="datoPreparado">Peso Bruto</th>
 										<th class="datoPreparado">Peso Neto</th>
 										<th></th>
@@ -122,7 +128,7 @@ if ($resultadoFichaTecnica->num_rows > 0) {
 			                	<?php while ($fichatecnicadet = $resultadoFichaTecnicaDet->fetch_assoc()) { 
 			                  		$cntFTD++; ?>
 			              
-			                        <tr id="filaProductoFichaTecnicaDet<?php echo $cntFTD; ?>" class="productoFichaTecnicaDet productoFichaTecnicaDetA">
+			                        <tr id="filaProductoFichaTecnicaDet<?php echo $cntFTD; ?>" class="productoFichaTecnicaDet productoFichaTecnicaDetA productoAjuste<?= $cntFTD ?>" indice="<?= $cntFTD ?>">
 			                            <td>
 			                            	<input type="hidden" name="IdFTDet[<?php echo $cntFTD ?>]" value="<?php echo $fichatecnicadet['Id'] ?>">
 			                              <select class="form-control" name="productoFichaTecnicaDet[<?php echo $cntFTD ?>]" id="productoFichaTecnicaDet<?php echo $cntFTD ?>" onchange="obtenerUnidadMedidaProducto(this, <?php echo $cntFTD ?>);" required>
@@ -132,9 +138,11 @@ if ($resultadoFichaTecnica->num_rows > 0) {
 			                            <td class="datoPreparado">
 			                              <input type="text" class="form-control text-center" name="unidadMedidaProducto[<?php echo $cntFTD ?>]" id="unidadMedidaProducto<?php echo $cntFTD ?>"  value="<?php echo $fichatecnicadet['UnidadMedida']; ?>" readonly>
 			                            </td>
-			                            <td class="datoPreparado">
-			                              <input type="number" min="0" class="form-control text-center" name="cantidadProducto[<?php echo $cntFTD ?>]" id="cantidadProducto<?php echo $cntFTD ?>"  value="<?php echo $fichatecnicadet['Cantidad']; ?>" onchange="cambiarPesos(this, <?php echo $cntFTD ?>);" step=".0001">
-			                            </td>
+
+			                            <!-- <td class="datoPreparado">
+			                              <input type="number" min="0" class="form-control text-center" name="cantidadProducto[<?php //echo $cntFTD ?>]" id="cantidadProducto<?php //echo $cntFTD ?>"  value="<?php //echo $fichatecnicadet['Cantidad']; ?>" onchange="cambiarPesos(this, <?php //echo $cntFTD ?>);" step=".0001">
+			                            </td> -->
+
 			                            <td class="datoPreparado">
 			                              <input type="number" min="0" class="form-control text-center" name="pesoBrutoProducto[<?php echo $cntFTD ?>]" id="pesoBrutoProducto<?php echo $cntFTD ?>" value="<?php echo $fichatecnicadet['PesoBruto']; ?>" step=".0001">
 			                            </td>
@@ -143,7 +151,11 @@ if ($resultadoFichaTecnica->num_rows > 0) {
 			                            </td>
 			                            
 			                            <td>
-			                              <span class="btn btn-danger btn-sm btn-outline"  data-toggle="modal" data-target="#modalEliminarFTDet" data-idftd="<?php echo $fichatecnicadet['Id']; ?>" data-numftd="<?php echo $cntFTD; ?>" data-idproducto="<?php echo $Producto['Codigo']; ?>" title='Eliminar de la composición'><span class="fa fa-trash"></span></span>
+			                              
+
+			                              <span class="btn btn-danger btn-sm btn-outline quitarProducto"  title='Eliminar de la composición'><span class="fa fa-trash"></span></span>
+
+
 			                            </td>
 			                           
 			                          </tr>

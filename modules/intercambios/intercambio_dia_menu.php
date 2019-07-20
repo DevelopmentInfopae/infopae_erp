@@ -20,7 +20,7 @@
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
-			<h2>Intercambio de Alimento</h2>
+			<h2>Intercambio de Preparación</h2>
 			<ol class="breadcrumb">
 					<li>
 							<a href="<?php echo $baseUrl; ?>">Inicio</a>
@@ -118,15 +118,10 @@
 										<div class="col-sm-4 form-group">
 											<label for="menu">Menú</label>
 											<input type="hidden" name="codigoMenu" id="codigoMenu">											
-											<input type="text" class="form-control" name="menu" id="menu" readonly="readonly">											
+											<input type="text" class="form-control" name="menu" id="menu" readonly="readonly">
 										</div>
 
-										<div class="col-sm-12 form-group">
-											<label for="preparaciones">Preparaciones</label>
-											<select class="form-control" name="preparaciones" id="preparaciones" required>
-												<option value="">Seleccione uno</option>								
-											</select>
-										</div>
+
 
 
 
