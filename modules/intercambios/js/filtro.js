@@ -18,27 +18,40 @@ $(document).ready(function(){
 	$( "#mes" ).change(function() {
 		localStorage.setItem("wappsi_mes", $("#mes").val());
 		cargarSemanas();
-		buscarMenu();
+		if($("#codigoMenu").length > 0){
+			buscarMenu();
+		}
 	});
 
 	$( "#semana" ).change(function() {
 		localStorage.setItem("wappsi_semana", $("#semana").val());
 		cargarDias();
-		buscarMenu();
+		if($("#codigoMenu").length > 0){
+			buscarMenu();
+		}
 	});
 
 	$( "#dia" ).change(function() {
 		localStorage.setItem("wappsi_dia", $("#dia").val());
-		buscarMenu();
+		if($("#codigoMenu").length > 0){
+			buscarMenu();
+		}
 	});
 
 	$( "#tipoComplemento" ).change(function() {
-		buscarMenu();
+		if($("#codigoMenu").length > 0){
+			buscarMenu();
+		}
 	});
 
 	$( "#grupoEtario" ).change(function() {
-		buscarMenu();
+		if($("#codigoMenu").length > 0){
+			buscarMenu();
+		}
 	});
+
+
+
 
 	
 

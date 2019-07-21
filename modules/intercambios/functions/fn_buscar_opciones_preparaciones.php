@@ -2,16 +2,18 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
-// $mes = '';
-// if(isset($_POST['mes']) && $_POST['mes'] != ''){
-// 		$mes = mysqli_real_escape_string($Link, $_POST['mes']);
-// }
+$grupoEtario = '';
+
+if(isset($_POST['grupoEtario']) && $_POST['grupoEtario'] != ''){
+	$grupoEtario = mysqli_real_escape_string($Link, $_POST['grupoEtario']);
+}
+
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " SELECT * FROM productos19 WHERE TipodeProducto = "Alimento" ";
+$consulta = " SELECT * FROM productos19 WHERE TipodeProducto = \"Preparación\" AND Cod_Grupo_Etario = $grupoEtario ";
 // echo $consulta;
 
-$resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
+$resultado = $Link->query($consulta) or die ('No se pudieron cargar las preparaciones. '.$consulta." ". mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$respuesta = 1;
 	while($row = $resultado->fetch_assoc()){

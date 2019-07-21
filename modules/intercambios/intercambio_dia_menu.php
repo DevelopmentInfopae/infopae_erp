@@ -20,7 +20,7 @@
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
-			<h2>Intercambio de Preparación</h2>
+			<h2>Intercambio de los menús del día</h2>
 			<ol class="breadcrumb">
 					<li>
 							<a href="<?php echo $baseUrl; ?>">Inicio</a>
@@ -68,7 +68,7 @@
 								<div class="row">
 									<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0 || $_SESSION["perfil"] == 5 || $_SESSION["perfil"] == 6 || $_SESSION["perfil"] == 3) { ?>
 										
-										<div class="col-sm-4 form-group">
+										<div class="col-sm-6 form-group">
 											<label for="mes">Mes</label>
 											<select class="form-control" name="mes" id="mes" required>
 												<option value="">Seleccione uno</option>
@@ -87,42 +87,26 @@
 											</select>
 										</div>
 
-										<div class="col-sm-4 form-group">
+										<div class="col-sm-6 form-group">
 											<label for="semana">Semana</label>
 											<select class="form-control" name="semana" id="semana" required>
 												<option value="">Seleccione uno</option>									
 											</select>
 										</div>
 
-										<div class="col-sm-4 form-group">
-											<label for="dia">Día</label>
-											<select class="form-control" name="dia" id="dia" required>
-												<option value="">Seleccione uno</option>									
-											</select>
-										</div>
-
-										<div class="col-sm-4 form-group">
+										<div class="col-sm-6 form-group">
 											<label for="tipoComplemento">Tipo de complemento</label>
 											<select class="form-control" name="tipoComplemento" id="tipoComplemento" required>
 												<option value="">Seleccione uno</option>								
 											</select>
 										</div>
 
-										<div class="col-sm-4 form-group">
+										<div class="col-sm-6 form-group">
 											<label for="grupoEtario">Grupo etario</label>
 											<select class="form-control" name="grupoEtario" id="grupoEtario" required>
 												<option value="">Seleccione uno</option>								
 											</select>
 										</div>
-
-										<div class="col-sm-4 form-group">
-											<label for="menu">Menú</label>
-											<input type="hidden" name="codigoMenu" id="codigoMenu">											
-											<input type="text" class="form-control" name="menu" id="menu" readonly="readonly">
-										</div>
-
-
-
 
 
 									<?php } ?>
@@ -329,7 +313,7 @@
 
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
-<script src="<?php echo $baseUrl; ?>/modules/intercambios/js/intercambio_alimento.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/intercambios/js/intercambio_dia_menu.js?v=<?= $cacheBusting; ?>"></script>
 <script src="<?php echo $baseUrl; ?>/modules/intercambios/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
 
 
