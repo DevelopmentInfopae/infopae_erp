@@ -14,10 +14,15 @@ function inicializarFunciones(){
 	
 	$('.quitarProducto').click(function(){
 		quitarProducto(this);
+	});	
+
+	$('.btnGuardar').click(function(){
+		guardarIntercambio();
 	});		
 }
 
 function  buscarPreparacion(){
+	$('.boxPreparacion').html('');
 	if($('#formParametros').valid()){
 
 		console.log("Buscar preparación");
@@ -122,11 +127,11 @@ function anadirProducto(){
 	indiceProductosAjuste++;
 	var nuevoPorducto = ""; 
 		nuevoPorducto += "<tr class\"productoAjuste"+indiceProductosAjuste+"\" indice=\""+indiceProductosAjuste+"\">";
-		nuevoPorducto += "<td><select class=\"form-control\" name=\"productoFichaTecnicaDet["+indiceProductosAjuste+"]\" id=\"productoFichaTecnicaDet"+indiceProductosAjuste+"\" onchange=\"obtenerUnidadMedidaProducto(this, "+indiceProductosAjuste+");\" required=\"\"> </select></td>"; 
-		nuevoPorducto += "<td><input type=\"text\" class=\"form-control text-center\" name=\"unidadMedidaProducto["+indiceProductosAjuste+"]\" id=\"unidadMedidaProducto"+indiceProductosAjuste+"\" value=\"\" readonly=\"\"></td>";
+		nuevoPorducto += "<td><select class=\"form-control producto\" name=\"productoFichaTecnicaDet["+indiceProductosAjuste+"]\" id=\"productoFichaTecnicaDet"+indiceProductosAjuste+"\" onchange=\"obtenerUnidadMedidaProducto(this, "+indiceProductosAjuste+");\" required=\"\"> </select></td>"; 
+		nuevoPorducto += "<td><input type=\"text\" class=\"form-control text-center unidad\" name=\"unidadMedidaProducto["+indiceProductosAjuste+"]\" id=\"unidadMedidaProducto"+indiceProductosAjuste+"\" value=\"\" readonly=\"\"></td>";
 		//nuevoPorducto += "<td><input type=\"number\" min=\"0\" class=\"form-control text-center\" name=\"cantidadProducto["+indiceProductosAjuste+"]\" id=\"cantidadProducto5\" value=\"\" onchange=\"cambiarPesos(this, "+indiceProductosAjuste+");\" step=\".0001\"></td>";
-		nuevoPorducto += "<td><input type=\"number\" min=\"0\" class=\"form-control text-center\" name=\"pesoBrutoProducto["+indiceProductosAjuste+"]\" id=\"pesoBrutoProducto"+indiceProductosAjuste+"\" value=\"\" step=\".0001\"></td>";
-		nuevoPorducto += "<td><input type=\"number\" min=\"0\" class=\"form-control text-center\" name=\"pesoNetoProducto["+indiceProductosAjuste+"]\" id=\"pesoNetoProducto"+indiceProductosAjuste+"\" value=\"\" step=\".0001\"></td>";
+		nuevoPorducto += "<td><input type=\"number\" min=\"0\" class=\"form-control text-center pesoBruto\" name=\"pesoBrutoProducto["+indiceProductosAjuste+"]\" id=\"pesoBrutoProducto"+indiceProductosAjuste+"\" value=\"\" step=\".0001\" required=\"\"></td>";
+		nuevoPorducto += "<td><input type=\"number\" min=\"0\" class=\"form-control text-center pesoNeto\" name=\"pesoNetoProducto["+indiceProductosAjuste+"]\" id=\"pesoNetoProducto"+indiceProductosAjuste+"\" value=\"\" step=\".0001\" required=\"\"></td>";
 		nuevoPorducto += "<td><span class=\"btn btn-danger btn-sm btn-outline quitarProducto\" data-numftd=\""+indiceProductosAjuste+"\" title=\"Eliminar de la composición\"><span class=\"fa fa-trash\"></span></span></td>";
 	nuevoPorducto += "</tr>"; 
 	$('.tablaAjuste tbody').append(nuevoPorducto);
@@ -174,4 +179,59 @@ function quitarProducto(elemento){
 	console.log("Quitar elemento.");
 	console.log(elemento);
 	$(elemento).closest("tr").remove();
+}
+
+function guardarIntercambio(){
+	console.log("Guadar intercambio de alimentos");
+	if($('#formParametros').valid()){
+		console.log("Formulario validado.");
+
+		var formData = new FormData();
+		
+		formData.append('mes', $('#mes').val());
+		formData.append('semana', $('#semana').val());
+		formData.append('dia', $('#dia').val());
+		formData.append('tipoComplemento', $('#tipoComplemento').val());
+		formData.append('grupoEtario', $('#grupoEtario').val());
+		formData.append('codigoMenu', $('#codigoMenu').val());
+		formData.append('menu', $('#menu').val());
+		formData.append('preparacion', $('#preparaciones').val());
+
+		$( ".productoFichaTecnicaDetA" ).each(function() {
+			var producto = $(this).find('.producto').val();
+			var productoNombre = $(this).find('.producto option:selected').text();
+			var unidad = $(this).find('.unidad').val();
+			var pesoBruto = $(this).find('.pesoBruto').val();
+			var pesoNeto = $(this).find('.pesoNeto').val();
+
+			formData.append('productos['+producto+'][producto]', producto);
+			formData.append('productos['+producto+'][productoNombre]', productoNombre);
+			formData.append('productos['+producto+'][unidad]', unidad);
+			formData.append('productos['+producto+'][pesoBruto]', pesoBruto);
+			formData.append('productos['+producto+'][pesoNeto]', pesoNeto);
+		});
+
+		$.ajax({
+			type: "post",
+			url: "functions/fn_guardar_intercambio_alimento.php",
+			dataType: "json",
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(){ $('#loader').fadeIn(); },
+			success: function(data){
+				if(data.estado == 1){
+					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();}});
+				}
+				else{
+					Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+				}
+			},
+			error: function(data){
+				console.log(data);
+				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		});
+
+	}
 }

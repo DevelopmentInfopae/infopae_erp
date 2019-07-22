@@ -45,12 +45,13 @@ $consulta = " SELECT p.* FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.
 
 //echo $consulta;
 
-$resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
+$resultado = $Link->query($consulta) or die ('No se pudieron cargar los menú. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$respuesta = 1;
 	while($row = $resultado->fetch_assoc()){
 		$codigoMenu = $row["Codigo"];
-		$descripcionMenu = $row["Descripcion"];	}
+		$descripcionMenu = $row["Descripcion"];	
+	}
 }if($resultado){
 	$resultadoAJAX = array(
 		"estado" => 1,
