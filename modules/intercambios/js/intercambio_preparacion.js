@@ -44,7 +44,12 @@ function inicializarFunciones(){
 	console.log("indiceProductosAjuste = "+indiceProductosAjuste);
 	$('.quitarProducto').click(function(){
 		quitarProducto(this);
-	});		
+	});	
+
+	$('.btnGuardar').click(function(){
+		guardarIntercambio();
+	});
+
 }
 
 function cargarOpcionesDeProducto(){
@@ -86,8 +91,8 @@ function obtenerUnidadMedidaProducto(elemento, indice){
 function anadirProducto(){
 	indiceProductosAjuste++;
 	var nuevoPorducto = ""; 
-		nuevoPorducto += "<tr class\"productoAjuste"+indiceProductosAjuste+"\" indice=\""+indiceProductosAjuste+"\">";
-		nuevoPorducto += "<td><select class=\"form-control\" name=\"productoFichaTecnicaDet["+indiceProductosAjuste+"]\" id=\"productoFichaTecnicaDet"+indiceProductosAjuste+"\" onchange=\"obtenerUnidadMedidaProducto(this, "+indiceProductosAjuste+");\" required=\"\"> </select></td>"; 
+		nuevoPorducto += "<tr class\"productoAjuste"+indiceProductosAjuste+" productoFichaTecnicaDetA\" indice=\""+indiceProductosAjuste+"\">";
+		nuevoPorducto += "<td><select class=\"form-control producto\" name=\"productoFichaTecnicaDet["+indiceProductosAjuste+"]\" id=\"productoFichaTecnicaDet"+indiceProductosAjuste+"\" onchange=\"obtenerUnidadMedidaProducto(this, "+indiceProductosAjuste+");\" required=\"\"> </select></td>"; 
 		//nuevoPorducto += "<td><input type=\"text\" class=\"form-control text-center\" name=\"unidadMedidaProducto["+indiceProductosAjuste+"]\" id=\"unidadMedidaProducto"+indiceProductosAjuste+"\" value=\"\" readonly=\"\"></td>";
 		//nuevoPorducto += "<td><input type=\"number\" min=\"0\" class=\"form-control text-center\" name=\"cantidadProducto["+indiceProductosAjuste+"]\" id=\"cantidadProducto5\" value=\"\" onchange=\"cambiarPesos(this, "+indiceProductosAjuste+");\" step=\".0001\"></td>";
 		//nuevoPorducto += "<td><input type=\"number\" min=\"0\" class=\"form-control text-center\" name=\"pesoBrutoProducto["+indiceProductosAjuste+"]\" id=\"pesoBrutoProducto"+indiceProductosAjuste+"\" value=\"\" step=\".0001\"></td>";
@@ -144,4 +149,59 @@ function quitarProducto(elemento){
 	console.log("Quitar elemento.");
 	console.log(elemento);
 	$(elemento).closest("tr").remove();
+}
+
+function guardarIntercambio(){
+	console.log("Guadar intercambio de preparación");
+	if($('#formParametros').valid()){
+		console.log("Formulario validado.");
+
+		var formData = new FormData();
+		
+		formData.append('mes', $('#mes').val());
+		formData.append('semana', $('#semana').val());
+		formData.append('dia', $('#dia').val());
+		formData.append('tipoComplemento', $('#tipoComplemento').val());
+		formData.append('grupoEtario', $('#grupoEtario').val());
+		formData.append('codigoMenu', $('#codigoMenu').val());
+		formData.append('menu', $('#menu').val());
+
+		$( ".tablaAjuste tbody tr" ).each(function() {
+			var producto = $(this).find('.producto').val();
+			var productoNombre = $(this).find('.producto option:selected').text();
+
+			console.log(producto);
+			console.log(productoNombre);
+
+			formData.append('productos['+producto+'][producto]', producto);
+			formData.append('productos['+producto+'][productoNombre]', productoNombre);
+
+		});
+
+		$.ajax({
+			type: "post",
+			url: "functions/fn_guardar_intercambio_preparacion.php",
+			dataType: "json",
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(){ $('#loader').fadeIn(); },
+			success: function(data){
+				if(data.estado == 1){
+					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ 
+						$('#loader').fadeOut();
+						location.reload();
+					}});
+				}
+				else{
+					Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+				}
+			},
+			error: function(data){
+				console.log(data);
+				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		});
+
+	}
 }

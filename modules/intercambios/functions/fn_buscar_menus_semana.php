@@ -28,7 +28,10 @@ if(isset($_POST['grupoEtario']) && $_POST['grupoEtario'] != ''){
 //var_dump($_POST);
 
 
-$consulta = " SELECT ps.DIA,  p.Id, p.Codigo, p.Descripcion FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
+$consulta = " SELECT ps.DIA,  p.Id, p.Codigo, p.Descripcion FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ORDER BY DIA asc ";
+
+// echo $consulta;
+
 $resultado = $Link->query($consulta);
 if ($resultado->num_rows > 0) {
 	$cntFTD = 0;  
@@ -65,7 +68,7 @@ if ($resultado->num_rows > 0) {
 <?php } ?>
 
 <?php
-$consulta = " SELECT ps.DIA,  p.Id, p.Codigo, p.Descripcion FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
+$consulta = " SELECT ps.DIA, ps.MENU,  p.Id, p.Codigo, p.Descripcion FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ORDER BY DIA asc ";
 $resultado = $Link->query($consulta);
 if ($resultado->num_rows > 0) {
 	$cntFTD = 0;  
@@ -88,9 +91,9 @@ if ($resultado->num_rows > 0) {
 									</tr>
 									<tr>
 										<td>
-											<select class="form-control menuDia" name="menuDia[<?php echo $cntFTD ?>]" id="menuDia<?php echo $cntFTD ?>" dia="<?= $menuDia['DIA'] ?>" required>
+											<select class="form-control menuDia" name="menuDia[<?php echo $cntFTD ?>]" id="menuDia<?php echo $cntFTD ?>" dia="<?= $menuDia['DIA'] ?>" menu="<?= $menuDia['MENU'] ?>" required>
 												
-												<option value="<?= $menuDia['Codigo'] ?>"><?= $menuDia['Descripcion'] ?></option>
+												<!-- <option value="<?php //= $menuDia['Codigo'] ?>"><?php //= $menuDia['Descripcion'] ?></option> -->
 
 										  	</select>
 										</td>
@@ -98,6 +101,19 @@ if ($resultado->num_rows > 0) {
 								<?php } ?>
 							</tbody>
 						</table>
+
+
+
+				                                    
+						<div class="hr-line-dashed"></div>
+						<div class="form-group row">
+							<div class="col-sm-12">
+								<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
+							</div>
+						</div>
+
+
+
 					</div>
 				</div>
 			</div>

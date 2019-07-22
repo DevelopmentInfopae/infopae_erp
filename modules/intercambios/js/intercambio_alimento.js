@@ -197,7 +197,7 @@ function guardarIntercambio(){
 		formData.append('menu', $('#menu').val());
 		formData.append('preparacion', $('#preparaciones').val());
 
-		$( ".productoFichaTecnicaDetA" ).each(function() {
+		$( ".tablaAjuste tbody tr" ).each(function() {
 			var producto = $(this).find('.producto').val();
 			var productoNombre = $(this).find('.producto option:selected').text();
 			var unidad = $(this).find('.unidad').val();
@@ -221,7 +221,10 @@ function guardarIntercambio(){
 			beforeSend: function(){ $('#loader').fadeIn(); },
 			success: function(data){
 				if(data.estado == 1){
-					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();}});
+					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ 
+						$('#loader').fadeOut();
+						location.reload();
+					}});
 				}
 				else{
 					Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});

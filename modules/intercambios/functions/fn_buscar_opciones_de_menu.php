@@ -4,10 +4,18 @@ require_once '../../../config.php';
 
 //var_dump($_POST);
 
+$mes = '';
+$semana = '';
 $tipoComplemento = '';
 $grupoEtario = '';
 $menusSeleccionados = 0;
 
+if(isset($_POST['mes']) && $_POST['mes'] != ''){
+	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
+}
+if(isset($_POST['semana']) && $_POST['semana'] != ''){
+	$semana = mysqli_real_escape_string($Link, $_POST['semana']);
+}
 if(isset($_POST['tipoComplemento']) && $_POST['tipoComplemento'] != ''){
 	$tipoComplemento = mysqli_real_escape_string($Link, $_POST['tipoComplemento']);
 }
@@ -20,11 +28,23 @@ if(isset($_POST['menusSeleccionados']) && $_POST['menusSeleccionados'] != ''){
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " SELECT p.* FROM productos19 p WHERE p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 AND p.Codigo NOT IN ( $menusSeleccionados ) ";
+$consulta = " SELECT p.* FROM productos19 p WHERE p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 AND p.Codigo NOT IN ( $menusSeleccionados ) 
 
-// echo $consulta;
 
-$resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
+
+AND
+p.Orden_Ciclo IN (SELECT menu FROM planilla_semanas ps 
+
+
+
+WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" )
+
+
+";
+
+//echo $consulta;
+
+$resultado = $Link->query($consulta) or die ('No se pudieron cargar los municipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$respuesta = 1;
 	while($row = $resultado->fetch_assoc()){

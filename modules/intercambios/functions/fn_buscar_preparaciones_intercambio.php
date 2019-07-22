@@ -86,7 +86,7 @@ if ($resultadoFichaTecnica->num_rows > 0) {
 			                        	<tr id="filaProductoFichaTecnicaDet<?php echo $cntFTD; ?>" class="productoFichaTecnicaDet productoFichaTecnicaDetA productoAjuste<?= $cntFTD ?>" indice="<?= $cntFTD ?>">
 			                            	<td>
 			                            		<input type="hidden" name="IdFTDet[<?php echo $cntFTD ?>]" value="<?php echo $fichatecnicadet['Id'] ?>">
-			                              		<select class="form-control" name="productoFichaTecnicaDet[<?php echo $cntFTD ?>]" id="productoFichaTecnicaDet<?php echo $cntFTD ?>" onchange="obtenerUnidadMedidaProducto(this, <?php echo $cntFTD ?>);" required>
+			                              		<select class="form-control producto" name="productoFichaTecnicaDet[<?php echo $cntFTD ?>]" id="productoFichaTecnicaDet<?php echo $cntFTD ?>" onchange="obtenerUnidadMedidaProducto(this, <?php echo $cntFTD ?>);" required>
 			                                		<option value="<?php echo $fichatecnicadet['codigo']; ?>"><?php echo $fichatecnicadet['Componente']; ?></option>
 			                              		</select>
 			                            	</td>
