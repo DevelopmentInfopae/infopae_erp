@@ -136,6 +136,13 @@
       <div class="ibox" id="contenedor_tabla_novedades_suplentes" style="display: none;">
         <div class="ibox-content">
           <form id="formulario_guardar_novedades_repitentes">
+            <input type="hidden" name="mes_hidden" id="mes_hidden">
+            <input type="hidden" name="sede_hidden" id="sede_hidden">
+            <input type="hidden" name="semana_hidden" id="semana_hidden">
+            <input type="hidden" name="municipio_hidden" id="municipio_hidden">
+            <input type="hidden" name="institucion_hidden" id="institucion_hidden">
+            <input type="hidden" name="tipo_complemento_hidden" id="tipo_complemento_hidden">
+
             <table class="table table-striped table-hover selectableRows tabla_novedades_suplentes">
               <thead>
                 <tr>
@@ -153,12 +160,6 @@
 
             <div class="row">
               <div class="col-sm-12">
-                <input type="hidden" name="mes_hidden" id="mes_hidden">
-                <input type="hidden" name="sede_hidden" id="sede_hidden">
-                <input type="hidden" name="semana_hidden" id="semana_hidden">
-                <input type="hidden" name="municipio_hidden" id="municipio_hidden">
-                <input type="hidden" name="institucion_hidden" id="institucion_hidden">
-                <input type="hidden" name="tipo_complemento_hidden" id="tipo_complemento_hidden">
                 <button type="button" class="btn btn-primary pull-right disabled boton_guardar_novedades_repitentes"><i class="fa fa-check"></i> Guardar</button>
               </div>
             </div>
