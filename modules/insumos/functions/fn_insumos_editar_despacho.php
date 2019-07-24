@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
@@ -32,7 +32,7 @@ function calcularCantidad($cins, $sede, $Link){
 
 
 	$datos = datosProducto($cins, $sede, $Link);
-	$cantxMes = $datos['cantxMes'];
+	$cantxMes = $datos['cantxMes'] > 0 ? $datos['cantxMes'] : 1;
 
 	if (strpos($datos['uMedida2'], " kg") || strpos($datos['uMedida2'], " lt")) {
 		$cantxMes = $cantxMes * 1000;
@@ -59,7 +59,7 @@ function calcularCantidad($cins, $sede, $Link){
 			}
 			$cantidad = $cantxMes * $manipuladores;
 		}
-	} else if ($conteoIns == "03") {//individual
+	} else if ($conteoIns == "03" || $conteoIns == "04") {//individual
 		$cantidad = $cantxMes;
 	}
 	$presentaciones = calcularPresentaciones($cantidad, $cins, $Link);
@@ -243,7 +243,7 @@ foreach ($meses_despachar as $key => $mes) {
 
 	if (sizeof($productoDespacho) > sizeof($idDetDespacho)) {
 		$insertinsumosmovdet = "INSERT INTO $insumosmovdet (Documento, Numero, Item, CodigoProducto, Descripcion, Cantidad, BodegaOrigen, BodegaDestino, Id, Umedida, CantUmedida, Factor, Id_Usuario, CantU2, CantU3, CantU4, CantU5, CanTotalPresentacion) VALUES ";
-		for ($i=sizeof($idDetDespacho); $i < sizeof($productoDespacho); $i++) { 
+		for ($i=sizeof($idDetDespacho); $i < sizeof($productoDespacho); $i++) {
 			$datos = datosProducto($productoDespacho[$i], $sedes[0], $Link);
 			$presentaciones = calcularCantidad($productoDespacho[$i], $sedes[0], $Link);
 			$insertinsumosmovdet.="('DESI', '".$numDoc."', '0', '".$productoDespacho[$i]."', '".$DescInsumo[$i]."', '".$presentaciones[6]."', '".$bodega_origen."', '".$sedes[0]."', '', '".$datos['uMedida2']."', '".$datos['cantUMedida']."', '1', '".$_SESSION['idUsuario']."', '".$presentaciones[1]."', '".$presentaciones[2]."', '".$presentaciones[3]."', '".$presentaciones[4]."', '".$presentaciones[5]."'), ";

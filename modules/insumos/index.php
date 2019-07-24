@@ -1,6 +1,6 @@
-<?php 
+<?php
 $titulo = 'Insumos';
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 
 $tiposInsumos = [];
@@ -45,7 +45,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
 
-          <?php 
+          <?php
           $insumos = [];
           $consulta = "SELECT * FROM productos".$_SESSION['periodoActual']." WHERE Codigo LIKE '05%' AND Nivel = 3";
           $resultado = $Link->query($consulta);
@@ -101,7 +101,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
                   </td>
                 </tr>
               <?php endforeach ?>
-              
+
             </tbody>
             <tfoot>
               <tr>
@@ -115,7 +115,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
             </tfoot>
           </table>
 
-        	
+
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
     </div><!-- /.col-lg-12 -->

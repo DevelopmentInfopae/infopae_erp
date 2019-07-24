@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
@@ -32,7 +32,7 @@ function calcularCantidad($cins, $sede, $Link, $mes){
 
 
 	$datos = datosProducto($cins, $sede, $Link);
-	$cantxMes = $datos['cantxMes'];
+	$cantxMes = $datos['cantxMes'] > 0 ? $datos['cantxMes'] : 1;
 
 	if (strpos($datos['uMedida2'], " kg") || strpos($datos['uMedida2'], " lt")) {
 		$cantxMes = $cantxMes * 1000;
@@ -50,7 +50,7 @@ function calcularCantidad($cins, $sede, $Link, $mes){
 			}
 
 			$cantidad = ceil($cupos / $cantCuposCalcular) * $cantxMes;
-			
+
 		}
 	} else if ($conteoIns == "02") {//manipuladores
 		$consultaManipuladores = "SELECT cantidad_Manipuladora AS manipuladores FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = '".$sede."'";
@@ -61,7 +61,7 @@ function calcularCantidad($cins, $sede, $Link, $mes){
 			}
 			$cantidad = $cantxMes * $manipuladores;
 		}
-	} else if ($conteoIns == "03") {//individual
+	} else if ($conteoIns == "03" || $conteoIns == "04") {//individual
 		$cantidad = $cantxMes;
 	}
 
@@ -186,6 +186,8 @@ if (isset($_POST['conductor'])) {
 	$conductor = "";
 }
 
+$productos_por_despacho = [];
+
 $consultarResponsable = "SELECT * FROM usuarios WHERE id = ".$_SESSION['idUsuario'];
 $resultadoResponsable = $Link->query($consultarResponsable);
 if ($resultadoResponsable->num_rows > 0) {
@@ -221,14 +223,13 @@ foreach ($meses_despachar as $key => $mes) {
 	  `DocOrigen` varchar(10) DEFAULT '',
 	  `NumDocOrigen` int(10) UNSIGNED DEFAULT '0',
 	  `Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	  `FechaMYSQL` datetime DEFAULT '0000-00-00 00:00:00',
+	  `FechaMYSQL` datetime DEFAULT NULL,
 	  `Anulado` tinyint(1) DEFAULT '0',
 	  `TipoTransporte` varchar(50) NOT NULL DEFAULT '',
 	  `Placa` varchar(10) NOT NULL DEFAULT '',
 	  `ResponsableRecibe` varchar(45) NOT NULL DEFAULT '',
 	  PRIMARY KEY (`Id`)
-	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-	";
+	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;";
 	if ($Link->query($queryinsumosmov)===true) {
 		$validaTablas++;
 	} else {
@@ -237,12 +238,12 @@ foreach ($meses_despachar as $key => $mes) {
 
 	$numerosDespachos = "";
 
-	$insertinsumosmov = "INSERT INTO $insumosmov (Documento, Numero, Tipo, BodegaOrigen, BodegaDestino, Nombre, Nitcc, Aprobado, NombreResponsable, LoginResponsable, Id, FechaMYSQL, Anulado, TipoTransporte, Placa, ResponsableRecibe) VALUES ";
+	$insertinsumosmov = "INSERT INTO $insumosmov (Documento, Numero, Tipo, BodegaOrigen, BodegaDestino, Nombre, Nitcc, Aprobado, NombreResponsable, LoginResponsable, FechaMYSQL, Anulado, TipoTransporte, Placa, ResponsableRecibe) VALUES ";
 	$numDoc = obtenerNumDoc($insumosmov, $Link);
 	foreach ($sedes as $key => $sede) {
 		$sedesNumDoc[$sede] = $numDoc;
 		$numerosDespachos.=$numDoc.", ";
-		$insertinsumosmov.="('DESI', '".$sedesNumDoc[$sede]."', '".$nomTipoMov."', '".$bodega_origen."', '".$sede."', '".$nombre_proveedor."', '".$proveedor."', '0', '".$nombreResp."', '".$loginResp."', '', '".date('Y-m-d H:i:s')."', '0', '".$tipo_transporte."', '".$placa_vehiculo."', '".$conductor."'), ";
+		$insertinsumosmov.="('DESI', '".$sedesNumDoc[$sede]."', '".$nomTipoMov."', '".$bodega_origen."', '".$sede."', '".$nombre_proveedor."', '".$proveedor."', '0', '".$nombreResp."', '".$loginResp."', '".date('Y-m-d H:i:s')."', '0', '".$tipo_transporte."', '".$placa_vehiculo."', '".$conductor."'), ";
 		$numDoc++;
 	}
 
@@ -287,14 +288,26 @@ foreach ($meses_despachar as $key => $mes) {
 		exit(" Error ".$queryinsumosmovdet);
 	}
 
-	$insertinsumosmovdet = "INSERT INTO $insumosmovdet (Documento, Numero, Item, CodigoProducto, Descripcion, Cantidad, BodegaOrigen, BodegaDestino, Id, Umedida, CantUmedida, Factor, Id_Usuario, CantU2, CantU3, CantU4, CantU5, CanTotalPresentacion) VALUES ";
+	$insertinsumosmovdet = "INSERT INTO $insumosmovdet (Documento, Numero, Item, CodigoProducto, Descripcion, Cantidad, BodegaOrigen, BodegaDestino, Umedida, CantUmedida, Factor, Id_Usuario, CantU2, CantU3, CantU4, CantU5, CanTotalPresentacion) VALUES ";
 	foreach ($sedes as $key => $sede) {
 		$numItem = 0;
 		foreach ($productoDespacho as $keyIns => $producto) {
-			$numItem++;
+
+
 			$datos = datosProducto($producto, $sede, $Link);
+
+			if (substr($producto, 0, 4) == '0504') {
+				if (!isset($productos_por_despacho[$sede][$producto])) {
+					$productos_por_despacho[$sede][$producto] = 1;
+				} else {
+					continue;
+				}
+			}
+
 			$presentaciones = calcularCantidad($producto, $sede, $Link, $mes);
-			$insertinsumosmovdet.="('DESI', '".$sedesNumDoc[$sede]."', '".$numItem."', '".$producto."', '".$DescInsumo[$keyIns]."', '".$presentaciones[6]."', '".$bodega_origen."', '".$sede."', '', '".$datos['uMedida2']."', '".$datos['cantUMedida']."', '1', '".$_SESSION['idUsuario']."', '".$presentaciones[1]."', '".$presentaciones[2]."', '".$presentaciones[3]."', '".$presentaciones[4]."', '".$presentaciones[5]."'), ";
+			$numItem++;
+
+			$insertinsumosmovdet.="('DESI', '".$sedesNumDoc[$sede]."', '".$numItem."', '".$producto."', '".$DescInsumo[$keyIns]."', '".$presentaciones[6]."', '".$bodega_origen."', '".$sede."', '".$datos['uMedida2']."', '".$datos['cantUMedida']."', '1', '".$_SESSION['idUsuario']."', '".$presentaciones[1]."', '".$presentaciones[2]."', '".$presentaciones[3]."', '".$presentaciones[4]."', '".$presentaciones[5]."'), ";
 		}
 	}
 
@@ -309,7 +322,7 @@ foreach ($meses_despachar as $key => $mes) {
 
 
 if ($validaProductos > 0) {
-	$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '15', 'Registró despachos de Insumos con números : <strong>".trim($numerosDespachos, ", ")."</strong> ')";
+	$sqlBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '15', 'Registró despachos de Insumos con números : <strong>".trim($numerosDespachos, ", ")."</strong> ')";
 	$Link->query($sqlBitacora);
 	echo "1";
 } else {

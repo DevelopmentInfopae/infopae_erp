@@ -12,7 +12,8 @@
   	while ($datos = $respuesta->fetch_assoc()) {
       $num++;
       if (isset($datos['Id'])) {
-        $datos['input'] = "<input type='checkbox' class='checkDespacho' value='".$datos['Id']."' name='idDespacho[]' data-num='$num' data-inst='".$datos['cod_inst']."'><input type='checkbox' value='".$datos['BodegaDestino']."' id='sede_$num' name='sedes[]' style='display:none;'>";
+        $datos['input'] = "
+        <input type='checkbox'  class='checkDespacho' value='".$datos['BodegaDestino']."' id='sede_$num' name='sedes[]' style='display:none;' data-num='$num' data-inst='".$datos['cod_inst']."'>";
       }
       if (isset($datos['Aprobado'])) {
         if ($datos['Aprobado'] == "0") {

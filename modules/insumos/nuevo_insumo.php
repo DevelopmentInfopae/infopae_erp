@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 $titulo = 'Nuevo insumo';
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 
-if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<script>location.href='index.php';</script>"; } 
+if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<script>location.href='index.php';</script>"; }
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -37,7 +37,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
         <div class="ibox-content contentBackground">
           <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"><!-- COLLAPSE -->
             <div class="panel panel-default">
-              <div class="panel-heading clearfix" role="tab" id="headingOne"> 
+              <div class="panel-heading clearfix" role="tab" id="headingOne">
                 <h4 class="panel-title"><span class="fa fa-file-text-o"></span>   Datos del insumo
                 </h4>
               </div>
@@ -51,6 +51,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
                         <option value="01">Contado por cupos</option>
                         <option value="02">Contado por manipuladores</option>
                         <option value="03">Contado individualmente</option>
+                        <option value="04">Contado por despacho</option>
                       </select>
                     </div>
                     <div class="form-group col-sm-3">
@@ -60,7 +61,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
                     </div>
                     <div class="form-group col-sm-3" id="divCantPresentacion">
                       <label>Cantidad por mes </label>
-                      <input type="number" name="cantidadMes" class="form-control" required>
+                      <input type="number" name="cantidadMes" id="cantidadMes" class="form-control" required>
                     </div>
                     <hr class="col-sm-11">
                     <div class="form-group col-sm-12" id="gestionMedidas" style="display: none;">
