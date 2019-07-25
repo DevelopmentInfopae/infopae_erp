@@ -11,8 +11,8 @@ if (isset($_POST['sedes'])) {
 	echo "<script>alert('No se ha definido sede.');</script>";
 }
 
-if (isset($_POST['tablaMes'])) {
-	$tablaMes = $_POST['tablaMes'];
+if (isset($_POST['tablaMesInicio'])) {
+	$tablaMes = $_POST['tablaMesInicio'];
 } else {
 	echo "<script>alert('No se ha definido mes.');</script>";
 }
