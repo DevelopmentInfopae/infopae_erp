@@ -93,7 +93,7 @@ if ($tipoProducto == "01") {
   }
   $nuevoCodigo = obtenerUltimoCodigo($codigoPrefijo);
   $tipo_complemento = $tipoComplemento;
-} else {  
+} else {
   $nuevoCodigo = obtenerUltimoCodigo($subtipoProducto);
   $tipo_complemento = "";
 }
@@ -119,7 +119,7 @@ if ($unidadMedida == "g" || $unidadMedida == "cc") { //Si tipo de producto es 03
   } else if ($unidadMedidaPresentacion[1] == "kg" || $unidadMedidaPresentacion[1] == "lt"){
     $CantidadUnd[1] = 1/1000;
   }
-  for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) { 
+  for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) {
     if ($unidadMedidaPresentacion[$i] == "u" || $unidadMedidaPresentacion[$i] == "lb" || $unidadMedidaPresentacion[$i] == "kg" || $unidadMedidaPresentacion[$i] == "lt") {
       $NombreUnidad[$i+1] =  $unidadMedidaPresentacion[$i];
       $CantidadUnd[$i+1] = 1;
@@ -156,14 +156,14 @@ if ($unidadMedida == "g" || $unidadMedida == "cc") { //Si tipo de producto es 03
     $variacionMenuDesc = "";
   }
   $descripcion = $descripcion." ".$grupoEtario." ".$variacionMenuDesc;
-  
+
   }
 }
 
 /*print_r($NombreUnidad);
 print_r($CantidadUnd);
 echo "<br>".sizeof($unidadMedidaPresentacion);*/
-for ($i=sizeof($NombreUnidad)+1; $i <=5 ; $i++) { 
+for ($i=sizeof($NombreUnidad)+1; $i <=5 ; $i++) {
   $NombreUnidad[$i] = "";
   $CantidadUnd[$i] = "";
 }

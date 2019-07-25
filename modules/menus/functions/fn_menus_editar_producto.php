@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once 'fn_menus_head_funciones.php';
 
@@ -38,7 +38,7 @@ function limpiarGrupoEtarioDeNombre($descripcion, $Cod_Grupo_Etario){
       }
     }
     return $descripcion;
-  }  
+  }
 }
 
 if (isset($_POST['descripcion'])) {
@@ -147,7 +147,7 @@ if ($tipoProducto == "01") {
   	$nuevoCodigo = $Codigo;
   }
   $tipo_complemento = $tipoComplemento;
-} else {  
+} else {
   if (validarCambioTipoProducto($IdProducto, $subtipoProducto)) {
 	  $nuevoCodigo = obtenerUltimoCodigo($subtipoProducto);
   } else {
@@ -177,7 +177,7 @@ if ($unidadMedida == "g" || $unidadMedida == "cc") { //Si tipo de producto es 03
   } else if ($unidadMedidaPresentacion[1] == "kg" || $unidadMedidaPresentacion[1] == "lt"){
     $CantidadUnd[1] = 1/1000;
   }
-  for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) { 
+  for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) {
     if ($unidadMedidaPresentacion[$i] == "u" || $unidadMedidaPresentacion[$i] == "lb" || $unidadMedidaPresentacion[$i] == "kg" || $unidadMedidaPresentacion[$i] == "lt") {
       $NombreUnidad[$i+1] =  $unidadMedidaPresentacion[$i];
       $CantidadUnd[$i+1] = 1;
@@ -214,7 +214,7 @@ if ($unidadMedida == "g" || $unidadMedida == "cc") { //Si tipo de producto es 03
 /*print_r($NombreUnidad);
 print_r($CantidadUnd);
 echo "<br>".sizeof($unidadMedidaPresentacion);*/
-for ($i=sizeof($NombreUnidad)+1; $i <=5 ; $i++) { 
+for ($i=sizeof($NombreUnidad)+1; $i <=5 ; $i++) {
   $NombreUnidad[$i] = "";
   $CantidadUnd[$i] = "";
 }
@@ -283,14 +283,14 @@ if ($Link->query($sqlProducto) === true) {
 			$pesoNetoProducto = "";
 		}
 
-		$sqlFichaTecnica = "update fichatecnica set Nombre = '".$descripcion."', Codigo = '".$nuevoCodigo."', NumeroUnidades = '1', FechaCosto = '".date('Y/m/d')."' WHERE Id = '".$IdFT."'";	
+		$sqlFichaTecnica = "update fichatecnica set Nombre = '".$descripcion."', Codigo = '".$nuevoCodigo."', NumeroUnidades = '1', FechaCosto = '".date('Y/m/d')."' WHERE Id = '".$IdFT."'";
 
 		if ($Link->query($sqlFichaTecnica) === true) {
 			$validaRegistro = 0;
 
 			if (($tipoProducto == "01" || $tipoProducto == "02" || $tipoProducto == "04") && $IdProducto != 0) {
 			  if ($tipoProducto == "01" && $IdFT != 0) {
-			    for ($i=1; $i <= sizeof($productoFichaTecnicaDet); $i++) { 
+			    for ($i=1; $i <= sizeof($productoFichaTecnicaDet); $i++) {
 			      $consultaDesc = "select Descripcion from productos".$_SESSION['periodoActual']." where Codigo = ".$productoFichaTecnicaDet[$i];
 			      $resultadoDesc = $Link->query($consultaDesc) or die('Unable to execute query. '. mysqli_error($Link)." ".$consultaDesc);
 			      if ($resultadoDesc->num_rows > 0) {
@@ -298,7 +298,7 @@ if ($Link->query($sqlProducto) === true) {
 			          $descProductoFichaTecnicaDet = $row['Descripcion'];
 			        }
 			      }
-			      
+
 			      if (isset($IdFTDet[$i])) {
 			      	$sqlFichaTecnicaDet = "update fichatecnicadet set codigo = '".$productoFichaTecnicaDet[$i]."', Componente = '".$descProductoFichaTecnicaDet."', Cantidad = '0', UnidadMedida = 'u', Factor = '0', Estado = '0', Tipo = 'Preparación', TipoProducto = 'Preparación', PesoBruto = '0', PesoNeto = '0' WHERE Id = '".$IdFTDet[$i]."'";
 			      } else {
@@ -311,7 +311,7 @@ if ($Link->query($sqlProducto) === true) {
 			      }
 			    }
 			  } else if (($tipoProducto == "02" || $tipoProducto == "04") && $IdFT != 0) {
-			    for ($i=1; $i <= sizeof($productoFichaTecnicaDet); $i++) { 
+			    for ($i=1; $i <= sizeof($productoFichaTecnicaDet); $i++) {
 			      $consultaDesc = "select Descripcion from productos".$_SESSION['periodoActual']." where Codigo = ".$productoFichaTecnicaDet[$i];
 			      $resultadoDesc = $Link->query($consultaDesc) or die('Unable to execute query. '. mysqli_error($Link)." ".$consultaDesc);
 			      if ($resultadoDesc->num_rows > 0) {

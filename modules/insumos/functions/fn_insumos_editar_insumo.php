@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 
@@ -59,7 +59,7 @@ if (isset($_POST['cantPresentacion'])) {
 $NombreUnidad[1] = $unidadMedida;
 $CantidadUnd[1] = $cantidadMes;
 
-for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) { 
+for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) {
 	if ($unidadMedidaPresentacion[1] == "u") {
 		$NombreUnidad[$i+1] = $unidadMedida;
 	} else {
@@ -73,10 +73,10 @@ for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) {
 	$CantidadUnd[$i+1] = $cantPresentacion[$i];
 }
 
-for ($j=1; $j <=5; $j++) { 
+for ($j=1; $j <=5; $j++) {
 	if (!isset($NombreUnidad[$j])) {
 		$NombreUnidad[$j] = "";
-		$CantidadUnd[$j] = "";
+		$CantidadUnd[$j] = 0;
 	}
 }
 
