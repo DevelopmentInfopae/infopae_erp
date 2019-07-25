@@ -1,7 +1,7 @@
 <option value="">Todos</option>
 <?php
 include '../../../config.php';
-  //var_dump($_POST);
+
   $municipio = '';
   $tipo = '';
 
@@ -35,6 +35,7 @@ include '../../../config.php';
     $consulta = $consulta." and sc.$tipo > 0 ";
   }
 
+  $consulta = $consulta." ORDER BY s.nom_inst ASC;";
 
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
