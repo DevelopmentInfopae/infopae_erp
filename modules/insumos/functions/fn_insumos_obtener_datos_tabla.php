@@ -13,7 +13,7 @@
       $num++;
       if (isset($datos['Id'])) {
         $datos['input'] = "
-        <input type='checkbox'  class='checkDespacho' value='".$datos['BodegaDestino']."' id='sede_$num' name='sedes[]' style='display:none;' data-num='$num' data-inst='".$datos['cod_inst']."'>";
+        <input type='checkbox'  class='checkDespacho' value='".$datos['BodegaDestino']."' id='sede_$num' name='sedes[]' style='display:none;' data-num='$num' data-inst='".$datos['cod_inst']."' data-iddespacho='".$datos['Id']."' data-mesdespacho='".$datos['mesDespacho']."'>";
       }
       if (isset($datos['Aprobado'])) {
         if ($datos['Aprobado'] == "0") {
