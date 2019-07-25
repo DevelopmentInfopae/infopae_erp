@@ -39,6 +39,15 @@ function  buscarPreparacionesIntercambio(){
 
 // Equivalente a document ready despues de traer los producto de la preparación
 function inicializarFunciones(){
+	$('.datepick').each(function(){
+		$(this).removeClass("hasDatepicker");
+		$(this).datepicker({
+			format: 'dd/mm/yyyy',
+			todayHighlight: 'true',
+			autoclose: 'true'
+		});
+	});
+
 	cargarOpcionesDeProducto();
 	indiceProductosAjuste = $('.tablaAjuste tbody tr').length;
 	console.log("indiceProductosAjuste = "+indiceProductosAjuste);
@@ -177,6 +186,11 @@ function guardarIntercambio(){
 			formData.append('productos['+producto+'][productoNombre]', productoNombre);
 
 		});
+
+		
+		formData.append('fechaVencimiento', $('#fechaVencimiento').val());
+		formData.append('foto', $('#foto')[0].files[0]);
+		formData.append('observaciones', $('#observaciones').val());
 
 		$.ajax({
 			type: "post",

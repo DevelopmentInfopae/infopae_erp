@@ -175,6 +175,14 @@
 <!-- Custom and plugin javascript -->
 <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+
+<!-- Data picker -->
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+
+<!-- Date picker en español -->
+<script src="<?php echo $baseUrl; ?>/js/bootstrap-datepicker.es.js"></script>
+
+
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
@@ -184,74 +192,8 @@
 
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
-<script src="<?php echo $baseUrl; ?>/modules/intercambios/js/intercambio_preparacion.js?v=<?= $cacheBusting; ?>"></script>
 <script src="<?php echo $baseUrl; ?>/modules/intercambios/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
-
-
-
-
-
-
-
-<script type="text/javascript">
-/*
-	if ($('#IdFT').val() != null && $('#tipoProducto').val() != "04") {
-	for (var i = <?php if(isset($cntFTD)){echo $cntFTD;} else {echo 0;} ?>; i > 0; i--) {
-	obtenerProductos(i);
-	}
-	}
-
-	if ($('#tipoProducto').val() == "01") {
-	ocultarDatosDetPreparado(1);
-	} else if ($('#tipoProducto').val() == "02") {
-	ocultarDatosDetPreparado(2);
-	}
-
-	//$('.productoFichaTecnicaDet select').select2({width : "100%"});
-	console.log(numProducto);
-	
-*/
-
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Page-Level Scripts -->
-
-	<form action="sede.php" method="post" name="formVerSede" id="formVerSede">
-		<input type="hidden" name="codSede" id="codSede">
-		<input type="hidden" name="nomSede" id="nomSede">
-		<input type="hidden" name="nomInst" id="nomInst">
-	</form>
-
-	<form action="sede_editar.php" method="post" name="formEditarSede" id="formEditarSede">
-		<input type="hidden" name="codigoSede" id="codigoSede">
-		<input type="hidden" name="nombreSede" id="nombreSede">
-	</form>
-
-	<form action="../dispositivos_biometricos/index.php" method="post" name="formDispositivosSede" id="formDispositivosSede">
-		<input type="hidden" name="cod_sede" id="cod_sede" value="">
-	</form>
-
-	<form action="../infraestructuras/ver_infraestructura.php" method="post" name="formInfraestructuraSede" id="formInfraestructuraSede">
-		<input type="hidden" name="cod_sede" id="cod_sede" value="">
-	</form>
-
-	<form action="../titulares_derecho/index.php" method="post" name="formTitularesSede" id="formTitularesSede">
-		<input type="hidden" name="cod_sede" id="cod_sede" value="">
-	</form>
+<script src="<?php echo $baseUrl; ?>/modules/intercambios/js/intercambio_preparacion.js?v=<?= $cacheBusting; ?>"></script>
 
 </body>
 </html>

@@ -141,6 +141,16 @@
 					<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/repitentes.php">Repitentes</a></li>
 				</ul>
 			</li>
+
+			<li>
+				<a href="#"><span class="nav-label">Menús</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li> <a href="<?= $baseUrl; ?>/modules/intercambios/intercambio_alimento.php">Intercambio de alimento</a> </li>
+					<li> <a href="<?= $baseUrl; ?>/modules/intercambios/intercambio_preparacion.php">Intercambio de preparación</a> </li>
+					<li> <a href="<?= $baseUrl; ?>/modules/intercambios/intercambio_dia_menu.php">Intercambio de día de menú</a> </li>
+				</ul>
+			</li>
+			
 		</ul>
 	</li>
 
@@ -237,17 +247,5 @@
 
 
 
-<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 || $_SESSION['perfil'] == 5 || $_SESSION['perfil'] == 6 ){ ?>
-	<li>
-		<a href="#"><i class="fa fa-coffee"></i> <span class="nav-label">Intercambios</span><span class="fa arrow"></span></a>
-		<ul class="nav nav-second-level collapse">
 
-			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 ){ ?>
-				<li> <a href="<?= $baseUrl; ?>/modules/intercambios/intercambio_alimento.php">Intercambio de alimento</a> </li>
-				<li> <a href="<?= $baseUrl; ?>/modules/intercambios/intercambio_preparacion.php">Intercambio de preparación</a> </li>
-				<li> <a href="<?= $baseUrl; ?>/modules/intercambios/intercambio_dia_menu.php">Intercambio de día de menú</a> </li>
-			<?php } ?>
-		</ul>
-	</li>
-<?php } ?>
 

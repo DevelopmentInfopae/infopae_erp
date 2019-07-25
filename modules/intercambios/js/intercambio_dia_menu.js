@@ -9,6 +9,15 @@ $(document).ready(function(){
 
 // Equivalente a document ready despues de traer los producto de la preparación
 function inicializarFunciones(){
+	$('.datepick').each(function(){
+		$(this).removeClass("hasDatepicker");
+		$(this).datepicker({
+			format: 'dd/mm/yyyy',
+			todayHighlight: 'true',
+			autoclose: 'true'
+		});
+	});
+
 	cargarOpcionesDeMenu();
 	$('.menuDia').change(function(){
 		$('.menuDia').find('option').not(':selected').remove();
@@ -134,6 +143,10 @@ function guardarIntercambio(){
 			formData.append('menu['+codigoMenu+'][codigo]', codigoMenu);
 
 		});
+
+		formData.append('fechaVencimiento', $('#fechaVencimiento').val());
+		formData.append('foto', $('#foto')[0].files[0]);
+		formData.append('observaciones', $('#observaciones').val());
 
 		$.ajax({
 			type: "post",

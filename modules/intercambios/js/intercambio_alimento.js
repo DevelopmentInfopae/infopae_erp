@@ -8,6 +8,15 @@ $(document).ready(function(){
 
 // Equivalente a document ready despues de traer los producto de la preparación
 function inicializarFunciones(){
+	$('.datepick').each(function(){
+		$(this).removeClass("hasDatepicker");
+		$(this).datepicker({
+			format: 'dd/mm/yyyy',
+			todayHighlight: 'true',
+			autoclose: 'true'
+		});
+	});
+
 	cargarOpcionesDeProducto();
 	indiceProductosAjuste = $('.tablaAjuste tbody tr').length;
 	console.log("indiceProductosAjuste = "+indiceProductosAjuste);
@@ -211,6 +220,10 @@ function guardarIntercambio(){
 			formData.append('productos['+producto+'][pesoNeto]', pesoNeto);
 		});
 
+		formData.append('fechaVencimiento', $('#fechaVencimiento').val());
+		formData.append('foto', $('#foto')[0].files[0]);
+		formData.append('observaciones', $('#observaciones').val());
+
 		$.ajax({
 			type: "post",
 			url: "functions/fn_guardar_intercambio_alimento.php",
@@ -223,7 +236,7 @@ function guardarIntercambio(){
 				if(data.estado == 1){
 					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ 
 						$('#loader').fadeOut();
-						location.reload();
+						//location.reload();
 					}});
 				}
 				else{

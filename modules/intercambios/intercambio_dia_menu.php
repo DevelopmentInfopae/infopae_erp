@@ -152,6 +152,13 @@
 <!-- Custom and plugin javascript -->
 <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+
+<!-- Data picker -->
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+
+<!-- Date picker en español -->
+<script src="<?php echo $baseUrl; ?>/js/bootstrap-datepicker.es.js"></script>
+
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
@@ -161,8 +168,8 @@
 
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
-<script src="<?php echo $baseUrl; ?>/modules/intercambios/js/intercambio_dia_menu.js?v=<?= $cacheBusting; ?>"></script>
 <script src="<?php echo $baseUrl; ?>/modules/intercambios/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/intercambios/js/intercambio_dia_menu.js?v=<?= $cacheBusting; ?>"></script>
 
 </body>
 </html>
