@@ -185,6 +185,7 @@
             <form id="formDespachos" method="POST" target="_blank">
             <input type="hidden" name="tablaMesInicio" id="tablaMesInicio" value="<?php echo $mesTablaInicio; ?>">
             <input type="hidden" name="tablaMesFin" id="tablaMesFin" value="<?php echo $mesTablaFin; ?>">
+            <input type="hidden" name="despachos_seleccionados" id="despachos_seleccionados">
              <table class="table" id="tablaTrazabilidad">
                 <thead>
                   <tr>
@@ -225,7 +226,7 @@
     $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
     $consulta = "SELECT
-        pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
+        pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst, '".$mesTablaInicio."' as mesDespacho
         FROM insumosmov$numtabla AS pmov
           INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
           INNER JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
@@ -302,7 +303,7 @@
 
     for ($i=$num_mes_inicio; $i <= $num_mes_fin ; $i++) {
        $consulta.="SELECT
-                     pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
+                     pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst, '".($i < 10 ? "0".$i : $i)."' as mesDespacho
                   FROM
                     insumosmov".($i < 10 ? "0".$i : $i).$_SESSION['periodoActual']." AS pmov
                       INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen

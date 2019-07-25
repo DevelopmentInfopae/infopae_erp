@@ -5,11 +5,43 @@ require_once '../../../fpdf181/fpdf.php';
 
 //283 de ancho total.
 
+$despachos_seleccionados = $_POST['despachos_seleccionados'];
+$despachos_seleccionados = trim($despachos_seleccionados, ", ");
+$ds = explode(", ", $despachos_seleccionados);
+$ds_mes = [];
+
+$meses_involucrados = [];
+
+foreach ($ds as $id => $value) {
+	$sd = explode("_", $value);
+
+	$ds_mes[$id]['id_despacho'] = $sd[0];
+	$ds_mes[$id]['mes_despacho'] = $sd[1];
+
+	if (!isset($meses_involucrados[$sd[1]])) {
+		$meses_involucrados[(Int) $sd[1]] = 1;
+	}
+
+}
+
+// exit(var_dump($meses_involucrados));
+
 if (isset($_POST['sedes'])) {
-	$sedes = $_POST['sedes'];
+	$sedes_post = $_POST['sedes'];
+	$sdp = [];
+
+	foreach ($sedes_post as $key => $sede) {
+		if (!isset($sdp[$sede])) {
+			$sedes[] = $sede;
+			$sdp[$sede] = 1;
+		}
+	}
+
 } else {
 	echo "<script>alert('No se ha definido sede.');</script>";
 }
+
+// exit(var_dump($sedes));
 
 if (isset($_POST['tablaMesInicio'])) {
 	$tablaMesInicio = str_replace("0", "", $_POST['tablaMesInicio']);
@@ -159,7 +191,9 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	$productos = [];
 	$productos_sede = [];
 	$maxEstudiantes = [];
+	$EstudiantesContados = [];
 	$maxManipuladoras = [];
+	$ManipuladorasContadas = [];
 
 	$pdf = new PDF('L', 'mm', 'Legal');
 	$pdf->AliasNbPages();
@@ -170,10 +204,15 @@ $sedeTabla = "sedes".$_SESSION['periodoActual'];
 
 for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 
+	if (!isset($meses_involucrados[$i])) {
+		continue;
+	}
+
 	$insumosmov = "insumosmov".($i < 10 ? "0".$i : $i).$_SESSION['periodoActual'];
 	$insumosmovdet = "insumosmovdet".($i < 10 ? "0".$i : $i).$_SESSION['periodoActual'];
 
 	foreach ($sedes as $key => $sede) {
+
 		$consultaSede = "SELECT
 						    ubicacion.Ciudad, instituciones.nom_inst, sede.*
 						FROM
@@ -192,10 +231,19 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 
 			$dataInst[$codigo_inst][$sede] = $ds;
 
-			if (!isset($maxManipuladoras[$codigo_inst])) {
-				$maxManipuladoras[$codigo_inst] = $dataInst[$codigo_inst][$sede]['cantidad_Manipuladora'];
+			if (count($ManipuladorasContadas) == 0) {
+				$ManipuladorasContadas[$i][$codigo_inst] = 1;
+			}
+
+			if (count($ManipuladorasContadas) > 0 && !isset($ManipuladorasContadas[$i])) {
 			} else {
-				$maxManipuladoras[$codigo_inst] += $dataInst[$codigo_inst][$sede]['cantidad_Manipuladora'];
+
+				if (!isset($maxManipuladoras[$codigo_inst])) {
+					$maxManipuladoras[$codigo_inst] = $dataInst[$codigo_inst][$sede]['cantidad_Manipuladora'];
+				} else {
+					$maxManipuladoras[$codigo_inst] += $dataInst[$codigo_inst][$sede]['cantidad_Manipuladora'];
+				}
+
 			}
 
 			if(!isset($nom_inst[$codigo_inst])){
@@ -207,32 +255,50 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 			}
 		}
 
-		$sumaCoberturasEtario = "";
 
-		foreach ($gruposEtarios as $ID => $DESCRIPCION) {
-			$sumaCoberturasEtario.=" MAX(Etario".$ID."_APS+Etario".$ID."_CAJMRI+Etario".$ID."_CAJTRI+Etario".$ID."_CAJMPS) as Etario".$ID." ,";
-	    }
+		// if (count($EstudiantesContados) == 0) {
+		// 	$EstudiantesContados[$i][$codigo_inst] = 1;
+		// }
 
-	    $sumaCoberturasEtario = trim($sumaCoberturasEtario, " ,");
+		// if (count($EstudiantesContados) > 0 && !isset($EstudiantesContados[$i])) {
+		// } else {
 
-		$consultaEtariosCobertura = "SELECT MAX(APS) + MAX(CAJMPS)+ MAX(CAJMRI)+ MAX(CAJTRI) AS cant_Estudiantes, $sumaCoberturasEtario FROM sedes_cobertura WHERE cod_sede = '".$sede."' and mes= '".($i < 10 ? "0".$i : $i)."' GROUP BY cod_sede";
-		$resultadoEtariosCobertura = $Link->query($consultaEtariosCobertura);
-		if ($resultadoEtariosCobertura->num_rows > 0) {
-			if ($EtariosCobertura = $resultadoEtariosCobertura->fetch_assoc()) {
-				if (!isset($maxEstudiantes[$codigo_inst])) {
-					$maxEstudiantes[$codigo_inst] = $EtariosCobertura["cant_Estudiantes"];
-				} else {
-					$maxEstudiantes[$codigo_inst] += $EtariosCobertura["cant_Estudiantes"];
-				}
+		// 	$sumaCoberturasEtario = "";
 
-				// $maxEstudiantes += $EtariosCobertura["cant_Estudiantes"];
-			}
-		}
+		// 	foreach ($gruposEtarios as $ID => $DESCRIPCION) {
+		// 		$sumaCoberturasEtario.=" MAX(Etario".$ID."_APS+Etario".$ID."_CAJMRI+Etario".$ID."_CAJTRI+Etario".$ID."_CAJMPS) as Etario".$ID." ,";
+		//     }
+
+		//     $sumaCoberturasEtario = trim($sumaCoberturasEtario, " ,");
+
+		// 	$consultaEtariosCobertura = "SELECT MAX(APS) + MAX(CAJMPS)+ MAX(CAJMRI)+ MAX(CAJTRI) AS cant_Estudiantes, $sumaCoberturasEtario FROM sedes_cobertura WHERE cod_sede = '".$sede."' and mes= '".($i < 10 ? "0".$i : $i)."' GROUP BY cod_sede";
+		// 	$resultadoEtariosCobertura = $Link->query($consultaEtariosCobertura);
+		// 	if ($resultadoEtariosCobertura->num_rows > 0) {
+		// 		if ($EtariosCobertura = $resultadoEtariosCobertura->fetch_assoc()) {
+		// 			if (!isset($maxEstudiantes[$codigo_inst])) {
+		// 				$maxEstudiantes[$codigo_inst] = $EtariosCobertura["cant_Estudiantes"];
+		// 			} else {
+		// 				$maxEstudiantes[$codigo_inst] += $EtariosCobertura["cant_Estudiantes"];
+		// 			}
+
+		// 			// $maxEstudiantes += $EtariosCobertura["cant_Estudiantes"];
+		// 		}
+		// 	}
+
+		// }
+
 
 		$consultaDespacho = "SELECT * FROM $insumosmov WHERE BodegaDestino = '".$sede."'";
 		$resultadoDespacho = $Link->query($consultaDespacho);
 		if ($resultadoDespacho->num_rows > 0) {
 			while ($Despacho = $resultadoDespacho->fetch_assoc()) {
+
+				if (!isset($maxEstudiantes[$codigo_inst])) {
+					$maxEstudiantes[$codigo_inst] = $Despacho["Cobertura"];
+				} else {
+					$maxEstudiantes[$codigo_inst] += $Despacho["Cobertura"];
+				}
+
 			    $consultaDetalles = "SELECT producto.id as pId, producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
 			    					INNER JOIN productos".$_SESSION['periodoActual']." as producto ON producto.Codigo = insmovdet.CodigoProducto
 			     					WHERE insmovdet.Numero = '".$Despacho['Numero']."'";
@@ -271,7 +337,7 @@ $alturaRenglon = 6;
 
 	foreach ($dataInst as $cod_inst => $sedes) {
 
-		$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, $maxEstudiantes[$cod_inst], $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMesInicio, $tablaMesFin);
+		$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMesInicio, $tablaMesFin);
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','',$fontSize);
 

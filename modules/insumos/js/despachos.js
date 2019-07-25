@@ -390,3 +390,18 @@ $('#institucion_desp').on('change', function(){
    });
 });
 
+
+$(document).on('ifChecked', '.checkDespacho', function(){
+
+	var despachos = "";
+
+	$('.checkDespacho').each(function(index, val){
+		if ($(this).iCheck('data')[0].checked) {
+			despachos += $(this).data('iddespacho')+"_"+$(this).data('mesdespacho')+", ";
+		}
+	});
+
+	$('#despachos_seleccionados').val(despachos);
+
+});
+

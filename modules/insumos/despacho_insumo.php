@@ -1,6 +1,6 @@
-<?php 
+<?php
 $titulo = 'Nuevo despacho';
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 ?>
@@ -38,7 +38,7 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
               <label>Tipo de despacho</label>
               <select name="tipo_despacho" id="tipo_despacho" class="form-control" required>
                 <option value="">Seleccione...</option>
-                <?php 
+                <?php
 
                 $consultaTipoDesp = "SELECT * FROM tipomovimiento WHERE Documento = 'DESI'";
                 $resultadoTipoDesp = $Link->query($consultaTipoDesp);
@@ -56,7 +56,7 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
               <label>Proveedor / Empleado</label>
               <select name="proveedor" id="proveedor" class="form-control" required>
                 <option value="">Seleccione...</option>
-                
+
               </select>
               <input type="hidden" name="nombre_proveedor" id="nombre_proveedor">
             </div>
@@ -64,14 +64,14 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
               <label>Municipio</label>
               <select name="municipio_desp" id="municipio_desp" class="form-control" required>
                 <option value="">Seleccione...</option>
-              <?php 
+              <?php
               $consultaMunicipios = "SELECT DISTINCT
                                         ubicacion.CodigoDANE, ubicacion.Ciudad
                                     FROM
                                         ubicacion,
                                         parametros
                                     WHERE
-                                        ubicacion.ETC = 0 
+                                        ubicacion.ETC = 0
                                         AND ubicacion.CodigoDane LIKE CONCAT(parametros.CodDepartamento, '%')
                                         AND EXISTS( SELECT DISTINCT
                                             cod_mun
@@ -86,7 +86,7 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
                   <option value="<?php echo $municipio['CodigoDANE']; ?>"><?php echo ucfirst(mb_strtolower($municipio['Ciudad'])); ?></option>
                 <?php }
               }
-               ?>  
+               ?>
               </select>
             </div>
             <div class="form-group col-sm-3">
@@ -105,15 +105,15 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
               <label>Rutas</label>
               <select name="ruta_desp" id="ruta_desp" class="form-control select2">
                 <option value="">Seleccione...</option>
-              <?php 
-              $consultaRutas = "SELECT * FROM rutas"; 
+              <?php
+              $consultaRutas = "SELECT * FROM rutas";
               $resultadoRutas = $Link->query($consultaRutas);
               if ($resultadoRutas->num_rows > 0) {
                 while ($ruta = $resultadoRutas->fetch_assoc()) { ?>
                   <option value="<?php echo $ruta['ID']; ?>"><?php echo $ruta['Nombre']; ?></option>
                 <?php }
               }
-              ?>   
+              ?>
               </select>
             </div>
             <div class="col-sm-12">
@@ -136,7 +136,7 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
                   </tr>
                 </thead>
                 <tbody id="tbodySedesDespachos">
-                  
+
                 </tbody>
                 <tfoot>
                   <tr>
@@ -148,7 +148,7 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
                 </tfoot>
               </table>
               <div class="alert alert-danger" role="alert" id="errDespachos" style="display: none;">
-                
+
               </div>
             </div>
 
@@ -170,8 +170,8 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
             <div class="form-group col-sm-3">
               <label>Meses a despachar</label>
               <select name="meses_despachar[]" id="meses_despachar" class="form-control" multiple required>
-              <?php 
-              $consultaMesesPlanillaDias = "SELECT mes FROM planilla_dias WHERE ano = '".$_SESSION['periodoActualCompleto']."'"; 
+              <?php
+              $consultaMesesPlanillaDias = "SELECT mes FROM planilla_dias WHERE ano = '".$_SESSION['periodoActualCompleto']."'";
               $resultadoMesesPlanillaDias = $Link->query($consultaMesesPlanillaDias);
               if ($resultadoMesesPlanillaDias->num_rows > 0) {
                 while ($MPD = $resultadoMesesPlanillaDias->fetch_assoc()) { ?>
@@ -180,7 +180,7 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
               } else { ?>
                   <option value="">No hay meses registrados.</option>
               <?php }
-              ?>   
+              ?>
               </select>
             </div>
 
@@ -201,7 +201,7 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
               <label>Tipo de transporte</label>
               <select name="tipo_transporte" class="form-control" required>
                 <option value="">Seleccione...</option>
-                <?php 
+                <?php
                 $consultaTipoTrans = "SELECT * FROM tipovehiculo";
                 $resultadoTipoTrans = $Link->query($consultaTipoTrans);
                 if ($resultadoTipoTrans->num_rows > 0) {
