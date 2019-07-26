@@ -236,7 +236,7 @@ function guardarIntercambio(){
 				if(data.estado == 1){
 					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ 
 						$('#loader').fadeOut();
-						//location.reload();
+						location.reload();
 					}});
 				}
 				else{
