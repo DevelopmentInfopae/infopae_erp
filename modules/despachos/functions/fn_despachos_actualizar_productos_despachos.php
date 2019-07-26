@@ -137,9 +137,14 @@ foreach ($numeros_despachos as $numero_despacho)
 																				SET Estado='1'
 																				WHERE Num_Doc = '".$numero_despacho."'";
 		$respuesta_editar_estado_despacho = $Link->query($consulta_editar_estado_despacho) or die("Error al actualizar el estado del despacho: ". $Link->error);
-
 	}
 }
+
+/**
+ * Algoritmo para registrar los datos en bitácora de acciones
+ */
+$consulta_registrar_bitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('".date("Y-m-d H:i:s")."', '".$_SESSION["id_usuario"]."', '54', 'Actualizó datos de Despachos');";
+$respuesta_registrar_bitacora = $Link->query($consulta_registrar_bitacora) or die("Error al guardar datos de bitácora: ". $Link->error);
 
 
 $respuesta_ajax =  [

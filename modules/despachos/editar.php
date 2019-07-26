@@ -527,7 +527,8 @@
     $('.producto').each(function(indice) {
       if (indice != indice_fila)
       {
-        if ($(this).find('option:selected').val() == id_producto)
+        var valor_input_actual = $(this).find('option:selected').val();
+        if (valor_input_actual == id_producto && valor_input_actual != "")
         {
           Command: toastr.warning('No puede seleccionar un mismo producto.', 'Advertencia', { onHidden: function() { control_select.select2('val', ''); } });
         }
