@@ -237,8 +237,11 @@
 
   } else if (isset($_POST['buscar'])) { //Si hay filtrado
 
-    $num_mes_inicio = str_replace("0", "", $_POST['mes_inicio']);
-    $num_mes_fin = str_replace("0", "", $_POST['mes_fin']);
+    // $num_mes_inicio = str_replace("0", "", $_POST['mes_inicio']);
+    // $num_mes_fin = str_replace("0", "", $_POST['mes_fin']);
+
+    $num_mes_inicio = (Int) $_POST['mes_inicio'];
+    $num_mes_fin = (Int) $_POST['mes_fin'];
 
     $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual']; //Número MesAño según mes escogido
     $condiciones = ""; //Donde se almacenan las condiciones según parámetros
