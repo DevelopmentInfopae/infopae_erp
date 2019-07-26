@@ -51,7 +51,7 @@ $resultadoAJAX = array(
 
 
 // Registro del encabezdo de la novedad
-$query = " insert into novedades_menu (mes, semana, tipo_complem, cod_grupo_etario,  observaciones, url_archivo, fecha_registro, estado, fecha_vencimiento, id_usuario, tipo_intercambio) values (\"$mes\", \"$semana\", \"$tipoComplemento\", \"$grupoEtario\", \"$observaciones\", \"$carpeta\", \"$fecha\", \"1\", \"$fechaVencimiento\", \"$usuario\", \"3\") ";
+$query = " insert into novedades_menu (mes, semana, tipo_complem, cod_grupo_etario,  observaciones, url_archivo, fecha_registro, estado, fecha_vencimiento, id_usuario, tipo_intercambio) values (\"$mes\", \"$semana\", \"$tipoComplemento\", \"$grupoEtario\", \"$observaciones\", \"\", \"$fecha\", \"1\", \"$fechaVencimiento\", \"$usuario\", \"3\") ";
 
 //echo "<br><br>$query<br><br>";
 $result = $Link->query($query) or die ('Insertando novedad'. mysqli_error($Link)); 

@@ -142,14 +142,17 @@
 				</ul>
 			</li>
 
-			<li>
+
+			<li><a href="<?php echo $baseUrl; ?>/modules/intercambios/index.php">Menú</a></li>
+			
+			<!-- <li>
 				<a href="#"><span class="nav-label">Menús</span> <span class="fa arrow"></span></a>
 				<ul class="nav nav-third-level">
-					<li> <a href="<?= $baseUrl; ?>/modules/intercambios/intercambio_alimento.php">Intercambio de alimento</a> </li>
-					<li> <a href="<?= $baseUrl; ?>/modules/intercambios/intercambio_preparacion.php">Intercambio de preparación</a> </li>
-					<li> <a href="<?= $baseUrl; ?>/modules/intercambios/intercambio_dia_menu.php">Intercambio de día de menú</a> </li>
+					<li> <a href="<?//= $baseUrl; ?>/modules/intercambios/intercambio_alimento.php">Intercambio de alimento</a> </li>
+					<li> <a href="<?//= $baseUrl; ?>/modules/intercambios/intercambio_preparacion.php">Intercambio de preparación</a> </li>
+					<li> <a href="<?//= $baseUrl; ?>/modules/intercambios/intercambio_dia_menu.php">Intercambio de día de menú</a> </li>
 				</ul>
-			</li>
+			</li> -->
 			
 		</ul>
 	</li>

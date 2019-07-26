@@ -75,7 +75,7 @@ if ($resultadoFichaTecnica->num_rows > 0) {
     if ($resultadoFichaTecnicaDet->num_rows > 0) {
 
       // Registro del encabezdo de la novedad
-      $query = " insert into novedades_menu (mes, semana, dia, menu, tipo_complem, cod_grupo_etario, cod_producto, observaciones, url_archivo, fecha_registro, estado, fecha_vencimiento, id_usuario, tipo_intercambio) values (\"$mes\", \"$semana\", \"$dia\", \"$codigoMenu\", \"$tipoComplemento\", \"$grupoEtario\", \"$codigoMenu\", \"$observaciones\", \"$carpeta\", \"$fecha\", \"1\", \"$fechaVencimiento\", \"$usuario\", \"2\") "; 
+      $query = " insert into novedades_menu (mes, semana, dia, menu, tipo_complem, cod_grupo_etario, cod_producto, observaciones, url_archivo, fecha_registro, estado, fecha_vencimiento, id_usuario, tipo_intercambio) values (\"$mes\", \"$semana\", \"$dia\", \"$codigoMenu\", \"$tipoComplemento\", \"$grupoEtario\", \"$codigoMenu\", \"$observaciones\", \"\", \"$fecha\", \"1\", \"$fechaVencimiento\", \"$usuario\", \"2\") "; 
 
       //echo "<br><br>$query<br><br>";
       $result = $Link->query($query) or die ('Insertando novedad'. mysqli_error($Link)); 
