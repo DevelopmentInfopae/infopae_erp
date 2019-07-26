@@ -17,6 +17,29 @@ if (isset($_POST['tablaMesInicio'])) {
 	echo "<script>alert('No se ha definido mes.');</script>";
 }
 
+$despachos_seleccionados = $_POST['despachos_seleccionados'];
+$despachos_seleccionados = trim($despachos_seleccionados, ", ");
+$ds = explode(", ", $despachos_seleccionados);
+$ds_mes = [];
+
+$meses_involucrados = [];
+
+foreach ($ds as $id => $value) {
+	$sd = explode("_", $value);
+
+	$ds_mes[$id]['id_despacho'] = $sd[0];
+	$ds_mes[$id]['mes_despacho'] = $sd[1];
+
+	if (!isset($meses_involucrados[$sd[1]])) {
+		$meses_involucrados[(Int) $sd[1]] = 1;
+	}
+
+}
+
+if (count($meses_involucrados) > 1) {
+	echo "<script>alert('No puede escoger despachos de diferentes meses para este informe.');</script>";
+}
+
 // $tablaMes = "01";
 // $sedes[0] = '16801300001601';
 // $sedes[1] = '16801300001602';
@@ -112,8 +135,8 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 
 		    foreach ($this->gruposEtarios as $ID => $DESCRIPCION) {
 		    	$this->Cell(61.94,6,utf8_decode($DESCRIPCION),'BLR',0,'C');
-		    	$this->Cell(61.94,6,utf8_decode($this->coberturaEtarios['Etario'.$ID]),'BLR',0,'C');//SEDES COBERTURA POR GRUPO ETARIO
-		    	$this->Cell(61.94,6,utf8_decode($this->coberturaEtarios['Etario'.$ID]),'BLR',1,'C');//SEDES COBERTURA POR GRUPO ETARIO
+		    	$this->Cell(61.94,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BLR',0,'C');//SEDES COBERTURA POR GRUPO ETARIO
+		    	$this->Cell(61.94,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BLR',1,'C');//SEDES COBERTURA POR GRUPO ETARIO
     		}
     		$this->SetXY(192.8, 47);
     		$this->Cell(48.6,18,utf8_decode($this->dataSede['cantidad_Manipuladora']),'TBR',0,'C');//MANIPULADORAS DE LA SEDE
@@ -173,22 +196,30 @@ foreach ($sedes as $key => $sede) {
     $sumaCoberturasEtario = trim($sumaCoberturasEtario, " ,");
 
 
-	$coberturaEtarios = [];
-	$consultaEtariosCobertura = "SELECT MAX(APS) + MAX(CAJMPS)+ MAX(CAJMRI)+ MAX(CAJTRI) AS cant_Estudiantes, $sumaCoberturasEtario FROM sedes_cobertura WHERE cod_sede = '".$sede."' and mes= '".$tablaMes."' GROUP BY cod_sede";
-	$resultadoEtariosCobertura = $Link->query($consultaEtariosCobertura);
-	if ($resultadoEtariosCobertura->num_rows > 0) {
-		if ($EtariosCobertura = $resultadoEtariosCobertura->fetch_assoc()) {
-			$coberturaEtarios["Etario1"] = $EtariosCobertura["Etario1"];
-			$coberturaEtarios["Etario2"] = $EtariosCobertura["Etario2"];
-			$coberturaEtarios["Etario3"] = $EtariosCobertura["Etario3"];
-			$maxEstudiantes = $EtariosCobertura["cant_Estudiantes"];
-		}
-	}
+	// $coberturaEtarios = [];$maxEstudiantes=0;
+	// $consultaEtariosCobertura = "SELECT MAX(APS) + MAX(CAJMPS)+ MAX(CAJMRI)+ MAX(CAJTRI) AS cant_Estudiantes, $sumaCoberturasEtario FROM sedes_cobertura WHERE cod_sede = '".$sede."' and mes= '".$tablaMes."' GROUP BY cod_sede";
+	// $resultadoEtariosCobertura = $Link->query($consultaEtariosCobertura);
+	// if ($resultadoEtariosCobertura->num_rows > 0) {
+	// 	if ($EtariosCobertura = $resultadoEtariosCobertura->fetch_assoc()) {
+	// 		$coberturaEtarios["Etario1"] = $EtariosCobertura["Etario1"];
+	// 		$coberturaEtarios["Etario2"] = $EtariosCobertura["Etario2"];
+	// 		$coberturaEtarios["Etario3"] = $EtariosCobertura["Etario3"];
+	// 		$maxEstudiantes = $EtariosCobertura["cant_Estudiantes"];
+	// 	}
+	// } else {
+
+	// }
 
 	$consultaDespacho = "SELECT * FROM $insumosmov WHERE BodegaDestino = '".$sede."'";
 	$resultadoDespacho = $Link->query($consultaDespacho);
 	if ($resultadoDespacho->num_rows > 0) {
 		while ($Despacho = $resultadoDespacho->fetch_assoc()) {
+
+			$coberturaEtarios["Etario1"] = $Despacho["Cobertura_G1"];
+			$coberturaEtarios["Etario2"] = $Despacho["Cobertura_G2"];
+			$coberturaEtarios["Etario3"] = $Despacho["Cobertura_G3"];
+			$maxEstudiantes = $Despacho["Cobertura"];
+
 			$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios,$tablaMes);
 			$pdf->AddPage();
 		    $pdf->SetFont('Arial','',7);

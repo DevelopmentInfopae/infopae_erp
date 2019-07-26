@@ -18,7 +18,48 @@ function obtenerNumDoc($tabla, $Link){
 	}
 }
 
+function obtenerCoberturas($sede, $Link, $mes){
+
+	$cupos = []; $coberturas = [];
+
+	$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
+							(Etario1_APS + Etario1_CAJMRI + Etario1_CAJTRI + Etario1_CAJMPS) AS Cobertura_G1,
+							(Etario2_APS + Etario2_CAJMRI + Etario2_CAJTRI + Etario2_CAJMPS) AS Cobertura_G2,
+							(Etario3_APS + Etario3_CAJMRI + Etario3_CAJTRI + Etario3_CAJMPS) AS Cobertura_G3,
+							mes
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+	$resultadoCupos = $Link->query($consultaCupos);
+	if ($resultadoCupos->num_rows > 0) {
+		while ($cps = $resultadoCupos->fetch_assoc()) {
+			$cupos[$cps['mes']]['Cobertura'] = $cps['Cupos'];
+			$cupos[$cps['mes']]['Cobertura_G1'] = $cps['Cobertura_G1'];
+			$cupos[$cps['mes']]['Cobertura_G2'] = $cps['Cobertura_G2'];
+			$cupos[$cps['mes']]['Cobertura_G3'] = $cps['Cobertura_G3'];
+		}
+	}
+
+	if (isset($cupos[$mes])) { //si hay cupos para el mes registrados
+		$coberturas['Cobertura'] = $cupos[$mes]['Cobertura'];
+		$coberturas['Cobertura_G1'] = $cupos[$mes]['Cobertura_G1'];
+		$coberturas['Cobertura_G2'] = $cupos[$mes]['Cobertura_G2'];
+		$coberturas['Cobertura_G3'] = $cupos[$mes]['Cobertura_G3'];
+	} else { //si no hay cupos para el mes registados
+		if (count($cupos) > 0) { //Si hay cupos registrados para otros meses
+			$cupos_duplicar = current($cupos); //se calcula la cantidad a despachar con el primer mes del array
+			$coberturas['Cobertura'] = $cupos_duplicar['Cobertura'];
+			$coberturas['Cobertura_G1'] = $cupos_duplicar['Cobertura_G1'];
+			$coberturas['Cobertura_G2'] = $cupos_duplicar['Cobertura_G2'];
+			$coberturas['Cobertura_G3'] = $cupos_duplicar['Cobertura_G3'];
+		}
+	}
+
+	return $coberturas;
+
+}
+
 function calcularCantidad($cins, $sede, $Link, $mes){
+
+	$coberturas = [];
 
 	$consultaParametro = "SELECT CantidadCupos FROM parametros";
 	$resultadoParametro = $Link->query($consultaParametro);
@@ -42,16 +83,18 @@ function calcularCantidad($cins, $sede, $Link, $mes){
 
 	$conteoIns = substr($cins, 2, 2);
 	if ($conteoIns == "01") { //cupos
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND mes = '".$mes."'";
-		$resultadoCupos = $Link->query($consultaCupos);
-		if ($resultadoCupos->num_rows > 0) {
-			if ($cuposInf = $resultadoCupos->fetch_assoc()) {
-				$cupos = $cuposInf['Cupos'];
-			}
+		// $consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND mes = '".$mes."'";
+		// $resultadoCupos = $Link->query($consultaCupos);
+		// if ($resultadoCupos->num_rows > 0) {
+		// 	if ($cuposInf = $resultadoCupos->fetch_assoc()) {
+		// 		$cupos = $cuposInf['Cupos'];
+		// 	}
+		// 	$cantidad = ceil($cupos / $cantCuposCalcular) * $cantxMes;
+		// }
+		$coberturas = obtenerCoberturas($sede, $Link, $mes);
+		$cantidad = ceil($coberturas['Cobertura'] / $cantCuposCalcular) * $cantxMes;
 
-			$cantidad = ceil($cupos / $cantCuposCalcular) * $cantxMes;
 
-		}
 	} else if ($conteoIns == "02") {//manipuladores
 		$consultaManipuladores = "SELECT cantidad_Manipuladora AS manipuladores FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = '".$sede."'";
 		$resultadoManipuladores = $Link->query($consultaManipuladores);
@@ -119,18 +162,6 @@ if (isset($_POST['municipio_desp'])) {
 } else {
 	$municipio_desp = "";
 }
-
-// if (isset($_POST['institucion_desp'])) {
-// 	$institucion_desp = $_POST['institucion_desp'];
-// } else {
-// 	$institucion_desp = "";
-// }
-
-// if (isset($_POST['sede_desp'])) {
-// 	$sede_desp = $_POST['sede_desp'];
-// } else {
-// 	$sede_desp = "";
-// }
 
 if (isset($_POST['ruta_desp'])) {
 	$ruta_desp = $_POST['ruta_desp'];
@@ -228,6 +259,10 @@ foreach ($meses_despachar as $key => $mes) {
 	  `TipoTransporte` varchar(50) NOT NULL DEFAULT '',
 	  `Placa` varchar(10) NOT NULL DEFAULT '',
 	  `ResponsableRecibe` varchar(45) NOT NULL DEFAULT '',
+	  `Cobertura` int(10) DEFAULT 0,
+	  `Cobertura_G1` int(10) DEFAULT 0,
+	  `Cobertura_G2` int(10) DEFAULT 0,
+	  `Cobertura_G3` int(10) DEFAULT 0,
 	  PRIMARY KEY (`Id`)
 	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;";
 	if ($Link->query($queryinsumosmov)===true) {
@@ -238,12 +273,14 @@ foreach ($meses_despachar as $key => $mes) {
 
 	$numerosDespachos = "";
 
-	$insertinsumosmov = "INSERT INTO $insumosmov (Documento, Numero, Tipo, BodegaOrigen, BodegaDestino, Nombre, Nitcc, Aprobado, NombreResponsable, LoginResponsable, FechaMYSQL, Anulado, TipoTransporte, Placa, ResponsableRecibe) VALUES ";
+
+	$insertinsumosmov = "INSERT INTO $insumosmov (Documento, Numero, Tipo, BodegaOrigen, BodegaDestino, Nombre, Nitcc, Aprobado, NombreResponsable, LoginResponsable, FechaMYSQL, Anulado, TipoTransporte, Placa, ResponsableRecibe, Cobertura, Cobertura_G1, Cobertura_G2, Cobertura_G3) VALUES ";
 	$numDoc = obtenerNumDoc($insumosmov, $Link);
 	foreach ($sedes as $key => $sede) {
+		$coberturas_sedes = obtenerCoberturas($sede, $Link, $mes);
 		$sedesNumDoc[$sede] = $numDoc;
 		$numerosDespachos.=$numDoc.", ";
-		$insertinsumosmov.="('DESI', '".$sedesNumDoc[$sede]."', '".$nomTipoMov."', '".$bodega_origen."', '".$sede."', '".$nombre_proveedor."', '".$proveedor."', '0', '".$nombreResp."', '".$loginResp."', '".date('Y-m-d H:i:s')."', '0', '".$tipo_transporte."', '".$placa_vehiculo."', '".$conductor."'), ";
+		$insertinsumosmov.="('DESI', '".$sedesNumDoc[$sede]."', '".$nomTipoMov."', '".$bodega_origen."', '".$sede."', '".$nombre_proveedor."', '".$proveedor."', '0', '".$nombreResp."', '".$loginResp."', '".date('Y-m-d H:i:s')."', '0', '".$tipo_transporte."', '".$placa_vehiculo."', '".$conductor."', '".$coberturas_sedes['Cobertura']."', '".$coberturas_sedes['Cobertura_G1']."', '".$coberturas_sedes['Cobertura_G2']."', '".$coberturas_sedes['Cobertura_G3']."'), ";
 		$numDoc++;
 	}
 
