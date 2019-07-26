@@ -18,7 +18,46 @@ function obtenerNumDoc($tabla, $Link){
 	}
 }
 
-function calcularCantidad($cins, $sede, $Link){
+function obtenerCoberturas($sede, $Link, $mes){
+
+	$cupos = []; $coberturas = [];
+
+	$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
+							(Etario1_APS + Etario1_CAJMRI + Etario1_CAJTRI + Etario1_CAJMPS) AS Cobertura_G1,
+							(Etario2_APS + Etario2_CAJMRI + Etario2_CAJTRI + Etario2_CAJMPS) AS Cobertura_G2,
+							(Etario3_APS + Etario3_CAJMRI + Etario3_CAJTRI + Etario3_CAJMPS) AS Cobertura_G3,
+							mes
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+	$resultadoCupos = $Link->query($consultaCupos);
+	if ($resultadoCupos->num_rows > 0) {
+		while ($cps = $resultadoCupos->fetch_assoc()) {
+			$cupos[$cps['mes']]['Cobertura'] = $cps['Cupos'];
+			$cupos[$cps['mes']]['Cobertura_G1'] = $cps['Cobertura_G1'];
+			$cupos[$cps['mes']]['Cobertura_G2'] = $cps['Cobertura_G2'];
+			$cupos[$cps['mes']]['Cobertura_G3'] = $cps['Cobertura_G3'];
+		}
+	}
+
+	if (isset($cupos[$mes])) { //si hay cupos para el mes registrados
+		$coberturas['Cobertura'] = $cupos[$mes]['Cobertura'];
+		$coberturas['Cobertura_G1'] = $cupos[$mes]['Cobertura_G1'];
+		$coberturas['Cobertura_G2'] = $cupos[$mes]['Cobertura_G2'];
+		$coberturas['Cobertura_G3'] = $cupos[$mes]['Cobertura_G3'];
+	} else { //si no hay cupos para el mes registados
+		if (count($cupos) > 0) { //Si hay cupos registrados para otros meses
+			$cupos_duplicar = current($cupos); //se calcula la cantidad a despachar con el primer mes del array
+			$coberturas['Cobertura'] = $cupos_duplicar['Cobertura'];
+			$coberturas['Cobertura_G1'] = $cupos_duplicar['Cobertura_G1'];
+			$coberturas['Cobertura_G2'] = $cupos_duplicar['Cobertura_G2'];
+			$coberturas['Cobertura_G3'] = $cupos_duplicar['Cobertura_G3'];
+		}
+	}
+
+	return $coberturas;
+
+}
+
+function calcularCantidad($cins, $sede, $Link, $mes){
 
 	$consultaParametro = "SELECT CantidadCupos FROM parametros";
 	$resultadoParametro = $Link->query($consultaParametro);
@@ -42,14 +81,18 @@ function calcularCantidad($cins, $sede, $Link){
 
 	$conteoIns = substr($cins, 2, 2);
 	if ($conteoIns == "01") { //cupos
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos FROM sedes_cobertura WHERE cod_sede = '".$sede."'";
-		$resultadoCupos = $Link->query($consultaCupos);
-		if ($resultadoCupos->num_rows > 0) {
-			if ($cuposInf = $resultadoCupos->fetch_assoc()) {
-				$cupos = $cuposInf['Cupos'];
-			}
-			$cantidad = ceil($cupos / $cantCuposCalcular) * $cantxMes;
-		}
+		// $consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos FROM sedes_cobertura WHERE cod_sede = '".$sede."'";
+		// $resultadoCupos = $Link->query($consultaCupos);
+		// if ($resultadoCupos->num_rows > 0) {
+		// 	if ($cuposInf = $resultadoCupos->fetch_assoc()) {
+		// 		$cupos = $cuposInf['Cupos'];
+		// 	}
+		// 	$cantidad = ceil($cupos / $cantCuposCalcular) * $cantxMes;
+		// }
+
+		$coberturas = obtenerCoberturas($sede, $Link, $mes);
+		$cantidad = ceil($coberturas['Cobertura'] / $cantCuposCalcular) * $cantxMes;
+
 	} else if ($conteoIns == "02") {//manipuladores
 		$consultaManipuladores = "SELECT cantidad_Manipuladora AS manipuladores FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = '".$sede."'";
 		$resultadoManipuladores = $Link->query($consultaManipuladores);
@@ -219,7 +262,9 @@ foreach ($meses_despachar as $key => $mes) {
 
 	$insumosmov = "insumosmov".$mes.$_SESSION['periodoActual'];
 
-	$updateinsumosmov ="UPDATE $insumosmov SET Tipo = '".$nomTipoMov."', BodegaOrigen = '".$bodega_origen."', BodegaDestino = '".$sedes[0]."', Nombre = '".$nombre_proveedor."', Nitcc = '".$proveedor."', TipoTransporte = '".$tipo_transporte."', Placa = '".$placa_vehiculo."', ResponsableRecibe = '".$conductor."' WHERE Id = '".$idDespacho."' ; ";
+	$coberturas_sedes = obtenerCoberturas($sedes[0], $Link, $mes);
+
+	$updateinsumosmov ="UPDATE $insumosmov SET Tipo = '".$nomTipoMov."', BodegaOrigen = '".$bodega_origen."', BodegaDestino = '".$sedes[0]."', Nombre = '".$nombre_proveedor."', Nitcc = '".$proveedor."', TipoTransporte = '".$tipo_transporte."', Placa = '".$placa_vehiculo."', ResponsableRecibe = '".$conductor."', Cobertura = '".$coberturas_sedes['Cobertura']."', Cobertura_G1 = '".$coberturas_sedes['Cobertura_G1']."', Cobertura_G2 = '".$coberturas_sedes['Cobertura_G2']."', Cobertura_G3 = '".$coberturas_sedes['Cobertura_G3']."' WHERE Id = '".$idDespacho."' ; ";
 
 	if ($Link->query($updateinsumosmov)===true) {
 		$validaProductos++;
@@ -231,7 +276,7 @@ foreach ($meses_despachar as $key => $mes) {
 
 	foreach ($idDetDespacho as $key => $det) {
 			$datos = datosProducto($productoDespacho[$key], $sedes[0], $Link);
-			$presentaciones = calcularCantidad($productoDespacho[$key], $sedes[0], $Link);
+			$presentaciones = calcularCantidad($productoDespacho[$key], $sedes[0], $Link, $mes);
 				$updateinsumosmovdet ="UPDATE $insumosmovdet SET CodigoProducto = '".$productoDespacho[$key]."', Descripcion = '".$DescInsumo[$key]."', Cantidad = '".$presentaciones[6]."', BodegaOrigen = '".$bodega_origen."', BodegaDestino = '".$sedes[0]."', Umedida = '".$datos['uMedida2']."', CantUmedida = '".$datos['cantUMedida']."', CantU2 = '".$presentaciones[1]."', CantU3 = '".$presentaciones[2]."', CantU4 = '".$presentaciones[3]."', CantU5 = '".$presentaciones[4]."', CanTotalPresentacion = '".$presentaciones[5]."' WHERE Id = '".$det."';";
 
 			if ($Link->query($updateinsumosmovdet)===true) {
@@ -245,7 +290,7 @@ foreach ($meses_despachar as $key => $mes) {
 		$insertinsumosmovdet = "INSERT INTO $insumosmovdet (Documento, Numero, Item, CodigoProducto, Descripcion, Cantidad, BodegaOrigen, BodegaDestino, Id, Umedida, CantUmedida, Factor, Id_Usuario, CantU2, CantU3, CantU4, CantU5, CanTotalPresentacion) VALUES ";
 		for ($i=sizeof($idDetDespacho); $i < sizeof($productoDespacho); $i++) {
 			$datos = datosProducto($productoDespacho[$i], $sedes[0], $Link);
-			$presentaciones = calcularCantidad($productoDespacho[$i], $sedes[0], $Link);
+			$presentaciones = calcularCantidad($productoDespacho[$i], $sedes[0], $Link, $mes);
 			$insertinsumosmovdet.="('DESI', '".$numDoc."', '0', '".$productoDespacho[$i]."', '".$DescInsumo[$i]."', '".$presentaciones[6]."', '".$bodega_origen."', '".$sedes[0]."', '', '".$datos['uMedida2']."', '".$datos['cantUMedida']."', '1', '".$_SESSION['idUsuario']."', '".$presentaciones[1]."', '".$presentaciones[2]."', '".$presentaciones[3]."', '".$presentaciones[4]."', '".$presentaciones[5]."'), ";
 		}
 
