@@ -507,7 +507,7 @@ function submitDespacho(accion){
                beforeSend: function(){},
                success: function(data){
                 if (data == "1") {
-                  Command: toastr.success(descNotif, titleNotif, {onHidden : function(){ location.reload();}})
+                  Command: toastr.success(descNotif, titleNotif, {onHidden : function(){ location.href='despachos.php';}})
                 } else if (data == "0") {
                   Command: toastr.error("Hubo un error al registrar el despacho.", "Ocurrió un error.", {onHidden : function(){ $('#loader').fadeOut();}})
                 } else {

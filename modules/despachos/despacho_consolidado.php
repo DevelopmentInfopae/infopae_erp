@@ -399,11 +399,16 @@ $totalGrupo1 = 0;
 $totalGrupo2 = 0;
 $totalGrupo3 = 0;
 
+$totalcons = "";
 // Vamos a buscar los alimentos de los depachos
 $alimentos = array();
+$tg = [];
 for ($i=0; $i < count($despachos) ; $i++) {
   $despacho = $despachos[$i];
   $numero = $despacho['num_doc'];
+  if ($i==0) {
+    // exit($numero);
+  }
   //$consulta = " select * from despachos_det$mesAnno where Tipo_Doc = 'DES' and Num_Doc = $numero ";
 
 
@@ -415,60 +420,52 @@ for ($i=0; $i < count($despachos) ; $i++) {
 
 
 
-
-
-
-
-
-
-
-
- // echo "<br>".$consulta."<br>";
+ // $totalcons.= "<br>".$consulta."<br>";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     while($row = $resultado->fetch_assoc()){
       $alimento = array();
+
+      if(isset($tg[$row['cod_Alimento']][$numero])){
+        $tg[$row['cod_Alimento']][$numero] += $row['Cantidad'];
+      } else {
+        $tg[$row['cod_Alimento']][$numero] = $row['Cantidad'];
+      }
+
       $alimento['codigo'] = $row['cod_Alimento'];
       $auxGrupo = $row['Id_GrupoEtario'];
       $alimento['grupo'.$auxGrupo] = $row['Cantidad'];
-
-
-
       $alimento['cantotalpresentacion'] = $row['CanTotalPresentacion'];
       $alimento['cantu2'] = $row['CantU2'];
       $alimento['cantu3'] = $row['CantU3'];
       $alimento['cantu4'] = $row['CantU4'];
       $alimento['cantu5'] = $row['CantU5'];
-
       // Guardamos el numero de documento para discriminar la unidades de cada despacho
       $alimento['Num_Doc'] = $row['Num_Doc'];
-
-
-
-    $alimento['componente'] = '';
-    $alimento['presentacion'] = '';
-    $alimento['grupo_alim'] = '';
-
-    $alimento['nombreunidad2'] = '';
-    $alimento['nombreunidad3'] = '';
-    $alimento['nombreunidad4'] = '';
-    $alimento['nombreunidad5'] = '';
-    $alimentos[] = $alimento;
+      $alimento['componente'] = '';
+      $alimento['presentacion'] = '';
+      $alimento['grupo_alim'] = '';
+      $alimento['nombreunidad2'] = '';
+      $alimento['nombreunidad3'] = '';
+      $alimento['nombreunidad4'] = '';
+      $alimento['nombreunidad5'] = '';
+      $alimentos[] = $alimento;
     }
   }
 }
 
+// exit(var_dump($tg['0302001']));
+// exit(var_dump($totalcons));
+
 // Vamos unificar los alimentos para que no se repitan
 $alimento = $alimentos[0];
 
-// var_dump($totalesSedeCobertura);
 
 if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
 if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
 if(!isset($alimento['grupo3'])){ $alimento['grupo3'] = 0;}else{ $totalGrupo3 = $totalesSedeCobertura['grupo3']; }
 $alimentosTotales = array();
 $alimentosTotales[] = $alimento;
-
 for ($i=1; $i < count($alimentos) ; $i++) {
   $alimento = $alimentos[$i];
   if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
@@ -517,9 +514,6 @@ for ($i=1; $i < count($alimentos) ; $i++) {
 
 
 
-
-
-
         $alimentosTotales[$j] = $alimentoTotal;
         break;
       }
@@ -529,10 +523,7 @@ for ($i=1; $i < count($alimentos) ; $i++) {
   }
 }
 
-
-//var_dump($alimentosTotales);
-
-
+// var_dump($alimentosTotales);
 
 // Vamos a traer los datos que faltan para mostrar en la tabla
 for ($i=0; $i < count($alimentosTotales) ; $i++) {
@@ -564,10 +555,6 @@ for ($i=0; $i < count($alimentosTotales) ; $i++) {
 }
 
 mysqli_close ( $Link );
-
-
-
-
 
 
 /*************************************************************/
@@ -628,6 +615,7 @@ class PDF extends FPDF{
   function Footer(){}
 }
 
+
 //CREACION DEL PDF
 // Creación del objeto de la clase heredada
 $pdf= new PDF('L','mm',array(279.4,215.9));
@@ -651,12 +639,10 @@ $grupoAlimActual = '';
 $pdf->SetFont('Arial','',$tamannoFuente);
 $grupoAlimActual = '';
 
-
+// exit(var_dump($alimentosTotales));
    for ($i=0; $i < count($alimentosTotales ) ; $i++) {
       $item = $alimentosTotales[$i];
    	if($item['componente'] != ''){
-
-
 
       $pdf->SetTextColor(0,0,0);
       $pdf->SetFillColor(255,255,255);
@@ -791,7 +777,6 @@ $grupoAlimActual = '';
 
 
 
-
       $aux = $item['componente'];
       // $long_nombre=strlen($aux);
       // if($long_nombre > $largoNombre){
@@ -836,9 +821,21 @@ $grupoAlimActual = '';
 
     $pdf->Cell(13.141,4,$item['presentacion'],1,0,'C',False);
 
+    if (strpos($item['componente'], "HUEVO") !== FALSE) {
+
+      $total = 0;
+      foreach ($tg[$item['codigo']] as $key => $value) {
+        $total += ceil($value);
+      }
+      $aux = $total;
+
+    } else {
+
+        $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
+
+    }
 
 
-    $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
     $aux = number_format($aux, 2, '.', '');
 
    /*
