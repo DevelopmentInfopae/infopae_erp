@@ -37,7 +37,7 @@ if ($resDatosDespacho->num_rows > 0) {
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="index.php">Ver insumos</a>
+        <a href="despachos.php">Ver despachos de insumos</a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>
