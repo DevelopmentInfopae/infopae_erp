@@ -13,7 +13,7 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="index.php">Ver insumos</a>
+        <a href="despachos.php">Ver despachos de insumos</a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>
