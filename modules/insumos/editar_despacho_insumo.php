@@ -1,8 +1,8 @@
-<?php 
+<?php
 // if(isset($_POST['id_despacho'])){} else { echo "<script>alert('No ha indicado despacho.');location.href='';</script>"; }
 
 $titulo = 'Editar despacho';
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 
@@ -37,7 +37,7 @@ if ($resDatosDespacho->num_rows > 0) {
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="index.php">Ver insumos</a>
+        <a href="despachos.php">Ver despachos de insumos</a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>
@@ -65,12 +65,12 @@ if ($resDatosDespacho->num_rows > 0) {
               <label>Tipo de despacho</label>
               <select name="tipo_despacho" id="tipo_despacho" class="form-control" required>
                 <option value="">Seleccione...</option>
-                <?php 
+                <?php
 
                 $consultaTipoDesp = "SELECT * FROM tipomovimiento WHERE Documento = 'DESI'";
                 $resultadoTipoDesp = $Link->query($consultaTipoDesp);
                 if ($resultadoTipoDesp->num_rows > 0) {
-                  while ($tipoDesp = $resultadoTipoDesp->fetch_assoc()) { 
+                  while ($tipoDesp = $resultadoTipoDesp->fetch_assoc()) {
 
                     if ($tipoDesp['Movimiento'] == $DatosDespacho['Tipo']) {
                       $selected = "selected='true'";
@@ -91,7 +91,7 @@ if ($resDatosDespacho->num_rows > 0) {
               <label>Proveedor / Empleado</label>
               <select name="proveedor" id="proveedor" class="form-control" required>
                 <option value="">Seleccione...</option>
-                
+
               </select>
               <input type="hidden" name="nombre_proveedor" id="nombre_proveedor">
             </div>
@@ -99,14 +99,14 @@ if ($resDatosDespacho->num_rows > 0) {
               <label>Municipio</label>
               <select name="municipio_desp" id="municipio_desp" class="form-control" required>
                 <option value="">Seleccione...</option>
-              <?php 
+              <?php
               $consultaMunicipios = "SELECT DISTINCT
                                         ubicacion.CodigoDANE, ubicacion.Ciudad
                                     FROM
                                         ubicacion,
                                         parametros
                                     WHERE
-                                        ubicacion.ETC = 0 
+                                        ubicacion.ETC = 0
                                         AND ubicacion.CodigoDane LIKE CONCAT(parametros.CodDepartamento, '%')
                                         AND EXISTS( SELECT DISTINCT
                                             cod_mun
@@ -121,7 +121,7 @@ if ($resDatosDespacho->num_rows > 0) {
                   <option value="<?php echo $municipio['CodigoDANE']; ?>"><?php echo ucfirst(mb_strtolower($municipio['Ciudad'])); ?></option>
                 <?php }
               }
-               ?>  
+               ?>
               </select>
             </div> -->
 <!--             <div class="form-group col-sm-3">
@@ -140,15 +140,15 @@ if ($resDatosDespacho->num_rows > 0) {
               <label>Rutas</label>
               <select name="ruta_desp" id="ruta_desp" class="form-control">
                 <option value="">Seleccione...</option>
-              <?php 
-              $consultaRutas = "SELECT * FROM rutas"; 
+              <?php
+              $consultaRutas = "SELECT * FROM rutas";
               $resultadoRutas = $Link->query($consultaRutas);
               if ($resultadoRutas->num_rows > 0) {
                 while ($ruta = $resultadoRutas->fetch_assoc()) { ?>
                   <option value="<?php echo $ruta['ID']; ?>"><?php echo $ruta['Nombre']; ?></option>
                 <?php }
               }
-              ?>   
+              ?>
               </select>
             </div> -->
            <!--  <div class="col-sm-12">
@@ -191,13 +191,13 @@ if ($resDatosDespacho->num_rows > 0) {
                 </tfoot>
               </table>
               <div class="alert alert-danger" role="alert" id="errDespachos" style="display: none;">
-                
+
               </div>
             </div>
 
             <hr class="col-sm-11">
 
-            <?php 
+            <?php
             $productos = [];
             $consulta = "SELECT * FROM productos".$_SESSION['periodoActual']." WHERE Codigo LIKE '05%' AND Nivel = '3'";
             $resultado = $Link->query($consulta);
@@ -216,12 +216,12 @@ if ($resDatosDespacho->num_rows > 0) {
               <br>
               <div class="row" id="productosDesp">
 
-                <?php 
+                <?php
                   $consDetDespacho = "SELECT * FROM $tablaNom2 WHERE Numero = '".$DatosDespacho['Numero']."'";
                   $resDetDespacho = $Link->query($consDetDespacho);
                   $num = 0;
                   if ($resDetDespacho->num_rows > 0) {
-                    while ($DetDespacho = $resDetDespacho->fetch_assoc()) { 
+                    while ($DetDespacho = $resDetDespacho->fetch_assoc()) {
                       $num++;
                       ?>
                       <div class="col-sm-3 row" id="producto_<?php echo $num; ?>">
@@ -231,7 +231,7 @@ if ($resDatosDespacho->num_rows > 0) {
                           <div class="col-sm-10">
                             <select class="form-control productodesp" onchange="validaProductos(this, '<?php echo $num; ?>')" name="productoDespacho[]" id="producto_<?php echo $num; ?>"
                               required>
-                              <?php foreach ($productos as $producto) { 
+                              <?php foreach ($productos as $producto) {
                                 if ($producto['Codigo'] == $DetDespacho['CodigoProducto']) { ?>
                                   <option value="<?php echo $producto['Codigo'] ?>" <?php echo $selected; ?>><?php echo $producto['Descripcion'] ?></option>
                                 <?php }
@@ -272,7 +272,7 @@ if ($resDatosDespacho->num_rows > 0) {
             <div class="col-sm-3">
               <label>Tipo de transporte</label>
               <select name="tipo_transporte" class="form-control" required>
-                <?php 
+                <?php
                 $consultaTipoTrans = "SELECT * FROM tipovehiculo";
                 $resultadoTipoTrans = $Link->query($consultaTipoTrans);
                 if ($resultadoTipoTrans->num_rows > 0) {

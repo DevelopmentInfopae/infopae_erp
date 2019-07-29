@@ -307,7 +307,7 @@ function editarDespacho(){
 
 	if (checks > 0) {
 		if (checks == 1) {
-			$('#id_despacho').val($(input).val());
+			$('#id_despacho').val($(input).data('iddespacho'));
 			$('#mesTabla').val($('#mes_inicio').val());
 			$('#editar_despacho').submit();
 		} else {
