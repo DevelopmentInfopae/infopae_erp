@@ -50,8 +50,8 @@
 		$tipoArchivo = str_replace("application/", "", $_FILES["archivoPriorizacion"]["type"]);
 
 		// Validamos si el archivo es .CSV
-		if($tipoArchivo == "vnd.ms-excel"){
-
+		if($tipoArchivo == "vnd.ms-excel")
+		{
 			$fila=0;
 			//Abrimos nuestro archivo
 			$archivo=fopen($rutaArchivo, "r");
@@ -109,8 +109,9 @@
 
 
 		 	// Ejecutamos la consulta para sedes cobertura
-	  		$resultadoCrearSedeCobertura = $Link->query(trim($consultaCrearSedeCobertura, ", "));
-	  		if($resultadoCrearSedeCobertura){
+  		$resultadoCrearSedeCobertura = $Link->query(trim($consultaCrearSedeCobertura, ", ")) or die("Error al subir las sedes cobertura: ". $Link->error);
+  		if($resultadoCrearSedeCobertura)
+  		{
 				$consultaCrearTablaPriorizacion = "CREATE TABLE IF NOT EXISTS `priorizacion". $semana ."` (
 																					`id` INTEGER(11) NOT NULL AUTO_INCREMENT,
 																					`cod_sede` BIGINT(20) NOT NULL,
@@ -137,7 +138,8 @@
 																					)ENGINE=InnoDB
 																					AUTO_INCREMENT=1 CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';";
 				$resultadoCrearTablePriorizacion = $Link->query($consultaCrearTablaPriorizacion) or die ('Unable to execute query. '. mysqli_error($Link));
-				if($resultadoCrearTablePriorizacion){
+				if($resultadoCrearTablePriorizacion)
+				{
 					// Ejecicón de la consulta para crear priorización
 					$resultadoCrearPriorizacion = $Link->query(trim($consultaCrearPriorizacion, ", "));
 					if($resultadoCrearPriorizacion){
