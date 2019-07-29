@@ -83,6 +83,36 @@ foreach ($despachosRecibidos as &$valor){
 class PDF extends FPDF{
   function Header(){}
   function Footer(){}
+
+  var $angle=0;
+
+  function Rotate($angle, $x=-1, $y=-1)
+  {
+      if($x==-1)
+          $x=$this->x;
+      if($y==-1)
+          $y=$this->y;
+      if($this->angle!=0)
+          $this->_out('Q');
+      $this->angle=$angle;
+      if($angle!=0)
+      {
+          $angle*=M_PI/180;
+          $c=cos($angle);
+          $s=sin($angle);
+          $cx=$x*$this->k;
+          $cy=($this->h-$y)*$this->k;
+          $this->_out(sprintf('q %.5f %.5f %.5f %.5f %.2f %.2f cm 1 0 0 1 %.2f %.2f cm', $c, $s, -$s, $c, $cx, $cy, -$cx, -$cy));
+      }
+  }
+
+  function Rotate_text($x, $y, $txt, $angle)
+  {
+    //Text rotated around its origin
+    $this->Rotate($angle, $x, $y);
+    $this->Text($x, $y, $txt);
+    $this->Rotate(0);
+  }
 }
 
 $pdf= new PDF('L','mm',array(280,220));
@@ -444,6 +474,7 @@ foreach ($codesedes as $sedecod => $isset) {
         $pdf->SetLineWidth(.05);
         $pdf->SetFont('Arial','',$tamannoFuente);
 
+        $tamano_carta = TRUE;
         include 'despacho_consolidado_footer.php';
         include 'despacho_kardex4_multiple_header.php';
 
@@ -539,7 +570,7 @@ foreach ($codesedes as $sedecod => $isset) {
               // Unidad de medida
               $pdf->Cell(13.141,4,$item['presentacion'],1,0,'C',False);
               $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
-              
+
                 if($item['presentacion'] == 'u'){
                   if (strpos($item['componente'], "HUEVO") !== FALSE) {
                     $aux = ceil(0+$aux);
