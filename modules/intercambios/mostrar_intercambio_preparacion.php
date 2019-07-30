@@ -54,9 +54,9 @@
 </div>
 
 <?php 
-	$consulta = " SELECT nmd.*, ftd.Componente FROM fichatecnica ft LEFT JOIN fichatecnicadet ftd ON ftd.IdFT = ft.Id LEFT JOIN novedades_menudet nmd ON nmd.cod_producto = ftd.codigo WHERE ft.Codigo = $codigo AND nmd.tipo = 0 AND nmd.id_novedad = $idNovedad ";
-	//echo $idNovedad;
-	//echo "<br>$consulta<br>";
+	$consulta = " SELECT nmd.*, p.Descripcion AS Componente from novedades_menudet nmd LEFT JOIN productos19 p ON nmd.cod_producto = p.Codigo WHERE nmd.tipo = 0 AND nmd.id_novedad = $idNovedad ORDER BY nmd.id "; 
+	// echo $idNovedad;
+	// echo "<br>$consulta<br>";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query - Leyendo novedad det '. mysqli_error($Link));
 ?>
 

@@ -56,7 +56,7 @@
 		<div class="title-action">
 			<?php if($estado == 1){ ?>
 				<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-					<a href="#" class="btn btn-primary" onclick="crearNovedadPriorizacion();"><i class="fa fa-undo"></i> Reversar Intercambio </a>
+					<button id="btnReversarIntercambio" type="button" class="btn btn-primary"><i class="fa fa-undo"></i> Reversar Intercambio</button>
 				<?php } ?>
 			<?php } ?>
 		</div>
@@ -66,6 +66,11 @@
 <div class="wrapper wrapper-content animated fadeInRight">
 	<div class="row">
 		<div class="col-lg-12">
+
+			<input type="hidden" id="idIntercambio" name="idIntercambio" value="<?= $idNovedad ?>">
+			<input type="hidden" id="codigoIntercambio" name="codigoIntercambio" value="<?= $codigo ?>">
+			<input type="hidden" id="tipoIntercambio" name="tipoIntercambio" value="<?= $tipoIntercambio ?>">
+
 			<?php 
 				if($tipoIntercambio == 1){
 					include 'mostrar_intercambio_alimento.php';
@@ -97,6 +102,40 @@
 	</div>
 </div>
 
+
+
+
+
+
+
+<div class="modal inmodal fade" id="ventanaReversar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header text-info" style="padding: 15px;">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+				<h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
+			</div>
+			<div class="modal-body">
+					<p class="text-center"></p>
+			</div>
+			<div class="modal-footer">
+				<input type="hidden" id="codigoACambiar">
+				<input type="hidden" id="estadoACambiar">
+				<button type="button" class="btn btn-primary btn-outline btn-sm btnNoReversar" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary btn-sm btnSiReversar" data-dismiss="modal">Aceptar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
@@ -105,7 +144,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
-
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <!-- Custom and plugin javascript -->
 <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
