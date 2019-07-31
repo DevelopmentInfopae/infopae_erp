@@ -109,16 +109,23 @@ foreach ($despachosRecibidos as &$valor){
 
 
 
-  $consulta = " select de.*, tc.descripcion , u.Ciudad, tc.jornada
-  from despachos_enc$mesAnno de
-  inner join sedes$anno  s on de.cod_Sede = s.cod_sede
-  inner join ubicacion u on s.cod_mun_sede = u.CodigoDANE
-  left join tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
-  where Tipo_Doc = 'DES' and de.Num_Doc = $valor ";
+  $consulta = "SELECT
+                de.*,
+                tc.descripcion,
+                u.Ciudad,
+                tc.jornada,
+                pm.Nombre AS nombre_proveedor
+              FROM despachos_enc$mesAnno de
+              INNER JOIN productosmov0119 pm ON de.Num_Doc = pm.Numero
+              INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede
+              INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE
+              LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO
+              WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor ";
 
 
 
-  //echo "<br>$consulta<br>";
+  // echo "<br>$consulta<br>";
+  // exit();
 
 
 
@@ -141,6 +148,7 @@ foreach ($despachosRecibidos as &$valor){
     $despacho['ciudad'] = $row['Ciudad'];
     $descripcionTipo = $row['descripcion'];
     $jornada = $row['jornada'];
+    $nombre_proveedor =$row["nombre_proveedor"];
 
 
 
