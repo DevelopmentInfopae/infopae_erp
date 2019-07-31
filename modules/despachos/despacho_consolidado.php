@@ -116,7 +116,7 @@ foreach ($despachosRecibidos as &$valor){
                 tc.jornada,
                 pm.Nombre AS nombre_proveedor
               FROM despachos_enc$mesAnno de
-              INNER JOIN productosmov0119 pm ON de.Num_Doc = pm.Numero
+              INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero
               INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede
               INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE
               LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO
