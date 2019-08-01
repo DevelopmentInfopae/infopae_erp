@@ -32,12 +32,12 @@ function validarAsistenciaSellada(){
 			console.log(data);
 			if(data.estado == 1){
 				//Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
-				$('#loader').fadeOut();
+				//$('#loader').fadeOut();
 				cargarEstudiantes();
 
 			}
 			else{
-				$('#loader').fadeOut();
+				//$('#loader').fadeOut();
 				cargarEstudiantes();
 			}		
 		},
@@ -49,6 +49,7 @@ function validarAsistenciaSellada(){
 }
 
 function cargarEstudiantes(){
+	$('.registroConsumo').slideUp();
 	var dibujado = 0;
 	var mes = "";
 	var semanaActual = "";
@@ -144,7 +145,7 @@ function cargarEstudiantes(){
 	responsive: true,
 	"preDrawCallback": function( settings ) {
 		if(dibujado == 0){
-			$('#loader').fadeIn();
+			//$('#loader').fadeIn();
 		}
 	}
 	}).on("draw", function(){ 
