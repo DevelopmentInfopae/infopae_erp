@@ -25,6 +25,7 @@
 					<li>
 							<a href="<?php echo $baseUrl; ?>">Inicio</a>
 					</li>
+					<li> <a href="<?php echo $baseUrl; ?>/modules/intercambios">Novedades de Menú</a> </li>
 					<li class="active">
 							<strong><?php echo $titulo; ?></strong>
 					</li>

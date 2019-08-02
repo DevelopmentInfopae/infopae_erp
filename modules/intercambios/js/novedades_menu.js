@@ -3,7 +3,8 @@ $(document).ready(function(){
 	datatables = $('.dataTablesNovedadesPriorizacion').DataTable({
 		ajax: {
 			method: 'POST',
-			url: 'functions/fn_novedades_menu_buscar_datatables.php'
+			url: 'functions/fn_novedades_menu_buscar_datatables.php',
+			dataSrc: ""
 		},
 		columns:[
 			{ data: 'mes', className: "text-center" },
