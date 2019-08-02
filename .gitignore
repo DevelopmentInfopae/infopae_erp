@@ -2,3 +2,7 @@
 db/conexion\.php
 
 config\.php
+
+db/
+
+upload/novedades/menu/

@@ -19,7 +19,7 @@ if(isset($_POST['validacion']) && $_POST['validacion'] != ''){
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " select * from sedes$periodoActual where tipo_validacion = \"$validacion\" and cod_inst = \"$institucion\" ";
+$consulta = " select * from sedes$periodoActual where (tipo_validacion = \"$validacion\" or tipo_validacion = \"Lector de Huella\" ) and cod_inst = \"$institucion\" ";
 $consulta = $consulta." order by nom_sede asc ";
 
 // echo $consulta;

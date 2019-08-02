@@ -109,16 +109,23 @@ foreach ($despachosRecibidos as &$valor){
 
 
 
-  $consulta = " select de.*, tc.descripcion , u.Ciudad, tc.jornada
-  from despachos_enc$mesAnno de
-  inner join sedes$anno  s on de.cod_Sede = s.cod_sede
-  inner join ubicacion u on s.cod_mun_sede = u.CodigoDANE
-  left join tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
-  where Tipo_Doc = 'DES' and de.Num_Doc = $valor ";
+  $consulta = "SELECT
+                de.*,
+                tc.descripcion,
+                u.Ciudad,
+                tc.jornada,
+                pm.Nombre AS nombre_proveedor
+              FROM despachos_enc$mesAnno de
+              INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero
+              INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede
+              INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE
+              LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO
+              WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor ";
 
 
 
-  //echo "<br>$consulta<br>";
+  // echo "<br>$consulta<br>";
+  // exit();
 
 
 
@@ -141,6 +148,7 @@ foreach ($despachosRecibidos as &$valor){
     $despacho['ciudad'] = $row['Ciudad'];
     $descripcionTipo = $row['descripcion'];
     $jornada = $row['jornada'];
+    $nombre_proveedor =$row["nombre_proveedor"];
 
 
 
@@ -613,6 +621,36 @@ sort($grupo);
 class PDF extends FPDF{
   function Header(){}
   function Footer(){}
+
+  var $angle=0;
+
+  function Rotate($angle, $x=-1, $y=-1)
+  {
+      if($x==-1)
+          $x=$this->x;
+      if($y==-1)
+          $y=$this->y;
+      if($this->angle!=0)
+          $this->_out('Q');
+      $this->angle=$angle;
+      if($angle!=0)
+      {
+          $angle*=M_PI/180;
+          $c=cos($angle);
+          $s=sin($angle);
+          $cx=$x*$this->k;
+          $cy=($this->h-$y)*$this->k;
+          $this->_out(sprintf('q %.5f %.5f %.5f %.5f %.2f %.2f cm 1 0 0 1 %.2f %.2f cm', $c, $s, -$s, $c, $cx, $cy, -$cx, -$cy));
+      }
+  }
+
+  function Rotate_text($x, $y, $txt, $angle)
+  {
+    //Text rotated around its origin
+    $this->Rotate($angle, $x, $y);
+    $this->Text($x, $y, $txt);
+    $this->Rotate(0);
+  }
 }
 
 
@@ -630,6 +668,7 @@ $pdf->SetDrawColor(0,0,0);
 $pdf->SetLineWidth(.05);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
+$tamano_carta = TRUE;
 include 'despacho_consolidado_footer.php';
 include 'despacho_consolidado_header.php';
 

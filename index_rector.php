@@ -4,7 +4,7 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Entrega de Complementos Alimentarios Contrato PAE Santander 2018 </h5>
+                    <h5>Entrega de Complementos Alimentarios Contrato PAE</h5>
                     <div>
                         <?php
                         $institucionCodigo = '';

@@ -25,10 +25,10 @@
   }
 
   $consulta_municipios = "SELECT DISTINCT codigoDANE as codigo, ciudad FROM ubicacion WHERE ETC = 0";
-  if(! empty($codigo_departamento))
-  {
-    $codigo_departamento .= " AND CodigoDANE LIKE '$codigo_departamento%'";
-  }
+
+  if (! empty($codigo_departamento)) { $consulta_municipios .= " AND CodigoDANE LIKE '$codigo_departamento%'"; }
+  if (! empty($codigo_municipio)) { $consulta_municipios .= " AND CodigoDANE = '$codigo_municipio'"; }
+
   $consulta_municipios .= " ORDER BY ciudad ASC";
   $respuesta_municipios = $Link->query($consulta_municipios) or die("Error al consultar los municipios: ". $Link->error);
 
@@ -281,18 +281,18 @@
                   <tbody>
                     <tr id="1">
                       <td>
-                        <select class="form-control producto" name="producto[]" id="producto_1" style="width: 100%">
+                        <select class="form-control producto" name="producto[0]" id="producto_0" required="required" style="width: 100%">
                           <option value="">Seleccione</option>
                           <?php foreach ($productos_array as $clave => $producto) : ?>
                             <option value="<?= $clave; ?>"><?= $producto; ?></option>
                           <?php endforeach ?>
                         </select>
-                        <label class="error" for="producto_1" style="display: none"></label>
+                        <label class="error" for="producto_0" style="display: none"></label>
                       </td>
-                      <td><input type="text" class="form-control lote" name="lote[]" id="lote_1"/></td>
-                      <td><input type="date" class="form-control fecha_vencimiento" name="fecha_vencimiento[]" id="fecha_vencimiento_1" min="<?= $fecha_despacho; ?>"/></td>
-                      <td><input type="text" class="form-control marca" name="marca[]" id="marca_1"/></td>
-                      <td class="text-center" style="vertical-align: middle;"><i class="fa fa-trash fa-1x remover_fila" data-indice_fila="1" style="cursor: pointer; font-size: 24px;"></i></td>
+                      <td><input type="text" class="form-control lote" name="lote[0]" id="lote_0" required="required"/></td>
+                      <td><input type="date" class="form-control fecha_vencimiento" name="fecha_vencimiento[0]" id="fecha_vencimiento_0" required="required" min="<?= $fecha_despacho; ?>"/></td>
+                      <td><input type="text" class="form-control marca" name="marca[0]" id="marca_0"/></td>
+                      <td class="text-center" style="vertical-align: middle;"><i class="fa fa-trash fa-1x remover_fila" data-indice_fila="0" style="cursor: pointer; font-size: 24px;"></i></td>
                     </tr>
                   </tbody>
                 </table>
@@ -311,8 +311,6 @@
       </div>
     <?php endif ?>
   </div>
-
-
 </div>
 
 <?php include '../../footer.php'; ?>
@@ -488,21 +486,21 @@
     })
     .done(function(datos)
     {
-      _consecutivo_fila ++;
-
       var campos_edicion_producto = '<tr id="'+_consecutivo_fila+'">'+
                                       '<td>'+
-                                        '<select class="form-control producto" name="producto[]" id="producto_'+_consecutivo_fila+'" style="width: 100%">'+
+                                        '<select class="form-control producto" name="producto['+_consecutivo_fila+']" id="producto_'+_consecutivo_fila+'" required="required" style="width: 100%">'+
                                           datos +
                                         '</select>'+
                                         '<label class="error" for="producto_'+_consecutivo_fila+'" style="display: none"></label>'+
                                       '</td>'+
-                                      '<td><input type="text" class="form-control lote" name="lote[]" id="lote_'+_consecutivo_fila+'"/></td>'+
-                                      '<td><input type="date" class="form-control fecha_vencimiento" name="fecha_vencimiento[]" id="fecha_vencimiento_'+_consecutivo_fila+'" min="<?= $fecha_despacho; ?>"/></td>'+
-                                      '<td><input type="text" class="form-control marca" name="marca[]" id="marca_'+_consecutivo_fila+'"/></td>'+
+                                      '<td><input type="text" class="form-control lote" name="lote['+_consecutivo_fila+']" id="lote_'+_consecutivo_fila+'" required="required"/></td>'+
+                                      '<td><input type="date" class="form-control fecha_vencimiento" name="fecha_vencimiento['+_consecutivo_fila+']" id="fecha_vencimiento_'+_consecutivo_fila+'" min="<?= $fecha_despacho; ?>" required="required"/></td>'+
+                                      '<td><input type="text" class="form-control marca" name="marca['+_consecutivo_fila+']" id="marca_'+_consecutivo_fila+'"/></td>'+
                                       '<td class="text-center" style="vertical-align: middle;"><i class="fa fa-trash fa-1x remover_fila" data-indice_fila="'+_consecutivo_fila+'" style="cursor: pointer; font-size: 24px;"></i></td>'+
                                     '</tr>';
       $('#tabla_editar_productos_despacho').append(campos_edicion_producto);
+
+      _consecutivo_fila ++;
 
       $('select').select2();
       $('#loader').fadeOut();
@@ -529,7 +527,8 @@
     $('.producto').each(function(indice) {
       if (indice != indice_fila)
       {
-        if ($(this).find('option:selected').val() == id_producto)
+        var valor_input_actual = $(this).find('option:selected').val();
+        if (valor_input_actual == id_producto && valor_input_actual != "")
         {
           Command: toastr.warning('No puede seleccionar un mismo producto.', 'Advertencia', { onHidden: function() { control_select.select2('val', ''); } });
         }
@@ -539,42 +538,6 @@
 
   function validar_campos_edicion()
   {
-    // Validar campos productos
-    $('.producto').each(function(){
-      var valor = $(this).val();
-      if (valor == '')
-      {
-        var id = $(this).prop('id');
-        Command: toastr.error('El campo <strong>producto</strong> es obligatorio.', 'Validación de campo', { onHidden: function(){ $('#'+id).select2('open'); } });
-
-        return false;
-      }
-    }) ;
-
-    // Validar campos lote
-    $('.lote').each(function() {
-      var valor = $(this).val();
-      if (valor == '')
-      {
-        var id = $(this).prop('id');
-        Command: toastr.error('El campo <strong>Lote</strong> es obligatorio.', 'Validación de campo', { onHidden: function(){ $('#'+id).focus(); } });
-
-        return false;
-      }
-    });
-
-    // Validar campos fecha
-    $('.fecha_vencimiento').each(function() {
-      var valor = $(this).val();
-      if (valor == '')
-      {
-        var id = $(this).prop('id');
-        Command: toastr.error('El campo <strong>Fecha vencimineto</strong> es obligatorio.', 'Validación de campo', { onHidden: function(){ $('#'+id).focus(); } });
-
-        return false;
-      }
-    });
-
     if ($('#formulario_editar_despacho').valid())
     {
       $.ajax({
@@ -585,12 +548,12 @@
         beforeSend: function() { $('#loader').fadeIn(); }
       })
       .done(function(datos) {
-        console.log(datos);
+        Command: toastr.success('Los despachos se actualizaron correctamente.', 'Proceso exitoso', { onHidden: function(){ location.reload(); } });
         $('#loader').fadeOut();
       })
       .fail(function(datos) {
-        console.log(datos.responseText);
         $('#loader').fadeOut();
+        Command: toastr.error(datos.responseText, 'Error en el proceso', { onHidden: function(){ location.reload(); } });
       });
     }
   }

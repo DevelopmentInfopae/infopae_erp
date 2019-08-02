@@ -224,11 +224,11 @@ function subirArchivoPriorizacion(){
             );
         }
       },
-      error: function(data){ console.log(data);
+      error: function(data){
         $('#loader').fadeOut();
         Command: toastr.error(
           "Al parecer existe un problema en el servidor. Por favor comuníquese con el administrador del sitio InfoPAE.",
-          "Error al subir datos", { onHidden : function(){ $('#loader').fadeOut(); } }
+          "Error al subir datos", { onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText); } }
           );
       }
     });
