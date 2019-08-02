@@ -1,11 +1,9 @@
-<?php 
+<?php
 
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
 $respuesta = $_POST['respuesta'];
-
-//1. Obtener preparados para armar menú, 2. Obtener unidad de medida de un producto
 
 if ($respuesta == 1) { ?>
 
@@ -36,20 +34,29 @@ if ($respuesta == 1) { ?>
     $tipoComplemento = 0;
   }
 
-  if ($tipoComplemento == "CAJMPS" || $tipoComplemento == "APS") {
+  if ($variacionMenu == '1') {
 
-    if ($tipoComplemento == "CAJMPS") {
-      $tipoPreparacion = " (Codigo like '0202%' or Codigo like '0201%')";
-    } else {
-      $tipoPreparacion = " Codigo like '0202%' ";
+    $tipoPreparacion = " Codigo like '0203%' ";
+
+  } else {
+
+    if ($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI" || $tipoComplemento == "APS") {
+
+      if ($tipoComplemento == "CAJMPS") {
+        $tipoPreparacion = " (Codigo like '0202%' or Codigo like '0201%')";
+      } else if ($tipoComplemento == "CAJMRI") {
+        $tipoPreparacion = " Codigo like '0201%' ";
+      } else {
+        $tipoPreparacion = " Codigo like '0202%' ";
+      }
+
     }
 
-  } else if ($tipoComplemento == "CAJMRI" || $tipoComplemento == "CAJTRI") {
-    $tipoPreparacion = " Codigo like '0204%' ";
   }
 
+
   if ($tipoProducto == "01") {
-   $consulta = "select * from productos".$_SESSION['periodoActual']." where ((".$tipoPreparacion." AND Cod_Grupo_Etario = ".$grupoEtario.") or (Codigo like '04%') or (Codigo like '02%' AND Cod_Grupo_Etario = 0)) and Nivel = 3 ORDER BY Codigo ASC";
+   $consulta = "select * from productos".$_SESSION['periodoActual']." where ((".$tipoPreparacion." AND Cod_Grupo_Etario = ".$grupoEtario.") or (Codigo like '04%')) and Nivel = 3 ORDER BY Codigo ASC";
     //$consulta = "select * from productos".$_SESSION['periodoActual']." where (Codigo like '02%' or Codigo like '04%') and Nivel = 3 and Inactivo = 0 Order by Codigo asc";
   } else if ($tipoProducto == "02") {
     $consulta = "select * from productos".$_SESSION['periodoActual']." where Codigo like '03%' and Nivel = 3 and Inactivo = 0 Order by Descripcion asc";
@@ -57,7 +64,7 @@ if ($respuesta == 1) { ?>
   $cod1 = "";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
-    while($row = $resultado->fetch_assoc()) { 
+    while($row = $resultado->fetch_assoc()) {
       if ($cod1 == "" || ($cod1 != substr($row['Codigo'], 0, 2) && $cod1 != "") ) {
         $cod1 = substr($row['Codigo'], 0, 2);
         if (substr($row['Codigo'], 0, 2) == "02") {
@@ -68,7 +75,7 @@ if ($respuesta == 1) { ?>
       }
       ?>
         <option value="<?php echo $row['Codigo']; ?>"><?php echo $row['Descripcion']; ?></option>
-     <?php 
+     <?php
       if ($cod1 != substr($row['Codigo'], 0, 2) ) {
         $cod1 = substr($row['Codigo'], 0, 2) ;
           echo "</optgroup>";
@@ -84,7 +91,7 @@ if ($respuesta == 1) { ?>
   $consulta = "select NombreUnidad1 from productos".$_SESSION['periodoActual']." where Codigo = ".$producto;
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
-    if($row = $resultado->fetch_assoc()) { 
+    if($row = $resultado->fetch_assoc()) {
       $unidadMedida = $row['NombreUnidad1'];
       echo $unidadMedida;
      }// Termina el while
