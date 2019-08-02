@@ -212,13 +212,13 @@ function obtenerProductos(num){
     beforeSend: function(){},
     success: function(data){
       console.log(data);
-      $('#productoFichaTecnicaDet'+num+' option').each(function(){$(this).remove()});
+      // $('#productoFichaTecnicaDet'+num+' option').each(function(){$(this).remove()});
 
       //console.log(data);
       $('#productoFichaTecnicaDet'+num).append(data);
       productos = data;
       //$('#debug').html(data);
-      $('#productoFichaTecnicaDet'+num).select2();
+      // $('#productoFichaTecnicaDet'+num).select2();
       productos = data;
       //$('#debug').html(data);
     }
