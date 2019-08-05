@@ -251,6 +251,11 @@ if ($resDatosDespacho->num_rows > 0) {
             <hr class="col-sm-11">
 
             <div class="form-group col-sm-3">
+              <label>Tipo complemento</label>
+              <input type="text" class="form-control" name="tipo_complemento" id="tipo_complemento" value="<?= $DatosDespacho['Complemento'] == "Total cobertura" ? "ALL" : $DatosDespacho['Complemento'] ?>" readonly>
+            </div>
+
+            <div class="form-group col-sm-3">
               <label>Meses a despachar</label>
               <input type="text" value="<?php echo $meses[$mesTabla]; ?>" class="form-control" readonly>
               <input type="hidden" name="meses_despachar[]" id="meses_despachar" value="<?php echo $mesTabla; ?>">
@@ -293,11 +298,11 @@ if ($resDatosDespacho->num_rows > 0) {
             </div>
             <div class="col-sm-3">
               <label>Placa</label>
-              <input type="text" name="placa_vehiculo" class="form-control" value="<?php echo $DatosDespacho['Placa']; ?>" required>
+              <input type="text" name="placa_vehiculo" class="form-control" value="<?php echo $DatosDespacho['Placa']; ?>">
             </div>
             <div class="col-sm-3">
               <label>Conductor</label>
-              <input type="text" name="conductor" class="form-control"  value="<?php echo $DatosDespacho['ResponsableRecibe']; ?>" required>
+              <input type="text" name="conductor" class="form-control"  value="<?php echo $DatosDespacho['ResponsableRecibe']; ?>">
             </div>
           </form>
           <div class="col-sm-12" style="padding: 3% 0% 2% 0%;">

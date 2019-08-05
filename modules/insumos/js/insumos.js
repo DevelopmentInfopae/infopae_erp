@@ -477,7 +477,7 @@ function submitDespacho(accion){
         $.ajax({
          type: "POST",
          url: "functions/fn_insumos_validar_despacho.php",
-         data : {"sedes" : JSON.stringify(sedes), "meses" : JSON.stringify(meses), "productos" : JSON.stringify(productos)},
+         data : {"sedes" : JSON.stringify(sedes), "meses" : JSON.stringify(meses), "productos" : JSON.stringify(productos), "complemento" : $('#tipo_complemento').val()},
          beforeSend: function(){},
          success: function(data){
 
