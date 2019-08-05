@@ -66,11 +66,8 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	class PDF extends FPDF
 	{
 
-		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho, $mes){
+		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho, $mes, $coberturaComplemento){
 			$this->fecha = $fecha;
-			// setlocale(LC_TIME, 'es');
-			// $fecha = DateTime::createFromFormat('!m', $mes);
-			// $mes = ucfirst(strftime("%B", $fecha->getTimestamp())); // marzo
 			$this->mes = mesNombre($mes);
 			$this->dpto = $dpto;
 			$this->sedes = $sedes;
@@ -81,6 +78,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->maxManipuladoras = $maxManipuladoras;
 			$this->nom_inst = $nom_inst;
 			$this->ciudad_despacho = $ciudad_despacho;
+			$this->coberturaComplemento = $coberturaComplemento;
 		}
 
 		function Header()
@@ -108,24 +106,34 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(32,$this->alturaRenglon,utf8_decode('MUNICIPIO O VEREDA: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    // $this->Cell(106.5,$this->alturaRenglon,utf8_decode($this->Ciudad),'BR',1,'L'); //MUNICIPIO DE SEDE - REEMPLAZAR
 		    $this->Cell(70,$this->alturaRenglon,utf8_decode($this->ciudad_despacho),'BR',0,'L'); //MUNICIPIO DE SEDE - REEMPLAZAR
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(55,$this->alturaRenglon,utf8_decode('INSTITUCIÓN O CENTRO EDUCATIVO: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    // $this->Cell(100,$this->alturaRenglon,utf8_decode($this->nom_inst),'BR',0,'L'); //INSTITUCIÓN - REEMPLAZZAR
 		    $this->Cell(100,$this->alturaRenglon,utf8_decode($this->nom_inst),'BR',0,'L'); //INSTITUCIÓN - REEMPLAZZAR
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(32.5,$this->alturaRenglon,utf8_decode('N° MANIPULADORAS: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    // $this->Cell(32.5,$this->alturaRenglon,utf8_decode($this->dataInst['cantidad_Manipuladora']),'BR',0,'L');
 		    $this->Cell(10,$this->alturaRenglon,utf8_decode($this->maxManipuladoras),'BR',0,'L');
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(32.5,$this->alturaRenglon,utf8_decode('TOTAL COBERTURA: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    // $this->Cell(32.5,$this->alturaRenglon,utf8_decode($this->maxEstudiantes),'BR',1,'L');
 		    $this->Cell(10,$this->alturaRenglon,utf8_decode($this->maxEstudiantes),'BR',1,'L');
     		//Salto de línea
+
+		    //ANCHO MÁXIMO 342
+
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('APS'),'LBR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['APS']) ? $this->coberturaComplemento['APS'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJMPS'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJMPS']) ? $this->coberturaComplemento['CAJMPS'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJMRI'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJMRI']) ? $this->coberturaComplemento['CAJMRI'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJTRI'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJTRI']) ? $this->coberturaComplemento['CAJTRI'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJTPS'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJTPS']) ? $this->coberturaComplemento['CAJTPS'] : '-')),'BR',1,'L');
+
 		    $this->Ln(1);
 		    $this->SetFont('Arial','B',$this->fontSize);
 
@@ -182,6 +190,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	$productos_sede = [];
 	$maxEstudiantes = [];
 	$maxManipuladoras = [];
+	$coberturaComplemento = [];
 
 	$pdf = new PDF('L', 'mm', 'Legal');
 	$pdf->AliasNbPages();
@@ -221,28 +230,6 @@ foreach ($sedes as $key => $sede) {
 		}
 	}
 
-	// $sumaCoberturasEtario = "";
-
-	// foreach ($gruposEtarios as $ID => $DESCRIPCION) {
-	// 	$sumaCoberturasEtario.=" MAX(Etario".$ID."_APS+Etario".$ID."_CAJMRI+Etario".$ID."_CAJTRI+Etario".$ID."_CAJMPS) as Etario".$ID." ,";
- //    }
-
- //    $sumaCoberturasEtario = trim($sumaCoberturasEtario, " ,");
-
-	// $consultaEtariosCobertura = "SELECT MAX(APS) + MAX(CAJMPS)+ MAX(CAJMRI)+ MAX(CAJTRI) AS cant_Estudiantes, $sumaCoberturasEtario FROM sedes_cobertura WHERE cod_sede = '".$sede."' and mes= '".$tablaMes."' GROUP BY cod_sede";
-	// $resultadoEtariosCobertura = $Link->query($consultaEtariosCobertura);
-	// if ($resultadoEtariosCobertura->num_rows > 0) {
-	// 	if ($EtariosCobertura = $resultadoEtariosCobertura->fetch_assoc()) {
-	// 		if (!isset($maxEstudiantes[$codigo_inst])) {
-	// 			$maxEstudiantes[$codigo_inst] = $EtariosCobertura["cant_Estudiantes"];
-	// 		} else {
-	// 			$maxEstudiantes[$codigo_inst] += $EtariosCobertura["cant_Estudiantes"];
-	// 		}
-
-	// 		// $maxEstudiantes += $EtariosCobertura["cant_Estudiantes"];
-	// 	}
-	// }
-
 	$consultaDespacho = "SELECT * FROM $insumosmov WHERE BodegaDestino = '".$sede."'";
 	$resultadoDespacho = $Link->query($consultaDespacho);
 	if ($resultadoDespacho->num_rows > 0) {
@@ -252,6 +239,12 @@ foreach ($sedes as $key => $sede) {
 				$maxEstudiantes[$codigo_inst] = $Despacho["Cobertura"];
 			} else {
 				$maxEstudiantes[$codigo_inst] += $Despacho["Cobertura"];
+			}
+
+			if (!isset($coberturaComplemento[$Despacho['Complemento']])) {
+				$coberturaComplemento[$Despacho['Complemento']] = $Despacho["Cobertura"];
+			} else {
+				$coberturaComplemento[$Despacho['Complemento']] += $Despacho["Cobertura"];
 			}
 
 		    $consultaDetalles = "SELECT producto.id as pId, producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
@@ -275,19 +268,14 @@ foreach ($sedes as $key => $sede) {
 	}
 }
 
-// var_dump($dataInst);
-// var_dump($nom_inst);
-
-
+// exit(var_dump($coberturaComplemento));
 
 $fontSize = 7;
 $alturaRenglon = 6;
 
-
-
 foreach ($dataInst as $cod_inst => $sedes) {
 
-	$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMes);
+	$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMes, $coberturaComplemento);
 	$pdf->AddPage();
 	$pdf->SetFont('Arial','',$fontSize);
 

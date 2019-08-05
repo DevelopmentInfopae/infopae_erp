@@ -74,7 +74,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		// $nom_inst="";
 		// $nom_sede="";
 
-		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes){
+		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes, $tipoComplemento){
 			$this->fecha = $fecha;
 			// setlocale(LC_TIME, 'es_CO');
 			// $fecha = DateTime::createFromFormat('!m', $mes);
@@ -88,6 +88,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->coberturaEtarios = $coberturaEtarios;
 			$this->maxEstudiantes = $maxEstudiantes;
 			$this->gruposEtarios = $gruposEtarios;
+			$this->tipoComplemento = $tipoComplemento;
 		}
 
 		function Header()
@@ -129,8 +130,29 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->Cell(61.94,10,utf8_decode('RANGO DE EDAD'),'TBLR',0,'C');
 		    $this->Cell(61.94,10,utf8_decode('N° DE RACIONES ADJUDICADAS'),'TBLR',0,'C');
 		    $this->Cell(61.94,10,utf8_decode('N° DE RACIONES ATENDIDAS'),'TBLR',0,'C');
-		    $this->Cell(48.6,10,utf8_decode('N° DE MANIPULADORAS'),'TBR',0,'C');
-		    $this->Cell(48.6,10,utf8_decode('TOTAL COBERTURA'),'TBR',1,'C');
+
+		    $cx = $this->getX();
+		    $cy = $this->getY();
+		    $this->Cell(32.4,10,utf8_decode(''),'TBR',0,'C');
+		    $this->setXY($cx, $cy);
+		    $this->MultiCell(32.4, 5, utf8_decode('N° DE MANIPULADORAS'), 0, 'C');
+		    $this->setXY($cx+32.4, $cy);
+
+		    $cx = $this->getX();
+		    $cy = $this->getY();
+		    $this->Cell(32.4,10,utf8_decode(''),'TBR',0,'C');
+		    $this->setXY($cx, $cy);
+		    $this->MultiCell(32.4, 5, utf8_decode('TOTAL COBERTURA'), 0, 'C');
+		    $this->setXY($cx+32.4, $cy);
+
+			$cx = $this->getX();
+		    $cy = $this->getY();
+		    $this->Cell(32.4,10,utf8_decode(''),'TBR',0,'C');
+		    $this->setXY($cx, $cy);
+		    $this->MultiCell(32.4, 5, utf8_decode('TIPO COMPLEMENTO'), 0, 'C');
+		    // $this->setXY($cx+32.4, $cy);
+		    $this->Ln();
+
 		    $this->SetFont('Arial','',8);
 
 		    foreach ($this->gruposEtarios as $ID => $DESCRIPCION) {
@@ -139,8 +161,22 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    	$this->Cell(61.94,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BLR',1,'C');//SEDES COBERTURA POR GRUPO ETARIO
     		}
     		$this->SetXY(192.8, 47);
-    		$this->Cell(48.6,18,utf8_decode($this->dataSede['cantidad_Manipuladora']),'TBR',0,'C');//MANIPULADORAS DE LA SEDE
-    		$this->Cell(48.6,18,utf8_decode($this->maxEstudiantes),'TBR',1,'C');//CANTIDAD COBERTURA
+
+    		if ($this->tipoComplemento == 'APS') {
+    			$manipuladoras = $this->dataSede['Manipuladora_APS'];
+    		} else if ($this->tipoComplemento == 'CAJMPS') {
+    			$manipuladoras = $this->dataSede['Manipuladora_CAJMPS'];
+    		} else if ($this->tipoComplemento == 'CAJMRI') {
+    			$manipuladoras = $this->dataSede['Manipuladora_CAJMRI'];
+    		} else if ($this->tipoComplemento == 'CAJTRI') {
+    			$manipuladoras = $this->dataSede['Manipuladora_CAJTRI'];
+    		} else {
+    			$manipuladoras = $this->dataSede['cantidad_Manipuladora'];
+    		}
+
+    		$this->Cell(32.4,18,utf8_decode($manipuladoras),'TBR',0,'C');//MANIPULADORAS DE LA SEDE
+    		$this->Cell(32.4,18,utf8_decode($this->maxEstudiantes),'TBR',0,'C');//CANTIDAD COBERTURA
+    		$this->Cell(32.4,18,utf8_decode($this->tipoComplemento),'TBR',1,'C');//CANTIDAD COBERTURA
     		//Salto de línea
 		    $this->Ln(1);
 		    $this->SetFont('Arial','B',8);
@@ -219,8 +255,9 @@ foreach ($sedes as $key => $sede) {
 			$coberturaEtarios["Etario2"] = $Despacho["Cobertura_G2"];
 			$coberturaEtarios["Etario3"] = $Despacho["Cobertura_G3"];
 			$maxEstudiantes = $Despacho["Cobertura"];
+			$tipoComplemento = $Despacho['Complemento'];
 
-			$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios,$tablaMes);
+			$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $tablaMes, $tipoComplemento);
 			$pdf->AddPage();
 		    $pdf->SetFont('Arial','',7);
 		    //PRODUCTOS

@@ -168,6 +168,18 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
             <hr class="col-sm-11">
 
             <div class="form-group col-sm-3">
+              <label>Tipo complemento</label>
+              <select name="tipo_complemento" id="tipo_complemento" class="form-control" required>
+                <option value="">Seleccione...</option>
+                <option value="ALL">TOTAL COBERTURA</option>
+                <option value="APS">APS</option>
+                <option value="CAJMRI">CAJMRI</option>
+                <option value="CAJTRI">CAJTRI</option>
+                <option value="CAJMPS">CAJMPS</option>
+              </select>
+            </div>
+
+            <div class="form-group col-sm-3">
               <label>Meses a despachar</label>
               <select name="meses_despachar[]" id="meses_despachar" class="form-control" multiple required>
               <?php
