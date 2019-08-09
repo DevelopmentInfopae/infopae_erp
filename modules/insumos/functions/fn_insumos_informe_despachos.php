@@ -23,6 +23,7 @@ $ds = explode(", ", $despachos_seleccionados);
 $ds_mes = [];
 
 $meses_involucrados = [];
+$ids_despachos = [];
 
 foreach ($ds as $id => $value) {
 	$sd = explode("_", $value);
@@ -32,6 +33,10 @@ foreach ($ds as $id => $value) {
 
 	if (!isset($meses_involucrados[$sd[1]])) {
 		$meses_involucrados[(Int) $sd[1]] = 1;
+	}
+
+	if (!isset($ids_despachos[$sd[0]])) {
+		$ids_despachos[(Int) $sd[0]] = 1;
 	}
 
 }
@@ -250,6 +255,10 @@ foreach ($sedes as $key => $sede) {
 	$resultadoDespacho = $Link->query($consultaDespacho);
 	if ($resultadoDespacho->num_rows > 0) {
 		while ($Despacho = $resultadoDespacho->fetch_assoc()) {
+
+			if (!isset($ids_despachos[$Despacho['Id']])) {
+				continue;
+			}
 
 			$coberturaEtarios["Etario1"] = $Despacho["Cobertura_G1"];
 			$coberturaEtarios["Etario2"] = $Despacho["Cobertura_G2"];

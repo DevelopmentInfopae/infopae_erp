@@ -316,9 +316,9 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 				}
 
 				if (!isset($coberturaComplemento[$Despacho['Complemento']])) {
-					$coberturaComplemento[$Despacho['Complemento']] = $Despacho["Cobertura"];
+					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] = $Despacho["Cobertura"];
 				} else {
-					$coberturaComplemento[$Despacho['Complemento']] += $Despacho["Cobertura"];
+					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];
 				}
 
 			    $consultaDetalles = "SELECT producto.id as pId, producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
@@ -359,7 +359,7 @@ $alturaRenglon = 6;
 
 	foreach ($dataInst as $cod_inst => $sedes) {
 
-		$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMesInicio, $tablaMesFin, $coberturaComplemento);
+		$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMesInicio, $tablaMesFin, $coberturaComplemento[$cod_inst]);
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','',$fontSize);
 
