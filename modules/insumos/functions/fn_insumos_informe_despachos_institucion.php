@@ -242,9 +242,9 @@ foreach ($sedes as $key => $sede) {
 			}
 
 			if (!isset($coberturaComplemento[$Despacho['Complemento']])) {
-				$coberturaComplemento[$Despacho['Complemento']] = $Despacho["Cobertura"];
+				$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] = $Despacho["Cobertura"];
 			} else {
-				$coberturaComplemento[$Despacho['Complemento']] += $Despacho["Cobertura"];
+				$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];
 			}
 
 		    $consultaDetalles = "SELECT producto.id as pId, producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
@@ -275,7 +275,7 @@ $alturaRenglon = 6;
 
 foreach ($dataInst as $cod_inst => $sedes) {
 
-	$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMes, $coberturaComplemento);
+	$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMes, $coberturaComplemento[$cod_inst]);
 	$pdf->AddPage();
 	$pdf->SetFont('Arial','',$fontSize);
 
@@ -293,9 +293,11 @@ foreach ($dataInst as $cod_inst => $sedes) {
 
 		$pdf->Cell(60.75,$alturaRenglon,utf8_decode($sName),'LBR',0,'C',False);
 
+
 		foreach ($productos as $id => $producto) {
+		$cantidad = 0;
 			if (isset($productos_sede[$cod_sede][$id])) {
-				$cantidad = number_format($productos_sede[$cod_sede][$id]['NombreUnidad1'] == 'u' ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'kg') || strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'lt') ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : $productos_sede[$cod_sede][$id]['CanTotalPresentacion'], 2, '.', ',');
+				$cantidad += number_format($productos_sede[$cod_sede][$id]['NombreUnidad1'] == 'u' ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'kg') || strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'lt') ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : $productos_sede[$cod_sede][$id]['CanTotalPresentacion'], 2, '.', ',');
 
 				$uP = " (".str_replace(" ", "", $productos_sede[$cod_sede][$id]['Umedida']).")";
 
