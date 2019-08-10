@@ -401,7 +401,21 @@ $(document).on('ifChecked', '.checkDespacho', function(){
 		}
 	});
 
-	$('#despachos_seleccionados').val(despachos);
+	$('#despachos_seleccionados').val('').val(despachos);
+
+});
+
+$(document).on('ifUnchecked', '.checkDespacho', function(){
+
+	var despachos = "";
+
+	$('.checkDespacho').each(function(index, val){
+		if ($(this).iCheck('data')[0].checked) {
+			despachos += $(this).data('iddespacho')+"_"+$(this).data('mesdespacho')+", ";
+		}
+	});
+
+	$('#despachos_seleccionados').val('').val(despachos);
 
 });
 
