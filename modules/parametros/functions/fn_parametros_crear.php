@@ -11,9 +11,11 @@
 	$cantidadCupos = (isset($_POST["cantidadCupos"]) && $_POST["cantidadCupos"] != '') ? mysqli_real_escape_string($Link, $_POST["cantidadCupos"]) : '';
 	$numeroContrato = (isset($_POST["numeroContrato"]) && $_POST["numeroContrato"] != '') ? mysqli_real_escape_string($Link, $_POST["numeroContrato"]) : '';
 	$nombredepartamento = (isset($_POST["nombredepartamento"]) && $_POST["nombredepartamento"] != '') ? mysqli_real_escape_string($Link, $_POST["nombredepartamento"]) : '';
+	$nombre_representante_legal = (isset($_POST["nombre_representante_legal"]) && $_POST["nombre_representante_legal"] != '') ? mysqli_real_escape_string($Link, $_POST["nombre_representante_legal"]) : '';
+	$documento_representante_legal = (isset($_POST["documento_representante_legal"]) && $_POST["documento_representante_legal"] != '') ? mysqli_real_escape_string($Link, $_POST["documento_representante_legal"]) : '';
 
-	$consulta1 = "INSERT INTO parametros (rutacarpetabackup, Operador, NumContrato, ano, CodDepartamento, NombreETC, Departamento, CantidadCupos, MesContrato, CodMunicipio)
-								VALUES ('upload/lectordhuellas', '$nombre', '$numeroContrato', '$anio', '$departamento', '$nombreEtc', '$nombredepartamento', '$cantidadCupos', '$mesContrato', '$municipio');";
+	$consulta1 = "INSERT INTO parametros (rutacarpetabackup, Operador, NumContrato, ano, CodDepartamento, NombreETC, Departamento, CantidadCupos, MesContrato, CodMunicipio, nombre_representante_legal, codigo_represente_legal)
+					VALUES ('upload/lectordhuellas', '$nombre', '$numeroContrato', '$anio', '$departamento', '$nombreEtc', '$nombredepartamento', '$cantidadCupos', '$mesContrato', '$municipio', '$nombre_representante_legal', '$codigo_represente_legal');";
 	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". mysql_error($Link));
 	if ($resultado1){
 		$id = $Link->insert_id;
