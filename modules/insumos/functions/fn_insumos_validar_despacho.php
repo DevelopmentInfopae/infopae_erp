@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
@@ -8,6 +8,9 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
 $sedes = json_decode($_POST['sedes']);
 $meses = json_decode($_POST['meses']);
 $productos = json_decode($_POST['productos']);
+$complemento = json_decode($_POST['complemento']);
+
+$complemento = ($complemento == 'ALL' ? 'Total cobertura' : $complemento);
 
 $condicional = "";
 
@@ -46,7 +49,7 @@ foreach ($meses as $key => $mes) {
 			$tablaErr.="Error al obtener información de sedes.";
 		}
 
-		$consulta = "SELECT * FROM $tabla WHERE BodegaDestino = '".$sede."' AND (".$condicional.")";
+		$consulta = "SELECT * FROM $tabla WHERE BodegaDestino = '".$sede."' AND Complemento = '".$complemento."' AND (".$condicional.")";
 		if ($resultado = $Link->query($consulta)) {
 			if ($resultado->num_rows > 0) {
 				$valida++;

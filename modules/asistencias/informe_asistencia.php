@@ -84,7 +84,10 @@
 					<div class="hr-line-dashed"></div>
 					<div class="form-group row">
 						<div class="col-sm-12">
+
+							<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5 ){ ?>
 							<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
+							<?php } ?>
 							<!-- <button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button> -->
 						</div>
 					</div>

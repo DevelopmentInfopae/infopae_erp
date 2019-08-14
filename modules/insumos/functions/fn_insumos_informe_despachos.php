@@ -17,12 +17,15 @@ if (isset($_POST['tablaMesInicio'])) {
 	echo "<script>alert('No se ha definido mes.');</script>";
 }
 
+$sedes = array_unique($sedes);
+
 $despachos_seleccionados = $_POST['despachos_seleccionados'];
 $despachos_seleccionados = trim($despachos_seleccionados, ", ");
 $ds = explode(", ", $despachos_seleccionados);
 $ds_mes = [];
 
 $meses_involucrados = [];
+$ids_despachos = [];
 
 foreach ($ds as $id => $value) {
 	$sd = explode("_", $value);
@@ -32,6 +35,10 @@ foreach ($ds as $id => $value) {
 
 	if (!isset($meses_involucrados[$sd[1]])) {
 		$meses_involucrados[(Int) $sd[1]] = 1;
+	}
+
+	if (!isset($ids_despachos[$sd[0]])) {
+		$ids_despachos[(Int) $sd[0]] = 1;
 	}
 
 }
@@ -74,7 +81,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		// $nom_inst="";
 		// $nom_sede="";
 
-		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes){
+		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes, $tipoComplemento){
 			$this->fecha = $fecha;
 			// setlocale(LC_TIME, 'es_CO');
 			// $fecha = DateTime::createFromFormat('!m', $mes);
@@ -88,6 +95,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->coberturaEtarios = $coberturaEtarios;
 			$this->maxEstudiantes = $maxEstudiantes;
 			$this->gruposEtarios = $gruposEtarios;
+			$this->tipoComplemento = $tipoComplemento;
 		}
 
 		function Header()
@@ -129,8 +137,29 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->Cell(61.94,10,utf8_decode('RANGO DE EDAD'),'TBLR',0,'C');
 		    $this->Cell(61.94,10,utf8_decode('N° DE RACIONES ADJUDICADAS'),'TBLR',0,'C');
 		    $this->Cell(61.94,10,utf8_decode('N° DE RACIONES ATENDIDAS'),'TBLR',0,'C');
-		    $this->Cell(48.6,10,utf8_decode('N° DE MANIPULADORAS'),'TBR',0,'C');
-		    $this->Cell(48.6,10,utf8_decode('TOTAL COBERTURA'),'TBR',1,'C');
+
+		    $cx = $this->getX();
+		    $cy = $this->getY();
+		    $this->Cell(32.4,10,utf8_decode(''),'TBR',0,'C');
+		    $this->setXY($cx, $cy);
+		    $this->MultiCell(32.4, 5, utf8_decode('N° DE MANIPULADORAS'), 0, 'C');
+		    $this->setXY($cx+32.4, $cy);
+
+		    $cx = $this->getX();
+		    $cy = $this->getY();
+		    $this->Cell(32.4,10,utf8_decode(''),'TBR',0,'C');
+		    $this->setXY($cx, $cy);
+		    $this->MultiCell(32.4, 5, utf8_decode('TOTAL COBERTURA'), 0, 'C');
+		    $this->setXY($cx+32.4, $cy);
+
+			$cx = $this->getX();
+		    $cy = $this->getY();
+		    $this->Cell(32.4,10,utf8_decode(''),'TBR',0,'C');
+		    $this->setXY($cx, $cy);
+		    $this->MultiCell(32.4, 5, utf8_decode('TIPO COMPLEMENTO'), 0, 'C');
+		    // $this->setXY($cx+32.4, $cy);
+		    $this->Ln();
+
 		    $this->SetFont('Arial','',8);
 
 		    foreach ($this->gruposEtarios as $ID => $DESCRIPCION) {
@@ -139,8 +168,22 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    	$this->Cell(61.94,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BLR',1,'C');//SEDES COBERTURA POR GRUPO ETARIO
     		}
     		$this->SetXY(192.8, 47);
-    		$this->Cell(48.6,18,utf8_decode($this->dataSede['cantidad_Manipuladora']),'TBR',0,'C');//MANIPULADORAS DE LA SEDE
-    		$this->Cell(48.6,18,utf8_decode($this->maxEstudiantes),'TBR',1,'C');//CANTIDAD COBERTURA
+
+    		if ($this->tipoComplemento == 'APS') {
+    			$manipuladoras = $this->dataSede['Manipuladora_APS'];
+    		} else if ($this->tipoComplemento == 'CAJMPS') {
+    			$manipuladoras = $this->dataSede['Manipuladora_CAJMPS'];
+    		} else if ($this->tipoComplemento == 'CAJMRI') {
+    			$manipuladoras = $this->dataSede['Manipuladora_CAJMRI'];
+    		} else if ($this->tipoComplemento == 'CAJTRI') {
+    			$manipuladoras = $this->dataSede['Manipuladora_CAJTRI'];
+    		} else {
+    			$manipuladoras = $this->dataSede['cantidad_Manipuladora'];
+    		}
+
+    		$this->Cell(32.4,18,utf8_decode($manipuladoras),'TBR',0,'C');//MANIPULADORAS DE LA SEDE
+    		$this->Cell(32.4,18,utf8_decode($this->maxEstudiantes),'TBR',0,'C');//CANTIDAD COBERTURA
+    		$this->Cell(32.4,18,utf8_decode($this->tipoComplemento),'TBR',1,'C');//CANTIDAD COBERTURA
     		//Salto de línea
 		    $this->Ln(1);
 		    $this->SetFont('Arial','B',8);
@@ -170,6 +213,8 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	$pdf = new PDF('L', 'mm', 'A4');
 	$pdf->AliasNbPages();
 	$pdf->SetMargins(7, 7);
+
+	// exit(var_dump($sedes));
 
 foreach ($sedes as $key => $sede) {
 	$consultaSede = "SELECT
@@ -210,49 +255,41 @@ foreach ($sedes as $key => $sede) {
 
 	// }
 
+    // exit(var_dump($ids_despachos));
+
 	$consultaDespacho = "SELECT * FROM $insumosmov WHERE BodegaDestino = '".$sede."'";
+	// exit($consultaDespacho);
 	$resultadoDespacho = $Link->query($consultaDespacho);
 	if ($resultadoDespacho->num_rows > 0) {
 		while ($Despacho = $resultadoDespacho->fetch_assoc()) {
+			if (isset($ids_despachos[$Despacho['Id']])) {
+				if ($Despacho['Id'] == '100') {
+					exit('Vamos que vamos');
+				}
 
-			$coberturaEtarios["Etario1"] = $Despacho["Cobertura_G1"];
-			$coberturaEtarios["Etario2"] = $Despacho["Cobertura_G2"];
-			$coberturaEtarios["Etario3"] = $Despacho["Cobertura_G3"];
-			$maxEstudiantes = $Despacho["Cobertura"];
+				$coberturaEtarios["Etario1"] = $Despacho["Cobertura_G1"];
+				$coberturaEtarios["Etario2"] = $Despacho["Cobertura_G2"];
+				$coberturaEtarios["Etario3"] = $Despacho["Cobertura_G3"];
+				$maxEstudiantes = $Despacho["Cobertura"];
+				$tipoComplemento = $Despacho['Complemento'];
 
-			$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios,$tablaMes);
-			$pdf->AddPage();
-		    $pdf->SetFont('Arial','',7);
-		    //PRODUCTOS
-		    $consultaDetalles = "SELECT producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
-		    					INNER JOIN productos".$_SESSION['periodoActual']." as producto ON producto.Codigo = insmovdet.CodigoProducto
-		     					WHERE insmovdet.Numero = '".$Despacho['Numero']."'";
-		    $resultadoDetalles = $Link->query($consultaDetalles);
-		    if ($resultadoDetalles->num_rows > 0) {
-		    	while ($detalles = $resultadoDetalles->fetch_assoc()) {
+				$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $tablaMes, $tipoComplemento);
+				$pdf->AddPage();
+			    $pdf->SetFont('Arial','',7);
+			    //PRODUCTOS
+			    $consultaDetalles = "SELECT producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
+			    					INNER JOIN productos".$_SESSION['periodoActual']." as producto ON producto.Codigo = insmovdet.CodigoProducto
+			     					WHERE insmovdet.Numero = '".$Despacho['Numero']."'";
+			    $resultadoDetalles = $Link->query($consultaDetalles);
+			    if ($resultadoDetalles->num_rows > 0) {
+			    	while ($detalles = $resultadoDetalles->fetch_assoc()) {
 
-		    		if ($detalles['CantU3'] != 0 || $detalles['CantU4'] != 0 || $detalles['CantU5'] != 0) { //SI SE DIERON MÁS PRESENTACIONES
-		    			$pdf->Cell(70.75,5,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
-			    		$pdf->Cell(30,5,utf8_decode($detalles['Umedida']),'BR',0,'C');
-			    		$pdf->Cell(30,5,utf8_decode(round($detalles['Cantidad']/1000, 2)),'BR',0,'C');
-			    		$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CanTotalPresentacion'], 3, '.', ',')),'BR',0,'C');
-			    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.35,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
-
-		    			if ($detalles['CantU2'] != 0 ) {
-		    				$pdf->Cell(70.75,5,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad2']),'BLR',0,'L');
-			    			$pdf->Cell(30,5,'','BR',0,'C');
-			    			$pdf->Cell(30,5,'','BR',0,'C');
-			    			$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CantU2'], 0)),'BR',0,'C');
-			    			$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+			    		if ($detalles['CantU3'] != 0 || $detalles['CantU4'] != 0 || $detalles['CantU5'] != 0) { //SI SE DIERON MÁS PRESENTACIONES
+			    			$pdf->Cell(70.75,5,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
+				    		$pdf->Cell(30,5,utf8_decode($detalles['Umedida']),'BR',0,'C');
+				    		$pdf->Cell(30,5,utf8_decode(round($detalles['Cantidad']/1000, 2)),'BR',0,'C');
+				    		$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CanTotalPresentacion'], 3, '.', ',')),'BR',0,'C');
+				    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
@@ -262,13 +299,79 @@ foreach ($sedes as $key => $sede) {
 				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
-		    			}
-		    			if ($detalles['CantU3'] != 0 ) {
-		    				$pdf->Cell(70.75,5,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad3']),'BLR',0,'L');
-			    			$pdf->Cell(30,5,'','BR',0,'C');
-			    			$pdf->Cell(30,5,'','BR',0,'C');
-			    			$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CantU3'], 0)),'BR',0,'C');
-			    			$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+
+			    			if ($detalles['CantU2'] != 0 ) {
+			    				$pdf->Cell(70.75,5,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad2']),'BLR',0,'L');
+				    			$pdf->Cell(30,5,'','BR',0,'C');
+				    			$pdf->Cell(30,5,'','BR',0,'C');
+				    			$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CantU2'], 0)),'BR',0,'C');
+				    			$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.35,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
+			    			}
+			    			if ($detalles['CantU3'] != 0 ) {
+			    				$pdf->Cell(70.75,5,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad3']),'BLR',0,'L');
+				    			$pdf->Cell(30,5,'','BR',0,'C');
+				    			$pdf->Cell(30,5,'','BR',0,'C');
+				    			$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CantU3'], 0)),'BR',0,'C');
+				    			$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.35,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
+			    			}
+
+			    			if ($detalles['CantU4'] != 0 ) {
+			    				$pdf->Cell(70.75,5,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad4']),'BLR',0,'L');
+				    			$pdf->Cell(30,5,'','BR',0,'C');
+				    			$pdf->Cell(30,5,'','BR',0,'C');
+				    			$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CantU4'], 0)),'BR',0,'C');
+				    			$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.35,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
+			    			}
+
+			    			if ($detalles['CantU5'] != 0 ) {
+			    				$pdf->Cell(70.75,5,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad5']),'BLR',0,'L');
+				    			$pdf->Cell(30,5,'','BR',0,'C');
+				    			$pdf->Cell(30,5,'','BR',0,'C');
+				    			$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CantU5'], 0)),'BR',0,'C');
+				    			$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.35,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
+					    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
+			    			}
+			    		} else {
+			    			$pdf->Cell(70.75,5,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
+				    		$pdf->Cell(30,5,utf8_decode($detalles['Umedida']),'BR',0,'C');
+				    		$pdf->Cell(30,5,utf8_decode(number_format($detalles['CanTotalPresentacion'], 2, '.', ',')),'BR',0,'C');
+				    		$pdf->Cell(12.8,5,utf8_decode((number_format($detalles['NombreUnidad1'] == 'u' ? ceil($detalles['CanTotalPresentacion']) : strpos($detalles['NombreUnidad2'], 'kg') || strpos($detalles['NombreUnidad2'], 'lt') ? ceil($detalles['CanTotalPresentacion']) : $detalles['CanTotalPresentacion'], 2, '.', ','))) ,'BR',0,'C');
+				    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
@@ -278,118 +381,71 @@ foreach ($sedes as $key => $sede) {
 				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
 				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
-		    			}
+			    		}
+			    	}
+			    }
 
-		    			if ($detalles['CantU4'] != 0 ) {
-		    				$pdf->Cell(70.75,5,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad4']),'BLR',0,'L');
-			    			$pdf->Cell(30,5,'','BR',0,'C');
-			    			$pdf->Cell(30,5,'','BR',0,'C');
-			    			$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CantU4'], 0)),'BR',0,'C');
-			    			$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.35,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
-		    			}
+				$cy = $pdf->GetY();
 
-		    			if ($detalles['CantU5'] != 0 ) {
-		    				$pdf->Cell(70.75,5,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad5']),'BLR',0,'L');
-			    			$pdf->Cell(30,5,'','BR',0,'C');
-			    			$pdf->Cell(30,5,'','BR',0,'C');
-			    			$pdf->Cell(12.8,5,utf8_decode(number_format($detalles['CantU5'], 0)),'BR',0,'C');
-			    			$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.35,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
-				    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
-		    			}
-		    		} else {
-		    			$pdf->Cell(70.75,5,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
-			    		$pdf->Cell(30,5,utf8_decode($detalles['Umedida']),'BR',0,'C');
-			    		$pdf->Cell(30,5,utf8_decode(number_format($detalles['CanTotalPresentacion'], 2, '.', ',')),'BR',0,'C');
-			    		$pdf->Cell(12.8,5,utf8_decode((number_format($detalles['NombreUnidad1'] == 'u' ? ceil($detalles['CanTotalPresentacion']) : strpos($detalles['NombreUnidad2'], 'kg') || strpos($detalles['NombreUnidad2'], 'lt') ? ceil($detalles['CanTotalPresentacion']) : $detalles['CanTotalPresentacion'], 2, '.', ','))) ,'BR',0,'C');
-			    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.6,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(19.6,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.35,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.3,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',0,'C');
-			    		$pdf->Cell(12.67,5,utf8_decode(''),'BR',1,'C');
-		    		}
-		    	}
-		    }
+				if($cy > 155){
+				$pdf->AddPage();
+				}
 
-			$cy = $pdf->GetY();
+				// $pdf->ln();
 
-			if($cy > 155){
-			$pdf->AddPage();
+				$current_y = $pdf->GetY();
+				$current_x = $pdf->GetX();
+
+				$pdf->SetXY($current_x, $current_y);
+
+
+				$pdf->Cell(94.3,4,'',1,0,'L',False);
+				$pdf->Cell(94.3,4,'',1,0,'L',False);
+				$pdf->Cell(94.3,4,'',1,0,'L',False);
+				$pdf->ln();
+
+				$pdf->Cell(94.3,12,'',1,0,'L',False);
+				$pdf->Cell(94.3,12,'',1,0,'L',False);
+				$pdf->Cell(94.3,12,'',1,0,'L',False);
+				$pdf->ln();
+
+				$pdf->Cell(94.3,16,'',1,0,'L',False);
+				$pdf->Cell(94.3,16,'',1,0,'L',False);
+				$cy = $pdf->GetY();
+				$cx = $pdf->GetX();
+				$pdf->Cell(94.3,8,'',1,0,'L',False);
+				$pdf->SetXY($cx, $cy+8);
+				$pdf->Cell(94.3,8,'',1,0,'L',False);
+				$pdf->ln();
+
+				$pdf->SetXY($current_x, $current_y);
+
+				$pdf->Cell(94.3,4,'MANIPULADOR',0,0,'C',False);
+				$pdf->Cell(94.3,4,'TRANSPORTADOR',0,0,'C',False);
+				$pdf->Cell(94.3,4,utf8_decode('INSTITUCIÓN EDUCATIVA'),0,0,'C',False);
+				$pdf->ln();
+
+				$pdf->SetXY($current_x, $current_y-0.2);
+
+				$pdf->Cell(94.3,12,'NOMBRE MANIPULADOR (Operador):',0,0,'L',False);
+				$pdf->Cell(94.3,12,'NOMBRE RECIBE (Operador):',0,0,'L',False);
+				$pdf->Cell(94.3,12,'NOMBRE RESPONSABLE INSTITUCION O CENTRO EDUCATIVO:',0,0,'L',False);
+				$pdf->ln();
+
+				$pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
+				$pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
+				$cy = $pdf->GetY();
+				$cx = $pdf->GetX();
+
+				$pdf->SetXY($cx, $cy+2);
+				$pdf->Cell(94.3,8,'CARGO:',0,0,'L',False);
+				$pdf->SetXY($cx, $cy+10);
+				$pdf->Cell(94.3,8,'FIRMA:',0,0,'L',False);
+
+				$pdf->ln();
 			}
 
-			// $pdf->ln();
 
-			$current_y = $pdf->GetY();
-			$current_x = $pdf->GetX();
-
-			$pdf->SetXY($current_x, $current_y);
-
-
-			$pdf->Cell(94.3,4,'',1,0,'L',False);
-			$pdf->Cell(94.3,4,'',1,0,'L',False);
-			$pdf->Cell(94.3,4,'',1,0,'L',False);
-			$pdf->ln();
-
-			$pdf->Cell(94.3,12,'',1,0,'L',False);
-			$pdf->Cell(94.3,12,'',1,0,'L',False);
-			$pdf->Cell(94.3,12,'',1,0,'L',False);
-			$pdf->ln();
-
-			$pdf->Cell(94.3,16,'',1,0,'L',False);
-			$pdf->Cell(94.3,16,'',1,0,'L',False);
-			$cy = $pdf->GetY();
-			$cx = $pdf->GetX();
-			$pdf->Cell(94.3,8,'',1,0,'L',False);
-			$pdf->SetXY($cx, $cy+8);
-			$pdf->Cell(94.3,8,'',1,0,'L',False);
-			$pdf->ln();
-
-			$pdf->SetXY($current_x, $current_y);
-
-			$pdf->Cell(94.3,4,'MANIPULADOR',0,0,'C',False);
-			$pdf->Cell(94.3,4,'TRANSPORTADOR',0,0,'C',False);
-			$pdf->Cell(94.3,4,utf8_decode('INSTITUCIÓN EDUCATIVA'),0,0,'C',False);
-			$pdf->ln();
-
-			$pdf->SetXY($current_x, $current_y-0.2);
-
-			$pdf->Cell(94.3,12,'NOMBRE MANIPULADOR (Operador):',0,0,'L',False);
-			$pdf->Cell(94.3,12,'NOMBRE RECIBE (Operador):',0,0,'L',False);
-			$pdf->Cell(94.3,12,'NOMBRE RESPONSABLE INSTITUCION O CENTRO EDUCATIVO:',0,0,'L',False);
-			$pdf->ln();
-
-			$pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
-			$pdf->Cell(94.3,16,'FIRMA:',0,0,'L',False);
-			$cy = $pdf->GetY();
-			$cx = $pdf->GetX();
-
-			$pdf->SetXY($cx, $cy+2);
-			$pdf->Cell(94.3,8,'CARGO:',0,0,'L',False);
-			$pdf->SetXY($cx, $cy+10);
-			$pdf->Cell(94.3,8,'FIRMA:',0,0,'L',False);
-
-			$pdf->ln();
 
 		}
 	}

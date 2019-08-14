@@ -21,16 +21,15 @@
         <strong><?php echo $titulo; ?></strong>
       </li>
     </ol>
-  </div><!-- /.col -->
+  </div>
   <div class="col-lg-4">
     <div class="title-action">
       <a href="#" class="btn btn-primary" onclick="guardarParametros();">
-        <i class="fa <?php if ($resultado1->num_rows > 0){ echo "fa-pencil"; } else { echo "fa-plus"; } ?>"></i>
-        Guardar
+        <i class="fa <?php if ($resultado1->num_rows > 0){ echo "fa-pencil"; } else { echo "fa-plus"; } ?>"></i> Guardar
       </a>
-    </div><!-- /.title-action -->
-  </div><!-- /.col -->
-</div><!-- /.row -->
+    </div>
+  </div>
+</div>
 
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -52,27 +51,27 @@
                       <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Quitar</a>
                     </div>
                   </div>
-                </div><!-- /.col -->
-              </div> <!-- </div> -->
+                </div>
+              </div>
               <div class="col-sm-8">
 
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="nombre">Razón social</label>
                     <input type="text" class="form-control" name="nombre" id="nombre" value="<?php if(isset($datos['Operador']) && $datos['Operador'] != '') { echo $datos['Operador']; }?>" required>
-                  </div><!-- /.col -->
+                  </div>
 
                   <div class="form-group col-sm-6">
                     <label for="numeroContrato">Número de Contrato</label>
                     <input type="text" class="form-control" name="numeroContrato" id="numeroContrato" value="<?php if(isset($datos['NumContrato']) && $datos['NumContrato'] != '') { echo $datos['NumContrato']; }?>" required>
-                  </div><!-- /.col -->
+                  </div>
                 </div>
 
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="anio">Año de contrato</label>
                     <input type="text" class="form-control" value="<?php if(isset($datos['ano']) && $datos['ano'] != '') { echo $datos['ano']; } else { echo date('Y'); } ?>" readOnly disabled>
-                  </div><!-- /.col -->
+                  </div>
 
                   <div class="form-group col-sm-6">
                     <label for="departamento">Departamento</label>
@@ -90,7 +89,7 @@
                         }
                       ?>
                     </select>
-                  </div><!-- /.col -->
+                  </div>
                 </div>
 
                 <div class="row">
@@ -110,23 +109,20 @@
                         }
                       ?>
                     </select>
-                  </div><!-- /.col -->
+                  </div>
 
                   <div class="form-group col-sm-6">
                     <label for="nombreEtc">ETC</label>
                     <input type="text" class="form-control" name="nombreEtc" id="nombreEtc" value="<?php if(isset($datos['NombreETC']) && $datos['NombreETC'] != '') { echo $datos['NombreETC']; }?>" placeholder="Ente territorial certificado" required>
                     <input type="hidden" name="id" id="id" value="<?php if(isset($datos['id']) && $datos['id']) { echo $datos['id']; } ?>">
-                  </div><!-- /.col -->
-
-                  <!-- <div class="row"> -->
-                  <!-- </div> -->
+                  </div>
                 </div>
 
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumios."></i></label>
                     <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
-                  </div><!-- /.col -->
+                  </div>
 
                   <div class="col-sm-6">
                     <div class="form-group">
@@ -136,14 +132,26 @@
                   </div>
                 </div>
 
-              </div> <!-- /.col-sm-8 -->
-            </div><!-- /.row -->
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                    <label for="nombre_representante_legal">Representate legal</label>
+                    <input type="text" name="nombre_representante_legal" id="nombre_representante_legal" class="form-control" value="<?php if (isset($datos['nombre_representante_legal']) && $datos['nombre_representante_legal'] != '') { echo $datos['nombre_representante_legal']; } ?>">
+                  </div>
+
+                  <div class="form-group col-sm-6">
+                    <label for="documento_representante_legal">Documento representante legal</label>
+                    <input type="text" name="documento_representante_legal" id="documento_representante_legal" class="form-control" value="<?php if (isset($datos['documento_representante_legal']) && $datos['documento_representante_legal'] != '') { echo $datos['documento_representante_legal']; } ?>">
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </form>
-        </div><!-- /.ibox-content -->
-      </div><!-- /.ibox float-e-margins -->
-    </div><!-- /.col-lg-12 -->
-  </div><!-- /.row -->
-</div><!-- /.wrapper wrapper-content animated fadeInRight -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <?php include '../../footer.php'; ?>
 

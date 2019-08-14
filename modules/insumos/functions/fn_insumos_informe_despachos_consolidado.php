@@ -75,7 +75,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	class PDF extends FPDF
 	{
 
-		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho, $mesInicio, $mesFin){
+		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho, $mesInicio, $mesFin, $coberturaComplemento){
 			$this->fecha = $fecha;
 			// setlocale(LC_TIME, 'es');
 			// $fecha = DateTime::createFromFormat('!m', $mes);
@@ -90,6 +90,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->maxManipuladoras = $maxManipuladoras;
 			$this->nom_inst = $nom_inst;
 			$this->ciudad_despacho = $ciudad_despacho;
+			$this->coberturaComplemento = $coberturaComplemento;
 		}
 
 		function Header()
@@ -136,6 +137,20 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    // $this->Cell(32.5,$this->alturaRenglon,utf8_decode($this->maxEstudiantes),'BR',1,'L');
 		    $this->Cell(10,$this->alturaRenglon,utf8_decode($this->maxEstudiantes),'BR',1,'L');
     		//Salto de línea
+
+    		//ANCHO MÁXIMO 342
+
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('APS'),'LBR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['APS']) ? $this->coberturaComplemento['APS'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJMPS'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJMPS']) ? $this->coberturaComplemento['CAJMPS'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJMRI'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJMRI']) ? $this->coberturaComplemento['CAJMRI'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJTRI'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJTRI']) ? $this->coberturaComplemento['CAJTRI'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJTPS'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJTPS']) ? $this->coberturaComplemento['CAJTPS'] : '-')),'BR',1,'L');
+
 		    $this->Ln(1);
 		    $this->SetFont('Arial','B',$this->fontSize);
 
@@ -194,6 +209,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	$EstudiantesContados = [];
 	$maxManipuladoras = [];
 	$ManipuladorasContadas = [];
+	$coberturaComplemento = [];
 
 	$pdf = new PDF('L', 'mm', 'Legal');
 	$pdf->AliasNbPages();
@@ -299,6 +315,12 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 					$maxEstudiantes[$codigo_inst] += $Despacho["Cobertura"];
 				}
 
+				if (!isset($coberturaComplemento[$Despacho['Complemento']])) {
+					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] = $Despacho["Cobertura"];
+				} else {
+					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];
+				}
+
 			    $consultaDetalles = "SELECT producto.id as pId, producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
 			    					INNER JOIN productos".$_SESSION['periodoActual']." as producto ON producto.Codigo = insmovdet.CodigoProducto
 			     					WHERE insmovdet.Numero = '".$Despacho['Numero']."'";
@@ -337,7 +359,7 @@ $alturaRenglon = 6;
 
 	foreach ($dataInst as $cod_inst => $sedes) {
 
-		$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMesInicio, $tablaMesFin);
+		$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMesInicio, $tablaMesFin, $coberturaComplemento[$cod_inst]);
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','',$fontSize);
 
