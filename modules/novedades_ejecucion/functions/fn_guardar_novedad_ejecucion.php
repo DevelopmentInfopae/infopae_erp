@@ -246,7 +246,7 @@
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	// Consulta que retorna los estudiantes registrados en entregas_res de acuerdo a los filtros ingresados.
+	/*// Consulta que retorna los estudiantes registrados en entregas_res de acuerdo a los filtros ingresados.
 	$repitentes_entregas = [];
 	$consulta_repitentes_entregas = "SELECT * FROM entregas_res_$mes$periodo_actual WHERE cod_sede = '".$sede."' AND tipo_complem = '".$tipo_complemento."' AND tipo = 'R';";
 	$respuesta_repitentes_entregas = $Link->query($consulta_titulares_entregas) or die('Error al consultar entregas_res_$mes$periodo_actual: '. $Link->error);
@@ -288,7 +288,7 @@
 		$consulta_actualizar_repitentes .= " ON DUPLICATE KEY UPDATE ". $campos_actualizar_duplicados;
 	}
 
-	$respuesta_actualizar_repitentes = $Link->query($consulta_actualizar_repitentes) or die('Error al actualizar repitentes en entregas_res_$mes$periodo_actual: '. $Link->error);
+	$respuesta_actualizar_repitentes = $Link->query($consulta_actualizar_repitentes) or die('Error al actualizar repitentes en entregas_res_$mes$periodo_actual: '. $Link->error);*/
 	///////////////////////////////////////////////////////////////////////////////
 
 	$respuesta_ajax = [
