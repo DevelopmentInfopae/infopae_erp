@@ -48,18 +48,18 @@
 	$columnasDiasEntregas_res = trim($columnasDiasEntregas_res, ", ");
 
 	$consulta_focalizados = "SELECT
-														td.Abreviatura AS abreviatura_documento,
-														e.num_doc AS numero_documento,
-														e.tipo_complem AS complemento,
-														CONCAT(e.nom1,' ',e.nom2,' ',e.ape1,' ',e.ape2) AS nombre,
-														f.cod_grado AS grado,
-														f.nom_grupo AS grupo,
-														$columnasDiasEntregas_res,
-														($columnasDiasSuma) AS suma_dias
-													FROM entregas_res_$mes$perido_actual e
-														RIGHT JOIN focalizacion$semana f ON e.num_doc = f.num_doc AND e.cod_sede = f.cod_sede  AND e.tipo_complem = f.Tipo_complemento
-														INNER JOIN tipodocumento td ON f.tipo_doc = td.id
-													WHERE f.cod_sede = $sede AND e.tipo_complem = '$tipoComplemento' AND f.activo = 1 AND e.tipo='F'";
+								td.Abreviatura AS abreviatura_documento,
+								e.num_doc AS numero_documento,
+								e.tipo_complem AS complemento,
+								CONCAT(e.nom1,' ',e.nom2,' ',e.ape1,' ',e.ape2) AS nombre,
+								f.cod_grado AS grado,
+								f.nom_grupo AS grupo,
+								$columnasDiasEntregas_res,
+								($columnasDiasSuma) AS suma_dias
+							FROM entregas_res_$mes$perido_actual e
+								RIGHT JOIN focalizacion$semana f ON e.num_doc = f.num_doc AND e.cod_sede = f.cod_sede  AND e.tipo_complem = f.Tipo_complemento
+								INNER JOIN tipodocumento td ON f.tipo_doc = td.id
+							WHERE f.cod_sede = $sede AND e.tipo_complem = '$tipoComplemento' AND f.activo = 1 AND e.tipo='F'";
 
 	$respuesta_focalizados = $Link->query($consulta_focalizados) or die('Error al consultar focalizacion: '. $Link->error);
 	if($respuesta_focalizados->num_rows > 0)

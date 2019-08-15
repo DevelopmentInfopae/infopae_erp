@@ -475,7 +475,7 @@ function guardarNovedad()
 			},
 			error: function(data)
 			{
-	      Command: toastr.error("Al parecer existe un error. Por favor comuníquese con el administrador del sistema.", "Error de proceso.", {
+	      		Command: toastr.error("Al parecer existe un error. Por favor comuníquese con el administrador del sistema.", "Error de proceso.", {
 	        	onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText); }
 	      	}
 	      );

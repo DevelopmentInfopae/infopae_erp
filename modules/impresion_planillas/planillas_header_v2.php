@@ -53,7 +53,7 @@ if ($tipoPlanilla != 6)
 							    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM AND MES = MS)
 							) AS total_entregas
 							FROM planilla_semanas WHERE SEMANA = '".$semana."';";
-		echo $consTotalEntregado;
+
 
 		$resTotalEntregado = $Link->query($consTotalEntregado);
 
