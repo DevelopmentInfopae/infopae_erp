@@ -101,7 +101,7 @@
     if ($respuesta_fecha_despacho->num_rows > 0)
     {
       $registro_fecha_despacho = $respuesta_fecha_despacho->fetch_object();
-      $fecha_despacho = $registro_fecha_despacho->ano."-".$registro_fecha_despacho->mes."-".$registro_fecha_despacho->dia;
+      $fecha_despacho = $registro_fecha_despacho->ano."-".$registro_fecha_despacho->mes."-".($registro_fecha_despacho->dia < 9 ? "0". $registro_fecha_despacho->dia : $registro_fecha_despacho->dia);
     }
 
     // Consulta que retorna los tipos de vehículos.
