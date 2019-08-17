@@ -1,7 +1,7 @@
-<?php 
+<?php
 $titulo = 'Informes de insumos ordenados por proveedor.';
 $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 ?>
 
@@ -21,7 +21,7 @@ $periodoActual = $_SESSION['periodoActual'];
     </ol>
   </div><!-- /.col -->
   <div class="col-lg-4">
-    
+
   </div><!-- /.col -->
 </div><!-- /.row -->
 
@@ -32,16 +32,16 @@ $periodoActual = $_SESSION['periodoActual'];
         <div class="ibox-content contentBackground">
           <?php
           $opciones ="";
-          $consultaTablas = "SELECT 
+          $consultaTablas = "SELECT
                                    table_name AS tabla
-                                  FROM 
+                                  FROM
                                    information_schema.tables
-                                  WHERE 
+                                  WHERE
                                    table_schema = DATABASE() AND table_name like 'insumosmovdet%'";
           $resultadoTablas = $Link->query($consultaTablas);
           if ($resultadoTablas->num_rows > 0) {
             $cnt=0;
-            while ($tabla = $resultadoTablas->fetch_assoc()) { 
+            while ($tabla = $resultadoTablas->fetch_assoc()) {
               $mes = str_replace("insumosmovdet", "", $tabla['tabla']);
               $mes = str_replace($_SESSION['periodoActual'], "", $mes);
 
@@ -81,12 +81,12 @@ $periodoActual = $_SESSION['periodoActual'];
                   </div>
                 </div>
               </div>
-            </div>  
+            </div>
             <div class="form-group col-sm-3">
               <label>Tipo documento</label>
               <select name="tipo_documento" id="tipo_documento" class="form-control">
                 <option value="">Seleccione...</option>
-              <?php 
+              <?php
               $consultarTipoDocumento = "SELECT * FROM tipomovimiento";
               $resultadoTipoDocumento = $Link->query($consultarTipoDocumento);
               if ($resultadoTipoDocumento->num_rows > 0) {
@@ -107,23 +107,23 @@ $periodoActual = $_SESSION['periodoActual'];
               <label>Rutas</label>
               <select name="ruta_desp" id="ruta_desp" class="form-control">
                 <option value="">Seleccione...</option>
-                <?php 
-                $consultaRutas = "SELECT * FROM rutas"; 
+                <?php
+                $consultaRutas = "SELECT * FROM rutas";
                 $resultadoRutas = $Link->query($consultaRutas);
                 if ($resultadoRutas->num_rows > 0) {
                   while ($ruta = $resultadoRutas->fetch_assoc()) { ?>
                     <option value="<?php echo $ruta['ID']; ?>"><?php echo $ruta['Nombre']; ?></option>
                   <?php }
                 }
-                ?>   
+                ?>
               </select>
             </div>
             <div class="form-group col-sm-3">
               <label>Municipio</label>
               <select class="form-control" name="municipio" id="municipio_desp">
               <option value="">Seleccione...</option>
-                <?php 
-                  $consultarMunicipios = "SELECT 
+                <?php
+                  $consultarMunicipios = "SELECT
                 ubicacion.CodigoDANE, ubicacion.Ciudad
                   FROM
                     insumosmov".$mes.$_SESSION['periodoActual']." AS denc
@@ -212,29 +212,29 @@ $periodoActual = $_SESSION['periodoActual'];
                 </tfoot>
               </table>
           </div>
-<?php 
+<?php
 
   if (!isset($_POST['buscar'])) { //Si no hay filtrado
 
     $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
-    $consulta = "SELECT 
+    $consulta = "SELECT
                      pmovdet.CodigoProducto, pmovdet.Descripcion, SUM(pmovdet.Cantidad) AS Cantidad, pmovdet.CantUMedida, (SUM(pmovdet.CanTotalPresentacion)*1000) AS CantidadPresentacion, pmovdet.Umedida, SUM(pmovdet.CantU2) AS CantU2, SUM(pmovdet.CantU3) AS CantU3, SUM(pmovdet.CantU4) AS CantU4, SUM(pmovdet.CantU5) AS CantU5, P.NombreUnidad2 as Umedida2, P.NombreUnidad3 as Umedida3, P.NombreUnidad4 as Umedida4, P.NombreUnidad5 as Umedida5
                   FROM
                     insumosmov$numtabla AS pmov
-                      INNER JOIN insumosmovdet$numtabla as pmovdet ON pmovdet.Numero = pmov.Numero 
-                      INNER JOIN productos$periodoActual as P ON P.Codigo = pmovdet.CodigoProducto 
+                      INNER JOIN insumosmovdet$numtabla as pmovdet ON pmovdet.Numero = pmov.Numero
+                      INNER JOIN productos$periodoActual as P ON P.Codigo = pmovdet.CodigoProducto
 
                       GROUP BY pmovdet.CodigoProducto ORDER BY pmovdet.Descripcion ASC
                   LIMIT 2000;";
   } else if (isset($_POST['buscar'])) { //Si hay filtrado
-    
+
     $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual']; //Número MesAño según mes escogido
     $condiciones = ""; //Donde se almacenan las condiciones según parámetros
     $inners="";//Donde se almacenan los INNERS necesarios para traer datos externos.
 
     if (isset($_POST['ruta_desp']) && $_POST['ruta_desp'] != "") { //SI SE ESCOGIÓ POR RUTA
-      $consultaRutas = "SELECT *, inst.nom_inst, ubicacion.Ciudad FROM rutasedes 
+      $consultaRutas = "SELECT *, inst.nom_inst, ubicacion.Ciudad FROM rutasedes
         INNER JOIN sedes".$_SESSION['periodoActual']." AS sede ON sede.cod_sede = rutasedes.cod_Sede
         INNER JOIN instituciones AS inst ON inst.codigo_inst = sede.cod_inst
         INNER JOIN ubicacion ON ubicacion.codigoDANE = inst.cod_mun
@@ -274,19 +274,19 @@ $periodoActual = $_SESSION['periodoActual'];
       }
     }
 
-    $consulta = "SELECT 
+    $consulta = "SELECT
                      pmovdet.CodigoProducto, pmovdet.Descripcion, SUM(pmovdet.Cantidad) AS Cantidad, pmovdet.CantUMedida, (SUM(pmovdet.CanTotalPresentacion)*1000) AS CantidadPresentacion, pmovdet.Umedida, SUM(pmovdet.CantU2) AS CantU2, SUM(pmovdet.CantU3) AS CantU3, SUM(pmovdet.CantU4) AS CantU4, SUM(pmovdet.CantU5) AS CantU5, P.NombreUnidad2 as Umedida2, P.NombreUnidad3 as Umedida3, P.NombreUnidad4 as Umedida4, P.NombreUnidad5 as Umedida5
                   FROM
                     insumosmov$numtabla AS pmov
-                      INNER JOIN insumosmovdet$numtabla as pmovdet ON pmovdet.Numero = pmov.Numero 
-                      INNER JOIN productos$periodoActual as P ON P.Codigo = pmovdet.CodigoProducto 
+                      INNER JOIN insumosmovdet$numtabla as pmovdet ON pmovdet.Numero = pmov.Numero
+                      INNER JOIN productos$periodoActual as P ON P.Codigo = pmovdet.CodigoProducto
                       $inners $condiciones
                       GROUP BY pmovdet.CodigoProducto ORDER BY pmovdet.Descripcion ASC
                   LIMIT 2000;";
 
-} 
+}
 
-echo $consulta;
+// echo $consulta;
 ?>
               <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
         </div><!-- /.ibox-content -->
@@ -434,7 +434,7 @@ echo $consulta;
         $('#institucion_desp').val('<?php echo $_POST['institucion_desp']; ?>').change();
     <?php endif ?>
     }, 2200);
-    
+
     setTimeout(function() {
       <?php if ($_POST['sede_desp'] != ""): ?>
           $('#sede_desp').val('<?php echo $_POST['sede_desp']; ?>').change();
