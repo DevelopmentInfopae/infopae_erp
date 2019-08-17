@@ -35,6 +35,8 @@ function guardarParametros(){
     formData.append('cantidadCupos', $('#cantidadCupos').val());
     formData.append('numeroContrato', $('#numeroContrato').val());
     formData.append('nombredepartamento', $("#departamento option:selected").text());
+    formData.append('nombre_representante_legal', $('#nombre_representante_legal').val());
+    formData.append('documento_representante_legal', $('#documento_representante_legal').val());
 
     $.ajax({
       type: "POST",
@@ -67,12 +69,12 @@ function guardarParametros(){
           );
         }
       },
-      error: function(data){ console.log(data);
+      error: function(data){
         Command: toastr.error(
           "Al parecer existe un problema en el servidor. Por favor comuníquese con el adminstrador del sitio InfoPAE.",
           "Error al procesar",
           {
-            onHidden : function(){ $('#loader').fadeOut(); }
+            onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText); }
           }
         );
       }
