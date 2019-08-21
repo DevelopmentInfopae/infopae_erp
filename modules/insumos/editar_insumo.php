@@ -1,13 +1,13 @@
-<?php 
+<?php
 if (!isset($_POST['codigoinsumoeditar'])) { echo "<script>location.href='index.php';</script>"; }
 
 $codigoinsumo = $_POST['codigoinsumoeditar'];
 
 $titulo = 'Editar insumo';
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 
-if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<script>location.href='index.php';</script>"; } 
+if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<script>location.href='index.php';</script>"; }
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -39,7 +39,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
 
-          <?php 
+          <?php
 
           $consultaInsumo = "SELECT * FROM productos".$_SESSION['periodoActual']." WHERE Codigo = ".$codigoinsumo;
           $resultadoInsumo = $Link->query($consultaInsumo);
@@ -50,7 +50,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
 
           <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"><!-- COLLAPSE -->
             <div class="panel panel-default">
-              <div class="panel-heading clearfix" role="tab" id="headingOne"> 
+              <div class="panel-heading clearfix" role="tab" id="headingOne">
                 <h4 class="panel-title"><span class="fa fa-file-text-o"></span>   Datos del insumo
                 </h4>
               </div>
@@ -62,28 +62,28 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
                     <div class="form-group col-sm-3">
                       <label>Tipo de conteo</label>
                       <select class="form-control" name="tipo_conteo" id="tipo_conteo" required>
-                        <?php if (substr($insumo['Codigo'], 2, 2) == "01"): ?>
-                        <option value="01">Contado por cupos</option>
-                        <option value="02">Contado por manipuladores</option>
-                        <option value="03">Contado individualmente</option>
-                        <?php elseif (substr($insumo['Codigo'], 2, 2) == "02"): ?>
-                        <option value="02">Contado por manipuladores</option>
-                        <option value="01">Contado por cupos</option>
-                        <option value="03">Contado individualmente</option>
-                        <?php elseif (substr($insumo['Codigo'], 2, 2) == "03"): ?>
-                        <option value="03">Contado individualmente</option>
-                        <option value="01">Contado por cupos</option>
-                        <option value="02">Contado por manipuladores</option>
-                        <?php endif ?>
+                        <option value="01" <?= substr($insumo['Codigo'], 2, 2) == "01" ? "selected='selected'" : "" ?>>Contado por cupos</option>
+                        <option value="02" <?= substr($insumo['Codigo'], 2, 2) == "02" ? "selected='selected'" : "" ?>>Contado por manipuladores</option>
+                        <option value="03" <?= substr($insumo['Codigo'], 2, 2) == "03" ? "selected='selected'" : "" ?>>Contado individualmente</option>
+                        <option value="04" <?= substr($insumo['Codigo'], 2, 2) == "04" ? "selected='selected'" : "" ?>>Contado por despacho</option>
                       </select>
                     </div>
+                    <?php
+                    if (substr($insumo['Codigo'], 2, 2) == "04") {
+                      $style_conteo = "display:none;";
+                      $required_conteo = "";
+                    } else {
+                      $style_conteo = "";
+                      $required_conteo = "required";
+                    }
+                     ?>
                     <div class="form-group col-sm-3">
                       <label>Descripción</label>
                       <input type="text" name="descripcion" id="descripcion_editar" class="form-control" placeholder="Describa el producto" value="<?php echo $insumo['Descripcion'] ?>" required>
                     </div>
-                    <div class="form-group col-sm-3" id="divCantPresentacion">
+                    <div class="form-group col-sm-3" id="divCantPresentacion" style="<?= $style_conteo ?>">
                       <label>Cantidad por mes </label>
-                      <input type="number" name="cantidadMes" class="form-control" value="<?php echo $insumo['CantidadUnd1']; ?>" required>
+                      <input type="number" name="cantidadMes" class="form-control" value="<?php echo $insumo['CantidadUnd1']; ?>" <?= $required_conteo ?>>
                     </div>
                     <hr class="col-sm-11">
                     <?php if($insumo['NombreUnidad1'] == "u"){$style="style='display:none;'";} else { $style="";} ?>
@@ -167,7 +167,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
                             <label>Cantidad presentación 2</label>
                             <input type="number" min="0" name="cantPresentacion[2]" id="cantPresentacion" class="form-control" onkeyup="validaCantPresentacion(1);" value="<?php echo $insumo['CantidadUnd3']; ?>" required>
                             <em id="msgcp1" style="display: none;">Ordenar de mayor a menor.</em>
-                          </div> 
+                          </div>
                         </div>
                       <?php endif ?>
                       <?php if ($insumo['NombreUnidad4'] != ""): ?>
@@ -267,6 +267,13 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<scrip
       }
     }
     });*/
+
+    $(document).ready(function(){
+      setTimeout(function() {
+        $('#tipo_conteo').trigger('change');
+        $('#unidadMedida').trigger('change');
+      }, 2000);
+    });
 
 </script>
 

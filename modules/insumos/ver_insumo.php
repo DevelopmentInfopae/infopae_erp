@@ -1,9 +1,9 @@
-<?php 
+<?php
 if (!isset($_POST['codigoinsumover'])) { echo "<script>location.href='index.php';</script>"; }
 
 
 $titulo = 'Ver insumo';
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 
 $codigoinsumo = $_POST['codigoinsumover'];
@@ -67,7 +67,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
 
-          <?php 
+          <?php
 
           $consultaInsumo = "SELECT * FROM productos".$_SESSION['periodoActual']." WHERE Codigo = ".$codigoinsumo;
           $resultadoInsumo = $Link->query($consultaInsumo);
@@ -78,7 +78,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
 
           <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"><!-- COLLAPSE -->
             <div class="panel panel-default">
-              <div class="panel-heading clearfix" role="tab" id="headingOne"> 
+              <div class="panel-heading clearfix" role="tab" id="headingOne">
                 <h4 class="panel-title"><span class="fa fa-file-text-o"></span>   Datos del insumo
                 </h4>
               </div>
@@ -90,19 +90,10 @@ if ($resultadoTipoInsumo->num_rows > 0) {
                     <div class="form-group col-sm-3">
                       <label>Tipo de conteo</label>
                       <select class="form-control" name="tipo_conteo" id="tipo_conteo" required>
-                        <?php if (substr($insumo['Codigo'], 2, 2) == "01"): ?>
-                        <option value="01">Contado por cupos</option>
-                        <option value="02">Contado por manipuladores</option>
-                        <option value="03">Contado individualmente</option>
-                        <?php elseif (substr($insumo['Codigo'], 2, 2) == "02"): ?>
-                        <option value="02">Contado por manipuladores</option>
-                        <option value="01">Contado por cupos</option>
-                        <option value="03">Contado individualmente</option>
-                        <?php elseif (substr($insumo['Codigo'], 2, 2) == "03"): ?>
-                        <option value="03">Contado individualmente</option>
-                        <option value="01">Contado por cupos</option>
-                        <option value="02">Contado por manipuladores</option>
-                        <?php endif ?>
+                        <option value="01" <?= substr($insumo['Codigo'], 2, 2) == "01" ? "selected='selected'" : "" ?>>Contado por cupos</option>
+                        <option value="02" <?= substr($insumo['Codigo'], 2, 2) == "02" ? "selected='selected'" : "" ?>>Contado por manipuladores</option>
+                        <option value="03" <?= substr($insumo['Codigo'], 2, 2) == "03" ? "selected='selected'" : "" ?>>Contado individualmente</option>
+                        <option value="04" <?= substr($insumo['Codigo'], 2, 2) == "04" ? "selected='selected'" : "" ?>>Contado por despacho</option>
                       </select>
                     </div>
                     <div class="form-group col-sm-3">
@@ -170,7 +161,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
                             <label>Cantidad presentación 2</label>
                             <input type="number" min="0" name="cantPresentacion[2]" id="cantPresentacion" class="form-control" onkeyup="validaCantPresentacion(1);" value="<?php echo $insumo['CantidadUnd3']; ?>" required>
                             <em id="msgcp1" style="display: none;">Ordenar de mayor a menor.</em>
-                          </div> 
+                          </div>
                         </div>
                       <?php endif ?>
                       <?php if ($insumo['NombreUnidad4'] != ""): ?>

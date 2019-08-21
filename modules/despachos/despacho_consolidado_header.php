@@ -12,7 +12,7 @@
   $pdf->SetXY($current_x, $current_y);
   $pdf->SetFont('Arial','B',$tamannoFuente);
   $pdf->Cell(146.45,5.7,utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'),0,5.7,'C',False);
-  $pdf->Cell(146.45,5.7,utf8_decode('CONSOLIDADO: REMISIÓN ENTREGA DE VÍVERES POR MUNICIPIO'),0,5.7,'C',False);
+  $pdf->Cell(146.45,5.7,utf8_decode('ORDEN DE PEDIDO DE VIVERES POR MUNICIPIO'),0,5.7,'C',False);
   $pdf->Cell(146.45,5.7,utf8_decode($descripcionTipo),0,5.7,'C',False);
   $pdf->Ln(0.19);
 
@@ -68,7 +68,12 @@
     $pdf->SetFont('Arial','B',$tamannoFuente);
     $pdf->Cell(8,4.76,utf8_decode('RUTA:'),0,0,'L',False);
     $pdf->SetFont('Arial','',$tamannoFuente);
-    $pdf->Cell(52,4.76,$ruta,0,0,'L',False);
+    $pdf->Cell(46.8,4.76,$ruta,"R",0,'L',False);
+
+    $pdf->SetFont('Arial','B',$tamannoFuente);
+    $pdf->Cell(16,4.76,utf8_decode('PROVEEDOR:'),"R",0,'L',False);
+    $pdf->SetFont('Arial','',$tamannoFuente);
+    $pdf->Cell(0,4.76,utf8_decode($nombre_proveedor),0,0,'L',False);
   }
 
 

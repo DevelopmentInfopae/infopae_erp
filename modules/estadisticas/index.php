@@ -36,18 +36,21 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <h2>Totales por semana</h2>
             <em>Puede ver estadísticas por semana, haciendo clic en cada una de ellas de la siguiente tabla.</em>
             <br>
+          
+            <div class="table-responsive">
+              <table class="table selectableRows table-bordered col-sm-12">
+                <thead id="tHeadSemana">
+                  
+                </thead>
+                <tbody id="tBodySemana">
+                  
+                </tbody>
+                <tfoot id="tFootSemana">
+                  
+                </tfoot>
+              </table>
+            </div>
           </div>
-          <table class="table selectableRows table-bordered col-sm-12">
-            <thead id="tHeadSemana">
-              
-            </thead>
-            <tbody id="tBodySemana">
-              
-            </tbody>
-            <tfoot id="tFootSemana">
-              
-            </tfoot>
-          </table>
           <hr class="col-sm-12">
           <div class="col-sm-12" style="text-align: center;">
             <h2>Totales por tipo complemento alimentario</h2>
@@ -76,21 +79,25 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <br>
           </div>
 
-          <div class="col-sm-7">
-            <table class="table table-striped table-hover selectableRows" id="tablaMunicipios">
-              <thead id="tHeadSemanaMun">
-                
-              </thead>
-              <tbody id="tBodySemanaMun">
-                
-              </tbody>
-              <tfoot id="tFootSemanaMun">
-                
-              </tfoot>
-            </table>
+          <div class="col-sm-8">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover selectableRows" id="tablaMunicipios">
+                <thead id="tHeadSemanaMun">
+                  
+                </thead>
+                <tbody id="tBodySemanaMun">
+                  
+                </tbody>
+                <tfoot id="tFootSemanaMun">
+                  
+                </tfoot>
+              </table>
+            </div>
           </div>
-          <div class="col-sm-5">
-            <div id="map" style="height: 500px;">
+          <div class="col-sm-4">
+            <div class="well">
+              <div id="map" style="height: 500px;">
+              </div>
             </div>
           </div>
           <hr class="col-sm-12">

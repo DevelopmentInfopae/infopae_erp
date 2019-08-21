@@ -63,6 +63,36 @@ if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
 class PDF extends FPDF{
   function Header(){}
   function Footer(){}
+
+  var $angle=0;
+
+  function Rotate($angle, $x=-1, $y=-1)
+  {
+      if($x==-1)
+          $x=$this->x;
+      if($y==-1)
+          $y=$this->y;
+      if($this->angle!=0)
+          $this->_out('Q');
+      $this->angle=$angle;
+      if($angle!=0)
+      {
+          $angle*=M_PI/180;
+          $c=cos($angle);
+          $s=sin($angle);
+          $cx=$x*$this->k;
+          $cy=($this->h-$y)*$this->k;
+          $this->_out(sprintf('q %.5f %.5f %.5f %.5f %.2f %.2f cm 1 0 0 1 %.2f %.2f cm', $c, $s, -$s, $c, $cx, $cy, -$cx, -$cy));
+      }
+  }
+
+  function Rotate_text($x, $y, $txt, $angle)
+  {
+    //Text rotated around its origin
+    $this->Rotate($angle, $x, $y);
+    $this->Text($x, $y, $txt);
+    $this->Rotate(0);
+  }
 }
 
 // Creación del objeto de la clase heredada
@@ -356,7 +386,7 @@ if($resultado->num_rows >= 1){
   $pdf->SetLineWidth(.05);
   $pdf->SetFont('Arial','',$tamannoFuente);
 
-
+  $tamano_carta = FALSE;
   include 'despacho_por_sede_footer.php';
   include 'despacho_kardex3_header.php';
 

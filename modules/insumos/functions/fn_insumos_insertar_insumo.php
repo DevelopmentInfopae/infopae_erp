@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 
@@ -22,10 +22,10 @@ if (isset($_POST['unidadMedida'])) {
 	$unidadMedida = "";
 }
 
-if (isset($_POST['cantidadMes'])) {
+if (isset($_POST['cantidadMes']) && $_POST['cantidadMes'] != '') {
 	$cantidadMes = $_POST['cantidadMes'];
 } else {
-	$cantidadMes = "";
+	$cantidadMes = 0;
 }
 
 $NombreUnidad = [];
@@ -51,7 +51,7 @@ if ($unidadMedidaPresentacion[1] == "u") {
 	$CantidadUnd[1] = $cantidadMes;
 }
 
-for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) { 
+for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) {
 	if ($unidadMedidaPresentacion[1] == "u") {
 		$NombreUnidad[$i+1] = " x ".$cantPresentacion[$i]." ".$unidadMedida;
 	} else {
@@ -60,10 +60,10 @@ for ($i=1; $i <= sizeof($unidadMedidaPresentacion); $i++) {
 	$CantidadUnd[$i+1] = $cantPresentacion[$i];
 }
 
-for ($j=1; $j <=5; $j++) { 
+for ($j=1; $j <=5; $j++) {
 	if (!isset($NombreUnidad[$j])) {
 		$NombreUnidad[$j] = "";
-		$CantidadUnd[$j] = "";
+		$CantidadUnd[$j] = 0;
 	}
 }
 
@@ -79,10 +79,10 @@ if ($resultadoConsecutivo->num_rows > 0) {
 	$nuevoCodigo = "05".$tipo_conteo."001";
 }
 
-$insertar = "INSERT INTO ".$tabla." (id, Codigo, Descripcion, Nivel, NombreUnidad1, NombreUnidad2, NombreUnidad3, NombreUnidad4, NombreUnidad5, CantidadUnd1, CantidadUnd2, CantidadUnd3, CantidadUnd4, CantidadUnd5, TipodeProducto, FecExpDesc, TipoDespacho) VALUES ('', '".$nuevoCodigo."', '".$descripcion."', '3', '".$NombreUnidad[1]."', '".$NombreUnidad[2]."', '".$NombreUnidad[3]."', '".$NombreUnidad[4]."', '".$NombreUnidad[5]."', '".$CantidadUnd[1]."', '".$CantidadUnd[2]."', '".$CantidadUnd[3]."', '".$CantidadUnd[4]."', '".$CantidadUnd[5]."', 'Insumo','".date('d/m/Y')."', '4')";
+$insertar = "INSERT INTO ".$tabla." (Codigo, Descripcion, Nivel, NombreUnidad1, NombreUnidad2, NombreUnidad3, NombreUnidad4, NombreUnidad5, CantidadUnd1, CantidadUnd2, CantidadUnd3, CantidadUnd4, CantidadUnd5, TipodeProducto, FecExpDesc, TipoDespacho) VALUES ('".$nuevoCodigo."', '".$descripcion."', '3', '".$NombreUnidad[1]."', '".$NombreUnidad[2]."', '".$NombreUnidad[3]."', '".$NombreUnidad[4]."', '".$NombreUnidad[5]."', '".$CantidadUnd[1]."', '".$CantidadUnd[2]."', '".$CantidadUnd[3]."', '".$CantidadUnd[4]."', '".$CantidadUnd[5]."', 'Insumo','".date('d/m/Y')."', '4')";
 
 if ($Link->query($insertar)===true) {
-	$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '51', 'Registró el insumo <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigo."</strong> ')";
+	$sqlBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '51', 'Registró el insumo <strong>".$descripcion."</strong> con código <strong>".$nuevoCodigo."</strong> ')";
 	$Link->query($sqlBitacora);
 	echo "1";
 } else {

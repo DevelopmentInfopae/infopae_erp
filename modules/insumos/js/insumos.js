@@ -76,7 +76,7 @@ function submitForm(form, accion){
 			      				console.log(data);}})
 			    	}
 			    }
-			  });		
+			  });
 		} else if (accion == 2) {
 			$.ajax({
 			    type: "POST",
@@ -95,7 +95,7 @@ function submitForm(form, accion){
 			      				console.log(data);}})
 			    	}
 			    }
-			  });		
+			  });
 		}
 
 	}
@@ -142,7 +142,7 @@ function eliminarProducto(){
   $('#modalEliminar').modal('hide');
   $('#loader').fadeIn();
   var codigoProducto = $('#codigoProductoEli').val();
-      
+
  $.ajax({
   type: "POST",
   url: "functions/fn_insumos_eliminar_insumo.php",
@@ -157,7 +157,7 @@ function eliminarProducto(){
     } else {
       Command: toastr.error("Ha ocurrido un error al actualizar.", "Error al actualizar", {onHidden : function(){
 			      				console.log(data);}})
-    } 
+    }
   }
 });
 }
@@ -172,15 +172,16 @@ $('#unidadMedida').change(function(){
     } else if (unidadMedida == "cc") {
        $('#unidadMedidaPresentacion').html('<option value="u">Unidad</option><option value="lt">Litro</option><option value="cc">Centimetros cúbicos</option>');
     }
-    $('#divCantPresentacion').css('display', '');
+    // $('#divCantPresentacion').css('display', '');
     $('#divUnidadMedidaPresentacion').css('display', '');
   	$('#cantPresentacion').val('');
   	$('#cantPresentacion').removeAttr('readonly');
   } else if (unidadMedida == "u"){
+    $('#unidadMedidaPresentacion').html('<option value="u">Unidad</option>');
   	$('#cantPresentacion').val(1);
   	$('#cantPresentacion').attr('readonly', true);
   	$('#gestionMedidas').css('display', 'none');
-    $('#divCantPresentacion').css('display', '');
+    // $('#divCantPresentacion').css('display', '');
     $('#divUnidadMedidaPresentacion').css('display', 'none');
   }
 });
@@ -188,15 +189,15 @@ $('#unidadMedida').change(function(){
 $('#unidadMedidaPresentacion').change(function(){
   var unidadMedidaPresentacion = $('#unidadMedidaPresentacion').val();
   if (unidadMedidaPresentacion == "g" || unidadMedidaPresentacion == "cc" || unidadMedidaPresentacion == "u") {
-    $('#divCantPresentacion').css('display', '');
+    // $('#divCantPresentacion').css('display', '');
     $('#cantPresentacion').val('').removeAttr('readOnly');
     $('#gestionMedidas').css('display', '');
     $('#cantPresentacion').val('').removeAttr('readOnly');
-  } else if (unidadMedidaPresentacion == "lb" || unidadMedidaPresentacion == "kg" || unidadMedidaPresentacion == "lt"){ 
+  } else if (unidadMedidaPresentacion == "lb" || unidadMedidaPresentacion == "kg" || unidadMedidaPresentacion == "lt"){
     $('#cantPresentacion').val('1').attr('readOnly', true);
     borrarMedidas();
   }
-}); 
+});
 
 function anadirMedida(){
   var unidadMedidaPrincipal = $('#unidadMedida').val();
@@ -476,12 +477,12 @@ function submitDespacho(accion){
         $.ajax({
          type: "POST",
          url: "functions/fn_insumos_validar_despacho.php",
-         data : {"sedes" : JSON.stringify(sedes), "meses" : JSON.stringify(meses), "productos" : JSON.stringify(productos)},
+         data : {"sedes" : JSON.stringify(sedes), "meses" : JSON.stringify(meses), "productos" : JSON.stringify(productos), "complemento" : $('#tipo_complemento').val()},
          beforeSend: function(){},
          success: function(data){
 
           data = JSON.parse(data);
-          
+
           if (data.respuesta[0].respuesta == "1") {
               btn = '<button type="button" class="close" onclick="$(\'#errDespachos\').fadeOut();" aria-label="Close">'+
                       '<span aria-hidden="true">&times;</span>'+
@@ -506,7 +507,7 @@ function submitDespacho(accion){
                beforeSend: function(){},
                success: function(data){
                 if (data == "1") {
-                  Command: toastr.success(descNotif, titleNotif, {onHidden : function(){ location.reload();}})
+                  Command: toastr.success(descNotif, titleNotif, {onHidden : function(){ location.href='despachos.php';}})
                 } else if (data == "0") {
                   Command: toastr.error("Hubo un error al registrar el despacho.", "Ocurrió un error.", {onHidden : function(){ $('#loader').fadeOut();}})
                 } else {
@@ -567,3 +568,17 @@ function eliminarProductoDespacho(){
       }
      });
 }
+
+$('#tipo_conteo').on('change', function(){
+  val = $(this).val();
+
+  if (val == "04") {
+    $('#divCantPresentacion').css('display', 'none');
+    $('#cantidadMes').removeAttr('required');
+    $('#cantidadMes').val('');
+  } else {
+    $('#divCantPresentacion').css('display', '');
+    $('#cantidadMes').prop('required', true);
+  }
+
+});

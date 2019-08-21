@@ -126,13 +126,16 @@ if ($tipoPlanilla == 5 || $tipoPlanilla == 6 || $tipoPlanilla == 7 || $tipoPlani
 }
 
 $pdf->SetFont('Arial','B',7);
-$pdf->Cell(65,5,'FIRMA Y NOMBRE RESPONSABLE DEL OPERADOR',0,0,'L',False);
-$pdf->Cell(100,5,'','B',0,'L',False);
-$pdf->Cell(2,5,'',0,0,'L',False);
-$pdf->Cell(82,5,'FIRMA, NOMBRE Y DOC. RECTOR ESTABLECIMIENTO EDUCATIVO',0,0,'L',False);
-$pdf->Cell(98,5,'','B',1,'L',False);
-$pdf->Cell(0,5,'',"B",1,'C',False);
-$pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
+$Y = $pdf->GetY();
+$pdf->MultiCell(42,3,'FIRMA, NOMBRE Y DOC. RESPONSABLE DEL OPERADOR',0,'L');
+$pdf->SetXY(45, $Y);
+$pdf->Cell(120,10, strtoupper($_SESSION["p_nombre_representante_legal"]) ." ". $_SESSION["p_documento_representante_legal"],'LR',0,'L',False);
+
+$Y = $pdf->GetY();
+$pdf->MultiCell(43,3,'FIRMA, NOMBRE Y DOC. RECTOR ESTABLECIMIENTO EDUCATIVO',0,'L');
+$pdf->SetXY(208, $Y);
+$pdf->Cell(0,10,'','L',1,'L',False);
+$pdf->Cell(0,5,'OBSERVACIONES:','TB',5,'L',False);
 $pdf->SetFont('Arial','B',6);
 $pdf->Cell(0, 2.9, utf8_decode('NOTA: El operador/responsable de prestar el servicio en los establecimientos educativos, debe tener en cuenta:'),0,1);
 $pdf->SetFont('Arial','',6);

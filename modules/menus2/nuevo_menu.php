@@ -176,7 +176,7 @@ $periodoActual = $_SESSION['periodoActual'];
                         <tbody id="tbodyProductos">
                           <tr class="productoFichaTecnicaDet">
                             <td>
-                              <select class="form-control" name="productoFichaTecnicaDet[1]" id="productoFichaTecnicaDet1" onchange="obtenerUnidadMedidaProducto(this, 1);" required>
+                              <select class="form-control" name="productoFichaTecnicaDet[1]" id="productoFichaTecnicaDet1" onchange="obtenerUnidadMedidaProducto(this, 1);" style="width: 100%;" required>
                                 <option value="">Cargando...</option>
                               </select>
                             </td>

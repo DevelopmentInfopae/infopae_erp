@@ -70,7 +70,7 @@
 	$actualizar_columnas_dias_novedad = trim($actualizar_columnas_dias_novedad, ", ");
 	$columnas_actualizar_novedades = trim($columnas_actualizar_novedades, ", ");
 
-  $consulta_repitentes = "SELECT
+  	$consulta_repitentes = "SELECT
 	 											    f.*,
 	 											    CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre,
 	 											    e.tipo_doc_nom,
