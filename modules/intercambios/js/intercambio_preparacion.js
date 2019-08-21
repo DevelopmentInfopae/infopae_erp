@@ -67,6 +67,7 @@ function cargarOpcionesDeProducto(){
 
 	var formData = new FormData();
 	formData.append('grupoEtario', $('#grupoEtario').val());
+	formData.append('tipoComplemento', $('#tipoComplemento').val());
 
 	$.ajax({
 		type: "post",

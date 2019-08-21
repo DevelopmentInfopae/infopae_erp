@@ -12,7 +12,13 @@
 
 	// Consulta de los datos de la novedad.
 
-	$consulta = "SELECT nm.id, nm.tipo_intercambio, IF(nm.tipo_intercambio = 1, 'Intercambio de alimento', IF(nm.tipo_intercambio = 2, 'Intercambio de preparación', 'Intercambio de día de menú')) AS tipo_intercambio_nm, nm.estado, IF(nm.estado = 1, 'Activo', 'Reversado') AS estado_nm, nm.mes, nm.semana, nm.dia, nm.tipo_complem AS tipo_complemento, ge.DESCRIPCION AS grupo_etario, CONCAT(p.Codigo, ' - ',p.Descripcion) AS menu, ft.Nombre AS producto, ft.Codigo, DATE_FORMAT(nm.fecha_vencimiento, '%d/%m/%Y') AS fecha_vencimiento, nm.url_archivo AS archivo, nm.observaciones AS observaciones FROM novedades_menu nm left join grupo_etario ge ON ge.ID = nm.cod_grupo_etario LEFT JOIN fichatecnica ft ON ft.Codigo = nm.cod_producto LEFT JOIN planilla_semanas ps ON ps.MES = nm.mes AND ps.SEMANA = nm.semana AND ps.DIA = nm.dia LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo AND p.Cod_Tipo_complemento = nm.tipo_complem AND p.Cod_Grupo_Etario = nm.cod_grupo_etario WHERE nm.id = $idNovedad ";
+	$consulta = "SELECT nm.id, nm.tipo_intercambio, IF(nm.tipo_intercambio = 1, 'Intercambio de alimento', IF(nm.tipo_intercambio = 2, 'Intercambio de preparación', 'Intercambio de día de menú')) AS tipo_intercambio_nm, nm.estado, IF(nm.estado = 1, 'Activo', 'Reversado') AS estado_nm, nm.mes, nm.semana, nm.dia, nm.tipo_complem AS tipo_complemento, ge.DESCRIPCION AS grupo_etario, CONCAT(p.Codigo, ' - ',p.Descripcion) AS menu, ft.Nombre AS producto, nm.cod_producto AS Codigo, DATE_FORMAT(nm.fecha_vencimiento, '%d/%m/%Y') AS fecha_vencimiento, nm.url_archivo AS archivo, nm.observaciones AS observaciones 
+	
+	
+	
+	FROM novedades_menu nm left join grupo_etario ge ON ge.ID = nm.cod_grupo_etario LEFT JOIN fichatecnica ft ON ft.Codigo = nm.cod_producto LEFT JOIN planilla_semanas ps ON ps.MES = nm.mes AND ps.SEMANA = nm.semana AND ps.DIA = nm.dia LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo AND p.Cod_Tipo_complemento = nm.tipo_complem AND p.Cod_Grupo_Etario = nm.cod_grupo_etario WHERE nm.id = $idNovedad ";
+
+	//echo "<br><br>$consulta<br><br>";
 
 	$resultado = $Link->query($consulta) or die ('Unable to execute query - Leyendo datos de la novedad '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
@@ -71,7 +77,9 @@
 			<input type="hidden" id="codigoIntercambio" name="codigoIntercambio" value="<?= $codigo ?>">
 			<input type="hidden" id="tipoIntercambio" name="tipoIntercambio" value="<?= $tipoIntercambio ?>">
 
+
 			<?php 
+				//echo $codigo;
 				if($tipoIntercambio == 1){
 					include 'mostrar_intercambio_alimento.php';
 				} else if($tipoIntercambio == 2){
