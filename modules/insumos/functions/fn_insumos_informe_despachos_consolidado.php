@@ -315,7 +315,7 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 					$maxEstudiantes[$codigo_inst] += $Despacho["Cobertura"];
 				}
 
-				if (!isset($coberturaComplemento[$Despacho['Complemento']])) {
+				if (!isset($coberturaComplemento[$codigo_inst][$Despacho['Complemento']])) {
 					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] = $Despacho["Cobertura"];
 				} else {
 					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];

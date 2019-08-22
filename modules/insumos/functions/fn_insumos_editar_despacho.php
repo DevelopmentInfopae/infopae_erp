@@ -391,7 +391,7 @@ foreach ($meses_despachar as $key => $mes) {
 	foreach ($idDetDespacho as $key => $det) {
 			$datos = datosProducto($productoDespacho[$key], $sedes[0], $Link);
 			$presentaciones = calcularCantidad($productoDespacho[$key], $sedes[0], $Link, $mes, $complemento);
-				$updateinsumosmovdet ="UPDATE $insumosmovdet SET CodigoProducto = '".$productoDespacho[$key]."', Descripcion = '".$DescInsumo[$key]."', Cantidad = '".$presentaciones[6]."', BodegaOrigen = '".$bodega_origen."', BodegaDestino = '".$sedes[0]."', Umedida = '".$datos['uMedida2']."', CantUmedida = '".$datos['cantUMedida']."', CantU2 = '".$presentaciones[1]."', CantU3 = '".$presentaciones[2]."', CantU4 = '".$presentaciones[3]."', CantU5 = '".$presentaciones[4]."', CanTotalPresentacion = '".$presentaciones[5]."' WHERE Id = '".$det."';";
+			$updateinsumosmovdet ="UPDATE $insumosmovdet SET CodigoProducto = '".$productoDespacho[$key]."', Descripcion = '".$DescInsumo[$key]."', Cantidad = '".$presentaciones[6]."', BodegaOrigen = '".$bodega_origen."', BodegaDestino = '".$sedes[0]."', Umedida = '".$datos['uMedida2']."', CantUmedida = '".$datos['cantUMedida']."', CantU2 = '".$presentaciones[1]."', CantU3 = '".$presentaciones[2]."', CantU4 = '".$presentaciones[3]."', CantU5 = '".$presentaciones[4]."', CanTotalPresentacion = '".$presentaciones[5]."' WHERE Id = '".$det."';";
 
 			if ($Link->query($updateinsumosmovdet)===true) {
 				$validaProductos++;
