@@ -733,7 +733,7 @@ $grupoAlimActual = '';
         //Termina la busqueda de las filas adicionales debido a presetaciones,
 
         // Mirar si caben todas las filas del grupo.
-        if(($current_y + (4*$filas)) > 187){
+        if(($current_y + (4*$filas)) > 183){
           $pdf->AddPage();
           include 'despacho_por_sede_footer.php';
           include 'despacho_consolidado_header.php';
