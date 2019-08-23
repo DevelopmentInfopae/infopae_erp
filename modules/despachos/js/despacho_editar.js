@@ -57,8 +57,11 @@ function actualizarDespacho(){
 	var itemsDespachoVariacion = [];
 	console.log('Buscando items agregados.');
 	$( "#box-table-a tbody input[type=checkbox]" ).each(function(){
+
+		variacion = ($(this).data('variacion') == 0 ? 3 : $(this).data('variacion'));
+
 		itemsDespacho.push($(this).val());
-		itemsDespachoVariacion.push($(this).data('variacion'));
+		itemsDespachoVariacion.push(variacion);
 		// itemsDespachoVariacion[$(this).val()] = $(this).data('variacion');
 		// itemsDespachoVariacion[$(this).val()].push($(this).data('variacion'));
 		console.log(itemsDespachoVariacion);
