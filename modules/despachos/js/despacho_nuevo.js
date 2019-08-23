@@ -213,7 +213,7 @@ function generarDespacho(){
 
   $( "#box-table-a tbody input[type=checkbox]" ).each(function() {
     itemsDespacho.push($(this).val());
-    string_variaciones += $(this).val()+"-"$(this).data('variaciones')+", ";
+    string_variaciones += $(this).val()+"-"+($(this).data('variaciones') == 0 ? 3 : $(this).data('variaciones'))+", ";
   });
 
   // Validaciones para generar el despacho
