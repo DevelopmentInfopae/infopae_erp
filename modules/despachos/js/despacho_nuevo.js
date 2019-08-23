@@ -209,8 +209,11 @@ function generarDespacho(){
     dias.push(aux);
   });
 
+  var string_variaciones;
+
   $( "#box-table-a tbody input[type=checkbox]" ).each(function() {
     itemsDespacho.push($(this).val());
+    string_variaciones += $(this).val()+"-"$(this).data('variaciones')+", ";
   });
 
   // Validaciones para generar el despacho
@@ -252,6 +255,7 @@ function generarDespacho(){
         "tipo":tipo,
         "tipoDespacho":tipoDespacho,
         "itemsDespacho":itemsDespacho,
+        "itemsDespachoVariaciones":string_variaciones,
         "bodegaOrigen":bodegaOrigen,
         "tipoTransporte":tipoTransporte,
         "placa":placa,

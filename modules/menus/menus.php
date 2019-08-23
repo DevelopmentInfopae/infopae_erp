@@ -1,6 +1,6 @@
-<?php 
+<?php
 $titulo = 'Movimientos';
-include '../../header.php'; 
+include '../../header.php';
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
@@ -41,17 +41,13 @@ $Link->set_charset("utf8");
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
-
           <div class="row">
             <div class="col-xs-12">
               <div class="table-responsive">
-
-
-                <?php 
+                <?php
                 $vsql="select id, codigo, descripcion from productos$periodoActual where TipodeProducto = 'Menú'";
-                $result = $Link->query($vsql) or die ('Unable to execute query. '. mysqli_error($Link)); 
+                $result = $Link->query($vsql) or die ('Unable to execute query. '. mysqli_error($Link));
                 ?>
-
                 <table class="table table-striped table-bordered table-hover selectableRows" id="box-table" >
                   <thead>
                     <tr>
@@ -60,7 +56,6 @@ $Link->set_charset("utf8");
                     </tr>
                   </thead>
                   <tbody>
-
                     <?php while($row = $result->fetch_assoc()){ ?>
                        <tr onclick="menuanalisis('<?php echo $row['id']; ?>','<?php echo $row['codigo']; ?>','<?php echo $row['descripcion']; ?>');">
                           <td align="center"><?php echo $row['codigo']; ?></td>
@@ -74,12 +69,11 @@ $Link->set_charset("utf8");
                       <th>Código</th>
                       <th>Descripción</th>
                     </tr>
-                  </tfoot> 
+                  </tfoot>
                 </table>
               </div><!-- /.table-responsive -->
             </div><!-- /.col -->
           </div><!--- /.row -->
-
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
     </div><!-- /.col-lg-12 -->
