@@ -41,7 +41,7 @@ and sc.CAJMPS > 0
 
 
 
-$consulta=" select distinct s.cod_sede, u.Ciudad, s.nom_inst, s.nom_sede
+$consulta=" select distinct s.cod_sede, u.Ciudad, s.nom_inst, s.nom_sede, s.cod_variacion_menu
 from sedes$periodoActual s
 left join ubicacion u on s.cod_mun_sede = u.CodigoDANE and u.ETC = 0
 left join sedes_cobertura sc on s.cod_sede = sc.cod_sede
@@ -104,7 +104,7 @@ if($resultado->num_rows >= 1){
     $consecutivo++;
     ?>
     <tr>
-      <td class="text-center"><input type="checkbox" class="i-checks" value="<?php echo $row['cod_sede']; ?>"/></td>
+      <td class="text-center"><input type="checkbox" class="i-checks" value="<?php echo $row['cod_sede']; ?>" data-variacion="<?php echo $row['cod_variacion_menu']; ?>" /></td>
       <td><input type="hidden" name="sede<?php echo $consecutivo; ?>" id="sede<?php echo $consecutivo; ?>" value="<?php echo $row['cod_sede']; ?>"><?php echo $row['Ciudad']; ?></td>
       <td><?php echo $row['nom_inst']; ?></td>
       <td><?php echo $row['nom_sede']; ?></td>

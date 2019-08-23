@@ -118,6 +118,11 @@ if(isset($_POST['itemsDespacho']) && $_POST['itemsDespacho'] != ''){
   $_SESSION['sedes'] = $sedes;
 }
 
+if(isset($_POST['itemsDespachoVariacion']) && $_POST['itemsDespachoVariacion'] != ''){
+  $sedes_variacion = $_POST['itemsDespachoVariacion'][0];
+}
+  // exit(var_dump($sedes_variacion));
+
 if(isset($_SESSION['usuario']) && $_SESSION['usuario'] != ''){
   $usuario = $_SESSION['usuario'];
 }
@@ -162,7 +167,7 @@ $consulta = " select ps.MENU, ps.NOMDIAS, ft.Nombre, p.Cod_Grupo_Etario, ft.Codi
 
   $consulta = $consulta." where ps.SEMANA = '$semana'
   and ft.Nombre IS NOT NULL
-  and p.Cod_Tipo_complemento = '$tipo' ";
+  and p.Cod_Tipo_complemento = '$tipo' AND p.cod_variacion_menu = '$sedes_variacion'";
 
   $diasDespacho = '';
   for ($i=0; $i < count($dias) ; $i++) {

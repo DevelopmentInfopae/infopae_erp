@@ -90,7 +90,7 @@ $( "#tipoProducto" ).change(function() {
     }
     });
 
-  if (tipoProducto == "01" || tipoProducto == "02") { 
+  if (tipoProducto == "01" || tipoProducto == "02") {
     if (tipoProducto == "01") {
       $('#descripcion').val('Menú ').attr('readOnly', true);
       $('#divTipoDespacho').css('display', 'none');
@@ -128,7 +128,7 @@ $( "#tipoProducto" ).change(function() {
   } else if (tipoProducto == "03" || tipoProducto == "04"){
     $('#unidadMedida').html('<option value="">Seleccione...</option><option value="u">Unidad</option><option value="g">Gramos</option><option value="cc">Centímetros Cúbicos</option>');
     $('#unidadMedida').removeAttr('readOnly');
-    $('#cantPresentacion').removeAttr('readOnly');  
+    $('#cantPresentacion').removeAttr('readOnly');
     $('#divGrupoEtario').css('display', 'none');
     $('#divUnidadMedidaPresentacion').css('display', '');
     $('#unidadMedidaPresentacion').attr('required', true);
@@ -143,7 +143,7 @@ $( "#tipoProducto" ).change(function() {
     $('#divTipoComplemento').css('display', 'none');
     $('#variacionMenu').removeAttr('required');
     $('#subtipoProducto').attr('required', true);
-  } 
+  }
 
   if (tipoProducto == "01" ) {
     $('#divOrdenCiclo').css('display', '');
@@ -323,7 +323,7 @@ $('#unidadMedidaPresentacion').change(function(){
     $('#divCantPresentacion').css('display', '');
     $('#cantPresentacion').val('').removeAttr('readOnly');
     $('#gestionMedidas').css('display', '');
-  } else if (unidadMedidaPresentacion == "u" || unidadMedidaPresentacion == "lb" || unidadMedidaPresentacion == "kg" || unidadMedidaPresentacion == "lt"){ 
+  } else if (unidadMedidaPresentacion == "u" || unidadMedidaPresentacion == "lb" || unidadMedidaPresentacion == "kg" || unidadMedidaPresentacion == "lt"){
 
     if (unidadMedidaPresentacion != "u") {
       $('#cantPresentacion').val('1').attr('readOnly', true);
@@ -333,7 +333,7 @@ $('#unidadMedidaPresentacion').change(function(){
     $('#divCantPresentacion').css('display', '');
     borrarMedidas();
   }
-}); 
+});
 
 /*Submit de formularios*/
 $('#formProducto').submit(function(event){
@@ -410,7 +410,7 @@ event.preventDefault();
 function obtenerCiclo(){
 var grupoEtario = $( "#Cod_Grupo_Etario" ).val();
     subtipoProducto = $( "#tipoComplemento" ).val();
-    variacionMenu = $( "#variacionMenu" ).val(); 
+    variacionMenu = $( "#variacionMenu" ).val();
     console.log(grupoEtario+" - "+subtipoProducto+" - "+variacionMenu);
   if (grupoEtario != "" && subtipoProducto != "" && variacionMenu != "") {
     $.ajax({
@@ -616,7 +616,7 @@ function eliminarProducto(){
   var codigoProducto = $('#codigoProductoEli').val();
       ordenCiclo = $('#ordenCicloEli').val();
       tipoComplemento = $('#tipoComplementoEli').val();
-      
+
  $.ajax({
   type: "POST",
   url: "functions/fn_menus_eliminar_producto.php",
@@ -626,7 +626,7 @@ function eliminarProducto(){
   console.log(data);
     data = JSON.parse(data);
     if (data.respuesta[0].exitoso == "1") {
-      Command: toastr.success("El producto fue "+data.respuesta[0].Accion+" con éxito.", "Producto "+data.respuesta[0].Accion, 
+      Command: toastr.success("El producto fue "+data.respuesta[0].Accion+" con éxito.", "Producto "+data.respuesta[0].Accion,
                                 {onHidden : function(){
                                   if (data.respuesta[0].TipoProducto == "01") {
                                     window.location.href='index.php';

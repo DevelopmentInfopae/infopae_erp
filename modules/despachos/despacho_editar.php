@@ -101,6 +101,14 @@ $mesAnno = '';
           $tipoDespacho = $row['TipoDespacho'];
           $diasDespacho = $row['Dias'];
           $sede = $row['cod_Sede'];
+          $data_sede = [];
+
+          $consDataSede = "SELECT * FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = ".$sede;
+          $resDataSede = $Link->query($consDataSede);
+          if ($resDataSede->num_rows > 0) {
+            $data_sede = $resDataSede->fetch_assoc();
+          }
+
         }
 
         // Segunda consulta para traer los datos almacenados en productosmov 16 que complementan los
@@ -349,7 +357,7 @@ $mesAnno = '';
             </thead>
             <tbody>
               <tr>
-                <td><input type="checkbox" value="<?php echo $sede; ?>"></td>
+                <td><input type="checkbox" value="<?php echo $sede; ?>" data-variacion="<?= $data_sede['cod_variacion_menu'] ?>"></td>
                 <td><input type="hidden" name="sede1" id="sede1" value="<?php echo $sede; ?>"><?php echo $municipioNm; ?></td>
                 <td><?php echo $institucionNm; ?></td>
                 <td><?php echo $sedeNm; ?></td>
@@ -466,6 +474,9 @@ $mesAnno = '';
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 
     <!-- Custom and plugin javascript -->
     <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>

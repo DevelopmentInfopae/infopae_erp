@@ -85,6 +85,21 @@
     $_SESSION['sedes'] = $sedes;
   }
 
+  if(isset($_POST['itemsDespachoVariaciones']) && $_POST['itemsDespachoVariaciones'] != ''){
+    $sv = $_POST['itemsDespachoVariaciones'];
+    $sv = trim($sv, ", ");
+    $sedesv1 = explode(', ', $sv);
+
+    $sedes_variaciones = [];
+
+    foreach ($sedesv1 as $row => $sedesv1_item) {
+      $sedesv2 = explode('-', string);
+
+      $sedes_variaciones[$sedesv2[0]] = $sedesv2[1];
+    }
+
+  }
+
   if(isset($_SESSION['usuario']) && $_SESSION['usuario'] != ''){
     $usuario = $_SESSION['usuario'];
   }
@@ -278,6 +293,7 @@ for ($i=0; $i < count($items); $i++) {
                 p.cantidadund3,
                 p.cantidadund4,
                 p.cantidadund5,
+                p.cod_variacion_menu as variacion,
                 m.grupo_alim,
                 ftd.Cantidad,
                 ftd.UnidadMedida,
@@ -344,9 +360,12 @@ $totalTotal = 0;
 
 
 $sedesCobertura = array();
+$sedes_variacion = [];
 
 for ($i=0; $i < count($sedes) ; $i++) {
+
   $auxSede = $sedes[$i];
+
   $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -834,8 +853,13 @@ if($bandera == 0 && $cantidadItems > 0){
       //if($j > 0){ $auxConsulta = $auxConsulta." , "; }
       $auxConsulta = $auxConsulta." ( ";
       $auxAlimento = $complementosCantidades[$j];
-      $codigo = $auxAlimento['codigo'];
       $sede = $sedesCobertura[$i];
+
+      if ($auxAlimento['variacion'] != $sedes_variaciones[$sede]) {
+        continue;
+      }
+
+      $codigo = $auxAlimento['codigo'];
       $bodegaDestino = $sede['cod_sede'];
       $componente = $auxAlimento['Componente'];
       $cantidad = ($auxAlimento["grupo1"] * $sede["grupo1"])+($auxAlimento["grupo2"] * $sede["grupo2"])+($auxAlimento["grupo3"] * $sede["grupo3"]);
@@ -939,6 +963,9 @@ if($bandera == 0 && $cantidadItems > 0){
       // validar si la cantidad es mayor a cero y agregar a la cadena que va
       // a hacer la insersión
       $auxAlimento = $complementosCantidades[$j];
+      if ($auxAlimento['variacion'] != $sedes_variaciones[$sede]) {
+        continue;
+      }
       $gruposRegistrar = 0;
       //include 'fn_despacho_generar_presentaciones.php';
       if($j > 0 &&( ($auxAlimento['grupo1']>0 && $sede["grupo1"]>0) || ($auxAlimento['grupo2']>0 && $sede["grupo2"]>0) || ($auxAlimento['grupo3']>0  && $sede["grupo3"]>0) ) ){

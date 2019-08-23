@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
@@ -55,7 +55,7 @@ if ($respuesta == 1) { ?>
   $cod1 = "";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
-    while($row = $resultado->fetch_assoc()) { 
+    while($row = $resultado->fetch_assoc()) {
       if ($cod1 == "" || ($cod1 != substr($row['Codigo'], 0, 2) && $cod1 != "") ) {
         $cod1 = substr($row['Codigo'], 0, 2);
         if (substr($row['Codigo'], 0, 2) == "02") {
@@ -66,7 +66,7 @@ if ($respuesta == 1) { ?>
       }
       ?>
         <option value="<?php echo $row['Codigo']; ?>"><?php echo $row['Descripcion']; ?></option>
-     <?php 
+     <?php
       if ($cod1 != substr($row['Codigo'], 0, 2) ) {
         $cod1 = substr($row['Codigo'], 0, 2) ;
           echo "</optgroup>";
@@ -82,7 +82,7 @@ if ($respuesta == 1) { ?>
   $consulta = "select NombreUnidad1 from productos".$_SESSION['periodoActual']." where Codigo = ".$producto;
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
-    if($row = $resultado->fetch_assoc()) { 
+    if($row = $resultado->fetch_assoc()) {
       $unidadMedida = $row['NombreUnidad1'];
       echo $unidadMedida;
      }// Termina el while
