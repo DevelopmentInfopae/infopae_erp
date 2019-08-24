@@ -119,7 +119,8 @@ if($resultado->num_rows >= 1){
 }
 
 // Fechas inicial y fecha final de las semanas del mes seleccionado
-$consulta_fechas = "(SELECT ANO, MES, DIA FROM planilla_semanas WHERE MES = '$mes' AND DIA BETWEEN $diaInicialSemanaInicial AND $diaFinalSemanaFinal ORDER BY SEMANA ASC, DIA ASC LIMIT 1) UNION ALL (SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '$mes' AND DIA BETWEEN $diaInicialSemanaInicial AND $diaFinalSemanaFinal ORDER BY SEMANA DESC, DIA DESC LIMIT 1)";
+$consulta_fechas = "(SELECT ANO, MES, DIA FROM planilla_semanas WHERE MES = '$mes' AND DIA = $diaInicialSemanaInicial ORDER BY SEMANA ASC, DIA ASC LIMIT 1) UNION ALL (SELECT ANO, MES, DIA FROM `planilla_semanas` WHERE MES = '$mes' AND DIA = $diaFinalSemanaFinal ORDER BY SEMANA DESC, DIA DESC LIMIT 1)";
+// exit($consulta_fechas);
 $resultado_fechas = $Link->query($consulta_fechas) or die ('Unable to execute query. '. mysqli_error($Link));
 if ($resultado_fechas->num_rows > 0) {
 	while ($registros_fechas = $resultado_fechas->fetch_assoc()) {
