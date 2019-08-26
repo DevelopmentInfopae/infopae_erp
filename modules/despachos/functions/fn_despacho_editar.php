@@ -190,6 +190,8 @@ $consulta = " select ps.MENU, ps.NOMDIAS, ft.Nombre, p.Cod_Grupo_Etario, ft.Codi
 
 //echo "<br><br>$consulta<br><br>";
 
+  // exit($consulta);
+
 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
