@@ -222,15 +222,28 @@ $itemsIngredientes = array();
 for ($i=0; $i < count($items); $i++) {
    $item = $items[$i];
    $codigo = $item['codigo'];
-   $consulta = " select ft.Codigo AS codigo_preparado, ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion, p.cantidadund1 cantidadPresentacion, p.cantidadund2 factor, p.cantidadund3, p.cantidadund4, p.cantidadund5, m.grupo_alim, ftd.Cantidad, ftd.UnidadMedida, ftd.PesoNeto, ftd.PesoBruto
+   $consulta = " SELECT
+                      ft.Codigo AS codigo_preparado,
+                      ftd.codigo,
+                      ftd.Componente,
+                      p.nombreunidad2 presentacion,
+                      p.cantidadund1 cantidadPresentacion,
+                      p.cantidadund2 factor,
+                      p.cantidadund3,
+                      p.cantidadund4,
+                      p.cantidadund5,
+                      m.grupo_alim,
+                      ftd.Cantidad,
+                      ftd.UnidadMedida,
+                      ftd.PesoNeto,
+                      ftd.PesoBruto
+                 FROM fichatecnica ft
 
-   from fichatecnica ft
+                 INNER JOIN fichatecnicadet ftd ON ft.id=ftd.idft
+                 INNER JOIN productos$tablaAnno p ON ftd.codigo=p.codigo
+                 INNER JOIN menu_aportes_calynut m ON ftd.codigo=m.cod_prod
 
-   inner join fichatecnicadet ftd on ft.id=ftd.idft
-   inner join productos$tablaAnno p on ftd.codigo=p.codigo
-   inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
-
-   where ft.codigo = $codigo  and ftd.tipo = 'Alimento' ";
+                 WHERE ft.codigo = $codigo  AND ftd.tipo = 'Alimento' ";
 
    if($tipoDespacho != 99){
     //echo "<br>Tipo de despacho = $tipoDespacho<br>";
