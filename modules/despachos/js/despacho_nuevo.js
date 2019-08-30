@@ -209,11 +209,11 @@ function generarDespacho(){
     dias.push(aux);
   });
 
-  var string_variaciones;
+  var string_variaciones = '';
 
   $( "#box-table-a tbody input[type=checkbox]" ).each(function() {
     itemsDespacho.push($(this).val());
-    string_variaciones += $(this).val()+"-"+($(this).data('variaciones') == 0 ? 3 : $(this).data('variaciones'))+", ";
+    string_variaciones += $(this).val()+"-"+($(this).data('variacion') == 0 ? 3 : $(this).data('variacion'))+", ";
   });
 
   // Validaciones para generar el despacho
