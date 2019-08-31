@@ -1,5 +1,5 @@
 <option value="">Todas</option>
-<?php 
+<?php
   require_once '../../../config.php';
   require_once '../../../db/conexion.php';
 
