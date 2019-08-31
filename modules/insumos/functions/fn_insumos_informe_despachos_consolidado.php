@@ -11,6 +11,8 @@ $ds = explode(", ", $despachos_seleccionados);
 $ds_mes = [];
 
 $meses_involucrados = [];
+$id_despachos = [];
+$id_in = '(';
 
 foreach ($ds as $id => $value) {
 	$sd = explode("_", $value);
@@ -18,11 +20,20 @@ foreach ($ds as $id => $value) {
 	$ds_mes[$id]['id_despacho'] = $sd[0];
 	$ds_mes[$id]['mes_despacho'] = $sd[1];
 
+	$id_in .= $sd[0].', ';
+
+	if (!isset($id_despachos[$sd[0]])) {
+		$id_despachos[(Int) $sd[0]] = 1;
+	}
+
 	if (!isset($meses_involucrados[$sd[1]])) {
 		$meses_involucrados[(Int) $sd[1]] = 1;
 	}
 
 }
+
+$id_in = trim($id_in, ', ');
+$id_in .= ')';
 
 // exit(var_dump($meses_involucrados));
 
@@ -135,7 +146,12 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->Cell(32.5,$this->alturaRenglon,utf8_decode('TOTAL COBERTURA: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
 		    // $this->Cell(32.5,$this->alturaRenglon,utf8_decode($this->maxEstudiantes),'BR',1,'L');
-		    $this->Cell(10,$this->alturaRenglon,utf8_decode($this->maxEstudiantes),'BR',1,'L');
+		    $maxEstudiantes = (isset($this->coberturaComplemento['APS']) ? $this->coberturaComplemento['APS'] : 0) +
+		    				  (isset($this->coberturaComplemento['CAJMPS']) ? $this->coberturaComplemento['CAJMPS'] : 0) +
+		    				  (isset($this->coberturaComplemento['CAJMRI']) ? $this->coberturaComplemento['CAJMRI'] : 0) +
+		    				  (isset($this->coberturaComplemento['CAJTRI']) ? $this->coberturaComplemento['CAJTRI'] : 0) +
+		    				  (isset($this->coberturaComplemento['CAJTPS']) ? $this->coberturaComplemento['CAJTPS'] : 0);
+		    $this->Cell(10,$this->alturaRenglon,utf8_decode($maxEstudiantes),'BR',1,'L');
     		//Salto de línea
 
     		//ANCHO MÁXIMO 342
@@ -303,23 +319,33 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 
 		// }
 
+		$inst_cobertura_sede_sumada = [];
+		$inst_estudiante_sede_sumada = [];
 
-		$consultaDespacho = "SELECT * FROM $insumosmov WHERE BodegaDestino = '".$sede."'";
+		$consultaDespacho = "SELECT * FROM $insumosmov WHERE BodegaDestino = '".$sede."' AND ID IN ".$id_in;
 		$resultadoDespacho = $Link->query($consultaDespacho);
 		if ($resultadoDespacho->num_rows > 0) {
 			while ($Despacho = $resultadoDespacho->fetch_assoc()) {
 
 				if (!isset($maxEstudiantes[$codigo_inst])) {
 					$maxEstudiantes[$codigo_inst] = $Despacho["Cobertura"];
-				} else {
-					$maxEstudiantes[$codigo_inst] += $Despacho["Cobertura"];
 				}
+				// else {
+				// 	if (!isset($inst_estudiante_sede_sumada[$codigo_inst][$sede])) {
+				// 		$maxEstudiantes[$codigo_inst] += $Despacho["Cobertura"];
+				// 		$inst_estudiante_sede_sumada[$codigo_inst][$sede] = 1;
+				// 	}
+				// }
 
 				if (!isset($coberturaComplemento[$codigo_inst][$Despacho['Complemento']])) {
 					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] = $Despacho["Cobertura"];
-				} else {
-					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];
 				}
+				// else {
+				// 	if (!isset($inst_cobertura_sede_sumada[$codigo_inst][$sede])) {
+				// 		$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];
+				// 		$inst_cobertura_sede_sumada[$codigo_inst][$sede] = 1;
+				// 	}
+				// }
 
 			    $consultaDetalles = "SELECT producto.id as pId, producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
 			    					INNER JOIN productos".$_SESSION['periodoActual']." as producto ON producto.Codigo = insmovdet.CodigoProducto
@@ -335,7 +361,7 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 			    			$fecha_despacho = $Despacho['FechaMYSQL'];
 			    		}
 
-			    		$productos_sede[$sede][$detalles['pId']][($i < 10 ? "0".$i : $i)] = $detalles;
+			    		$productos_sede[$sede][$detalles['pId']][$Despacho['Complemento']][($i < 10 ? "0".$i : $i)] = $detalles;
 			    	}
 			    }
 			}
@@ -382,15 +408,20 @@ $alturaRenglon = 6;
 
 					$cantidad = 0;
 
-					foreach ($productos_sede[$cod_sede][$id] as $mes => $detalles) {
-						$cantidad += number_format($detalles['NombreUnidad1'] == 'u' ?
-							ceil($detalles['CanTotalPresentacion']) :
-							strpos($detalles['NombreUnidad2'], 'kg') || strpos($detalles['NombreUnidad2'], 'lt') ?
-							ceil($detalles['CanTotalPresentacion']) : $detalles['CanTotalPresentacion'], 2, '.', ',');
-						$uP = " (".str_replace(" ", "", $detalles['Umedida']).")";
+					foreach ($productos_sede[$cod_sede][$id] as $complemento => $mes) {
+
+						foreach ($mes as $detalles) {
+							$cantidad += number_format($detalles['NombreUnidad1'] == 'u' ?
+								ceil($detalles['CanTotalPresentacion']) :
+								strpos($detalles['NombreUnidad2'], 'kg') || strpos($detalles['NombreUnidad2'], 'lt') ?
+								ceil($detalles['CanTotalPresentacion']) : $detalles['CanTotalPresentacion'], 2, '.', ',');
+							$uP = " (".str_replace(" ", "", $detalles['Umedida']).")";
+						}
+
+						$cantidad.=$uP;
+
 					}
 
-					$cantidad.=$uP;
 
 				} else {
 					$cantidad = "-";
