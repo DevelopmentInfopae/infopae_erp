@@ -54,8 +54,18 @@ function actualizarDespacho(){
 	$('#dias .dia:checked').each( function() { var aux = $(this).val(); dias.push(aux); }  );
 
 	var itemsDespacho = [];
+	var itemsDespachoVariacion = [];
 	console.log('Buscando items agregados.');
-	$( "#box-table-a tbody input[type=checkbox]" ).each(function(){ itemsDespacho.push($(this).val()); console.log($(this).val());    });
+	$( "#box-table-a tbody input[type=checkbox]" ).each(function(){
+
+		variacion = ($(this).data('variacion') == 0 ? 3 : $(this).data('variacion'));
+
+		itemsDespacho.push($(this).val());
+		itemsDespachoVariacion.push(variacion);
+		// itemsDespachoVariacion[$(this).val()] = $(this).data('variacion');
+		// itemsDespachoVariacion[$(this).val()].push($(this).data('variacion'));
+		console.log(itemsDespachoVariacion);
+	});
 	bandera = 0;
 	// Validaciones para actualizar el despacho
 	if(subtipo == ''){
@@ -96,6 +106,7 @@ function actualizarDespacho(){
 			"tipo":tipo,
 			"tipoDespacho":tipoDespacho ,
 			"itemsDespacho":itemsDespacho,
+			"itemsDespachoVariacion":itemsDespachoVariacion,
 			"bodegaOrigen":bodegaOrigen,
 			"tipoTransporte":tipoTransporte,
 			"placa":placa,

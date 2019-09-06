@@ -118,6 +118,11 @@ if(isset($_POST['itemsDespacho']) && $_POST['itemsDespacho'] != ''){
   $_SESSION['sedes'] = $sedes;
 }
 
+if(isset($_POST['itemsDespachoVariacion']) && $_POST['itemsDespachoVariacion'] != ''){
+  $sedes_variacion = $_POST['itemsDespachoVariacion'][0];
+}
+  // exit(var_dump($sedes_variacion));
+
 if(isset($_SESSION['usuario']) && $_SESSION['usuario'] != ''){
   $usuario = $_SESSION['usuario'];
 }
@@ -162,7 +167,7 @@ $consulta = " select ps.MENU, ps.NOMDIAS, ft.Nombre, p.Cod_Grupo_Etario, ft.Codi
 
   $consulta = $consulta." where ps.SEMANA = '$semana'
   and ft.Nombre IS NOT NULL
-  and p.Cod_Tipo_complemento = '$tipo' ";
+  and p.Cod_Tipo_complemento = '$tipo' AND p.cod_variacion_menu = '$sedes_variacion'";
 
   $diasDespacho = '';
   for ($i=0; $i < count($dias) ; $i++) {
@@ -184,6 +189,8 @@ $consulta = " select ps.MENU, ps.NOMDIAS, ft.Nombre, p.Cod_Grupo_Etario, ft.Codi
   $consulta = $consulta." order by ftd.codigo asc ";
 
 //echo "<br><br>$consulta<br><br>";
+
+  // exit($consulta);
 
 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -215,15 +222,28 @@ $itemsIngredientes = array();
 for ($i=0; $i < count($items); $i++) {
    $item = $items[$i];
    $codigo = $item['codigo'];
-   $consulta = " select ft.Codigo AS codigo_preparado, ftd.codigo, ftd.Componente,p.nombreunidad2 presentacion, p.cantidadund1 cantidadPresentacion, p.cantidadund2 factor, p.cantidadund3, p.cantidadund4, p.cantidadund5, m.grupo_alim, ftd.Cantidad, ftd.UnidadMedida, ftd.PesoNeto, ftd.PesoBruto
+   $consulta = " SELECT
+                      ft.Codigo AS codigo_preparado,
+                      ftd.codigo,
+                      ftd.Componente,
+                      p.nombreunidad2 presentacion,
+                      p.cantidadund1 cantidadPresentacion,
+                      p.cantidadund2 factor,
+                      p.cantidadund3,
+                      p.cantidadund4,
+                      p.cantidadund5,
+                      m.grupo_alim,
+                      ftd.Cantidad,
+                      ftd.UnidadMedida,
+                      ftd.PesoNeto,
+                      ftd.PesoBruto
+                 FROM fichatecnica ft
 
-   from fichatecnica ft
+                 INNER JOIN fichatecnicadet ftd ON ft.id=ftd.idft
+                 INNER JOIN productos$tablaAnno p ON ftd.codigo=p.codigo
+                 INNER JOIN menu_aportes_calynut m ON ftd.codigo=m.cod_prod
 
-   inner join fichatecnicadet ftd on ft.id=ftd.idft
-   inner join productos$tablaAnno p on ftd.codigo=p.codigo
-   inner join menu_aportes_calynut m on ftd.codigo=m.cod_prod
-
-   where ft.codigo = $codigo  and ftd.tipo = 'Alimento' ";
+                 WHERE ft.codigo = $codigo  AND ftd.tipo = 'Alimento' ";
 
    if($tipoDespacho != 99){
     //echo "<br>Tipo de despacho = $tipoDespacho<br>";

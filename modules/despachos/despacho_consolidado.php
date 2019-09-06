@@ -186,7 +186,7 @@ foreach ($despachosRecibidos as &$valor){
   $diasMostrar[] = $auxDias;
 
   $auxMenus = $row['Menus'];
-  $menusMostrar[] = $auxMenus;
+  $menusMostrar[] = trim($auxMenus, ", ");
 
   $arrayDiasDespacho = explode(',', $diasDespacho);
 
@@ -299,16 +299,24 @@ $auxCiclos = '';
 $auxCiclos = $ciclos[0];
 
 $auxMenus = '';
-for ($i=0; $i < count($menusMostrar) ; $i++) {
-  if($i > 0){
-    $auxMenus = $auxMenus.",";
+$menus_id_unique_array = [];
+
+for ($i=0; $i < count($menusMostrar) ; $i++)
+{
+  $menus_id_array = explode(',', $menusMostrar[$i]);
+  foreach ($menus_id_array as $menu_id)
+  {
+    if (! in_array(trim($menu_id), $menus_id_unique_array))
+    {
+      $menus_id_unique_array[] = trim($menu_id);
+    }
   }
-  $auxMenus = $auxMenus.$menusMostrar[$i];
 }
-$auxMenus = explode(',', $auxMenus);
-$auxMenus = array_unique ($auxMenus);
-sort($auxMenus);
-$auxMenus = implode(", ",$auxMenus);
+
+sort($menus_id_unique_array);
+
+$auxMenus = implode(", ",$menus_id_unique_array);
+
 
 
 
@@ -725,7 +733,7 @@ $grupoAlimActual = '';
         //Termina la busqueda de las filas adicionales debido a presetaciones,
 
         // Mirar si caben todas las filas del grupo.
-        if(($current_y + (4*$filas)) > 187){
+        if(($current_y + (4*$filas)) > 183){
           $pdf->AddPage();
           include 'despacho_por_sede_footer.php';
           include 'despacho_consolidado_header.php';

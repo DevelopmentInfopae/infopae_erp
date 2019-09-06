@@ -85,6 +85,23 @@
     $_SESSION['sedes'] = $sedes;
   }
 
+  if(isset($_POST['itemsDespachoVariaciones']) && $_POST['itemsDespachoVariaciones'] != ''){
+    $sv = $_POST['itemsDespachoVariaciones'];
+    $sv = trim($sv, ", ");
+    $sedesv1 = explode(', ', $sv);
+
+    $sedes_variaciones = [];
+
+    foreach ($sedesv1 as $row => $sedesv1_item) {
+      $sedesv2 = explode('-', $sedesv1_item);
+
+      $sedes_variaciones[$sedesv2[0]] = $sedesv2[1];
+    }
+
+    // exit(var_dump($sedes_variaciones));
+
+  }
+
   if(isset($_SESSION['usuario']) && $_SESSION['usuario'] != ''){
     $usuario = $_SESSION['usuario'];
   }
@@ -127,7 +144,7 @@ $consulta = " show tables like 'productosmov$annoMes' ";
 $result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 $existe = $result->num_rows;
 if($existe <= 0){
-  $consulta = " CREATE TABLE `productosmov$annoMes` ( `Documento` varchar(10) DEFAULT '', `Numero` int(10) unsigned DEFAULT '0', `Tipo` varchar(100) DEFAULT '', `FechaDoc` varchar(45) DEFAULT '', `BodegaOrigen` bigint(20) unsigned DEFAULT '0', `BodegaDestino` bigint(20) unsigned DEFAULT '0', `Nombre` varchar(200) DEFAULT '', `Nitcc` varchar(20) DEFAULT '', `Concepto` text, `ValorTotal` decimal(20,2) DEFAULT '0.00', `Aprobado` tinyint(1) DEFAULT '0', `NombreResponsable` varchar(60) DEFAULT '', `LoginResponsable` varchar(30) DEFAULT '', `GeneraCompra` tinyint(1) DEFAULT '0', `DocOrigen` varchar(10) DEFAULT '', `NumDocOrigen` int(10) unsigned DEFAULT '0', `NombreRED` varchar(45) DEFAULT '', `Id` int(10) unsigned NOT NULL AUTO_INCREMENT, `FechaMYSQL` datetime DEFAULT '0000-00-00 00:00:00', `Anulado` tinyint(1) DEFAULT '0', `TipoTransporte` varchar(50) NOT NULL DEFAULT '', `Placa` varchar(10) NOT NULL DEFAULT '', `ResponsableRecibe` varchar(45) NOT NULL DEFAULT '', `NumCompra` int(10) unsigned DEFAULT '0', PRIMARY KEY (`Id`) ) ";
+  $consulta = " CREATE TABLE `productosmov$annoMes` ( `Documento` varchar(10) DEFAULT '', `Numero` int(10) unsigned DEFAULT '0', `Tipo` varchar(100) DEFAULT '', `FechaDoc` varchar(45) DEFAULT '', `BodegaOrigen` bigint(20) unsigned DEFAULT '0', `BodegaDestino` bigint(20) unsigned DEFAULT '0', `Nombre` varchar(200) DEFAULT '', `Nitcc` varchar(20) DEFAULT '', `Concepto` text, `ValorTotal` decimal(20,2) DEFAULT '0.00', `Aprobado` tinyint(1) DEFAULT '0', `NombreResponsable` varchar(60) DEFAULT '', `LoginResponsable` varchar(30) DEFAULT '', `GeneraCompra` tinyint(1) DEFAULT '0', `DocOrigen` varchar(10) DEFAULT '', `NumDocOrigen` int(10) unsigned DEFAULT '0', `NombreRED` varchar(45) DEFAULT '', `Id` int(10) unsigned NOT NULL AUTO_INCREMENT, `FechaMYSQL` datetime DEFAULT NULL, `Anulado` tinyint(1) DEFAULT '0', `TipoTransporte` varchar(50) NOT NULL DEFAULT '', `Placa` varchar(10) NOT NULL DEFAULT '', `ResponsableRecibe` varchar(45) NOT NULL DEFAULT '', `NumCompra` int(10) unsigned DEFAULT '0', PRIMARY KEY (`Id`) ) ";
   $result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 }
 
@@ -198,7 +215,21 @@ if($existe <= 0){
 // 1. Armar array con los componentes
 // Primera consulta, la que trae los diferentes alimentos de los menu.
 
-  $consulta = " SELECT ps.MENU, ps.NOMDIAS, ft.Nombre, p.Cod_Grupo_Etario, ft.Codigo AS codigo_menu, ftd.codigo, ftd.Componente, ftd.Cantidad, ftd.UnidadMedida FROM planilla_semanas ps INNER JOIN productos$tablaAnno p ON ps.menu = p.orden_ciclo INNER JOIN fichatecnica ft ON p.Codigo = ft.Codigo INNER JOIN fichatecnicadet ftd ON ftd.IdFT = ft.Id ";
+  $consulta = " SELECT
+                    ps.MENU,
+                    ps.NOMDIAS,
+                    ft.Nombre,
+                    p.Cod_Grupo_Etario,
+                    p.cod_variacion_menu as variacion_menu,
+                    ft.Codigo AS codigo_menu,
+                    ftd.codigo,
+                    ftd.Componente,
+                    ftd.Cantidad,
+                    ftd.UnidadMedida
+                FROM planilla_semanas ps
+                INNER JOIN productos$tablaAnno p ON ps.menu = p.orden_ciclo
+                INNER JOIN fichatecnica ft ON p.Codigo = ft.Codigo
+                INNER JOIN fichatecnicadet ftd ON ftd.IdFT = ft.Id ";
   $consulta = $consulta." where ps.SEMANA = '$semana'
   and ft.Nombre IS NOT NULL
   and p.Cod_Tipo_complemento = '$tipo' ";
@@ -234,6 +265,7 @@ if($resultado->num_rows >= 1){
 }//Termina el if que valida que si existan resultados
 $resultado->close();
 
+
 // $menusReg = array_unique($menusReg);
 // sort($menusReg);
 // $menusReg = implode(",",$menusReg);
@@ -263,9 +295,11 @@ $menusReg = $menus;
 
 $itemsIngredientes = array();
 
+// exit(var_dump($items));
 for ($i=0; $i < count($items); $i++) {
   $item = $items[$i];
   $codigo = $item['codigo'];
+  $variacion_menu = $item['variacion_menu'];
 
   // Consulta 2 o segunda consulta
   $consulta = "SELECT
@@ -278,6 +312,7 @@ for ($i=0; $i < count($items); $i++) {
                 p.cantidadund3,
                 p.cantidadund4,
                 p.cantidadund5,
+                p.cod_variacion_menu as variacion,
                 m.grupo_alim,
                 ftd.Cantidad,
                 ftd.UnidadMedida,
@@ -299,6 +334,8 @@ for ($i=0; $i < count($items); $i++) {
     while($row = $resultado->fetch_assoc()){
       $item['factor'] = $row['factor'];
       $item['codigo'] = $row['codigo'];
+      $item['variacion'] = $row['variacion'];
+      $item['variacion_menu'] = $variacion_menu;
       $item['codigoPreparado'] = $codigo;
       $item['Componente'] = $row['Componente'];
       $item['grupo_alim'] = $row['grupo_alim'];
@@ -344,9 +381,12 @@ $totalTotal = 0;
 
 
 $sedesCobertura = array();
+$sedes_variacion = [];
 
 for ($i=0; $i < count($sedes) ; $i++) {
+
   $auxSede = $sedes[$i];
+
   $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -448,6 +488,8 @@ if($bandera == 0 && $cantidadItems > 0){
     "nomDias" => $item["NOMDIAS"],
     "codigoPreparado" => $item["codigoPreparado"],
     "codigo" => $item["codigo"],
+    "variacion" => $item["variacion"],
+    "variacion_menu" => $item["variacion_menu"],
     "Componente" => $item["Componente"],
     "presentacion" => $item["presentacion"],
     "cantidadPresentacion" => $item["cantidadPresentacion"],
@@ -662,6 +704,8 @@ if($bandera == 0 && $cantidadItems > 0){
       $complementoNuevo["nomDias"] = $item["NOMDIAS"];
       $complementoNuevo["codigoPreparado"] = $item["codigoPreparado"];
       $complementoNuevo["codigo"] = $item["codigo"];
+      $complementoNuevo["variacion"] = $item["variacion"];
+      $complementoNuevo["variacion_menu"] = $item["variacion_menu"];
       $complementoNuevo["Componente"] =$item["Componente"];
       $complementoNuevo["presentacion"] = $item["presentacion"];
       $complementoNuevo["cantidadPresentacion"] = $item["cantidadPresentacion"];
@@ -827,6 +871,9 @@ if($bandera == 0 && $cantidadItems > 0){
   /* Insertando en productosmovdet$annoMes */
   $consulta = " insert into productosmovdet$annoMes (Documento, Numero, Item, CodigoProducto, Descripcion, Cantidad, BodegaOrigen,BodegaDestino ,Umedida, CantUmedida, Factor, cantu2, cantu3, cantu4, cantu5, cantotalpresentacion ) values ";
   $banderaPrimero = 0;
+
+  // exit(var_dump($complementosCantidades));
+
   for ($i=0; $i < count($sedesCobertura) ; $i++) {
     $auxItem = 1;
     for ($j=0; $j < count($complementosCantidades) ; $j++){
@@ -834,8 +881,13 @@ if($bandera == 0 && $cantidadItems > 0){
       //if($j > 0){ $auxConsulta = $auxConsulta." , "; }
       $auxConsulta = $auxConsulta." ( ";
       $auxAlimento = $complementosCantidades[$j];
-      $codigo = $auxAlimento['codigo'];
       $sede = $sedesCobertura[$i];
+
+      if ($auxAlimento['variacion_menu'] != $sedes_variaciones[$sede['cod_sede']]) {
+        continue;
+      }
+
+      $codigo = $auxAlimento['codigo'];
       $bodegaDestino = $sede['cod_sede'];
       $componente = $auxAlimento['Componente'];
       $cantidad = ($auxAlimento["grupo1"] * $sede["grupo1"])+($auxAlimento["grupo2"] * $sede["grupo2"])+($auxAlimento["grupo3"] * $sede["grupo3"]);
@@ -939,6 +991,9 @@ if($bandera == 0 && $cantidadItems > 0){
       // validar si la cantidad es mayor a cero y agregar a la cadena que va
       // a hacer la insersión
       $auxAlimento = $complementosCantidades[$j];
+      if ($auxAlimento['variacion_menu'] != $sedes_variaciones[$sede['cod_sede']]) {
+        continue;
+      }
       $gruposRegistrar = 0;
       //include 'fn_despacho_generar_presentaciones.php';
       if($j > 0 &&( ($auxAlimento['grupo1']>0 && $sede["grupo1"]>0) || ($auxAlimento['grupo2']>0 && $sede["grupo2"]>0) || ($auxAlimento['grupo3']>0  && $sede["grupo3"]>0) ) ){
