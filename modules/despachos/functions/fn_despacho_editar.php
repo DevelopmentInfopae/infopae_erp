@@ -121,7 +121,7 @@ $Link->set_charset("utf8");
 
 // Se van a buscar el mes y el año a partir de la tabla de planilla semana
 $consulta = " select ano, mes, semana from planilla_semanas where semana = '$semana' limit 1 ";
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
 if($resultado->num_rows >= 1){
   while($row = $resultado->fetch_assoc()){
     $semanaMes = $row['mes'];
@@ -176,7 +176,7 @@ $consulta = "SELECT
   // exit($consulta);
 
 
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
 if($resultado->num_rows >= 1){
   $aux = 0;
   while($row = $resultado->fetch_assoc()) {
@@ -229,7 +229,7 @@ for ($i=0; $i < count($items); $i++) {
   }
 
    //echo "<br><br>".$consulta."<br><br>";
-   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
    if($resultado->num_rows >= 1){
       $ingredientes = 1;
       while($row = $resultado->fetch_assoc()){
@@ -283,7 +283,7 @@ for ($i=0; $i < count($sedes) ; $i++) {
   //echo "<br>Consulta que busca las coberturas de las diferentes sedes.<br>";
   //echo "<br><br>".$consulta."<br><br>";
 
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
   if($resultado->num_rows >= 1){
 
 
@@ -337,7 +337,7 @@ for ($i=0; $i < count($sedesCobertura) ; $i++) {
       $consulta = $consulta." and TipoDespacho = $tipoDespacho ";
    }
 
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
   if($resultado->num_rows >= 1){
     $bandera++;
     $row = $resultado->fetch_assoc();
@@ -717,7 +717,7 @@ if($bandera == 0){
 
   Nombre = '$nombre', Nitcc = '$documento', Tipo = '$tipoDocumento', BodegaOrigen = $bodegaOrigen, BodegaDestino = $bodegaDestino, NombreResponsable = '$usuario', LoginResponsable = '$login', FechaMYSQL = '$fecha' , TipoTransporte = $tipoTransporte, Placa = '$placa', ResponsableRecibe = '$conductor'where Documento = 'DES' and Numero = $despacho ";
 
-    $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+    $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
   }
 
 
@@ -725,7 +725,7 @@ if($bandera == 0){
 
   // se va borrar los movimientos detallados para registrar los nuevos.
   $consulta = " delete from productosmovdet$annoMes where Documento = 'DES' and Numero = $despacho ";
-  $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
 
   //echo "<br><br>Insertando en productosmovdet<br><br>";
 
@@ -770,7 +770,7 @@ if($bandera == 0){
   // TERMINA LA INSERCIÓN EN PRODUCTOS MOV_DET
 
   //echo "<br><br>".$consulta."<br><br>";
-  $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
 
   // Insertando en despachos_enc
   //echo "<br><br>Insertando en despachos_enc<br><br>";
@@ -829,14 +829,14 @@ if($bandera == 0){
     $consulta = "UPDATE despachos_enc$annoMes SET FechaHora_Elab = '$fecha', Id_usuario = $idUsuario, cod_Sede = $sede, Tipo_Complem = '$tipo', Semana = '$semana', Cobertura = $cobertura, Dias = '$diasDespacho', Menus = '$menusReg', Cobertura_G1 = '$grupo1', Cobertura_G2 = '$grupo2', Cobertura_G3 = '$grupo3' WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho";
   }
 
-  $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
 
 
   // Insertando en despachos_det
 
   // Se van a borrar los despacho detallados para poder actualizar los registros.
   $consulta = " delete from despachos_det$annoMes where Tipo_Doc = 'DES' and Num_Doc = $despacho ";
-  $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
 
   // INICIA CONSULTA DE INSERCIÓN EN DESPACHOS DET
   $consulta = " insert into despachos_det$annoMes (Tipo_Doc, Num_Doc, cod_Alimento, id_GrupoEtario, Cantidad, D1, D2, D3, D4, D5) values ";
@@ -955,7 +955,7 @@ if($bandera == 0){
   }
   // TERMINA CONSULTA DE INSERCIÓN EN DESPACHOS DET
 
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
   $Link->close();
   echo "1";
 }// Termina el if de bandera igual a cero
