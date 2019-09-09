@@ -121,9 +121,9 @@ $consulta = " select * from tipo_despacho ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. Buscando los tipos de despacho '. mysqli_error($Link));
 $tiposDespacho = array();
 if($resultado->num_rows >= 1){
-	while($row = $resultado->fetch_assoc()){
-		$tiposDespacho[] = $row['Id'];
-	}
+  while($row = $resultado->fetch_assoc()){
+    $tiposDespacho[] = $row['Id'];
+  }
 }
 
 // Se van a buscar el mes y el año a partir de la tabla de planilla semana y se va a verificar la existencia de las tablas.
