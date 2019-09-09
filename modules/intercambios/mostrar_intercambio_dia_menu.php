@@ -66,7 +66,7 @@
 			                        
 			                        <tr>
 			                            <td>
-			                            	<input type="text" class="form-control" name="" id=""  value="<?= $row['Descripcion']; ?>" readonly>
+			                            	<input type="text" class="form-control" name="" id=""  value="<?= $row['Descripcion']; ?> - Orden Ciclo: <?= $row['orden_ciclo']; ?>" readonly>
 			                            </td>
 			                        </tr>
 			                           
@@ -105,7 +105,7 @@
 			                        
 			                        <tr>
 			                            <td>
-			                            	<input type="text" class="form-control" name="" id=""  value="<?= $row['Descripcion']; ?>" readonly>
+			                            	<input type="text" class="form-control" name="" id=""  value="<?= $row['Descripcion']; ?> - Orden Ciclo: <?= $row['orden_ciclo']; ?>" readonly>
 			                            </td>
 			                        </tr>
 			                           

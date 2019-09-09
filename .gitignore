@@ -1,8 +1,2 @@
-\.DS_Store
-db/conexion\.php
-
-config\.php
-
-db/
-
-upload/novedades/menu/
+# exclude uploads in novedades menu
+upload/novedades/menu/*
