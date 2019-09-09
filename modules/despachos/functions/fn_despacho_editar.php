@@ -331,7 +331,7 @@ for ($i=0; $i < count($sedesCobertura) ; $i++) {
   FROM despachos_enc$annoMes de
   inner join sedes$tablaAnno s on s.cod_sede = de.cod_Sede
   INNER JOIN tipo_despacho td on de.TipoDespacho = td.Id
-  WHERE de.Semana = '$semana' AND de.cod_sede = '$auxSede' AND de.Tipo_Complem = '$tipo' AND (de.Estado = 1 OR de.Estado = 2) AND de.Tipo_Doc = 'DES' AND de.Num_Doc != '$despacho' ";
+  WHERE de.Semana = '$semana' AND Dias = '$diasDespacho' AND de.cod_sede = '$auxSede' AND de.Tipo_Complem = '$tipo' AND (de.Estado = 1 OR de.Estado = 2) AND de.Tipo_Doc = 'DES' AND de.Num_Doc != '$despacho' ";
 
   if($tipoDespacho != 99){
       $consulta = $consulta." and TipoDespacho = $tipoDespacho ";
