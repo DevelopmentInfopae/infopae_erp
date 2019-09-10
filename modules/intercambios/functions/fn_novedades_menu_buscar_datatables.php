@@ -1,8 +1,8 @@
 <?php
-  require_once '../../../db/conexion.php';
-  require_once '../../../config.php';
+	require_once '../../../db/conexion.php';
+	require_once '../../../config.php';
 
-  $consultaNovedad = "SELECT 
+	$consultaNovedad = "SELECT 
 nm.id,
 nm.mes AS mes,
 nm.semana AS semana,
@@ -35,24 +35,27 @@ LEFT JOIN productos19 p ON p.Codigo = nm.cod_producto
 ORDER BY nm.fecha_registro desc";
 
 
-//echo $consultaNovedad;
+//echo "<br><br>$consultaNovedad<br><br>";
+
+	$data = array();
+	$resultadoNovedades = $Link->query($consultaNovedad) or die ('Consulta de novedades de menú'. mysqli_error($Link));
+	if($resultadoNovedades){
+		if($resultadoNovedades->num_rows > 0){
+			while($registrosSedes = $resultadoNovedades->fetch_assoc()) {
+				//$aux = $registrosSedes['fecha_hora'];
+				//$aux = date("d/m/Y h:i:s a", strtotime($aux));
+				//$registrosSedes['fecha_hora'] = $aux;
+				$data[] = $registrosSedes;
+			}
+		}
+	}
 
 
-  $resultadoNovedades = $Link->query($consultaNovedad);
-  if($resultadoNovedades->num_rows > 0){
-    while($registrosSedes = $resultadoNovedades->fetch_assoc()) {
-			//$aux = $registrosSedes['fecha_hora'];
-			//$aux = date("d/m/Y h:i:s a", strtotime($aux));
-			//$registrosSedes['fecha_hora'] = $aux;
-      $data[] = $registrosSedes;
-    }
-  }
+	$output = [
+		'sEcho' => 1,
+		'iTotalRecords' => count($data),
+		'iTotalDisplayRecords' => count($data),
+		'aaData' => $data
+	];
 
-  $output = [
-    'sEcho' => 1,
-    'iTotalRecords' => count($data),
-    'iTotalDisplayRecords' => count($data),
-    'aaData' => $data
-  ];
-
-  echo json_encode($output);
+	echo json_encode($output);
