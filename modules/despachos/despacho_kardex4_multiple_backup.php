@@ -117,7 +117,7 @@ class PDF extends FPDF{
 
 $pdf= new PDF('L','mm',array(280,220));
 $pdf->SetMargins(8, 6.31, 8);
-$pdf->SetAutoPageBreak(TRUE, 5);
+$pdf->SetAutoPageBreak(FALSE, 5);
 $pdf->AliasNbPages();
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
@@ -459,18 +459,6 @@ foreach ($codesedes as $sedecod => $isset)
   array_multisort($sort['grupo_alim'], SORT_ASC, $alimentosTotales);
   sort($grupo);
 
-  $alimentos_por_grupos_alimentos = [];
-  for ($i=0; $i < count($alimentosTotales); $i++)
-  {
-    $alimento = $alimentosTotales[$i];
-    $alimentos_por_grupos_alimentos[$alimento["grupo_alim"]][] = $alimento;
-  }
-
-  /*echo "<pre>";
-  print_r($alimentos_por_grupos_alimentos);
-  exit();*/
-
-
   $pdf->AddPage();
   $pdf->SetTextColor(0,0,0);
   $pdf->SetFillColor(255,255,255);
@@ -486,89 +474,10 @@ foreach ($codesedes as $sedecod => $isset)
   $grupoAlimActual = '';
   $pdf->SetFont('Arial','',$tamannoFuente);
   $grupoAlimActual = '';
-  $altura = 4;
 
-  $posicion_X_celda_grupo_alimenticio = $pdf->GetX();
-  foreach ($alimentos_por_grupos_alimentos as $nombre_grupo_alimenticio => $alimentos)
+  for ($i=0; $i < count($alimentosTotales) ; $i++)
   {
-    $altura_celda_grupo_alimenticio = count($alimentos) * 4;
-
-    $altura_pagina = (isset($posicion_Y_celda_alimento) ? $posicion_Y_celda_alimento : 0) + $altura_celda_grupo_alimenticio;
-    if ($altura_pagina > 215)
-    {
-      $pdf->AddPage();
-      include 'despacho_kardex4_multiple_header.php';
-    }
-
-    $posicion_Y_celda_grupo_alimenticio = $pdf->GetY();
-    foreach ($alimentos as $alimento)
-    {
-      $pdf->Cell(42.4, 4, "", 0, 0, 'L');
-      $pdf->Cell(45.2, 4, utf8_decode($alimento['componente']), 1, 0, 'L');
-
-      // Unidad de medida
-      $pdf->Cell(13.141, 4, utf8_decode($alimento['presentacion']), 1, 0, 'C');
-
-      // Cantidad entregada
-      $aux = $alimento['grupo1'] + $alimento['grupo2'] + $alimento['grupo3'];
-
-      // Existencias
-      if($alimento['presentacion'] == 'u')
-      {
-        if (strpos($alimento['componente'], "HUEVO") !== FALSE)
-        { $aux = ceil(0+$aux); }
-        else
-        { $aux = round(0+$aux); }
-      }
-      else
-      { $aux = number_format($aux, 2, '.', ''); }
-      $pdf->Cell(17.471,4,$aux,1,0,'C',False);
-
-      //Imprimiendo TOTAL
-      if($alimento['cantotalpresentacion'] > 0 )
-      {
-        $aux = $alimento['cantotalpresentacion'];
-
-        if($alimento['presentacion'] == 'u')
-        { $aux = round(0+$aux); }
-        else
-        { $aux = number_format($aux, 2, '.', ''); }
-      }
-      $pdf->Cell(16,4,'',1,0,'C',False);
-
-      // Días de la semana
-      for($k = 1; $k <= 5; $k++)
-      {
-        $consumoDia = 0;
-        $consumoDia = $alimento['d'.$k];
-        if ($alimento['presentacion'] == "u")
-        {
-          $consumoDia = number_format($consumoDia, $digitosDecimales);
-          $pdf->Cell(22, 4, $consumoDia, '1', 0, 'C');
-        }
-        else
-        {
-          $consumoDia = number_format($consumoDia, $digitosDecimales);
-          $pdf->Cell(22, 4, $consumoDia, '1', 0, 'C');
-        }
-      }
-
-      $pdf->Cell(19.7,4,'','1',0,'C',False);
-      $pdf->Ln();
-
-      $posicion_Y_celda_alimento = $pdf->GetY();
-    }
-
-    $pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
-    $pdf->MultiCell(42.4, 4, strtoupper(utf8_decode($nombre_grupo_alimenticio)), 0, "C");
-    $pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
-    $pdf->MultiCell(42.4, $altura_celda_grupo_alimenticio, "", 1);
-  }
-
-
-  /*for ($i=0; $i < count($alimentosTotales) ; $i++)
-  {
-    $alimento = $alimentosTotales[$i];
+    $item = $alimentosTotales[$i];
 
     if($item['componente'] != '')
     {
@@ -692,7 +601,7 @@ foreach ($codesedes as $sedecod => $isset)
 
       $alimento = $item;
     }
-  }*/
+  }
 
   for ($s=1; $s <=5 ; $s++)
   {
@@ -719,8 +628,6 @@ foreach ($codesedes as $sedecod => $isset)
     $pdf->Ln();
   }
 
-  $pdf->Ln(4);
-
   $current_y = $pdf->GetY();
   if($current_y > 175)
   {
@@ -733,7 +640,7 @@ foreach ($codesedes as $sedecod => $isset)
 
   // La hoja mide de alto 215.9 mm
   // La firma mide aprox 91 mm
-  if((220 - $current_y) < 60)
+  if((215.9 - $current_y) < 60)
   {
     $pdf->AddPage();
     include 'despacho_kardex4_multiple_header.php';

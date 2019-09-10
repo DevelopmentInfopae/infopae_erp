@@ -586,440 +586,52 @@
 
   $pdf->Ln(4);
 
-  // for ($i=0; $i < count($alimentosTotales) ; $i++)
-  // {
-  //   $item = $alimentosTotales[$i];
+  for ($i = 2; $i <= 5; $i++)
+  {
+    $unidad = $i;
 
-  //   $x_inicial = $pdf->GetX();
-  //  	if(! empty($item['componente']))
-  //   {
-  //    //  $pdf->SetTextColor(0,0,0);
-  //    //  $pdf->SetFillColor(255,255,255);
+    if($alimento['cantu'.$unidad] > 0)
+    {
+      $pdf->SetX($current_x+$anchoCelda);
+      $presentacion = " ".$alimento['nombreunidad'.$unidad];
 
-  //    //  //Grupo Alimenticio
-  //    //  $largoNombreGrupo = 25;
-  //    //  $caracteresPorLinea = 10;
-  //    //  $anchoCelda = 23.788;
+      $pdf->SetTextColor(0,0,0);
+      $pdf->SetFillColor(255,255,255);
 
-  //     if($item['grupo_alim'] != $grupoAlimActual)
-  //     {
-  //       /*$grupoAlimActual = $item['grupo_alim'];
-  //       echo $grupoAlimActual."<br>";*/
+      $aux = $sangria.$alimento['componente'].$presentacion;
 
-  //    //    $filas = array_count_values($grupo)[$grupoAlimActual];
-  //    //    $cantAlimentosGrupo = $filas;
-
-  //    //    // Se va a realizar una busqueda por si hay filas adicionales debido a presentaciones.
-  //    //    for ($j=$i;$j < $i+$cantAlimentosGrupo; $j++)
-  //    //    {
-  //    //      $aux = $alimentosTotales[$j];
-  //    //      if($aux['cantu2'] > 0){
-  //    //        $filas++;
-  //    //      }
-  //    //      if($aux['cantu3'] > 0){
-  //    //        $filas++;
-  //    //      }
-  //    //      if($aux['cantu5'] > 0){
-  //    //        $filas++;
-  //    //      }
-  //    //      if($aux['cantu4'] > 0){
-  //    //        $filas++;
-  //    //      }
-  //    //      if($aux['cantu2'] > 0 || $aux['cantu3'] > 0 || $aux['cantu4'] > 0 || $aux['cantu5'] > 0){
-  //    //        //$filas--;
-  //    //      }
-  //    //    }
-  //    //    //Termina la busqueda de las filas adicionales debido a presetaciones,
-
-  //    //    // Mirar si caben todas las filas del grupo.
-  //    //    if(($current_y + (4*$filas)) > 183){
-  //    //      $pdf->AddPage();
-  //    //      include 'despacho_por_sede_footer.php';
-  //    //      include 'despacho_consolidado_header.php';
-  //    //      $pdf->SetFont('Arial','',$tamannoFuente);
-  //    //    }
-
-  //    //    $current_y = $pdf->GetY();
-  //    //    $current_x = $pdf->GetX();
-  //    //    $altura = 4 * $filas;
-  //    //    $pdf->Cell($anchoCelda,$altura,'',1,0,'C',FALSE);
-
-
-  //    //    $aux = $item['grupo_alim'];
-  //    //    $aux = mb_strtoupper($aux, 'UTF-8');
-  //    //    $long_nombre=strlen($aux);
-  //    //    // Altura para cada linea de la celda
-  //    //    $altura = 4;
-  //    //    $margenSuperiorCelda = 0;
-
-  //    //    if( $long_nombre > ( $caracteresPorLinea * $filas )  ){
-  //    //      $margenSuperiorCelda = 0;
-  //    //      $largoMaximo = ($caracteresPorLinea * $filas) - 2;
-  //    //      $aux = substr($aux,0,$largoMaximo);
-  //    //    }
-
-  //    //    if($filas == 1){
-  //    //      $margenSuperiorCelda = 0;
-  //    //    }
-
-  //    //    if($filas == 2){
-  //    //      $margenSuperiorCelda = 0;
-  //    //    }
-
-
-  //    //    if(  $long_nombre <= 10 && $filas > 2 ){
-  //    //      $margenSuperiorCelda = (($filas - 1) / 2)*$altura ;
-  //    //    }
-
-  //    //    if( $long_nombre > 10 && $long_nombre <= 20 && $filas > 2 ){
-  //    //      $margenSuperiorCelda = (($filas - 2) / 2)*$altura ;
-  //    //    }
-
-  //    //     if( $long_nombre > 20 && $long_nombre <= 30 && $filas > 3 ){
-  //    //      $margenSuperiorCelda = (($filas - 3) / 2)*$altura ;
-  //    //    }
-
-  //    //     if( $long_nombre > 30 && $filas > 4 ){
-  //    //      $margenSuperiorCelda = (($filas - 4) / 2)*$altura ;
-  //    //    }
-
-
-
-  //    //    $pdf->SetXY($current_x, $current_y+$margenSuperiorCelda);
-  //    //    $pdf->MultiCell(23.788,$altura,utf8_decode($aux),0,'C',FALSE);
-
-
-
-
-
-
-  //    //    $pdf->SetXY($current_x+$anchoCelda, $current_y);
-  //     }
-  //    //  else
-  //    //  {
-  //    //    $pdf->SetX($current_x+$anchoCelda);
-  //    //  }
-  //    //  // Termina la impresión de grupo alimenticio
-
-
-
-  //    //  // Se verifica que no haya cantidades en las direntes presentaciones, para no mostrar la primera fila.
-  //    //  //if($item['cantu2'] <= 0 && $item['cantu3'] <= 0 && $item['cantu4'] <= 0 && $item['cantu5'] <= 0){
-
-  //    //  if(1==1)
-  //    //  {
-  //    //    // Alimento
-        // $pdf->Cell(23.788, 4, "", 0);
-        // $pdf->Cell(49,4,utf8_decode($item['componente']),1,0,'L',FALSE);
-
-  //    //    if($item['presentacion'] == 'u'){
-  //    //       $aux = 0+$item['grupo1'];
-  //    //       $aux = number_format($aux, 2, '.', '');
-  //    //       // $aux = round(0+$item['grupo1']);
-  //    //    }else{
-  //    //       $aux = 0+$item['grupo1'];
-  //    //       $aux = number_format($aux, 2, '.', '');
-  //    //    }
-  //       $pdf->Cell(13.1, 4, utf8_decode(number_format($item['grupo1'], 2, '.', '')), 1, 0, 'C', FALSE);
-
-
-  //    //    if($item['presentacion'] == 'u'){
-  //    //      $aux = 0+$item['grupo2'];
-  //    //      $aux = number_format($aux, 2, '.', '');
-  //    //      // $aux = round(0+$item['grupo2']);
-  //    //    }else{
-  //    //      $aux = 0+$item['grupo2'];
-  //    //      $aux = number_format($aux, 2, '.', '');
-  //    //    }
-  //       $pdf->Cell(13.1,4,utf8_decode(number_format($item['grupo2'], 2, '.', '')),1,0,'C',FALSE);
-
-  //    //    if($item['presentacion'] == 'u'){
-  //    //      $aux = 0+$item['grupo3'];
-  //    //      $aux = number_format($aux, 2, '.', '');
-  //    //      // $aux = round(0+$item['grupo3']);
-  //    //    }
-  //    //    else
-  //    //    {
-  //    //      $aux = 0+$item['grupo3'];
-  //    //      $aux = number_format($aux, 2, '.', '');
-  //    //    }
-  //       $pdf->Cell(13.1, 4, utf8_decode(number_format($item['grupo3'], 2, '.', '')), 1, 0, 'C', FALSE);
-  //       $pdf->Cell(13.141, 4, $item['presentacion'], 1, 0, 'C', FALSE);
-
-  //       if (strpos($item['componente'], "HUEVO") !== FALSE)
-  //       {
-  //         $total = 0;
-  //         foreach ($tg[$item['codigo']] as $key => $value)
-  //         {
-  //           $total += ceil($value);
-  //         }
-
-  //         $aux = $total;
-  //       }
-  //       else
-  //       {
-  //         $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
-  //       }
-
-
-  //       $aux = number_format($aux, 2, '.', '');
-
-  //    //    //MOSTRAR O NO CUANDO HAY PRESENTACIONES
-
-
-  //    //    // Para no mostrar lso totales de los alimentos que tienen diferentes presentaciones.
-  //    //    if($item['cantotalpresentacion'] > 0 ){
-  //    //      //$aux = '';
-  //    //    }
-
-
-  //    //    //Imprimiendo CNT TOTAL
-  //       $pdf->Cell(13.141, 4, $aux, 1, 0, 'C', FALSE);
-
-  //       if($item['presentacion'] == 'u')
-  //       {
-  //         if (strpos($item['componente'], "HUEVO") !== FALSE)
-  //         {
-  //           $aux = ceil(0+$aux);
-  //         }
-  //         else
-  //         {
-  //           $aux = round(0+$aux);
-  //         }
-  //       }
-  //       else
-  //       {
-  //         $aux = number_format($aux, 2, '.', '');
-  //       }
-
-  //       if($item['cantotalpresentacion'] > 0 )
-  //       {
-  //         $aux = $item['cantotalpresentacion'];
-  //         $aux2 = $aux;
-  //         if($item['presentacion'] == 'u')
-  //         {
-  //           $aux = round(0+$aux);
-  //         }
-  //         else
-  //         {
-  //           $aux = number_format($aux, 2, '.', '');
-  //         }
-  //       }
-
-  //    //    // Para no mostrar lso totales de los alimentos que tienen diferentes presentaciones.
-  //    //    if($item['cantotalpresentacion'] > 0 )
-  //    //    {
-  //    //      //$aux = '';
-  //    //    }
-
-  //    //    //Imprimiendo TOTAL
-
-
-  //    //    // CANTIDAD ENTREGADA
-  //       $pdf->Cell(10.6,4,$aux,1,0,'C',FALSE);
-  //         //total entregado
-  //       $pdf->Cell(10.6,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(10.6,4,'',1,0,'C',FALSE);
-
-  //       // ESPECIFICACIÓN DE CALIDAD
-  //       $pdf->Cell(13.7,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.7,4,'',1,0,'C',FALSE);
-
-  //       // FALTANTES
-  //       $pdf->Cell(9.2,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(8.9,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.9,4,'',1,0,'C',FALSE);
-
-  //       //DEVOLUCIÓN
-  //       $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(15.2,4,'',1,0,'C',FALSE);
-
-  //    //    $pdf->Ln(4);
-  //    //  }//Termina el if que validad si hay cantidades en las unidades con el fin de ocultar la fila inicial.
-
-      for ($i = 2; $i <= 5; $i++)
+      $long_nombre=strlen($aux);
+      if($long_nombre > $largoNombre)
       {
-        $unidad = $i;
-
-        if($alimento['cantu'.$unidad] > 0)
-        {
-          $pdf->SetX($current_x+$anchoCelda);
-          $presentacion = " ".$alimento['nombreunidad'.$unidad];
-
-          $pdf->SetTextColor(0,0,0);
-          $pdf->SetFillColor(255,255,255);
-
-          $aux = $sangria.$alimento['componente'].$presentacion;
-
-          $long_nombre=strlen($aux);
-          if($long_nombre > $largoNombre)
-          {
-            $aux = substr($aux,0,$largoNombre);
-          }
-
-          $pdf->Cell(68.3,4,utf8_decode($aux),1,0,'L',FALSE);
-          $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-          $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-          $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-          $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-          $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-          $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-
-    			// CANTIDAD ENTREGADA
-    	    $pdf->Cell(9.3,4,$aux,1,0,'C',FALSE);
-    	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-    	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-    	    // ESPECIFICACIÓN DE CALIDAD
-    	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
-    	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
-    	    // FALTANTES
-    	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-    	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-    	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-    	    //DEVOLUCIÓN
-    	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-    	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-    	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-          $pdf->Ln(4);
-        }
+        $aux = substr($aux,0,$largoNombre);
       }
 
-  //     $unidad = 3;
-  //     if($alimento['cantu'.$unidad] > 0)
-  //     {
-  //       $pdf->SetX($current_x+$anchoCelda);
+      $pdf->Cell(68.3,4,utf8_decode($aux),1,0,'L',FALSE);
+      $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
+      $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
+      $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
+      $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
+      $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
+      $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
 
-  //       $presentacion = " ".$alimento['nombreunidad'.$unidad];
-
-  //       $pdf->SetTextColor(0,0,0);
-  //       $pdf->SetFillColor(255,255,255);
-
-  //       $aux = $sangria.$alimento['componente'].$presentacion;
-  //       $long_nombre=strlen($aux);
-  //       if($long_nombre > $largoNombre)
-  //       {
-  //         $aux = substr($aux,0,$largoNombre);
-  //       }
-  //       $pdf->Cell(68.3,4,utf8_decode($aux),1,0,'L',FALSE);
-  //       $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-  //       $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-  // 			// CANTIDAD ENTREGADA
-  // 	    $pdf->Cell(9.3,4,$aux,1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    // ESPECIFICACIÓN DE CALIDAD
-  // 	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
-  // 	    // FALTANTES
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    //DEVOLUCIÓN
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  //       $pdf->Ln(4);
-  //     }
-
-  //     $unidad = 4;
-  //     if($alimento['cantu'.$unidad] > 0)
-  //     {
-  //       $pdf->SetX($current_x+$anchoCelda);
-
-  //       $presentacion = " ".$alimento['nombreunidad'.$unidad];
-
-  //       $pdf->SetTextColor(0,0,0);
-  //       $pdf->SetFillColor(255,255,255);
-
-  //       $aux = $sangria.$alimento['componente'].$presentacion;
-  //       $long_nombre=strlen($aux);
-  //       if($long_nombre > $largoNombre)
-  //       {
-  //         $aux = substr($aux,0,$largoNombre);
-  //       }
-
-  //       $pdf->Cell(68.3,4,utf8_decode($aux),1,0,'L',FALSE);
-  //       $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-  //       $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-  // 			// CANTIDAD ENTREGADA
-  // 	    $pdf->Cell(9.3,4,$aux,1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    // ESPECIFICACIÓN DE CALIDAD
-  // 	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
-  // 	    // FALTANTES
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    //DEVOLUCIÓN
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  //       $pdf->Ln(4);
-  //     }
-
-  //     $unidad = 5;
-  //     if($alimento['cantu'.$unidad] > 0)
-  //     {
-  //       $pdf->SetX($current_x+$anchoCelda);
-
-  //       $presentacion = " ".$alimento['nombreunidad'.$unidad];
-
-  //       $pdf->SetTextColor(0,0,0);
-  //       $pdf->SetFillColor(255,255,255);
-
-  //       $aux = $sangria.$alimento['componente'].$presentacion;
-  //       $long_nombre=strlen($aux);
-  //       if($long_nombre > $largoNombre)
-  //       {
-  //         $aux = substr($aux,0,$largoNombre);
-  //       }
-  //       $pdf->Cell(68.3,4,utf8_decode($aux),1,0,'L',FALSE);
-  //       $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-  //       $pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-  //       $aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-  // 			// CANTIDAD ENTREGADA
-  // 	    $pdf->Cell(9.3,4,$aux,1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    // ESPECIFICACIÓN DE CALIDAD
-  // 	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
-  // 	    // FALTANTES
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    //DEVOLUCIÓN
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  // 	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-  //       $pdf->Ln(4);
-  //     }
-  //       $pdf->Ln();
-  //   }
-  // }
-
-  // $current_y = $pdf->GetY();
-  // if($current_y > 175)
-  // {
-  //   $filas = 0;
-  //   $pdf->AddPage();
-  //   include 'despacho_consolidado_footer.php';
-  //   include 'despacho_consolidado_header.php';
-  // }
+			// CANTIDAD ENTREGADA
+	    $pdf->Cell(9.3,4,$aux,1,0,'C',FALSE);
+	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
+	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
+	    // ESPECIFICACIÓN DE CALIDAD
+	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
+	    $pdf->Cell(11,4,'',1,0,'C',FALSE);
+	    // FALTANTES
+	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
+	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
+	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
+	    //DEVOLUCIÓN
+	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
+	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
+	    $pdf->Cell(9.3,4,'',1,0,'C',FALSE);
+      $pdf->Ln(4);
+    }
+  }
 
   $current_y = $pdf->GetY();
   if($current_y > 167)
