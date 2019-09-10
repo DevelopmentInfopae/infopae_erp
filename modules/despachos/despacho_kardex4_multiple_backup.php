@@ -117,7 +117,7 @@ class PDF extends FPDF{
 
 $pdf= new PDF('L','mm',array(280,220));
 $pdf->SetMargins(8, 6.31, 8);
-$pdf->SetAutoPageBreak(TRUE, 5);
+$pdf->SetAutoPageBreak(FALSE, 5);
 $pdf->AliasNbPages();
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
@@ -459,13 +459,6 @@ foreach ($codesedes as $sedecod => $isset)
   array_multisort($sort['grupo_alim'], SORT_ASC, $alimentosTotales);
   sort($grupo);
 
-  $alimentos_por_grupos_alimentos = [];
-  for ($i=0; $i < count($alimentosTotales); $i++)
-  {
-    $alimento = $alimentosTotales[$i];
-    $alimentos_por_grupos_alimentos[$alimento["grupo_alim"]][] = $alimento;
-  }
-
   $pdf->AddPage();
   $pdf->SetTextColor(0,0,0);
   $pdf->SetFillColor(255,255,255);
@@ -481,83 +474,133 @@ foreach ($codesedes as $sedecod => $isset)
   $grupoAlimActual = '';
   $pdf->SetFont('Arial','',$tamannoFuente);
   $grupoAlimActual = '';
-  $altura = 4;
 
-  $posicion_X_celda_grupo_alimenticio = $pdf->GetX();
-  foreach ($alimentos_por_grupos_alimentos as $nombre_grupo_alimenticio => $alimentos)
+  for ($i=0; $i < count($alimentosTotales) ; $i++)
   {
-    $altura_celda_grupo_alimenticio = count($alimentos) * 4;
+    $item = $alimentosTotales[$i];
 
-    $altura_pagina = (isset($posicion_Y_celda_alimento) ? $posicion_Y_celda_alimento : 0) + $altura_celda_grupo_alimenticio;
-    if ($altura_pagina > 215)
+    if($item['componente'] != '')
     {
-      $pdf->AddPage();
-      include 'despacho_kardex4_multiple_header.php';
-    }
+      $pdf->SetTextColor(0,0,0);
+      $pdf->SetFillColor(255,255,255);
 
-    $posicion_Y_celda_grupo_alimenticio = $pdf->GetY();
-    foreach ($alimentos as $alimento)
-    {
-      $pdf->Cell(42.4, 4, "", 0, 0, 'L');
-      $pdf->Cell(45.2, 4, utf8_decode($alimento['componente']), 1, 0, 'L');
+      //Grupo Alimenticio
+      $largoNombreGrupo = 25;
+      $caracteresPorLinea = 30;
+      $anchoCelda = 42.4;
 
-      // Unidad de medida
-      $pdf->Cell(13.141, 4, utf8_decode($alimento['presentacion']), 1, 0, 'C');
-
-      // Cantidad entregada
-      $aux = $alimento['grupo1'] + $alimento['grupo2'] + $alimento['grupo3'];
-
-      // Existencias
-      if($alimento['presentacion'] == 'u')
+      if($item['grupo_alim'] != $grupoAlimActual)
       {
-        if (strpos($alimento['componente'], "HUEVO") !== FALSE)
-        { $aux = ceil(0+$aux); }
-        else
-        { $aux = round(0+$aux); }
+        $grupoAlimActual = $item['grupo_alim'];
+        $filas = array_count_values($grupo)[$grupoAlimActual];
+        $cantAlimentosGrupo = $filas;
+
+        // Mirar si caben todas las filas del grupo.
+        if(($current_y + (4*$filas)) > 187)
+        {
+          $pdf->AddPage();
+          include 'despacho_por_sede_footer.php';
+          include 'despacho_kardex4_multiple_header.php';
+          $pdf->SetFont('Arial','',$tamannoFuente);
+        }
+
+        $current_y = $pdf->GetY();
+        $current_x = $pdf->GetX();
+        $altura = 4 * $filas;
+        $pdf->Cell($anchoCelda,$altura,'',1,0,'C',False);
+
+        $aux = $item['grupo_alim'];
+        $aux = mb_strtoupper($aux, 'UTF-8');
+        $long_nombre=strlen($aux);
+        // Altura para cada linea de la celda
+        $altura = 4;
+        $margenSuperiorCelda = 0;
+
+        if( $long_nombre > ( $caracteresPorLinea * $filas )  )
+        {
+          $margenSuperiorCelda = 0;
+          $largoMaximo = ($caracteresPorLinea * $filas) - 2;
+          $aux = substr($aux,0,$largoMaximo);
+        }
+
+        if($filas == 1) { $margenSuperiorCelda = 0; }
+
+        if($filas == 2) { $margenSuperiorCelda = 0; }
+
+        if(  $long_nombre <= 10 && $filas > 2 ) { $margenSuperiorCelda = (($filas - 1) / 2)*$altura ; }
+
+        if( $long_nombre > 10 && $long_nombre <= 20 && $filas > 2 ) { $margenSuperiorCelda = (($filas - 2) / 2)*$altura ; }
+
+        if( $long_nombre > 20 && $long_nombre <= 30 && $filas > 3 ) { $margenSuperiorCelda = (($filas - 3) / 2)*$altura ; }
+
+        if( $long_nombre > 30 && $filas > 4 ) { $margenSuperiorCelda = (($filas - 4) / 2)*$altura ; }
+
+        $pdf->SetXY($current_x, $current_y+$margenSuperiorCelda);
+        $pdf->MultiCell($anchoCelda,$altura,utf8_decode($aux),0,'C',False);
+        $pdf->SetXY($current_x+$anchoCelda, $current_y);
       }
       else
-      { $aux = number_format($aux, 2, '.', ''); }
-      $pdf->Cell(17.471,4,$aux,1,0,'C',False);
+      { $pdf->SetX($current_x+$anchoCelda); }
+            // Termina la impresión de grupo alimenticio
 
-      //Imprimiendo TOTAL
-      if($alimento['cantotalpresentacion'] > 0 )
+      // Se verifica que no haya cantidades en las direntes presentaciones, para no mostrar la primera fila.
+      if(1==1)
       {
-        $aux = $alimento['cantotalpresentacion'];
+        $aux = $item['componente'];
+        $long_nombre=strlen($aux);
+        if($long_nombre > $largoNombre) { $aux = substr($aux,0,$largoNombre); }
 
-        if($alimento['presentacion'] == 'u')
-        { $aux = round(0+$aux); }
+        $pdf->Cell(45.2,4,utf8_decode($aux),1,0,'L',False);
+        // Unidad de medida
+        $pdf->Cell(13.141,4,$item['presentacion'],1,0,'C',False);
+        $aux = $item['grupo1']+$item['grupo2']+$item['grupo3'];
+
+        if($item['presentacion'] == 'u')
+        {
+          if (strpos($item['componente'], "HUEVO") !== FALSE)
+          { $aux = ceil(0+$aux); }
+          else
+          { $aux = round(0+$aux); }
+
+        }
         else
         { $aux = number_format($aux, 2, '.', ''); }
-      }
-      $pdf->Cell(16,4,'',1,0,'C',False);
 
-      // Días de la semana
-      for($k = 1; $k <= 5; $k++)
-      {
-        $consumoDia = 0;
-        $consumoDia = $alimento['d'.$k];
-        if ($alimento['presentacion'] == "u")
+        //TOTAL REQUERIDO
+        $pdf->Cell(17.471,4,$aux,1,0,'C',False);
+        if($item['cantotalpresentacion'] > 0 )
         {
-          $consumoDia = number_format($consumoDia, $digitosDecimales);
-          $pdf->Cell(22, 4, $consumoDia, '1', 0, 'C');
+          $aux = $item['cantotalpresentacion'];
+          if($item['presentacion'] == 'u')
+          { $aux = round(0+$aux); }
+          else
+          { $aux = number_format($aux, 2, '.', ''); }
         }
-        else
+
+        //Imprimiendo TOTAL
+        $pdf->Cell(16,4,'',1,0,'C',False);
+        for( $k = 1; $k <= 5; $k++ )
         {
-          $consumoDia = number_format($consumoDia, $digitosDecimales);
-          $pdf->Cell(22, 4, $consumoDia, '1', 0, 'C');
+          $consumoDia = 0;
+          $consumoDia = $item['d'.$k];
+          if ($item['presentacion'] == "u")
+          {
+            $consumoDia = number_format($consumoDia, $digitosDecimales);
+            $pdf->Cell(22,4,$consumoDia,'1',0,'C',False);
+          }
+          else
+          {
+            $consumoDia = number_format($consumoDia, $digitosDecimales);
+            $pdf->Cell(22,4,$consumoDia,'1',0,'C',False);
+          }
         }
-      }
 
-      $pdf->Cell(19.7,4,'','1',0,'C',False);
-      $pdf->Ln();
+        $pdf->Cell(19.7,4,'','1',0,'C',False);
+        $pdf->Ln(4);
+      }//Termina el if que validad si hay cantidades en las unidades con el fin de ocultar la fila inicial.
 
-      $posicion_Y_celda_alimento = $pdf->GetY();
+      $alimento = $item;
     }
-
-    $pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
-    $pdf->MultiCell(42.4, 4, strtoupper(utf8_decode($nombre_grupo_alimenticio)), 0, "C");
-    $pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
-    $pdf->MultiCell(42.4, $altura_celda_grupo_alimenticio, "", 1);
   }
 
   for ($s=1; $s <=5 ; $s++)
@@ -585,8 +628,6 @@ foreach ($codesedes as $sedecod => $isset)
     $pdf->Ln();
   }
 
-  $pdf->Ln(4);
-
   $current_y = $pdf->GetY();
   if($current_y > 175)
   {
@@ -599,7 +640,7 @@ foreach ($codesedes as $sedecod => $isset)
 
   // La hoja mide de alto 215.9 mm
   // La firma mide aprox 91 mm
-  if((220 - $current_y) < 60)
+  if((215.9 - $current_y) < 60)
   {
     $pdf->AddPage();
     include 'despacho_kardex4_multiple_header.php';
