@@ -115,7 +115,7 @@ class PDF extends FPDF{
   }
 }
 
-$pdf= new PDF('L','mm',array(280,220));
+$pdf= new PDF('L','mm',array(279, 216));
 $pdf->SetMargins(8, 6.31, 8);
 $pdf->SetAutoPageBreak(TRUE, 5);
 $pdf->AliasNbPages();
@@ -484,12 +484,13 @@ foreach ($codesedes as $sedecod => $isset)
   $altura = 4;
 
   $posicion_X_celda_grupo_alimenticio = $pdf->GetX();
+  $posicion_Y_celda_alimento = $pdf->GetY();
   foreach ($alimentos_por_grupos_alimentos as $nombre_grupo_alimenticio => $alimentos)
   {
     $altura_celda_grupo_alimenticio = count($alimentos) * 4;
 
     $altura_pagina = (isset($posicion_Y_celda_alimento) ? $posicion_Y_celda_alimento : 0) + $altura_celda_grupo_alimenticio;
-    if ($altura_pagina > 215)
+    if ($altura_pagina > 204.5)
     {
       $pdf->AddPage();
       include 'despacho_kardex4_multiple_header.php';
@@ -558,12 +559,13 @@ foreach ($codesedes as $sedecod => $isset)
     $pdf->MultiCell(42.4, 4, strtoupper(utf8_decode($nombre_grupo_alimenticio)), 0, "C");
     $pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
     $pdf->MultiCell(42.4, $altura_celda_grupo_alimenticio, "", 1);
+
   }
 
   for ($s=1; $s <=5 ; $s++)
   {
     $current_y = $pdf->GetY();
-    if($current_y > 200)
+    if($current_y > 204.5)
     {
       $filas = 0;
       $pdf->AddPage();
@@ -571,7 +573,7 @@ foreach ($codesedes as $sedecod => $isset)
       include 'despacho_kardex4_multiple_header.php';
     }
 
-    $pdf->Cell(42.4,$altura,'',1,0,'C',False);//GRUPO ALIMENTO
+    $pdf->Cell(42.4,$altura,"",1,0,'C',False);//GRUPO ALIMENTO
     $pdf->Cell(45.2,$altura,'',1,0,'C',False);//ALIMENTO
     $pdf->Cell(13.141,$altura,'',1,0,'C',False);//U MEDIDA
     $pdf->Cell(17.5,$altura,'',1,0,'C',False);//CANT ENTREGADA
@@ -587,7 +589,7 @@ foreach ($codesedes as $sedecod => $isset)
 
   $pdf->Ln(4);
 
-  $current_y = $pdf->GetY();
+  /*$current_y = $pdf->GetY();
   if($current_y > 175)
   {
     $filas = 0;
@@ -597,16 +599,16 @@ foreach ($codesedes as $sedecod => $isset)
   }
   $current_y = $pdf->GetY();
 
-  // La hoja mide de alto 215.9 mm
-  // La firma mide aprox 91 mm
-  if((220 - $current_y) < 60)
+  if((215 - $current_y) < 48)
   {
     $pdf->AddPage();
     include 'despacho_kardex4_multiple_header.php';
     include 'despacho_firma_planilla_kardex3.php';
   }
   else
-  { include 'despacho_firma_planilla_kardex3.php'; }
+  { include 'despacho_firma_planilla_kardex3.php'; }*/
+  /*include 'despacho_consolidado_footer.php';*/
+  include 'despacho_firma_planilla_kardex3.php';
 }
 
 mysqli_close ( $Link );
