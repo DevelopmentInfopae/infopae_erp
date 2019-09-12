@@ -282,7 +282,7 @@ while($row = $result->fetch_assoc()){
 	
 	if($consumio == 1){
 		$entregas++;
-		$consultaConsumo = " update entregas_res_$mes$anno set $diaIndice = \"$consumio\" where tipo = \"F\" and tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" ";
+		$consultaConsumo = " update entregas_res_$mes$anno set $diaIndice = \"$consumio\" where tipo = \"F\" and tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and cod_Sede = \"$sede\" ";
 		//echo "<br><br>$consultaConsumo<br><br>";
 		$resultConsumo = $Link->query($consultaConsumo) or die ('Error al actualizar Entregas Res<br>'.$consultaConsumo. mysqli_error($Link));
 		//echo "<br>".$Link->affected_rows;	
@@ -293,7 +293,7 @@ while($row = $result->fetch_assoc()){
 		if($repitio == 1){
 			//$entregas++;
 			$repitentes++;
-			$consultaEntregasRepitio = " select * from entregas_res_$mes$anno where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and tipo = \"R\" "; 
+			$consultaEntregasRepitio = " select * from entregas_res_$mes$anno where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and tipo = \"R\" and cod_Sede = \"$sede\"  "; 
 	
 	
 			//echo "$consultaEntregasRepitio<br>";
@@ -304,7 +304,7 @@ while($row = $result->fetch_assoc()){
 			
 			
 			if($resultadoEntregasRepitio->num_rows >= 1){
-				$consultaRepite = " update entregas_res_$mes$anno set $diaIndice = 1 where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and tipo = \"R\" ";
+				$consultaRepite = " update entregas_res_$mes$anno set $diaIndice = 1 where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and tipo = \"R\" and cod_Sede = \"$sede\" ";
 	
 				//echo "$consultaRepite<br>";
 	
@@ -312,7 +312,7 @@ while($row = $result->fetch_assoc()){
 				$resultRepite = $Link->query($consultaRepite) or die ('Actualizando repite en entregas'.$consultaRepite. mysqli_error($Link));
 	
 			}else{
-				$consultaRepite = " insert into entregas_res_$mes$anno (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, $diaIndice) select tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo,  \"R\" as tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, \"1\" as $diaIndice from  entregas_res_$mes$anno WHERE tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" ";
+				$consultaRepite = " insert into entregas_res_$mes$anno (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, $diaIndice) select tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo,  \"R\" as tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, \"1\" as $diaIndice from  entregas_res_$mes$anno WHERE tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and cod_Sede = \"$sede\" ";
 	
 				//echo "$consultaRepite<br>";
 	
