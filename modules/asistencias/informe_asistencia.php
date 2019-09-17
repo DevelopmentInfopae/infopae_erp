@@ -51,7 +51,8 @@
 				<div class="ibox-content">
 					<input type="hidden" id="semanaActual" value="<?php echo $semanaActual; ?>">
 					<input type="hidden" id="sede" value="">
-
+					<input type="hidden" id="validacion" name="validacion" value="Tablet">
+					
 
 					<div class="table-responsive table-asistencia">
 						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
