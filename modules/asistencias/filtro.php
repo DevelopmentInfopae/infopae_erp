@@ -48,12 +48,20 @@
 
 										<div class="col-sm-4 form-group">
 											<label for="dia">Día</label>
-											<select class="form-control" name="dia" id="dia" required>
+									<select class="form-control" name="dia" id="dia" <?php if(!isset($diaNoObligatorio) || $diaNoObligatorio != 1){ ?>required<?php } ?>>
 												<option value="">Seleccione uno</option>									
 											</select>
 										</div>
 
 									<?php } ?>
+
+
+									
+
+
+
+
+
 
 
 
@@ -82,27 +90,33 @@
 									<?php if(!isset($ventanaRepitentes) || $ventanaRepitentes == 0){ ?>
 									<?php } ?>
 
-										<div class="col-sm-4 form-group">
-											<label for="nivel">Nivel</label>
-											<select class="form-control" name="nivel" id="nivel" required>
-												<option value="">Seleccione uno</option>
-											</select>
-										</div>
 
 
-										<div class="col-sm-4 form-group">
-											<label for="grado">Grado</label>
-											<select class="form-control" name="grado" id="grado">
-												<option value="">Todas</option>
-											</select>
-										</div>
+										<?php if($_SESSION["perfil"] != 5 && $_SESSION["perfil"] != 6){ ?>
+											<div class="col-sm-4 form-group">
+												<label for="nivel">Nivel</label>
+												<select class="form-control" name="nivel" id="nivel" required>
+													<option value="">Seleccione uno</option>
+												</select>
+											</div>
 
-										<div class="col-sm-4 form-group">
-											<label for="grupo">Grupo</label>
-											<select class="form-control" name="grupo" id="grupo">
-												<option value="">Todas</option>
-											</select>
-										</div>
+
+											<div class="col-sm-4 form-group">
+												<label for="grado">Grado</label>
+												<select class="form-control" name="grado" id="grado">
+													<option value="">Todas</option>
+												</select>
+											</div>
+
+											<div class="col-sm-4 form-group">
+												<label for="grupo">Grupo</label>
+												<select class="form-control" name="grupo" id="grupo">
+													<option value="">Todas</option>
+												</select>
+											</div>
+										<?php } ?>
+
+
 										
 
 
