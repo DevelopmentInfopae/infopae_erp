@@ -324,7 +324,7 @@ if(isset($_GET["municipio"]) && $_GET['municipio'] != ''){ ?>
 
                           }
 
-                          echo "<br>".$consulta."<br><br><br>";
+                          //echo "<br>".$consulta."<br><br><br>";
 
 
 
