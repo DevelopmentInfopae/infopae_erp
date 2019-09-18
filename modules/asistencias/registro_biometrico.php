@@ -34,7 +34,10 @@
 </div>
 <!-- /.row wrapper de la cabecera de la seccion -->
 
-<?php include "filtro.php"  ?>
+<?php 
+	$diaNoObligatorio = 1;
+	include "filtro.php"  
+?>
 
 <div class="wrapper wrapper-content  animated fadeInRight registroConsumo" style="display: none">
 	<div class="row">
@@ -58,25 +61,23 @@
 						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
 							<thead>
 								<tr>
-									<th>Asistencia</th>
+		
 									<th>Documento</th>
 									<th>Nombre</th>
 									<th>Grado</th>
-									<th>Grupo</th>
-									<th> Consumió </th>
-									<th> Repitió </th>
+									<th>Grupo</th>				
+									<th>Fecha</th>
 								</tr>
 							</thead>
 
 							<tfoot>
 								<tr>
-									<th>Asistencia</th>
+				
 									<th>Documento</th>
 									<th>Nombre</th>
 									<th>Grado</th>
-									<th>Grupo</th>	
-									<th>Consumió</th>
-									<th>Repitió</th>
+									<th>Grupo</th>				
+									<th>Fecha</th>
 								</tr>
 							</tfoot>
 						</table>
@@ -123,6 +124,6 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/informe_asistencia.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/registro_biometrico.js?v=<?= $cacheBusting; ?>"></script>
 </body>
 </html>
