@@ -569,7 +569,7 @@ foreach ($codesedes as $sedecod => $isset)
     {
       $filas = 0;
       $pdf->AddPage();
-      include 'despacho_consolidado_footer.php';
+
       include 'despacho_kardex4_multiple_header.php';
     }
 
@@ -589,26 +589,16 @@ foreach ($codesedes as $sedecod => $isset)
 
   $pdf->Ln(4);
 
-  /*$current_y = $pdf->GetY();
-  if($current_y > 175)
-  {
-    $filas = 0;
-    $pdf->AddPage();
-    include 'despacho_consolidado_footer.php';
-    include 'despacho_kardex4_multiple_header.php';
-  }
   $current_y = $pdf->GetY();
-
-  if((215 - $current_y) < 48)
+  if($current_y > 181)
   {
     $pdf->AddPage();
+
     include 'despacho_kardex4_multiple_header.php';
     include 'despacho_firma_planilla_kardex3.php';
+  } else {
+    include 'despacho_firma_planilla_kardex3.php';
   }
-  else
-  { include 'despacho_firma_planilla_kardex3.php'; }*/
-  /*include 'despacho_consolidado_footer.php';*/
-  include 'despacho_firma_planilla_kardex3.php';
 }
 
 mysqli_close ( $Link );
