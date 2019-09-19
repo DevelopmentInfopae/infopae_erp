@@ -1,2 +1,5 @@
 # exclude uploads in novedades menu
 upload/novedades/menu/*
+config.php
+functions/*.txt
+db/conexion.php
