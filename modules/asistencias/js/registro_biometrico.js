@@ -9,9 +9,14 @@ $(document).ready(function(){
 	console.log("Hoy es "+day+" de "+month);	
 
 	$('#btnBuscar').click(function(){
-		if($('#form_asistencia').valid()){
-			cargarEstudiantes();
-		}
+		$('#loader').fadeIn();
+	
+
+			if($('#form_asistencia').valid()){
+				cargarEstudiantes();
+			}
+
+
 	});
 });
 
