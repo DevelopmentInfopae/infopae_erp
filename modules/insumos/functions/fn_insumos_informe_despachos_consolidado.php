@@ -339,6 +339,8 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 
 				if (!isset($coberturaComplemento[$codigo_inst][$Despacho['Complemento']])) {
 					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] = $Despacho["Cobertura"];
+				} else {
+					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];
 				}
 				// else {
 				// 	if (!isset($inst_cobertura_sede_sumada[$codigo_inst][$sede])) {
