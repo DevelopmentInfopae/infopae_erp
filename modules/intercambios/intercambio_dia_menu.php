@@ -135,13 +135,6 @@
 	<div class="boxPreparacion"></div>
 </form>
 
-
-
-
-
-
-
-
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->

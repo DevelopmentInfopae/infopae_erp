@@ -82,39 +82,74 @@ if (isset($_FILES["foto"])) {
 }
 /* Termina tratamiento del archivo */
 
-// Inserción de los registros originales
-$query = " INSERT INTO novedades_menudet (tipo, id_novedad, cod_producto, orden_ciclo) SELECT 0 AS tipo, \"$nuevoId\" as novedad, p.Codigo, p.Orden_Ciclo FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ORDER BY DIA ASC ";
-//echo $query;
-
-$Link->query($query) or die ('Error inserción de registros originales en el detalle de la novedad'. mysqli_error($Link));
-
-
-$query = "";
-
-$queryNovedadDet = " INSERT INTO novedades_menudet (tipo, id_novedad, cod_producto, orden_ciclo) values ";
-
-
+// Para poder hacer el registro del intercambio de los menus debo saber el orden_ciclo de los menus que escogi
 $menus = $_POST['menu'];
-$aux = 0;
+//var_dump($menus);
+$menusConsulta = array();
 foreach ($menus as $menu) {
-	$ordenCiclo = mysqli_real_escape_string($Link, $menu['ordenCiclo']);
-	$codigo = mysqli_real_escape_string($Link, $menu['codigo']);
+	$menusConsulta[] = $menu['codigo'];
+}
+unset($menus);
+//var_dump($menusConsulta);
+$menusConsulta = implode( ", ", $menusConsulta );
 
-	if($aux > 0){$queryNovedadDet .= " , "; }
+// Buscando los registros originales
+$query = " SELECT 0 AS tipo, \"$nuevoId\" as novedad, p.Codigo, p.Orden_Ciclo FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
+$query .= " union SELECT 0 AS tipo, \"$nuevoId\" as novedad, p2.Codigo, p2.Orden_Ciclo FROM productos19 p2 where p2.Codigo IN ($menusConsulta)  ";
+//echo $query;
+$result = $Link->query($query) or die ('Error al cargar los registros originales.'. mysqli_error($Link));
+if ($result->num_rows > 0) {
+	while($row = $result->fetch_assoc()){
+		$menusOriginales[ $row["Orden_Ciclo"]] = $row;
+	}
+}
+$menusSeleccionados =  $_POST['menu'];
 
-	$query .= " update productos19 set Orden_Ciclo = \"$ordenCiclo\" where Codigo = \"$codigo\"; ";
+$menusConCambios = array();
 
-	$queryNovedadDet .= " (\"1\", \"$nuevoId\", \"$codigo\", \"$ordenCiclo\") ";
+//var_dump( $menusOriginales );
+//var_dump( $menusSeleccionados );
+foreach ($menusOriginales as $menuOriginal) {
+	$auxCodigo = $menuOriginal['Codigo'];
+	if(isset($menusSeleccionados[$auxCodigo])){
+		$menuSeleccionado = $menusSeleccionados[$auxCodigo];
+		if($menuOriginal['Orden_Ciclo'] == $menuSeleccionado['ordenCiclo']){
+			$menuOriginal['Orden_Ciclo_Destino'] = $menuOriginal['Orden_Ciclo'];
+			$menusConCambios[$menuOriginal['Orden_Ciclo']] = $menuOriginal;
+		}
+		else{
+			$menuOriginal['Orden_Ciclo_Destino'] =	$menuSeleccionado['ordenCiclo'];
+			$menuDeIntercambio = $menusOriginales[$menuSeleccionado['ordenCiclo']];
+			$menuDeIntercambio['Orden_Ciclo_Destino'] = $menuOriginal['Orden_Ciclo'];
+			$menusConCambios[$menuOriginal['Orden_Ciclo']] = $menuOriginal;
+			$menusConCambios[$menuDeIntercambio['Orden_Ciclo']] = $menuDeIntercambio;
+		}
+	}
+}
+//var_dump( $menusConCambios );
+
+// Inserción del detalle de la novedad
+$aux = 0;
+$queryCambioEnMenu = "";
+$query = " INSERT INTO novedades_menudet (tipo, id_novedad, cod_producto, orden_ciclo) values ";
+foreach ($menusConCambios as $menu) {
+	$codigo = mysqli_real_escape_string($Link, $menu['Codigo']);
+	$ordenCiclo = mysqli_real_escape_string($Link, $menu['Orden_Ciclo']);
+	$ordenCicloDestino = mysqli_real_escape_string($Link, $menu['Orden_Ciclo_Destino']);
+	if($aux > 0){$query .= " , "; }
+	$query .= " (\"0\", \"$nuevoId\", \"$codigo\", \"$ordenCiclo\") , ";
+	$query .= " (\"1\", \"$nuevoId\", \"$codigo\", \"$ordenCicloDestino\") ";
 	$aux++;
+	$queryCambioEnMenu .= " update productos19 set Orden_Ciclo = \"$ordenCicloDestino\" where Codigo = \"$codigo\"; ";
 }
 //echo $query;
-$resultNovedadDet = $Link->query($queryNovedadDet) or die ('Insert error en novedad det'. mysqli_error($Link)); 
-$result = $Link->multi_query($query) or die ('Update error'. mysqli_error($Link));   
+$Link->query($query) or die ('Error inserción de registros originales en el detalle de la novedad'. mysqli_error($Link));
+
+$result = $Link->multi_query($queryCambioEnMenu) or die ('Update error'. mysqli_error($Link));
 if($result){
 	$resultadoAJAX = array(
-    	"estado" => 1,
-    	"message" => "El registro se ha realizado con éxito.",
-  	);
+		"estado" => 1,
+		"message" => "El registro se ha realizado con éxito.",
+	  );
 } 
- 
 echo json_encode($resultadoAJAX);
