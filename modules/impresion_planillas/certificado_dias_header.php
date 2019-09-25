@@ -104,7 +104,7 @@ $pdf->Cell(198,6,utf8_decode($institucion["nombre_rector"]),0,0,'L',false);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(23,6,utf8_decode('DOC. RECTOR:'),1,0,"L",false);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(0,6,"",'B',0,'L',false);
+$pdf->Cell(0,6,$institucion["documento_rector"],'B',0,'L',false);
 $pdf->Ln(6);
 
 $pdf->SetXY($x, $y);
