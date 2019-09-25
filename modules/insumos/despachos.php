@@ -5,8 +5,6 @@
   $periodoActual = $_SESSION['periodoActual'];
 
   $codigoDANE = $_SESSION['p_Municipio'];
-
-  // var_dump($_SESSION);
 ?>
 
 <style type="text/css">
@@ -23,15 +21,15 @@
         <strong><?php echo $titulo; ?></strong>
       </li>
     </ol>
-  </div><!-- /.col -->
+  </div>
   <div class="col-lg-4">
     <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
       <div class="title-action">
         <button class="btn btn-primary" onclick="window.location.href = '<?php echo $baseUrl; ?>/modules/insumos/despacho_insumo.php';"><span class="fa fa-plus"></span>  Nuevo</button>
       </div>
     <?php } ?>
-  </div><!-- /.col -->
-</div><!-- /.row -->
+  </div>
+</div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
@@ -73,23 +71,23 @@
             <div id="fechaDiasDespachos">
               <div class="form-group col-sm-3">
                 <label>Desde</label>
-                <div class="compositeDate">
+                <!-- <div class="compositeDate"> -->
                   <div class="nopadding">
                     <select name="mes_inicio" id="mes_inicio" class="form-control ">
                     <?php echo $opciones; ?>
                     </select>
                   </div>
-                </div>
+                <!-- </div> -->
               </div>
               <div class="form-group col-sm-3">
                 <label>Hasta</label>
-                <div class="compositeDate">
+                <!-- <div class="compositeDate"> -->
                   <div class="nopadding">
                     <select name="mes_fin" id="mes_fin" class="form-control ">
                     <?php echo $opciones; ?>
                     </select>
                   </div>
-                </div>
+                <!-- </div> -->
               </div>
             </div>
             <div class="form-group col-sm-3">
@@ -158,13 +156,13 @@
               </select>
             </div>
             <input type="hidden" name="buscar" value="1">
+            <div class="col-sm-12">
+              <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
+              <?php if (isset($_POST['buscar'])): ?>
+                <button class="btn btn-primary" onclick="location.href='despachos.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
+              <?php endif ?>
+            </div>
           </form>
-          <div class="col-sm-12">
-            <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
-            <?php if (isset($_POST['buscar'])): ?>
-              <button class="btn btn-primary" onclick="location.href='despachos.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
-            <?php endif ?>
-          </div>
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
     </div><!-- /.col-lg-12 -->
