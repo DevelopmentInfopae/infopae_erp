@@ -31,7 +31,20 @@ if(isset($_POST['validacion']) && $_POST['validacion'] != ''){
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " select * from instituciones where cod_mun = \"$municipio\" and codigo_inst in (select cod_inst from sedes19 where tipo_validacion = \"$validacion\" and cod_mun_sede = \"$municipio\") ";
+$consulta = " select * from instituciones where cod_mun = \"$municipio\" and codigo_inst in (select cod_inst from sedes19 where 1=1 ";
+if($validacion == 'Tablet'){
+	$consulta.= " and (tipo_validacion = \"$validacion\" or tipo_validacion = \"Lector de Huella\" ) ";
+}else{
+	if($validacion != ''){
+		$consulta.= " and tipo_validacion = \"$validacion\" ";
+	}
+}
+$consulta.= " and cod_mun_sede = \"$municipio\") ";
+
+
+
+
+
 
 //$consulta = " select * from instituciones where cod_mun = \"$municipio\" and codigo_inst in (select cod_inst from sedes19 where (tipo_validacion = \"$validacion\" or tipo_validacion = \"Lector de Huella\" ) and cod_mun_sede = \"$municipio\") ";
 

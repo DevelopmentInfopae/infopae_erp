@@ -13,7 +13,7 @@ $anno = date("y");
 if(isset($_POST["mes"]) && $_POST["mes"] != ""){
 	$mes = mysqli_real_escape_string($Link, $_POST["mes"]);
 }else{
-	$mes = date("m");
+	$mes = "";
 }
 
 if(isset($_POST["dia"]) && $_POST["dia"] != ""){
@@ -76,7 +76,10 @@ WHERE 1 = 1 AND f.cod_sede = $sede AND br.fecha IS NOT NULL ";
 
 
 if($dia != ""){
-    $consulta .= " AND DAY(br.fecha) = $dia ";
+	$consulta .= " AND DAY(br.fecha) = $dia ";
+}
+if($mes != ""){
+	$consulta .= " AND MONTH(br.fecha) = $mes ";
 }
 
 

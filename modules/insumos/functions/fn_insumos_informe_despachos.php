@@ -264,7 +264,6 @@ foreach ($sedes as $key => $sede) {
 		while ($Despacho = $resultadoDespacho->fetch_assoc()) {
 			if (isset($ids_despachos[$Despacho['Id']])) {
 				if ($Despacho['Id'] == '100') {
-					exit('Vamos que vamos');
 				}
 
 				$coberturaEtarios["Etario1"] = $Despacho["Cobertura_G1"];
