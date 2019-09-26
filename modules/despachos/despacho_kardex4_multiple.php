@@ -590,7 +590,7 @@ foreach ($codesedes as $sedecod => $isset)
   $pdf->Ln(4);
 
   $current_y = $pdf->GetY();
-  if($current_y > 181)
+  if($current_y > 171)
   {
     $pdf->AddPage();
 
