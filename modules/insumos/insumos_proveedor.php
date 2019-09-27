@@ -219,14 +219,26 @@ $periodoActual = $_SESSION['periodoActual'];
     $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
     $consulta = "SELECT
-                     pmovdet.CodigoProducto, pmovdet.Descripcion, SUM(pmovdet.Cantidad) AS Cantidad, pmovdet.CantUMedida, (SUM(pmovdet.CanTotalPresentacion)*1000) AS CantidadPresentacion, pmovdet.Umedida, SUM(pmovdet.CantU2) AS CantU2, SUM(pmovdet.CantU3) AS CantU3, SUM(pmovdet.CantU4) AS CantU4, SUM(pmovdet.CantU5) AS CantU5, P.NombreUnidad2 as Umedida2, P.NombreUnidad3 as Umedida3, P.NombreUnidad4 as Umedida4, P.NombreUnidad5 as Umedida5
-                  FROM
-                    insumosmov$numtabla AS pmov
-                      INNER JOIN insumosmovdet$numtabla as pmovdet ON pmovdet.Numero = pmov.Numero
-                      INNER JOIN productos$periodoActual as P ON P.Codigo = pmovdet.CodigoProducto
-
-                      GROUP BY pmovdet.CodigoProducto ORDER BY pmovdet.Descripcion ASC
-                  LIMIT 2000;";
+                  pmovdet.CodigoProducto,
+                  pmovdet.Descripcion,
+                  CAST(SUM(pmovdet.Cantidad) AS DECIMAL(12,2)) AS Cantidad,
+                  pmovdet.CantUMedida,
+                  CAST((SUM(pmovdet.CanTotalPresentacion)*1000) AS DECIMAL(12,2)) AS CantidadPresentacion,
+                  pmovdet.Umedida,
+                  CAST(SUM(pmovdet.CantU2) AS DECIMAL(12,2)) AS CantU2,
+                  CAST(SUM(pmovdet.CantU3) AS DECIMAL(12,2)) AS CantU3,
+                  CAST(SUM(pmovdet.CantU4) AS DECIMAL(12,2)) AS CantU4,
+                  CAST(SUM(pmovdet.CantU5) AS DECIMAL(12,2)) AS CantU5,
+                  P.NombreUnidad2 as Umedida2,
+                  P.NombreUnidad3 as Umedida3,
+                  P.NombreUnidad4 as Umedida4,
+                  P.NombreUnidad5 as Umedida5
+                FROM
+                  insumosmov$numtabla AS pmov
+                    INNER JOIN insumosmovdet$numtabla as pmovdet ON pmovdet.Numero = pmov.Numero
+                    INNER JOIN productos$periodoActual as P ON P.Codigo = pmovdet.CodigoProducto
+                GROUP BY pmovdet.CodigoProducto ORDER BY pmovdet.Descripcion ASC
+                LIMIT 2000;";
   } else if (isset($_POST['buscar'])) { //Si hay filtrado
 
     $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual']; //Número MesAño según mes escogido
@@ -353,15 +365,15 @@ $periodoActual = $_SESSION['periodoActual'];
     columns:[
         { data: 'CodigoProducto'},
         { data: 'Descripcion'},
-        { data: 'Cantidad'},
+        { data: 'Cantidad', className: "text-right"},
         { data: 'CantidadPresentacion'},
-        { data: 'CantU2'},
+        { data: 'CantU2', className: "text-right"},
         { data: 'Umedida2'},
-        { data: 'CantU3'},
+        { data: 'CantU3', className: "text-right"},
         { data: 'Umedida3'},
-        { data: 'CantU4'},
+        { data: 'CantU4', className: "text-right"},
         { data: 'Umedida4'},
-        { data: 'CantU5'},
+        { data: 'CantU5', className: "text-right"},
         { data: 'Umedida5'},
       ],
           /*order: [ 0, 'asc' ],*/
