@@ -1,7 +1,7 @@
-<?php 
+<?php
 $titulo = 'Trazabilidad de insumos';
 $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 ?>
 
@@ -32,16 +32,16 @@ $periodoActual = $_SESSION['periodoActual'];
         <div class="ibox-content contentBackground">
           <?php
           $opciones ="";
-          $consultaTablas = "SELECT 
+          $consultaTablas = "SELECT
                                    table_name AS tabla
-                                  FROM 
+                                  FROM
                                    information_schema.tables
-                                  WHERE 
+                                  WHERE
                                    table_schema = DATABASE() AND table_name like 'insumosmovdet%'";
           $resultadoTablas = $Link->query($consultaTablas);
           if ($resultadoTablas->num_rows > 0) {
             $cnt=0;
-            while ($tabla = $resultadoTablas->fetch_assoc()) { 
+            while ($tabla = $resultadoTablas->fetch_assoc()) {
               $mes = str_replace("insumosmovdet", "", $tabla['tabla']);
               $mes = str_replace($_SESSION['periodoActual'], "", $mes);
 
@@ -106,7 +106,7 @@ $periodoActual = $_SESSION['periodoActual'];
                   <option value="2">Mes despachado</option>
                 </select>
               </div>
-            </div>    
+            </div>
             <div class="form-group col-sm-3">
               <label>Municipio</label>
               <select class="form-control" name="municipio" id="municipio">
@@ -117,7 +117,7 @@ $periodoActual = $_SESSION['periodoActual'];
               <label>Tipo documento</label>
               <select name="tipo_documento" id="tipo_documento" class="form-control">
                 <option value="">Seleccione...</option>
-              <?php 
+              <?php
               $consultarTipoDocumento = "SELECT * FROM tipomovimiento";
               $resultadoTipoDocumento = $Link->query($consultarTipoDocumento);
               if ($resultadoTipoDocumento->num_rows > 0) {
@@ -238,22 +238,22 @@ $periodoActual = $_SESSION['periodoActual'];
                 </tfoot>
               </table>
           </div>
-<?php 
+<?php
 
   if (!isset($_POST['buscar'])) { //Si no hay filtrado
 
     $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
-    $consulta = "SELECT 
-        pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe 
-        FROM insumosmov$numtabla AS pmov 
-          INNER JOIN insumosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero 
-          INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen 
+    $consulta = "SELECT
+        pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe
+        FROM insumosmov$numtabla AS pmov
+          INNER JOIN insumosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero
+          INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
           INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
           INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
         LIMIT 200;";
   } else if (isset($_POST['buscar'])) { //Si hay filtrado
-    
+
     $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual']; //Número MesAño según mes escogido
     $condiciones = ""; //Donde se almacenan las condiciones según parámetros
     $inners="";//Donde se almacenan los INNERS necesarios para traer datos externos.
@@ -318,7 +318,7 @@ $periodoActual = $_SESSION['periodoActual'];
                 }
 
                 $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' GROUP BY pmovdet.CodigoProducto ";
-                
+
               } else { // Si no se especificó ver por totales, muestra cada uno de los despachos del producto
                 $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' ";
               }
@@ -332,7 +332,7 @@ $periodoActual = $_SESSION['periodoActual'];
       }
     }
 
-    $consulta = "SELECT 
+    $consulta = "SELECT
                       $datos
                   FROM
                     insumosmov$numtabla AS pmov
@@ -342,7 +342,7 @@ $periodoActual = $_SESSION['periodoActual'];
                       INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
                       $inners $condiciones
                   LIMIT 2000;";
-} 
+}
 
 ?>
               <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
@@ -374,7 +374,6 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/js/trazabilidad.js"></script>
 
   <script type="text/javascript">
-  console.log('Aplicando Data Table');
   dataset1 = $('#tablaTrazabilidad').DataTable({
     ajax: {
         method: 'POST',
@@ -402,7 +401,7 @@ $periodoActual = $_SESSION['periodoActual'];
     pageLength: 25,
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-    buttons : [{extend:'excel', title:'Menus', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6]}}],
+    buttons : [{extend:'excel', title:'Trazabilidad_insumos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6]}}],
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',
@@ -417,7 +416,12 @@ $periodoActual = $_SESSION['periodoActual'];
         sPrevious: 'Anterior'
       }
     },
-    "preDrawCallback": function( settings ) {
+    initComplete: function() {
+      var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li></ul></div>';
+      $('.containerBtn').html(btnAcciones);
+      $('#loader').fadeOut();
+    },
+    preDrawCallback: function( settings ) {
         $('#loader').fadeIn();
       }
     }).on("draw", function(){ $('#loader').fadeOut();});;
