@@ -477,19 +477,31 @@ else if ($tipoPlanilla == 7)
 {
   foreach ($sedes as $sede)
   {
+    // Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
     $codigoSede = $sede['cod_sede'];
+
+    $consulta = "SELECT count(id) AS titulares, sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
+    $resultado = $Link->query($consulta) or die ('Unable to execute query. <br>'.$consulta.'<br>'. mysqli_error($Link));
+    if($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $totales = $row;
+      }
+    }
+
     $consulta_suplente_repitentes_sede = "SELECT *
-    FROM entregas_res_$mes$anno2d
-    WHERE cod_inst = '$institucion'
-      AND cod_sede = '$codigoSede'
-      AND (tipo = 'S' OR tipo = 'R')
-      AND tipo_complem='$tipoComplemento'
-    ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
+                                          FROM entregas_res_$mes$anno2d
+                                          WHERE cod_inst = '$institucion'
+                                            AND cod_sede = '$codigoSede'
+                                            AND (tipo = 'S' OR tipo = 'R')
+                                            AND tipo_complem='$tipoComplemento'
+                                          ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
     $respuesta_suplente_repitentes_sede = $Link->query($consulta_suplente_repitentes_sede) or die("Error al consultar suplentes y repitentes en entregas_res_$mes$anno2d: ". $Link->error);
     if ($respuesta_suplente_repitentes_sede->num_rows > 0)
     {
       $linea = 1;
       $lineas = 25;
+      $pagina = 1;
+      $paginas = ceil($respuesta_suplente_repitentes_sede->num_rows / $lineas);
       $numero_estudiantes = 0;
       $codigoSede = $sede['cod_sede'];
       $pdf->AddPage();
@@ -511,6 +523,7 @@ else if ($tipoPlanilla == 7)
           $pdf->Cell(0, $alturaLinea, '', 'T');
           include 'planillas_footer_v2.php';
           $pdf->AddPage();
+          $pagina++;
           include 'planillas_header_v2.php';
           $pdf->SetFont('Arial','',$tamannoFuente);
           $linea = 1;
@@ -578,7 +591,9 @@ else if ($tipoPlanilla == 8)
     if ($respuesta_suplente_repitentes_sede->num_rows > 0)
     {
       $linea = 1;
+      $pagina = 1;
       $lineas = 25;
+      $paginas = ceil($respuesta_suplente_repitentes_sede->num_rows / $lineas);
       $numero_estudiantes = 0;
       $codigoSede = $sede['cod_sede'];
       $pdf->AddPage();
@@ -600,6 +615,7 @@ else if ($tipoPlanilla == 8)
           $pdf->Cell(0, $alturaLinea, '', 'T');
           include 'planillas_footer_v2.php';
           $pdf->AddPage();
+          $pagina++;
           include 'planillas_header_v2.php';
           $pdf->SetFont('Arial','',$tamannoFuente);
           $linea = 1;
