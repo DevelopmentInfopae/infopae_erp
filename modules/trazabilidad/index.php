@@ -19,11 +19,8 @@ $periodoActual = $_SESSION['periodoActual'];
         <strong><?php echo $titulo; ?></strong>
       </li>
     </ol>
-  </div><!-- /.col -->
-  <div class="col-lg-4">
-
-  </div><!-- /.col -->
-</div><!-- /.row -->
+  </div>
+</div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
@@ -54,7 +51,7 @@ $periodoActual = $_SESSION['periodoActual'];
               }
              }
           }
-           ?>
+          ?>
           <form class="form row" id="formBuscar" method="POST">
             <div id="fechaDiasDespachos" style="display: none;">
               <div class="form-group col-sm-2">
@@ -497,7 +494,7 @@ $periodoActual = $_SESSION['periodoActual'];
     pageLength: 25,
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-    buttons : [{extend:'excel', title:'Trazabilidad_alimentos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6]}}],
+    buttons : [{extend:'excel', title:'Trazabilidad_alimentos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]}}],
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',
