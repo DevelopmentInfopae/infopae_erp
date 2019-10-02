@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	
+
 	CargarTablas();
 
 	$('.exportarEstadisticas').on('click', function(){
@@ -20,14 +20,14 @@ var jvectorDept = {"76" : "CO-VAC", "13" : "CO-BOY", "20" : "CO-COR", "41" : "CO
 
 var mesesNom = {'01' : "Enero", "02" : "Febrero", "03" : "Marzo", "04" : "Abril", "05" : "Mayo", "06" : "Junio", "07" : "Julio", "08" : "Agosto", "09" : "Septiembre", "10" : "Octubre", "11" : "Noviembre", "12" : "Diciembre"};
 
-function arreglarDivs(){
-	var heights = $(".col-sm-4").map(function() {
-        return $(this).height();
-    }).get(),
-    maxHeight = Math.max.apply(null, heights);
-    $(".col-sm-4").height(maxHeight);
-    $(".col-sm-8").height(maxHeight);
-}
+// function arreglarDivs(){
+// 	var heights = $(".col-sm-4").map(function() {
+//         return $(this).height();
+//     }).get(),
+//     maxHeight = Math.max.apply(null, heights);
+//     $(".col-sm-4").height(maxHeight);
+//     $(".col-sm-8").height(maxHeight);
+// }
 
 function CargarTablas(){
 	$('#loader').fadeIn();
@@ -39,8 +39,8 @@ function CargarTablas(){
 		$('#tHeadSemana').html(data['thead']);
 		$('#tBodySemana').html(data['tbody']);
 		$('#tFootSemana').html(data['tfoot']);
-		$('.verGraficas').on('click', 
-			function(){ 
+		$('.verGraficas').on('click',
+			function(){
 				$('.exportarEstadisticas').css('display', '');
 				$('#filtroSemana').css('display', '');
 				verSemana($(this).data('semana'), data['diasSemanas'], data['tipoComplementos']);
@@ -103,7 +103,7 @@ function CargarTablas(){
 				data : {"diasSemanas" : data['diasSemanas']},
 				error : function(data){
 					console.log("Error :"+data);
-				}, 
+				},
 				success : function(data){
 					data = JSON.parse(data);
 					$('#tHeadSemanaMun').html(data['thead']);
@@ -272,7 +272,7 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 			google.charts.setOnLoadCallback(function(){
 				armarGrafica(json, 'Totales Tipo complemento por semana', 'Semana seleccionada', 'graficaComplementoSemanas', 'none', 0);
 			});
-		} 
+		}
 	});
 
 	$.ajax({
@@ -301,7 +301,7 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 						json[numGE] = [];
 						json[numGE].push(complemento);
 						complementoCreado.push(complemento);
-					} 
+					}
 					if (!etarioCreado.includes(etario)) {
 						etarioCreado.push(etario);
 						json[0].push(etario);
@@ -320,12 +320,12 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 			$.each(info, function(etario, ArrayT){
 				numGE2 = 1;
 				$.each(ArrayT, function(complemento, total){
-					json[numGE2].push(parseInt(total));		
+					json[numGE2].push(parseInt(total));
 					numGE2++;
 				});
 			});
 
-			
+
 			numGE3 = json.length;
 			json[numGE3] = [];
 			json[numGE3].push('Total');
@@ -405,7 +405,7 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
     var options = {
     	title: titulo,
         width: "100%",
-        height: "40%",
+        height: 300,
         bar: {groupWidth: "95%"},
         chart: {
           title: titulo,
@@ -416,15 +416,15 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
         },
         annotations : {
         	textStyle: {
-		      fontSize: 12,
+		      fontSize: 10,
 		      bold: true,
-		      italic: true,
+		      italic: false,
 		      color: '#ffffff',
-		      auraColor: '#000000',
+		      auraColor: '#676a6c',
 		      opacity: 0.8
 		    }
         },
-        colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA']
+        colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA', '#9af5d9']
     };
 
     var chart = new google.visualization.ColumnChart(document.getElementById(idDiv));

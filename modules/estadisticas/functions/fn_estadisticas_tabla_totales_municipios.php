@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 $periodoActual = $_SESSION['periodoActual'];
@@ -18,7 +18,7 @@ $consultaMunicipios = "SELECT DISTINCT
                         ubicacion,
                         parametros
                     WHERE
-                        ubicacion.ETC = 0 
+                        ubicacion.ETC = 0
                         AND ubicacion.CodigoDane LIKE CONCAT(parametros.CodDepartamento, '%')
                         AND EXISTS( SELECT DISTINCT
                             cod_mun
@@ -30,7 +30,7 @@ $consultaMunicipios = "SELECT DISTINCT
 $resultadoMunicipios = $Link->query($consultaMunicipios);
 if ($resultadoMunicipios->num_rows > 0) {
 	while ($dataMunicipios = $resultadoMunicipios->fetch_assoc()) {
-		$municipios[$dataMunicipios['CodigoDANE']] = $dataMunicipios['Ciudad']; 
+		$municipios[$dataMunicipios['CodigoDANE']] = $dataMunicipios['Ciudad'];
 	}
 }
 
@@ -118,25 +118,25 @@ $tHeadSemana = '<tr>
      				<th>Municipio</th>';
   $numTds = 1;
   $semanaAct = "";
-  foreach ($totalesMunicipios as $codigo => $semanaArr) { 
+  foreach ($totalesMunicipios as $codigo => $semanaArr) {
     foreach ($semanaArr as $semana => $totales) { //recorremos todas las semanas obtenidas para crear las columnas
 	    if ($numTds <= $sem) {
 	    	if ($semana != $semanaAct) { //Si la semana en turno es igual a la última semana guardada, no se crea otra columna
 		        $numTds++; //aumentamos en 1 el número de columnas creadas
-		      
+
 				$tHeadSemana .=  '<th>
 					  '.ucwords(str_replace("_", " ", $semana)).'
 					</th>';
 	      	}
 	   		$semanaAct=$semana; //Guardamos el último número de semana del mes (incrementable sin reinicio por mes)
 	    }
-    } 
+    }
   }
 $tHeadSemana .= '<th>Total</th></tr>';
   // var_dump($totalesMunicipios);
 
 $tBodySemana="";
-foreach ($totalesMunicipios as $codigo => $semanaArr) { 
+foreach ($totalesMunicipios as $codigo => $semanaArr) {
 $tBodySemana .= "<tr>
 					<td>".$codigo."</td>";
 for ($l=1; $l < $numTds ; $l++) { //según el número de columnas creadas, recorremos las semanas obtenidas
@@ -147,10 +147,10 @@ for ($l=1; $l < $numTds ; $l++) { //según el número de columnas creadas, recor
 	  $tBodySemana .= '<td>
 	    '.$semanaArr["semana_".$l].'
 	  </td>';
-  } else { //Si en el mes en turno, NO está la semana del recorrido "for" imprimimos la columna nueva vacía. 
+  } else { //Si en el mes en turno, NO está la semana del recorrido "for" imprimimos la columna nueva vacía.
     $tBodySemana .='<td>0</td>';
   }
-} 
+}
 $tBodySemana .="<td>".$totalesMunicipios2[$codigo]."</td></tr>";
 }
 
@@ -164,8 +164,8 @@ $tFootSemana ='<tr>
 	  $tFootSemana .='<th>
 	    '.$sumTotalesSemanas["semana_".$l].'
 	  </th>';
-	
-	  } 
+
+	  }
 $tFootSemana .='<th>Total</th></tr>';
 
 $data['thead'] = $tHeadSemana;

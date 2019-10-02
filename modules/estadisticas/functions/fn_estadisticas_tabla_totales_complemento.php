@@ -1,13 +1,13 @@
-<?php 
-// require_once 'fn_estadisticas_head_functions.php';
-require_once '../../../config.php';
-require_once '../../../db/conexion.php';
-$periodoActual = $_SESSION['periodoActual'];
-$mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
-
+<?php
+  // require_once 'fn_estadisticas_head_functions.php';
+  require_once '../../../config.php';
+  require_once '../../../db/conexion.php';
+  $periodoActual = $_SESSION['periodoActual'];
+  $mesesNom = array('1' => "Enero", "2" => "Febrero", "3" => "Marzo", "4" => "Abril", "5" => "Mayo", "6" => "Junio", "7" => "Julio", "8" => "Agosto", "9" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 
   $diasSemanas = $_POST['diasSemanas'];
   $tipoComplementos = $_POST['tipoComplementos'];
+  sort($tipoComplementos);
 
   foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
     $datos = "";
@@ -16,7 +16,6 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
       foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
-        // echo $mes." - ".$semana." - ".$D." - ".$dia."</br>";
         $datos.="SUM(D$diaD) + ";
         $diaD++;
       }
@@ -24,10 +23,16 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
       $datos.= " AS semana_".$semana.", ";
       $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
     }
+
     $datos = trim($datos, ", ");
     $consultaRes = "SELECT $datos FROM $tabla";
-    // echo $consultaRes."</br>";
 
+    $mes = (int) $mes;
+    $totalesComplementos[$mes]["APS"] = 0;
+    $totalesComplementos[$mes]["CAJMPS"] = 0;
+    $totalesComplementos[$mes]["CAJMRI"] = 0;
+    $totalesComplementos[$mes]["CAJTPS"] = 0;
+    $totalesComplementos[$mes]["CAJTRI"] = 0;
     foreach ($tipoComplementos as $key => $complemento) {
       $consultaResComplemento = "SELECT ";
       $diaD = 1;
@@ -38,8 +43,8 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
         }
       }
       $consultaResComplemento = trim($consultaResComplemento, "+ ");
-      $consultaResComplemento.=" AS TOTAL FROM $tabla WHERE tipo_complem = '$complemento'";
-      // echo $consultaResComplemento."</br>";
+      $consultaResComplemento.=" AS TOTAL FROM $tabla WHERE tipo_complem = '$complemento' GROUP BY tipo_complem";
+
       if ($resResComplemento = $Link->query($consultaResComplemento)) {
         if ($resResComplemento->num_rows > 0) {
           if ($ResComplemento = $resResComplemento->fetch_assoc()) {
@@ -66,42 +71,39 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
         }
       }
     }
-
   }
-$tHeadComp = '<tr>
-    <th>Mes</th>';
-     
+
+  ksort($totalesComplementos);
+  $tHeadComp = '<tr>
+                  <th>Mes</th>';
     foreach ($tipoComplementos as $key => $complemento) {
         $tHeadComp .= '<th>'.$complemento.'</th>';
-    
     }
   $tHeadComp .= '</tr>';
 
-$tBodyComp = "";
-  foreach ($totalesComplementos as $mes => $valoresMes) {
-   $tBodyComp .= '<tr>
-                  <td>'.$mesesNom[$mes].'</td>';
-    foreach ($valoresMes as $complemento => $totales) {
-     $tBodyComp .= '<td>'.$totales.'</td>';
-    
+  $tBodyComp = "";
+    foreach ($totalesComplementos as $mes => $valoresMes) {
+     $tBodyComp .= '<tr>
+                    <td>'.$mesesNom[$mes].'</td>';
+      foreach ($valoresMes as $complemento => $totales) {
+       $tBodyComp .= '<td>'.$totales.'</td>';
+
+      }
+      $tBodyComp .="<tr>";
     }
-    $tBodyComp .="<tr>";
-  }
 
-$tFootComp = '<tr>
-  <th>TOTAL</th>';
-  
-  foreach ($sumTotalesComplementos as $complemento => $total) {
-    $tFootComp .='<th>'.$total.'</th>';
-  }
-   
-$tFootComp .='</tr>';
+  $tFootComp = '<tr>
+    <th>TOTAL</th>';
 
-$data['thead'] = $tHeadComp;
-$data['tbody'] = $tBodyComp;
-$data['tfoot'] = $tFootComp;
-$data['info'] = $totalesComplementos;
+    foreach ($sumTotalesComplementos as $complemento => $total) {
+      $tFootComp .='<th>'.$total.'</th>';
+    }
 
-echo json_encode($data);
- 
-  // var_dump($totalesSemanas);
+  $tFootComp .='</tr>';
+
+  $data['thead'] = $tHeadComp;
+  $data['tbody'] = $tBodyComp;
+  $data['tfoot'] = $tFootComp;
+  $data['info'] = $totalesComplementos;
+
+  echo json_encode($data);
