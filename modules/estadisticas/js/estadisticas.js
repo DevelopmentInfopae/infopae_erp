@@ -18,16 +18,7 @@ var coordenadas = {"11001":{"Latitud":"4.6","Longitud":"-74.0833333"},"13001":{"
 
 var jvectorDept = {"76" : "CO-VAC", "13" : "CO-BOY", "20" : "CO-COR", "41" : "CO-HUI", "97" : "CO-VAU", "54" : "CO-NSA", "66" : "CO-RIS", "99" : "CO-VID", "11" : "CO-BOL", "27" : "CO-CUN", "95" : "CO-GUV", "85" : "CO-CAU", "18" : "CO-CAS", "17" : "CO-CAQ", "19" : "CO-CES", "68" : "CO-SAN", "08" : "CO-ATL", "91" : "CO-AMA", "50" : "CO-MET", "47" : "CO-MAG", "81" : "CO-ARA", "94" : "CO-GUA", "88" : "CO-SAP", "15" : "CO-CAL", "63" : "CO-QUI", "44" : "CO-LAG", "73" : "CO-TOL", "70" : "CO-SUC", "86" : "CO-PUT", "52" : "CO-NAR", "23" : "CO-CHO", "25" : "CO-DC", "05" : "CO-ANT"};
 
-var mesesNom = {'01' : "Enero", "02" : "Febrero", "03" : "Marzo", "04" : "Abril", "05" : "Mayo", "06" : "Junio", "07" : "Julio", "08" : "Agosto", "09" : "Septiembre", "10" : "Octubre", "11" : "Noviembre", "12" : "Diciembre"};
-
-// function arreglarDivs(){
-// 	var heights = $(".col-sm-4").map(function() {
-//         return $(this).height();
-//     }).get(),
-//     maxHeight = Math.max.apply(null, heights);
-//     $(".col-sm-4").height(maxHeight);
-//     $(".col-sm-8").height(maxHeight);
-// }
+var mesesNom = {'1' : "Enero", "2" : "Febrero", "3" : "Marzo", "4" : "Abril", "5" : "Mayo", "6" : "Junio", "7" : "Julio", "8" : "Agosto", "9" : "Septiembre", "10" : "Octubre", "11" : "Noviembre", "12" : "Diciembre"};
 
 function CargarTablas(){
 	$('#loader').fadeIn();
@@ -69,6 +60,7 @@ function CargarTablas(){
 			data : {"diasSemanas" : data['diasSemanas'], "tipoComplementos" : data['tipoComplementos']},
 			success:function(data){
 				data = JSON.parse(data);
+
 				$('#tHeadComp').html(data['thead']);
 				$('#tBodyComp').html(data['tbody']);
 				$('#tFootComp').html(data['tfoot']);
@@ -135,8 +127,6 @@ function CargarTablas(){
 					markersJ = [];
 					cityAreaData = [];
 
-					console.log(info);
-
 				    $.each(info, function(ciudad, total){
 				    		markersJ.push({latLng : [ coordenadas[ciudad]['Latitud'], coordenadas[ciudad]['Longitud'] ], name : "Muncipio : \n"+total[1]+" = "+total[0]});
 				    		cityAreaData.push(total[0]);
@@ -167,17 +157,6 @@ function CargarTablas(){
 					  $('#map').vectorMap('get','mapObject').setFocus({region: jvectorDept[data['codDepartamento']], animate: true});
 					});
 
-				    // info = data['info'];
-				    // console.log(info);
-				    // json = [];
-				    // json[0] = ['Ciudad', 'Total'];
-				    // $.each(info, function(ciudad, total){
-				    // 	json.push([ciudad, total]);
-				    // });
-				    // console.log(json);
-					// google.charts.load('current', {packages: ['corechart', 'bar']});
-					// google.charts.setOnLoadCallback(function(){
-					// armarGrafica2(json, 'Totales por municipio  y semana', 'Ordenado por semana', 'graficaTotalesMunicipio', 'none', 1);});
 					setTimeout(function() {$('#loader').fadeOut();}, 2000);
 				}
 			});
@@ -212,7 +191,7 @@ function CargarTablas(){
 				$.each(data['totales'], function(complemento, total){
 					json[cnt].push(total);
 				});
-				console.log(json);
+
 				google.charts.load('current', {packages: ['corechart', 'bar']});
 				google.charts.setOnLoadCallback(function(){
 					armarGrafica(json, 'Valor de recursos ejecutados', 'Ordenado por mes', 'graficaValoresEjecutados', 'right', 1);
@@ -380,8 +359,6 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 
 
 function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
-
-    // console.log(json);
     var data = google.visualization.arrayToDataTable(json);
 
     if (multiColumn == 1) {
@@ -399,7 +376,7 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
 			        role: "annotation"
 				});
 			}
-		// console.log(viewJSON);
+
 		data.setColumns(viewJSON);
     }
     var options = {
@@ -432,8 +409,6 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
     }
 
 function armarGrafica2(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
-
-    // console.log(json);
     var data = google.visualization.arrayToDataTable(json);
 
     if (multiColumn == 1) {
@@ -451,7 +426,7 @@ function armarGrafica2(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
 			        role: "annotation"
 				});
 			}
-		// console.log(viewJSON);
+
 		data.setColumns(viewJSON);
     }
     var options = {
