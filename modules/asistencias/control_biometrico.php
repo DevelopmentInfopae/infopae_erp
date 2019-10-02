@@ -179,7 +179,7 @@ from biometria_reg br
 left join  biometria b
 on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo)
 inner join focalizacion35 f2 on (b.num_doc=f2.num_doc)
-WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = 2019 AND MONTH(br.fecha) = 09 AND DAY(br.fecha) = 26
+WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia
 GROUP BY f2.id
 									
 									
@@ -215,7 +215,7 @@ from biometria_reg br
 left join  biometria b
 on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo)
 inner join focalizacion35 f2 on (b.num_doc=f2.num_doc)
-WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = 2019 AND MONTH(br.fecha) = 09 AND DAY(br.fecha) = 26
+WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia
 GROUP BY f2.id
 									
 									
