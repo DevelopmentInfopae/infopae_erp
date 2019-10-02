@@ -141,7 +141,7 @@
 						if($sede != ""){
 							$consulta .= " and s.cod_sede = \"$sede\" ";	
 						}
-						//echo $consulta;
+						//echo "<br><br>$consulta<br><br>";
 						$resultado = $Link->query($consulta) or die ('Carga de sedes:<br>'.$consulta.'<br>'. mysqli_error($Link));
 						if($resultado->num_rows >= 1){
 							while($row = $resultado->fetch_assoc()){
@@ -159,6 +159,7 @@
 								$resultado2 = $Link->query($consulta2);
 
 								if($resultado2->num_rows > 0){
+									//echo "En tabla de asistencias";
 
 									$row2 = $resultado2->fetch_assoc();
 									$sellado = $row2['estado'];
@@ -168,10 +169,60 @@
 									$consulta4 = "SELECT f.cod_grado, g.nombre, f.nom_grupo , count(num_doc) AS total ,(SELECT sum(a.consumio + a.repitio) AS cantidad FROM focalizacion$anno2d f2 left join asistencia_det$mes$anno2d a ON f2.tipo_doc = a.tipo_doc AND f2.num_doc = a.num_doc WHERE f2.cod_sede = $codSede AND a.consumio IS not NULL and a.dia = \"$dia\" AND f2.nom_grupo = f.nom_grupo GROUP BY f2.nom_grupo ) AS entregado FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = $codSede GROUP BY nom_grupo ";
 
 								}else{
-									$consulta3 = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total ,(SELECT SUM(t.entregas) AS entregado FROM (SELECT if(COUNT(f2.id)>2,2,COUNT(f2.id)) as entregas, f2.* FROM focalizacion$semanaActual f2 LEFT JOIN biometria b ON f2.tipo_doc = b.tipo_doc AND f2.num_doc = b.num_doc LEFT JOIN biometria_reg br ON b.id_dispositivo = br.dispositivo_id AND b.id_bioest = br.usr_dispositivo_id WHERE id_dispositivo IS NOT NULL AND id_bioest IS NOT NULL AND year(br.fecha) = $anno AND month(br.fecha) = $mes AND day(br.fecha) = $dia GROUP BY f2.num_doc ) AS t WHERE t.cod_sede = s.cod_sede GROUP BY t.cod_sede ) AS entregado FROM sedes$anno2d s WHERE s.cod_sede = \"$codSede\""; 
+									//echo "No en tabla de asistencias";
+
+									$consulta3 = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total ,(SELECT SUM(t.entregas) AS entregado FROM (
+										
+										
+select IF(COUNT(f2.id)>2,1, COUNT(f2.id)) AS entregas, f2.*
+from biometria_reg br 
+left join  biometria b
+on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo)
+inner join focalizacion35 f2 on (b.num_doc=f2.num_doc)
+WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = 2019 AND MONTH(br.fecha) = 09 AND DAY(br.fecha) = 26
+GROUP BY f2.id
+									
+									
+									
+									) AS t 
+									
+									
+									
+									
+									WHERE t.cod_sede = s.cod_sede GROUP BY t.cod_sede ) AS entregado FROM sedes$anno2d s WHERE s.cod_sede = \"$codSede\""; 
 
 
-									$consulta4 = "SELECT f.cod_grado, g.nombre, f.nom_grupo , count(num_doc) AS total ,(SELECT SUM(t.entregas) AS entregado FROM (SELECT if(COUNT(f2.id)>2,2,COUNT(f2.id)) as entregas, f2.* FROM focalizacion$semanaActual f2 LEFT JOIN biometria b ON f2.tipo_doc = b.tipo_doc AND f2.num_doc = b.num_doc LEFT JOIN biometria_reg br ON b.id_dispositivo = br.dispositivo_id AND b.id_bioest = br.usr_dispositivo_id WHERE year(br.fecha) = $anno AND month(br.fecha) = $mes AND day(br.fecha) = $dia GROUP BY f2.num_doc ) AS t WHERE t.cod_sede = $codSede AND t.nom_grupo = f.nom_grupo ) AS entregado FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = $codSede GROUP BY nom_grupo ";
+
+
+
+
+
+
+
+
+
+
+
+
+
+									$consulta4 = "SELECT f.cod_grado, g.nombre, f.nom_grupo , count(num_doc) AS total ,(SELECT SUM(t.entregas) AS entregado FROM (
+										
+										
+										
+										
+										select IF(COUNT(f2.id)>2,1, COUNT(f2.id)) AS entregas, f2.*
+from biometria_reg br 
+left join  biometria b
+on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo)
+inner join focalizacion35 f2 on (b.num_doc=f2.num_doc)
+WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = 2019 AND MONTH(br.fecha) = 09 AND DAY(br.fecha) = 26
+GROUP BY f2.id
+									
+									
+									
+									
+									
+									) AS t WHERE t.cod_sede = $codSede AND t.nom_grupo = f.nom_grupo ) AS entregado FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = $codSede GROUP BY nom_grupo ";
 								}
 
 								//echo "<br>$consulta3<br>";
