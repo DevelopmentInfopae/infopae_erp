@@ -1,6 +1,6 @@
-<?php 
+<?php
 $titulo = 'Estadísticas';
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 ?>
@@ -19,63 +19,75 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
         <strong><?php echo $titulo; ?></strong>
       </li>
     </ol>
-  </div><!-- /.col -->
+  </div>
   <div class="col-lg-4">
     <div class="title-action">
       <button class="btn btn-primary exportarEstadisticas" style="display: none;"><span class="fa fa-file-excel-o"></span>  Exportar</button>
     </div>
-  </div><!-- /.col -->
-</div><!-- /.row -->
+  </div>
+</div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground row">
-          <div class="col-sm-12" style="text-align: center;">
-            <h2>Totales por semana</h2>
+          <div class="col-sm-12 text-center">
+            <h2><strong>Totales por semana</strong></h2>
             <em>Puede ver estadísticas por semana, haciendo clic en cada una de ellas de la siguiente tabla.</em>
             <br>
-          
+
             <div class="table-responsive">
               <table class="table selectableRows table-bordered col-sm-12">
                 <thead id="tHeadSemana">
-                  
+
                 </thead>
                 <tbody id="tBodySemana">
-                  
+
                 </tbody>
                 <tfoot id="tFootSemana">
-                  
+
                 </tfoot>
               </table>
             </div>
           </div>
-          <hr class="col-sm-12">
-          <div class="col-sm-12" style="text-align: center;">
-            <h2>Totales por tipo complemento alimentario</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+          <div class="col-sm-12 text-center">
+            <h2><strong>Totales por tipo complemento alimentario</strong></h2>
             <br>
           </div>
-          <div class="col-sm-6 nopadding">
+          <div class="col-sm-6 col-sm-offset-3">
             <table class="table table-bordered">
               <thead id="tHeadComp">
-                
+
               </thead>
               <tbody id="tBodyComp">
-                
+
               </tbody>
               <tfoot id="tFootComp">
-                
+
               </tfoot>
             </table>
           </div>
 
-          <div class="col-sm-6">
+          <div class="col-sm-12 nopadding">
             <div id="graficaTotalesComplemento"></div>
           </div>
-          <hr class="col-sm-12">
-          <div class="col-sm-12" style="text-align: center;">
-            <h2>Totales por municipio  y semana</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+          <div class="col-sm-12 text-center">
+            <h2><strong>Totales por municipio y semana</strong></h2>
             <br>
           </div>
 
@@ -83,13 +95,13 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <div class="table-responsive">
               <table class="table table-striped table-hover selectableRows" id="tablaMunicipios">
                 <thead id="tHeadSemanaMun">
-                  
+
                 </thead>
                 <tbody id="tBodySemanaMun">
-                  
+
                 </tbody>
                 <tfoot id="tFootSemanaMun">
-                  
+
                 </tfoot>
               </table>
             </div>
@@ -100,114 +112,127 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               </div>
             </div>
           </div>
-          <hr class="col-sm-12">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
           <div class="col-sm-12" style="text-align: center;">
-            <h2>Valor de recursos ejecutados</h2>
+            <h2><strong>Valor de recursos ejecutados</strong></h2>
             <br>
           </div>
-          <div class="col-sm-6">
-
-            <?php 
-            $consValores = "SELECT 'ValorContrato' AS Concepto, ValorContrato FROM parametros
+          <div class="col-sm-4">
+            <?php
+              $consValores = "SELECT 'ValorContrato' AS Concepto, ValorContrato FROM parametros
                             UNION
-                            SELECT CODIGO AS Concepto, ValorRacion AS ValorContrato FROM tipo_complemento;";
-            $resValores = $Link->query($consValores);
+                            SELECT CODIGO AS Concepto, ValorRacion AS ValorContrato FROM tipo_complemento ORDER BY Concepto;";
+              $resValores = $Link->query($consValores);
 
-            $valorRaciones = [];
-            if ($resValores->num_rows > 0) {
-              while($Valores = $resValores->fetch_assoc()) {
-                if ($Valores['Concepto'] == "ValorContrato") {
-                  $valorContrato = $Valores['ValorContrato'];
-                } else {
-                  $valorRaciones[$Valores['Concepto']] = $Valores['ValorContrato'];
+              $valorRaciones = [];
+              if ($resValores->num_rows > 0) {
+                while($Valores = $resValores->fetch_assoc()) {
+                  if ($Valores['Concepto'] == "ValorContrato") {
+                    $valorContrato = $Valores['ValorContrato'];
+                  } else {
+                    $valorRaciones[$Valores['Concepto']] = $Valores['ValorContrato'];
+                  }
                 }
               }
-            }
-
-             ?>
-
-            <table class="table">
+            ?>
+            <table class="table table-striped table-condensed">
               <tr>
                 <th>Valor del contrato</th>
-                <td style="text-align: right;">$ <?php echo number_format($valorContrato, 2, ",", "."); ?></td>
+                <td class="text-right">$ <?= number_format($valorContrato, 2, ",", "."); ?></td>
               </tr>
               <?php foreach ($valorRaciones as $complemento => $valor): ?>
                 <tr>
                   <th>Valor Ofertado por <?= $complemento ?></th>
-                  <td style="text-align: right;">$ <?php echo number_format($valor, 2, ",", "."); ?></td>
+                  <td class="text-right">$ <?= number_format($valor, 2, ",", "."); ?></td>
                 </tr>
               <?php endforeach ?>
             </table>
           </div>
-          <div class="col-sm-12">
-            
-          </div>
-          <div class="col-sm-5">
-            <table class="table table-striped table-hover selectableRows" id="tablaValoresEjecutados">
-              
+
+          <div class="col-sm-4">
+            <table class="table table-bordered table-striped table-hover selectableRows" id="tablaValoresEjecutadosPorcentajes">
+
             </table>
           </div>
-          <div class="col-sm-7">
-            <div id="graficaValoresEjecutados"></div>
-          </div>
-          <div class="col-sm-5">
-            <table class="table table-striped table-hover selectableRows" id="tablaValoresEjecutadosPorcentajes">
-              
-            </table>
-          </div>
-          <div class="col-sm-7">
+          <div class="col-sm-4">
             <div id="graficaValoresEjecutadosPorcentajes"></div>
           </div>
 
-        </div><!-- /.ibox-content -->
-      </div><!-- /.ibox float-e-margins -->
-    </div><!-- /.col-lg-12 -->
-  </div><!-- /.row -->
+          <div class="col-sm-12 nopadding">
+            <div id="graficaValoresEjecutados"></div>
+          </div>
+
+          <div class="col-sm-12">
+            <table class="table table-bordered table-hover selectableRows" id="tablaValoresEjecutados">
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="row" id="filtroSemana" style="display: none;">
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground row">
-          <div class="col-sm-12 row nopadding" >
-            <div class="col-sm-12" style="text-align: center;">
+          <div class="col-sm-12 row" >
+            <div class="col-sm-12 text-center">
               <h1>Semana <span id="numSemana"></span></h1>
             </div>
             <input type="hidden" name="semana" id="semana">
             <hr class="col-sm-12">
-            <div class="col-sm-4">
-              <h3>Totales Tipo complemento por semana</h3>
-              <table class="table table-bordered" id="complementoSemanas">
-              
-              </table>
+            <div class="row">
+              <h3 class="text-center"><strong>Totales Tipo complemento por semana</strong></h3>
+              <br>
+              <div class="col-sm-4">
+                <table class="table table-bordered" id="complementoSemanas">
+
+                </table>
+              </div>
+              <div class="col-sm-8">
+                <div id="graficaComplementoSemanas"></div>
+              </div>
             </div>
-            <div class="col-sm-8">
-              <div id="graficaComplementoSemanas"></div>
+            <hr>
+            <div class="row">
+              <h3 class="text-center"><strong>Totales semana por tipo complemento alimentario y grupo etario</strong></h3>
+              <br>
+              <div class="col-sm-4">
+                <table class="table table-bordered" id="complementoEtarios">
+
+                </table>
+              </div>
+              <div class="col-sm-8">
+                <div id="graficaComplementoEtarios"></div>
+              </div>
             </div>
-            <div class="col-sm-4">
-              <h3>Totales semana por tipo complemento alimentario y grupo etario</h3>
-              <table class="table table-bordered" id="complementoEtarios">
-              
-              </table>
-            </div>
-            <div class="col-sm-8">
-              <div id="graficaComplementoEtarios"></div>
-            </div>
-            <div class="col-sm-4">
-              <h3>Totales por dias tipo complemento alimentario</h3>
-              <table class="table table-bordered" id="complementoDias">
-              
-              </table>
-            </div>
-            <div class="col-sm-8">
-              <div id="graficaComplementoDias"></div>
+            <hr>
+            <div class="row">
+              <h3 class="text-center"><strong>Totales por dias tipo complemento alimentario</strong></h3>
+              <br>
+              <div class="col-sm-4">
+                <table class="table table-bordered" id="complementoDias">
+
+                </table>
+              </div>
+              <div class="col-sm-8">
+                <div id="graficaComplementoDias"></div>
+              </div>
             </div>
           </div>
-        </div><!-- /.ibox-content -->
-      </div><!-- /.ibox float-e-margins -->
-    </div><!-- /.col-lg-12 -->
-  </div><!-- /.row -->
+        </div>
+      </div>
+    </div>
+  </div>
 
-</div><!-- /.wrapper wrapper-content animated fadeInRight -->
+</div>
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
@@ -232,11 +257,6 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
 
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/estadisticas/js/estadisticas.js"></script>
-
-
-<script type="text/javascript">
-
-</script>
 
 <?php mysqli_close($Link); ?>
 
