@@ -11,11 +11,9 @@ $semana = (isset($_POST["semana_edicion"]) && !empty($_POST["semana_edicion"])) 
 $municipio = (isset($_POST["municipio_edicion"]) && !empty($_POST["municipio_edicion"])) ? $Link->real_escape_string($_POST["municipio_edicion"]) : "";
 $complemento = (isset($_POST["complemento_edicion"]) && !empty($_POST["complemento_edicion"])) ? $Link->real_escape_string($_POST["complemento_edicion"]) : "";
 $institucion = (isset($_POST["institucion_edicion"]) && !empty($_POST["institucion_edicion"])) ? $Link->real_escape_string($_POST["institucion_edicion"]) : "";
-
 $placa = (isset($_POST["placa"]) && !empty($_POST["placa"])) ? $Link->real_escape_string($_POST["placa"]) : "";
 $conductor = (isset($_POST["conductor"]) && !empty($_POST["conductor"])) ? $Link->real_escape_string($_POST["conductor"]) : "";
 $tipo_vehiculo = (isset($_POST["tipo_vehiculo"]) && !empty($_POST["tipo_vehiculo"])) ? $Link->real_escape_string($_POST["tipo_vehiculo"]) : "";
-
 $lotes = (isset($_POST["lote"]) && !empty($_POST["lote"])) ? $_POST["lote"] : "";
 $marcas = (isset($_POST["marca"]) && !empty($_POST["marca"])) ? $_POST["marca"] : "";
 $productos = (isset($_POST["producto"]) && !empty($_POST["producto"])) ? $_POST["producto"] : "";
@@ -44,10 +42,8 @@ $consulta_numeros_despachos = "SELECT
                                   $condicion_sede
                                 ORDER BY p.Numero;";
 $respuesta_numeros_despachos = $Link->query($consulta_numeros_despachos) or die("Error al consultar los Número de los despachos: ". $Link->error);
-if ($respuesta_numeros_despachos->num_rows > 0)
-{
-	while ($resgistro_numeros_despachos = $respuesta_numeros_despachos->fetch_object())
-	{
+if ($respuesta_numeros_despachos->num_rows > 0) {
+	while ($resgistro_numeros_despachos = $respuesta_numeros_despachos->fetch_object()) {
 		$numeros_despachos[] = $resgistro_numeros_despachos->numero;
 	}
 }
@@ -55,16 +51,14 @@ if ($respuesta_numeros_despachos->num_rows > 0)
 /**
  * Algoritmo para actualizar los datos de transporte del despacho
  */
-if (! empty($placa) || ! empty($conductor) || ! empty($tipo_vehiculo))
-{
+if (! empty($placa) || ! empty($conductor) || ! empty($tipo_vehiculo)) {
 	$condicion_placa = (! empty($placa)) ? " Placa='".$placa."', " : "";
 	$condicion_conductor = (! empty($conductor)) ? " ResponsableRecibe='".$conductor."', " : "";
 	$condicion_tipo_vehiculo = (! empty($tipo_vehiculo)) ? " TipoTransporte='".$tipo_vehiculo."', " : "";
 
 	$condiciones = trim("$condicion_tipo_vehiculo $condicion_placa $condicion_conductor", ", ");
 
-	foreach ($numeros_despachos as $numero_despacho)
-	{
+	foreach ($numeros_despachos as $numero_despacho) {
 		$consulta_editar_datos_transporte = "UPDATE productosmov$mes$periodo_actual
 																				SET
 																					$condiciones
@@ -76,63 +70,52 @@ if (! empty($placa) || ! empty($conductor) || ! empty($tipo_vehiculo))
 /**
  * Algoritmo para actualizar los datos de cada producto del despacho
  */
-foreach ($numeros_despachos as $numero_despacho)
-{
-	foreach ($productos as $indice => $codigo_producto)
-	{
-		$lote = "Lote='".$lotes[$indice]."', ";
-		$fecha_vencimiento = "FechaVencimiento='".$fecha_vencimientos[$indice]."', ";
-		$marca = (! empty($marcas[$indice])) ? "marca='".$marcas[$indice]."', " : "";
+foreach ($productos as $indice => $codigo_producto) {
+	$lote = "Lote='".$lotes[$indice]."', ";
+	$fecha_vencimiento = "FechaVencimiento='".$fecha_vencimientos[$indice]."', ";
+	$marca = (! empty($marcas[$indice])) ? "marca='".$marcas[$indice]."', " : "";
 
-		$condiciones_datos_productos = trim("$lote $fecha_vencimiento $marca", ", ");
+	$condiciones_datos_productos = trim("$lote $fecha_vencimiento $marca", ", ");
 
-		$consulta_editar_datos_productos = "UPDATE productosmovdet$mes$periodo_actual
-																				SET
-																					$condiciones_datos_productos
-																				WHERE Numero='".$numero_despacho."' AND CodigoProducto='".$codigo_producto."'";
-		$respuesta_editar_datos_productos = $Link->query($consulta_editar_datos_productos) or die("Error al actualizar los datos de los productos: ". $Link->error);
-	}
+	$consulta_editar_datos_productos = "UPDATE productosmovdet$mes$periodo_actual pmd
+											INNER JOIN despachos_enc$mes$periodo_actual de ON  pmd.Numero=de.Num_doc
+											INNER JOIN sedes$periodo_actual s ON (pmd.BodegaDestino = s.cod_sede)
+										SET
+											$condiciones_datos_productos
+										WHERE
+											pmd.CodigoProducto = '$codigo_producto'
+											AND de.Num_doc = pmd.Numero
+											AND de.Semana = '$semana'
+											AND de.Tipo_complem = '$complemento'";
+	$respuesta_editar_datos_productos = $Link->query($consulta_editar_datos_productos) or die("Error al actualizar los datos de los productos: ". $Link->error);
 }
 
 /**
  * Algoritmo para validar los productos y cambiar el estado del despacho
  */
-foreach ($numeros_despachos as $numero_despacho)
-{
+foreach ($numeros_despachos as $numero_despacho) {
 	$estado_despacho = 2;
 	$consulta_datos_productos = "SELECT
-														    Lote as lote,
-														    FechaVencimiento as fecha_vencimiento,
-														    marca
-															FROM
-														    productosmovdet$mes$periodo_actual
-															WHERE
-														    Numero = '".$numero_despacho."';";
+								    Lote as lote,
+								    FechaVencimiento as fecha_vencimiento,
+								    marca
+								FROM
+								    productosmovdet$mes$periodo_actual
+								WHERE
+								    Numero = '".$numero_despacho."';";
 	$respuesta_datos_consulta = $Link->query($consulta_datos_productos) or die("Error al consultar datos de productos: ". $Link->error);
-	if ($respuesta_datos_consulta->num_rows > 0)
-	{
+	if ($respuesta_datos_consulta->num_rows > 0) {
 		$datos_vacios = 0;
-		while ($registro_datos_productos = $respuesta_datos_consulta->fetch_object())
-		{
-			if (empty($registro_datos_productos->lote) || is_null($registro_datos_productos->lote))
-			{
-				$datos_vacios ++;
-			}
+		while ($registro_datos_productos = $respuesta_datos_consulta->fetch_object()) {
+			if (empty($registro_datos_productos->lote) || is_null($registro_datos_productos->lote)) { $datos_vacios ++; }
 
-			if (empty($registro_datos_productos->fecha_vencimiento) || is_null($registro_datos_productos->fecha_vencimiento))
-			{
-				$datos_vacios ++;
-			}
+			if (empty($registro_datos_productos->fecha_vencimiento) || is_null($registro_datos_productos->fecha_vencimiento)) { $datos_vacios ++; }
 
-			if (empty($registro_datos_productos->marca) || is_null($registro_datos_productos->marca))
-			{
-				$datos_vacios ++;
-			}
+			if (empty($registro_datos_productos->marca) || is_null($registro_datos_productos->marca)) { $datos_vacios ++; }
 		}
 	}
 
-	if ($datos_vacios == 0)
-	{
+	if ($datos_vacios == 0) {
 		$consulta_editar_estado_despacho = "UPDATE despachos_enc$mes$periodo_actual
 																				SET Estado='1'
 																				WHERE Num_Doc = '".$numero_despacho."'";

@@ -286,9 +286,6 @@ $pdf->Ln(4.76);
   $pdf->MultiCell(35,4.7,utf8_decode($auxDias),0,'C',False);
 
   $pdf->SetXY($current_x, $current_y+9.4);
-  //$pdf->MultiCell(45,4.7,'SEMANA: '.$semana,0,'C',False);
-
-
 
   $pdf->SetXY($current_x+35, $current_y);
   //ciclos
@@ -296,18 +293,10 @@ $pdf->Ln(4.76);
   $current_x = $pdf->GetX();
   $pdf->Cell(75,14.1,'',1,0,'L',False);
   $pdf->SetXY($current_x, $current_y+2.35);
-  //$pdf->SetFont('Arial','B',$tamannoFuente);
-  //$pdf->Cell(90,4.7,'SEMANA: '.$auxSemana,0,0,'C',False);
   $pdf->Cell(75,4.7,'SEMANA: '.$auxCiclos,0,0,'C',False);
   $pdf->SetFont('Arial','',$tamannoFuente);
-  //$pdf->SetXY($current_x+34, $current_y+2.35);
-  //$pdf->Cell(10,4.7,$auxSemana,0,4.7,'L',False);
-  //$pdf->SetFont('Arial','B',$tamannoFuente);
   $pdf->SetXY($current_x, $current_y+7,05);
   $pdf->Cell(75,4.7,utf8_decode('MENÚS: '.$auxMenus),0,0,'C',False);
-  //$pdf->SetFont('Arial','',$tamannoFuente);
-  //$pdf->SetXY($current_x+33, $current_y+7,05);
-  //$pdf->Cell(90,4.7,$auxCiclos,0,0,'L',False);
 
   $pdf->SetXY($current_x+75, $current_y);
   $current_y = $pdf->GetY();
@@ -384,7 +373,6 @@ $pdf->Ln(4.76);
   $pdf->SetXY($current_x, $current_y);
   $pdf->Cell(22,8,utf8_decode('LUNES'),'B',8,'C',False);
   $pdf->Cell(22,7,'CANT','R',0,'C',False);
-  //$pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+22, $current_y);
 
@@ -394,7 +382,6 @@ $pdf->Ln(4.76);
   $pdf->SetXY($current_x, $current_y);
   $pdf->Cell(22,8,utf8_decode('MARTES'),'B',8,'C',False);
   $pdf->Cell(22,7,'CANT','R',0,'C',False);
-  //$pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+22, $current_y);
 
@@ -404,7 +391,6 @@ $pdf->Ln(4.76);
   $pdf->SetXY($current_x, $current_y);
   $pdf->Cell(22,8,utf8_decode('MIÉRCOLES'),'B',8,'C',False);
   $pdf->Cell(22,7,'CANT','R',0,'C',False);
-  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+22, $current_y);
 
@@ -414,7 +400,6 @@ $pdf->Ln(4.76);
   $pdf->SetXY($current_x, $current_y);
   $pdf->Cell(22,8,utf8_decode('JUEVES'),'B',8,'C',False);
   $pdf->Cell(22,7,'CANT','R',0,'C',False);
-  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+22, $current_y);
 
@@ -424,7 +409,6 @@ $pdf->Ln(4.76);
   $pdf->SetXY($current_x, $current_y);
   $pdf->Cell(22,8,utf8_decode('VIERNES'),'B',8,'C',False);
   $pdf->Cell(22,7,'CANT','R',0,'C',False);
-  // $pdf->Cell(15.9,7,'SALIDA','R',0,'C',False);
 
   $pdf->SetXY($current_x+22, $current_y);
 
@@ -437,7 +421,4 @@ $pdf->Ln(4.76);
   $pdf->SetXY($current_x+19.7, $current_y);
 
   $pdf->Ln(15);
-  //Termina el header
-
-
-    $pdf->SetFont('Arial','',$tamannoFuente);
+  $pdf->SetFont('Arial','',$tamannoFuente);
