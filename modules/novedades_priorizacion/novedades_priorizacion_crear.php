@@ -44,13 +44,20 @@
 								<select class="form-control" name="municipio" id="municipio">
 									<option value="">Seleccione uno</option>
 								</select>
-							</div><!-- /.col -->
-							<div class="col-sm-8 form-group">
+							</div>
+							<div class="col-sm-4 form-group">
 								<label for="institucion">Institución</label>
 								<select class="form-control" name="institucion" id="institucion">
 									<option value="">Seleccione una</option>
 									<?php
-										$consulta = "SELECT DISTINCT s.cod_inst, s.nom_inst FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE s.cod_mun_sede = '". $municipio_defecto["CodMunicipio"] ."' ";
+										$consulta = "SELECT
+														DISTINCT s.cod_inst,
+														s.nom_inst
+													FROM
+														sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede
+													WHERE
+														s.cod_mun_sede = '". $municipio_defecto["CodMunicipio"] ."'
+													ORDER BY s.nom_inst";
 										if($tipo != ''){
 											$consulta = $consulta." and sc.$tipo > 0 ";
 										}
@@ -64,33 +71,33 @@
 										}
 									?>
 								</select>
-							</div><!-- /.col -->
+							</div>
 							<div class="col-sm-4 form-group">
 								<label for="sede">Sede</label>
 								<select class="form-control" name="sede" id="sede">
 									<option value="">Selecciones una</option>
 								</select>
-							</div><!-- /.col -->
+							</div>
 							<div class="col-sm-4 form-group">
 								<label for="mes">Mes</label>
 								<select class="form-control" name="mes" id="mes">
 									<option value="">Seleccione uno</option>
 								</select>
-							</div><!-- /.col -->
+							</div>
 							<div class="col-sm-4 form-group">
 								<label for="semana">Semana</label>
 								<div id="semana">
 
 								</div>
-							</div><!-- /.col -->
-						</div><!-- -/.row -->
+							</div>
+						</div>
 						<div class="row">
 							<div class="col-sm-4 form-group">
 								<button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1"><strong> <i class="fa fa-search"></i> Buscar</strong></button>
 							</div>
 						</div>
-	        		</div><!-- /.ibox-content -->
-				</div><!-- /.ibox float-e-margins -->
+	        		</div>
+				</div>
 
 				<div class="ibox float-e-margins priorizacionAction">
 					<div class="ibox-content contentBackground">
@@ -113,6 +120,20 @@
 											<td> <input type="text" class="form-control" name="APSactual2" id="APSactual2" value="" readonly style="text-align:center;"> </td>
 											<td> <input type="text" class="form-control" name="APSactual3" id="APSactual3" value="" readonly style="text-align:center;"> </td>
 										</tr>
+										<tr class="CAJMRIactual">
+											<td> <input type="text" class="form-control" name="CAJMRInm" id="CAJMRInm" value="CAJMRI" readonly> </td>
+											<td> <input type="text" class="form-control" name="CAJMRIactualTotal" id="CAJMRIactualTotal" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="CAJMRIactual1" id="CAJMRIactual1" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="CAJMRIactual2" id="CAJMRIactual2" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="CAJMRIactual3" id="CAJMRIactual3" value="" readonly style="text-align:center;"> </td>
+										</tr>
+										<tr class="CAJTRIactual">
+											<td> <input type="text" class="form-control" name="CAJTRInm" id="CAJTRInm" value="CAJTRI" readonly> </td>
+											<td> <input type="text" class="form-control" name="CAJTRIactualTotal" id="CAJTRIactualTotal" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="CAJTRIactual1" id="CAJTRIactual1" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="CAJTRIactual2" id="CAJTRIactual2" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="CAJTRIactual3" id="CAJTRIactual3" value="" readonly style="text-align:center;"> </td>
+										</tr>
 										<tr class="CAJMPSactual">
 											<td> <input type="text" class="form-control" name="CAJMPSnm" id="CAJMPSnm" value="CAJMPS" readonly> </td>
 											<td> <input type="text" class="form-control" name="CAJMPSactualTotal" id="CAJMPSactualTotal" value="" readonly style="text-align:center;"> </td>
@@ -120,12 +141,12 @@
 											<td> <input type="text" class="form-control" name="CAJMPSactual2" id="CAJMPSactual2" value="" readonly style="text-align:center;"> </td>
 											<td> <input type="text" class="form-control" name="CAJMPSactual3" id="CAJMPSactual3" value="" readonly style="text-align:center;"> </td>
 										</tr>
-										<tr class="CAJMRIactual">
-											<td> <input type="text" class="form-control" name="CAJMRInm" id="CAJMRInm" value="CAJMRI" readonly> </td>
-											<td> <input type="text" class="form-control" name="CAJMRIactualTotal" id="CAJMRIactualTotal" value="" readonly style="text-align:center;"> </td>
-											<td> <input type="text" class="form-control" name="CAJMRIactual1" id="CAJMRIactual1" value="" readonly style="text-align:center;"> </td>
-											<td> <input type="text" class="form-control" name="CAJMRIactual2" id="CAJMRIactual2" value="" readonly style="text-align:center;"> </td>
-											<td> <input type="text" class="form-control" name="CAJMRIactual3" id="CAJMRIactual3" value="" readonly style="text-align:center;"> </td>
+										<tr class="CAJTPSactual">
+											<td> <input type="text" class="form-control" name="CAJTPSnm" id="CAJTPSnm" value="CAJTPS" readonly> </td>
+											<td> <input type="text" class="form-control" name="CAJTPSactualTotal" id="CAJTPSactualTotal" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="CAJTPSactual1" id="CAJTPSactual1" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="CAJTPSactual2" id="CAJTPSactual2" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="CAJTPSactual3" id="CAJTPSactual3" value="" readonly style="text-align:center;"> </td>
 										</tr>
 									</tbody>
 								</table>
@@ -154,6 +175,20 @@
 											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="APS2" id="APS2" value="0"  style="text-align:center;"> </td>
 											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="APS3" id="APS3" value="0"  style="text-align:center;"> </td>
 										</tr>
+										<tr class="CAJMRI">
+											<td> <input type="text" class="form-control" name="CAJMRInm" id="CAJMRInm" value="CAJMRI" readonly> </td>
+											<td> <input type="text" class="form-control" name="CAJMRITotal" id="CAJMRITotal" value="0" readonly style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJMRI1" id="CAJMRI1" value="0"  style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJMRI2" id="CAJMRI2" value="0"  style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJMRI3" id="CAJMRI3" value="0"  style="text-align:center;"> </td>
+										</tr>
+										<tr class="CAJTRI">
+											<td> <input type="text" class="form-control" name="CAJTRInm" id="CAJTRInm" value="CAJTRI" readonly> </td>
+											<td> <input type="text" class="form-control" name="CAJTRITotal" id="CAJTRITotal" value="0" readonly style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJTRI1" id="CAJTRI1" value="0"  style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJTRI2" id="CAJTRI2" value="0"  style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJTRI3" id="CAJTRI3" value="0"  style="text-align:center;"> </td>
+										</tr>
 										<tr class="CAJMPS">
 											<td> <input type="text" class="form-control" name="CAJMPSnm" id="CAJMPSnm" value="CAJMPS" readonly> </td>
 											<td> <input type="text" class="form-control" name="CAJMPSTotal" id="CAJMPSTotal" value="0" readonly style="text-align:center;"> </td>
@@ -161,12 +196,12 @@
 											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJMPS2" id="CAJMPS2" value="0"  style="text-align:center;"> </td>
 											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJMPS3" id="CAJMPS3" value="0"  style="text-align:center;"> </td>
 										</tr>
-										<tr class="CAJMRI">
-											<td> <input type="text" class="form-control" name="CAJMRInm" id="CAJMRInm" value="CAJMRI" readonly> </td>
-											<td> <input type="text" class="form-control" name="CAJMRITotal" id="CAJMRITotal" value="0" readonly style="text-align:center;"> </td>
-											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJMRI1" id="CAJMRI1" value="0"  style="text-align:center;"> </td>
-											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJMRI2" id="CAJMRI2" value="0"  style="text-align:center;"> </td>
-											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJMRI3" id="CAJMRI3" value="0"  style="text-align:center;"> </td>
+										<tr class="CAJTPS">
+											<td> <input type="text" class="form-control" name="CAJTPSnm" id="CAJTPSnm" value="CAJTPS" readonly> </td>
+											<td> <input type="text" class="form-control" name="CAJTPSTotal" id="CAJTPSTotal" value="0" readonly style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJTPS1" id="CAJTPS1" value="0"  style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJTPS2" id="CAJTPS2" value="0"  style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJTPS3" id="CAJTPS3" value="0"  style="text-align:center;"> </td>
 										</tr>
 										<tr class="total">
 											<td> <input type="text" class="form-control" name="totalNm" id="totalNm" value="TOTAL" readonly> </td>
@@ -263,7 +298,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede_archivos.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/js/novedades_priorizacion_crear.js"></script>
-
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <!-- Page-Level Scripts -->
 
 <?php mysqli_close($Link); ?>
