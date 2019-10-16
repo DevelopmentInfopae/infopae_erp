@@ -464,7 +464,7 @@
 
   //CREACION DEL PDF
   // Creación del objeto de la clase heredada
-  $pdf= new PDF('L','mm',array(279.4, 215.9));
+  $pdf= new PDF('L','mm',array(279.4, 216));
   $pdf->SetMargins(8, 6.31, 8);
   $pdf->SetAutoPageBreak(TRUE, 5);
   $pdf->AliasNbPages();
@@ -634,7 +634,7 @@
   }
 
   $current_y = $pdf->GetY();
-  if($current_y > 167)
+  if($current_y > 162)
   {
     $pdf->AddPage();
     include 'despacho_consolidado_footer.php';
