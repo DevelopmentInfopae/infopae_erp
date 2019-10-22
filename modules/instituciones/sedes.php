@@ -523,7 +523,7 @@
                               '<i class="fa fa-upload"></i> '+
                               '<span class="fileinput-new">Importar sedes</span>'+
                               '<span class="fileinput-exists">Cambiar</span>'+
-                              '<input type="file" name="archivoSede" id="archivoSede" onchange="if(!this.value.length) return false; cargarArchivo();" accept=".csv, .xlsx">'+
+                              '<input type="file" name="archivoSede" id="archivoSede" onchange="if(!this.value.length) return false; cargarArchivo();" accept=".csv">'+
                             '</span> '+
                             '<span class="fileinput-filename center-block"></span>'+
                             '<span href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</span>'+
@@ -531,11 +531,24 @@
                         '</li>'+
                         '<li><a href="#" id="importarPriorizacion"><i class="fa fa-upload"></i> Importar priorización</a></li>'+
                         '<li><a href="#" id="importarFocalizacion"><i class="fa fa-upload"></i> Importar focalización</a></li>'+
+                        '<li>'+
+                          '<a class="fileinput fileinput-new" data-provides="fileinput">'+
+                            '<span class="btn-file">'+
+                              '<i class="fa fa-upload"></i> '+
+                              '<span class="fileinput-new">Importar manipuladoras</span>'+
+                              '<span class="fileinput-exists">Cambiar</span>'+
+                              '<input type="file" name="archivoManipuladoras" id="archivoManipuladoras" onchange="if(!this.value.length) return false; subir_archivo_manipuladoras();" accept=".csv">'+
+                            '</span> '+
+                            '<span class="fileinput-filename center-block"></span>'+
+                            '<span href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</span>'+
+                          '</a>'+
+                        '</li>'+
                         '<li class="divider"></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla sedes.CSV</a></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.xlsx" dowload> <i class="fa fa-download"></i> Descarga plantilla sedes.XLSX </a></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/priorizacion/Plantilla_Priorizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla priorización .CSV</a></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/focalizacion/Plantilla_Focalizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla focalización .CSV</a></li>'+
+                        '<li><a id="descargarPlantillaManipuladoras"> <i class="fa fa-download"></i> Descarga plantilla manipuladoras.CSV</a></li>'+
                         '<ul>'+
                       '</ul>'+
                     '</div>';

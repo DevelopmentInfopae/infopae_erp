@@ -193,7 +193,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','B',$this->fontSize);
 
 
-		    $this->Cell(36,15,utf8_decode("FIRMA MANIPULADORA"),'TBR',0,'C');
+		    $this->Cell(36,15,utf8_decode("FIRMA QUIÉN RECIBE"),'TBR',0,'C');
 
 
 		    $this->Ln();

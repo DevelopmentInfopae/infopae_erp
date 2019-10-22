@@ -177,10 +177,14 @@ foreach ($codesedes as $sedecod => $isset)
       //TRATAMIENTO DE LOS DIAS
       // Buscar el mes de la semana a la que pertenecen los despachos
       $auxDias = $row['Dias'];
+      $auxDias2 = explode(",", $auxDias);
+
+
       $diasMostrar[] = $auxDias;
 
       $auxMenus = $row['Menus'];
       $menusMostrar[] = $auxMenus;
+      $arreglo_meses = [];
 
       if(!in_array($row['Semana'], $semanasMostrar, true))
       {
@@ -190,6 +194,17 @@ foreach ($codesedes as $sedecod => $isset)
         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
         if($resultado->num_rows >= 1)
         {
+          while($datos_semanas = $resultado->fetch_assoc()) {
+            foreach ($auxDias2 as $dia) {
+              if ($dia == $datos_semanas["DIA"]) {
+                $mes_actual = mesEnLetras($datos_semanas['MES']);
+                if (! in_array($mes_actual, $arreglo_meses)) { $arreglo_meses[] = $mes_actual;}
+              }
+            }
+          }
+
+          $meses = implode($arreglo_meses, " / ");
+
           $row = $resultado->fetch_assoc();
           $mes = $row['MES'];
           $ciclo = $row['CICLO'];
@@ -208,6 +223,7 @@ foreach ($codesedes as $sedecod => $isset)
   }// Termina el For Each de los despachos recibidos
 
 
+  // Algoritmo para recorrer los dias de la semana.
   $auxDias = '';
   for ($i=0; $i < count($diasMostrar) ; $i++)
   {
@@ -217,13 +233,13 @@ foreach ($codesedes as $sedecod => $isset)
 
   $auxDias = explode(',', $auxDias);
   $auxDias = array_unique ($auxDias);
-  sort($auxDias);
+  // sort($auxDias);
   $cantDias = count($auxDias);
   $auxDias = implode(", ",$auxDias);
   sort($semanasMostrar);
   sort($ciclos);
 
-  $auxDias = "X ".$cantDias." DíAS ".$auxDias." ".$mes;
+  $auxDias = "X ".$cantDias." DíAS ".$auxDias." ".$meses;
   $auxDias = strtoupper($auxDias);
   $auxSemana = '';
 
@@ -590,7 +606,7 @@ foreach ($codesedes as $sedecod => $isset)
   $pdf->Ln(4);
 
   $current_y = $pdf->GetY();
-  if($current_y > 181)
+  if($current_y > 171)
   {
     $pdf->AddPage();
 

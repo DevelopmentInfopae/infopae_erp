@@ -11,12 +11,16 @@
 	$codSede = (isset($_POST['codSede'])) ? mysqli_real_escape_string($Link, $_POST['codSede']) : '';
 	$nomInst = (isset($_POST['nomInst'])) ? mysqli_real_escape_string($Link, $_POST['nomInst']) : '';
 
-	$consulta = "SELECT s.*, u.nombre as coordinador, jor.nombre AS nombreJornada, var.descripcion AS nombreVariacion
-							FROM sedes$periodoActual s
-							LEFT JOIN usuarios u on s.id_coordinador = u.id
-							LEFT JOIN jornada jor ON jor.id = s.jornada
-							LEFT JOIN variacion_menu var ON var.id = s.cod_variacion_menu
-							WHERE s.cod_sede = $codSede ";
+	$consulta = "SELECT
+					s.*,
+					u.nombre as coordinador,
+					jor.nombre AS nombreJornada,
+					var.descripcion AS nombreVariacion
+				FROM sedes$periodoActual s
+					LEFT JOIN usuarios u on s.id_coordinador = u.id
+					LEFT JOIN jornada jor ON jor.id = s.jornada
+					LEFT JOIN variacion_menu var ON var.id = s.cod_variacion_menu
+				WHERE s.cod_sede = $codSede ";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
 		$row = $resultado->fetch_assoc();
@@ -74,21 +78,21 @@
           </button>
           <ul class="dropdown-menu pull-right keep-open-on-click" aria-labelledby="dropdownMenu1">
         	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+	            <li>
+	              <a href="#" data-codigosede="<?php echo $codSede; ?>" name="editarSede" id="editarSede"><i class="fa fa-pencil"></i> Editar </a>
+	            </li>
+	            <li>
+	              <a href="#" class="verDispositivosSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-eye fa-lg"></i> Ver Dispositivos</a>
+	            </li>
+	            <li>
+	              <a href="#" class="verInfraestructuraSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-bank fa-lg"></i> Ver Infraestructura</a>
+	            </li>
+	            <li>
+	              <a href="#" class="verTitularesSede" data-codigosede="<?php echo$codSede; ?>"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>
+	            </li>
+          	<?php } ?>
             <li>
-              <a href="#" data-codigosede="<?php echo $codSede; ?>" name="editarSede" id="editarSede"><i class="fa fa-pencil"></i> Editar </a>
-            </li>
-            <li>
-              <a href="#" class="verDispositivosSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-eye fa-lg"></i> Ver Dispositivos</a>
-            </li>
-            <li>
-              <a href="#" class="verInfraestructuraSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-bank fa-lg"></i> Ver Infraestructura</a>
-            </li>
-            <li>
-              <a href="#" class="verTitularesSede" data-codigosede="<?php echo$codSede; ?>"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>
-            </li>
-          <?php } ?>
-            <li>
-	  					<a href="sede_archivos.php?sede=<?php echo $codSede;  ?>"><i class="fa fa-cloud"></i> Ver Archivos </a>
+				<a href="sede_archivos.php?sede=<?php echo $codSede;  ?>"><i class="fa fa-cloud"></i> Ver Archivos </a>
             </li>
           <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
             <li class="divider"></li>
@@ -112,104 +116,88 @@
       <div class="ibox">
       	<div class="ibox-content">
       		<div class="row">
-	  				<div class="col-sm-2">
-							<div class="fachadaSede">
-								<?php if($fotoFachada == ''){ ?>
-									<img src="<?php echo $baseUrl ?>/img/no_image.jpg" alt="Foto de sede">
-								<?php }else{ ?>
-									<img src="<?php echo $fotoFachada; ?>" alt="Foto de sede">
-								<?php } ?>
-							</div>
-	  				</div>
-	  				<div class="col-sm-4">
-	  					<dl class="dl-horizontal">
-								  <dt>
-								  	<?php if($coordinador != ''){ ?>
-			    						<strong>Coordinador: </strong><br>
-			    						<?php //echo $coordinador; ?><br>
-			    					<?php } ?>
-			    					<?php if($direccion != ''){ ?>
-				    					<strong>Dirección: </strong><br>
-				    					<!-- <?php echo $direccion; ?><br> -->
-			    					<?php } ?>
-			    					<?php if($telefonos != ''){ ?>
-				    					<strong>Telefonos: </strong><br>
-				    					<!-- <?php echo $telefonos; ?><br> -->
-			    					<?php } ?>
-			    					<?php if($email != ''){ ?>
-											<strong>Correo electronico: </strong><br>
-				    					<!-- <?php echo $email; ?><br> -->
-			    					<?php } ?>
-			    					<?php if($nombreJornada != ''){ ?>
-											<strong>Jornada: </strong><br>
-				    					<!-- <?php echo $nombreJornada; ?><br> -->
-			    					<?php } ?>
-			    					<?php if($tipoValidacion != ''){ ?>
-											<strong>Tipo validación: </strong><br>
-				    					<!-- <?php echo $tipoValidacion; ?><br> -->
-			    					<?php } ?>
-			    					<?php if($sector != ''){ ?>
-											<strong>Sector: </strong><br>
-				    					<!-- <?php //echo ($sector == "1") ? "Rural" : "Urbano"; ?><br> -->
-			    					<?php } ?>
-			    					<?php if($tipoVariacion != ''){ ?>
-											<strong>Variación menú: </strong><br>
-				    					<!-- <?php echo $tipoVariacion; ?><br> -->
-			    					<?php } ?>
-								  </dt>
-								  <dd>
-								  	<?php if($coordinador != ''){ ?>
-			    						<!-- <strong>Coordinador: </strong><br> -->
-			    						<?php echo $coordinador; ?><br>
-			    					<?php } ?>
-			    					<?php if($direccion != ''){ ?>
-				    					<!-- <strong>Dirección: </strong><br> -->
-				    					<?php echo $direccion; ?><br>
-			    					<?php } ?>
-			    					<?php if($telefonos != ''){ ?>
-				    					<!-- <strong>Telefonos: </strong><br> -->
-				    					<?php echo $telefonos; ?><br>
-			    					<?php } ?>
-			    					<?php if($email != ''){ ?>
-											<!-- <strong>Correo electronico: </strong><br> -->
-				    					<?php echo $email; ?><br>
-			    					<?php } ?>
-			    					<?php if($nombreJornada != ''){ ?>
-											<!-- <strong>Jornada: </strong><br> -->
-				    					<?php echo $nombreJornada; ?><br>
-			    					<?php } ?>
-			    					<?php if($tipoValidacion != ''){ ?>
-											<!-- <strong>Tipo validación: </strong><br> -->
-				    					<?php echo $tipoValidacion; ?><br>
-			    					<?php } ?>
-			    					<?php if($sector != ''){ ?>
-											<!-- <strong>Sector: </strong><br> -->
-				    					<?php echo ($sector == "1") ? "Rural" : "Urbano"; ?><br>
-			    					<?php } ?>
-			    					<?php if($tipoVariacion != ''){ ?>
-											<!-- <strong>Variación menú: </strong><br> -->
-				    					<?php echo $tipoVariacion; ?><br>
-			    					<?php } ?>
-	    						</dd>
-								</dl>
-	  				</div>
-	  				<div class="col-sm-6">
-  						<label>Manipuladoras</label></br>
-  						<label>
-							<?php
-								$cantidad_manipuladoras = $manipuladoras;
-								while($manipuladoras > 0)
-								{
-							?>
-								<i class="fa fa-child fa-2x text-muted"></i>
-							<?php
-								$manipuladoras--;
-								}
-							?>
-  						</label>
-  						<label class="text-muted" style="font-size: 26px;">= <?php echo $cantidad_manipuladoras; ?></label>
-	  				</div>
-	  			</div>
+  				<div class="col-sm-2">
+					<div class="fachadaSede">
+						<?php if($fotoFachada == '') { ?>
+							<img src="<?php echo $baseUrl ?>/img/no_image.jpg" alt="Foto de sede">
+						<?php } else { ?>
+							<img src="<?php echo $fotoFachada; ?>" alt="Foto de sede">
+						<?php } ?>
+					</div>
+  				</div>
+  				<div class="col-sm-4">
+  					<dl class="dl-horizontal">
+	                    <dt>
+						  	<?php if($coordinador != ''){ ?>
+	    						<strong>Coordinador: </strong><br>
+	    					<?php } ?>
+	    					<?php if($direccion != ''){ ?>
+		    					<strong>Dirección: </strong><br>
+	    					<?php } ?>
+	    					<?php if($telefonos != ''){ ?>
+		    					<strong>Telefonos: </strong><br>
+	    					<?php } ?>
+	    					<?php if($email != ''){ ?>
+								<strong>Correo electronico: </strong><br>
+	    					<?php } ?>
+	    					<?php if($nombreJornada != ''){ ?>
+								<strong>Jornada: </strong><br>
+	    					<?php } ?>
+	    					<?php if($tipoValidacion != ''){ ?>
+								<strong>Tipo validación: </strong><br>
+	    					<?php } ?>
+	    					<?php if($sector != ''){ ?>
+								<strong>Sector: </strong><br>
+	    					<?php } ?>
+	    					<?php if($tipoVariacion != ''){ ?>
+								<strong>Variación menú: </strong><br>
+	    					<?php } ?>
+						</dt>
+						<dd>
+						  	<?php if($coordinador != ''){ ?>
+	    						<?php echo $coordinador; ?><br>
+	    					<?php } ?>
+	    					<?php if($direccion != ''){ ?>
+		    					<?php echo $direccion; ?><br>
+	    					<?php } ?>
+	    					<?php if($telefonos != ''){ ?>
+		    					<?php echo $telefonos; ?><br>
+	    					<?php } ?>
+	    					<?php if($email != ''){ ?>
+		    					<?php echo $email; ?><br>
+	    					<?php } ?>
+	    					<?php if($nombreJornada != ''){ ?>
+		    					<?php echo $nombreJornada; ?><br>
+	    					<?php } ?>
+	    					<?php if($tipoValidacion != ''){ ?>
+		    					<?php echo $tipoValidacion; ?><br>
+	    					<?php } ?>
+	    					<?php if($sector != ''){ ?>
+		    					<?php echo ($sector == "1") ? "Rural" : "Urbano"; ?><br>
+	    					<?php } ?>
+	    					<?php if($tipoVariacion != ''){ ?>
+		    					<?php echo $tipoVariacion; ?><br>
+	    					<?php } ?>
+						</dd>
+					</dl>
+  				</div>
+  				<div class="col-sm-6">
+					<label>Manipuladoras</label></br>
+					<label>
+						<?php
+							$cantidad_manipuladoras = $manipuladoras;
+							while($manipuladoras > 0)
+							{
+						?>
+						<i class="fa fa-child fa-2x text-muted"></i>
+						<?php
+							$manipuladoras--;
+							}
+						?>
+					</label>
+					<label class="text-muted" style="font-size: 26px;">= <?php echo $cantidad_manipuladoras; ?></label>
+  				</div>
+  			</div>
       	</div>
       </div>
     </div>
@@ -222,7 +210,6 @@
         <div class="col-sm-12">
             <div class="ibox">
                 <div class="ibox-content">
-					<h2>Priorización</h2>
 					<?php
 					$priorizacion = array();
 					$totalesPriorizacion = array();
@@ -230,91 +217,112 @@
 					$totalesPriorizacion['CAJMRI'] = 0;
 					$totalesPriorizacion['CAJTRI'] = 0;
 					$totalesPriorizacion['CAJMPS'] = 0;
+					$totalesPriorizacion['CAJTPS'] = 0;
 
 					for ($i=1; $i <= 3 ; $i++) {
 						$totalesPriorizacion['Etario'.$i.'_APS'] = 0;
 						$totalesPriorizacion['Etario'.$i.'_CAJMRI'] = 0;
 						$totalesPriorizacion['Etario'.$i.'_CAJTRI'] = 0;
 						$totalesPriorizacion['Etario'.$i.'_CAJMPS'] = 0;
+						$totalesPriorizacion['Etario'.$i.'_CAJTPS'] = 0;
 					}
-					foreach ($semanas as $semana){
-						$consulta = " select * from sedes_cobertura where semana = '$semana' and cod_sede = $codSede ";
+
+					foreach ($semanas as $semana) {
+						$consulta = "SELECT * FROM sedes_cobertura WHERE semana = '$semana' AND cod_sede = '$codSede'";
+
 						$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-						if($resultado->num_rows >= 1){
-							while($row = $resultado->fetch_assoc()){
+						if($resultado->num_rows >= 1) {
+							while($row = $resultado->fetch_assoc()) {
+
 								if(isset($priorizacion['APS'][$semana]) && floatval($priorizacion['APS'][$semana]) > 0){
 									$priorizacion['APS'][$semana] = $priorizacion['APS'][$semana] + $row['APS'];
-								}else{
+								} else {
 									$priorizacion['APS'][$semana] = $row['APS'];
 								}
-								if(isset($priorizacion['CAJMRI'][$semana]) && floatval($priorizacion['CAJMRI'][$semana]) > 0){
+
+								if(isset($priorizacion['CAJMRI'][$semana]) && floatval($priorizacion['CAJMRI'][$semana]) > 0) {
 									$priorizacion['CAJMRI'][$semana] = $priorizacion['CAJMRI'][$semana] + $row['CAJMRI'];
-								}else{
+								} else {
 									$priorizacion['CAJMRI'][$semana] = $row['CAJMRI'];
 								}
-								if(isset($priorizacion['CAJTRI'][$semana]) && floatval($priorizacion['CAJTRI'][$semana]) > 0){
+
+								if(isset($priorizacion['CAJTRI'][$semana]) && floatval($priorizacion['CAJTRI'][$semana]) > 0) {
 									$priorizacion['CAJTRI'][$semana] = $priorizacion['CAJTRI'][$semana] + $row['CAJTRI'];
-								}else{
-									//$priorizacion['CAJTRI'][$semana] = $row['CAJTRI'];
+								} else {
+									$priorizacion['CAJTRI'][$semana] = $row["CAJTRI"];
 								}
-								if(isset($priorizacion['CAJMPS'][$semana]) && floatval($priorizacion['CAJMPS'][$semana]) > 0){
+
+								if(isset($priorizacion['CAJMPS'][$semana]) && floatval($priorizacion['CAJMPS'][$semana]) > 0) {
 									$priorizacion['CAJMPS'][$semana] = $priorizacion['CAJMPS'][$semana] + $row['CAJMPS'];
 								}else{
 									$priorizacion['CAJMPS'][$semana] = $row['CAJMPS'];
 								}
 
+								if (isset($priorizacion["CAJTPS"][$semana]) && floatval($priorizacion["CAJTPS"][$semana]) > 0) {
+									$priorizacion["CAJTPS"][$semana] = $priorizacion["CAJTPS"][$semana] + $row["CAJTPS"];
+								} else {
+									$priorizacion["CAJTPS"][$semana] = $row["CAJTPS"];
+								}
+
 								for ($i=1; $i <= 3 ; $i++) {
-									if(isset($priorizacion['Etario'.$i.'_APS'][$semana]) && floatval($priorizacion['Etario'.$i.'_APS'][$semana]) > 0){
+									if(isset($priorizacion['Etario'.$i.'_APS'][$semana]) && floatval($priorizacion['Etario'.$i.'_APS'][$semana]) > 0) {
 										$priorizacion['Etario'.$i.'_APS'][$semana] = $priorizacion['Etario'.$i.'_APS'][$semana] + $row['Etario'.$i.'_APS'];
-									}else{
+									} else {
 										$priorizacion['Etario'.$i.'_APS'][$semana] = $row['Etario'.$i.'_APS'];
 									}
 
-									if(isset($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) && floatval($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) > 0){
+									if(isset($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) && floatval($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) > 0) {
 										$priorizacion['Etario'.$i.'_CAJMRI'][$semana] = $priorizacion['Etario'.$i.'_CAJMRI'][$semana] + $row['Etario'.$i.'_CAJMRI'];
-									}else{
+									} else {
 										$priorizacion['Etario'.$i.'_CAJMRI'][$semana] = $row['Etario'.$i.'_CAJMRI'];
 									}
 
 									if(isset($priorizacion['Etario'.$i.'_CAJTRI'][$semana]) && floatval($priorizacion['Etario'.$i.'_CAJTRI'][$semana]) > 0){
 										$priorizacion['Etario'.$i.'_CAJTRI'][$semana] = $priorizacion['Etario'.$i.'_CAJTRI'][$semana] + $row['Etario'.$i.'_CAJTRI'];
-									}else{
-										//$priorizacion['Etario'.$i.'_CAJTRI'][$semana] = $row['Etario'.$i.'_CAJTRI'];
+									} else {
+										$priorizacion['Etario'.$i.'_CAJTRI'][$semana] = $row['Etario'.$i.'_CAJTRI'];
 									}
 
-									if(isset($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) && floatval($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) > 0){
+									if(isset($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) && floatval($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) > 0) {
 										$priorizacion['Etario'.$i.'_CAJMPS'][$semana] = $priorizacion['Etario'.$i.'_CAJMPS'][$semana] + $row['Etario'.$i.'_CAJMPS'];
-									}else{
+									} else {
 										$priorizacion['Etario'.$i.'_CAJMPS'][$semana] = $row['Etario'.$i.'_CAJMPS'];
+									}
+
+									if (isset($priorizacion["Etario".$i."_CAJTPS"][$semana]) && floatval($priorizacion["Etario".$i."_CAJTPS"][$semana]) > 0) {
+										$priorizacion["Etario".$i."_CAJTPS"][$semana] = $priorizacion["Etario".$i."_CAJTPS"][$semana] + $row["Etario".$i."_CAJTPS"];
+									} else {
+										$priorizacion["Etario".$i."_CAJTPS"][$semana] = $row["Etario".$i."_CAJTPS"];
 									}
 								}
 
 								$totalesPriorizacion['APS'] = $totalesPriorizacion['APS'] + $row['APS'];
 								$totalesPriorizacion['CAJMRI'] = $totalesPriorizacion['CAJMRI'] + $row['CAJMRI'];
-								//$totalesPriorizacion['CAJTRI'] = $totalesPriorizacion['CAJTRI'] + $row['CAJTRI'];
+								$totalesPriorizacion['CAJTRI'] = $totalesPriorizacion['CAJTRI'] + $row['CAJTRI'];
 								$totalesPriorizacion['CAJMPS'] = $totalesPriorizacion['CAJMPS'] + $row['CAJMPS'];
+								$totalesPriorizacion['CAJTPS'] = $totalesPriorizacion['CAJTPS'] + $row['CAJTPS'];
 
 								for ($i=1; $i <= 3 ; $i++) {
 									$totalesPriorizacion['Etario'.$i.'_APS'] = $totalesPriorizacion['Etario'.$i.'_APS'] + $row['Etario'.$i.'_APS'];
 									$totalesPriorizacion['Etario'.$i.'_CAJMRI'] = $totalesPriorizacion['Etario'.$i.'_CAJMRI'] + $row['Etario'.$i.'_CAJMRI'];
-									//$totalesPriorizacion['Etario'.$i.'_CAJTRI'] = $totalesPriorizacion['Etario'.$i.'_CAJTRI'] + $row['Etario'.$i.'_CAJTRI'];
+									$totalesPriorizacion['Etario'.$i.'_CAJTRI'] = $totalesPriorizacion['Etario'.$i.'_CAJTRI'] + $row['Etario'.$i.'_CAJTRI'];
 									$totalesPriorizacion['Etario'.$i.'_CAJMPS'] = $totalesPriorizacion['Etario'.$i.'_CAJMPS'] + $row['Etario'.$i.'_CAJMPS'];
+									$totalesPriorizacion['Etario'.$i.'_CAJTPS'] = $totalesPriorizacion['Etario'.$i.'_CAJTPS'] + $row['Etario'.$i.'_CAJTPS'];
 								}
 							}
 						}
 					}
 					?>
+					<h2>Priorización</h2>
 					<div class="table-responsive">
 						<table class="table table-striped table-hover dataTable-priorizacion">
 							<thead>
 								<tr>
 									<th>Complemento</th>
-									<?php
-										foreach ($semanas as $semana){ ?>
-											<th style="text-align:center;">Sem <?php echo $semana; ?></th>
-										<?php }
-									?>
-									<th style="text-align:center;">Total</th>
+									<?php foreach ($semanas as $semana){ ?>
+										<th class="text-center">Sem <?= $semana; ?></th>
+									<?php } ?>
+									<th class="text-center">Total</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -322,44 +330,117 @@
 									<tr>
 										<td>Etario <?= $i; ?> APS</td>
 										<?php foreach ($semanas as $semana){ ?>
-											<td style="text-align:center;">
-												<?php echo (isset($priorizacion['Etario'.$i.'_APS'][$semana])) ? $priorizacion['Etario'.$i.'_APS'][$semana] : ""; ?>
+											<td class="text-center">
+												<?= (isset($priorizacion['Etario'.$i.'_APS'][$semana])) ? $priorizacion['Etario'.$i.'_APS'][$semana] : ""; ?>
 											</td>
 										<?php } ?>
-										<td style="text-align:center;"><?= $totalesPriorizacion['Etario'.$i.'_APS']; ?></td>
+										<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_APS']; ?></td>
 									</tr>
 								<?php } ?>
 
-								<tr> <th>Total APS</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo isset($priorizacion['APS'][$semana]) ? $priorizacion['APS'][$semana] : ""; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['APS']; ?></th> </tr>
+								<tr>
+									<th>Total APS</th>
+									<?php foreach ($semanas as $semana){ ?>
+										<th class="text-center"><?= isset($priorizacion['APS'][$semana]) ? $priorizacion['APS'][$semana] : ""; ?></th>
+									<?php } ?>
+									<th class="text-center"><?= $totalesPriorizacion['APS']; ?></th>
+								</tr>
 
 								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-									<tr> <td>Etario <?php echo$i; ?> CAJMRI</td> <?php foreach ($semanas as $semana){ ?> <td style="text-align:center;"><?php echo isset($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) ? $priorizacion['Etario'.$i.'_CAJMRI'][$semana] : ""; ?></td> <?php } ?> <td style="text-align:center;"><?php echo $totalesPriorizacion['Etario'.$i.'_CAJMRI']; ?></td> </tr>
+								<tr>
+									<td>Etario <?= $i; ?> CAJMRI</td>
+									<?php foreach ($semanas as $semana){ ?>
+										<td class="text-center">
+											<?= isset($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) ? $priorizacion['Etario'.$i.'_CAJMRI'][$semana] : ""; ?>
+										</td>
+									<?php } ?>
+									<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_CAJMRI']; ?></td>
+								</tr>
 								<?php } ?>
 
-								<tr> <th>Total CAJMRI</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo isset($priorizacion['CAJMRI'][$semana]) ? $priorizacion['CAJMRI'][$semana] : ""; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['CAJMRI']; ?></th> </tr>
-
-								<!-- <?php for ($i=1; $i <= 3 ; $i++) {  ?>
-									<tr> <td>Etario <?php echo$i; ?> CAJTRI</td> <?php foreach ($semanas as $semana){ ?> <td style="text-align:center;"><?php echo $priorizacion['Etario'.$i.'_CAJTRI'][$semana]; ?></td> <?php } ?> <td style="text-align:center;"><?php echo $totalesPriorizacion['Etario'.$i.'_CAJTRI']; ?></td> </tr>
-								<?php } ?> -->
-
-								<!-- <tr> <th>Total CAJTRI</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo $priorizacion['CAJTRI'][$semana]; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['CAJTRI']; ?></th> </tr> -->
+								<tr>
+									<th>Total CAJMRI</th>
+									<?php foreach ($semanas as $semana){ ?>
+										<th class="text-center">
+											<?= isset($priorizacion['CAJMRI'][$semana]) ? $priorizacion['CAJMRI'][$semana] : ""; ?>
+										</th>
+									<?php } ?>
+									<th class="text-center"><?= $totalesPriorizacion['CAJMRI']; ?></th>
+								</tr>
 
 								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-									<tr> <td>Etario <?php echo$i; ?> CAJMPS</td> <?php foreach ($semanas as $semana){ ?> <td style="text-align:center;"><?php echo isset($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) ? $priorizacion['Etario'.$i.'_CAJMPS'][$semana] : ""; ?></td> <?php } ?> <td style="text-align:center;"><?php echo $totalesPriorizacion['Etario'.$i.'_CAJMPS']; ?></td> </tr>
+								<tr>
+									<td>Etario <?= $i; ?> CAJTRI</td>
+									<?php foreach ($semanas as $semana){ ?>
+										<td class="text-center">
+											<?= isset($priorizacion['Etario'.$i.'_CAJTRI'][$semana]) ? $priorizacion['Etario'.$i.'_CAJTRI'][$semana] : ""; ?>
+										</td>
+									<?php } ?>
+									<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_CAJTRI']; ?></td>
+								</tr>
 								<?php } ?>
 
-								<tr> <th>Total CAJMPS</th> <?php foreach ($semanas as $semana){ ?> <th style="text-align:center;"><?php echo isset($priorizacion['CAJMPS'][$semana]) ? $priorizacion['CAJMPS'][$semana] : ""; ?></th> <?php } ?> <th style="text-align:center;"><?php echo $totalesPriorizacion['CAJMPS']; ?></th> </tr>
+								<tr>
+									<th>Total CAJTRI</th>
+									<?php foreach ($semanas as $semana){ ?>
+										<th class="text-center">
+											<?= isset($priorizacion['CAJTRI'][$semana]) ? $priorizacion['CAJTRI'][$semana] : ""; ?>
+										</th>
+									<?php } ?>
+									<th class="text-center"><?= $totalesPriorizacion['CAJTRI']; ?></th>
+								</tr>
 
+								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
+									<tr>
+										<td>Etario <?= $i; ?> CAJMPS</td>
+										<?php foreach ($semanas as $semana){ ?>
+											<td class="text-center">
+												<?= isset($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) ? $priorizacion['Etario'.$i.'_CAJMPS'][$semana] : ""; ?>
+											</td>
+										<?php } ?>
+										<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_CAJMPS']; ?></td>
+									</tr>
+								<?php } ?>
+
+								<tr>
+									<th>Total CAJMPS</th>
+									<?php foreach ($semanas as $semana){ ?>
+										<th class="text-center">
+											<?= isset($priorizacion['CAJMPS'][$semana]) ? $priorizacion['CAJMPS'][$semana] : ""; ?>
+										</th>
+									<?php } ?>
+									<th class="text-center"><?= $totalesPriorizacion['CAJMPS']; ?></th>
+								</tr>
+
+								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
+									<tr>
+										<td>Etario <?= $i; ?> CAJTPS</td>
+										<?php foreach ($semanas as $semana){ ?>
+											<td class="text-center">
+												<?= isset($priorizacion['Etario'.$i.'_CAJTPS'][$semana]) ? $priorizacion['Etario'.$i.'_CAJTPS'][$semana] : ""; ?>
+											</td>
+										<?php } ?>
+										<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_CAJTPS']; ?></td>
+									</tr>
+								<?php } ?>
+
+								<tr>
+									<th>Total CAJTPS</th>
+									<?php foreach ($semanas as $semana){ ?>
+										<th class="text-center">
+											<?= isset($priorizacion['CAJTPS'][$semana]) ? $priorizacion['CAJTPS'][$semana] : ""; ?>
+										</th>
+									<?php } ?>
+									<th class="text-center"><?= $totalesPriorizacion['CAJTPS']; ?></th>
+								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
 									<th>Complemento</th>
-									<?php
-										foreach ($semanas as $semana){ ?>
-											<th style="text-align:center;">Sem <?php echo $semana; ?></th>
-										<?php }
-									?>
-									<th style="text-align:center;">Total</th>
+									<?php foreach ($semanas as $semana){ ?>
+										<th class="text-center">Sem <?= $semana; ?></th>
+									<?php } ?>
+									<th class="text-center">Total</th>
 								</tr>
 							</tfoot>
 						</table>
@@ -385,7 +466,9 @@
                 <th>Fecha</th>
                 <th>APS</th>
                 <th>CAJMRI</th>
+                <th>CAJTRI</th>
                 <th>CAJMPS</th>
+                <th>CAJTPS</th>
                 <th>Semana</th>
                 <th>Observaciones</th>
               </tr>
@@ -394,15 +477,17 @@
             </tbody>
             <tfoot>
               <tr>
-								<th>Municipio</th>
-								<th>Institución</th>
-								<th>Sede</th>
-								<th>Fecha</th>
-								<th>APS</th>
-								<th>CAJMRI</th>
-								<th>CAJMPS</th>
-								<th>Semana</th>
-								<th>Observaciones</th>
+				<th>Municipio</th>
+				<th>Institución</th>
+				<th>Sede</th>
+				<th>Fecha</th>
+				<th>APS</th>
+				<th>CAJMRI</th>
+				<th>CAJTRI</th>
+				<th>CAJMPS</th>
+				<th>CAJTPS</th>
+				<th>Semana</th>
+				<th>Observaciones</th>
               </tr>
             </tfoot>
           </table>
@@ -558,46 +643,46 @@
   </div>
 </div>
 
-	<!-- Ventana modal confirmar -->
-  <div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-	  <div class="modal-dialog modal-sm">
-	    <div class="modal-content">
-	      <div class="modal-header text-info" style="padding: 15px;">
-	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-	        <h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
-	      </div>
-	      <div class="modal-body">
-	          <p class="text-center"></p>
-	      </div>
-	      <div class="modal-footer">
-	        <input type="hidden" id="codigoACambiar">
-	        <input type="hidden" id="estadoACambiar">
-	        <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstado();">Cancelar</button>
-	        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="cambiarEstado();">Aceptar</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
+<!-- Ventana modal confirmar -->
+<div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header text-info" style="padding: 15px;">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
+      </div>
+      <div class="modal-body">
+          <p class="text-center"></p>
+      </div>
+      <div class="modal-footer">
+        <input type="hidden" id="codigoACambiar">
+        <input type="hidden" id="estadoACambiar">
+        <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstado();">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="cambiarEstado();">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-	<?php include '../../footer.php'; ?>
+<?php include '../../footer.php'; ?>
 
-  <!-- Mainly scripts -->
-  <script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
-  <script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
-  <script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-  <script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-  <script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
-  <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/dataTables.fixedColumns.min.js"></script>
-  <link href="<?php echo $baseUrl; ?>/modules/instituciones/css/fixedColumns.dataTables.min.css" rel="stylesheet"/>
+<!-- Mainly scripts -->
+<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/instituciones/js/dataTables.fixedColumns.min.js"></script>
+<link href="<?php echo $baseUrl; ?>/modules/instituciones/css/fixedColumns.dataTables.min.css" rel="stylesheet"/>
 
-  <!-- Custom and plugin javascript -->
-  <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
-  <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
-  <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
-  <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 
-  <!-- Page-Level Scripts -->
-  <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede.js"></script>
+<!-- Page-Level Scripts -->
+<script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede.js"></script>
   <script>
     $(document).ready(function(){
 			$('#loader').fadeIn();
@@ -614,29 +699,26 @@
 			});
 
 			// Configuración para la tabla de focalizaciones
-      $('.dataTable-focalizacion').DataTable({
-				order: [[2,'asc']],
-        // scrollY:        "600px",
-        // scrollX:        true,
-        // scrollCollapse: true,
-	      paging:         true,
-        pageLength: 10,
-        responsive: true,
-        dom: 'l<"inputFiltro"f>tip<"html5buttons"B>',
-        buttons: [
-          {extend: 'excel', title: 'ExampleFile'}
-        ],
-        oLanguage: {
-	        sLengthMenu: 'Mostrando _MENU_ registros',
-	        sZeroRecords: 'No se encontraron registros',
-	        sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
-	        sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-	        sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-	        sSearch:         'Buscar: '
-	      }
-      });
+      	$('.dataTable-focalizacion').DataTable({
+			order: [[2,'asc']],
+	    	paging:         true,
+        	pageLength: 10,
+        	responsive: true,
+        	dom: 'l<"inputFiltro"f>tip<"html5buttons"B>',
+        	buttons: [
+          		{extend: 'excel', title: 'ExampleFile'}
+        	],
+        	oLanguage: {
+		        sLengthMenu: 'Mostrando _MENU_ registros',
+		        sZeroRecords: 'No se encontraron registros',
+		        sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+		        sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+		        sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+		        sSearch:         'Buscar: '
+	      	}
+      	});
 
-      // Configuración para la tabla de novedades priorización.
+      	// Configuración para la tabla de novedades priorización.
     	datatables = $('.dataTablesNovedadesPriorizacion').DataTable({
 	      ajax: {
 	        method: 'POST',
@@ -652,7 +734,9 @@
 	        { data: 'fecha_hora'},
 	        { data: 'APS'},
 	        { data: 'CAJMRI'},
+	        { data: 'CAJTRI'},
 	        { data: 'CAJMPS'},
+	        { data: 'CAJTPS'},
 	        { data: 'Semana'},
 	        { data: 'observaciones'}
 	      ],
