@@ -11,6 +11,7 @@ $(document).ready(function(){
   $(document).on('click', '#subirArchivoFocalizacion', function(){ subirArchivoFocalizacion(); });
   $(document).on('click', '#boton_abri_ventana_exportar_priorizacion', function(){ abrir_ventana_exportar_priorizacion(); });
   $(document).on('click', '#exportar_priorizacion', function(){ exportar_priorizacion(); });
+  $(document).on('click', '#descargarPlantillaManipuladoras', descarga_plantilla_manipuladoras);
 	// Configuración del pligin toast
 	toastr.options = {
     "closeButton": true,
@@ -316,4 +317,42 @@ function exportar_priorizacion(){
 
     window.open('functions/fn_sedes_exportar_priorizacion.php?mes='+mes+'&semana='+semana, '_blank');
   }
+}
+
+function descarga_plantilla_manipuladoras() {
+  location.href = 'functions/fn_sedes_descargar_plantilla_manipuladoras.php';
+}
+
+function subir_archivo_manipuladoras() {
+  var formData = new FormData();
+  formData.append('archivoManipuladoras', $('#archivoManipuladoras')[0].files[0]);
+
+  $.ajax({
+    type: "POST",
+    url: "functions/fn_sedes_cargar_archivo_manipuladoras.php",
+    contentType: false,
+    processData: false,
+    data: formData,
+    dataType: 'json',
+    beforeSend: function(){ $('#loader').fadeIn(); },
+    success: function(data){ console.log(data);
+     if(data.estado == 1){
+      Command: toastr.success(
+        data.mensaje,
+        "Proceso realizado", { onHidden : function(){ $('#loader').fadeOut(); window.open($("#inputBaseUrl").val()+"/modules/instituciones/sedes.php", "_self"); } }
+        );
+    } else {
+      Command: toastr.error(
+        data.mensaje,
+        "Error en el proceso", { onHidden : function(){ $('#loader').fadeOut(); } }
+        );
+    }
+  },
+  error: function(data){ console.log(data.responseText);
+   Command: toastr.error(
+    data.mensaje,
+    "Error en el proceso", { onHidden : function(){ $('#loader').fadeOut(); } }
+    );
+ }
+});
 }

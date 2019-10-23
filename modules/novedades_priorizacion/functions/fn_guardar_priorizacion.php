@@ -61,28 +61,28 @@ if (isset($_FILES["foto"])) {
 				// $Link = new mysqli($Hostname, $Username, $Password, $Database);
 				// if ($Link->connect_errno) { echo "Fallo al contenctar a MySQL: (" . $Link->connect_errno . ") " . $Link->connect_error; }
 				// $Link->set_charset("utf8");
-				$consulta = "INSERT INTO novedades_priorizacion (
-											num_novedad,
-											id_usuario,
-											fecha_hora,
-											cod_sede,
-											APS,
-											CAJMRI,
-											CAJMPS,
-											Etario1_APS,
-											Etario1_CAJMRI,
-											Etario1_CAJMPS,
-											Etario2_APS,
-											Etario2_CAJMRI,
-											Etario2_CAJMPS,
-											Etario3_APS,
-											Etario3_CAJMRI,
-											Etario3_CAJMPS,
-											Semana,
-											observaciones,
-											arch_adjunto,
-											estado
-										) VALUES ( 1, ";
+			$consulta = "INSERT INTO novedades_priorizacion (
+							num_novedad,
+							id_usuario,
+							fecha_hora,
+							cod_sede,
+							APS,
+							CAJMRI,
+							CAJMPS,
+							Etario1_APS,
+							Etario1_CAJMRI,
+							Etario1_CAJMPS,
+							Etario2_APS,
+							Etario2_CAJMRI,
+							Etario2_CAJMPS,
+							Etario3_APS,
+							Etario3_CAJMRI,
+							Etario3_CAJMPS,
+							Semana,
+							observaciones,
+							arch_adjunto,
+							estado)
+						VALUES ( 1, ";
 
 			$aux = $_SESSION['id_usuario'];
 			$consulta .= " $aux, ";

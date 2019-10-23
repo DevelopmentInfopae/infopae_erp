@@ -3,16 +3,17 @@ require_once '../../../config.php';
 require_once '../../../autentication.php';
 require_once '../../../db/conexion.php';
 
+$registros = 0;
+
+$periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 $mes = (isset($_POST['mes']) && $_POST['mes'] != '') ? mysqli_real_escape_string($Link, $_POST["mes"]) : "";
 $sede = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
 $semanas = (isset($_POST['semanas']) && $_POST['semanas'] != '') ? $_POST["semanas"] : "";
-$periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
-$registros = 0;
 
 $semana = $semanas[0];
-$consulta = "SELECT * FROM priorizacion$semana where cod_sede = '$sede'";
-//echo $consulta;
+$consulta = "SELECT * FROM priorizacion$semana WHERE cod_sede = '$sede'";
+
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
@@ -27,14 +28,22 @@ if($resultado->num_rows >= 1){
 		$cajmri1 = $row['Etario1_CAJMRI'];
 		$cajmri2 = $row['Etario2_CAJMRI'];
 		$cajmri3 = $row['Etario3_CAJMRI'];
+		$cajtri = $row['CAJTRI'];
+		$cajtri1 = $row['Etario1_CAJTRI'];
+		$cajtri2 = $row['Etario2_CAJTRI'];
+		$cajtri3 = $row['Etario3_CAJTRI'];
 		$cajmps = $row['CAJMPS'];
 		$cajmps1 = $row['Etario1_CAJMPS'];
 		$cajmps2 = $row['Etario2_CAJMPS'];
 		$cajmps3 = $row['Etario3_CAJMPS'];
-	}// Termina el while
-}//Termina el if que valida que si existan resultados
+		$cajtps = $row['CAJTPS'];
+		$cajtps1 = $row['Etario1_CAJTPS'];
+		$cajtps2 = $row['Etario2_CAJTPS'];
+		$cajtps3 = $row['Etario3_CAJTPS'];
+	}
+}
 
-echo json_encode(array(
+$respuesta_ajax = [
 	"registros" => $registros,
 	"cantEstudiantes" => $cantEstudiantes,
 	"numEstFocalizados" => $numEstFocalizados,
@@ -46,8 +55,18 @@ echo json_encode(array(
 	"cajmri1" => $cajmri1,
 	"cajmri2" => $cajmri2,
 	"cajmri3" => $cajmri3,
+	"cajtri" => $cajtri,
+	"cajtri1" => $cajtri1,
+	"cajtri2" => $cajtri2,
+	"cajtri3" => $cajtri3,
 	"cajmps" => $cajmps,
 	"cajmps1" => $cajmps1,
 	"cajmps2" => $cajmps2,
-	"cajmps3" => $cajmps3
-));
+	"cajmps3" => $cajmps3,
+	"cajtps" => $cajtps,
+	"cajtps1" => $cajtps1,
+	"cajtps2" => $cajtps2,
+	"cajtps3" => $cajtps3
+];
+
+echo json_encode($respuesta_ajax);
