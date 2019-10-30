@@ -29,8 +29,8 @@ $estilo_titulo = [
     ]
 ];
 
-$archivo->setCellValue("A1", "Código institucion")->getStyle('A1')->applyFromArray($estilo_titulo);
-$archivo->setCellValue("B1", "Nombre institucion")->getStyle('B1')->applyFromArray($estilo_titulo);
+$archivo->setCellValue("A1", "Código institución")->getStyle('A1')->applyFromArray($estilo_titulo);
+$archivo->setCellValue("B1", "Nombre institución")->getStyle('B1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("C1", "Código Sede")->getStyle('C1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("D1", "Nombre Sede")->getStyle('D1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("E1", "Nombre Municipio")->getStyle('E1')->applyFromArray($estilo_titulo);
@@ -55,7 +55,7 @@ if (! empty($sedes)) {
 
 foreach(range("A","V") as $columna) { $archivo->getColumnDimension($columna)->setAutoSize(true); }
 
-header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
 header('Content-Disposition: attachment;filename=Manipuladoras.csv');
 
 $escritor = new Csv($excel);
