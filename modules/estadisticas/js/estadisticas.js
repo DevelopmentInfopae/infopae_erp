@@ -92,36 +92,35 @@ function CargarTablas(){
 			$.ajax({
 				type : "POST",
 				url : "functions/fn_estadisticas_tabla_totales_municipios.php",
-				data : {"diasSemanas" : data['diasSemanas']},
-				error : function(data){
-					console.log("Error :"+data);
+				dataType: 'JSON',
+				data : {
+					"diasSemanas" : data['diasSemanas']
 				},
-				success : function(data){
-					data = JSON.parse(data);
+				success : function(data) {
 					$('#tHeadSemanaMun').html(data['thead']);
 					$('#tBodySemanaMun').html(data['tbody']);
 					$('#tFootSemanaMun').html(data['tfoot']);
 					info = data['info'];
 					dataset1 = $('#tablaMunicipios').DataTable({
-				    order: [ 0, 'asc' ],
-				    pageLength: 10,
-				    responsive: true,
-				    dom : 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons" B>',
-				    buttons : [{extend:'excel', title:'Dispositivos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4]}}],
-				    oLanguage: {
-				      sLengthMenu: 'Mostrando _MENU_ registros por pÁgina',
-				      sZeroRecords: 'No se encontraron registros',
-				      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-				      sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-				      sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-				      sSearch:         'Buscar: ',
-				      oPaginate:{
-				        sFirst:    'Primero',
-				        sLast:     'Último',
-				        sNext:     'Siguiente',
-				        sPrevious: 'Anterior'
-				      }
-				    }
+					    order: [ 0, 'asc' ],
+					    pageLength: 10,
+					    responsive: true,
+					    dom : 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons" B>',
+					    buttons : [{extend:'excel', title:'Dispositivos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4]}}],
+					    oLanguage: {
+					      sLengthMenu: 'Mostrando _MENU_ registros por pÁgina',
+					      sZeroRecords: 'No se encontraron registros',
+					      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+					      sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+					      sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+					      sSearch:         'Buscar: ',
+					      oPaginate:{
+					        sFirst:    'Primero',
+					        sLast:     'Último',
+					        sNext:     'Siguiente',
+					        sPrevious: 'Anterior'
+					      }
+					    }
 				    });
 
 					markersJ = [];
@@ -158,7 +157,10 @@ function CargarTablas(){
 					});
 
 					setTimeout(function() {$('#loader').fadeOut();}, 2000);
-				}
+				},
+				error : function(data){
+					console.log(data.responseText);
+				},
 			});
 
 			$.ajax({
