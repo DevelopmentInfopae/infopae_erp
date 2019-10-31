@@ -35,16 +35,17 @@
                     <h2>Parámetros de Consulta</h2>
                     <form class="col-lg-12" action="despachos.php" name="formDespachos" id="formDespachos" method="post" target="_blank">
                         <div class="row">
-                            <div class="col-sm-3 form-group">
+                            <div class="col-sm-6 col-md-3 form-group">
                                 <label for="fechaInicial">Fecha Inicial</label>
                                 <div class="row compositeDate">
                                     <div class="col-sm-4 nopadding">
                                         <select name="annoi" id="annoi" class="form-control">
                                             <option value="<?php echo $_SESSION['periodoActualCompleto']; ?>"><?php echo $_SESSION['periodoActualCompleto']; ?></option>
                                         </select>
-                                    </div><!-- /.col-sm-4 -->
+                                    </div>
+
                                     <div class="col-sm-5 nopadding">
-                                    <?php if(!isset($_GET['pb_mesi']) || $_GET['pb_mesi'] == ''){ $_GET['pb_mesi'] = date("n"); } ?>
+                                        <?php if(!isset($_GET['pb_mesi']) || $_GET['pb_mesi'] == ''){ $_GET['pb_mesi'] = date("n"); } ?>
                                         <select name="mesi" id="mesi" onchange="mesFinal();" class="form-control">
                                             <option value="">mm</option>
                                             <option value="1" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 1) {echo " selected "; } ?>>Enero</option>
@@ -61,9 +62,9 @@
                                             <option value="12" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 12) {echo " selected "; } ?>>Diciembre</option>
                                         </select>
                                         <input type="hidden" name="mesiConsulta" id="mesiConsulta" value="<?php if (isset($_GET['pb_mesi'])) { echo $_GET['pb_mesi']; } ?>">
-                                    </div><!-- /.col -->
+                                    </div>
 
-                                    <div class="col-md-3 nopadding">
+                                    <div class="col-sm-3 nopadding">
                                         <select name="diai" id="diai" class="form-control">
                                             <option value="">dd</option>
                                             <option value="1" <?php if (isset($_GET['pb_diai']) && $_GET['pb_diai'] == 1) { echo " selected "; } ?>>01</option>
@@ -102,7 +103,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-3 form-group">
+                            <div class="col-sm-6 col-md-3 form-group">
                                 <label for="fechaInicial">Fecha Final</label>
                                 <div class="row compositeDate">
                                     <div class="col-sm-4 form-group nopadding">
@@ -153,7 +154,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-3 form-group">
+                            <div class="col-sm-6 col-md-3 form-group">
                                 <label for="semana">Semana</label>
                                 <select name="semana" id="semana" class="form-control">
                                     <option value="">Seleccione uno</option>
@@ -171,7 +172,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-sm-3 form-group">
+                            <div class="col-sm-6 col-md-3 form-group">
                                 <label for="tipo">Tipo Complemento</label>
                                 <select class="form-control" name="tipo" id="tipo">
                                     <option value="">Seleccione una</option>
@@ -191,56 +192,56 @@
                         </div>
 
                         <div class="row">
-                          <div class="col-sm-2 form-group">
-                            <label for="fechaInicial">Municipio</label>
-                            <select class="form-control" name="municipio" id="municipio">
-                              <option value="">Seleccione uno</option>
-                              <?php
-                                $consulta = " select DISTINCT codigoDANE, ciudad from ubicacion where 1=1 and ETC = 0 ";
-                                $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
-                                if($DepartamentoOperador != ''){
-                                  $consulta = $consulta." and CodigoDANE like '$DepartamentoOperador%' ";
-                                }
-                                $consulta = $consulta." order by ciudad asc ";
-                                $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-                                if($resultado->num_rows >= 1){
-                                  while($row = $resultado->fetch_assoc()) {
-                              ?>
-                                  <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($municipio_defecto["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; }?>><?= $row["ciudad"]; ?></option>
-                              <?php
-                                  }// Termina el while
-                                }//Termina el if que valida que si existan resultados
-                              ?>
-                            </select>
-                          </div>
-
-                          <div class="col-sm-3 form-group">
-                            <label for="institucion">Institución</label>
-                            <select class="form-control" name="institucion" id="institucion">
-                              <option value="">Todas</option>
-                              <?php
-                                if ((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ) || $municipio_defecto["CodMunicipio"] != "") {
-                                  $municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"];
-                                  $consulta = "SELECT DISTINCT s.cod_inst, s.nom_inst FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE 1=1";
-                                  $consulta = $consulta." AND s.cod_mun_sede = '$municipio'";
-                                  $consulta = $consulta." ORDER BY s.nom_inst ASC";
-
-                                  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-                                  if($resultado->num_rows >= 1){
-                                    while($row = $resultado->fetch_assoc()) {
-                              ?>
-                                  <option value="<?= $row['cod_inst']; ?>" <?php if(isset($_GET["pb_institucion"]) && $_GET["pb_institucion"] == $row['cod_inst'] ){ echo " selected "; }  ?> > <?= $row['nom_inst']; ?></option>
-                              <?php
+                            <div class="col-sm-4 col-md-2 form-group">
+                                <label for="fechaInicial">Municipio</label>
+                                <select class="form-control" name="municipio" id="municipio">
+                                  <option value="">Seleccione uno</option>
+                                  <?php
+                                    $consulta = " select DISTINCT codigoDANE, ciudad from ubicacion where 1=1 and ETC = 0 ";
+                                    $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
+                                    if($DepartamentoOperador != ''){
+                                      $consulta = $consulta." and CodigoDANE like '$DepartamentoOperador%' ";
                                     }
-                                  }
-                                }
-                              ?>
-                            </select>
-                          </div>
+                                    $consulta = $consulta." order by ciudad asc ";
+                                    $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+                                    if($resultado->num_rows >= 1){
+                                      while($row = $resultado->fetch_assoc()) {
+                                  ?>
+                                      <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($municipio_defecto["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; }?>><?= $row["ciudad"]; ?></option>
+                                  <?php
+                                      }// Termina el while
+                                    }//Termina el if que valida que si existan resultados
+                                  ?>
+                                </select>
+                            </div>
 
-                          <div class="col-sm-3 form-group">
-                            <label for="sede">sede</label>
-                            <select class="form-control" name="sede" id="sede">
+                            <div class="col-sm-4 col-md-3 form-group">
+                                <label for="institucion">Institución</label>
+                                <select class="form-control" name="institucion" id="institucion">
+                                  <option value="">Todas</option>
+                                  <?php
+                                    if ((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ) || $municipio_defecto["CodMunicipio"] != "") {
+                                      $municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"];
+                                      $consulta = "SELECT DISTINCT s.cod_inst, s.nom_inst FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE 1=1";
+                                      $consulta = $consulta." AND s.cod_mun_sede = '$municipio'";
+                                      $consulta = $consulta." ORDER BY s.nom_inst ASC";
+
+                                      $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+                                      if($resultado->num_rows >= 1){
+                                        while($row = $resultado->fetch_assoc()) {
+                                  ?>
+                                      <option value="<?= $row['cod_inst']; ?>" <?php if(isset($_GET["pb_institucion"]) && $_GET["pb_institucion"] == $row['cod_inst'] ){ echo " selected "; }  ?> > <?= $row['nom_inst']; ?></option>
+                                  <?php
+                                        }
+                                      }
+                                    }
+                                  ?>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-4 col-md-3 form-group">
+                                <label for="sede">sede</label>
+                                <select class="form-control" name="sede" id="sede">
                               <option value="">Todas</option>
                               <?php
                                 $institucion = '';
@@ -258,12 +259,12 @@
                                   }
                                 }
                               ?>
-                            </select>
-                          </div>
+                                </select>
+                            </div>
 
-                          <div class="col-sm-2 form-group">
-                            <label for="tipoDespacho">Tipo Despacho</label>
-                            <select class="form-control" name="tipoDespacho" id="tipoDespacho">
+                            <div class="col-sm-4 col-md-2 form-group">
+                                <label for="tipoDespacho">Tipo Despacho</label>
+                                <select class="form-control" name="tipoDespacho" id="tipoDespacho">
                               <option value="">Todos</option>
                               <?php
                                 $consulta = " select * from tipo_despacho where id != 4 order by Descripcion asc ";
@@ -276,12 +277,12 @@
                                   }
                                 }
                               ?>
-                            </select>
-                          </div>
+                                </select>
+                            </div>
 
-                          <div class="col-sm-2 form-group">
-                            <label for="ruta">Ruta</label>
-                            <select class="form-control" name="ruta" id="ruta">
+                            <div class="col-sm-4 col-md-2 form-group">
+                                <label for="ruta">Ruta</label>
+                                <select class="form-control" name="ruta" id="ruta">
                               <option value="">Todos</option>
                               <?php
                                 $consulta = "SELECT * FROM rutas ORDER BY nombre ASC";
@@ -294,9 +295,9 @@
                                   }
                                 }
                               ?>
-                            </select>
-                            <input type="hidden" name="rutaNm" id="rutaNm" value="">
-                          </div>
+                                </select>
+                                <input type="hidden" name="rutaNm" id="rutaNm" value="">
+                            </div>
                         </div>
 
                         <div class="row">
