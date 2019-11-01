@@ -32,7 +32,7 @@
         <div class="ibox-content contentBackground">
           <form class="col-lg-12" action="despachos.php" name="formDespachos" id="formDespachos" method="post">
             <div class="row">
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="subtipo">Tipo de despacho</label>
                 <select class="form-control" name="subtipo" id="subtipo">
                   <option value="">Seleccione uno</option>
@@ -49,14 +49,14 @@
                 </select>
                 <input type="hidden" id="subtipoNm" name="subtipoNm" value="">
               </div>
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="subtipo">Proveedor / Empleado</label>
                 <select class="form-control" name="proveedorEmpleado" id="proveedorEmpleado">
                   <option value="">Seleccione uno</option>
                 </select>
                 <input type="hidden" id="proveedorEmpleadoNm" name="proveedorEmpleadoNm" value="">
               </div><!-- /.col -->
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="subtipo">Semana</label>
                 <select class="form-control" name="semana" id="semana">
                   <option value="">Seleccione una</option>
@@ -72,13 +72,13 @@
                   ?>
                 </select>
               </div>
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="dias">Días</label>
                 <!-- Planilla semanas -->
                 <div id="dias">
                 </div>
               </div><!-- /.col -->
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="tipoRacion">Tipo Ración</label>
                 <select class="form-control" name="tipoRacion" id="tipoRacion">
                 <option value="">Seleccione una</option>
@@ -92,9 +92,9 @@
                   }// Termina el while
                 }//Termina el if que valida que si existan resultados
                 ?>
-              </select>
+                </select>
               </div><!-- /.col -->
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="tipoDespacho">Tipo Despacho</label>
                 <!-- Tipo Complemento - Codigo -->
                 <select class="form-control" name="tipoDespacho" id="tipoDespacho">
@@ -111,28 +111,28 @@
                   ?>
                 </select>
               </div><!-- /.col -->
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="municipio">Municipio</label>
                 <!-- Tipo Complemento - Codigo -->
                 <select class="form-control" name="municipio" id="municipio">
                 <option value="">Seleccione uno</option>
                 </select>
               </div><!-- /.col -->
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="institucion">Institución</label>
                 <!-- Tipo Complemento - Codigo -->
                 <select class="form-control select2" name="institucion" id="institucion">
                   <option value="">Todos</option>
                 </select>
               </div><!-- /.col -->
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="sede">Sede</label>
                 <!-- Tipo Complemento - Codigo -->
                 <select class="form-control select2" name="sede" id="sede">
                   <option value="">Todos</option>
                 </select>
               </div><!-- /.col -->
-              <div class="col-sm-3 form-group">
+              <div class="col-sm-4 col-md-3 form-group">
                 <label for="ruta">Buscar Sedes x Ruta</label>
                 <!-- Tipo Complemento - Codigo -->
                 <select class="form-control select2" name="ruta" id="ruta">
