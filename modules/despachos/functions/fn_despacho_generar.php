@@ -237,7 +237,7 @@ foreach ($variaciones as $id => $variacion) {
 	if (count($sedes) == 0) {
 		continue;
 	}
-	
+
 
 		// 1. Armar array con los componentes
 		// Primera consulta, la que trae los diferentes alimentos de los menu.
@@ -414,7 +414,7 @@ foreach ($variaciones as $id => $variacion) {
 
 			$auxSede = $sedes[$i];
 
-			$consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
+			$consulta = " SELECT distinct cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
 
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 			if($resultado->num_rows >= 1){
@@ -479,7 +479,7 @@ foreach ($variaciones as $id => $variacion) {
 					$aux = $dias[$j];
 					//$consulta = $consulta." Dias like '%$aux%' ";
 					$consulta = $consulta." FIND_IN_SET('$aux', Dias) ";
-					
+
 			 }
 			 $consulta = $consulta." ) ";
 
