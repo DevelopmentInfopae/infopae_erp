@@ -117,8 +117,8 @@
   $sedes = $_POST['itemsDespacho'];
 
 // Tipos de despacho, para prevenir que despues de un despacho especifico se haga un despacho general
-$consulta = " select * from tipo_despacho ";
-$resultado = $Link->query($consulta) or die ('Unable to execute query. Buscando los tipos de despacho '. mysqli_error($Link));
+$consulta = "SELECT * FROM tipo_despacho ";
+$resultado = $Link->query($consulta) or die ('Error al consultar tipos de despachos: '. mysqli_error($Link));
 $tiposDespacho = array();
 if($resultado->num_rows >= 1){
   while($row = $resultado->fetch_assoc()){
@@ -128,7 +128,7 @@ if($resultado->num_rows >= 1){
 
 // Se van a buscar el mes y el año a partir de la tabla de planilla semana y se va a verificar la existencia de las tablas.
 $consulta = " select ano, mes, semana from planilla_semanas where semana = '$semana' limit 1 ";
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+$resultado = $Link->query($consulta) or die ('Error al cosultar planillas_semanas: '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
   while($row = $resultado->fetch_assoc()){
     $semanaMes = $row['mes'];
@@ -141,7 +141,7 @@ $annoMes = $semanaMes.$semanaAnno;
 // Se va ha buscar que existan cada una de las tablas, de lo contrario se crearan.
 // Productos Mov
 $consulta = " show tables like 'productosmov$annoMes' ";
-$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+$result = $Link->query($consulta) or die ('Error al consultar existencia de tablas productosmov: '. mysqli_error($Link));
 $existe = $result->num_rows;
 if($existe <= 0){
   $consulta = " CREATE TABLE `productosmov$annoMes` ( `Documento` varchar(10) DEFAULT '', `Numero` int(10) unsigned DEFAULT '0', `Tipo` varchar(100) DEFAULT '', `FechaDoc` varchar(45) DEFAULT '', `BodegaOrigen` bigint(20) unsigned DEFAULT '0', `BodegaDestino` bigint(20) unsigned DEFAULT '0', `Nombre` varchar(200) DEFAULT '', `Nitcc` varchar(20) DEFAULT '', `Concepto` text, `ValorTotal` decimal(20,2) DEFAULT '0.00', `Aprobado` tinyint(1) DEFAULT '0', `NombreResponsable` varchar(60) DEFAULT '', `LoginResponsable` varchar(30) DEFAULT '', `GeneraCompra` tinyint(1) DEFAULT '0', `DocOrigen` varchar(10) DEFAULT '', `NumDocOrigen` int(10) unsigned DEFAULT '0', `NombreRED` varchar(45) DEFAULT '', `Id` int(10) unsigned NOT NULL AUTO_INCREMENT, `FechaMYSQL` datetime DEFAULT NULL, `Anulado` tinyint(1) DEFAULT '0', `TipoTransporte` varchar(50) NOT NULL DEFAULT '', `Placa` varchar(10) NOT NULL DEFAULT '', `ResponsableRecibe` varchar(45) NOT NULL DEFAULT '', `NumCompra` int(10) unsigned DEFAULT '0', PRIMARY KEY (`Id`) ) ";
@@ -150,7 +150,7 @@ if($existe <= 0){
 
 // Productos Mov Det
 $consulta = " show tables like 'productosmovdet$annoMes' ";
-$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+$result = $Link->query($consulta) or die ('Error al consultar existencia de tablas productosmovdet: '. mysqli_error($Link));
 $existe = $result->num_rows;
 if($existe <= 0){
   $consulta = " CREATE TABLE `productosmovdet$annoMes` ( `Documento` varchar(10) DEFAULT '', `Numero` int(10) DEFAULT '0', `Item` int(10) unsigned DEFAULT '0', `CodigoProducto` varchar(20) DEFAULT '', `Descripcion` text NOT NULL, `Cantidad` decimal(28,8) DEFAULT '0.00000000', `CantFacturada` decimal(28,8) DEFAULT '0.00000000', `ValorUnitario` decimal(18,2) DEFAULT '0.00', `CuentaInventario` varchar(30) DEFAULT '', `CuentaContraPartida` varchar(30) DEFAULT '', `Facturado` tinyint(1) DEFAULT '0', `CentroCosto` varchar(10) DEFAULT '', `BodegaOrigen` bigint(20) unsigned DEFAULT '0', `BodegaDestino` bigint(20) unsigned DEFAULT '0', `CantBodOrg` decimal(28,8) DEFAULT '0.00000000', `CantBodDest` decimal(28,8) DEFAULT '0.00000000', `Id` int(10) unsigned NOT NULL AUTO_INCREMENT, `Talla` varchar(5) DEFAULT '', `Color` varchar(45) DEFAULT '', `CostoUnitario` decimal(10,2) DEFAULT '0.00', `NombreRED` varchar(45) DEFAULT '', `Umedida` varchar(255) DEFAULT '', `CantUmedida` decimal(20,4) DEFAULT '0.0000', `Factor` decimal(28,8) DEFAULT '0.00000000', `Id_Usuario` int(10) unsigned DEFAULT '0',
@@ -170,7 +170,7 @@ if($existe <= 0){
 /************************** Modificación dónde se agregan 3 nuevos campos (Cobertura_G1, Cobertura_G2, Cobertura_G3) **************************/
 // Consulta que valida si existe la tabla Despachos_encMESAÑO NO existe para crearla.
 $consulta = "SHOW TABLES LIKE 'despachos_enc$annoMes'";
-$result = $Link->query($consulta) or die ('Unable to execute query: Mostrando la tabla despachos_enc '. mysqli_error($Link));
+$result = $Link->query($consulta) or die ('Error al consultar las tablas despachos_enc: '. mysqli_error($Link));
 $existe = $result->num_rows;
 if($existe == 0) {
   // Consulta para crear la tabla despachos_encMESAÑO.
@@ -237,7 +237,7 @@ foreach ($variaciones as $id => $variacion) {
   if (count($sedes) == 0) {
     continue;
   }
-  
+
 
     // 1. Armar array con los componentes
     // Primera consulta, la que trae los diferentes alimentos de los menu.
@@ -414,7 +414,7 @@ foreach ($variaciones as $id => $variacion) {
 
       $auxSede = $sedes[$i];
 
-      $consulta = " select cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo from sedes_cobertura where semana = '$semana' and cod_sede = $auxSede and Ano = $annoActual ";
+      $consulta = "SELECT DISTINCT  cod_sede, Etario1_$tipo, Etario2_$tipo, Etario3_$tipo FROM sedes_cobertura WHERE semana = '$semana' AND cod_sede = $auxSede AND Ano = $annoActual ";
 
       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
       if($resultado->num_rows >= 1){
@@ -859,7 +859,8 @@ foreach ($variaciones as $id => $variacion) {
 
       /* Leyendo el consecutivo */
       $consecutivo = '';
-      $consulta = " select Consecutivo from documentos where Tipo = 'DES' ";
+      $consulta = "SELECT Consecutivo FROM documentos WHERE Tipo = 'DES'";
+
       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
       if($resultado->num_rows >= 1){
         $row = $resultado->fetch_assoc();
@@ -905,7 +906,6 @@ foreach ($variaciones as $id => $variacion) {
         $auxItem = 1;
         for ($j=0; $j < count($complementosCantidades) ; $j++){
           $auxConsulta = '';
-          //if($j > 0){ $auxConsulta = $auxConsulta." , "; }
           $auxConsulta = $auxConsulta." ( ";
           $auxAlimento = $complementosCantidades[$j];
           $sede = $sedesCobertura[$i];
@@ -926,9 +926,9 @@ foreach ($variaciones as $id => $variacion) {
           $auxConsulta = $auxConsulta." 'DES',$consecutivo,$auxItem,'$codigo','$componente',$cantidad,$bodegaOrigen,$bodegaDestino,'$presentacion',$cantidad,$factor, $necesario2, $necesario3, $necesario4, $necesario5, $tomadoTotal ";
           $auxItem++;
           $auxConsulta = $auxConsulta." ) ";
-          //var_dump($auxConsulta);
+
           if($cantidad > 0){
-            //if($i > 0 && $j == 0){ $consulta = $consulta." , "; }
+
             if($banderaPrimero == 0){
               $banderaPrimero++;
             }else{
@@ -938,8 +938,7 @@ foreach ($variaciones as $id => $variacion) {
           }
         }
       }
-      // echo "<br><br>DETALLE DE MOVIMIENTO<br><br>";
-      // echo "<br><br>".$consulta."<br><br>";
+
       $resultado = $Link->query($consulta) or die ('Unable to execute query - Inserción en productosmovdet '. mysqli_error($Link));
 
 
