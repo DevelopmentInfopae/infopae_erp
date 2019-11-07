@@ -302,7 +302,7 @@
             if (!isset($_POST['buscar'])) { //Si no hay filtrado
               $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
-              echo $consulta = "SELECT
+              $consulta = "SELECT
                   pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab,  pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca
                   FROM productosmov$numtabla AS pmov
                     INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero
