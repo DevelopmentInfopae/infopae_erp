@@ -302,13 +302,14 @@
             if (!isset($_POST['buscar'])) { //Si no hay filtrado
               $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
-              $consulta = "SELECT
+              echo $consulta = "SELECT
                   pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab,  pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca
                   FROM productosmov$numtabla AS pmov
                     INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero
                     INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
                     INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
                     INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
+                    INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero
                   LIMIT 200;";
             } else if (isset($_POST['buscar'])) { //Si hay filtrado
               $inners="";
