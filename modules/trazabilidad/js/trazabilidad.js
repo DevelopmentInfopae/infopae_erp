@@ -1,40 +1,36 @@
 $(document).ready(function(){
-	$('#nomMesFin').val($('#mes_inicio option:selected').text());
-	$('#mes_fin').val($('#mes_inicio').val());
-	$('input').iCheck({
-     checkboxClass: 'icheckbox_square-green '
-  	});
-
-	$.ajax({
-	   type: "POST",
-	   url: "functions/fn_trazabilidad_obtener_municipios.php",
-	   data: { "mes_tabla" : $('#mes_inicio').val() },
-	   beforeSend: function(){},
-	   success: function(data){
-	     $('#municipio').html(data);
-	   }
-	 });
-
 	$.fn.datepicker.dates['en'] = {
-    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
-    daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sab", "Dom"],
-    daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
-    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+	    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+	    daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sab", "Dom"],
+	    daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
+	    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+	    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
 	};
+	$(".datepicker").datepicker();
+	$('input').iCheck({ checkboxClass: 'icheckbox_square-green ' });
 
-	$( ".datepicker" ).datepicker();
-	$('#fecha_fin_elaboracion').datepicker('setStartDate', $('#fecha_inicio_elaboracion').val());
-	$('#fecha_inicio_elaboracion').datepicker('setEndDate', $('#fecha_fin_elaboracion').val());
+	$('#mes_fin').val($('#mes_inicio').val());
+	$('#nomMesFin').val($('#mes_inicio option:selected').text());
+
+	$('#fecha_inicio_elaboracion').trigger('change');
+	// $('#fecha_fin_elaboracion').datepicker('setStartDate', $('#fecha_inicio_elaboracion').val());
+	// $('#fecha_inicio_elaboracion').datepicker('setEndDate', $('#fecha_fin_elaboracion').val());
 });
 
 $('#fecha_inicio_elaboracion').on('change', function(){
+
+	var fecha_desde = $(this).val();
+	var fecha = fecha_desde.split('-');
+	var ultimoDia = new Date(fecha[0], fecha[1], 0);
+
 	$('#fecha_fin_elaboracion').datepicker('setStartDate', $(this).val());
+	$('#fecha_fin_elaboracion').datepicker('setEndDate', fecha[0]+'-'+fecha[1]+'-'+ultimoDia.getDate());
+	$('#fecha_fin_elaboracion').datepicker('setDate', fecha[0]+'-'+fecha[1]+'-'+ultimoDia.getDate());
 });
 
-$('#fecha_fin_elaboracion').on('change', function(){
+/*$('#fecha_fin_elaboracion').on('change', function(){
 	$('#fecha_inicio_elaboracion').datepicker('setEndDate', $(this).val());
-});
+});*/
 
 $('#tipo_documento').on('change', function(){
 
@@ -58,7 +54,7 @@ $('#tipo_documento').on('change', function(){
 $('#tipo_filtro').on('change', function(){
 
 	$('#loader').fadeIn();
-	
+
 	mesinicio = $('#mes_inicio').val();
 
 	var filtro = $(this).val();
@@ -135,8 +131,7 @@ $('#tipo_filtro').on('change', function(){
 $('#mes_inicio').on('change', function(){
 	$('#mes_fin').val($(this).val());
 	$('#nomMesFin').val($('#mes_inicio option:selected').text());
-	$('#loader').fadeIn();
-	$.ajax({
+/*	$.ajax({
 	   type: "POST",
 	   url: "functions/fn_trazabilidad_obtener_municipios.php",
 	   data: { "mes_tabla" : $('#mes_inicio').val() },
@@ -145,7 +140,7 @@ $('#mes_inicio').on('change', function(){
 	     $('#municipio').html(data);
 	     $('#loader').fadeOut();
 	   }
-	 });
+	 });*/
 });
 
 $('#fecha_de').on('change', function(){
