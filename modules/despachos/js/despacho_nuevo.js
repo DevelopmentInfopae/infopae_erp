@@ -273,8 +273,6 @@ function generarDespacho(){
         alert('El despacho se ha registrado con éxito.');
         $(window).unbind('beforeunload');
         window.location.href = 'despachos.php';
-      } else {
-        alert(data);
       }
     })
     .fail(function(data){ console.log(data); })

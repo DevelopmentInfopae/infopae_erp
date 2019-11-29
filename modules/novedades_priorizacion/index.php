@@ -38,8 +38,10 @@
                 <th>Sede</th>
                 <th>Fecha</th>
                 <th>APS</th>
-                <th>CAJMRI</th>
                 <th>CAJMPS</th>
+                <th>CAJMRI</th>
+                <th>CAJTPS</th>
+                <th>CAJTRI</th>
                 <th>Semana</th>
                 <th>Observaciones</th>
               </tr>
@@ -53,8 +55,10 @@
 								<th>Sede</th>
 								<th>Fecha</th>
 								<th>APS</th>
-								<th>CAJMRI</th>
 								<th>CAJMPS</th>
+                <th>CAJMRI</th>
+                <th>CAJTPS</th>
+                <th>CAJTRI</th>
 								<th>Semana</th>
 								<th>Observaciones</th>
               </tr>
@@ -119,8 +123,10 @@
         { data: 'nom_sede'},
         { data: 'fecha_hora'},
         { data: 'APS'},
-        { data: 'CAJMRI'},
         { data: 'CAJMPS'},
+        { data: 'CAJMRI'},
+        { data: 'CAJTPS'},
+        { data: 'CAJTRI'},
         { data: 'Semana'},
         { data: 'observaciones'}
       ],
