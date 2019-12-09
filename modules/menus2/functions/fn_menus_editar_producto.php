@@ -4,13 +4,20 @@ require_once 'fn_menus_head_funciones.php';
 
 $usuario = $_SESSION['idUsuario'];
 
+
+
+
+
+
+
+
 function validarCambioTipoProducto($IdProducto, $codigoPrefijo){
   global $Link;
   $consultaProducto = "select Codigo from productos".$_SESSION['periodoActual']." where Id = '".$IdProducto."'";
   $resultadoProducto = $Link->query($consultaProducto) or die('Unable to execute query. '. mysqli_error($Link));
   if ($resultadoProducto->num_rows > 0) {
     while ($row = $resultadoProducto->fetch_assoc()) {
-      $Codigo = $row['Codigo'];
+	  $Codigo = $row['Codigo'];
     }
     if (substr($Codigo,0,4) != $codigoPrefijo) {
     	return true;
@@ -119,6 +126,17 @@ if (isset($_POST['variacionMenu']) && $_POST['variacionMenu'] != "") {
   $variacionMenu = 0;
 }
 
+//Datos iniciales del producto
+$consultaProducto = "select Codigo, Descripcion, Orden_Ciclo from productos".$_SESSION['periodoActual']." where Id = '".$IdProducto."'";
+$resultadoProducto = $Link->query($consultaProducto) or die('Unable to execute query. '. mysqli_error($Link));
+if ($resultadoProducto->num_rows > 0) {
+	while ($row = $resultadoProducto->fetch_assoc()) {
+		$codigoInicial = $row['Codigo'];
+		$descripcionInicial = $row['Descripcion'];
+		$ordenCicloInicial = $row['Orden_Ciclo'];
+	}
+}
+
 $consultaTipoProducto = "select Descripcion from productos".$_SESSION['periodoActual']." where Codigo like '".$tipoProducto."%' AND nivel = 1";
 $resultadoTipoProducto = $Link->query($consultaTipoProducto) or die('Unable to execute query. '. mysqli_error($Link));
 if ($resultadoTipoProducto->num_rows > 0) {
@@ -209,6 +227,16 @@ if ($unidadMedida == "g" || $unidadMedida == "cc") { //Si tipo de producto es 03
 	}
 	$descripcion = $descripcion." ".$variacionMenuDesc;
   }
+}
+
+/* Validacón de existencia de novedad de menu tipo 3 ( Intercambio de dia ) activa */
+$banderaNovedad = 0;
+$sqlValidacionNovedad = " SELECT * FROM novedades_menudet nmd LEFT JOIN novedades_menu nm ON nmd.id_novedad = nm.id WHERE nmd.cod_producto = \"$codigoInicial\" AND nm.tipo_intercambio = 3 AND nm.estado = 1 ";
+$result = $Link->query($sqlValidacionNovedad) or die('Unable to execute query buscando novedades de menú activas. '. mysqli_error($Link));
+if ($result->num_rows > 0) {
+	$banderaNovedad++;
+	$descripcion = $descripcionInicial;
+	$ordenCiclo = $ordenCicloInicial;
 }
 
 /*print_r($NombreUnidad);
@@ -366,7 +394,7 @@ if ($Link->query($sqlProducto) === true) {
 			  if ($validaRegistro == sizeof($productoFichaTecnicaDet)) {
 			  	$sqlBitacora = "insert into bitacora (id, fecha, usuario, tipo_accion, observacion) values (NULL, '".date('Y-m-d h:i:s')."', '".$usuario."', '".$tipo_accion."', '".$accion."') ";
 			  	if ($Link->query($sqlBitacora)===true) {
-			  		echo "1";
+					echo "1"; 
 			  	} else {
 			  		echo "Error bitácora : ".$sqlBitacora;
 			  	}
