@@ -14,6 +14,7 @@
 	$dia = intval(date("d"));
 	$mes = date("m");
 	$anno = date("Y");
+	$semanaActual = null;
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
