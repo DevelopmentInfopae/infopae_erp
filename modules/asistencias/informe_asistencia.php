@@ -3,6 +3,8 @@
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
+	//var_dump($_SESSION);
+
 	$periodoActual = $_SESSION["periodoActual"];
 	$titulo = "Informe de asistencias";
 	$institucionNombre = "";
@@ -13,7 +15,8 @@
 
 	$dia = intval(date("d"));
 	$mes = date("m");
-	$anno = date("Y");		
+	$anno = date("Y");
+	$semanaActual = null;
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
