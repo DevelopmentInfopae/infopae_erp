@@ -1,5 +1,8 @@
 <?php
 	include '../../header.php';
+
+	$periodoActual = $_SESSION['periodoActual'];
+
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
@@ -16,7 +19,7 @@
 	
 	
 	
-	FROM novedades_menu nm left join grupo_etario ge ON ge.ID = nm.cod_grupo_etario LEFT JOIN fichatecnica ft ON ft.Codigo = nm.cod_producto LEFT JOIN planilla_semanas ps ON ps.MES = nm.mes AND ps.SEMANA = nm.semana AND ps.DIA = nm.dia LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo AND p.Cod_Tipo_complemento = nm.tipo_complem AND p.Cod_Grupo_Etario = nm.cod_grupo_etario WHERE nm.id = $idNovedad ";
+	FROM novedades_menu nm left join grupo_etario ge ON ge.ID = nm.cod_grupo_etario LEFT JOIN fichatecnica ft ON ft.Codigo = nm.cod_producto LEFT JOIN planilla_semanas ps ON ps.MES = nm.mes AND ps.SEMANA = nm.semana AND ps.DIA = nm.dia LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo AND p.Cod_Tipo_complemento = nm.tipo_complem AND p.Cod_Grupo_Etario = nm.cod_grupo_etario WHERE nm.id = $idNovedad ";
 
 	//echo "<br><br>$consulta<br><br>";
 
