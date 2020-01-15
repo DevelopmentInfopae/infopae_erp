@@ -1,3 +1,8 @@
+<?php 
+	$periodoActual = $_SESSION['periodoActual']; 
+	$cntFTD = "";
+?>
+
 <div class="wrapper wrapper-content  animated fadeInRight">
 	<div class="row">
 		<div class="col-sm-12">
@@ -54,7 +59,7 @@
 </div>
 
 <?php 
-	$consulta = " SELECT nmd.*, p.Descripcion AS Componente from novedades_menudet nmd LEFT JOIN productos19 p ON nmd.cod_producto = p.Codigo WHERE nmd.tipo = 0 AND nmd.id_novedad = $idNovedad ORDER BY nmd.id ";
+	$consulta = " SELECT nmd.*, p.Descripcion AS Componente from novedades_menudet nmd LEFT JOIN productos$periodoActual p ON nmd.cod_producto = p.Codigo WHERE nmd.tipo = 0 AND nmd.id_novedad = $idNovedad ORDER BY nmd.id ";
 	//echo $idNovedad;
 	//echo "<br>$consulta<br>";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query - Leyendo novedad det Original '. mysqli_error($Link));

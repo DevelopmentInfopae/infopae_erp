@@ -2,6 +2,8 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
+$periodoActual = $_SESSION['periodoActual'];
+
 $grupoEtario = '';
 $tipoComplemento = '';
 
@@ -17,9 +19,9 @@ $opciones = "<option value=\"\">Seleccione uno</option>";
 
 //echo $tipoComplemento;
 if($tipoComplemento == "CAJMRI" || $tipoComplemento == "CAJTRI"){
-	$consulta = " SELECT * FROM productos19 WHERE TipodeProducto = \"Industrializado\" ";
+	$consulta = " SELECT * FROM productos$periodoActual WHERE TipodeProducto = \"Industrializado\" ";
 }else{
-	$consulta = " SELECT * FROM productos19 WHERE TipodeProducto = \"Preparación\" AND Cod_Grupo_Etario = $grupoEtario ";
+	$consulta = " SELECT * FROM productos$periodoActual WHERE TipodeProducto = \"Preparación\" AND Cod_Grupo_Etario = $grupoEtario ";
 }
 //echo $consulta;
 

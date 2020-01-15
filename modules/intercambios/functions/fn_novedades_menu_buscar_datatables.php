@@ -2,6 +2,8 @@
 	require_once '../../../db/conexion.php';
 	require_once '../../../config.php';
 
+	$periodoActual = $_SESSION['periodoActual'];
+
 	$consultaNovedad = "SELECT 
 nm.id,
 nm.mes AS mes,
@@ -31,7 +33,7 @@ IF(nm.estado = 1, 'Activo', 'Reversado') AS estado
 
 FROM novedades_menu nm
 left join grupo_etario ge ON ge.ID = nm.cod_grupo_etario
-LEFT JOIN productos19 p ON p.Codigo = nm.cod_producto
+LEFT JOIN productos$periodoActual p ON p.Codigo = nm.cod_producto
 ORDER BY nm.fecha_registro desc";
 
 

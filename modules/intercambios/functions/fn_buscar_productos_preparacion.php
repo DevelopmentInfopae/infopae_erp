@@ -2,13 +2,15 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
+$periodoActual = $_SESSION['periodoActual'];
+
 // $mes = '';
 // if(isset($_POST['mes']) && $_POST['mes'] != ''){
 // 		$mes = mysqli_real_escape_string($Link, $_POST['mes']);
 // }
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " SELECT * FROM productos19 WHERE TipodeProducto = \"Alimento\" ";
+$consulta = " SELECT * FROM productos$periodoActual WHERE TipodeProducto = \"Alimento\" ";
 // echo $consulta;
 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
