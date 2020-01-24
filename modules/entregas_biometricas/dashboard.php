@@ -7,8 +7,6 @@
  * @author Ricardo Farfán <ricardo@xlogam.com>
  */
 
-
-
 // G:\xampp\htdocs\infopae2019\modules\entregas_biometricas\dashboard.php:67:
 // array (size=9)
 //   'mes' => string '10' (length=2)
@@ -21,68 +19,43 @@
 //   'grupo' => string '' (length=0)
 //   'dispositivo' => string '1' (length=1)
 
+set_time_limit (0);
+ini_set('memory_limit','6000M');
 
-
-
-
-
-
-
-
-
- include '../../header.php';
-	set_time_limit (0);
-	ini_set('memory_limit','6000M');
-
-	$periodoActual = $_SESSION["periodoActual"];
-	$titulo = "entregas_biometricas";
-	$institucionNombre = "";
-
-	date_default_timezone_set('America/Bogota');
-	$fecha = date("Y-m-d H:i:s");
-	$cacheBusting = date("YmdHis");
-
-
-	$dia = intval(date("d"));
-	$mes = date("m");
-	$anno = date("Y");
-	$anno2d = date("y");
-
-	$validacion = "Lector de Huella";
-
- 	$sedeP = "";
-	if(isset($_GET["sede"]) && $_GET["sede"] != ""){
-		$sedeP = mysqli_real_escape_string($Link, $_GET['sede']);
-	}
-
-	$institucionP = "";
-	$consulta = " SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = \"$sedeP\" ";
-	//echo $consulta;
-	$resultado = $Link->query($consulta) or die ('No se pudo cargar la institucion. '. mysqli_error($Link));
-	if($resultado->num_rows >= 1){
-		$row = $resultado->fetch_assoc();
-		$institucionP = $row["cod_inst"];
-	}
-
-
-	//Busqueda de la semana actual
-	$semanaActual = "";
-	$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
-	// var_dump($consulta);				
-	$resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
-	if($resultado->num_rows >= 1){
-		$row = $resultado->fetch_assoc();
-		$semanaActual = $row["semana"];
-	}
-	// var_dump($_SESSION);
-	// var_dump($semanaActual);				
+$titulo = "Entregas Biometricas";
+include '../../header.php';
+$cacheBusting = date("YmdHis");
 ?>
 
+<link rel="stylesheet" href="css/entregas_biometricas.css?v=<?= $cacheBusting; ?>">
+
+<?php
+date_default_timezone_set('America/Bogota');
+
+$fecha = date("Y-m-d H:i:s");
+$cacheBusting = date("YmdHis");
+$periodoActual = $_SESSION["periodoActual"];
+$dia = intval(date("d"));
+$mes = date("m");
+$anno = date("Y");
+$anno2d = date("y");
+
+// Lectura de los parametros POST o GET
+if(isset($_GET["sede"]) && $_GET["sede"] != ""){
+	$institucionNombre = mysqli_real_escape_string($Link, $_GET['institucionNombre']);
+	$sedeNombre = mysqli_real_escape_string($Link, $_GET['sedeNombre']);
+	$dispositivoNombre = mysqli_real_escape_string($Link, $_GET['dispositivoNombre']);
+	$nivelNombre = mysqli_real_escape_string($Link, $_GET['nivelNombre']);
+	$grado = mysqli_real_escape_string($Link, $_GET['grado']);
+	$gradoNombre = mysqli_real_escape_string($Link, $_GET['gradoNombre']);
+	$grupo = mysqli_real_escape_string($Link, $_GET['grupo']);
+}
+?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
 			<h2>Completar entregas biometricas</h2>
-			<?php var_dump($_POST); ?>
+			<?php //var_dump($_GET); ?>
 			<ol class="breadcrumb">
 				<li>
 					<a href="<?php echo $baseUrl; ?>">Inicio</a>
@@ -92,49 +65,7 @@
 				</li>
 			</ol>
 	</div>
-	<div class="col-xs-4">
-		<div class="title-action registroConsumo" style="display: none">
-			<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
-			<button class="btn btn-primary btnSellar" type="button">Guardar Definitivamente</button>
-		</div>
-	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
-					<!-- <a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a> -->
-	<?php } ?>
-	<!-- <button class="btn btn-primary" id="btnRestablecerContadores">Restablecer almacenamiento local</button> -->
-	</div>
 </div>
-<!-- /.row wrapper de la cabecera de la seccion -->
-
-
-
-
-
-<?php
-	$consulta = " select distinct semana from planilla_semanas ";
-	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-	if($resultado->num_rows >= 1){
-		while($row = $resultado->fetch_assoc()){
-			$aux = $row['semana'];
-			$consulta2 = " show tables LIKE 'focalizacion$aux' ";
-			$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
-			if($resultado2->num_rows >= 1){
-			 $semanas[] = $aux;
-			}
-		}
-	}
-?>
-
-
-
-
-
-<input type="hidden" name="validacion" id="validacion" value="<?= $validacion ?>">
-<input type="hidden" name="institucionP" id="institucionP" value="<?= $institucionP ?>">
-<input type="hidden" name="sedeP" id="sedeP" value="<?= $sedeP ?>">
-
-
-
-
 
 <div class="wrapper wrapper-content  animated fadeInRight registroConsumo" >
 	<div class="row">
@@ -149,21 +80,59 @@
 					</div>
 				</div>
 				<div class="ibox-content">
-					<h2>INSTITUCIÓN EDUCATIVA AGUADA DE CEFERINO</h2>
-					<h2>SEDE A-AGUADA DE CEFERINO</h2>
-					<h3>PRIMARIA</h3>
-					<h4>QR001</h4>
-					<div class="row">
-						<div class="col-sm-4">
-							<span class="fecha-actual"></span>
-						</div>
-						<div class="col-sm-4">
-							<span class="hora-actual"></span>
-						</div>
-						<div class="col-sm-4">
-							CAPTURA
+
+					<h2 class="titulo-institucion">Institución: <?= $institucionNombre ?></h2>
+
+					<div class="color-oscuro border-oscuro">
+						<div class="row">
+							<div class="col-sm-4">
+								<h4>Sede: <br> <?= $sedeNombre ?></h4>
+							</div>
+							<div class="col-sm-2 ">
+								<h4>Dispositivo: <br> <?= $dispositivoNombre ?></h4>
+							</div>
+							<div class="col-sm-2 ">
+								<h4>Nivel: <br> <?= $nivelNombre ?></h4>
+							</div>
+							<?php if($grado != ''){ ?>
+								<div class="col-sm-2 ">
+									<h4>Grado: <br> <?= $gradoNombre ?></h4>
+								</div>
+							<?php } ?>
+							<?php if($grupo != ''){ ?>
+								<div class="col-sm-2 ">
+									<h4>Grupo: <br> <?= $grupo ?></h4>
+								</div>
+							<?php } ?>
 						</div>
 					</div>
+					
+					<div class="color-oscuro">
+						<div class="row">
+							<div class="col-sm-3 text-center">
+								<span class="fecha-actual"></span>
+							</div>
+							<div class="col-sm-6 text-center">
+								<span class="hora-actual"></span>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-captura">
+									<form class="form-inline form-registro-biometria">
+										<input type="text" class="form-control mb-8 mr-sm-8" id="inlineFormInputName2" placeholder="Documento">
+										<button type="submit" class="btn btn-primary mb-2">Registrar</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+
+
+
+
+
 
 					<div class="table-responsive table-asistencia">
 						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
@@ -260,67 +229,6 @@
 	</div><!-- /.row -->
 </div>
 
-
-
-<div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header text-info" style="padding: 15px;">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-				<h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
-			</div>
-			<div class="modal-body">
-					<p class="text-center"></p>
-			</div>
-			<div class="modal-footer">
-				<input type="hidden" id="codigoACambiar">
-				<input type="hidden" id="estadoACambiar">
-				<button type="button" class="btn btn-primary btn-outline btn-sm btnNo" data-dismiss="modal">Cancelar</button>
-				<button type="button" class="btn btn-primary btn-sm btnSi" data-dismiss="modal">Aceptar</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal inmodal fade" id="ventanaSellar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header text-info" style="padding: 15px;">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-				<h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
-			</div>
-			<div class="modal-body">
-					<p class="text-center"></p>
-			</div>
-			<div class="modal-footer">
-				<input type="hidden" id="codigoACambiar">
-				<input type="hidden" id="estadoACambiar">
-				<button type="button" class="btn btn-primary btn-outline btn-sm btnNoSellar" data-dismiss="modal">Cancelar</button>
-				<button type="button" class="btn btn-primary btn-sm btnSiSellar" data-dismiss="modal">Aceptar</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<form action="">
-	<input type="hidden" name="asistenteTramite" id="asistenteTramite" value = "">
-	<input type="hidden" name="tipoDocumentoAsistenteTramite" id="tipoDocumentoAsistenteTramite" value = "">
-	<input type="hidden" name="valorActualizacion" id="valorActualizacion" value = "">
-</form>
-
-
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
@@ -338,35 +246,10 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
-<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/dashboard.js?v=<?= $cacheBusting; ?>"></script>
-
-
 
 <!-- Page-Level Scripts -->
-
-	<form action="sede.php" method="post" name="formVerSede" id="formVerSede">
-		<input type="hidden" name="codSede" id="codSede">
-		<input type="hidden" name="nomSede" id="nomSede">
-		<input type="hidden" name="nomInst" id="nomInst">
-	</form>
-
-	<form action="sede_editar.php" method="post" name="formEditarSede" id="formEditarSede">
-		<input type="hidden" name="codigoSede" id="codigoSede">
-		<input type="hidden" name="nombreSede" id="nombreSede">
-	</form>
-
-	<form action="../dispositivos_biometricos/index.php" method="post" name="formDispositivosSede" id="formDispositivosSede">
-		<input type="hidden" name="cod_sede" id="cod_sede" value="">
-	</form>
-
-	<form action="../infraestructuras/ver_infraestructura.php" method="post" name="formInfraestructuraSede" id="formInfraestructuraSede">
-		<input type="hidden" name="cod_sede" id="cod_sede" value="">
-	</form>
-
-	<form action="../titulares_derecho/index.php" method="post" name="formTitularesSede" id="formTitularesSede">
-		<input type="hidden" name="cod_sede" id="cod_sede" value="">
-	</form>
+<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/dashboard.js?v=<?= $cacheBusting; ?>"></script>
 
 </body>
 </html>

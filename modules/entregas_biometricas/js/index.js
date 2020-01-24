@@ -9,6 +9,14 @@ $(document).ready(function(){
 		if($('#form_asistencia').valid()){
 			//cargarEstudiantes();
 			console.log('Se va a cargar la interfaz de registro.');
+			
+			$('#municipioNombre').val($("#municipio option:selected").text());
+			$('#institucionNombre').val($("#institucion option:selected").text());
+			$('#sedeNombre').val($("#sede option:selected").text());
+			$('#nivelNombre').val($("#nivel option:selected").text());
+			$('#gradoNombre').val($("#grado option:selected").text());
+			$('#dispositivoNombre').val($("#dispositivo option:selected").text());
+			
 			$('#form_asistencia').attr('action', 'dashboard.php');
 			$('#form_asistencia').submit();
 			$('#loader').fadeOut();

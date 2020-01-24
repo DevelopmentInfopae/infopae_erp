@@ -25,7 +25,7 @@
 					<div class="row">
 						<div class="col-sm-12">
 
-							<form action="" id="form_asistencia" name="form_asistencia" method="post">
+							<form action="" id="form_asistencia" name="form_asistencia" method="get">
 								<div class="row">
 
 
@@ -147,6 +147,12 @@
 									</div>
 								</div>
 
+								<input type="hidden" id="municipioNombre" name="municipioNombre" value="">
+								<input type="hidden" id="institucionNombre" name="institucionNombre" value="">
+								<input type="hidden" id="sedeNombre" name="sedeNombre" value="">
+								<input type="hidden" id="nivelNombre" name="nivelNombre" value="">
+								<input type="hidden" id="gradoNombre" name="gradoNombre" value="">
+								<input type="hidden" id="dispositivoNombre" name="dispositivoNombre" value="">
 							</form>
 
 						</div>
