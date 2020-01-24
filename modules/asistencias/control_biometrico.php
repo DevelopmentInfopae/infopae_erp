@@ -157,8 +157,8 @@
 								$consulta2 = " select * from asistencia_enc$mes$periodoActual where mes = \"$mes\" and dia = \"$dia\" and cod_sede = \"$codSede\" ";
 								//echo "<br>$consulta2<br>";
 								$resultado2 = $Link->query($consulta2);
-
-								if($resultado2->num_rows > 0){
+					
+								if($resultado2 !== false && $resultado2->num_rows > 0){
 									//echo "En tabla de asistencias";
 
 									$row2 = $resultado2->fetch_assoc();
@@ -178,7 +178,7 @@ select IF(COUNT(f2.id)>2,1, COUNT(f2.id)) AS entregas, f2.*
 from biometria_reg br 
 left join  biometria b
 on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo)
-inner join focalizacion35 f2 on (b.num_doc=f2.num_doc)
+inner join focalizacion$semanaActual f2 on (b.num_doc=f2.num_doc)
 WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia
 GROUP BY f2.id
 									
@@ -214,7 +214,7 @@ GROUP BY f2.id
 from biometria_reg br 
 left join  biometria b
 on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo)
-inner join focalizacion35 f2 on (b.num_doc=f2.num_doc)
+inner join focalizacion$semanaActual f2 on (b.num_doc=f2.num_doc)
 WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia
 GROUP BY f2.id
 									
