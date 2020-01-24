@@ -5,17 +5,17 @@
 
 $(document).ready(function(){
 	$( "#btnBuscar" ).click(function() {
-        $('#loader').fadeIn();
-        if($('#form_asistencia').valid()){
-            //cargarEstudiantes();
-            console.log('Se va a cargar la interfaz de registro.');
-            //https://uniwebsidad.com/tutoriales/como-controlar-la-forma-en-la-que-se-cargan-las-fuentes-web
-            //$('#your_form').attr('action', 'http://uri-for-button1.com');
-            //submit
-        }else{
-            $('#loader').fadeOut();
-        }
-    });
+		$('#loader').fadeIn();
+		if($('#form_asistencia').valid()){
+			//cargarEstudiantes();
+			console.log('Se va a cargar la interfaz de registro.');
+			$('#form_asistencia').attr('action', 'dashboard.php');
+			$('#form_asistencia').submit();
+			$('#loader').fadeOut();
+		}else{
+			$('#loader').fadeOut();
+		}
+	});
 });
 
 

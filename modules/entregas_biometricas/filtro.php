@@ -20,7 +20,7 @@
 
 				<div class="ibox-content">
 
-					<div class="alert alert-success"> Seleccione los datos correspondientes a la fecha, grupo de estudiantes y dispositivo para los que se desea hacer el registro. </div>
+					<div class="alert alert-success"> Seleccione los datos correspondientes a al grupo de estudiantes y dispositivo para los que se desea hacer el registro. </div>
 					
 					<div class="row">
 						<div class="col-sm-12">

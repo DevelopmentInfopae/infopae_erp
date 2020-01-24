@@ -6,12 +6,36 @@
  * y el ingreso manual del numero de documento.
  * @author Ricardo Farfán <ricardo@xlogam.com>
  */
-	include '../../header.php';
+
+
+
+// G:\xampp\htdocs\infopae2019\modules\entregas_biometricas\dashboard.php:67:
+// array (size=9)
+//   'mes' => string '10' (length=2)
+//   'semana' => string '35b' (length=3)
+//   'municipio' => string '68307' (length=5)
+//   'institucion' => string '268307000370' (length=12)
+//   'sede' => string '26830700037001' (length=14)
+//   'nivel' => string '1' (length=1)
+//   'grado' => string '' (length=0)
+//   'grupo' => string '' (length=0)
+//   'dispositivo' => string '1' (length=1)
+
+
+
+
+
+
+
+
+
+
+ include '../../header.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
 	$periodoActual = $_SESSION["periodoActual"];
-	$titulo = "Asistencias";
+	$titulo = "entregas_biometricas";
 	$institucionNombre = "";
 
 	date_default_timezone_set('America/Bogota');
@@ -55,15 +79,10 @@
 ?>
 
 
-
-
-
-<link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
-<div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
-
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
 			<h2>Completar entregas biometricas</h2>
+			<?php var_dump($_POST); ?>
 			<ol class="breadcrumb">
 				<li>
 					<a href="<?php echo $baseUrl; ?>">Inicio</a>
@@ -117,11 +136,7 @@
 
 
 
-
-
-<?php include "filtro.php"  ?>
-
-<div class="wrapper wrapper-content  animated fadeInRight registroConsumo" style="display: none">
+<div class="wrapper wrapper-content  animated fadeInRight registroConsumo" >
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="ibox">
@@ -134,83 +149,116 @@
 					</div>
 				</div>
 				<div class="ibox-content">
-					<input type="hidden" id="semanaActual" value="<?php echo $semanaActual; ?>">
-					<input type="hidden" id="sede" value="">
-
+					<h2>INSTITUCIÓN EDUCATIVA AGUADA DE CEFERINO</h2>
+					<h2>SEDE A-AGUADA DE CEFERINO</h2>
+					<h3>PRIMARIA</h3>
+					<h4>QR001</h4>
+					<div class="row">
+						<div class="col-sm-4">
+							<span class="fecha-actual"></span>
+						</div>
+						<div class="col-sm-4">
+							<span class="hora-actual"></span>
+						</div>
+						<div class="col-sm-4">
+							CAPTURA
+						</div>
+					</div>
 
 					<div class="table-responsive table-asistencia">
 						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
 							<thead>
 								<tr>
-									<th>Asistencia</th>
-									<th>Documento</th>
+									<th>Registro</th>
 									<th>Nombre</th>
+									<th>Apellido</th>
 									<th>Grado</th>
 									<th>Grupo</th>
-									<th style="text-align: center;">
-										Consumió
-										<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header-consumio-all" data-columna="1"/> </div> 		
-									</th>
-									<th>Repite</th>
-									<th>
-										Repitió
-										<div class="i-checks text-center"> <input type="checkbox" class="checkbox-header-repitio-all" data-columna="1"/> </div> 
-									</th>
 								</tr>
 							</thead>
-
+							<tbody>
+								<tr>
+									<td>23/01/2020 8:08:00 A.M.</td>
+									<td>Pedro Jóse</td>
+									<td>Perez Gomez</td>
+									<td>Primero</td>
+									<td>101</td>
+								</tr>
+								<tr>
+									<td>23/01/2020 8:08:00 A.M.</td>
+									<td>Pedro Jóse</td>
+									<td>Perez Gomez</td>
+									<td>Primero</td>
+									<td>101</td>
+								</tr>
+								<tr>
+									<td>23/01/2020 8:08:00 A.M.</td>
+									<td>Pedro Jóse</td>
+									<td>Perez Gomez</td>
+									<td>Primero</td>
+									<td>101</td>
+								</tr>
+								<tr>
+									<td>23/01/2020 8:08:00 A.M.</td>
+									<td>Pedro Jóse</td>
+									<td>Perez Gomez</td>
+									<td>Primero</td>
+									<td>101</td>
+								</tr>
+								<tr>
+									<td>23/01/2020 8:08:00 A.M.</td>
+									<td>Pedro Jóse</td>
+									<td>Perez Gomez</td>
+									<td>Primero</td>
+									<td>101</td>
+								</tr>
+								<tr>
+									<td>23/01/2020 8:08:00 A.M.</td>
+									<td>Pedro Jóse</td>
+									<td>Perez Gomez</td>
+									<td>Primero</td>
+									<td>101</td>
+								</tr>
+								<tr>
+									<td>23/01/2020 8:08:00 A.M.</td>
+									<td>Pedro Jóse</td>
+									<td>Perez Gomez</td>
+									<td>Primero</td>
+									<td>101</td>
+								</tr>
+								<tr>
+									<td>23/01/2020 8:08:00 A.M.</td>
+									<td>Pedro Jóse</td>
+									<td>Perez Gomez</td>
+									<td>Primero</td>
+									<td>101</td>
+								</tr>
+								<tr>
+									<td>23/01/2020 8:08:00 A.M.</td>
+									<td>Pedro Jóse</td>
+									<td>Perez Gomez</td>
+									<td>Primero</td>
+									<td>101</td>
+								</tr>
+							</tbody>
 							<tfoot>
 								<tr>
-									<th>Asistencia</th>
-									<th>Documento</th>
+									<th>Registro</th>
 									<th>Nombre</th>
+									<th>Apellido</th>
 									<th>Grado</th>
-									<th>Grupo</th>	
-									<th>Consumió</th>
-									<th>Repite</th>
-									<th>Repitió</th>
+									<th>Grupo</th>
 								</tr>
 							</tfoot>
 						</table>
 					</div>
-					
-
-				<div class="hr-line-dashed"></div>
-				<div class="form-group row">
-					<div class="col-sm-12">
-						<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
-						<!-- <button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button> -->
-					</div>
+						
+					<div class="hr-line-dashed"></div>
 				</div>
 			</div>
-	</div>
+		</div>
+	</div><!-- /.row -->
 </div>
-</div><!-- /.row -->
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -290,8 +338,8 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/consumo_biometricos.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/dashboard.js?v=<?= $cacheBusting; ?>"></script>
 
 
 
