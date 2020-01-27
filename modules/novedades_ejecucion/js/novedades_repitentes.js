@@ -344,7 +344,7 @@ function buscar_focalizados()
       { data: 'maximo_D5', className: 'text-center'}
     ],
     order: [[3, 'asc'], [4, 'asc'], [2, 'asc']],
-    dom: 'r<"containerBtn"><"inputFiltro"f>tip',
+    dom: 'r<"containerBtn">tip',
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros',
       sZeroRecords: 'No se encontraron registros',
@@ -632,6 +632,7 @@ function restarCantidadDias(checkbox)
 function guardar_novedades_repitentes()
 {
 	var formData = new FormData($("#formulario_guardar_novedades_repitentes")[0]);
+
 	$.ajax({
 		url: 'functions/fn_novedades_repitentes_guardar.php',
 		type: 'POST',

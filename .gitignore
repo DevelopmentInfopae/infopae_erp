@@ -1,8 +1,5 @@
-\.DS_Store
-db/conexion\.php
-
-config\.php
-
-modules/manipuladoras/usb_bak/Instalador NODE JS/~$NFIGURACIÓN NODE JS.docx
-
-modules/manipuladoras/usb_bak/Instalador NODE JS/CONFIGURACIÓN NODE JS.docx
+# exclude uploads in novedades menu
+upload/novedades/menu/*
+config.php
+functions/*.txt
+db/conexion.php

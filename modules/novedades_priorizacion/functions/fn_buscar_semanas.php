@@ -23,7 +23,6 @@
 
 // Buscando la existencia de tablas de prorización
 $consulta = " SELECT TABLE_NAME AS tabla FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$Database' and TABLE_NAME LIKE 'priorizacion%' ";
-//var_dump($consulta);
 $resultado = $Link->query($consulta) or die ('Unable to execute query - Buscando Meses '. mysqli_error($Link));
 $tablasPriorizacion = array();
 if($resultado->num_rows >= 1){
@@ -31,15 +30,12 @@ if($resultado->num_rows >= 1){
 		$tablasPriorizacion[] =  substr($row['tabla'],12);
 	}
 }
-//var_dump($tablasPriorizacion);
 
 // Se va a revizar cada tabla de prirización
 $semanasMostrar = array();
 foreach ($semanas as $semana) {
 	if (in_array($semana, $tablasPriorizacion)) {
-		//echo "<br>Existe la tabla de priorización<br>";
-		$consulta = " select * from priorizacion$semana where cod_sede = '$sede' ";
-		//var_dump($consulta);
+		$consulta = "SELECT * FROM priorizacion$semana WHERE cod_sede = '$sede'";
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		if($resultado->num_rows >= 1){
 			$semanasMostrar[] = $semana;
@@ -50,10 +46,11 @@ foreach ($semanas as $semana) {
 //var_dump($semanasMostrar);
 $aux = 0;
 foreach ($semanasMostrar as $semanaMostrar) {
-	$respuesta .= "<label for=\"semana$aux\">
-										<input type=\"radio\" class=\"semana\" id=\"semana$aux\" name=\"semana\" value=\"$semanaMostrar\">
-										$semanaMostrar
-									</label>";
+	$respuesta .= '<div class="radio-inline">
+					<label for="semana'.$aux.'">
+						<input type="radio" class="semana" id="semana'.$aux.'" name="semana" value="'.$semanaMostrar.'"> '.$semanaMostrar.
+					'</label>
+				</div>';
 	$aux++;
 }
-echo json_encode(array("log"=>$log, "respuesta"=>'<div class="radio">'. $respuesta ."</div>"));
+echo json_encode(array("log"=>$log, "respuesta"=>$respuesta));

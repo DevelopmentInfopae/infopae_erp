@@ -1,6 +1,6 @@
-<?php 
+<?php
 $titulo = 'Nuevo menú de complementos alimentarios';
-require_once '../../header.php'; 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 ?>
 
@@ -34,7 +34,7 @@ $periodoActual = $_SESSION['periodoActual'];
         <div class="ibox-content contentBackground">
           <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"><!-- COLLAPSE -->
             <div class="panel panel-default">
-              <div class="panel-heading clearfix" role="tab" id="headingOne"> 
+              <div class="panel-heading clearfix" role="tab" id="headingOne">
                 <h4 class="panel-title"><span class="fa fa-file-text-o"></span>   Datos del menú
                   <a role="button" data-toggle="collapse" data-parent="#accordion" href="#producto" aria-expanded="true" aria-controls="producto" id="verDatosProducto" class="pull-right" style="color: #337ab7;">Editar</a>
                 </h4>
@@ -86,7 +86,7 @@ $periodoActual = $_SESSION['periodoActual'];
                       <label>Grupo Etario</label>
                       <select class="form-control" name="Cod_Grupo_Etario" id="Cod_Grupo_Etario">
                         <option value="">Seleccione...</option>
-                        <?php 
+                        <?php
                         $consultaGrupoEtario = "select * from grupo_etario";
                         $resultadoGrupoEtario = $Link->query($consultaGrupoEtario);
                         if ($resultadoGrupoEtario->num_rows > 0) {
@@ -151,7 +151,7 @@ $periodoActual = $_SESSION['periodoActual'];
             <div class="panel panel-default" id="fichaTecnicaPanel">
               <div class="panel-heading" role="tab" id="headingTwo">
                 <h4 class="panel-title"><span class="fa fa-list-alt"></span> Composición del menú
-                  
+
                   <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#fichaTecnica" aria-expanded="false" aria-controls="fichaTecnica" style="display: none;" id="verFichaTecnica"></a>
                 </h4>
               </div>
@@ -176,7 +176,7 @@ $periodoActual = $_SESSION['periodoActual'];
                         <tbody id="tbodyProductos">
                           <tr class="productoFichaTecnicaDet">
                             <td>
-                              <select class="form-control" name="productoFichaTecnicaDet[1]" id="productoFichaTecnicaDet1" onchange="obtenerUnidadMedidaProducto(this, 1);" required>
+                              <select class="form-control" name="productoFichaTecnicaDet[1]" id="productoFichaTecnicaDet1" onchange="obtenerUnidadMedidaProducto(this, 1);" style="width: 100%;" required>
                                 <option value="">Cargando...</option>
                               </select>
                             </td>

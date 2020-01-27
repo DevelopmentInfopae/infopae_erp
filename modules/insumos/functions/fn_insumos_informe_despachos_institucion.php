@@ -11,10 +11,46 @@ if (isset($_POST['sedes'])) {
 	echo "<script>alert('No se ha definido sede.');</script>";
 }
 
-if (isset($_POST['tablaMes'])) {
-	$tablaMes = $_POST['tablaMes'];
+if (isset($_POST['tablaMesInicio'])) {
+	$tablaMes = $_POST['tablaMesInicio'];
 } else {
 	echo "<script>alert('No se ha definido mes.');</script>";
+}
+
+$despachos_seleccionados = $_POST['despachos_seleccionados'];
+$despachos_seleccionados = trim($despachos_seleccionados, ", ");
+$ds = explode(", ", $despachos_seleccionados);
+$ds_mes = [];
+
+$meses_involucrados = [];
+$id_despachos = [];
+$id_in = '(';
+
+foreach ($ds as $id => $value) {
+	$sd = explode("_", $value);
+
+	$ds_mes[$id]['id_despacho'] = $sd[0];
+	$ds_mes[$id]['mes_despacho'] = $sd[1];
+
+	$id_in .= $sd[0].', ';
+
+	if (!isset($id_despachos[$sd[0]])) {
+		$id_despachos[(Int) $sd[0]] = 1;
+	}
+
+	if (!isset($meses_involucrados[$sd[1]])) {
+		$meses_involucrados[(Int) $sd[1]] = 1;
+	}
+
+}
+
+$id_in = trim($id_in, ', ');
+$id_in .= ')';
+
+// exit(var_dump($id_in));
+
+if (count($meses_involucrados) > 1) {
+	echo "<script>alert('No puede escoger despachos de diferentes meses para este informe.');</script>";
 }
 
 $sedeTabla = "sedes".$_SESSION['periodoActual'];
@@ -41,11 +77,8 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	class PDF extends FPDF
 	{
 
-		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho, $mes){
+		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho, $mes, $coberturaComplemento){
 			$this->fecha = $fecha;
-			// setlocale(LC_TIME, 'es');
-			// $fecha = DateTime::createFromFormat('!m', $mes);
-			// $mes = ucfirst(strftime("%B", $fecha->getTimestamp())); // marzo
 			$this->mes = mesNombre($mes);
 			$this->dpto = $dpto;
 			$this->sedes = $sedes;
@@ -56,6 +89,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->maxManipuladoras = $maxManipuladoras;
 			$this->nom_inst = $nom_inst;
 			$this->ciudad_despacho = $ciudad_despacho;
+			$this->coberturaComplemento = $coberturaComplemento;
 		}
 
 		function Header()
@@ -83,24 +117,40 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(32,$this->alturaRenglon,utf8_decode('MUNICIPIO O VEREDA: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    // $this->Cell(106.5,$this->alturaRenglon,utf8_decode($this->Ciudad),'BR',1,'L'); //MUNICIPIO DE SEDE - REEMPLAZAR
 		    $this->Cell(70,$this->alturaRenglon,utf8_decode($this->ciudad_despacho),'BR',0,'L'); //MUNICIPIO DE SEDE - REEMPLAZAR
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(55,$this->alturaRenglon,utf8_decode('INSTITUCIÓN O CENTRO EDUCATIVO: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    // $this->Cell(100,$this->alturaRenglon,utf8_decode($this->nom_inst),'BR',0,'L'); //INSTITUCIÓN - REEMPLAZZAR
 		    $this->Cell(100,$this->alturaRenglon,utf8_decode($this->nom_inst),'BR',0,'L'); //INSTITUCIÓN - REEMPLAZZAR
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(32.5,$this->alturaRenglon,utf8_decode('N° MANIPULADORAS: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    // $this->Cell(32.5,$this->alturaRenglon,utf8_decode($this->dataInst['cantidad_Manipuladora']),'BR',0,'L');
 		    $this->Cell(10,$this->alturaRenglon,utf8_decode($this->maxManipuladoras),'BR',0,'L');
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Cell(32.5,$this->alturaRenglon,utf8_decode('TOTAL COBERTURA: '),'BL',0,'L');
 		    $this->SetFont('Arial','',$this->fontSize);
-		    // $this->Cell(32.5,$this->alturaRenglon,utf8_decode($this->maxEstudiantes),'BR',1,'L');
-		    $this->Cell(10,$this->alturaRenglon,utf8_decode($this->maxEstudiantes),'BR',1,'L');
+		    $maxEstudiantes = (isset($this->coberturaComplemento['APS']) ? $this->coberturaComplemento['APS'] : 0) +
+		    				  (isset($this->coberturaComplemento['CAJMPS']) ? $this->coberturaComplemento['CAJMPS'] : 0) +
+		    				  (isset($this->coberturaComplemento['CAJMRI']) ? $this->coberturaComplemento['CAJMRI'] : 0) +
+		    				  (isset($this->coberturaComplemento['CAJTRI']) ? $this->coberturaComplemento['CAJTRI'] : 0) +
+		    				  (isset($this->coberturaComplemento['CAJTPS']) ? $this->coberturaComplemento['CAJTPS'] : 0);
+		    $this->Cell(10,$this->alturaRenglon,utf8_decode($maxEstudiantes),'BR',1,'L');
     		//Salto de línea
+
+		    //ANCHO MÁXIMO 342
+
+
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('APS'),'LBR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['APS']) ? $this->coberturaComplemento['APS'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJMPS'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJMPS']) ? $this->coberturaComplemento['CAJMPS'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJMRI'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJMRI']) ? $this->coberturaComplemento['CAJMRI'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJTRI'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJTRI']) ? $this->coberturaComplemento['CAJTRI'] : '-')),'BR',0,'L');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode('CAJTPS'),'BR',0,'C');
+		    $this->Cell(34.2,$this->alturaRenglon,utf8_decode((isset($this->coberturaComplemento['CAJTPS']) ? $this->coberturaComplemento['CAJTPS'] : '-')),'BR',1,'L');
+
 		    $this->Ln(1);
 		    $this->SetFont('Arial','B',$this->fontSize);
 
@@ -143,7 +193,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','B',$this->fontSize);
 
 
-		    $this->Cell(36,15,utf8_decode("FIRMA MANIPULADORA"),'TBR',0,'C');
+		    $this->Cell(36,15,utf8_decode("FIRMA QUIÉN RECIBE"),'TBR',0,'C');
 
 
 		    $this->Ln();
@@ -157,10 +207,16 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	$productos_sede = [];
 	$maxEstudiantes = [];
 	$maxManipuladoras = [];
+	$coberturaComplemento = [];
 
 	$pdf = new PDF('L', 'mm', 'Legal');
 	$pdf->AliasNbPages();
 	$pdf->SetMargins(7, 7);
+
+
+
+	$inst_cobertura_sede_sumada = [];
+	$inst_estudiante_sede_sumada = [];
 
 foreach ($sedes as $key => $sede) {
 	$consultaSede = "SELECT
@@ -196,32 +252,31 @@ foreach ($sedes as $key => $sede) {
 		}
 	}
 
-	$sumaCoberturasEtario = "";
+	$dataInst[$codigo_inst][$sede]['complemento'] = [];
 
-	foreach ($gruposEtarios as $ID => $DESCRIPCION) {
-		$sumaCoberturasEtario.=" MAX(Etario".$ID."_APS+Etario".$ID."_CAJMRI+Etario".$ID."_CAJTRI+Etario".$ID."_CAJMPS) as Etario".$ID." ,";
-    }
-
-    $sumaCoberturasEtario = trim($sumaCoberturasEtario, " ,");
-
-	$consultaEtariosCobertura = "SELECT MAX(APS) + MAX(CAJMPS)+ MAX(CAJMRI)+ MAX(CAJTRI) AS cant_Estudiantes, $sumaCoberturasEtario FROM sedes_cobertura WHERE cod_sede = '".$sede."' and mes= '".$tablaMes."' GROUP BY cod_sede";
-	$resultadoEtariosCobertura = $Link->query($consultaEtariosCobertura);
-	if ($resultadoEtariosCobertura->num_rows > 0) {
-		if ($EtariosCobertura = $resultadoEtariosCobertura->fetch_assoc()) {
-			if (!isset($maxEstudiantes[$codigo_inst])) {
-				$maxEstudiantes[$codigo_inst] = $EtariosCobertura["cant_Estudiantes"];
-			} else {
-				$maxEstudiantes[$codigo_inst] += $EtariosCobertura["cant_Estudiantes"];
-			}
-
-			// $maxEstudiantes += $EtariosCobertura["cant_Estudiantes"];
-		}
-	}
-
-	$consultaDespacho = "SELECT * FROM $insumosmov WHERE BodegaDestino = '".$sede."'";
+	$consultaDespacho = "SELECT * FROM $insumosmov WHERE BodegaDestino = '".$sede."' AND ID IN ".$id_in;
 	$resultadoDespacho = $Link->query($consultaDespacho);
 	if ($resultadoDespacho->num_rows > 0) {
 		while ($Despacho = $resultadoDespacho->fetch_assoc()) {
+
+			if (!isset($maxEstudiantes[$codigo_inst])) {
+				$maxEstudiantes[$codigo_inst] = $Despacho["Cobertura"];
+				$inst_estudiante_sede_sumada[$codigo_inst][$sede] = 1;
+			} else {
+				if (!isset($inst_estudiante_sede_sumada[$codigo_inst][$sede])) {
+					$maxEstudiantes[$codigo_inst] += $Despacho["Cobertura"];
+				}
+			}
+
+			if (!isset($coberturaComplemento[$codigo_inst][$Despacho['Complemento']])) {
+				$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] = $Despacho["Cobertura"];
+				$inst_cobertura_sede_sumada[$codigo_inst][$sede] = 1;
+			} else {
+				if (!isset($inst_cobertura_sede_sumada[$codigo_inst][$sede])) {
+					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];
+				}
+			}
+
 		    $consultaDetalles = "SELECT producto.id as pId, producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
 		    					INNER JOIN productos".$_SESSION['periodoActual']." as producto ON producto.Codigo = insmovdet.CodigoProducto
 		     					WHERE insmovdet.Numero = '".$Despacho['Numero']."'";
@@ -236,26 +291,25 @@ foreach ($sedes as $key => $sede) {
 		    			$fecha_despacho = $Despacho['FechaMYSQL'];
 		    		}
 
-		    		$productos_sede[$sede][$detalles['pId']] = $detalles;
+		    		$productos_sede[$sede][$detalles['pId']][$Despacho['Complemento']] = $detalles;
 		    	}
 		    }
+
+			$dataInst[$codigo_inst][$sede]['complemento'][] = $Despacho['Complemento'];
 		}
 	}
 }
 
-// var_dump($dataInst);
-// var_dump($nom_inst);
-
-
+// exit(var_dump($coberturaComplemento));
 
 $fontSize = 7;
 $alturaRenglon = 6;
 
-
-
 foreach ($dataInst as $cod_inst => $sedes) {
 
-	$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, $maxEstudiantes[$cod_inst], $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMes);
+
+
+	$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMes, $coberturaComplemento[$cod_inst]);
 	$pdf->AddPage();
 	$pdf->SetFont('Arial','',$fontSize);
 
@@ -273,13 +327,17 @@ foreach ($dataInst as $cod_inst => $sedes) {
 
 		$pdf->Cell(60.75,$alturaRenglon,utf8_decode($sName),'LBR',0,'C',False);
 
+
 		foreach ($productos as $id => $producto) {
+			$cantidad = 0;
 			if (isset($productos_sede[$cod_sede][$id])) {
-				$cantidad = number_format($productos_sede[$cod_sede][$id]['NombreUnidad1'] == 'u' ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'kg') || strpos($productos_sede[$cod_sede][$id]['NombreUnidad2'], 'lt') ? ceil($productos_sede[$cod_sede][$id]['CanTotalPresentacion']) : $productos_sede[$cod_sede][$id]['CanTotalPresentacion'], 2, '.', ',');
+				foreach ($productos_sede[$cod_sede][$id] as $complemento => $producto_2) {
+					$cantidad += number_format($producto_2['NombreUnidad1'] == 'u' ? ceil($producto_2['CanTotalPresentacion']) : strpos($producto_2['NombreUnidad2'], 'kg') || strpos($producto_2['NombreUnidad2'], 'lt') ? ceil($producto_2['CanTotalPresentacion']) : $producto_2['CanTotalPresentacion'], 2, '.', ',');
 
-				$uP = " (".str_replace(" ", "", $productos_sede[$cod_sede][$id]['Umedida']).")";
+					$uP = " (".str_replace(" ", "", $producto_2['Umedida']).")";
 
-				$cantidad.=$uP;
+					$cantidad.=$uP;
+				}
 
 			} else {
 				$cantidad = "-";

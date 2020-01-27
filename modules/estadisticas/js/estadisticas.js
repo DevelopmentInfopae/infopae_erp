@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	
+
 	CargarTablas();
 
 	$('.exportarEstadisticas').on('click', function(){
@@ -18,16 +18,7 @@ var coordenadas = {"11001":{"Latitud":"4.6","Longitud":"-74.0833333"},"13001":{"
 
 var jvectorDept = {"76" : "CO-VAC", "13" : "CO-BOY", "20" : "CO-COR", "41" : "CO-HUI", "97" : "CO-VAU", "54" : "CO-NSA", "66" : "CO-RIS", "99" : "CO-VID", "11" : "CO-BOL", "27" : "CO-CUN", "95" : "CO-GUV", "85" : "CO-CAU", "18" : "CO-CAS", "17" : "CO-CAQ", "19" : "CO-CES", "68" : "CO-SAN", "08" : "CO-ATL", "91" : "CO-AMA", "50" : "CO-MET", "47" : "CO-MAG", "81" : "CO-ARA", "94" : "CO-GUA", "88" : "CO-SAP", "15" : "CO-CAL", "63" : "CO-QUI", "44" : "CO-LAG", "73" : "CO-TOL", "70" : "CO-SUC", "86" : "CO-PUT", "52" : "CO-NAR", "23" : "CO-CHO", "25" : "CO-DC", "05" : "CO-ANT"};
 
-var mesesNom = {'01' : "Enero", "02" : "Febrero", "03" : "Marzo", "04" : "Abril", "05" : "Mayo", "06" : "Junio", "07" : "Julio", "08" : "Agosto", "09" : "Septiembre", "10" : "Octubre", "11" : "Noviembre", "12" : "Diciembre"};
-
-function arreglarDivs(){
-	var heights = $(".col-sm-4").map(function() {
-        return $(this).height();
-    }).get(),
-    maxHeight = Math.max.apply(null, heights);
-    $(".col-sm-4").height(maxHeight);
-    $(".col-sm-8").height(maxHeight);
-}
+var mesesNom = {'1' : "Enero", "2" : "Febrero", "3" : "Marzo", "4" : "Abril", "5" : "Mayo", "6" : "Junio", "7" : "Julio", "8" : "Agosto", "9" : "Septiembre", "10" : "Octubre", "11" : "Noviembre", "12" : "Diciembre"};
 
 function CargarTablas(){
 	$('#loader').fadeIn();
@@ -39,8 +30,8 @@ function CargarTablas(){
 		$('#tHeadSemana').html(data['thead']);
 		$('#tBodySemana').html(data['tbody']);
 		$('#tFootSemana').html(data['tfoot']);
-		$('.verGraficas').on('click', 
-			function(){ 
+		$('.verGraficas').on('click',
+			function(){
 				$('.exportarEstadisticas').css('display', '');
 				$('#filtroSemana').css('display', '');
 				verSemana($(this).data('semana'), data['diasSemanas'], data['tipoComplementos']);
@@ -69,6 +60,7 @@ function CargarTablas(){
 			data : {"diasSemanas" : data['diasSemanas'], "tipoComplementos" : data['tipoComplementos']},
 			success:function(data){
 				data = JSON.parse(data);
+
 				$('#tHeadComp').html(data['thead']);
 				$('#tBodyComp').html(data['tbody']);
 				$('#tFootComp').html(data['tfoot']);
@@ -100,42 +92,39 @@ function CargarTablas(){
 			$.ajax({
 				type : "POST",
 				url : "functions/fn_estadisticas_tabla_totales_municipios.php",
-				data : {"diasSemanas" : data['diasSemanas']},
-				error : function(data){
-					console.log("Error :"+data);
-				}, 
-				success : function(data){
-					data = JSON.parse(data);
+				dataType: 'JSON',
+				data : {
+					"diasSemanas" : data['diasSemanas']
+				},
+				success : function(data) {
 					$('#tHeadSemanaMun').html(data['thead']);
 					$('#tBodySemanaMun').html(data['tbody']);
 					$('#tFootSemanaMun').html(data['tfoot']);
 					info = data['info'];
 					dataset1 = $('#tablaMunicipios').DataTable({
-				    order: [ 0, 'asc' ],
-				    pageLength: 10,
-				    responsive: true,
-				    dom : 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons" B>',
-				    buttons : [{extend:'excel', title:'Dispositivos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4]}}],
-				    oLanguage: {
-				      sLengthMenu: 'Mostrando _MENU_ registros por pÁgina',
-				      sZeroRecords: 'No se encontraron registros',
-				      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-				      sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-				      sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-				      sSearch:         'Buscar: ',
-				      oPaginate:{
-				        sFirst:    'Primero',
-				        sLast:     'Último',
-				        sNext:     'Siguiente',
-				        sPrevious: 'Anterior'
-				      }
-				    }
+					    order: [ 0, 'asc' ],
+					    pageLength: 10,
+					    responsive: true,
+					    dom : 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons" B>',
+					    buttons : [{extend:'excel', title:'Dispositivos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4]}}],
+					    oLanguage: {
+					      sLengthMenu: 'Mostrando _MENU_ registros por pÁgina',
+					      sZeroRecords: 'No se encontraron registros',
+					      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+					      sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+					      sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+					      sSearch:         'Buscar: ',
+					      oPaginate:{
+					        sFirst:    'Primero',
+					        sLast:     'Último',
+					        sNext:     'Siguiente',
+					        sPrevious: 'Anterior'
+					      }
+					    }
 				    });
 
 					markersJ = [];
 					cityAreaData = [];
-
-					console.log(info);
 
 				    $.each(info, function(ciudad, total){
 				    		markersJ.push({latLng : [ coordenadas[ciudad]['Latitud'], coordenadas[ciudad]['Longitud'] ], name : "Muncipio : \n"+total[1]+" = "+total[0]});
@@ -167,19 +156,11 @@ function CargarTablas(){
 					  $('#map').vectorMap('get','mapObject').setFocus({region: jvectorDept[data['codDepartamento']], animate: true});
 					});
 
-				    // info = data['info'];
-				    // console.log(info);
-				    // json = [];
-				    // json[0] = ['Ciudad', 'Total'];
-				    // $.each(info, function(ciudad, total){
-				    // 	json.push([ciudad, total]);
-				    // });
-				    // console.log(json);
-					// google.charts.load('current', {packages: ['corechart', 'bar']});
-					// google.charts.setOnLoadCallback(function(){
-					// armarGrafica2(json, 'Totales por municipio  y semana', 'Ordenado por semana', 'graficaTotalesMunicipio', 'none', 1);});
 					setTimeout(function() {$('#loader').fadeOut();}, 2000);
-				}
+				},
+				error : function(data){
+					console.log(data.responseText);
+				},
 			});
 
 			$.ajax({
@@ -212,7 +193,7 @@ function CargarTablas(){
 				$.each(data['totales'], function(complemento, total){
 					json[cnt].push(total);
 				});
-				console.log(json);
+
 				google.charts.load('current', {packages: ['corechart', 'bar']});
 				google.charts.setOnLoadCallback(function(){
 					armarGrafica(json, 'Valor de recursos ejecutados', 'Ordenado por mes', 'graficaValoresEjecutados', 'right', 1);
@@ -272,7 +253,7 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 			google.charts.setOnLoadCallback(function(){
 				armarGrafica(json, 'Totales Tipo complemento por semana', 'Semana seleccionada', 'graficaComplementoSemanas', 'none', 0);
 			});
-		} 
+		}
 	});
 
 	$.ajax({
@@ -301,7 +282,7 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 						json[numGE] = [];
 						json[numGE].push(complemento);
 						complementoCreado.push(complemento);
-					} 
+					}
 					if (!etarioCreado.includes(etario)) {
 						etarioCreado.push(etario);
 						json[0].push(etario);
@@ -320,12 +301,12 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 			$.each(info, function(etario, ArrayT){
 				numGE2 = 1;
 				$.each(ArrayT, function(complemento, total){
-					json[numGE2].push(parseInt(total));		
+					json[numGE2].push(parseInt(total));
 					numGE2++;
 				});
 			});
 
-			
+
 			numGE3 = json.length;
 			json[numGE3] = [];
 			json[numGE3].push('Total');
@@ -380,8 +361,6 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 
 
 function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
-
-    // console.log(json);
     var data = google.visualization.arrayToDataTable(json);
 
     if (multiColumn == 1) {
@@ -399,13 +378,13 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
 			        role: "annotation"
 				});
 			}
-		// console.log(viewJSON);
+
 		data.setColumns(viewJSON);
     }
     var options = {
     	title: titulo,
         width: "100%",
-        height: "40%",
+        height: 300,
         bar: {groupWidth: "95%"},
         chart: {
           title: titulo,
@@ -416,15 +395,15 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
         },
         annotations : {
         	textStyle: {
-		      fontSize: 12,
+		      fontSize: 10,
 		      bold: true,
-		      italic: true,
+		      italic: false,
 		      color: '#ffffff',
-		      auraColor: '#000000',
+		      auraColor: '#676a6c',
 		      opacity: 0.8
 		    }
         },
-        colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA']
+        colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA', '#9af5d9']
     };
 
     var chart = new google.visualization.ColumnChart(document.getElementById(idDiv));
@@ -432,8 +411,6 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
     }
 
 function armarGrafica2(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
-
-    // console.log(json);
     var data = google.visualization.arrayToDataTable(json);
 
     if (multiColumn == 1) {
@@ -451,7 +428,7 @@ function armarGrafica2(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
 			        role: "annotation"
 				});
 			}
-		// console.log(viewJSON);
+
 		data.setColumns(viewJSON);
     }
     var options = {

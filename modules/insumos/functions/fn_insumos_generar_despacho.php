@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
@@ -18,7 +18,146 @@ function obtenerNumDoc($tabla, $Link){
 	}
 }
 
-function calcularCantidad($cins, $sede, $Link, $mes){
+function obtenerCoberturas($sede, $Link, $mes, $complemento){
+
+	$cupos = []; $coberturas = [];
+
+	if ($complemento == 'APS') {
+
+		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
+							(Etario1_APS) AS Cobertura_G1,
+							(Etario2_APS) AS Cobertura_G2,
+							(Etario3_APS) AS Cobertura_G3,
+							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
+							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
+							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
+							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
+							mes
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+
+	} else if ($complemento == 'CAJMRI') {
+
+		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
+							(Etario1_CAJMRI) AS Cobertura_G1,
+							(Etario2_CAJMRI) AS Cobertura_G2,
+							(Etario3_CAJMRI) AS Cobertura_G3,
+							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
+							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
+							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
+							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
+							mes
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+
+	} else if ($complemento == 'CAJTRI') {
+
+		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
+							(Etario1_CAJTRI) AS Cobertura_G1,
+							(Etario2_CAJTRI) AS Cobertura_G2,
+							(Etario3_CAJTRI) AS Cobertura_G3,
+							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
+							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
+							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
+							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
+							mes
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+
+	} else if ($complemento == 'CAJMPS') {
+
+		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
+							(Etario1_CAJMPS) AS Cobertura_G1,
+							(Etario2_CAJMPS) AS Cobertura_G2,
+							(Etario3_CAJMPS) AS Cobertura_G3,
+							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
+							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
+							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
+							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
+							mes
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+
+	} else if ($complemento == 'ALL') {
+
+		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
+							(Etario1_APS + Etario1_CAJMRI + Etario1_CAJTRI + Etario1_CAJMPS) AS Cobertura_G1,
+							(Etario2_APS + Etario2_CAJMRI + Etario2_CAJTRI + Etario2_CAJMPS) AS Cobertura_G2,
+							(Etario3_APS + Etario3_CAJMRI + Etario3_CAJTRI + Etario3_CAJMPS) AS Cobertura_G3,
+							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
+							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
+							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
+							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
+							mes
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+
+	}
+
+	$resultadoCupos = $Link->query($consultaCupos);
+	if ($resultadoCupos->num_rows > 0) {
+		while ($cps = $resultadoCupos->fetch_assoc()) {
+			$cupos[$cps['mes']]['Cobertura'] = $cps['Cupos'];
+			$cupos[$cps['mes']]['Cobertura_G1'] = $cps['Cobertura_G1'];
+			$cupos[$cps['mes']]['Cobertura_G2'] = $cps['Cobertura_G2'];
+			$cupos[$cps['mes']]['Cobertura_G3'] = $cps['Cobertura_G3'];
+			$cupos[$cps['mes']]['Cobertura_APS'] = $cps['Cobertura_APS'];
+			$cupos[$cps['mes']]['Cobertura_CAJMRI'] = $cps['Cobertura_CAJMRI'];
+			$cupos[$cps['mes']]['Cobertura_CAJTRI'] = $cps['Cobertura_CAJTRI'];
+			$cupos[$cps['mes']]['Cobertura_CAJMPS'] = $cps['Cobertura_CAJMPS'];
+		}
+	}
+
+	if (isset($cupos[$mes])) { //si hay cupos para el mes registrados
+
+		if ($complemento == 'APS') {
+			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_APS'];
+		} else if ($complemento == 'CAJMRI') {
+			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJMRI'];
+		} else if ($complemento == 'CAJTRI') {
+			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJTRI'];
+		} else if ($complemento == 'CAJMPS') {
+			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJMPS'];
+		} else if ($complemento == 'ALL') {
+			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura'];
+		}
+		// $coberturas['Cobertura'] = $cupos[$mes]['Cobertura'];
+		$coberturas['Cobertura_G1'] = $cupos[$mes]['Cobertura_G1'];
+		$coberturas['Cobertura_G2'] = $cupos[$mes]['Cobertura_G2'];
+		$coberturas['Cobertura_G3'] = $cupos[$mes]['Cobertura_G3'];
+		$coberturas['Cobertura_APS'] = $cupos[$mes]['Cobertura_APS'];
+		$coberturas['Cobertura_CAJMRI'] = $cupos[$mes]['Cobertura_CAJMRI'];
+		$coberturas['Cobertura_CAJTRI'] = $cupos[$mes]['Cobertura_CAJTRI'];
+		$coberturas['Cobertura_CAJMPS'] = $cupos[$mes]['Cobertura_CAJMPS'];
+	} else { //si no hay cupos para el mes registados
+		if (count($cupos) > 0) { //Si hay cupos registrados para otros meses
+
+			$cupos_duplicar = current($cupos); //se calcula la cantidad a despachar con el primer mes del array
+
+			// if ($complemento == 'APS') {
+			// 	$coberturas['Cobertura'] = $cupos_duplicar[$mes]['Cobertura_APS'];
+			// } else if ($complemento == 'CAJMRI') {
+			// 	$coberturas['Cobertura'] = $cupos_duplicar[$mes]['Cobertura_CAJMRI'];
+			// } else if ($complemento == 'CAJTRI') {
+			// 	$coberturas['Cobertura'] = $cupos_duplicar[$mes]['Cobertura_CAJTRI'];
+			// } else if ($complemento == 'CAJMPS') {
+			// 	$coberturas['Cobertura'] = $cupos_duplicar[$mes]['Cobertura_CAJMPS'];
+			// } else if ($complemento == 'ALL') {
+			// 	$coberturas['Cobertura'] = $cupos_duplicar[$mes]['Cobertura'];
+			// }
+			$coberturas['Cobertura'] = $cupos_duplicar['Cobertura'];
+			$coberturas['Cobertura_G1'] = $cupos_duplicar['Cobertura_G1'];
+			$coberturas['Cobertura_G2'] = $cupos_duplicar['Cobertura_G2'];
+			$coberturas['Cobertura_G3'] = $cupos_duplicar['Cobertura_G3'];
+			$coberturas['Cobertura_APS'] = $cupos_duplicar[$mes]['Cobertura_APS'];
+			$coberturas['Cobertura_CAJMRI'] = $cupos_duplicar[$mes]['Cobertura_CAJMRI'];
+			$coberturas['Cobertura_CAJTRI'] = $cupos_duplicar[$mes]['Cobertura_CAJTRI'];
+			$coberturas['Cobertura_CAJMPS'] = $cupos_duplicar[$mes]['Cobertura_CAJMPS'];
+		}
+	}
+
+	return $coberturas;
+
+}
+
+function calcularCantidad($cins, $sede, $Link, $mes, $complemento){
+
+	$coberturas = [];
 
 	$consultaParametro = "SELECT CantidadCupos FROM parametros";
 	$resultadoParametro = $Link->query($consultaParametro);
@@ -30,9 +169,8 @@ function calcularCantidad($cins, $sede, $Link, $mes){
 		$cantCuposCalcular = 100;
 	}
 
-
 	$datos = datosProducto($cins, $sede, $Link);
-	$cantxMes = $datos['cantxMes'];
+	$cantxMes = $datos['cantxMes'] > 0 ? $datos['cantxMes'] : 1;
 
 	if (strpos($datos['uMedida2'], " kg") || strpos($datos['uMedida2'], " lt")) {
 		$cantxMes = $cantxMes * 1000;
@@ -42,18 +180,25 @@ function calcularCantidad($cins, $sede, $Link, $mes){
 
 	$conteoIns = substr($cins, 2, 2);
 	if ($conteoIns == "01") { //cupos
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND mes = '".$mes."'";
-		$resultadoCupos = $Link->query($consultaCupos);
-		if ($resultadoCupos->num_rows > 0) {
-			if ($cuposInf = $resultadoCupos->fetch_assoc()) {
-				$cupos = $cuposInf['Cupos'];
-			}
 
-			$cantidad = ceil($cupos / $cantCuposCalcular) * $cantxMes;
-			
-		}
+		$coberturas = obtenerCoberturas($sede, $Link, $mes, $complemento);
+		$cantidad = ceil($coberturas['Cobertura'] / $cantCuposCalcular) * $cantxMes;
+
 	} else if ($conteoIns == "02") {//manipuladores
-		$consultaManipuladores = "SELECT cantidad_Manipuladora AS manipuladores FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = '".$sede."'";
+
+		if ($complemento == 'APS') {
+			$select = 'Manipuladora_APS';
+		} else if ($complemento == 'CAJMRI') {
+				$select = 'Manipuladora_CAJMRI';
+		} else if ($complemento == 'CAJTRI') {
+				$select = 'Manipuladora_CAJTRI';
+		} else if ($complemento == 'CAJMPS') {
+				$select = 'Manipuladora_CAJMPS';
+		} else if ($complemento == 'ALL') {
+				$select = 'cantidad_Manipuladora';
+		}
+
+		$consultaManipuladores = "SELECT ".$select." AS manipuladores FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = '".$sede."'";
 		$resultadoManipuladores = $Link->query($consultaManipuladores);
 		if ($resultadoManipuladores->num_rows > 0) {
 			if ($manipInf = $resultadoManipuladores->fetch_assoc()) {
@@ -61,8 +206,11 @@ function calcularCantidad($cins, $sede, $Link, $mes){
 			}
 			$cantidad = $cantxMes * $manipuladores;
 		}
-	} else if ($conteoIns == "03") {//individual
+
+	} else if ($conteoIns == "03" || $conteoIns == "04") {//individual
+
 		$cantidad = $cantxMes;
+
 	}
 
 	$presentaciones = calcularPresentaciones($cantidad, $cins, $Link);
@@ -120,18 +268,6 @@ if (isset($_POST['municipio_desp'])) {
 	$municipio_desp = "";
 }
 
-// if (isset($_POST['institucion_desp'])) {
-// 	$institucion_desp = $_POST['institucion_desp'];
-// } else {
-// 	$institucion_desp = "";
-// }
-
-// if (isset($_POST['sede_desp'])) {
-// 	$sede_desp = $_POST['sede_desp'];
-// } else {
-// 	$sede_desp = "";
-// }
-
 if (isset($_POST['ruta_desp'])) {
 	$ruta_desp = $_POST['ruta_desp'];
 } else {
@@ -186,6 +322,14 @@ if (isset($_POST['conductor'])) {
 	$conductor = "";
 }
 
+if (isset($_POST['tipo_complemento'])) {
+	$complemento = $_POST['tipo_complemento'];
+} else {
+	$complemento = "";
+}
+
+$productos_por_despacho = [];
+
 $consultarResponsable = "SELECT * FROM usuarios WHERE id = ".$_SESSION['idUsuario'];
 $resultadoResponsable = $Link->query($consultarResponsable);
 if ($resultadoResponsable->num_rows > 0) {
@@ -221,14 +365,18 @@ foreach ($meses_despachar as $key => $mes) {
 	  `DocOrigen` varchar(10) DEFAULT '',
 	  `NumDocOrigen` int(10) UNSIGNED DEFAULT '0',
 	  `Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	  `FechaMYSQL` datetime DEFAULT '0000-00-00 00:00:00',
+	  `FechaMYSQL` datetime DEFAULT NULL,
 	  `Anulado` tinyint(1) DEFAULT '0',
 	  `TipoTransporte` varchar(50) NOT NULL DEFAULT '',
 	  `Placa` varchar(10) NOT NULL DEFAULT '',
 	  `ResponsableRecibe` varchar(45) NOT NULL DEFAULT '',
+	  `Cobertura` int(10) DEFAULT 0,
+	  `Cobertura_G1` int(10) DEFAULT 0,
+	  `Cobertura_G2` int(10) DEFAULT 0,
+	  `Cobertura_G3` int(10) DEFAULT 0,
+	  `Complemento` varchar(20) DEFAULT '',
 	  PRIMARY KEY (`Id`)
-	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-	";
+	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;";
 	if ($Link->query($queryinsumosmov)===true) {
 		$validaTablas++;
 	} else {
@@ -237,14 +385,18 @@ foreach ($meses_despachar as $key => $mes) {
 
 	$numerosDespachos = "";
 
-	$insertinsumosmov = "INSERT INTO $insumosmov (Documento, Numero, Tipo, BodegaOrigen, BodegaDestino, Nombre, Nitcc, Aprobado, NombreResponsable, LoginResponsable, Id, FechaMYSQL, Anulado, TipoTransporte, Placa, ResponsableRecibe) VALUES ";
+
+	$insertinsumosmov = "INSERT INTO $insumosmov (Documento, Numero, Tipo, BodegaOrigen, BodegaDestino, Nombre, Nitcc, Aprobado, NombreResponsable, LoginResponsable, FechaMYSQL, Anulado, TipoTransporte, Placa, ResponsableRecibe, Cobertura, Cobertura_G1, Cobertura_G2, Cobertura_G3, Complemento) VALUES ";
 	$numDoc = obtenerNumDoc($insumosmov, $Link);
 	foreach ($sedes as $key => $sede) {
+		$coberturas_sedes = obtenerCoberturas($sede, $Link, $mes, $complemento);
 		$sedesNumDoc[$sede] = $numDoc;
 		$numerosDespachos.=$numDoc.", ";
-		$insertinsumosmov.="('DESI', '".$sedesNumDoc[$sede]."', '".$nomTipoMov."', '".$bodega_origen."', '".$sede."', '".$nombre_proveedor."', '".$proveedor."', '0', '".$nombreResp."', '".$loginResp."', '', '".date('Y-m-d H:i:s')."', '0', '".$tipo_transporte."', '".$placa_vehiculo."', '".$conductor."'), ";
+		$insertinsumosmov.="('DESI', '".$sedesNumDoc[$sede]."', '".$nomTipoMov."', '".$bodega_origen."', '".$sede."', '".$nombre_proveedor."', '".$proveedor."', '0', '".$nombreResp."', '".$loginResp."', '".date('Y-m-d H:i:s')."', '0', '".$tipo_transporte."', '".$placa_vehiculo."', '".$conductor."', '".$coberturas_sedes['Cobertura']."', '".$coberturas_sedes['Cobertura_G1']."', '".$coberturas_sedes['Cobertura_G2']."', '".$coberturas_sedes['Cobertura_G3']."', '".($complemento == "ALL" ? "Total cobertura" : $complemento)."'), ";
 		$numDoc++;
 	}
+
+	// exit($insertinsumosmov);
 
 
 	$insertinsumosmov = trim($insertinsumosmov, ", ");
@@ -278,6 +430,7 @@ foreach ($meses_despachar as $key => $mes) {
 	  `CantU4` decimal(28,8) DEFAULT '0.00000000',
 	  `CantU5` decimal(28,8) DEFAULT '0.00000000',
 	  `CanTotalPresentacion` decimal(28,8) DEFAULT '0.00000000',
+	  `Complemento` varchar(20) DEFAULT '',
 	  PRIMARY KEY (`Id`)
 	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 	";
@@ -287,18 +440,37 @@ foreach ($meses_despachar as $key => $mes) {
 		exit(" Error ".$queryinsumosmovdet);
 	}
 
-	$insertinsumosmovdet = "INSERT INTO $insumosmovdet (Documento, Numero, Item, CodigoProducto, Descripcion, Cantidad, BodegaOrigen, BodegaDestino, Id, Umedida, CantUmedida, Factor, Id_Usuario, CantU2, CantU3, CantU4, CantU5, CanTotalPresentacion) VALUES ";
+	$insertinsumosmovdet = "INSERT INTO $insumosmovdet (Documento, Numero, Item, CodigoProducto, Descripcion, Cantidad, BodegaOrigen, BodegaDestino, Umedida, CantUmedida, Factor, Id_Usuario, CantU2, CantU3, CantU4, CantU5, CanTotalPresentacion, Complemento) VALUES ";
 	foreach ($sedes as $key => $sede) {
 		$numItem = 0;
 		foreach ($productoDespacho as $keyIns => $producto) {
-			$numItem++;
+
+
 			$datos = datosProducto($producto, $sede, $Link);
-			$presentaciones = calcularCantidad($producto, $sede, $Link, $mes);
-			$insertinsumosmovdet.="('DESI', '".$sedesNumDoc[$sede]."', '".$numItem."', '".$producto."', '".$DescInsumo[$keyIns]."', '".$presentaciones[6]."', '".$bodega_origen."', '".$sede."', '', '".$datos['uMedida2']."', '".$datos['cantUMedida']."', '1', '".$_SESSION['idUsuario']."', '".$presentaciones[1]."', '".$presentaciones[2]."', '".$presentaciones[3]."', '".$presentaciones[4]."', '".$presentaciones[5]."'), ";
+
+			if (substr($producto, 0, 4) == '0504') {
+				if (!isset($productos_por_despacho[$sede][$producto])) {
+					$productos_por_despacho[$sede][$producto] = 1;
+				} else {
+					continue;
+				}
+			}
+
+			$presentaciones = calcularCantidad($producto, $sede, $Link, $mes, $complemento);
+
+			if ($presentaciones[6] < 1) {
+				continue;
+			}
+
+			$numItem++;
+
+			$insertinsumosmovdet.="('DESI', '".$sedesNumDoc[$sede]."', '".$numItem."', '".$producto."', '".$DescInsumo[$keyIns]."', '".$presentaciones[6]."', '".$bodega_origen."', '".$sede."', '".$datos['uMedida2']."', '".$datos['cantUMedida']."', '1', '".$_SESSION['idUsuario']."', '".$presentaciones[1]."', '".$presentaciones[2]."', '".$presentaciones[3]."', '".$presentaciones[4]."', '".$presentaciones[5]."', '".($complemento == "ALL" ? "Total cobertura" : $complemento)."'), ";
 		}
 	}
 
 	$insertinsumosmovdet = trim($insertinsumosmovdet, ", ");
+
+	// exit($insertinsumosmovdet);
 
 	if ($Link->query($insertinsumosmovdet)===true) {
 		$validaProductos++;
@@ -309,8 +481,8 @@ foreach ($meses_despachar as $key => $mes) {
 
 
 if ($validaProductos > 0) {
-	$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '15', 'Registró despachos de Insumos con números : <strong>".trim($numerosDespachos, ", ")."</strong> ')";
-	$Link->query($sqlBitacora);
+	// $sqlBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '15', 'Registró despachos de Insumos con números : <strong>".trim($numerosDespachos, ", ")."</strong> ')";
+	// $Link->query($sqlBitacora);
 	echo "1";
 } else {
 	echo "0";

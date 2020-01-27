@@ -11,6 +11,8 @@
 	$cantidadCupos = (isset($_POST["cantidadCupos"]) && $_POST["cantidadCupos"] != '') ? mysqli_real_escape_string($Link, $_POST["cantidadCupos"]) : '';
 	$numeroContrato = (isset($_POST["numeroContrato"]) && $_POST["numeroContrato"] != '') ? mysqli_real_escape_string($Link, $_POST["numeroContrato"]) : '';
 	$nombredepartamento = (isset($_POST["nombredepartamento"]) && $_POST["nombredepartamento"] != '') ? mysqli_real_escape_string($Link, $_POST["nombredepartamento"]) : '';
+	$nombre_representante_legal = (isset($_POST["nombre_representante_legal"]) && $_POST["nombre_representante_legal"] != '') ? mysqli_real_escape_string($Link, $_POST["nombre_representante_legal"]) : '';
+	$documento_representante_legal = (isset($_POST["documento_representante_legal"]) && $_POST["documento_representante_legal"] != '') ? mysqli_real_escape_string($Link, $_POST["documento_representante_legal"]) : '';
 
 	$consulta1 = "UPDATE parametros
 								SET
@@ -21,9 +23,11 @@
 									Departamento = '$nombredepartamento',
 									CantidadCupos = '$cantidadCupos',
 									MesContrato = '$mesContrato',
-									CodMunicipio = '$municipio'
+									CodMunicipio = '$municipio',
+									nombre_representante_legal = '$nombre_representante_legal',
+									documento_representante_legal = '$documento_representante_legal'
 								WHERE id = '$id'";
-	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". mysql_error($Link));
+	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". $Link->error);
 	if ($resultado1)
 	{
 		if (isset($_FILES["foto"]["name"]))
@@ -120,7 +124,6 @@
       }
     }
 
-    // return array('aspect'=>$aspect, 'ratio'=>$ratio);
     return round($ratio);
 	}
 

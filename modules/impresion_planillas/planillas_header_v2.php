@@ -52,8 +52,8 @@ if ($tipoPlanilla != 6)
 								(SELECT SUM(".$tipoComplemento.") FROM priorizacion".$semana." WHERE cod_sede = '".$codigoSede."') *
 							    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM AND MES = MS)
 							) AS total_entregas
-							FROM planilla_semanas WHERE SEMANA = '".$semana."';";
-		// echo $consTotalEntregado;
+							FROM planilla_semanas WHERE SEMANA = '".$semana."' AND MES = '".$mes."';";
+
 
 		$resTotalEntregado = $Link->query($consTotalEntregado);
 
@@ -190,7 +190,7 @@ $pdf->Cell(22,14,utf8_decode(''),'R',0,'C',False);
 $x = $pdf->GetX();
 $y = $pdf->GetY();
 $pdf->SetXY($x, $y-1.6);
-if ($tipoPlanilla == 5 || $tipoPlanilla == 6 || $tipoPlanilla == 7) { $anchoDatosNombre = 31.4; } else { $anchoDatosNombre = 28; }
+if ($tipoPlanilla == 5 || $tipoPlanilla == 6 || $tipoPlanilla == 7 || $tipoPlanilla == 8) { $anchoDatosNombre = 31.4; } else { $anchoDatosNombre = 28; }
 $pdf->Cell($anchoDatosNombre,14,utf8_decode('1° Nombre'),0,0,'C',False);
 $pdf->SetXY($x, $y+1.6);
 $pdf->Cell($anchoDatosNombre,14,utf8_decode('del Titular'),0,0,'C',False);

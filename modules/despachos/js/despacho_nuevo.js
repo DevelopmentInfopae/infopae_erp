@@ -209,8 +209,11 @@ function generarDespacho(){
     dias.push(aux);
   });
 
+  var string_variaciones = '';
+
   $( "#box-table-a tbody input[type=checkbox]" ).each(function() {
     itemsDespacho.push($(this).val());
+    string_variaciones += $(this).val()+"-"+($(this).data('variacion') == 0 ? 3 : $(this).data('variacion'))+", ";
   });
 
   // Validaciones para generar el despacho
@@ -252,6 +255,7 @@ function generarDespacho(){
         "tipo":tipo,
         "tipoDespacho":tipoDespacho,
         "itemsDespacho":itemsDespacho,
+        "itemsDespachoVariaciones":string_variaciones,
         "bodegaOrigen":bodegaOrigen,
         "tipoTransporte":tipoTransporte,
         "placa":placa,
@@ -269,8 +273,6 @@ function generarDespacho(){
         alert('El despacho se ha registrado con éxito.');
         $(window).unbind('beforeunload');
         window.location.href = 'despachos.php';
-      } else {
-        alert(data);
       }
     })
     .fail(function(data){ console.log(data); })

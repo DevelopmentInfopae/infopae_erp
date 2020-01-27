@@ -3,6 +3,8 @@
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
+	//var_dump($_SESSION);
+
 	$periodoActual = $_SESSION["periodoActual"];
 	$titulo = "Informe de asistencias";
 	$institucionNombre = "";
@@ -13,7 +15,8 @@
 
 	$dia = intval(date("d"));
 	$mes = date("m");
-	$anno = date("Y");		
+	$anno = date("Y");
+	$semanaActual = null;
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
@@ -51,7 +54,8 @@
 				<div class="ibox-content">
 					<input type="hidden" id="semanaActual" value="<?php echo $semanaActual; ?>">
 					<input type="hidden" id="sede" value="">
-
+					<input type="hidden" id="validacion" name="validacion" value="Tablet">
+					
 
 					<div class="table-responsive table-asistencia">
 						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
@@ -84,7 +88,10 @@
 					<div class="hr-line-dashed"></div>
 					<div class="form-group row">
 						<div class="col-sm-12">
+
+							<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5 ){ ?>
 							<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
+							<?php } ?>
 							<!-- <button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button> -->
 						</div>
 					</div>

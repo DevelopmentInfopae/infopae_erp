@@ -37,14 +37,12 @@ if (isset($_POST["semana_final"]) && $_POST["semana_final"] != "") {
   $semanaFinal = $diaInicialSemanaFinal = $diaFinalSemanaFinal = "";
 }
 
-
 $anno2d = substr($anno,2);
 if($mes < 10){
   if(substr($mes,0,1)!="0"){
     $mes = '0'.$mes;
   }
 }
-
 
 //Primera consulta: los dias de la s entregas
 $consulta = "SELECT ID, ANO, MES, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias where ano='$anno' AND mes='$mes'";
@@ -119,7 +117,7 @@ class PDF extends PDF_Rotate
   function Header() {
     $tamannoFuente = 10;
     $logoInfopae = $_SESSION['p_Logo ETC'];
-    if ($this->tipoPlanilla == 5 || $this->tipoPlanilla == 7)
+    if ($this->tipoPlanilla == 5 || $this->tipoPlanilla == 7 || $this->tipoPlanilla == 8)
     {
       $tituloPlanilla = "Registro de novedades - repitentes y/o suplentes del programa de alimentaciÓn escolar - pae";
     }
@@ -429,9 +427,8 @@ else if ($tipoPlanilla == 6)
       if($linea > $lineas)
       {
         $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-        $pdf->Ln(7);
         $alturaCuadroFilas = $alturaLinea * ($linea-1);
-        $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
+        $pdf->Cell(0,$alturaCuadroFilas, '',1,0,'R',False);
         include 'planillas_footer_v2.php';
         $pdf->AddPage();
         $pagina++;
@@ -468,7 +465,6 @@ else if ($tipoPlanilla == 6)
 
     //Termina impresión de estudiantes de la sede
     $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-    $pdf->Ln(7);
     $alturaCuadroFilas = $alturaLinea * ($linea-1);
     $pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
 
@@ -479,19 +475,31 @@ else if ($tipoPlanilla == 7)
 {
   foreach ($sedes as $sede)
   {
+    // Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
     $codigoSede = $sede['cod_sede'];
+
+    $consulta = "SELECT count(id) AS titulares, sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
+    $resultado = $Link->query($consulta) or die ('Unable to execute query. <br>'.$consulta.'<br>'. mysqli_error($Link));
+    if($resultado->num_rows > 0) {
+      while($row = $resultado->fetch_assoc()) {
+        $totales = $row;
+      }
+    }
+
     $consulta_suplente_repitentes_sede = "SELECT *
-    FROM entregas_res_$mes$anno2d
-    WHERE cod_inst = '$institucion'
-      AND cod_sede = '$codigoSede'
-      AND (tipo = 'S' OR tipo = 'R')
-      AND tipo_complem='$tipoComplemento'
-    ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
+                                          FROM entregas_res_$mes$anno2d
+                                          WHERE cod_inst = '$institucion'
+                                            AND cod_sede = '$codigoSede'
+                                            AND (tipo = 'S' OR tipo = 'R')
+                                            AND tipo_complem='$tipoComplemento'
+                                          ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
     $respuesta_suplente_repitentes_sede = $Link->query($consulta_suplente_repitentes_sede) or die("Error al consultar suplentes y repitentes en entregas_res_$mes$anno2d: ". $Link->error);
     if ($respuesta_suplente_repitentes_sede->num_rows > 0)
     {
       $linea = 1;
       $lineas = 25;
+      $pagina = 1;
+      $paginas = ceil($respuesta_suplente_repitentes_sede->num_rows / $lineas);
       $numero_estudiantes = 0;
       $codigoSede = $sede['cod_sede'];
       $pdf->AddPage();
@@ -513,6 +521,7 @@ else if ($tipoPlanilla == 7)
           $pdf->Cell(0, $alturaLinea, '', 'T');
           include 'planillas_footer_v2.php';
           $pdf->AddPage();
+          $pagina++;
           include 'planillas_header_v2.php';
           $pdf->SetFont('Arial','',$tamannoFuente);
           $linea = 1;
@@ -545,6 +554,101 @@ else if ($tipoPlanilla == 7)
         }
 
         $pdf->Cell(0, $alturaLinea, $total_entregas_por_estudiante, 'R', 0, 'C');
+
+
+        // Se utiliza pero imprimir los border del fila.
+        $pdf->SetXY($x, $y);
+        $pdf->Cell(0,$alturaLinea, '','B',1);
+        $linea++;
+      }
+
+      $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
+      $pdf->Cell(0,$alturaLinea, '', 'T', 0, 'R', False);
+
+      include 'planillas_footer_v2.php';
+    }
+    else
+    {
+      echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
+    }
+  }
+}
+else if ($tipoPlanilla == 8)
+{
+  foreach ($sedes as $sede)
+  {
+    $codigoSede = $sede['cod_sede'];
+    $consulta_suplente_repitentes_sede = "SELECT *
+    FROM entregas_res_$mes$anno2d
+    WHERE cod_inst = '$institucion'
+      AND cod_sede = '$codigoSede'
+      AND (tipo = 'S' OR tipo = 'R')
+      AND tipo_complem='$tipoComplemento'
+    ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
+    $respuesta_suplente_repitentes_sede = $Link->query($consulta_suplente_repitentes_sede) or die("Error al consultar suplentes y repitentes en entregas_res_$mes$anno2d: ". $Link->error);
+    if ($respuesta_suplente_repitentes_sede->num_rows > 0)
+    {
+      $linea = 1;
+      $pagina = 1;
+      $lineas = 25;
+      $paginas = ceil($respuesta_suplente_repitentes_sede->num_rows / $lineas);
+      $numero_estudiantes = 0;
+      $codigoSede = $sede['cod_sede'];
+      $pdf->AddPage();
+      $pdf->SetTextColor(0,0,0);
+      $pdf->SetFillColor(255,255,255);
+      $pdf->SetDrawColor(0,0,0);
+
+      include 'planillas_header_v2.php';
+      $pdf->SetLineWidth(.05);
+
+      while($suplente_repitente_sede = $respuesta_suplente_repitentes_sede->fetch_assoc())
+      {
+        $numero_estudiantes++;
+        $suplente_repitente_sede = (object) $suplente_repitente_sede;
+
+        if($linea > $lineas)
+        {
+          $pdf->SetXY($xCuadroFilas, $yCuadroFilas);
+          $pdf->Cell(0, $alturaLinea, '', 'T');
+          include 'planillas_footer_v2.php';
+          $pdf->AddPage();
+          $pagina++;
+          include 'planillas_header_v2.php';
+          $pdf->SetFont('Arial','',$tamannoFuente);
+          $linea = 1;
+        }
+
+        $x = $pdf->GetX();
+        $y = $pdf->GetY();
+        $pdf->SetFont('','',$tamannoFuente);
+        $pdf->Cell(8,$alturaLinea, $numero_estudiantes,'LR',0,'C',False);
+        $pdf->Cell(10,$alturaLinea, $suplente_repitente_sede->tipo_doc_nom,'R',0,'C',False);
+        $pdf->Cell(22,$alturaLinea, $suplente_repitente_sede->num_doc,'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom1)),'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom2)),'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape1)),'R',0,'L',False);
+        $pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape2)),'R',0,'L',False);
+        $pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->edad,'R',0,'C',False);
+        $pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->cod_grado,'R',0,'C',False);
+        $pdf->Cell(8,$alturaLinea, $suplente_repitente_sede->nom_grupo,'R',0,'C',False);
+        $pdf->Cell(13,$alturaLinea, utf8_decode(mb_strtoupper($tipoComplemento)),'R',0,'C',False);
+
+        // Impresión de las 24 columnas para los días.
+        $total_entregas_por_estudiante = 0;
+        for($j = 0 ; $j < 24 ; $j++)
+        {
+          $dia_entrega_estudiante = $suplente_repitente_sede->{'D'.($j+1)};
+          $total_entregas_por_estudiante += $dia_entrega_estudiante;
+
+          $pdf->SetTextColor(190,190,190);
+
+          $entrega_complemento = $dia_entrega_estudiante == 1 ? 'x' : '';
+          $pdf->Cell(6,$alturaLinea, $entrega_complemento,'R',0,'C',False);
+        }
+
+        $pdf->SetTextColor(0,0,0);
+        $pdf->Cell(0, $alturaLinea, '', 'R', 0, 'C');
 
 
         // Se utiliza pero imprimir los border del fila.

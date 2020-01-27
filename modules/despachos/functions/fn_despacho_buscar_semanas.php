@@ -1,4 +1,4 @@
-<option value="">Seleccione uno</option>
+<option value="">Seleccione</option>
 <?php
   include '../../../config.php';
   require_once '../../../autentication.php';

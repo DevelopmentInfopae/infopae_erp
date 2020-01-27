@@ -5,8 +5,6 @@
   $periodoActual = $_SESSION['periodoActual'];
 
   $codigoDANE = $_SESSION['p_Municipio'];
-
-  // var_dump($_SESSION);
 ?>
 
 <style type="text/css">
@@ -23,15 +21,15 @@
         <strong><?php echo $titulo; ?></strong>
       </li>
     </ol>
-  </div><!-- /.col -->
+  </div>
   <div class="col-lg-4">
     <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
       <div class="title-action">
         <button class="btn btn-primary" onclick="window.location.href = '<?php echo $baseUrl; ?>/modules/insumos/despacho_insumo.php';"><span class="fa fa-plus"></span>  Nuevo</button>
       </div>
     <?php } ?>
-  </div><!-- /.col -->
-</div><!-- /.row -->
+  </div>
+</div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
@@ -59,6 +57,7 @@
               if ($cnt == 0) {
                   $cnt++;
                   $mesTablaInicio = $mes;
+                  $mesTablaFin = $mes;
               }
              }
           } else {
@@ -72,22 +71,23 @@
             <div id="fechaDiasDespachos">
               <div class="form-group col-sm-3">
                 <label>Desde</label>
-                <div class="compositeDate">
+                <!-- <div class="compositeDate"> -->
                   <div class="nopadding">
                     <select name="mes_inicio" id="mes_inicio" class="form-control ">
                     <?php echo $opciones; ?>
                     </select>
                   </div>
-                </div>
+                <!-- </div> -->
               </div>
               <div class="form-group col-sm-3">
                 <label>Hasta</label>
-                <div class="compositeDate">
+                <!-- <div class="compositeDate"> -->
                   <div class="nopadding">
-                    <input type="text" id="nomMesFin" value="Espere..." class="form-control" readonly>
-                    <input type="hidden" name="mes_fin" id="mes_fin" value="01">
+                    <select name="mes_fin" id="mes_fin" class="form-control ">
+                    <?php echo $opciones; ?>
+                    </select>
                   </div>
-                </div>
+                <!-- </div> -->
               </div>
             </div>
             <div class="form-group col-sm-3">
@@ -156,13 +156,13 @@
               </select>
             </div>
             <input type="hidden" name="buscar" value="1">
+            <div class="col-sm-12">
+              <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
+              <?php if (isset($_POST['buscar'])): ?>
+                <button class="btn btn-primary" onclick="location.href='despachos.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
+              <?php endif ?>
+            </div>
           </form>
-          <div class="col-sm-12">
-            <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
-            <?php if (isset($_POST['buscar'])): ?>
-              <button class="btn btn-primary" onclick="location.href='despachos.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
-            <?php endif ?>
-          </div>
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
     </div><!-- /.col-lg-12 -->
@@ -181,7 +181,9 @@
             </label>
 
             <form id="formDespachos" method="POST" target="_blank">
-            <input type="hidden" name="tablaMes" id="tablaMes" value="<?php echo $mesTablaInicio; ?>">
+            <input type="hidden" name="tablaMesInicio" id="tablaMesInicio" value="<?php echo $mesTablaInicio; ?>">
+            <input type="hidden" name="tablaMesFin" id="tablaMesFin" value="<?php echo $mesTablaFin; ?>">
+            <input type="hidden" name="despachos_seleccionados" id="despachos_seleccionados">
              <table class="table" id="tablaTrazabilidad">
                 <thead>
                   <tr>
@@ -222,7 +224,7 @@
     $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
     $consulta = "SELECT
-        pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
+        pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst, '".$mesTablaInicio."' as mesDespacho
         FROM insumosmov$numtabla AS pmov
           INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
           INNER JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
@@ -232,6 +234,12 @@
         LIMIT 200;";
 
   } else if (isset($_POST['buscar'])) { //Si hay filtrado
+
+    // $num_mes_inicio = str_replace("0", "", $_POST['mes_inicio']);
+    // $num_mes_fin = str_replace("0", "", $_POST['mes_fin']);
+
+    $num_mes_inicio = (Int) $_POST['mes_inicio'];
+    $num_mes_fin = (Int) $_POST['mes_fin'];
 
     $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual']; //Número MesAño según mes escogido
     $condiciones = ""; //Donde se almacenan las condiciones según parámetros
@@ -281,16 +289,34 @@
       }
     }
 
-    $consulta = "SELECT
-                     pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
+    $consulta = "";
+
+    // $consulta = "SELECT
+    //                  pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
+    //               FROM
+    //                 insumosmov$numtabla AS pmov
+    //                   INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
+    //                   INNER JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
+    //                   INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
+    //                   $inners $condiciones
+    //                   LEFT JOIN ubicacion as u ON u.codigoDANE = sede.cod_mun_sede
+    //               LIMIT 2000;";
+
+    for ($i=$num_mes_inicio; $i <= $num_mes_fin ; $i++) {
+       $consulta.="SELECT
+                     pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst, '".($i < 10 ? "0".$i : $i)."' as mesDespacho
                   FROM
-                    insumosmov$numtabla AS pmov
+                    insumosmov".($i < 10 ? "0".$i : $i).$_SESSION['periodoActual']." AS pmov
                       INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
                       INNER JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
                       INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
                       $inners $condiciones
                       LEFT JOIN ubicacion as u ON u.codigoDANE = sede.cod_mun_sede
-                  LIMIT 2000;";
+
+                      UNION ALL ";
+      }
+
+      $consulta = trim($consulta, "UNION ALL ");
 }
 
 // echo $consulta;
@@ -429,6 +455,7 @@
                         '<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">'+
                           '<li><a onclick="informeDespachos(1);"><span class="fa fa-file-excel-o"></span> Individual </a></li>'+
                           '<li><a onclick="informeDespachosInstitucion(1);"><span class="fa fa-file-excel-o"></span> Institución </a></li>'+
+                          '<li><a onclick="informeDespachosConsolidado(1);"><span class="fa fa-file-excel-o"></span> Consolidado </a></li>'+
                           '<li><a onclick="editarDespacho();"><span class="fa fa-pencil"></span> Editar </a></li>'+
                           '<li><a data-toggle="modal" data-target="#modalEliminarDespachos"><span class="fa fa-trash"></span> Eliminar </a></li>'+
                           '<li><a onclick=";"><span class="fa fa-clock-o"></span> Lote y Fec. Venc. </a></li>'+

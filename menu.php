@@ -89,6 +89,7 @@
 		<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level">
 			<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
+			<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
 			<li><a href="<?php echo $baseUrl; ?>/modules/ordenes_compra/ordenes.php">Órdenes de compra</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/despachos.php"><span class="nav-label">Insumos</span></a> </li>
 		</ul>
@@ -141,6 +142,19 @@
 					<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/repitentes.php">Repitentes</a></li>
 				</ul>
 			</li>
+
+
+			<li><a href="<?php echo $baseUrl; ?>/modules/intercambios/index.php">Menú</a></li>
+			
+			<!-- <li>
+				<a href="#"><span class="nav-label">Menús</span> <span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li> <a href="<?//= $baseUrl; ?>/modules/intercambios/intercambio_alimento.php">Intercambio de alimento</a> </li>
+					<li> <a href="<?//= $baseUrl; ?>/modules/intercambios/intercambio_preparacion.php">Intercambio de preparación</a> </li>
+					<li> <a href="<?//= $baseUrl; ?>/modules/intercambios/intercambio_dia_menu.php">Intercambio de día de menú</a> </li>
+				</ul>
+			</li> -->
+			
 		</ul>
 	</li>
 
@@ -224,6 +238,7 @@
 
 			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5  || $_SESSION['perfil'] == 6 ){ ?>
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/informe_asistencia.php"> Informe de asistencia </a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/registro_biometrico.php"> Registro Biometrico </a> </li>
 			<?php } ?>
 
 			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 3 ){ ?>
@@ -234,3 +249,8 @@
 		</ul>
 	</li>
 <?php } ?>
+
+
+
+
+
