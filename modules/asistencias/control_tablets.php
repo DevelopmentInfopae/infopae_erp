@@ -126,7 +126,7 @@
 
 
 						// Consulta que recorre todas las sedes validadas con tableta y trae si estan selladas, total de estudiantes y total entregado.
-						$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$anno2d s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
+						$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$periodoActual s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
 							if($municipio != ""){
 								$consulta .= " and s.cod_mun_sede = \"$municipio\" ";	
 							}
