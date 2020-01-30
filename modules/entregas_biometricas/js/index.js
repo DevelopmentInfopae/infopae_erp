@@ -17,7 +17,7 @@ $(document).ready(function(){
 			$('#gradoNombre').val($("#grado option:selected").text());
 			$('#dispositivoNombre').val($("#dispositivo option:selected").text());
 			
-			$('#form_asistencia').attr('action', 'dashboard.php');
+			$('#form_asistencia').attr('action', 'dashboard_barcode_qr.php');
 			$('#form_asistencia').submit();
 			$('#loader').fadeOut();
 		}else{
