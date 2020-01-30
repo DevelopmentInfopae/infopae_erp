@@ -1,0 +1,16 @@
+body{
+    background-color: #edeff0;
+}
+
+.barra-top{
+    background-color: #4da390;
+}
+
+.contenedor-dashboard{
+    max-width: 90%;
+    margin: auto;
+}
+
+.grafica-dashboard{
+    background-color: aqua;
+}
