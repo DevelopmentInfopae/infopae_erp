@@ -29,21 +29,95 @@
 </head>
 <body>
 	<div class="barra-top">
-		<button></button>
-		<div class="logo-dashboard"></div>
-		<h1></h1>
-		<div class="fecha-hora"></div>
+		<div class="barra-top__left">
+			<button><i class="fa fa-bars"></i></button>
+			<div class="logo-dashboard"><img alt="entregado" src="<?= $baseUrl ?>/img/logo_b.png" /></div>
+		</div>
+		<div class="barra-top__center">
+			<h1>Consulta en línea de entrega de complementos alimentarios</h1>
+		</div>
+		<div class="barra-top__right">
+			<div class="fecha-hora">
+				<?php
+					$mes = date('n');
+					$dia = date('j');
+					$anno = date('Y');
+					switch ($mes) {
+						case 1:
+							$mes = "Enero";
+							break;
+						case 2:
+							$mes = "Febrero";
+							break;
+						case 3:
+							$mes = "Marzo";
+							break;
+						case 4:
+							$mes = "Abril";
+							break;
+						case 5:
+							$mes = "Mayo";
+							break;
+						case 6:
+							$mes = "Junio";
+							break;
+						case 7:
+							$mes = "Julio";
+							break;
+						case 8:
+							$mes = "Agosto";
+							break;
+						case 9:
+							$mes = "Septiembre";
+							break;
+						case 10:
+							$mes = "Octubre";
+							break;
+						case 11:
+							$mes = "Noviembre";
+							break;
+						case 12:
+							$mes = "Diciembre";
+							break;
+					}
+					// var_dump($mes);
+					// var_dump($dia);
+					// var_dump($anno);
+				?>
+				<?= $mes ?> <?= $dia ?> de <?= $anno ?>
+				<span class="hora-actual">9:12am</span>
+			</div>
+		</div>
 	</div>
 
 	<div class="contenedor-dashboard">
 		<div class="row">
-			<div class="col-sm-6">
-				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas inventore dolore deleniti cumque saepe eaque officia alias, ut dolor sit ducimus? Deserunt, quam perspiciatis consequatur magni temporibus debitis itaque fuga.</p>
+			<div class="col-sm-12 filtro">
+				<div class="form-filtro">
+					<div class="campo">
+						<label for="municipio">Municipio</label>
+						<select name="municipio" id="municipio"></select>
+					</div>
+					<div class="campo">
+						<label for="institucion">institución</label>
+						<select name="institucion" id="institucion"></select>
+					</div>
+					<div class="campo">
+						<label for="sede">Sede</label>
+						<select name="sede" id="sede"></select>
+					</div>
+					<div class="campo">
+						<button type="button" id="btnFiltro">OK</button>
+					</div>
+
+				</div>
+				<div class="actualizar">
+					<div class="campo">
+						<button type="button" id="btnActualizar">Actualizar gráfica</button>
+					</div>
+				</div>
 			</div>
-			<div class="col-sm-6">
-				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas inventore dolore deleniti cumque saepe eaque officia alias, ut dolor sit ducimus? Deserunt, quam perspiciatis consequatur magni temporibus debitis itaque fuga.</p>
-			</div>
-		</div>    
+		</div>
 
 		<div class="row">
 			<div class="col-sm-12 grafica-dashboard">
