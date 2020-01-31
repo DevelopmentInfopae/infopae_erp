@@ -32,7 +32,7 @@ function doLogin() {
         	success: function(i){
                 //alert(i);
           		console.log(i);
-                if (i==0 || i==1 || i==5) {
+                if (i==0 || i==1 || i==5 || i==9) {
                     window.location = "index.php";
                 } else if (i==6){
                     window.location = "index_rector.php";
