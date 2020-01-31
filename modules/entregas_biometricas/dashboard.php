@@ -1,306 +1,102 @@
 <?php
-/**
- * Dashboard.
- * Pantalla en donde se muestran los registros 
- * que se han ido leyendo, permite la lectura, 
- * y el ingreso manual del numero de documento.
- * @author Ricardo Farfán <ricardo@xlogam.com>
- */
+	include '../../config.php';
+	$usuario = '';
+	$tipoUsuario = '';
+	$idUsr = '';
+	$fotoUsr = '';
+	require_once '../../db/conexion.php';
+	include '../../autentication.php';
+	include '../../php/funciones.php';
+	$idUsr = $_SESSION['id_usuario'];
+	$fotoUsr = $_SESSION['foto'];
 
-
-
-// G:\xampp\htdocs\infopae2019\modules\entregas_biometricas\dashboard.php:67:
-// array (size=9)
-//   'mes' => string '10' (length=2)
-//   'semana' => string '35b' (length=3)
-//   'municipio' => string '68307' (length=5)
-//   'institucion' => string '268307000370' (length=12)
-//   'sede' => string '26830700037001' (length=14)
-//   'nivel' => string '1' (length=1)
-//   'grado' => string '' (length=0)
-//   'grupo' => string '' (length=0)
-//   'dispositivo' => string '1' (length=1)
-
-
-
-
-
-
-
-
-
-
- include '../../header.php';
-	set_time_limit (0);
-	ini_set('memory_limit','6000M');
-
-	$periodoActual = $_SESSION["periodoActual"];
-	$titulo = "entregas_biometricas";
-	$institucionNombre = "";
-
-	date_default_timezone_set('America/Bogota');
-	$fecha = date("Y-m-d H:i:s");
-	$cacheBusting = date("YmdHis");
-
-
-	$dia = intval(date("d"));
-	$mes = date("m");
-	$anno = date("Y");
-	$anno2d = date("y");
-
-	$validacion = "Lector de Huella";
-
- 	$sedeP = "";
-	if(isset($_GET["sede"]) && $_GET["sede"] != ""){
-		$sedeP = mysqli_real_escape_string($Link, $_GET['sede']);
-	}
-
-	$institucionP = "";
-	$consulta = " SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = \"$sedeP\" ";
-	//echo $consulta;
-	$resultado = $Link->query($consulta) or die ('No se pudo cargar la institucion. '. mysqli_error($Link));
-	if($resultado->num_rows >= 1){
-		$row = $resultado->fetch_assoc();
-		$institucionP = $row["cod_inst"];
-	}
-
-
-	//Busqueda de la semana actual
-	$semanaActual = "";
-	$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
-	// var_dump($consulta);				
-	$resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
-	if($resultado->num_rows >= 1){
-		$row = $resultado->fetch_assoc();
-		$semanaActual = $row["semana"];
-	}
-	// var_dump($_SESSION);
-	// var_dump($semanaActual);				
+	$dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
+	if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
 ?>
-
-
-<div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-	<div class="col-xs-8">
-			<h2>Completar entregas biometricas</h2>
-			<?php var_dump($_POST); ?>
-			<ol class="breadcrumb">
-				<li>
-					<a href="<?php echo $baseUrl; ?>">Inicio</a>
-				</li>
-				<li class="active">
-					<strong><?php echo $titulo; ?></strong>
-				</li>
-			</ol>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Dashboard Entregas Biometricas</title>
+	<link rel="shortcut icon" href="<?php echo $baseUrl; ?>/favicon.ico" />
+	<link href="<?php echo $baseUrl; ?>/theme/css/bootstrap.min.css" rel="stylesheet">
+	<link href="<?php echo $baseUrl; ?>/theme/font-awesome/css/font-awesome.css" rel="stylesheet">
+	<!-- CSS de toda la aplicación -->
+	<link href="<?php echo $baseUrl; ?>/theme/css/style.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+	<div class="barra-top">
+		<button></button>
+		<div class="logo-dashboard"></div>
+		<h1></h1>
+		<div class="fecha-hora"></div>
 	</div>
-	<div class="col-xs-4">
-		<div class="title-action registroConsumo" style="display: none">
-			<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
-			<button class="btn btn-primary btnSellar" type="button">Guardar Definitivamente</button>
-		</div>
-	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
-					<!-- <a href="#" class="btn btn-primary" onclick="crearSede();"><i class="fa fa-plus"></i> Nueva</a> -->
-	<?php } ?>
-	<!-- <button class="btn btn-primary" id="btnRestablecerContadores">Restablecer almacenamiento local</button> -->
-	</div>
-</div>
-<!-- /.row wrapper de la cabecera de la seccion -->
 
+	<div class="contenedor-dashboard">
+		<div class="row">
+			<div class="col-sm-6">
+				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas inventore dolore deleniti cumque saepe eaque officia alias, ut dolor sit ducimus? Deserunt, quam perspiciatis consequatur magni temporibus debitis itaque fuga.</p>
+			</div>
+			<div class="col-sm-6">
+				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas inventore dolore deleniti cumque saepe eaque officia alias, ut dolor sit ducimus? Deserunt, quam perspiciatis consequatur magni temporibus debitis itaque fuga.</p>
+			</div>
+		</div>    
 
-
-
-
-<?php
-	$consulta = " select distinct semana from planilla_semanas ";
-	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-	if($resultado->num_rows >= 1){
-		while($row = $resultado->fetch_assoc()){
-			$aux = $row['semana'];
-			$consulta2 = " show tables LIKE 'focalizacion$aux' ";
-			$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
-			if($resultado2->num_rows >= 1){
-			 $semanas[] = $aux;
-			}
-		}
-	}
-?>
-
-
-
-
-
-<input type="hidden" name="validacion" id="validacion" value="<?= $validacion ?>">
-<input type="hidden" name="institucionP" id="institucionP" value="<?= $institucionP ?>">
-<input type="hidden" name="sedeP" id="sedeP" value="<?= $sedeP ?>">
-
-
-
-
-
-<div class="wrapper wrapper-content  animated fadeInRight registroConsumo" >
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="ibox">
-				<div class="ibox-title">
-					<h5>Estudiantes</h5>
-					<div class="ibox-tools">
-						<div class="collapse-link">
-							<i class="fa fa-chevron-down"></i>
-						</div>
-					</div>
-				</div>
-				<div class="ibox-content">
-					<h2>INSTITUCIÓN EDUCATIVA AGUADA DE CEFERINO</h2>
-					<h2>SEDE A-AGUADA DE CEFERINO</h2>
-					<h3>PRIMARIA</h3>
-					<h4>QR001</h4>
-					<div class="row">
-						<div class="col-sm-4">
-							<span class="fecha-actual"></span>
-						</div>
-						<div class="col-sm-4">
-							<span class="hora-actual"></span>
-						</div>
-						<div class="col-sm-4">
-							CAPTURA
-						</div>
-					</div>
-
-					<div class="table-responsive table-asistencia">
-						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
-							<thead>
-								<tr>
-									<th>Registro</th>
-									<th>Nombre</th>
-									<th>Apellido</th>
-									<th>Grado</th>
-									<th>Grupo</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-							</tbody>
-							<tfoot>
-								<tr>
-									<th>Registro</th>
-									<th>Nombre</th>
-									<th>Apellido</th>
-									<th>Grado</th>
-									<th>Grupo</th>
-								</tr>
-							</tfoot>
-						</table>
-					</div>
-						
-					<div class="hr-line-dashed"></div>
+		<div class="row">
+			<div class="col-sm-12 grafica-dashboard">
+				<div class="flot-chart">
+					<div class="flot-chart-content" id="flot-line-chart-moving"></div>
 				</div>
 			</div>
 		</div>
-	</div><!-- /.row -->
-</div>
 
 
+		<div class="row">
+			<div class="col-sm-6 col-dash">
+				<div class="sedes">
+					<?php for($i = 0 ; $i < 6 ; $i++){ ?>
+						<div class="sede">
+							<div class="sede-top">
+								<div class="sede-left">
+									<i class="fa fa-circle"></i>
+								</div>
+								<h5>Colegio Integrado LLano Grande</h5>
+								<h2 class="no-margins"> <span class="entregado">1</span> / <span class="total">546</span></h2>
+							</div>
+							<div class="sede-bottom">
+								<div class="sede-left">
+									<div class="sede-hora-inicio">
+										7:45 a.m.
+									</div>
+								</div>
+								<div class="progress progress-mini"> <div style="width: 10%;" class="progress-bar"></div> </div>
+							</div>
+						</div>
+						<?php } ?>
+					</div>
+				</div>
+				<div class="col-sm-6 col-dash col-der">
 
-<div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header text-info" style="padding: 15px;">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-				<h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
-			</div>
-			<div class="modal-body">
-					<p class="text-center"></p>
-			</div>
-			<div class="modal-footer">
-				<input type="hidden" id="codigoACambiar">
-				<input type="hidden" id="estadoACambiar">
-				<button type="button" class="btn btn-primary btn-outline btn-sm btnNo" data-dismiss="modal">Cancelar</button>
-				<button type="button" class="btn btn-primary btn-sm btnSi" data-dismiss="modal">Aceptar</button>
+					<div class="entregas">
+						<?php for($i = 0 ; $i < 6 ; $i++){ ?>
+						<div class="entrega">
+							<i class="fa fa-check-circle"></i>
+							<span class="hora-estudiante">07:45:01</span>
+							<div class="estudiante-icono"> <img alt="entregado" src="<?= $baseUrl ?>/img/touch.png" /> </div>
+							<div class="estudiante">
+								<h2><span class="estudiante--nombre">Ricardo Farfán</span> recibió complemento <span class="estudiante--complemento">APS</span></h2>
+								<p>Sede <span class="estudiante--sede">Colegio Integrado LLano Grande</span> <br> Validado a través de <span class="estudiante--validacion">huella dactilar.</span></p>
+							</div>
+						</div>
+						<?php } ?>
+					</div>
+
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-
-<div class="modal inmodal fade" id="ventanaSellar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header text-info" style="padding: 15px;">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-				<h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
-			</div>
-			<div class="modal-body">
-					<p class="text-center"></p>
-			</div>
-			<div class="modal-footer">
-				<input type="hidden" id="codigoACambiar">
-				<input type="hidden" id="estadoACambiar">
-				<button type="button" class="btn btn-primary btn-outline btn-sm btnNoSellar" data-dismiss="modal">Cancelar</button>
-				<button type="button" class="btn btn-primary btn-sm btnSiSellar" data-dismiss="modal">Aceptar</button>
-			</div>
-		</div>
-	</div>
-</div>
 
 
 
@@ -312,61 +108,23 @@
 
 
 
+	<!-- Mainly scripts -->
+	<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
+	<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
+	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
+	<!-- Custom and plugin javascript -->
 
-<form action="">
-	<input type="hidden" name="asistenteTramite" id="asistenteTramite" value = "">
-	<input type="hidden" name="tipoDocumentoAsistenteTramite" id="tipoDocumentoAsistenteTramite" value = "">
-	<input type="hidden" name="valorActualizacion" id="valorActualizacion" value = "">
-</form>
+	<!-- Flot -->
+	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/flot/jquery.flot.js"></script>
+	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/flot/jquery.flot.resize.js"></script>
+	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/flot/jquery.flot.pie.js"></script>
+	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/flot/jquery.flot.time.js"></script>
 
-
-<?php include '../../footer.php'; ?>
-
-<!-- Mainly scripts -->
-<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-<!-- Custom and plugin javascript -->
-<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
-<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/dashboard.js?v=<?= $cacheBusting; ?>"></script>
-
-
-
-<!-- Page-Level Scripts -->
-
-	<form action="sede.php" method="post" name="formVerSede" id="formVerSede">
-		<input type="hidden" name="codSede" id="codSede">
-		<input type="hidden" name="nomSede" id="nomSede">
-		<input type="hidden" name="nomInst" id="nomInst">
-	</form>
-
-	<form action="sede_editar.php" method="post" name="formEditarSede" id="formEditarSede">
-		<input type="hidden" name="codigoSede" id="codigoSede">
-		<input type="hidden" name="nombreSede" id="nombreSede">
-	</form>
-
-	<form action="../dispositivos_biometricos/index.php" method="post" name="formDispositivosSede" id="formDispositivosSede">
-		<input type="hidden" name="cod_sede" id="cod_sede" value="">
-	</form>
-
-	<form action="../infraestructuras/ver_infraestructura.php" method="post" name="formInfraestructuraSede" id="formInfraestructuraSede">
-		<input type="hidden" name="cod_sede" id="cod_sede" value="">
-	</form>
-
-	<form action="../titulares_derecho/index.php" method="post" name="formTitularesSede" id="formTitularesSede">
-		<input type="hidden" name="cod_sede" id="cod_sede" value="">
-	</form>
+	<!-- Custom and plugin javascript -->
+	<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/dashboard.js?v=<?= $cacheBusting; ?>"></script>
 
 </body>
 </html>

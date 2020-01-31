@@ -1,10 +1,11 @@
 <?php
+	$titulo = "Control dispositivos biométricos";
 	include '../../header.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
 	$periodoActual = $_SESSION["periodoActual"];
-	$titulo = "Control dispositivos biométricos";
+	
 	$institucionNombre = "";
 
 	date_default_timezone_set('America/Bogota');
@@ -16,11 +17,7 @@
 	$anno = date("Y");
 	$anno2d = date("y");
 
-
-
-
-
-
+	$periodoActual = $_SESSION['periodoActual'];
 
 	$validacion = "Lector de Huella";
 	$semanaActual = "";
@@ -128,7 +125,7 @@
 						// Consulta que recorre todas las sedes validadas con tableta y trae si estan selladas, total de estudiantes y total entregado.
 						
 
-						//$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$anno2d s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
+						//$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$periodoActual s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
 
 
 						$consulta = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst FROM sedes$periodoActual s WHERE s.tipo_validacion = \"Lector de Huella\""; 
@@ -253,7 +250,13 @@ GROUP BY f2.id
 								if($entregado == null || $entregado == ""){
 									$entregado = 0;
 								}
-								$porcentaje = ($entregado / $total) * 100;
+								if($total > 0){
+									$porcentaje = ($entregado / $total) * 100;
+								}
+								else{
+									$porcentaje = 0;
+								}
+								
 								$claseSede = "text-rojo";
 								if($sellado == 2){
 									$claseSede = "text-verde";

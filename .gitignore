@@ -3,3 +3,5 @@ upload/novedades/menu/*
 config.php
 functions/*.txt
 db/conexion.php
+
+.DS_Store

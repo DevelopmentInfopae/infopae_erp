@@ -1,0 +1,102 @@
+body{
+	background-color: #edeff0;
+}
+
+.barra-top{
+	background-color: #4da390;
+}
+
+.contenedor-dashboard{
+	max-width: 90%;
+	margin: auto;
+}
+
+.sede{
+	margin-bottom: 20px;
+}
+
+.sede:last-child{
+	margin-bottom: 0px;
+}
+
+.sede-top{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.sede-top h2{
+	margin: 0px;
+	padding: 0px;
+}
+
+.sede-top h5{
+	flex-grow: 1;
+	margin: 0px;
+	padding: 0px;
+	font-size: 24px;
+}
+
+.fa-circle{
+	color: orange;
+}
+
+.sede-bottom{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.progress-mini{
+	width: 100%;
+}
+
+.sede-hora-inicio{
+	white-space: nowrap;
+	font-size: 14px;
+}
+
+.sede-left{
+	width: 80px;
+	flex-shrink: 0;
+}
+
+.progress-mini, .progress-mini .progress-bar{
+	height: 11px;
+}
+
+.progress{
+	border-radius: 5px;
+}
+
+.col-der{
+	background-color: #ffffff;
+}
+
+.col-dash{
+	height: 650px;
+	overflow-y: auto;
+}
+
+.entrega{
+	align-items: center;
+	display: flex;
+	justify-content: flex-start;
+}
+
+.estudiante-icono{
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.entrega .fa-check-circle{
+	color: #00A551;
+}
+
+
+
+@media screen and (max-width: 1600px){
+	.col-dash{
+		height: 470px;
+	}
+}
