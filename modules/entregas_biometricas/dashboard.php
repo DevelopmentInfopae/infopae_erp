@@ -12,6 +12,27 @@
 
 	$dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
 	if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
+
+	$mes="";
+	$semana="";
+	$dia="";
+	$mes = date('m');
+	$dia = date('d');
+	//$mes = date('n');
+	//$dia = date('j');
+	$anno = date('Y');
+
+	//Forzando una fecha OJO solo en desarrollo
+	$mes = '01';
+	$dia = '21';
+	$anno = '2019';
+
+	$consulta = "SELECT semana FROM planilla_semanas WHERE mes = $mes AND dia = $dia LIMIT 1";
+	$resultado = $Link->query($consulta) or die ('No se pudo hacer busqueda de la semana. '. mysqli_error($Link));
+	if($resultado->num_rows >= 1){
+		$row = $resultado->fetch_assoc();
+		$semana = $row["semana"];
+	}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -39,85 +60,88 @@
 		<div class="barra-top__right">
 			<div class="fecha-hora">
 				<?php
-					$mes = date('n');
-					$dia = date('j');
-					$anno = date('Y');
 					switch ($mes) {
 						case 1:
-							$mes = "Enero";
+							$mesNombre = "Enero";
 							break;
 						case 2:
-							$mes = "Febrero";
+							$mesNombre = "Febrero";
 							break;
 						case 3:
-							$mes = "Marzo";
+							$mesNombre = "Marzo";
 							break;
 						case 4:
-							$mes = "Abril";
+							$mesNombre = "Abril";
 							break;
 						case 5:
-							$mes = "Mayo";
+							$mesNombre = "Mayo";
 							break;
 						case 6:
-							$mes = "Junio";
+							$mesNombre = "Junio";
 							break;
 						case 7:
-							$mes = "Julio";
+							$mesNombre = "Julio";
 							break;
 						case 8:
-							$mes = "Agosto";
+							$mesNombre = "Agosto";
 							break;
 						case 9:
-							$mes = "Septiembre";
+							$mesNombre = "Septiembre";
 							break;
 						case 10:
-							$mes = "Octubre";
+							$mesNombre = "Octubre";
 							break;
 						case 11:
-							$mes = "Noviembre";
+							$mesNombre = "Noviembre";
 							break;
 						case 12:
-							$mes = "Diciembre";
+							$mesNombre = "Diciembre";
 							break;
 					}
-					// var_dump($mes);
+					// var_dump($mesNombre);
 					// var_dump($dia);
 					// var_dump($anno);
 				?>
-				<?= $mes ?> <?= $dia ?> de <?= $anno ?>
+				<?= $mesNombre ?> <?= $dia ?> de <?= $anno ?>
 				<span class="hora-actual">9:12am</span>
 			</div>
 		</div>
 	</div>
 
 	<div class="contenedor-dashboard">
-		<div class="row">
-			<div class="col-sm-12 filtro">
-				<div class="form-filtro">
-					<div class="campo">
-						<label for="municipio">Municipio</label>
-						<select name="municipio" id="municipio"></select>
-					</div>
-					<div class="campo">
-						<label for="institucion">institución</label>
-						<select name="institucion" id="institucion"></select>
-					</div>
-					<div class="campo">
-						<label for="sede">Sede</label>
-						<select name="sede" id="sede"></select>
-					</div>
-					<div class="campo">
-						<button type="button" id="btnFiltro">OK</button>
-					</div>
+		<form action="">
+			<input type="hidden" id="anno" name="anno" value="<?= $anno ?>">
+			<input type="hidden" id="mes" name="mes" value="<?= $mes ?>">
+			<input type="hidden" id="dia" name="dia" value="<?= $dia ?>">
+			<input type="hidden" id="semana" name="semana" value="<?= $semana ?>">
+			<div class="row">
+				<div class="col-sm-12 filtro">
+					<div class="form-filtro">
+						<div class="campo">
+							<label for="municipio">Municipio</label>
+							<select name="municipio" id="municipio"></select>
+						</div>
+						<div class="campo">
+							<label for="institucion">institución</label>
+							<select name="institucion" id="institucion"></select>
+						</div>
+						<div class="campo">
+							<label for="sede">Sede</label>
+							<select name="sede" id="sede"></select>
+						</div>
+						<div class="campo">
+							<button type="button" id="btnFiltro">OK</button>
+						</div>
 
-				</div>
-				<div class="actualizar">
-					<div class="campo">
-						<button type="button" id="btnActualizar">Actualizar gráfica</button>
+					</div>
+					<div class="actualizar">
+						<div class="campo">
+							<button type="button" id="btnActualizar">Actualizar gráfica</button>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 
 		<div class="row">
 			<div class="col-sm-12 grafica-dashboard">
@@ -189,6 +213,7 @@
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
 	<!-- Custom and plugin javascript -->
+	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 
 	<!-- Flot -->
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/flot/jquery.flot.js"></script>
