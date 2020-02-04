@@ -233,8 +233,12 @@ function cargarNiveles(){
 	
 	if($('#semana').val() != "" && $('#semana').val() != null){
 		formData.append('semanaActual', $('#semana').val());
+		console.log("Se usó semana.");
+		console.log($('#semana').val());
 	}else{
 		formData.append('semanaActual', $('#semanaActual').val());
+		console.log("Se usó semana actual.");
+		console.log($('#semanaActual').val());
 	}
 
 	formData.append('sede', $('#sede').val());

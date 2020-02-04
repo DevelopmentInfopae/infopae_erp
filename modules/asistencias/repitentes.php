@@ -13,7 +13,7 @@
 	
 
 
-	$dia = intval(date("d"));
+	$dia = date("d");
 	$mes = date("m");
 	$anno = date("Y");
 
