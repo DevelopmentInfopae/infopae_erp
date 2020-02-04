@@ -15,7 +15,7 @@
 
 
 
-	$dia = intval(date("d"));
+	$dia = date("d");
 	$mes = date("m");
 	$anno = date("Y");
 
@@ -25,6 +25,7 @@
 	//Busqueda de la semana actual
 	$semanaActual = "";
 	$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
+	//echo "<br>$consulta<br>";
 	//var_dump($consulta);				
 	$resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){

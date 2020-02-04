@@ -12,12 +12,9 @@
 	$cacheBusting = date("YmdHis");
 
 
-	$dia = intval(date("d"));
+	$dia = date("d");
 	$mes = date("m");
 	$anno = date("Y");
-
-
-
 
 	//Busqueda de la semana actual
 	$semanaActual = "";
