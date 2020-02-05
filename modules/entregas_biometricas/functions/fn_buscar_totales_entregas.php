@@ -55,6 +55,7 @@ if($resultado->num_rows >= 1){
 //var_dump($sedes);
 
 $cuerpo = "";
+$ultimo_registro = 0;
 
 foreach ($sedes as $codSede) {
 	//var_dump($codSede);
@@ -70,6 +71,12 @@ foreach ($sedes as $codSede) {
 		$t_total = $row["total"];
 		$t_entregado = $row["entregado"];
 		$t_primer_registro = $row["primer_registro"];
+		$date = new DateTime($t_primer_registro);
+		$t_primer_registro = date_format($date, 'g:i a');
+
+
+
+
 		
 		if($t_entregado == null || $t_entregado == ""){
 			$t_entregado = 0;
@@ -83,16 +90,50 @@ foreach ($sedes as $codSede) {
 		}
 
 		// Armado del html de cada sede
-		$cuerpoSede = "<div class=\"sede sede-$t_cod_sede\"> <div class=\"sede-top\"> <div class=\"sede-left\"> <i class=\"fa fa-circle\"></i> </div> <h5>$t_nom_sede</h5> <h2 class=\"no-margins\"> <span class=\"entregado\">$t_entregado</span> / <span class=\"total\">$t_total</span></h2> </div> <div class=\"sede-bottom\"> <div class=\"sede-left\"> <div class=\"sede-hora-inicio\"> $t_primer_registro </div> </div> <div class=\"progress progress-mini\"> <div style=\"width: $porcentaje%;\" class=\"progress-bar\"></div> </div> </div> </div>";
+		$cuerpoSede = "<div class=\"sede sede-$t_cod_sede\"> <div class=\"sede-top\"> <div class=\"sede-left\"> <i class=\"fa fa-circle\"></i> </div> <h5>$t_nom_sede</h5> <h2 class=\"no-margins\"> <span class=\"entregado entregado-$t_cod_sede\">$t_entregado</span> / <span class=\"total\">$t_total</span></h2> </div> <div class=\"sede-bottom\"> <div class=\"sede-left\"> <div class=\"sede-hora-inicio\"> $t_primer_registro </div> </div> <div class=\"progress progress-mini\"> <div style=\"width: $porcentaje%;\" class=\"progress-bar\"></div> </div> </div> </div>";
 
 		$cuerpo .= $cuerpoSede;
 	}
+	break;
 }
+
+
+/* Busqueda del ultimo registro, para tener una referencia de los registros nuevos. */
+
+
+$consulta = " SELECT MAX(br.id) AS ultimo_registro FROM biometria_reg br
+LEFT JOIN dispositivos d ON br.dispositivo_id = d.id
+LEFT JOIN sedes19  s ON d.cod_sede = s.cod_sede
+WHERE DAY(br.fecha) = $dia AND MONTH(br.fecha) = $mes AND YEAR(br.fecha) = $anno ";
+
+if($institucion != "" && $institucion != "null"){
+	$consulta .= " AND s.cod_inst = $institucion ";
+}
+if($sede != "" && $sede != "null"){
+	$consulta .= " AND d.cod_sede = $sede ";
+}
+
+//echo "<br>$consulta<br>";
+
+$resultado = $Link->query($consulta) or die ('Error al buscar el ultimo registro.'. mysqli_error($Link));
+if($resultado->num_rows >= 1){
+	$row = $resultado->fetch_assoc();
+	$ultimo_registro = $row["ultimo_registro"];
+}
+
+
+
+
+
+
+
+
 if($cuerpo != ''){
 	$resultadoAJAX = array(
 		"estado" => 1,
 		"mensaje" => "Se ha cargado con exito.",
-		"cuerpo" => $cuerpo
+		"cuerpo" => $cuerpo,
+		"ultimo_registro" => $ultimo_registro
 	);
 }else{
 	$resultadoAJAX = array(

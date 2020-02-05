@@ -23,8 +23,8 @@
 	$anno = date('Y');
 
 	//Forzando una fecha OJO solo en desarrollo
-	$mes = '01';
-	$dia = '21';
+	$mes = '05';
+	$dia = '20';
 	$anno = '2019';
 
 	$consulta = "SELECT semana FROM planilla_semanas WHERE mes = $mes AND dia = $dia LIMIT 1";
@@ -155,8 +155,8 @@
 		<div class="row">
 			<div class="col-sm-6 col-dash">
 				<div class="sedes">
-					<?php for($i = 0 ; $i < 6 ; $i++){ ?>
-						<div class="sede">
+					<?php //for($i = 0 ; $i < 6 ; $i++){ ?>
+						<!-- <div class="sede">
 							<div class="sede-top">
 								<div class="sede-left">
 									<i class="fa fa-circle"></i>
@@ -172,15 +172,15 @@
 								</div>
 								<div class="progress progress-mini"> <div style="width: 10%;" class="progress-bar"></div> </div>
 							</div>
-						</div>
-						<?php } ?>
+						</div> -->
+						<?php //} ?>
 					</div>
 				</div>
 				<div class="col-sm-6 col-dash col-der">
 
 					<div class="entregas">
-						<?php for($i = 0 ; $i < 6 ; $i++){ ?>
-						<div class="entrega">
+						<?php //for($i = 0 ; $i < 6 ; $i++){ ?>
+						<!-- <div class="entrega">
 							<i class="fa fa-check-circle"></i>
 							<span class="hora-estudiante">07:45:01</span>
 							<div class="estudiante-icono"> <img alt="entregado" src="<?= $baseUrl ?>/img/touch.png" /> </div>
@@ -188,8 +188,8 @@
 								<h2><span class="estudiante--nombre">Ricardo Farfán</span> recibió complemento <span class="estudiante--complemento">APS</span></h2>
 								<p>Sede <span class="estudiante--sede">Colegio Integrado LLano Grande</span> <br> Validado a través de <span class="estudiante--validacion">huella dactilar.</span></p>
 							</div>
-						</div>
-						<?php } ?>
+						</div> -->
+						<?php //} ?>
 					</div>
 
 				</div>
