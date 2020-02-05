@@ -23,7 +23,7 @@ if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){
 	$fecha = date("Y-m-d H:i:s");
 	$anno = date("y"); 
 	$mes = date("m");
-	$dia = intval(date("d"));
+	$dia = date("d");
 
 
 
