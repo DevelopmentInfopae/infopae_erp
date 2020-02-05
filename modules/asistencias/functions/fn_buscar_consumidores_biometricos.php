@@ -23,7 +23,7 @@ if(isset($_POST["mes"]) && $_POST["mes"] != ""){
 if(isset($_POST["dia"]) && $_POST["dia"] != ""){
 	$dia = mysqli_real_escape_string($Link, $_POST["dia"]);
 }else{
-	$dia = intval(date("d"));
+	$dia = date("d");
 }
 $semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
 
