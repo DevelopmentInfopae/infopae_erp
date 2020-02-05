@@ -11,7 +11,7 @@
 	$fecha = date("Y-m-d H:i:s");
 	$cacheBusting = date("YmdHis");
 
-	$dia = intval(date("d"));
+	$dia = date("d");
 	$mes = date("m");
 	$anno = date("Y");
 	$anno2d = date("y");

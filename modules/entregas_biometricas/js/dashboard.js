@@ -1,6 +1,7 @@
 var municipioBusqueda = "";
 var institucionBusqueda = "";
 var sedeBusqueda = "";
+var ultimoRegistro = 0;
 
 $(function() {
 
@@ -126,7 +127,7 @@ $(document).ready(function(){
 
 	
 
-	buscarNuevosRegistros();
+	
 
 	// cargarMunicipios();
 
@@ -175,11 +176,6 @@ function mueveReloj(){
 	//de esta forma:
 
 	setTimeout(mueveReloj,1000);
-}
-
-function buscarNuevosRegistros(){
-	console.log('Buscando Nuevos Registros');
-	setTimeout(buscarNuevosRegistros,2000);
 }
 
 function cargarMunicipios(){
@@ -318,6 +314,8 @@ function buscarTotalesSedes(){
 			if(data.estado == 1){
 				console.log('Totales cargados');
 				$('.sedes').html(data.cuerpo);
+				ultimoRegistro = data.ultimo_registro;
+				console.log("Ultimo Registro: "+ultimoRegistro);
 
 				// $('#dia').html(data.opciones);
 				// $('#dia').val(localStorage.getItem("wappsi_dia"));
@@ -326,6 +324,9 @@ function buscarTotalesSedes(){
 				// 	cargarDias()
 				// }
 				$('#loader').fadeOut();
+				setTimeout("buscarNuevosRegistros()",2000);
+		
+
 			}
 			else{
 				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
@@ -336,4 +337,77 @@ function buscarTotalesSedes(){
 			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 		}
 	});
+}
+
+function buscarNuevosRegistros(){
+	console.log('Buscando Nuevos Registros');
+	console.log(ultimoRegistro);
+
+	var formData = new FormData();
+
+	formData.append('ultimoRegistro', ultimoRegistro);
+	formData.append('anno', $('#anno').val());
+	formData.append('mes', $('#mes').val());
+	formData.append('dia', $('#dia').val());
+	formData.append('semana', $('#semana').val());
+	formData.append('municipio', $('#municipio').val());
+	formData.append('institucion', $('#institucion').val());
+	formData.append('sede', $('#sede').val());
+
+	$.ajax({
+		type: "post",
+		url: "functions/fn_buscar_nuevos_registros.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			console.log(data);
+			if(data.estado == 1){
+				console.log('Terminada la verificación de nuevos registros.');
+				var codSede = data.codSede;
+				$('.entregas').prepend(data.cuerpo);
+				console.log("Sede que recibió registro: "+codSede);
+
+				var aux = $('.entregado-'+codSede).html();
+				aux = parseInt(aux);
+				aux++;
+				$('.entregado-'+codSede).html(aux);
+
+				
+				
+				
+				
+				
+				if ( $(".entrega").length > 9){
+					$(".entrega").last().remove();
+				}
+
+				//entregas
+
+
+				// $('.sedes').html(data.cuerpo);
+				// ultimoRegistro = data.ultimo_registro;
+				// console.log("Ultimo Registro: "+ultimoRegistro);
+
+				// // $('#dia').html(data.opciones);
+				// // $('#dia').val(localStorage.getItem("wappsi_dia"));
+				// // localStorage.setItem("wappsi_dia", $("#dia").val());
+				// // if($('#semana').val() != ""){
+				// // 	cargarDias()
+				// // }
+				$('#loader').fadeOut();
+
+			}
+			else{
+				//Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+	setTimeout(buscarNuevosRegistros,2000);
 }
