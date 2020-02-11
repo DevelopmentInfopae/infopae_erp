@@ -12,6 +12,8 @@ $semana = '';
 $municipio = '';
 $institucion = '';
 $sede = '';
+$totalEntregas = 0;
+$totalEntregado = 0;
 
 if(isset($_POST['anno']) && $_POST['anno'] != ''){
 	$anno = mysqli_real_escape_string($Link, $_POST['anno']);
@@ -38,10 +40,10 @@ if(isset($_POST['sede']) && $_POST['sede'] != ''){
 
 // Busar el listado sedes para las que vamos a mostrar los totles.
 $consulta = " SELECT cod_sede FROM sedes$periodoActual WHERE cod_mun_sede = $municipio ";
-if($institucion != 'null'){
+if($institucion != 'null' && $institucion != ''){
 	$consulta .= " and cod_inst = $institucion ";
 }
-if($sede != 'null'){
+if($sede != 'null' && $sede != ''){
 	$consulta .= " and cod_sede = $sede ";
 }
 //echo $consulta;
@@ -70,6 +72,10 @@ foreach ($sedes as $codSede) {
 		$t_nom_inst = $row["nom_inst"];
 		$t_total = $row["total"];
 		$t_entregado = $row["entregado"];
+		
+		$totalEntregas = $totalEntregas + $t_total;
+		$totalEntregado = $totalEntregado + $t_entregado;
+		
 		$t_primer_registro = $row["primer_registro"];
 		$date = new DateTime($t_primer_registro);
 		$t_primer_registro = date_format($date, 'g:i a');
@@ -94,7 +100,7 @@ foreach ($sedes as $codSede) {
 
 		$cuerpo .= $cuerpoSede;
 	}
-	break;
+	//break;
 }
 
 
@@ -133,7 +139,9 @@ if($cuerpo != ''){
 		"estado" => 1,
 		"mensaje" => "Se ha cargado con exito.",
 		"cuerpo" => $cuerpo,
-		"ultimo_registro" => $ultimo_registro
+		"ultimo_registro" => $ultimo_registro,
+		"total_entregas" => $totalEntregas,
+		"total_entregado" => $totalEntregado
 	);
 }else{
 	$resultadoAJAX = array(
