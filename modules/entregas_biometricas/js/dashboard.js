@@ -2,6 +2,10 @@ var municipioBusqueda = "";
 var institucionBusqueda = "";
 var sedeBusqueda = "";
 var ultimoRegistro = 0;
+var totalEntregas = 0;
+var totalEntregado = 0;
+
+var data = [];
 
 $(function() {
 
@@ -11,10 +15,11 @@ $(function() {
 	// this gives us a nice high-res plot while avoiding more than one point per pixel.
 
 	var maximum = container.outerWidth() / 2 || 300;
+	console.log(maximum)
 
 	//
 
-	var data = [];
+	
 
 	function getRandomData() {
 
@@ -25,7 +30,8 @@ $(function() {
 		while (data.length < maximum) {
 			var previous = data.length ? data[data.length - 1] : 50;
 			var y = previous + Math.random() * 10 - 5;
-			data.push(y < 0 ? 0 : y > 100 ? 100 : y);
+			var y = totalEntregado;
+			data.push(y < 0 ? 0 : y > 1000 ? 1000 : y);
 		}
 
 		// zip the generated y values with the x values
@@ -85,7 +91,7 @@ $(function() {
 		},
 		yaxis: {
 			min: 0,
-			max: 110
+			max: 1000
 		},
 		legend: {
 			show: true
@@ -123,6 +129,16 @@ $(document).ready(function(){
 	
 	$( "#btnFiltro" ).click(function() {
 		console.log('Click en aplicar Filtro');
+		data = [];
+		municipioBusqueda = $('#municipio').val();
+		institucionBusqueda = $('#institucion').val();
+		sedeBusqueda = $('#sede').val();
+		ultimoRegistro = 0;
+		totalEntregas = 0;
+		totalEntregado = 0;
+		$('.sedes').html('');
+		$('.entregas').html('');
+		buscarTotalesSedes();
 	});
 
 	
@@ -197,7 +213,7 @@ function cargarMunicipios(){
 				console.log('Municipio para hacer la busqueda: '+municipioBusqueda);
 				/* Si no habia un valor de munipio anterior es necesario buscar lo totales de las sedes .*/
 				if(aux == null){
-					buscarTotalesSedes();
+					//buscarTotalesSedes();
 				}
 			}
 			else{
@@ -298,9 +314,9 @@ function buscarTotalesSedes(){
 	formData.append('mes', $('#mes').val());
 	formData.append('dia', $('#dia').val());
 	formData.append('semana', $('#semana').val());
-	formData.append('municipio', $('#municipio').val());
-	formData.append('institucion', $('#institucion').val());
-	formData.append('sede', $('#sede').val());
+	formData.append('municipio', municipioBusqueda);
+	formData.append('institucion', institucionBusqueda);
+	formData.append('sede', sedeBusqueda);
 
 	$.ajax({
 		type: "post",
@@ -309,12 +325,15 @@ function buscarTotalesSedes(){
 		contentType: false,
 		processData: false,
 		data: formData,
-		beforeSend: function(){ $('#loader').fadeIn(); },
+		beforeSend: function(){ $('.overlay').fadeIn(); },
 		success: function(data){
 			if(data.estado == 1){
 				console.log('Totales cargados');
 				$('.sedes').html(data.cuerpo);
 				ultimoRegistro = data.ultimo_registro;
+				totalEntregas = data.total_entregas;
+				totalEntregado = data.total_entregado;
+
 				console.log("Ultimo Registro: "+ultimoRegistro);
 
 				// $('#dia').html(data.opciones);
@@ -323,13 +342,15 @@ function buscarTotalesSedes(){
 				// if($('#semana').val() != ""){
 				// 	cargarDias()
 				// }
-				$('#loader').fadeOut();
-				setTimeout("buscarNuevosRegistros()",2000);
+				$('.overlay').fadeOut();
+				if(totalEntregas > 0){
+					setTimeout("buscarNuevosRegistros()",2000);
+				}
 		
 
 			}
 			else{
-				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('.overlay').fadeOut();}});
 			}
 		},
 		error: function(data){
@@ -350,9 +371,9 @@ function buscarNuevosRegistros(){
 	formData.append('mes', $('#mes').val());
 	formData.append('dia', $('#dia').val());
 	formData.append('semana', $('#semana').val());
-	formData.append('municipio', $('#municipio').val());
-	formData.append('institucion', $('#institucion').val());
-	formData.append('sede', $('#sede').val());
+	formData.append('municipio', municipioBusqueda);
+	formData.append('institucion', institucionBusqueda);
+	formData.append('sede', sedeBusqueda);
 
 	$.ajax({
 		type: "post",
@@ -366,23 +387,28 @@ function buscarNuevosRegistros(){
 			console.log(data);
 			if(data.estado == 1){
 				console.log('Terminada la verificación de nuevos registros.');
-				var codSede = data.codSede;
-				$('.entregas').prepend(data.cuerpo);
-				console.log("Sede que recibió registro: "+codSede);
+				
 
-				var aux = $('.entregado-'+codSede).html();
-				aux = parseInt(aux);
-				aux++;
-				$('.entregado-'+codSede).html(aux);
+				if(totalEntregas > 0){
+					var codSede = data.codSede;
+					$('.entregas').prepend(data.cuerpo);
+					console.log("Sede que recibió registro: "+codSede);
+					var aux = $('.entregado-'+codSede).html();
+					aux = parseInt(aux);
+					aux++;
+					$('.entregado-'+codSede).html(aux);
+	
+					//Aumentando el contador de lo entregado
+					totalEntregado = totalEntregado + 1;
+					
+					// Actualizando el Id del ultimo registro procesado
+					ultimoRegistro = data.ultimoRegistro;
 
-				
-				
-				
-				
-				
-				if ( $(".entrega").length > 9){
-					$(".entrega").last().remove();
+					if ( $(".entrega").length > 9){
+						$(".entrega").last().remove();
+					}
 				}
+
 
 				//entregas
 
@@ -399,6 +425,8 @@ function buscarNuevosRegistros(){
 				// // }
 				$('#loader').fadeOut();
 
+				
+
 			}
 			else{
 				//Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
@@ -409,5 +437,7 @@ function buscarNuevosRegistros(){
 			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 		}
 	});
-	setTimeout(buscarNuevosRegistros,2000);
+	if(totalEntregas > 0){
+		setTimeout(buscarNuevosRegistros,2000);
+	}
 }

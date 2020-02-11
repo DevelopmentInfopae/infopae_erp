@@ -18,8 +18,6 @@ $cantRegistrosNuevos = 0;
 
 if(isset($_POST['ultimoRegistro']) && $_POST['ultimoRegistro'] != ''){
 	$ultimoRegistro = mysqli_real_escape_string($Link, $_POST['ultimoRegistro']);
-	/* Ojo, borrar la proxima línea */
-	$ultimoRegistro--;
 }
 if(isset($_POST['anno']) && $_POST['anno'] != ''){
 	$anno = mysqli_real_escape_string($Link, $_POST['anno']);
@@ -122,7 +120,8 @@ if($cantRegistrosNuevos > 0){
 		"mensaje" => "Se ha cargado con exito.",
 		"cantRegistrosNuevos" => $cantRegistrosNuevos,
 		"cuerpo" => $cuerpo,
-		"codSede" => $codSede
+		"codSede" => $codSede,
+		"ultimoRegistro" => $idEntrega
 	);
 }else{
 	$resultadoAJAX = array(
