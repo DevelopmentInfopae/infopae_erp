@@ -51,7 +51,7 @@
 <body>
 	<div class="barra-top">
 		<div class="barra-top__left">
-			<button><i class="fa fa-bars"></i></button>
+			<!-- <button><i class="fa fa-bars"></i></button> -->
 			<div class="logo-dashboard"><img alt="entregado" src="<?= $baseUrl ?>/img/logo_b.png" /></div>
 		</div>
 		<div class="barra-top__center">
@@ -134,11 +134,11 @@
 						</div>
 
 					</div>
-					<div class="actualizar">
+					<!-- <div class="actualizar">
 						<div class="campo">
 							<button type="button" id="btnActualizar">Actualizar gráfica</button>
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</form>
@@ -154,7 +154,11 @@
 
 		<div class="row">
 			<div class="col-sm-6 col-dash">
+				<div class="overlay"> <i class="fa fa-refresh fa-spin"></i> </div>
 				<div class="sedes">
+
+					
+
 					<?php //for($i = 0 ; $i < 6 ; $i++){ ?>
 						<!-- <div class="sede">
 							<div class="sede-top">

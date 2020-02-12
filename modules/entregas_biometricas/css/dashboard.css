@@ -114,7 +114,12 @@ body{
 	margin-left: 0px;
 }
 
-
+.overlay{
+	text-align: center;
+	font-size: 60px;
+	color: #bebebe;
+	display: none;
+}
 
 
 

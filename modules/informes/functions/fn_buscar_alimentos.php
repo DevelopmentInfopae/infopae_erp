@@ -2,6 +2,8 @@
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 
+$periodoActual = $_SESSION['periodoActual'];
+
 $data = [];
 $periodo_actual = $_SESSION["periodoActual"];
 $mes = (isset($_POST['mes'])) ? $Link->real_escape_string($_POST['mes']) : "";
@@ -34,7 +36,7 @@ $consulta = "SELECT
 FROM productosmovdet$mes$periodo_actual pm
 STRAIGHT_JOIN productosmov$mes$periodo_actual prm ON pm.Numero = prm.Numero
 INNER JOIN productos$periodo_actual p ON pm.CodigoProducto = p.codigo
-INNER JOIN sedes19 sed ON sed.cod_sede = pm.BodegaDestino
+INNER JOIN sedes$periodoActual sed ON sed.cod_sede = pm.BodegaDestino
 WHERE pm.Numero IN (SELECT num_doc FROM despachos_enc$mes$periodo_actual d WHERE d.estado<> 0 AND semana BETWEEN '$semana_inicial' AND '$semana_final' $condicion_tipo_complemento)
 GROUP BY pm.CodigoProducto";
 

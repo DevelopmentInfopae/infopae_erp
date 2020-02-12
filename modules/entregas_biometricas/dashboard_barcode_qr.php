@@ -45,6 +45,7 @@ if(isset($_GET["sede"]) && $_GET["sede"] != ""){
 	$institucionNombre = mysqli_real_escape_string($Link, $_GET['institucionNombre']);
 	$sedeNombre = mysqli_real_escape_string($Link, $_GET['sedeNombre']);
 	$dispositivoNombre = mysqli_real_escape_string($Link, $_GET['dispositivoNombre']);
+	$dispositivo = mysqli_real_escape_string($Link, $_GET['dispositivo']);
 	$nivelNombre = mysqli_real_escape_string($Link, $_GET['nivelNombre']);
 	$grado = mysqli_real_escape_string($Link, $_GET['grado']);
 	$gradoNombre = mysqli_real_escape_string($Link, $_GET['gradoNombre']);
@@ -118,8 +119,9 @@ if(isset($_GET["sede"]) && $_GET["sede"] != ""){
 							<div class="col-sm-4">
 								<div class="form-captura">
 									<form class="form-inline form-registro-biometria">
-										<input type="text" class="form-control mb-8 mr-sm-8" id="inlineFormInputName2" placeholder="Documento">
-										<button type="submit" class="btn btn-primary mb-2">Registrar</button>
+										<input type="hidden" id="dispositivo" value="<?= $dispositivo ?>">
+										<input type="text" class="form-control mb-8 mr-sm-8" id="lector" placeholder="Documento" style="color: black;">
+										<button type="button" class="btn btn-primary mb-2" id="btn-lector">Registrar</button>
 									</form>
 								</div>
 							</div>
@@ -145,63 +147,7 @@ if(isset($_GET["sede"]) && $_GET["sede"] != ""){
 									<th>Grupo</th>
 								</tr>
 							</thead>
-							<tbody>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
-								<tr>
-									<td>23/01/2020 8:08:00 A.M.</td>
-									<td>Pedro Jóse</td>
-									<td>Perez Gomez</td>
-									<td>Primero</td>
-									<td>101</td>
-								</tr>
+							<tbody class="entregas-qr">
 								<tr>
 									<td>23/01/2020 8:08:00 A.M.</td>
 									<td>Pedro Jóse</td>
