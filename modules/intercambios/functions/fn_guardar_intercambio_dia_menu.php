@@ -2,6 +2,8 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
+$periodoActual = $_SESSION['periodoActual'];
+
 $fecha = date('Y-m-d H:i:s');
 $carpeta = 'upload/novedades/menu/';
 $carpetaFisica = '../../../upload/novedades/menu/';
@@ -94,8 +96,8 @@ unset($menus);
 $menusConsulta = implode( ", ", $menusConsulta );
 
 // Buscando los registros originales
-$query = " SELECT 0 AS tipo, \"$nuevoId\" as novedad, p.Codigo, p.Orden_Ciclo FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
-$query .= " union SELECT 0 AS tipo, \"$nuevoId\" as novedad, p2.Codigo, p2.Orden_Ciclo FROM productos19 p2 where p2.Codigo IN ($menusConsulta)  ";
+$query = " SELECT 0 AS tipo, \"$nuevoId\" as novedad, p.Codigo, p.Orden_Ciclo FROM planilla_semanas ps LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
+$query .= " union SELECT 0 AS tipo, \"$nuevoId\" as novedad, p2.Codigo, p2.Orden_Ciclo FROM productos$periodoActual p2 where p2.Codigo IN ($menusConsulta)  ";
 //echo $query;
 $result = $Link->query($query) or die ('Error al cargar los registros originales.'. mysqli_error($Link));
 if ($result->num_rows > 0) {
@@ -140,7 +142,7 @@ foreach ($menusConCambios as $menu) {
 	$query .= " (\"0\", \"$nuevoId\", \"$codigo\", \"$ordenCiclo\") , ";
 	$query .= " (\"1\", \"$nuevoId\", \"$codigo\", \"$ordenCicloDestino\") ";
 	$aux++;
-	$queryCambioEnMenu .= " update productos19 set Orden_Ciclo = \"$ordenCicloDestino\" where Codigo = \"$codigo\"; ";
+	$queryCambioEnMenu .= " update productos$periodoActual set Orden_Ciclo = \"$ordenCicloDestino\" where Codigo = \"$codigo\"; ";
 }
 //echo $query;
 $Link->query($query) or die ('Error inserción de registros originales en el detalle de la novedad'. mysqli_error($Link));

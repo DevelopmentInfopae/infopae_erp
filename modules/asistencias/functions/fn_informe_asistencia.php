@@ -19,7 +19,7 @@ if(isset($_POST["mes"]) && $_POST["mes"] != ""){
 if(isset($_POST["dia"]) && $_POST["dia"] != ""){
 	$dia = mysqli_real_escape_string($Link, $_POST["dia"]);
 }else{
-	$dia = intval(date("d"));
+	$dia = date("d");
 }
 
 $periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);

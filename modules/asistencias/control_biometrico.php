@@ -1,26 +1,23 @@
 <?php
+	$titulo = "Control dispositivos biométricos";
 	include '../../header.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
 	$periodoActual = $_SESSION["periodoActual"];
-	$titulo = "Control dispositivos biométricos";
+	
 	$institucionNombre = "";
 
 	date_default_timezone_set('America/Bogota');
 	$fecha = date("Y-m-d H:i:s");
 	$cacheBusting = date("YmdHis");
 
-	$dia = intval(date("d"));
+	$dia = date("d");
 	$mes = date("m");
 	$anno = date("Y");
 	$anno2d = date("y");
 
-
-
-
-
-
+	$periodoActual = $_SESSION['periodoActual'];
 
 	$validacion = "Lector de Huella";
 	$semanaActual = "";
@@ -128,10 +125,10 @@
 						// Consulta que recorre todas las sedes validadas con tableta y trae si estan selladas, total de estudiantes y total entregado.
 						
 
-						//$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$anno2d s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
+						//$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$periodoActual s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
 
 
-						$consulta = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst FROM sedes$anno2d s WHERE s.tipo_validacion = \"Lector de Huella\""; 
+						$consulta = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst FROM sedes$periodoActual s WHERE s.tipo_validacion = \"Lector de Huella\""; 
 						if($municipio != ""){
 							$consulta .= " and s.cod_mun_sede = \"$municipio\" ";	
 						}
@@ -154,23 +151,26 @@
 
 								// Validar si existe el encabezado para saber si trae los totales de las tablas de dispisitivos o d ela tabla de asistencia.
 
-								$consulta2 = " select * from asistencia_enc$mes$anno2d where mes = \"$mes\" and dia = \"$dia\" and cod_sede = \"$codSede\" ";
+								$consulta2 = " select * from asistencia_enc$mes$periodoActual where mes = \"$mes\" and dia = \"$dia\" and cod_sede = \"$codSede\" ";
 								//echo "<br>$consulta2<br>";
 								$resultado2 = $Link->query($consulta2);
-
-								if($resultado2->num_rows > 0){
+					
+								if($resultado2 !== false && $resultado2->num_rows > 0){
 									//echo "En tabla de asistencias";
 
 									$row2 = $resultado2->fetch_assoc();
 									$sellado = $row2['estado'];
-									$consulta3 = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst, a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$anno2d s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.cod_sede = \"$codSede\"";
+									$consulta3 = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst, a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join asistencia_det$mes$periodoActual a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$periodoActual s LEFT JOIN asistencia_enc$mes$periodoActual a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.cod_sede = \"$codSede\"";
+								
 
-
-									$consulta4 = "SELECT f.cod_grado, g.nombre, f.nom_grupo , count(num_doc) AS total ,(SELECT sum(a.consumio + a.repitio) AS cantidad FROM focalizacion$anno2d f2 left join asistencia_det$mes$anno2d a ON f2.tipo_doc = a.tipo_doc AND f2.num_doc = a.num_doc WHERE f2.cod_sede = $codSede AND a.consumio IS not NULL and a.dia = \"$dia\" AND f2.nom_grupo = f.nom_grupo GROUP BY f2.nom_grupo ) AS entregado FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = $codSede GROUP BY nom_grupo ";
-
+									
+									
+									$consulta4 = "SELECT f.cod_grado, g.nombre, f.nom_grupo , count(num_doc) AS total ,(SELECT sum(a.consumio + a.repitio) AS cantidad FROM focalizacion$periodoActual f2 left join asistencia_det$mes$periodoActual a ON f2.tipo_doc = a.tipo_doc AND f2.num_doc = a.num_doc WHERE f2.cod_sede = $codSede AND a.consumio IS not NULL and a.dia = \"$dia\" AND f2.nom_grupo = f.nom_grupo GROUP BY f2.nom_grupo ) AS entregado FROM focalizacion$semanaActual f left join grados g on g.id = f.cod_grado WHERE f.cod_sede = $codSede GROUP BY nom_grupo ";
+							
+									
 								}else{
 									//echo "No en tabla de asistencias";
-
+									
 									$consulta3 = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total ,(SELECT SUM(t.entregas) AS entregado FROM (
 										
 										
@@ -178,7 +178,7 @@ select IF(COUNT(f2.id)>2,1, COUNT(f2.id)) AS entregas, f2.*
 from biometria_reg br 
 left join  biometria b
 on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo)
-inner join focalizacion35 f2 on (b.num_doc=f2.num_doc)
+inner join focalizacion$semanaActual f2 on (b.num_doc=f2.num_doc)
 WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia
 GROUP BY f2.id
 									
@@ -189,7 +189,7 @@ GROUP BY f2.id
 									
 									
 									
-									WHERE t.cod_sede = s.cod_sede GROUP BY t.cod_sede ) AS entregado FROM sedes$anno2d s WHERE s.cod_sede = \"$codSede\""; 
+									WHERE t.cod_sede = s.cod_sede GROUP BY t.cod_sede ) AS entregado FROM sedes$periodoActual s WHERE s.cod_sede = \"$codSede\""; 
 
 
 
@@ -214,7 +214,7 @@ GROUP BY f2.id
 from biometria_reg br 
 left join  biometria b
 on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo)
-inner join focalizacion35 f2 on (b.num_doc=f2.num_doc)
+inner join focalizacion$semanaActual f2 on (b.num_doc=f2.num_doc)
 WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia
 GROUP BY f2.id
 									
@@ -253,7 +253,13 @@ GROUP BY f2.id
 								if($entregado == null || $entregado == ""){
 									$entregado = 0;
 								}
-								$porcentaje = ($entregado / $total) * 100;
+								if($total > 0){
+									$porcentaje = ($entregado / $total) * 100;
+								}
+								else{
+									$porcentaje = 0;
+								}
+								
 								$claseSede = "text-rojo";
 								if($sellado == 2){
 									$claseSede = "text-verde";

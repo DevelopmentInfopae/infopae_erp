@@ -12,7 +12,7 @@
 	$cacheBusting = date("YmdHis");
 
 
-	$dia = intval(date("d"));
+	$dia = date("d");
 	$mes = date("m");
 	$anno = date("Y");
 	$anno2d = date("y");
@@ -25,7 +25,7 @@
 	}
 
 	$institucionP = "";
-	$consulta = " SELECT cod_inst FROM sedes$anno2d WHERE cod_sede = \"$sedeP\" ";
+	$consulta = " SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = \"$sedeP\" ";
 	//echo $consulta;
 	$resultado = $Link->query($consulta) or die ('No se pudo cargar la institucion. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){

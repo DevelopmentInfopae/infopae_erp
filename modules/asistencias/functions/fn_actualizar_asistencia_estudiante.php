@@ -24,7 +24,7 @@ $semana = mysqli_real_escape_string($Link, $_POST['semana']);
 if(isset($_POST["dia"]) && $_POST["dia"] != ""){
 	$dia = mysqli_real_escape_string($Link, $_POST['dia']);
 } else{
-	$dia = intval(date("d"));
+	$dia = date("d");
 }
 
 

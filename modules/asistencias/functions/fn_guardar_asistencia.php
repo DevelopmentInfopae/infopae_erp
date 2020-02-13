@@ -20,7 +20,7 @@ if( isset($_POST["mes"]) && $_POST["mes"] != "" ){
 if( isset($_POST["dia"]) && $_POST["dia"] != "" ){
 	$dia = $_POST["dia"];
 }else{
-	$dia = intval(date("d"));
+	$dia = date("d");
 }
 
 

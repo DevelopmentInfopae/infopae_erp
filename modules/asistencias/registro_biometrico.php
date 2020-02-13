@@ -11,9 +11,10 @@
 	$fecha = date("Y-m-d H:i:s");
 	$cacheBusting = date("YmdHis");
 
-	$dia = intval(date("d"));
+	$dia = date("d");
 	$mes = date("m");
 	$anno = date("Y");
+	$semanaActual = null;
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
