@@ -701,8 +701,13 @@ if ($alimento['presentacion'] == 'u') {
 
 
 	// CANTIDAD ENTREGADA
-	$pdf->Cell(10.7,4,$aux,1,0,'C',False);
-	  //total entregado
+	if( $alimento['cantu2'] > 0 || $alimento['cantu3'] > 0 || $alimento['cantu4'] > 0 || $alimento['cantu5'] > 0 ){
+		$pdf->Cell(10.7,4,'',1,0,'C',False);
+	}else{
+		$pdf->Cell(10.7,4,$aux,1,0,'C',False);
+	}
+	
+	//total entregado
 	$pdf->Cell(10.6,4,'',1,0,'C',False);
 	$pdf->Cell(10.6,4,'',1,0,'C',False);
 	// ESPECIFICACIÓN DE CALIDAD
