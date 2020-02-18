@@ -661,8 +661,14 @@ $grupoAlimActual = '';
 
 				$aux = number_format($aux, 2, '.', '');
 
+	
 		$pdf->Cell(13.141,5,($aux),1,0,'C',False);
-			//total
+			
+		
+		// TOTAL
+
+		//var_dump($item);
+		//var_dump($alimento);
 
 
 		if($item['cantotalpresentacion'] > 0){
@@ -685,8 +691,23 @@ $grupoAlimActual = '';
 				$aux = number_format($aux, 2, '.', '');
 			}
 
-		$pdf->Cell(10.6,5,$aux,1,0,'C',False);
 
+		if($item['cantu2'] > 0 || $item['cantu3'] > 0 || $item['cantu4'] > 0 || $item['cantu5'] > 0 ){ $aux = ""; }
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+		$pdf->Cell(10.6,5,$aux,1,0,'C',False);
 		$pdf->Cell(10.638,5,'',1,0,'C',False);
 		$pdf->Cell(10.6,5,'',1,0,'C',False);
 		$pdf->Cell(13.626,5,'',1,0,'C',False);
