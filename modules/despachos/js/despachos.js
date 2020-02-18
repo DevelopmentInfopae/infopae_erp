@@ -787,6 +787,7 @@ function despachos_agrupados(){
     $( ".soloJs" ).remove();
     console.log('Se van a mostrar los despachos agrupados');
     $('#formDespachos').attr('action', 'despacho_agrupado.php');
+    $('#formDespachos').attr('method', 'post');
     $('#formDespachos').submit();
 
   }

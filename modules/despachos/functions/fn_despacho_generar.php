@@ -1,6 +1,7 @@
 <?php
 	include '../../../config.php';
 	require_once '../../../db/conexion.php';
+	include 'fn_funciones.php';
 
 	// Vamos a usar una veriable bandera para determinar si finalmente se pueden hacer las inserciónes.
 	$tipo = '';
@@ -260,7 +261,7 @@ foreach ($variaciones as $id => $variacion) {
 			$consulta = $consulta." where ps.SEMANA = '$semana'
 			and ft.Nombre IS NOT NULL
 			and p.Cod_Tipo_complemento = '$tipo' AND p.cod_variacion_menu = '$variacion'";
-
+			//echo "<br>$consulta<br>";
 
 
 
@@ -330,30 +331,33 @@ foreach ($variaciones as $id => $variacion) {
 
 			// Consulta 2 o segunda consulta
 			$consulta = "SELECT
-										ft.Codigo AS codigo_preparado,
-										ftd.codigo,
-										ftd.Componente,
-										p.nombreunidad2 AS presentacion,
-										p.cantidadund1 AS cantidadPresentacion,
-										p.cantidadund2 AS factor,
-										p.cantidadund3,
-										p.cantidadund4,
-										p.cantidadund5,
-										p.cod_variacion_menu as variacion,
-										m.grupo_alim,
-										ftd.Cantidad,
-										ftd.UnidadMedida,
-										ftd.PesoNeto,
-										ftd.PesoBruto
-									FROM fichatecnica ft
-										INNER JOIN fichatecnicadet ftd ON ft.id=ftd.idft
-										INNER JOIN productos$tablaAnno p ON ftd.codigo=p.codigo
-										INNER JOIN menu_aportes_calynut m ON ftd.codigo=m.cod_prod
-									WHERE ft.codigo = $codigo AND ftd.tipo = 'Alimento'";
+					ft.Codigo AS codigo_preparado,
+					ftd.codigo,
+					ftd.Componente,
+					p.nombreunidad2 AS presentacion,
+					p.cantidadund1 AS cantidadPresentacion,
+					p.cantidadund2 AS factor,
+					p.cantidadund3,
+					p.cantidadund4,
+					p.cantidadund5,
+					p.cod_variacion_menu as variacion,
+					m.grupo_alim,
+					ftd.Cantidad,
+					ftd.UnidadMedida,
+					ftd.PesoNeto,
+					ftd.PesoBruto,
+					td.Redondeo
+				FROM fichatecnica ft
+					INNER JOIN fichatecnicadet ftd ON ft.id=ftd.idft
+					INNER JOIN productos$tablaAnno p ON ftd.codigo=p.codigo
+					INNER JOIN menu_aportes_calynut m ON ftd.codigo=m.cod_prod
+					INNER JOIN tipo_despacho td ON td.Id = p.TipoDespacho
+				WHERE ft.codigo = $codigo AND ftd.tipo = 'Alimento'";
 			if ($tipoDespacho != 99) {
 				$consulta = $consulta." and p.tipodespacho = $tipoDespacho ";
 			}
-
+			//echo "<br>$consulta<br>";
+		
 			// Impresión de la segunda consulta
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 			if($resultado->num_rows >= 1) {
@@ -372,6 +376,7 @@ foreach ($variaciones as $id => $variacion) {
 					$item['cantidadund5'] = $row['cantidadund5'];
 					$item['unidadMedida'] = $row['UnidadMedida'];
 					$item['cantidadPresentacion'] = $row['cantidadPresentacion'];
+					$item['redondeo'] = $row['Redondeo'];
 
 					//IMPORTANTE los calculos se hacen con peso bruto con ecepcion de los RI
 					if($tipo == 'CAJMRI'){
@@ -383,6 +388,7 @@ foreach ($variaciones as $id => $variacion) {
 					$itemsIngredientes[] = $item;
 					$ingredientes++;
 				}
+				//var_dump($item);
 			} else {
 				if ($tipoDespacho == 99) {
 					// Si no se encontraron ingredientes vamos a mostrar un mensaje.
@@ -392,9 +398,6 @@ foreach ($variaciones as $id => $variacion) {
 					break;
 				}
 			}
-
-
-
 		}
 		$items = $itemsIngredientes;
 
@@ -530,6 +533,8 @@ foreach ($variaciones as $id => $variacion) {
 				"cantidadund3" => $item['cantidadund3'],
 				"cantidadund4" => $item['cantidadund4'],
 				"cantidadund5" => $item['cantidadund5'],
+				
+				"redondeo" => $item['redondeo'],
 
 				"cantidadGrupo1"  => 0,
 				"cantidadGrupo2"  => 0,
@@ -643,6 +648,7 @@ foreach ($variaciones as $id => $variacion) {
 
 			for ($i=1; $i <  count($items); $i++) {
 				$item = $items[$i];
+				//var_dump($item);
 				$encontrado = 0;
 
 				for ($j=0; $j < count($complementosCantidades) ; $j++) {
@@ -746,6 +752,8 @@ foreach ($variaciones as $id => $variacion) {
 					$complementoNuevo["cantidadund3"] = $item["cantidadund3"];
 					$complementoNuevo["cantidadund4"] = $item["cantidadund4"];
 					$complementoNuevo["cantidadund5"] = $item["cantidadund5"];
+					
+					$complementoNuevo["redondeo"] = $item["redondeo"];
 
 					$complementoNuevo["cantidadGrupo1"] = 0;
 					$complementoNuevo["cantidadGrupo2"] = 0;
@@ -854,6 +862,7 @@ foreach ($variaciones as $id => $variacion) {
 					$complementosCantidades[] = $complementoNuevo;
 				}
 			}// Termina el if externo el de los items
+			//var_dump($complementosCantidades);
 
 			$_SESSION['complementosCantidades'] = $complementosCantidades;
 
@@ -902,6 +911,7 @@ foreach ($variaciones as $id => $variacion) {
 			$banderaPrimero = 0;
 
 			// exit(var_dump($complementosCantidades));
+			//var_dump($complementosCantidades);
 
 			for ($i=0; $i < count($sedesCobertura) ; $i++) {
 				$auxItem = 1;
@@ -919,16 +929,69 @@ foreach ($variaciones as $id => $variacion) {
 					$codigo = $auxAlimento['codigo'];
 					$bodegaDestino = $sede['cod_sede'];
 					$componente = $auxAlimento['Componente'];
-					$cantidad = ($auxAlimento["grupo1"] * $sede["grupo1"])+($auxAlimento["grupo2"] * $sede["grupo2"])+($auxAlimento["grupo3"] * $sede["grupo3"]);
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+			
+					
+
+
+
+
+					$t1 = $auxAlimento["grupo1"] * $sede["grupo1"];
+					$t2 = $auxAlimento["grupo2"] * $sede["grupo2"];
+					$t3 = $auxAlimento["grupo3"] * $sede["grupo3"];
+					$cantidad = $t1 + $t2 + $t3;
+
+
+
+
+
+
+
+
+
+
 					$unidad = $auxAlimento['unidadMedida'];
 					$factor = $auxAlimento['factor'];
 					$presentacion = $auxAlimento['presentacion'];
 					$consecutivo = $consecutivos[$i];
 					include 'fn_despacho_generar_presentaciones.php';
+
+
+
+
+
+
+
+
 					$auxConsulta = $auxConsulta." 'DES',$consecutivo,$auxItem,'$codigo','$componente',$cantidad,$bodegaOrigen,$bodegaDestino,'$presentacion',$cantidad,$factor, $necesario2, $necesario3, $necesario4, $necesario5, $tomadoTotal ";
 					$auxItem++;
 					$auxConsulta = $auxConsulta." ) ";
+
+
+
+
 					//var_dump($auxConsulta);
+
+
+
+
+
+
+
+
 					if($cantidad > 0){
 						//if($i > 0 && $j == 0){ $consulta = $consulta." , "; }
 						if($banderaPrimero == 0){
@@ -1039,7 +1102,11 @@ foreach ($variaciones as $id => $variacion) {
 						$consulta = $consulta." ( ";
 						$codigo = $auxAlimento['codigo'];
 						$componente = $auxAlimento['Componente'];
+						
 						$cantidad = $auxAlimento["grupo1"] * $sede["grupo1"];
+
+
+
 						$unidad = $auxAlimento['unidadMedida'];
 						$consecutivo = $consecutivos[$i];
 						$d1 = $auxAlimento["grupo1_d1"] * $sede["grupo1"];
@@ -1047,6 +1114,12 @@ foreach ($variaciones as $id => $variacion) {
 						$d3 = $auxAlimento["grupo1_d3"] * $sede["grupo1"];
 						$d4 = $auxAlimento["grupo1_d4"] * $sede["grupo1"];
 						$d5 = $auxAlimento["grupo1_d5"] * $sede["grupo1"];
+
+
+		
+
+
+
 						$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
 						$consulta = $consulta." ) ";
 					}
@@ -1063,6 +1136,9 @@ foreach ($variaciones as $id => $variacion) {
 						$componente = $auxAlimento['Componente'];
 						//$cantidad = $auxAlimento['grupo2']*$auxAlimento['cantidad'];
 						$cantidad = $auxAlimento["grupo2"] * $sede["grupo2"];
+
+
+
 						$unidad = $auxAlimento['unidadMedida'];
 						$consecutivo = $consecutivos[$i];
 						$d1 = $auxAlimento["grupo2_d1"] * $sede["grupo2"];
@@ -1070,6 +1146,9 @@ foreach ($variaciones as $id => $variacion) {
 						$d3 = $auxAlimento["grupo2_d3"] * $sede["grupo2"];
 						$d4 = $auxAlimento["grupo2_d4"] * $sede["grupo2"];
 						$d5 = $auxAlimento["grupo2_d5"] * $sede["grupo2"];
+
+
+
 						$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
 						$consulta = $consulta." ) ";
 					}
@@ -1087,6 +1166,9 @@ foreach ($variaciones as $id => $variacion) {
 						$componente = $auxAlimento['Componente'];
 						//$cantidad = $auxAlimento['grupo3']*$auxAlimento['cantidad'];
 						$cantidad = $auxAlimento["grupo3"] * $sede["grupo3"];
+
+	
+
 						$unidad = $auxAlimento['unidadMedida'];
 						$consecutivo = $consecutivos[$i];
 						$d1 = $auxAlimento["grupo3_d1"] * $sede["grupo3"];
@@ -1094,6 +1176,9 @@ foreach ($variaciones as $id => $variacion) {
 						$d3 = $auxAlimento["grupo3_d3"] * $sede["grupo3"];
 						$d4 = $auxAlimento["grupo3_d4"] * $sede["grupo3"];
 						$d5 = $auxAlimento["grupo3_d5"] * $sede["grupo3"];
+
+
+
 						$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
 						$consulta = $consulta." ) ";
 					}
@@ -1101,6 +1186,10 @@ foreach ($variaciones as $id => $variacion) {
 			}
 			//echo "<br>CONSULTA DE DESPACHO DETALLADO<br>".$consulta."<br>";
 			//Ejecutando inserción en despachos_det
+
+
+		
+
 			$resultado = $Link->query($consulta) or die ('Inserción despachos_det - Unable to execute query. '. mysqli_error($Link));
 			$Link->close();
 
