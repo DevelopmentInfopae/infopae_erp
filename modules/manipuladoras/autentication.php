@@ -1,6 +1,6 @@
 <?php
 
-	session_start();
+	//session_start();
 	//COMPRUEBA QUE EL USUARIO ESTA AUTENTIFICADO
 	if (!isset($_SESSION["autentificado"]) || $_SESSION["autentificado"]!="SI" || ( $_SESSION["perfil"]!=4 ) ) {
     	//si no existe, envio a la página para loguearse.
