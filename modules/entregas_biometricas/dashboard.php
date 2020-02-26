@@ -23,9 +23,9 @@
 	$anno = date('Y');
 
 	//Forzando una fecha OJO solo en desarrollo
-	$mes = '05';
-	$dia = '20';
-	$anno = '2019';
+	// $mes = '05';
+	// $dia = '20';
+	// $anno = '2019';
 
 	$consulta = "SELECT semana FROM planilla_semanas WHERE mes = $mes AND dia = $dia LIMIT 1";
 	$resultado = $Link->query($consulta) or die ('No se pudo hacer busqueda de la semana. '. mysqli_error($Link));
@@ -44,6 +44,11 @@
 	<link rel="shortcut icon" href="<?php echo $baseUrl; ?>/favicon.ico" />
 	<link href="<?php echo $baseUrl; ?>/theme/css/bootstrap.min.css" rel="stylesheet">
 	<link href="<?php echo $baseUrl; ?>/theme/font-awesome/css/font-awesome.css" rel="stylesheet">
+	
+	
+	<!-- Toastr style -->
+    <link href="<?php echo $baseUrl; ?>/theme/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+	
 	<!-- CSS de toda la aplicación -->
 	<link href="<?php echo $baseUrl; ?>/theme/css/style.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/dashboard.css">

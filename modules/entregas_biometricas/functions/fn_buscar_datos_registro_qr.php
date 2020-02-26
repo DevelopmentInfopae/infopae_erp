@@ -23,8 +23,8 @@ if(isset($_POST['dispositivo']) && $_POST['dispositivo'] != ''){
 //var_dump($documento);
 //var_dump($dispositivo);
 
-$documento = 1102349197;
-$dispositivo = 5;
+// $documento = 1102349197;
+// $dispositivo = 5;
 
 /* Consulta de nombre, apellido, grado, grupo */
 

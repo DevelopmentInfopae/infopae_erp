@@ -792,3 +792,58 @@ function despachos_agrupados(){
 
   }
 }
+
+
+function despachos_por_sede_vertical(){
+  //Contando los elementos checked
+  var cant = 0;
+  var despacho = 0;
+  var semana = 0;
+  var tipo = '';
+  var bandera = 0;
+  $("tbody input:checked").each(function(){
+    if(bandera == 0){
+      cant++;
+      despacho = $(this).val();
+
+      if(bandera == 0){
+        if(semana == 0){
+          semana = $("#semana_"+despacho).val();
+        }
+        else{
+          if(semana != $("#semana_"+despacho).val()){
+            bandera++;
+            Command: toastr.warning('Los despachos seleccionados deben ser de la misma <strong>semana</strong>', 'Advertencia');
+          }
+        }
+      }
+
+      if(bandera == 0){
+        if(tipo == ''){
+          tipo = $("#tipo_"+despacho).val();
+        }
+        else{
+          if(tipo != $("#tipo_"+despacho).val()){
+            bandera++;
+            alert('');
+            Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
+          }
+        }
+      }
+    }
+  });
+
+  if(cant == 0){
+    Command: toastr.warning('Debe seleccionar al menos un despacho para continuar', 'Advertencia');
+    bandera++;
+  }
+
+  if(bandera == 0){
+    $( ".soloJs" ).remove();
+
+    $('#formDespachos').attr('action', 'despacho_por_sede_vertical.php');
+    $('#formDespachos').attr('method', 'post');
+    $('#formDespachos').submit();
+    $('#formDespachos').attr('method', 'get');
+  }
+}

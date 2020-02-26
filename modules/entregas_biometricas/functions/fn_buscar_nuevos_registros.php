@@ -45,7 +45,7 @@ if(isset($_POST['sede']) && $_POST['sede'] != ''){
 
 $consulta = " SELECT MAX(br.id) AS ultimo_registro FROM biometria_reg br
 LEFT JOIN dispositivos d ON br.dispositivo_id = d.id
-LEFT JOIN sedes19  s ON d.cod_sede = s.cod_sede
+LEFT JOIN sedes$periodoActual  s ON d.cod_sede = s.cod_sede
 WHERE DAY(br.fecha) = $dia AND MONTH(br.fecha) = $mes AND YEAR(br.fecha) = $anno AND br.id > $ultimoRegistro ";
 
 
@@ -84,7 +84,7 @@ if($registrosNuevos[0] != null){
 	LEFT JOIN biometria b ON b.id_bioest = br.usr_dispositivo_id AND b.id_dispositivo = br.dispositivo_id
 	LEFT JOIN dispositivos d ON br.dispositivo_id = d.id
 	LEFT JOIN focalizacion18 f ON f.tipo_doc = b.tipo_doc AND f.num_doc = b.num_doc
-	LEFT JOIN sedes19 s ON b.cod_sede = s.cod_sede
+	LEFT JOIN sedes$periodoActual s ON b.cod_sede = s.cod_sede
 	WHERE br.id = $idEntrega ";
 
 	//echo "<br>$consulta<br>";

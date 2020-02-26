@@ -109,7 +109,7 @@ foreach ($sedes as $codSede) {
 
 $consulta = " SELECT MAX(br.id) AS ultimo_registro FROM biometria_reg br
 LEFT JOIN dispositivos d ON br.dispositivo_id = d.id
-LEFT JOIN sedes19  s ON d.cod_sede = s.cod_sede
+LEFT JOIN sedes$periodoActual s ON d.cod_sede = s.cod_sede
 WHERE DAY(br.fecha) = $dia AND MONTH(br.fecha) = $mes AND YEAR(br.fecha) = $anno ";
 
 if($institucion != "" && $institucion != "null"){
