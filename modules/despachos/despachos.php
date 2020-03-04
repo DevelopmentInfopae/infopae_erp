@@ -706,9 +706,11 @@
                                 '<button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button>'+
                                 '<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">'+
                                   '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>'+
+                                  '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>'+
                                   '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>'+
                                   '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>'+
                                   '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>'+
+                                  '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>'+
                                   '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>'+
                                   '<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>'+
                                     '<li>'+

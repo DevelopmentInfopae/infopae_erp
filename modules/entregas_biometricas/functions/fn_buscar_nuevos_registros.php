@@ -45,9 +45,8 @@ if(isset($_POST['sede']) && $_POST['sede'] != ''){
 
 $consulta = " SELECT MAX(br.id) AS ultimo_registro FROM biometria_reg br
 LEFT JOIN dispositivos d ON br.dispositivo_id = d.id
-LEFT JOIN sedes19  s ON d.cod_sede = s.cod_sede
+LEFT JOIN sedes$periodoActual  s ON d.cod_sede = s.cod_sede
 WHERE DAY(br.fecha) = $dia AND MONTH(br.fecha) = $mes AND YEAR(br.fecha) = $anno AND br.id > $ultimoRegistro ";
-
 
 
 if($institucion != "" && $institucion != "null"){
@@ -57,6 +56,7 @@ if($sede != "" && $sede != "null"){
 	$consulta .= " AND d.cod_sede = $sede ";
 }
 
+//echo "<br><br>$consulta<br><br>";
 //echo "<br>$consulta<br>";
 
 $resultado = $Link->query($consulta) or die ('Error al buscar el ultimo registro.'. mysqli_error($Link));
@@ -69,6 +69,7 @@ if($resultado->num_rows >= 1){
 //var_dump($registrosNuevos);
 
 if($registrosNuevos[0] != null){
+	//echo "<br><br>$consulta<br><br>";
 	$idEntrega = $registrosNuevos[0];
 
 	$consulta = " SELECT
@@ -83,8 +84,8 @@ if($registrosNuevos[0] != null){
 	FROM biometria_reg br 
 	LEFT JOIN biometria b ON b.id_bioest = br.usr_dispositivo_id AND b.id_dispositivo = br.dispositivo_id
 	LEFT JOIN dispositivos d ON br.dispositivo_id = d.id
-	LEFT JOIN focalizacion18 f ON f.tipo_doc = b.tipo_doc AND f.num_doc = b.num_doc
-	LEFT JOIN sedes19 s ON b.cod_sede = s.cod_sede
+	LEFT JOIN focalizacion$semana f ON f.tipo_doc = b.tipo_doc AND f.num_doc = b.num_doc
+	LEFT JOIN sedes$periodoActual s ON b.cod_sede = s.cod_sede
 	WHERE br.id = $idEntrega ";
 
 	//echo "<br>$consulta<br>";
@@ -106,9 +107,30 @@ if($registrosNuevos[0] != null){
 			$date = new DateTime($fecha);
 			$fecha = date_format($date, 'H:i:s');
 
+
+			$claseValidacion = "";
+			if($validacion == "Lector Huella Dactilar" || $validacion == "Huella Dactilar"){
+				$claseValidacion = "huellaDactilar";	
+			} else if($validacion == "Lector Radiofrecuencia" || $validacion == "Radiofrecuencia" || $validacion == "Lector RFID"){
+				$claseValidacion = "radiofrecuencia";	
+			} else if($validacion == "Lector Reconocimiento facial" || $validacion == "Reconocimiento facial" || $validacion == "Lector Facial"){
+				$claseValidacion = "reconocimientoFacial";	
+			}
+
+			
+
 			// Armado de cuerpo información de la entrega.
 			
-			$cuerpo = " <div class=\"entrega\"> <i class=\"fa fa-check-circle\"></i> <span class=\"hora-estudiante\">$fecha</span> <div class=\"estudiante-icono\"> <img alt=\"entregado\" src=\"$baseUrl/img/touch.png\" /> </div> <div class=\"estudiante\"> <h2><span class=\"estudiante--nombre\">$nombre $apellido</span> recibió complemento <span class=\"estudiante--complemento\">$complemento</span></h2> <p>Sede <span class=\"estudiante--sede\">$nomSede</span> <br> Validado a través de <span class=\"estudiante--validacion\">$validacion</span></p> </div> </div> ";
+			$cuerpo = " <div class=\"entrega\"> <i class=\"fa fa-check-circle\"></i> <span class=\"hora-estudiante\">$fecha</span> <div class=\"estudiante\"> <h2><span class=\"estudiante--nombre\">$nombre $apellido</span> </h2> <span class=\"estudiante--sede\">$nomSede</span> </div> <div class=\"estudiante--validacion $claseValidacion\">$validacion</div> </div> ";
+
+
+
+
+
+
+
+
+
 
 		}
 	}

@@ -2,29 +2,31 @@ $(document).ready(function(){
 	mueveReloj();
 	fechaActual();
 
-	$( "#lector" ).change(function() {
-		nuevoRegistro();
+	$('#lector').keypress(function(event){
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if(keycode == '13'){
+			event.preventDefault()
+			nuevoRegistro();
+			//alert('You pressed a "enter" key in textbox');  
+			
+		}
 	});
+	
+	// $( "#lector" ).change(function() {
+	// 	nuevoRegistro();
+	// });
 
 	$( "#btn-lector" ).click(function() {
 		nuevoRegistro();
 	});
 
-	// cargarMunicipios();
+	$("#lector").focus();
 
+	// cargarMunicipios();
 	// if(localStorage.getItem("wappsi_mes") != null){
 	// 	$( "#mes" ).val(localStorage.getItem("wappsi_mes"));
 	// 	cargarSemanas();	
 	// }
-
-
-
-
-
-
-
-
-
 
 });
 
@@ -90,6 +92,8 @@ function nuevoRegistro(){
 				if(data.estado == 1){
 					$('.entregas-qr').prepend(data.fila);
 					$('#loader').fadeOut();
+					$("#lector").html('');
+					
 					
 					
 					// console.log('Terminada la verificación de nuevos registros.');	
@@ -127,8 +131,8 @@ function nuevoRegistro(){
 					// // if($('#semana').val() != ""){
 					// // 	cargarDias()
 					// // }
-	
-					
+					$("#lector").val('');
+					$("#lector").focus();
 	
 				}
 				else{

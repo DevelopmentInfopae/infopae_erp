@@ -29,6 +29,7 @@
 
     <link href="<?php echo $baseUrl; ?>/theme/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?php echo $baseUrl; ?>/theme/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="<?php echo $baseUrl; ?>/theme/fontawesome-free-5.11.2-web/css/all.css" rel="stylesheet">
 
     <!-- Toastr style -->
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/toastr/toastr.min.css" rel="stylesheet">

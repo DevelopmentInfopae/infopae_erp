@@ -5,11 +5,16 @@ body{
 
 .barra-top{
 	background-color: #4da390;
+}
+
+.barra-top-contenido{
+	padding: 10px 0px;
+	color: #ffffff;
+	max-width: 90%;
+	margin: auto;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	color: #ffffff;
-	padding: 10px 30px;
 }
 
 
@@ -43,7 +48,12 @@ body{
 }
 
 .logo-dashboard{
-	margin-left: 30px;
+	margin-left: 0px;
+}
+
+.logo-dashboard img{
+	height: 50px;
+	width: auto;
 }
 
 
@@ -57,7 +67,22 @@ body{
 .fecha-hora{
 	font-size: 24px;
 	font-weight: 500;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
+
+.hora-actual{
+	font-size: 25px;
+	font-weight: 700;
+}
+.fecha-actual{
+	font-size: 14px;
+}
+
+
 
 .filtro{
 	align-items: stretch;
@@ -147,7 +172,7 @@ body{
 }
 
 .sede{
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 .sede:last-child{
@@ -176,12 +201,13 @@ body{
 	flex-grow: 1;
 	margin: 0px;
 	padding: 0px;
-	font-size: 20px;
+	font-size: 14px;
 	font-weight: 600;
 }
 
 .fa-circle{
 	color: orange;
+	font-size: 24px;
 }
 
 .sede-bottom{
@@ -196,7 +222,7 @@ body{
 
 .sede-hora-inicio{
 	white-space: nowrap;
-	font-size: 14px;
+	font-size: 10px;
 }
 
 .sede-left{
@@ -218,18 +244,21 @@ body{
 
 .col-dash{
 	height: 650px;
+}
+
+.sedes, .entregas{
 	overflow-y: auto;
 }
 
 .entrega{
 	align-items: center;
 	display: flex;
-	justify-content: flex-start;
+	justify-content: space-between;
 	margin-bottom: 10px;
 }
 
 .entrega:first-child{
-	margin-top: 30px;
+	/* margin-top: 30px; */
 }
 
 .entrega:last-child{
@@ -243,7 +272,7 @@ body{
 
 .hora-estudiante{
 	margin-left: 10px;
-	margin-right: 10px;
+	margin-right: 20px;
 	font-weight: 700;
 	font-size: 18px;
 }
@@ -253,6 +282,10 @@ body{
 	margin-right: 15px;
 }
 
+.estudiante{
+	flex-grow: 1;
+}
+
 .estudiante h2{
 	margin: 0px;
 	padding: 0px;
@@ -260,6 +293,94 @@ body{
 	font-size: 17px;
 }
 
+
+.dashboard-bottom{
+	max-width: 90%;
+	margin: auto;
+}
+
+.contenedor-dashboard__row{
+	display: flex;
+	justify-content: space-between;
+	align-items: stretch;
+	height: 100%;
+}
+
+.contenedor-dashboard__col{
+	min-height: 100px;
+	width: calc(50% - 20px);
+	background-color: #ffffff;
+	padding: 20px;
+	box-shadow: 0px 0px 5px rgba(64,64,64,0.2);
+}
+
+.contenedor-dashboard__col >h2{
+	margin: 0px;
+	padding: 0px;
+	font-size: 20px;
+	font-weight: 600;
+	margin-bottom: 20px;
+}
+
+.estudiante--validacion{
+	border: 1px solid #797979;
+	color: #797979;
+	padding: 5px 5px;
+	border-radius: 20px;
+	white-space: nowrap;
+	font-size: 11px;
+	margin-left: 20px;
+	font-weight: 700;
+}
+
+.huellaDactilar{
+	border-color: orange;
+	color: orange;
+}
+
+.radiofrecuencia{
+	border-color: #007adf;
+	color: #007adf;
+}
+
+.reconocimientoFacial{
+	border-color: #238126;
+	color: #238126;
+}
+
+.estudiante--sede{
+	font-size: 10px;
+}
+
+.totales{
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	font-size: 35px;
+	color: #636363;
+	font-weight: 700;
+}
+
+.totales-contenido{
+	display: none;
+}
+
+.contenedor-grafica-dashboard{
+	max-width: 92.5%;
+	margin: auto;
+}
+
+.gris{
+	color: #b6b6b6;
+}
+
+.naranja{
+	color: orange;
+}
+
+.verde{
+	color: rgb(57, 211, 57);
+}
 
 
 @media screen and (max-width: 1600px){

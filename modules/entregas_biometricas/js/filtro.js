@@ -50,7 +50,7 @@ $(document).ready(function(){
 
 	$( "#sede" ).change(function() {
 		localStorage.setItem("wappsi_sede", $("#sede").val());
-		cargarNiveles();
+		//cargarNiveles();
 		cargarDispositivos();
 	});
 

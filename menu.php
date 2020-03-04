@@ -49,6 +49,14 @@
 
 <?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5 || $_SESSION['perfil'] == 9 ){ ?>
 
+	<li>
+		<a href="#"><i class="fas fa-fingerprint"></i> <span class="nav-label">Entregas Biometricas</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+			<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php"><span class="nav-label">Dashboard</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php"><span class="nav-label">Registrar entregas vía QR - BarCode</span></a> </li>
+		</ul>
+	</li>
+	
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/instituciones.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Instituciones</span></a> </li>
 
 
@@ -60,9 +68,6 @@
 			<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"><i class="fa fa-tags"></i> <span class="nav-label">Suplentes</span></a> </li>
 		</ul>
 	</li>
-
-
-
 
 	<?php if( $_SESSION['perfil'] != 9 ){ ?>
 		<li>
