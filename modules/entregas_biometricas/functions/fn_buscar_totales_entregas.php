@@ -39,14 +39,25 @@ if(isset($_POST['sede']) && $_POST['sede'] != ''){
 
 
 // Busar el listado sedes para las que vamos a mostrar los totles.
-$consulta = " SELECT cod_sede FROM sedes$periodoActual WHERE cod_mun_sede = $municipio ";
+$consulta = " SELECT cod_sede FROM sedes$periodoActual WHERE cod_mun_sede = $municipio 
+
+
+
+
+AND cod_sede IN (SELECT distinct cod_sede  FROM dispositivos)
+
+
+
+
+
+ ";
 if($institucion != 'null' && $institucion != ''){
 	$consulta .= " and cod_inst = $institucion ";
 }
 if($sede != 'null' && $sede != ''){
 	$consulta .= " and cod_sede = $sede ";
 }
-//echo $consulta;
+//echo "<br><br>$consulta<br><br>";
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 $sedes = array();
 if($resultado->num_rows >= 1){
@@ -61,7 +72,12 @@ $ultimo_registro = 0;
 
 foreach ($sedes as $codSede) {
 	//var_dump($codSede);
-	$consulta = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst , (select count(DISTINCT f.num_doc) AS total from focalizacion$semana f WHERE f.cod_sede = s.cod_sede ) AS total ,(SELECT SUM(t.entregas) AS entregado FROM ( select IF(COUNT(f2.id)>2,1, COUNT(f2.id)) AS entregas, f2.* from biometria_reg br left join  biometria b on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo) inner join focalizacion$semana f2 on (b.num_doc=f2.num_doc) WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia GROUP BY f2.id ) AS t WHERE t.cod_sede = s.cod_sede GROUP BY t.cod_sede ) AS entregado, ( SELECT min(br.fecha) FROM biometria_reg br LEFT JOIN biometria b ON (br.usr_dispositivo_id=b.id_bioest AND br.dispositivo_id=b.id_dispositivo) INNER JOIN focalizacion$semana f2 ON (b.num_doc=f2.num_doc) WHERE b.cod_sede = \"$codSede\" AND YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia ) AS primer_registro FROM sedes$periodoActual s WHERE s.cod_sede = \"$codSede\"";
+	$consulta = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst , (select count(DISTINCT f.num_doc) AS total from focalizacion$semana f WHERE f.cod_sede = s.cod_sede ) AS total ,(SELECT SUM(t.entregas) AS entregado 
+	
+	
+	FROM ( select IF(COUNT(f2.id)>2,COUNT(f2.id), COUNT(f2.id)) AS entregas, f2.* from biometria_reg br left join  biometria b on (br.usr_dispositivo_id=b.id_bioest and br.dispositivo_id=b.id_dispositivo) inner join focalizacion$semana f2 on (b.num_doc=f2.num_doc) WHERE b.cod_sede = \"$codSede\" AND  YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia GROUP BY f2.id ) AS t WHERE t.cod_sede = s.cod_sede GROUP BY t.cod_sede ) AS entregado, ( SELECT min(br.fecha) FROM biometria_reg br LEFT JOIN biometria b ON (br.usr_dispositivo_id=b.id_bioest AND br.dispositivo_id=b.id_dispositivo) INNER JOIN focalizacion$semana f2 ON (b.num_doc=f2.num_doc) WHERE b.cod_sede = \"$codSede\" AND YEAR(br.fecha) = $anno AND MONTH(br.fecha) = $mes AND DAY(br.fecha) = $dia ) AS primer_registro FROM sedes$periodoActual s WHERE s.cod_sede = \"$codSede\"";
+
+
 
 	$resultado = $Link->query($consulta) or die ('No se pudieron cargar los totales. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
@@ -95,8 +111,16 @@ foreach ($sedes as $codSede) {
 			$porcentaje = 0;
 		}
 
+
+		$claseCirculo = "gris";
+		if($t_entregado >= $t_total){
+			$claseCirculo = "verde";
+		} else if($t_entregado < $t_total && $t_entregado > 0){
+			$claseCirculo = "naranja";
+		}
+
 		// Armado del html de cada sede
-		$cuerpoSede = "<div class=\"sede sede-$t_cod_sede\"> <div class=\"sede-top\"> <div class=\"sede-left\"> <i class=\"fa fa-circle\"></i> </div> <h5>$t_nom_sede</h5> <h2 class=\"no-margins\"> <span class=\"entregado entregado-$t_cod_sede\">$t_entregado</span> / <span class=\"total\">$t_total</span></h2> </div> <div class=\"sede-bottom\"> <div class=\"sede-left\"> <div class=\"sede-hora-inicio\"> $t_primer_registro </div> </div> <div class=\"progress progress-mini\"> <div style=\"width: $porcentaje%;\" class=\"progress-bar\"></div> </div> </div> </div>";
+		$cuerpoSede = "<div class=\"sede sede-$t_cod_sede\"> <div class=\"sede-top\"> <div class=\"sede-left\"> <i class=\"fa fa-circle circulo-$t_cod_sede $claseCirculo\"></i> </div> <h5>$t_nom_sede</h5> <h2 class=\"no-margins\"> <span class=\"entregado entregado-$t_cod_sede\">$t_entregado</span> / <span class=\"total total-$t_cod_sede\">$t_total</span></h2> </div> <div class=\"sede-bottom\"> <div class=\"sede-left\"> <div class=\"sede-hora-inicio\"> $t_primer_registro </div> </div> <div class=\"progress progress-mini\"> <div style=\"width: $porcentaje%;\" class=\"progress-bar\"></div> </div> </div> </div>";
 
 		$cuerpo .= $cuerpoSede;
 	}

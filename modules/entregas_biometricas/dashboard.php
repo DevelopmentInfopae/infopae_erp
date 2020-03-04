@@ -21,6 +21,8 @@
 	//$mes = date('n');
 	//$dia = date('j');
 	$anno = date('Y');
+	$dias = array("Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado");
+	$diaNombre = $dias[date("w")];
 
 	//Forzando una fecha OJO solo en desarrollo
 	// $mes = '05';
@@ -54,156 +56,172 @@
 	<link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
-	<div class="barra-top">
-		<div class="barra-top__left">
-			<!-- <button><i class="fa fa-bars"></i></button> -->
-			<div class="logo-dashboard"><img alt="entregado" src="<?= $baseUrl ?>/img/logo_b.png" /></div>
-		</div>
-		<div class="barra-top__center">
-			<h1>Consulta en línea de entrega de complementos alimentarios</h1>
-		</div>
-		<div class="barra-top__right">
-			<div class="fecha-hora">
-				<?php
-					switch ($mes) {
-						case 1:
-							$mesNombre = "Enero";
-							break;
-						case 2:
-							$mesNombre = "Febrero";
-							break;
-						case 3:
-							$mesNombre = "Marzo";
-							break;
-						case 4:
-							$mesNombre = "Abril";
-							break;
-						case 5:
-							$mesNombre = "Mayo";
-							break;
-						case 6:
-							$mesNombre = "Junio";
-							break;
-						case 7:
-							$mesNombre = "Julio";
-							break;
-						case 8:
-							$mesNombre = "Agosto";
-							break;
-						case 9:
-							$mesNombre = "Septiembre";
-							break;
-						case 10:
-							$mesNombre = "Octubre";
-							break;
-						case 11:
-							$mesNombre = "Noviembre";
-							break;
-						case 12:
-							$mesNombre = "Diciembre";
-							break;
-					}
-					// var_dump($mesNombre);
-					// var_dump($dia);
-					// var_dump($anno);
-				?>
-				<?= $mesNombre ?> <?= $dia ?> de <?= $anno ?>
-				<span class="hora-actual">9:12am</span>
+	<div class="dashboard-top">
+		<div class="barra-top">
+			<div class="barra-top-contenido">
+				<div class="barra-top__left">
+					<!-- <button><i class="fa fa-bars"></i></button> -->
+					<div class="logo-dashboard">
+						<a href="<?= $baseUrl ?>" target="_self"><img alt="entregado" src="<?= $baseUrl ?>/img/logo_b.png" /></a>				
+					</div>
+				</div>
+				<div class="barra-top__center">
+					<h1>Consulta en línea de entrega de complementos alimentarios</h1>
+				</div>
+				<div class="barra-top__right">
+					<div class="fecha-hora">
+						<?php
+							switch ($mes) {
+								case 1:
+									$mesNombre = "Ene";
+									break;
+								case 2:
+									$mesNombre = "Feb";
+									break;
+								case 3:
+									$mesNombre = "Mar";
+									break;
+								case 4:
+									$mesNombre = "Abr";
+									break;
+								case 5:
+									$mesNombre = "May";
+									break;
+								case 6:
+									$mesNombre = "Jun";
+									break;
+								case 7:
+									$mesNombre = "Jul";
+									break;
+								case 8:
+									$mesNombre = "Ago";
+									break;
+								case 9:
+									$mesNombre = "Sep";
+									break;
+								case 10:
+									$mesNombre = "Oct";
+									break;
+								case 11:
+									$mesNombre = "Nov";
+									break;
+								case 12:
+									$mesNombre = "Dic";
+									break;
+							}
+							// var_dump($mesNombre);
+							// var_dump($dia);
+							// var_dump($anno);
+						?>
+						<span class="hora-actual">9:12am</span>
+						<span class="fecha-actual">
+							<?= $diaNombre ?>, <?= $mesNombre ?> <?= $dia ?> <?//= $anno ?>
+						</span>
+					</div>
+				</div>
 			</div>
 		</div>
+
+		<div class="contenedor-dashboard">
+			<form action="">
+				<input type="hidden" id="anno" name="anno" value="<?= $anno ?>">
+				<input type="hidden" id="mes" name="mes" value="<?= $mes ?>">
+				<input type="hidden" id="dia" name="dia" value="<?= $dia ?>">
+				<input type="hidden" id="semana" name="semana" value="<?= $semana ?>">
+				<div class="row">
+					<div class="col-sm-12 filtro">
+						<div class="form-filtro">
+							<div class="campo">
+								<label for="municipio">Municipio</label>
+								<select name="municipio" id="municipio"></select>
+							</div>
+							<div class="campo">
+								<label for="institucion">institución</label>
+								<select name="institucion" id="institucion"></select>
+							</div>
+							<div class="campo">
+								<label for="sede">Sede</label>
+								<select name="sede" id="sede"></select>
+							</div>
+							<div class="campo">
+								<button type="button" id="btnFiltro">OK</button>
+							</div>
+
+						</div>
+						<!-- <div class="actualizar">
+							<div class="campo">
+								<button type="button" id="btnActualizar">Actualizar gráfica</button>
+							</div>
+						</div> -->
+
+
+						<div class="totales">
+							<div class="totales-contenido">
+								<span class="total-entregado">0</span>/<span class="total-entregar">0</span>
+							</div>
+						</div>
+
+
+
+
+
+					</div>
+				</div>
+			</form>
+
+			
+			
+			
+		</div>
+		
+		
+		
+			<div class="contenedor-grafica-dashboard">
+				<div class="row">
+					<div class="col-sm-12 grafica-dashboard">
+						<div class="flot-chart">
+							<div class="flot-chart-content" id="flot-line-chart-moving"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+
+
+
+
 	</div>
+	<div class="dashboard-bottom">
 
-	<div class="contenedor-dashboard">
-		<form action="">
-			<input type="hidden" id="anno" name="anno" value="<?= $anno ?>">
-			<input type="hidden" id="mes" name="mes" value="<?= $mes ?>">
-			<input type="hidden" id="dia" name="dia" value="<?= $dia ?>">
-			<input type="hidden" id="semana" name="semana" value="<?= $semana ?>">
-			<div class="row">
-				<div class="col-sm-12 filtro">
-					<div class="form-filtro">
-						<div class="campo">
-							<label for="municipio">Municipio</label>
-							<select name="municipio" id="municipio"></select>
-						</div>
-						<div class="campo">
-							<label for="institucion">institución</label>
-							<select name="institucion" id="institucion"></select>
-						</div>
-						<div class="campo">
-							<label for="sede">Sede</label>
-							<select name="sede" id="sede"></select>
-						</div>
-						<div class="campo">
-							<button type="button" id="btnFiltro">OK</button>
-						</div>
-
-					</div>
-					<!-- <div class="actualizar">
-						<div class="campo">
-							<button type="button" id="btnActualizar">Actualizar gráfica</button>
-						</div>
-					</div> -->
-				</div>
-			</div>
-		</form>
-
-		<div class="row">
-			<div class="col-sm-12 grafica-dashboard">
-				<div class="flot-chart">
-					<div class="flot-chart-content" id="flot-line-chart-moving"></div>
-				</div>
-			</div>
-		</div>
-
-
-		<div class="row">
-			<div class="col-sm-6 col-dash">
-				<div class="overlay"> <i class="fa fa-refresh fa-spin"></i> </div>
-				<div class="sedes">
-
-					
-
-					<?php //for($i = 0 ; $i < 6 ; $i++){ ?>
-						<!-- <div class="sede">
-							<div class="sede-top">
-								<div class="sede-left">
-									<i class="fa fa-circle"></i>
-								</div>
-								<h5>Colegio Integrado LLano Grande</h5>
-								<h2 class="no-margins"> <span class="entregado">1</span> / <span class="total">546</span></h2>
-							</div>
-							<div class="sede-bottom">
-								<div class="sede-left">
-									<div class="sede-hora-inicio">
-										7:45 a.m.
-									</div>
-								</div>
-								<div class="progress progress-mini"> <div style="width: 10%;" class="progress-bar"></div> </div>
-							</div>
-						</div> -->
-						<?php //} ?>
+			<div class="contenedor-dashboard__row">
+				<div class="contenedor-dashboard__col contenedor-dashboard__col-izq">
+					<h2>Sedes educativas</h2>
+					<div class="overlay"> <i class="fa fa-refresh fa-spin"></i> </div>
+					<div class="sedes">
+						<?php //for ($i=0; $i < 10; $i++) { ?> 
+							<!-- <div class="sede sede-16830700035901"> <div class="sede-top"> <div class="sede-left"> <i class="fa fa-circle"></i> </div> <h5>INSTITUTO INTEGRADO FRANCISCO SERRANO MUÑOZ - SEDE PRINCIPAL</h5> <h2 class="no-margins"> <span class="entregado entregado-16830700035901">0</span> / <span class="total">160</span></h2> </div> <div class="sede-bottom"> <div class="sede-left"> <div class="sede-hora-inicio"> 3:54 pm </div> </div> <div class="progress progress-mini"> <div style="width: 0%;" class="progress-bar"></div> </div> </div> </div> -->
+						<?php //} ?> 
 					</div>
 				</div>
-				<div class="col-sm-6 col-dash col-der">
-
+				<div class="contenedor-dashboard__col contenedor-dashboard__col-der">
+					<h2>Titulares de derecho</h2>
 					<div class="entregas">
-						<?php //for($i = 0 ; $i < 6 ; $i++){ ?>
-						<!-- <div class="entrega">
-							<i class="fa fa-check-circle"></i>
-							<span class="hora-estudiante">07:45:01</span>
-							<div class="estudiante-icono"> <img alt="entregado" src="<?= $baseUrl ?>/img/touch.png" /> </div>
-							<div class="estudiante">
-								<h2><span class="estudiante--nombre">Ricardo Farfán</span> recibió complemento <span class="estudiante--complemento">APS</span></h2>
-								<p>Sede <span class="estudiante--sede">Colegio Integrado LLano Grande</span> <br> Validado a través de <span class="estudiante--validacion">huella dactilar.</span></p>
-							</div>
-						</div> -->
-						<?php //} ?>
+						<?php //for ($i=0; $i < 10; $i++) { ?> 
+							<!-- <div class="entrega"> <i class="fa fa-check-circle"></i> <span class="hora-estudiante">15:57:32</span> <div class="estudiante"> <h2><span class="estudiante--nombre">JOHAN AGUILAR</span> </h2> <span class="estudiante--sede">I.E. COLEGIO MARIO MORALES DELGADO - SEDE PRINCIPAL</span> </div> <div class="estudiante--validacion radiofrecuencia">Lector Huella Dactilar</div> </div> -->
+						<?php //} ?> 
+							
+		
+							
+							
+							
 					</div>
-
 				</div>
 			</div>
-		</div>
+
+	</div>
+	
 
 
 

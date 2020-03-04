@@ -4,6 +4,7 @@ var sedeBusqueda = "";
 var ultimoRegistro = 0;
 var totalEntregas = 0;
 var totalEntregado = 0;
+var flagBuscarNuevos = 0;
 
 var data = [];
 
@@ -98,11 +99,24 @@ $(function() {
 		}
 	});
 
+
 	// Update the random dataset at 25FPS for a smoothly-animating chart
 
 	setInterval(function updateRandom() {
 		series[0].data = getRandomData();
 		plot.setData(series);
+
+
+
+
+		var opts = plot.getOptions() // get a reference to the options
+		//console.log(opts);
+		opts.yaxes[0].max = totalEntregado * 2; // adjust an axis min, use the xaxes property NOT the xaxis
+		// there is no need to "setOptions"...
+		plot.setupGrid() // if you need to redraw the axis/grid
+
+
+
 		plot.draw();
 	}, 40);
 
@@ -112,6 +126,29 @@ $(document).ready(function(){
 	mueveReloj();
 	fechaActual();
 	cargarMunicipios();
+
+	//console.log(alturaVentana);
+	alturaVentana = $( document  ).height();
+	alturaVentana = $( window ).height();
+	//console.log(alturaVentana);
+	alturaZonaTop = $(".dashboard-top").height();
+	$(".dashboard-bottom").height(alturaVentana-alturaZonaTop-20);
+	$(".sedes").height(alturaVentana-alturaZonaTop-100);
+	$(".entregas").height(alturaVentana-alturaZonaTop-100);
+	
+	$( window ).resize(function() {
+		//console.log(alturaVentana);
+		alturaVentana = $( document  ).height();
+		alturaVentana = $( window ).height();
+		//console.log(alturaVentana);
+		alturaZonaTop = $(".dashboard-top").height();
+		$(".dashboard-bottom").height(alturaVentana-alturaZonaTop-20);
+		$(".sedes").height(alturaVentana-alturaZonaTop-100);
+		$(".entregas").height(alturaVentana-alturaZonaTop-100);
+	});
+		
+
+
 	
 	$( "#municipio" ).change(function() {
 		localStorage.setItem("wappsi_municipio", $("#municipio").val());
@@ -166,7 +203,7 @@ function fechaActual(){
 	  console.log(`${day}/${month}/${year}`);
 	  fechaActual = `${day}/${month}/${year}`;
 	}
-	$('.fecha-actual').html(fechaActual);
+	//$('.fecha-actual').html(fechaActual);
 }
 
 function mueveReloj(){ 
@@ -307,7 +344,7 @@ function cargarSedes(){
 
 function buscarTotalesSedes(){
 	console.log('Buscando Totales de las entregas en las sedes.');
-
+	flagBuscarNuevos = 0;
 	var formData = new FormData();
 
 	formData.append('anno', $('#anno').val());
@@ -325,14 +362,35 @@ function buscarTotalesSedes(){
 		contentType: false,
 		processData: false,
 		data: formData,
-		beforeSend: function(){ $('.overlay').fadeIn(); },
+		beforeSend: function(){ 
+			//$('.overlay').fadeIn(); 
+		},
 		success: function(data){
 			if(data.estado == 1){
 				console.log('Totales cargados');
 				$('.sedes').html(data.cuerpo);
-				ultimoRegistro = data.ultimo_registro;
+
+
+				// if(data.ultimo_registro > 0){
+				// 	ultimoRegistro = data.ultimo_registro;
+				// }else{
+				// 	ultimoRegistro = 0;
+				// }
+
+
+
 				totalEntregas = data.total_entregas;
 				totalEntregado = data.total_entregado;
+				flagBuscarNuevos = 1;
+
+				console.log("Total entregas: "+totalEntregas);
+				console.log("Total entregado: "+totalEntregado);
+
+				
+				$('.totales-contenido').fadeIn();
+				$('.total-entregado').html(totalEntregado);
+				$('.total-entregar').html(totalEntregas);
+				
 
 				console.log("Ultimo Registro: "+ultimoRegistro);
 
@@ -343,8 +401,12 @@ function buscarTotalesSedes(){
 				// 	cargarDias()
 				// }
 				$('.overlay').fadeOut();
-				if(totalEntregas > 0){
-					setTimeout("buscarNuevosRegistros()",2000);
+				// if(totalEntregas > 0 && flagBuscarNuevos == 1){
+				// 	setTimeout("buscarNuevosRegistros()",2000);
+				// }
+				if(flagBuscarNuevos == 1){
+					//buscarNuevosRegistros();
+					setTimeout("buscarNuevosRegistros()",500);
 				}
 		
 
@@ -375,69 +437,121 @@ function buscarNuevosRegistros(){
 	formData.append('institucion', institucionBusqueda);
 	formData.append('sede', sedeBusqueda);
 
-	$.ajax({
-		type: "post",
-		url: "functions/fn_buscar_nuevos_registros.php",
-		dataType: "json",
-		contentType: false,
-		processData: false,
-		data: formData,
-		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data){
-			console.log(data);
-			if(data.estado == 1){
-				console.log('Terminada la verificación de nuevos registros.');
-				
-
-				if(totalEntregas > 0){
-					var codSede = data.codSede;
-					$('.entregas').prepend(data.cuerpo);
-					console.log("Sede que recibió registro: "+codSede);
-					var aux = $('.entregado-'+codSede).html();
-					aux = parseInt(aux);
-					aux++;
-					$('.entregado-'+codSede).html(aux);
+	if(flagBuscarNuevos == 1){
+		$.ajax({
+			type: "post",
+			url: "functions/fn_buscar_nuevos_registros.php",
+			dataType: "json",
+			contentType: false,
+			processData: false,
+			data: formData,
+			beforeSend: function(){
+				flagBuscarNuevos = 0;
+				$('#loader').fadeIn(); 
+			},
+			success: function(data){
+				flagBuscarNuevos = 1;
+				console.log(data);
+				if(data.estado == 1){
+					console.log('Terminada la verificación de nuevos registros.');
 	
-					//Aumentando el contador de lo entregado
-					totalEntregado = totalEntregado + 1;
+					//if(totalEntregas > 0){
+						var codSede = data.codSede;
+						$('.entregas').prepend(data.cuerpo);
+						console.log("Sede que recibió registro: "+codSede);
+						var aux = $('.entregado-'+codSede).html();
+						aux = parseInt(aux);
+						aux++;
+						$('.entregado-'+codSede).html(aux);
+
+						var auxt = $('.total-'+codSede).html();
+						auxt = parseInt(auxt);
+
+						if($('.circulo-'+codSede).hasClass( "gris" )){
+							$('.circulo-'+codSede).removeClass("gris");
+							$('.circulo-'+codSede).addClass("naranja");
+						}
+						
+						if(aux >= auxt){
+							$('.circulo-'+codSede).removeClass("gris");
+							$('.circulo-'+codSede).removeClass("naranja");
+							$('.circulo-'+codSede).addClass("verde");
+						}
+
+						
+		
+
+
+
+
+
+						//Aumentando el contador de lo entregado
+						totalEntregado = totalEntregado + 1;
+						$('.total-entregado').html(totalEntregado);
+						
+						// Actualizando el Id del ultimo registro procesado
+						//ultimoRegistro = data.ultimoRegistro;
+
+
+
+						if(data.ultimoRegistro > 0){
+							ultimoRegistro = data.ultimoRegistro;
+						}else{
+							ultimoRegistro = 0;
+						}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+						if ( $(".entrega").length > 10){
+							$(".entrega").last().remove();
+						}
+					//}
+	
+	
+					//entregas
+	
+	
+					// $('.sedes').html(data.cuerpo);
+					// ultimoRegistro = data.ultimo_registro;
+					// console.log("Ultimo Registro: "+ultimoRegistro);
+	
+					// // $('#dia').html(data.opciones);
+					// // $('#dia').val(localStorage.getItem("wappsi_dia"));
+					// // localStorage.setItem("wappsi_dia", $("#dia").val());
+					// // if($('#semana').val() != ""){
+					// // 	cargarDias()
+					// // }
+					$('#loader').fadeOut();
+
 					
-					// Actualizando el Id del ultimo registro procesado
-					ultimoRegistro = data.ultimoRegistro;
-
-					if ( $(".entrega").length > 9){
-						$(".entrega").last().remove();
-					}
+					
+					
 				}
-
-
-				//entregas
-
-
-				// $('.sedes').html(data.cuerpo);
-				// ultimoRegistro = data.ultimo_registro;
-				// console.log("Ultimo Registro: "+ultimoRegistro);
-
-				// // $('#dia').html(data.opciones);
-				// // $('#dia').val(localStorage.getItem("wappsi_dia"));
-				// // localStorage.setItem("wappsi_dia", $("#dia").val());
-				// // if($('#semana').val() != ""){
-				// // 	cargarDias()
-				// // }
-				$('#loader').fadeOut();
-
-				
-
+				else{
+					//Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+				}
+				buscarTotalesSedes();
+			},
+			error: function(data){
+				console.log(data);
+				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 			}
-			else{
-				//Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
-			}
-		},
-		error: function(data){
-			console.log(data);
-			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
-		}
-	});
-	if(totalEntregas > 0){
-		setTimeout(buscarNuevosRegistros,2000);
+		});
 	}
+	// if(totalEntregas > 0){
+	// 	setTimeout(buscarNuevosRegistros,3000);
+	// }
 }
