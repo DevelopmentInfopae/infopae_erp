@@ -710,6 +710,7 @@
                                   '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>'+
                                   '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>'+
                                   '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>'+
+                                  '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>'+
                                   '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>'+
                                   '<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>'+
                                     '<li>'+
