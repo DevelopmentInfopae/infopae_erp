@@ -289,7 +289,7 @@
     $numero = $despacho['num_doc'];
     $consulta = "SELECT DISTINCT dd.id, dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion
                 FROM despachos_det$mesAnno dd
-                LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero
+                LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto
                 WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero  ";
 
     $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
