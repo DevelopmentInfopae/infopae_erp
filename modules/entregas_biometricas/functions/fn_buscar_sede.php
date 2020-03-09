@@ -15,7 +15,7 @@ if(isset($_POST['validacion']) && $_POST['validacion'] != ''){
 }
 
 
-$opciones = "<option value=\"\">Seleccione uno</option>";
+$opciones = "<option value=\"\" selected>TODAS</option>";
 
 $consulta = " select * from sedes$periodoActual where 1=1 AND cod_sede IN (SELECT distinct cod_sede  FROM dispositivos)
 ";

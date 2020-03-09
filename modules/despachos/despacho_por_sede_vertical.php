@@ -11,7 +11,7 @@ date_default_timezone_set('America/Bogota');
 $mesAnno = '';
 $sangria = " * ";
 $largoNombre = 30;
-$tamannoFuente = 4;
+$tamannoFuente = 5;
 $altoFila = 2.5;
 
 if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho'])) {

@@ -178,6 +178,11 @@ $(document).ready(function(){
 		buscarTotalesSedes();
 	});
 
+
+	$( "#btnSicronizar" ).click(function() {
+		sincronizar();
+	});
+
 	
 
 	
@@ -284,9 +289,10 @@ function cargarInstituciones(){
 		success: function(data){
 			if(data.estado == 1){
 				$('#institucion').html(data.opciones);
+				$("#institucion").val($("#target option:first").val());
 				
-				$('#institucion').val(localStorage.getItem("wappsi_institucion"));
-				localStorage.setItem("wappsi_institucion", $("#institucion").val());
+				//$('#institucion').val(localStorage.getItem("wappsi_institucion"));
+				//localStorage.setItem("wappsi_institucion", $("#institucion").val());
 				if($('#institucion').val() != ""){
 					cargarSedes()
 				}
@@ -322,8 +328,9 @@ function cargarSedes(){
 		success: function(data){
 			if(data.estado == 1){
 				$('#sede').html(data.opciones);
-				$('#sede').val(localStorage.getItem("wappsi_sede"));
-				localStorage.setItem("wappsi_institucion", $("#institucion").val());
+				$("#sede").val($("#target option:first").val());
+				//$('#sede').val(localStorage.getItem("wappsi_sede"));
+				//localStorage.setItem("wappsi_institucion", $("#institucion").val());
 				if($('#sede').val() != ""){
 					//cargarNiveles();
 					//cargarDispositivos();
@@ -554,4 +561,31 @@ function buscarNuevosRegistros(){
 	// if(totalEntregas > 0){
 	// 	setTimeout(buscarNuevosRegistros,3000);
 	// }
+}
+
+function sincronizar(){
+	var formData = new FormData();
+	$.ajax({
+		type: "post",
+		url: "functions/fn_sincronizacion_sqlserver_mysql.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ 
+			$('.overlay').fadeIn(); 
+		},
+		success: function(data){
+			if(data.estado == 1){
+			}
+			else{
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('.overlay').fadeOut();}});
+			}
+			$('.overlay').fadeOut();
+		},
+		error: function(data){
+			console.log(data);
+			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
 }
