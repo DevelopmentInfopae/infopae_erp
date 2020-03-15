@@ -512,11 +512,51 @@
     foreach ($grupo_alimentario as $alimento)
     {
       $pdf->Cell(23.788, 4, "", 0);
-      $pdf->Cell(49,4,utf8_decode($alimento['componente']),1,0,'L',FALSE);
 
-      $pdf->Cell(13.1, 4, utf8_decode(number_format($alimento['grupo1'], 2, '.', '')), 1, 0, 'C', FALSE);
-      $pdf->Cell(13.1, 4, utf8_decode(number_format($alimento['grupo2'], 2, '.', '')), 1, 0, 'C', FALSE);
-      $pdf->Cell(13.1, 4, utf8_decode(number_format($alimento['grupo3'], 2, '.', '')), 1, 0, 'C', FALSE);
+
+
+      $aux = $alimento['componente'];
+      $long_nombre=strlen($aux);
+      //var_dump($largoNombre);
+      $largoNombre =37;
+      if($long_nombre > $largoNombre){
+        $aux = substr($aux,0,$largoNombre);
+      }
+      // Impresión de Alimento (Nombre del alimento)
+      $pdf->Cell(49,4,utf8_decode($aux),1,0,'L',FALSE);
+
+
+      if($alimento['grupo_alim'] == "Contramuestra"){ 
+        $aux = ""; 
+      }else{ 
+        $aux = $alimento['grupo1']; 
+        $aux = number_format($aux, 2, '.', '');
+      }
+      $pdf->Cell(13.1, 4, utf8_decode($aux), 1, 0, 'C', FALSE);
+      
+      
+      if($alimento['grupo_alim'] == "Contramuestra"){ 
+        $aux = ""; 
+      }else{ 
+        $aux = $alimento['grupo2']; 
+        $aux = number_format($aux, 2, '.', '');
+      }
+      $pdf->Cell(13.1, 4, utf8_decode($aux), 1, 0, 'C', FALSE);
+      
+      
+      if($alimento['grupo_alim'] == "Contramuestra"){ 
+        $aux = ""; 
+      }else{ 
+        $aux = $alimento['grupo3']; 
+        $aux = number_format($aux, 2, '.', '');
+      }
+      $pdf->Cell(13.1, 4, utf8_decode($aux), 1, 0, 'C', FALSE);
+      
+   
+
+
+
+
       $pdf->Cell(13.141, 4, $alimento['presentacion'], 1, 0, 'C', FALSE);
 
       if (strpos($alimento['componente'], "HUEVO") !== FALSE)
