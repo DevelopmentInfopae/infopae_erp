@@ -348,32 +348,41 @@ for ($k=0; $k < count($_POST) ; $k++){
 
 
 
-  /*************************************************************/
-  /*************************************************************/
-  /*************************************************************/
-  /*************************************************************/
- // var_dump($alimentos);
+/*************************************************************/
+/*************************************************************/
+/*************************************************************/
+/*************************************************************/
+// var_dump($alimentos);
 unset($sort);
 unset($grupo);
-  $sort = array();
-  $grupo = array();
-  foreach($alimentos as $kOrden=>$vOrden) {
-	  $sort['componente'][$kOrden] = $vOrden['componente'];
-	  $sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
-	  $sort['cantidadpresentacion'][$kOrden] = $vOrden['cantidadpresentacion'];
-	  $grupo[$kOrden] = $vOrden['grupo_alim'];
-  }
+$sort = array();
+$grupo = array();
+foreach($alimentos as $kOrden=>$vOrden) {
+	$sort['componente'][$kOrden] = $vOrden['componente'];
+	$sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
+	$sort['cantidadpresentacion'][$kOrden] = $vOrden['cantidadpresentacion'];
+	$grupo[$kOrden] = $vOrden['grupo_alim'];
+}
 
-  // array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC, $sort['cantidadpresentacion'], SORT_NUMERIC, SORT_ASC, $alimentos);
+// array_multisort($sort['grupo_alim'], SORT_ASC, $sort['componente'], SORT_ASC, $sort['cantidadpresentacion'], SORT_NUMERIC, SORT_ASC, $alimentos);
 
-  //var_dump($alimentos);
-  array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
-  sort($grupo);
-  //var_dump($alimentosTotales);
-  /*************************************************************/
-  /*************************************************************/
-  /*************************************************************/
-  /*************************************************************/
+//var_dump($alimentos);
+
+array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
+sort($grupo);
+
+//var_dump($alimentos);
+//var_dump($grupo);
+
+
+
+
+
+//var_dump($alimentosTotales);
+/*************************************************************/
+/*************************************************************/
+/*************************************************************/
+/*************************************************************/
 
 
 
@@ -597,6 +606,13 @@ unset($grupo);
 
 
 
+
+	$largoNombre = 37;
+	$long_nombre=strlen($aux);
+	if($long_nombre > $largoNombre){
+		$aux = substr($aux,0,$largoNombre);
+	}
+
 	  //Alimento
 	  $pdf->Cell(48.9,4,utf8_decode($aux),1,0,'L',False);
 
@@ -610,6 +626,7 @@ unset($grupo);
 	  $aux = 0+$alimento['cant_grupo1'];
 	  $aux = number_format($aux, 2, '.', '');
 	}
+	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
 	$pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
 
@@ -620,6 +637,7 @@ unset($grupo);
 	  $aux = 0+$alimento['cant_grupo2'];
 	  $aux = number_format($aux, 2, '.', '');
 	}
+	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
 	$pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
 	if($alimento['presentacion'] == 'u'){
@@ -629,13 +647,16 @@ unset($grupo);
 	  $aux = 0+$alimento['cant_grupo3'];
 	  $aux = number_format($aux, 2, '.', '');
 	}
+
+	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
 	$pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
+
 
 	//UNIDAD DE MEDIDA
 	$pdf->Cell(13.141,4,$alimento['presentacion'],1,0,'C',False);
 
 
-	$aux = number_format($aux, 2, '.', '');
+	//$aux = number_format($aux, 2, '.', '');
 
 //MOSTRAR O NO CUANDO HAY PRESENTACIONES
 

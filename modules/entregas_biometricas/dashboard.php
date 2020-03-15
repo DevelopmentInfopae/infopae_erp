@@ -137,14 +137,21 @@
 							</div>
 							<div class="campo">
 								<label for="institucion">institución</label>
-								<select name="institucion" id="institucion"></select>
+								<select name="institucion" id="institucion">
+									<option value="" selected>TODAS</option>
+								</select>
 							</div>
 							<div class="campo">
 								<label for="sede">Sede</label>
-								<select name="sede" id="sede"></select>
+								<select name="sede" id="sede">
+									<option value="" selected>TODAS</option>
+								</select>
 							</div>
 							<div class="campo">
 								<button type="button" id="btnFiltro">OK</button>
+							</div>
+							<div class="campo">
+								<button type="button" id="btnSicronizar">Sincronizar BD</button>
 							</div>
 
 						</div>
@@ -207,6 +214,7 @@
 				</div>
 				<div class="contenedor-dashboard__col contenedor-dashboard__col-der">
 					<h2>Titulares de derecho</h2>
+					<div class="overlay"> <i class="fa fa-refresh fa-spin"></i> </div>
 					<div class="entregas">
 						<?php //for ($i=0; $i < 10; $i++) { ?> 
 							<!-- <div class="entrega"> <i class="fa fa-check-circle"></i> <span class="hora-estudiante">15:57:32</span> <div class="estudiante"> <h2><span class="estudiante--nombre">JOHAN AGUILAR</span> </h2> <span class="estudiante--sede">I.E. COLEGIO MARIO MORALES DELGADO - SEDE PRINCIPAL</span> </div> <div class="estudiante--validacion radiofrecuencia">Lector Huella Dactilar</div> </div> -->

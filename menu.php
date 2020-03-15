@@ -76,7 +76,7 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php"><span class="nav-label">Alimentos</span></a> </li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php"><span class="nav-label">Preparaciones</span></a> </li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref"><span class="nav-label">Aportes calúricos y nutricionales</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref"><span class="nav-label">Aportes calóricos y nutricionales</span></a> </li>
 			</ul>
 		</li>
 		<li>
