@@ -10,9 +10,11 @@ require_once '../../db/conexion.php';
 include '../../php/funciones.php';
 
 $sangria = " - ";
-$largoNombre = 30;
-$tamannoFuente = 4;
+$largoNombre = 28;
+$tamannoFuente = 5;
 $altoFila = 2.5;
+
+
 
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
@@ -33,30 +35,16 @@ $mesAnno = $mes.$anno;
 
 $cget = "SELECT * FROM grupo_etario";
 $resGrupoEtario = $Link->query($cget);
-if ($resGrupoEtario->num_rows > 0)
-{
-while ($ge = $resGrupoEtario->fetch_assoc())
-{
-$get[] = $ge['DESCRIPCION'];
-}
-}
+if($resGrupoEtario->num_rows > 0){ while ($ge = $resGrupoEtario->fetch_assoc()) { $get[] = $ge['DESCRIPCION']; } }
 
 $ruta = '';
 if(isset($_POST['rutaNm']) && $_POST['rutaNm']!= ''){ $ruta = $_POST['rutaNm']; }
 
 $corteDeVariables = 16;
-if(isset($_POST['seleccionarVarios'])){
-$corteDeVariables++;
-}
-if(isset($_POST['informeRuta'])){
-$corteDeVariables++;
-}
-if(isset($_POST['ruta'])){
-$corteDeVariables++;
-}
-if(isset($_POST['rutaNm'])){
-$corteDeVariables++;
-}
+if(isset($_POST['seleccionarVarios'])){ $corteDeVariables++; }
+if(isset($_POST['informeRuta'])){ $corteDeVariables++; }
+if(isset($_POST['ruta'])){ $corteDeVariables++; }
+if(isset($_POST['rutaNm'])){ $corteDeVariables++; }
 $_POST = array_slice($_POST, $corteDeVariables);
 $_POST = array_values($_POST);
 
@@ -79,62 +67,44 @@ $diasMostrar = array();
 $semanasMostrar = array();
 
 foreach ($despachosRecibidos as $valor){
-	$consulta = "SELECT
-		de.*,
-		tc.descripcion,
-		u.Ciudad,
-		u.Departamento,
-		tc.jornada,
-		pm.Nombre AS nombre_proveedor
-	FROM despachos_enc$mesAnno de
-	INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero
-	INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede
-	INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE
-	LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO
-	WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor ";
-
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-//var_dump($resultado);
-if($resultado->num_rows >= 1){
-	$row = $resultado->fetch_assoc();
-	$despacho['num_doc'] = $row['Num_Doc'];
-	$despacho['cod_sede'] = $row['cod_Sede'];
-	$despacho['tipo_complem'] = $row['Tipo_Complem'];
-	$modalidad = $despacho['tipo_complem'];
-	$despacho['semana'] = $row['Semana'];
-	$despacho['cobertura'] = $row['Cobertura'];
-	$despacho['ciudad'] = $row['Ciudad'];
-	$departamento = $row['Departamento'];
-	$descripcionTipo = $row['descripcion'];
-	$jornada = $row['jornada'];
-	$nombre_proveedor =$row["nombre_proveedor"];
-
-$aux = $row['FechaHora_Elab'];
-$aux = strtotime($aux);
-if($fechaDespacho < $aux) { $fechaDespacho = date("d/m/Y",$aux); }
-
-// Agregando elementos a los demas array_walk_recursive
-$sedes[] = $row['cod_Sede'];
-$tipos[] = $row['Tipo_Complem'];
-$semanas[] = $row['Semana'];
-$municipios[] = $row['Ciudad'];
-
-//TRATAMIENTO DE LOS DIAS
-// Buscar el mes de la semana a la que pertenecen los despachos
-$auxDias = $row['Dias'];
-$diasMostrar[] = $auxDias;
-$auxMenus = $row['Menus'];
-$diasDespacho = $row['Dias'];
-$menusMostrar[] = trim($auxMenus, ", ");
-
-$arrayDiasDespacho = explode(',', $diasDespacho);
-
-if (!in_array($row['Semana'], $semanasMostrar, true))
-{
-$semanasMostrar[] =  $row['Semana'];
-$semana = $row['Semana'];
-$consulta = " select * from planilla_semanas where SEMANA = '$semana' ";
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, u.Departamento, tc.jornada, pm.Nombre AS nombre_proveedor FROM despachos_enc$mesAnno de INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor ";
+	//echo "<br><br>$consulta<br><br>";
+	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	//var_dump($resultado);
+	if($resultado->num_rows >= 1){
+		$row = $resultado->fetch_assoc();
+		$despacho['num_doc'] = $row['Num_Doc'];
+		$despacho['cod_sede'] = $row['cod_Sede'];
+		$despacho['tipo_complem'] = $row['Tipo_Complem'];
+		$modalidad = $despacho['tipo_complem'];
+		$despacho['semana'] = $row['Semana'];
+		$despacho['cobertura'] = $row['Cobertura'];
+		$despacho['ciudad'] = $row['Ciudad'];
+		$departamento = $row['Departamento'];
+		$descripcionTipo = $row['descripcion'];
+		$jornada = $row['jornada'];
+		$nombre_proveedor =$row["nombre_proveedor"];
+		$aux = $row['FechaHora_Elab'];
+		$aux = strtotime($aux);
+		if($fechaDespacho < $aux) { $fechaDespacho = date("d/m/Y",$aux); }
+		// Agregando elementos a los demas array_walk_recursive
+		$sedes[] = $row['cod_Sede'];
+		$tipos[] = $row['Tipo_Complem'];
+		$semanas[] = $row['Semana'];
+		$municipios[] = $row['Ciudad'];
+		//TRATAMIENTO DE LOS DIAS
+		// Buscar el mes de la semana a la que pertenecen los despachos
+		$auxDias = $row['Dias'];
+		$diasMostrar[] = $auxDias;
+		$auxMenus = $row['Menus'];
+		$diasDespacho = $row['Dias'];
+		$menusMostrar[] = trim($auxMenus, ", ");
+		$arrayDiasDespacho = explode(',', $diasDespacho);
+		if (!in_array($row['Semana'], $semanasMostrar, true)){
+			$semanasMostrar[] =  $row['Semana'];
+			$semana = $row['Semana'];
+			$consulta = " select * from planilla_semanas where SEMANA = '$semana' ";
+			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
 
 
@@ -375,18 +345,16 @@ if($encontrado == 0) { $alimentosTotales[] = $alimento; }
 }
 
 // Vamos a traer los datos que faltan para mostrar en la tabla
-for ($i=0; $i < count($alimentosTotales) ; $i++)
-{
-$alimentoTotal = $alimentosTotales[$i];
-$auxCodigo = $alimentoTotal['codigo'];
-$auxDespacho = $alimentoTotal["Num_Doc"];
-$consulta = "SELECT DISTINCT p.Codigo, p.Descripcion AS Componente, p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5,
-			(SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $auxDespacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida
-		FROM productos$anno p
-		LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
-		INNER JOIN menu_aportes_calynut m ON p.Codigo=m.cod_prod
-		WHERE p.Codigo = $auxCodigo";
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+for ($i=0; $i < count($alimentosTotales) ; $i++){
+	$alimentoTotal = $alimentosTotales[$i];
+	$auxCodigo = $alimentoTotal['codigo'];
+	$auxDespacho = $alimentoTotal["Num_Doc"];
+	$consulta = "SELECT DISTINCT p.Codigo, p.Descripcion AS Componente, p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5, (SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $auxDespacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida FROM productos$anno p LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo INNER JOIN menu_aportes_calynut m ON p.Codigo=m.cod_prod WHERE p.Codigo = $auxCodigo";
+	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+
+
+
+
 
 if($resultado->num_rows >= 1)
 {
@@ -405,7 +373,7 @@ $alimentosTotales[$i] = $alimentoTotal;
 }
 }
 
-mysqli_close($Link);
+
 
 unset($sort);
 unset($grupo);
@@ -469,7 +437,7 @@ $pdf->AliasNbPages();
 
 $pdf->AddPage();
 $pdf->SetTextColor(0,0,0);
-$pdf->SetFillColor(255,255,255);
+$pdf->SetFillColor(225,225,225);
 $pdf->SetDrawColor(0,0,0);
 $pdf->SetLineWidth(.05);
 $pdf->SetFont('Arial','',$tamannoFuente);
@@ -505,140 +473,178 @@ $pdf->AddPage();
 include 'despacho_consolidado_header_vertical.php';
 }
 
-$posicion_Y_celda_grupo_alimenticio = $pdf->GetY();
+	$posicion_Y_celda_grupo_alimenticio = $pdf->GetY();
 
-foreach ($grupo_alimentario as $alimento)
-{
-$pdf->Cell(23.788, 4, "", 0);
-$pdf->Cell(49,4,utf8_decode($alimento['componente']),1,0,'L',FALSE);
-
-$pdf->Cell(13.1, 4, utf8_decode(number_format($alimento['grupo1'], 2, '.', '')), 1, 0, 'C', FALSE);
-$pdf->Cell(13.1, 4, utf8_decode(number_format($alimento['grupo2'], 2, '.', '')), 1, 0, 'C', FALSE);
-$pdf->Cell(13.1, 4, utf8_decode(number_format($alimento['grupo3'], 2, '.', '')), 1, 0, 'C', FALSE);
-$pdf->Cell(13.141, 4, $alimento['presentacion'], 1, 0, 'C', FALSE);
-
-if (strpos($alimento['componente'], "HUEVO") !== FALSE)
-{
-$total = 0;
-foreach ($tg[$alimento['codigo']] as $key => $value) { $total += ceil($value); }
-
-$aux = $total;
-}
-else
-{ $aux = $alimento['grupo1']+$alimento['grupo2']+$alimento['grupo3']; }
-
-$pdf->Cell(13.141, 4, number_format($aux, 2, '.', ''), 1, 0, 'C', FALSE);
-
-if($alimento['presentacion'] == 'u')
-{
-if (strpos($alimento['componente'], "HUEVO") !== FALSE)
-{ $aux = ceil(0+$aux); }
-else
-{ $aux = round(0+$aux); }
-}
-else
-{ $aux = number_format($aux, 2, '.', ''); }
-
-if($alimento['cantotalpresentacion'] > 0 )
-{
-$aux = $alimento['cantotalpresentacion'];
-$aux2 = $aux;
-
-if($alimento['presentacion'] == 'u')
-{ $aux = round(0+$aux);           }
-else
-{ $aux = number_format($aux, 2, '.', ''); }
-}
-
-$pdf->Cell(10.6,4,$aux,1,0,'C',FALSE);
-
-//total entregado
-$pdf->Cell(10.6,4,'',1,0,'C',FALSE);
-$pdf->Cell(10.6,4,'',1,0,'C',FALSE);
-
-// ESPECIFICACIÓN DE CALIDAD
-$pdf->Cell(13.7,4,'',1,0,'C',FALSE);
-$pdf->Cell(13.7,4,'',1,0,'C',FALSE);
-
-// FALTANTES
-$pdf->Cell(9.2,4,'',1,0,'C',FALSE);
-$pdf->Cell(8.9,4,'',1,0,'C',FALSE);
-$pdf->Cell(13.9,4,'',1,0,'C',FALSE);
-
-//DEVOLUCIÓN
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-$pdf->Cell(15.2,4,'',1,0,'C',FALSE);
-
-$pdf->Ln();
-
-$posicion_Y_celda_alimento = $pdf->GetY();
-}
+	foreach ($grupo_alimentario as $alimento){
+		$filas++;
+		$aux = $alimento['componente'];
+		$long_nombre=strlen($aux);
+		if($long_nombre > $largoNombre){ $aux = substr($aux,0,$largoNombre); }
+		$pdf->Cell(34,$altoFila,utf8_decode($aux),'LB',0,'L',FALSE);
 
 
-$pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
-$pdf->MultiCell(23.788, 4, utf8_decode($nombre_grupo), 0, "C");
-$pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
-$pdf->MultiCell(23.788, $altura_celda_grupo_alimenticio, "", 1);
-}
+		$aux = number_format($alimento['grupo1'], 2, '.', '');
+		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
+		$pdf->Cell(11.6, $altoFila, utf8_decode($aux), 'LB', 0, 'C', FALSE);
+		
+		$aux = number_format($alimento['grupo2'], 2, '.', '');
+		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
+		$pdf->Cell(11.8, $altoFila, utf8_decode($aux), 'LB', 0, 'C', FALSE);
 
-$pdf->Ln(4);
+		$aux = number_format($alimento['grupo3'], 2, '.', '');
+		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
+		$pdf->Cell(11.6, $altoFila, utf8_decode($aux), 'LB', 0, 'C', FALSE);
 
-for ($i = 2; $i <= 5; $i++)
-{
-$unidad = $i;
 
-if($alimento['cantu'.$unidad] > 0)
-{
-$pdf->SetX($current_x+$anchoCelda);
-$presentacion = " ".$alimento['nombreunidad'.$unidad];
+		$pdf->Cell(11, $altoFila, $alimento['presentacion'], 'LB', 0, 'C', FALSE);
+		if (strpos($alimento['componente'], "HUEVO") !== FALSE){
+			$total = 0;
+			foreach ($tg[$alimento['codigo']] as $key => $value) { $total += ceil($value); }
+			$aux = $total;
+		} else { 
+			$aux = $alimento['grupo1']+$alimento['grupo2']+$alimento['grupo3']; 
+		}
+		$pdf->Cell(11, $altoFila, number_format($aux, 2, '.', ''), 'LB', 0, 'C', FALSE);
+		if($alimento['presentacion'] == 'u'){
+			if (strpos($alimento['componente'], "HUEVO") !== FALSE){ 
+				$aux = ceil(0+$aux);
+			} else {
+				$aux = round(0+$aux);
+			}
+		} else { 
+			$aux = number_format($aux, 2, '.', '');
+		}
+		if($alimento['cantotalpresentacion'] > 0 ){
+			$aux = $alimento['cantotalpresentacion'];
+			$aux2 = $aux;
+			if($alimento['presentacion'] == 'u'){
+				$aux = round(0+$aux);
+			} else {
+				$aux = number_format($aux, 2, '.', '');
+			}
+		}
+		$pdf->Cell(16,$altoFila,$aux,'LB',0,'C',FALSE);
 
-$pdf->SetTextColor(0,0,0);
-$pdf->SetFillColor(255,255,255);
+		// TOTAL ENTREGADO
+		$pdf->Cell(9,$altoFila,'','LB',0,'C',FALSE);
+		$pdf->Cell(9,$altoFila,'','LB',0,'C',FALSE);
 
-$aux = $sangria.$alimento['componente'].$presentacion;
+		// ESPECIFICACIÓN DE CALIDAD
+		$pdf->Cell(8.5,$altoFila,'','LB',0,'C',FALSE);
+		$pdf->Cell(8.5,$altoFila,'','LB',0,'C',FALSE);
 
-$long_nombre=strlen($aux);
-if($long_nombre > $largoNombre)
-{
-$aux = substr($aux,0,$largoNombre);
+		// FALTANTES
+		$pdf->Cell(5,$altoFila,'','LB',0,'C',FALSE);
+		$pdf->Cell(5,$altoFila,'','LB',0,'C',FALSE);
+		$pdf->Cell(14,$altoFila,'','LB',0,'C',FALSE);
+
+		//DEVOLUCIÓN
+		$pdf->Cell(5,$altoFila,'','LB',0,'C',FALSE);
+		$pdf->Cell(5,$altoFila,'','LB',0,'C',FALSE);
+		$pdf->Cell(0,$altoFila,'','LBR',0,'C',FALSE);
+
+		$pdf->Ln($altoFila);
+
+		$posicion_Y_celda_alimento = $pdf->GetY();
+	}
+	//$pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
+	//$pdf->MultiCell(23.788, 4, utf8_decode($nombre_grupo), 0, "C");
+	//$pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
+	//$pdf->MultiCell(23.788, $altura_celda_grupo_alimenticio, "", 1);
 }
 
-$pdf->Cell(68.3,4,utf8_decode($aux),1,0,'L',FALSE);
-$pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-$pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-$pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-$pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-$pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+//$pdf->Ln($altoFila);
 
+for ($i = 2; $i <= 5; $i++){
+	$unidad = $i;
+	if($alimento['cantu'.$unidad] > 0){
+		
+		$filas++;
+		
+		$pdf->SetX($current_x+$anchoCelda);
+		$presentacion = " ".$alimento['nombreunidad'.$unidad];
+		$pdf->SetTextColor(0,0,0);
+		$aux = $sangria.$alimento['componente'].$presentacion;
+		$long_nombre=strlen($aux);
+		
+		if($long_nombre > $largoNombre){ $aux = substr($aux,0,$largoNombre); }
+
+		//$pdf->Cell(34,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(34,$altoFila,utf8_decode($aux),1,0,'L',FALSE);
+		$pdf->Cell(11.6,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(11.8,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(11.6,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(11,$altoFila,'',1,0,'C',FALSE);
+		$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+
+		// CANTIDAD ENTREGADA
+		$pdf->Cell(16,$altoFila,$aux,1,0,'C',FALSE);
+		$pdf->Cell(9,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(9,$altoFila,'',1,0,'C',FALSE);
+		// ESPECIFICACIÓN DE CALIDAD
+		$pdf->Cell(8.5,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(8.5,$altoFila,'',1,0,'C',FALSE);
+		// FALTANTES
+		$pdf->Cell(5,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(5,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(14,$altoFila,'',1,0,'C',FALSE);
+		//DEVOLUCIÓN
+		$pdf->Cell(5,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(5,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Cell(0,$altoFila,'',1,0,'C',FALSE);
+		$pdf->Ln($altoFila);
+
+	}
+}
+
+// Ciclo para completar las filas en blanco
+//55
+for($i = $filas ; $i <= 57 ; $i++){
+	$current_y = $pdf->GetY();
+	$current_x = $pdf->GetX();
+	$pdf->Cell(0,$altoFila,'','LBR',0,'L',False);
+	$pdf->SetXY($current_x, $current_y);
+	$pdf->Cell(34,$altoFila,'','R',0,'L',False);
+	$pdf->Cell(11.6,$altoFila,'','R',0,'C',False);
+	$pdf->Cell(11.8,$altoFila,'','R',0,'C',False);
+	$pdf->Cell(11.6,$altoFila,'','R',0,'C',False);
+	
+	$pdf->Cell(11,$altoFila,'','R',0,'C',False);
+
+	// 	CANTIDAD TOTAL
+	$pdf->Cell(11,$altoFila,'','R',0,'C',False);
+	
 	// CANTIDAD ENTREGADA
-$pdf->Cell(9.3,4,$aux,1,0,'C',FALSE);
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-// ESPECIFICACIÓN DE CALIDAD
-$pdf->Cell(11,4,'',1,0,'C',FALSE);
-$pdf->Cell(11,4,'',1,0,'C',FALSE);
-// FALTANTES
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-//DEVOLUCIÓN
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-$pdf->Ln(4);
-}
+	//$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
+	$pdf->Cell(16,$altoFila,'','R',0,'C',False);
+	$pdf->Cell(9,$altoFila,'','R',0,'C',False);
+	$pdf->Cell(9,$altoFila,'','R',0,'C',False);
+
+	// ESPECIFICACIÓN DE CALIDAD
+	$pdf->Cell(8.5,$altoFila,'','R',0,'C',False);
+	$pdf->Cell(8.5,$altoFila,'','R',0,'C',False);
+
+	// FALTANTES
+	$pdf->Cell(5,$altoFila,'','R',0,'C',False);
+	$pdf->Cell(5,$altoFila,'','R',0,'C',False);
+	$pdf->Cell(14,$altoFila,'','R',0,'C',False);
+
+	//DEVOLUCIÓN
+	$pdf->Cell(5,$altoFila,'','R',0,'C',False);
+	$pdf->Cell(5.084,$altoFila,'','R',0,'C',False);
+	$pdf->Cell(0,$altoFila,'',0,0,'C',False);
+	
+	$pdf->Ln($altoFila);
 }
 
-$current_y = $pdf->GetY();
-if($current_y > 162)
-{
-$pdf->AddPage();
-include 'despacho_consolidado_footer_vertical.php';
-include 'despacho_consolidado_header_vertical.php';
-}
+include 'despacho_firma_planilla_vertical.php';
 
-include 'despacho_firma_planilla.php';
+// $current_y = $pdf->GetY();
+// if($current_y > 162)
+// {
+// $pdf->AddPage();
+// include 'despacho_consolidado_footer_vertical.php';
+// include 'despacho_consolidado_header_vertical.php';
+// }
 
 $pdf->Output();

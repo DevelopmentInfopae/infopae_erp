@@ -10,9 +10,13 @@ date_default_timezone_set('America/Bogota');
 
 $mesAnno = '';
 $sangria = " * ";
-$largoNombre = 30;
+$largoNombre = 28;
 $tamannoFuente = 5;
 $altoFila = 2.5;
+
+
+
+
 
 if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho'])) {
 	// Se va a recuperar el mes y el año para las tablaMesAnno
@@ -92,6 +96,9 @@ $pdf= new PDF('P','mm',array(279.4,215.9));
 $pdf->SetMargins(15.6, 8.6, 9.3);
 $pdf->SetAutoPageBreak(FALSE, 5);
 $pdf->AliasNbPages();
+// $colorRelleno = 238,236,225;
+/// $colorRelleno = '179,255,255';
+$pdf->SetFillColor(225,225,225);
 
 include '../../php/funciones.php';
 
@@ -288,7 +295,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 
 	$pdf->AddPage();
 	$pdf->SetTextColor(0,0,0);
-	$pdf->SetFillColor(255,255,255);
+	
 	$pdf->SetDrawColor(0,0,0);
 	$pdf->SetLineWidth(.05);
 	$pdf->SetFont('Arial','',$tamannoFuente);
@@ -337,7 +344,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$alimento['cantotalpresentacion'] = 0;
 			}
 			$pdf->SetTextColor(0,0,0);
-			$pdf->SetFillColor(255,255,255);
+			
 
 			// Se verifica que no haya cantidades en las direntes presentaciones, para no mostrar la primera fila.
 			//if($alimento['cantu2'] <= 0 && $alimento['cantu3'] <= 0 && $alimento['cantu4'] <= 0 && $alimento['cantu5'] <= 0){
@@ -356,6 +363,8 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$pdf->SetXY($current_x, $current_y);
 
 				//Alimento
+				$long_nombre=strlen($aux);
+				if($long_nombre > $largoNombre){ $aux = substr($aux,0,$largoNombre); }
 				$pdf->Cell(34,$altoFila,utf8_decode($aux),'R',0,'L',False);
 
 				if($alimento['presentacion'] == 'u'){
@@ -365,6 +374,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 					$aux = 0+$alimento['cant_grupo1'];
 					$aux = number_format($aux, 2, '.', '');
 				}
+				if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
 				$pdf->Cell(11.6,$altoFila,utf8_decode($aux),'R',0,'C',False);
 				
 				if($alimento['presentacion'] == 'u'){
@@ -374,6 +384,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 					$aux = 0+$alimento['cant_grupo2'];
 					$aux = number_format($aux, 2, '.', '');
 				}
+				if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
 				$pdf->Cell(11.8,$altoFila,utf8_decode($aux),'R',0,'C',False);
 				
 				if($alimento['presentacion'] == 'u'){
@@ -383,11 +394,12 @@ for ($k=0; $k < count($_POST) ; $k++){
 					$aux = 0+$alimento['cant_grupo3'];
 					$aux = number_format($aux, 2, '.', '');
 				}
+				if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
 				$pdf->Cell(11.6,$altoFila,utf8_decode($aux),'R',0,'C',False);
 
 				//UNIDAD DE MEDIDA
 				$pdf->Cell(11,$altoFila,$alimento['presentacion'],'R',0,'C',False);
-				$aux = number_format($aux, 2, '.', '');
+				//$aux = number_format($aux, 2, '.', '');
 				
 				//MOSTRAR O NO CUANDO HAY PRESENTACIONES
 				if ($alimento['presentacion'] == 'u') {
@@ -434,7 +446,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$presentacion = " ".$alimento['nombreunidad'.$unidad];	
 	
 				$pdf->SetTextColor(0,0,0);
-				$pdf->SetFillColor(255,255,255);
+				
 	
 				$aux = $sangria.$alimento['componente'].$presentacion;
 	
@@ -489,7 +501,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$presentacion = " ".$alimento['nombreunidad'.$unidad];	
 	
 				$pdf->SetTextColor(0,0,0);
-				$pdf->SetFillColor(255,255,255);
+				
 	
 				$aux = $sangria.$alimento['componente'].$presentacion;
 	
@@ -544,7 +556,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$presentacion = " ".$alimento['nombreunidad'.$unidad];	
 	
 				$pdf->SetTextColor(0,0,0);
-				$pdf->SetFillColor(255,255,255);
+				
 	
 				$aux = $sangria.$alimento['componente'].$presentacion;
 	
@@ -599,7 +611,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$presentacion = " ".$alimento['nombreunidad'.$unidad];	
 	
 				$pdf->SetTextColor(0,0,0);
-				$pdf->SetFillColor(255,255,255);
+				
 	
 				$aux = $sangria.$alimento['componente'].$presentacion;
 	

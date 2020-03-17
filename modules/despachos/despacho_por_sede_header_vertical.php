@@ -103,7 +103,14 @@ $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 //$pdf->Cell(0,5,'','LR',0,'C',False);
 $pdf->SetXY($current_x, $current_y);
-$pdf->SetFillColor(238,236,225);
+
+
+
+
+
+
+
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(34,5,utf8_decode('RANGO DE EDAD'),'TLB',0,'C',true);
 $pdf->Cell(35,5,utf8_decode('N° RACIONES ADJUDICADAS'),'TLB',0,'C',true);
@@ -125,10 +132,10 @@ $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->Cell(0,2.5,utf8_decode('TOTAL RACIONES'),'LTR',0,'C',true);
 $pdf->SetXY($current_x, $current_y+2.5);
-$pdf->Cell(15,2.5,utf8_decode('JM'),'LBT',0,'C',true);
+$pdf->Cell(14,2.5,utf8_decode('JM'),'LBT',0,'C',true);
 $pdf->Cell(0,2.5,utf8_decode('JT'),1,0,'C',true);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->SetFillColor(255,255,255);
+
 
 // Linea 7
 $pdf->Ln(2.5);
@@ -148,7 +155,7 @@ $pdf->Cell(27,12.9,'','R',0,'C',False);
 
 $aux_y_despues = $pdf->GetY();
 $aux_x_despues = $pdf->GetX();
-$pdf->SetXY($aux_x_antes, $aux_y_antes+3);
+$pdf->SetXY($aux_x_antes, $aux_y_antes+0.5);
 $pdf->MultiCell(26,4,utf8_decode($auxDias),0,'C',False);
 $pdf->SetXY($aux_x_despues, $aux_y_despues);
 $pdf->Cell(16,12.9,utf8_decode($auxMenus),'R',0,'C',False);
@@ -167,7 +174,7 @@ if($jornada == 2){
 	$jt = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3;
 }
 
-$pdf->Cell(15,12.9,utf8_decode($jm),'R',0,'C',False);
+$pdf->Cell(14,12.9,utf8_decode($jm),'R',0,'C',False);
 $pdf->Cell(0,12.9,utf8_decode($jt),0,0,'C',False);
 
 $pdf->SetXY($current_x, $current_y);
@@ -202,36 +209,45 @@ $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 //$pdf->Cell(0,10,'','LBR',0,'C',False);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(34,10,utf8_decode(''),'R',0,'C',False);
-$pdf->Cell(35,10,utf8_decode(''),'R',0,'C',False);
-$pdf->Cell(11,10,utf8_decode(''),'R',0,'C',False);
-$pdf->Cell(11,10,utf8_decode(''),'R',0,'C',False);
-$pdf->Cell(34,10,utf8_decode(''),'R',0,'C',False);
-$pdf->Cell(17,10,utf8_decode(''),'R',0,'C',False);
-$pdf->Cell(24,10,utf8_decode(''),'R',0,'C',False);
-$pdf->Cell(0,10,utf8_decode(''),'R',0,'C',False);
+$pdf->Cell(34,10,utf8_decode(''),'LTB',0,'C',true);
+$pdf->Cell(35,10,utf8_decode(''),'LTB',0,'C',true);
+$pdf->Cell(11,10,utf8_decode(''),'LTB',0,'C',true);
+$pdf->Cell(11,10,utf8_decode(''),'LTB',0,'C',true);
+$pdf->Cell(34,10,utf8_decode(''),'LTB',0,'C',true);
+$pdf->Cell(17,10,utf8_decode(''),'LTB',0,'C',true);
+$pdf->Cell(24,10,utf8_decode(''),'LTB',0,'C',true);
+$pdf->Cell(0,10,utf8_decode(''),1,0,'C',true);
 
 
-$pdf->SetFillColor(238,236,225);
+$pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(34,10,utf8_decode('ALIMENTO'),'LBT',0,'C',true);
+$pdf->Cell(34,10,utf8_decode('ALIMENTO'),0,0,'C',false);
 $aux_y_antes = $pdf->GetY();
 $aux_x_antes = $pdf->GetX();
 $pdf->Cell(35,5,utf8_decode(''),'B',0,'C',False);
 $pdf->SetXY($aux_x_antes, $aux_y_antes);
-$pdf->MultiCell(35,2.5,utf8_decode('CANTIDAD DE ALIMENTOS POR NÚMERO DE RACIONES'),0,'C',true);
+$pdf->MultiCell(35,2.5,utf8_decode('CANTIDAD DE ALIMENTOS POR NÚMERO DE RACIONES'),0,'C',false);
+
 
 $pdf->SetXY($aux_x_antes, $aux_y_antes+5);
-$pdf->MultiCell(11.6,2.5,utf8_decode($get[0]),'R','C',False);
-$pdf->SetXY($aux_x_antes+11.6, $aux_y_antes+5);
-$pdf->MultiCell(11.8,2.5,utf8_decode($get[1]),'R','C',False);
-$pdf->SetXY($aux_x_antes+11.8+11.6, $aux_y_antes+5);
-$pdf->MultiCell(11.6,2.5,utf8_decode($get[2]),0,'C',False);
+$pdf->Cell(11.6,5,utf8_decode(''),'R',0,'C',false);
+$pdf->Cell(11.8,5,utf8_decode(''),'R',0,'C',false);
+
+
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->SetXY($aux_x_antes, $aux_y_antes+5.3);
+$pdf->MultiCell(11.6,1.5,utf8_decode($get[0]),0,'C',false);
+$pdf->SetXY($aux_x_antes+11.6, $aux_y_antes+5.3);
+$pdf->MultiCell(11.8,1.5,utf8_decode($get[1]),0,'C',false);
+$pdf->SetXY($aux_x_antes+11.8+11.6, $aux_y_antes+5.3);
+$pdf->MultiCell(11.6,1.5,utf8_decode($get[2]),0,'C',false);
+
 
 $pdf->SetXY($current_x+34+35, $current_y+2);
-$pdf->MultiCell(11,2,utf8_decode('UNIDAD DE MEDIDA'),'R','C',False);
+$pdf->MultiCell(11,2,utf8_decode('UNIDAD DE MEDIDA'),'R','C',false);
 $pdf->SetXY($current_x+34+35+10.5, $current_y+3);
-$pdf->MultiCell(12,2,utf8_decode('CANTIDAD TOTAL'),0,'C',False);
+$pdf->MultiCell(12,2,utf8_decode('CANTIDAD TOTAL'),0,'C',false);
+
 
 $pdf->SetXY($current_x+34+35+11+11, $current_y);
 $current_y = $pdf->GetY();
@@ -241,6 +257,7 @@ $pdf->SetXY($current_x, $current_y+5);
 $pdf->Cell(16,5,utf8_decode('TOTAL'),'R',0,'C',False);
 $pdf->Cell(9,5,utf8_decode('C'),'R',0,'C',False);
 $pdf->Cell(9,5,utf8_decode('NC'),0,0,'C',False);
+
 
 $pdf->SetXY($current_x+34, $current_y);
 $current_y = $pdf->GetY();
@@ -252,6 +269,7 @@ $pdf->SetXY($current_x, $current_y+5);
 $pdf->Cell(8.5,5,utf8_decode('C'),'R',0,'C',False);
 $pdf->Cell(8.5,5,utf8_decode('NC'),0,0,'C',False);
 
+
 $pdf->SetXY($current_x+17, $current_y);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
@@ -260,6 +278,7 @@ $pdf->SetXY($current_x, $current_y+5);
 $pdf->Cell(5,5,utf8_decode('SI'),'R',0,'C',False);
 $pdf->Cell(5,5,utf8_decode('NO'),'R',0,'C',False);
 $pdf->Cell(14,5,utf8_decode('CANTIDAD'),0,0,'C',False);
+
 
 $pdf->SetXY($current_x+24, $current_y);
 $current_y = $pdf->GetY();
@@ -270,6 +289,6 @@ $pdf->Cell(5,5,utf8_decode('SI'),'R',0,'C',False);
 $pdf->Cell(5,5,utf8_decode('NO'),'R',0,'C',False);
 $pdf->Cell(0,5,utf8_decode('CANTIDAD'),0,0,'C',False);
 
+
 $pdf->Ln(5);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->SetFillColor(255,255,255);
