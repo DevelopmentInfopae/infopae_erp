@@ -1,6 +1,7 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
+include 'fn_fecha_asistencia.php';
 
 //var_dump($_SESSION);
 
@@ -20,10 +21,9 @@ if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){
 	$sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
 
 	// Validar que la asistencia no este sellada
-	$fecha = date("Y-m-d H:i:s");
-	$anno = date("y"); 
-	$mes = date("m");
-	$dia = date("d");
+	$anno = $annoAsistencia2D; 
+	$mes = $mesAsistencia;
+	$dia = $diaAsistencia;
 
 
 

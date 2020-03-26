@@ -330,7 +330,6 @@ function cargarEstudiantes(){
 			mes: mes,
 			semana: semana,
 			dia: dia,
-
 			semanaActual: semanaActual,
 			sede: sede,
 			nivel: nivel,

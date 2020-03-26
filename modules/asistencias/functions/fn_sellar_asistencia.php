@@ -1,31 +1,26 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
+include 'fn_fecha_asistencia.php';
 
 $bandera = 0;
 
 // var_dump($_POST);
 //var_dump($_SESSION);
 
-$fecha = date("Y-m-d H:i:s");
-$anno = date("y");
-$annoCompleto = date("Y"); 
-
-
-
-
-
+$anno = $annoAsistencia2D;
+$annoCompleto = $annoasistencia; 
 
 if(isset($_POST['mes']) && $_POST['mes'] != ""){
 	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
 }else{
-	$mes = date("m");
+	$mes = $mesAsistencia;
 }
 
 if(isset($_POST['dia']) && $_POST['dia'] != ""){
 	$dia = mysqli_real_escape_string($Link, $_POST['dia']);
 }else{
-	$dia = date("d");
+	$dia = $diaAsistencia;
 }
 
 
@@ -43,7 +38,6 @@ include 'fn_validar_existencias_tablas.php';
 
 // Representación numérica del día de la semana
 // 0 (para domingo) hasta 6 (para sábado)
-// $diaSemana = date("w");
 $fechaConsulta = "$annoCompleto-$mes-$dia";
 $fechaConsulta = strtotime($fechaConsulta);
 $diaSemana = date("w", $fechaConsulta);

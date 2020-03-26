@@ -1,28 +1,24 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
+require_once 'fn_fecha_asistencia.php';
 
 // var_dump($_POST);
 //var_dump($_SESSION);
 
-$fecha = date("Y-m-d H:i:s");
-$anno = date("y"); 
-
-
-
+$anno = $annoAsistencia2D; 
 
 if( isset($_POST["mes"]) && $_POST["mes"] != "" ){
-	$mes = $_POST["mes"];
+	$mes = mysqli_real_escape_string($Link, $_POST["mes"]);
 }else{
-	$mes = date("m");
+	$mes = $mesAsistencia;
 }
 
 if( isset($_POST["dia"]) && $_POST["dia"] != "" ){
-	$dia = $_POST["dia"];
+	$dia = mysqli_real_escape_string($Link,$_POST["dia"]);
 }else{
-	$dia = date("d");
+	$dia = $diaAsistencia;
 }
-
 
 
 
@@ -48,29 +44,40 @@ include 'fn_validar_existencias_tablas.php';
 
 if($banderaRegistros == 0){
 	//Insertar no habria necesidad de borrar
-	$consulta = " insert into asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values ";
+	$consulta = " insert into asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario, repite, consumio, repitio ) values ";
 	$aux = 0;
+	$valores = "";
 	foreach ($asistencias as $asistencia){
 		if($aux > 0){
-			$consulta .= " , ";
+			$valores .= " , ";
 		}
-		$consulta .= " ( ";
+		$valores .= " ( ";
 		$auxField = mysqli_real_escape_string($Link, $asistencia["tipoDocumento"]);
-		$consulta .= " \"$auxField\", ";	
+		$valores .= " \"$auxField\", ";	
 		$auxField = mysqli_real_escape_string($Link, $asistencia["documento"]);
-		$consulta .= " \"$auxField\", ";
-		$consulta .= " \"$fecha\", ";
-		$consulta .= " \"$mes\", ";
-		$consulta .= " \"$semana\", ";
-		$consulta .= " \"$dia\", ";
+		$valores .= " \"$auxField\", ";
+		$valores .= " \"$fecha\", ";
+		$valores .= " \"$mes\", ";
+		$valores .= " \"$semana\", ";
+		$valores .= " \"$dia\", ";
 		$auxField = mysqli_real_escape_string($Link, $asistencia["asistencia"]);
-		$consulta .= " $auxField, ";
-		$consulta .= " $id_usuario ";
-		$consulta .= " ) ";
+		$valores .= " $auxField, ";
+		$valores .= " $id_usuario, ";
+		$valores .= " 0, ";
+		$valores .= " 0, ";
+		$valores .= " 0 ";
+		$valores .= " ) ";
 		$aux++;
 	}
-	
 
+	$consulta .= $valores;
+	$consulta .= " ON DUPLICATE KEY UPDATE 
+	fecha = values(fecha),
+	asistencia = values(asistencia), 
+	id_usuario = values(id_usuario), 	
+	repite = values(repite), 
+	consumio = values(consumio), 
+	repitio = values(repitio) ";
 	//echo $consulta;
 	
 

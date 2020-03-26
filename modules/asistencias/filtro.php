@@ -116,6 +116,12 @@
 											</div>
 										<?php } ?>
 
+											<div class="col-sm-4 form-group">
+												<label for="complemento">Complemento</label>
+												<select class="form-control" name="complemento" id="complemento">
+													<option value="">Seleccionar</option>
+												</select>
+											</div>
 
 										
 

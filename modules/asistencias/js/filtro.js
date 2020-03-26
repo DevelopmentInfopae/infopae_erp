@@ -477,7 +477,7 @@ function actualizarMarcadores(flagConsumo){
 				console.log(total);
 				console.log("Reg Faltan");
 				console.log(reg_faltan);				
-				console.log("Reg Ausentes");
+				console.log("Reg Ausentes"); 
 				console.log(reg_ausentes);				
 				console.log("Reg Repitentes");
 				console.log(reg_repitentes);

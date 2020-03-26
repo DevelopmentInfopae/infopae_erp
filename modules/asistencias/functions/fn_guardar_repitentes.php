@@ -1,24 +1,24 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
+include 'fn_fecha_asistencia.php';
 
 // var_dump($_POST);
 //var_dump($_SESSION);
 
-$fecha = date("Y-m-d H:i:s");
-$anno = date("y");
+$anno = $annoasistencia;
 
 
 if(isset($_POST['mes']) && $_POST['mes'] != ""){
 	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
 }else{
-	$mes = date("m");
+	$mes = $mesAsistencia;
 }
 
 if(isset($_POST['dia']) && $_POST['dia'] != ""){
 	$dia = mysqli_real_escape_string($Link, $_POST['dia']);
 }else{
-	$dia = date("d");
+	$dia = $diaAsistencia;
 }
 
 
