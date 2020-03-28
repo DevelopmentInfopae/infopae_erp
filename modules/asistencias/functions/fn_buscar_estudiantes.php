@@ -28,6 +28,7 @@ if(isset($_POST["semana"]) && $_POST["semana"] != ""){
 }
 
 $sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
+$complemento = (isset($_POST["complemento"]) && $_POST["complemento"] != "") ? mysqli_real_escape_string($Link, $_POST["complemento"]) : "";
 
 $nivel = (isset($_POST["nivel"]) && $_POST["nivel"] != "") ? mysqli_real_escape_string($Link, $_POST["nivel"]) : "";
 
@@ -39,13 +40,17 @@ $banderaRegistros = 0;
 
 include "fn_buscar_registros_asistencia.php"; 
 
+//var_dump($banderaRegistros);
 if($banderaRegistros == 0){
-	//var_dump($banderaRegistros);
 
 	$consulta = " select f.tipo_doc, f.num_doc, concat(f.ape1, \" \", f.ape2, \" \", f.nom1, \" \", f.nom2) as nombre, g.nombre as grado, f.nom_grupo as grupo from focalizacion$semanaActual f left join grados g on g.id = f.cod_grado where 1=1 ";
 
 	if($sede != "" ){
 		$consulta .= " and f.cod_sede = $sede ";
+	}
+
+	if($complemento != "" ){
+		$consulta .= " and f.Tipo_complemento = \"$complemento\" ";
 	}
 
 	if($nivel == 1 ){

@@ -6,7 +6,7 @@ include 'fn_fecha_asistencia.php';
 // var_dump($_POST);
 //var_dump($_SESSION);
 
-$anno = $annoasistencia; 
+$anno = $annoAsistencia2D; 
 
 if(isset($_POST["mes"]) && $_POST["mes"] != ""){
 	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
@@ -30,6 +30,7 @@ if(isset($_POST["dia"]) && $_POST["dia"] != ""){
 
 
 $sede = mysqli_real_escape_string($Link, $_POST['sede']);
+$complemento = mysqli_real_escape_string($Link, $_POST['complemento']);
 
 $documento = mysqli_real_escape_string($Link, $_POST['documento']); 
 $tipoDocumento = mysqli_real_escape_string($Link, $_POST['tipoDocumento']); 
@@ -48,16 +49,17 @@ include 'fn_validar_existencias_tablas.php';
 
 
 
-$consultaRegistro = " select * from asistencia_det$mes$anno where mes = \"$mes\" and dia = \"$dia\" and tipo_doc = \"$tipoDocumento\" and num_doc = \"$documento\" ";
+$consultaRegistro = " select * from asistencia_det$mes$anno where mes = \"$mes\" and dia = \"$dia\" and tipo_doc = \"$tipoDocumento\" and num_doc = \"$documento\" and complemento = \"$complemento\" ";
+
 $resultRegistro = $Link->query($consultaRegistro) or die ('Consulta si existe registro'. mysqli_error($Link));
 // echo "<br><br>$consultaRegistro<br><br>"; 
 if($resultRegistro->num_rows >= 1){
-	$consulta = " update asistencia_det$mes$anno set asistencia = $valor, repite = 0, consumio = 0, repitio = 0 where asistencia_det$mes$anno.mes = \"$mes\" and asistencia_det$mes$anno.semana = \"$semana\" and asistencia_det$mes$anno.dia = \"$dia\" and asistencia_det$mes$anno.num_doc  = \"$documento\" and asistencia_det$mes$anno.tipo_doc  = \"$tipoDocumento\""; 
+	$consulta = " update asistencia_det$mes$anno set asistencia = $valor, repite = 0, consumio = 0, repitio = 0 where asistencia_det$mes$anno.mes = \"$mes\" and asistencia_det$mes$anno.semana = \"$semana\" and asistencia_det$mes$anno.dia = \"$dia\" and asistencia_det$mes$anno.num_doc  = \"$documento\" and asistencia_det$mes$anno.tipo_doc  = \"$tipoDocumento\" and asistencia_det$mes$anno.complemento  = \"$complemento\" "; 
 	
 	$result = $Link->query($consulta) or die ('Actualización de asistencia'.$consulta. mysqli_error($Link));
 
 }else{
-	$consulta = " insert into asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario ) values (\"$tipoDocumento\", \"$documento\", \"$fecha\", \"$mes\", \"$semana\", \"$dia\", \"$valor\", \"$id_usuario\" ) ";
+	$consulta = " insert into asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario, complemento) values (\"$tipoDocumento\", \"$documento\", \"$fecha\", \"$mes\", \"$semana\", \"$dia\", \"$valor\", \"$id_usuario\", \"$complemento\" ) ";
 	
 	$result = $Link->query($consulta) or die ('Inserción de asistencia'.$consulta. mysqli_error($Link));
 

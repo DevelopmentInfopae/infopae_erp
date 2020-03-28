@@ -6,7 +6,7 @@ include 'fn_fecha_asistencia.php';
 // var_dump($_POST);
 //var_dump($_SESSION);
 
-$anno = $annoasistencia;
+$anno = $annoAsistencia2D;
 
 
 if(isset($_POST['mes']) && $_POST['mes'] != ""){
@@ -26,6 +26,7 @@ if(isset($_POST['dia']) && $_POST['dia'] != ""){
 
 
 $sede = mysqli_real_escape_string($Link, $_POST['sede']);
+$complemento = mysqli_real_escape_string($Link, $_POST['complemento']);
 $semana = mysqli_real_escape_string($Link, $_POST['semana']);
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
@@ -74,7 +75,7 @@ foreach ($repitentes as $repitente){
 
 
 
-	$consulta .= " update asistencia_det$mes$anno set repite = \"$repite\" where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and asistencia = 1 and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\"; ";
+	$consulta .= " update asistencia_det$mes$anno set repite = \"$repite\" where mes = \"$mes\" and semana = \"$semana\" and dia = \"$dia\" and asistencia = 1 and tipo_doc = \"$tipo_doc\" and num_doc = \"$num_doc\" and complemento = \"$complemento\"; ";
 }
 
 //echo $consulta;

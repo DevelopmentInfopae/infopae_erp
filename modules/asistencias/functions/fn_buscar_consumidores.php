@@ -1,7 +1,7 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
-include 'fn_fecha_asistecnia.php';
+include 'fn_fecha_asistencia.php';
 
 // Declaración de variables.
 $data = [];
@@ -10,7 +10,7 @@ $sede = "";
 $grado = "";
 $grupo = "";
 
-$anno = $annoAsistencia; 
+$anno = $annoAsistencia2D; 
 
 
 
@@ -52,6 +52,7 @@ $periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 $semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
 
 $sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
+$complemento = (isset($_POST["complemento"]) && $_POST["complemento"] != "") ? mysqli_real_escape_string($Link, $_POST["complemento"]) : "";
 $nivel = (isset($_POST["nivel"]) && $_POST["nivel"] != "") ? mysqli_real_escape_string($Link, $_POST["nivel"]) : "";
 
 
@@ -80,7 +81,7 @@ include 'fn_validar_existencias_tablas.php';
 
 
 
-$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, g.nombre AS grado, f.nom_grupo AS grupo, a.asistencia, a.repite, a.consumio, a.repitio FROM focalizacion$semanaActual f LEFT JOIN grados g ON g.id = f.cod_grado left join asistencia_det$mes$anno a on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc and a.dia = $dia WHERE 1 = 1  ";
+$consulta = "SELECT f.tipo_doc, f.num_doc, CONCAT(f.ape1, ' ', f.ape2, ' ', f.nom1, ' ', f.nom2) AS nombre, g.nombre AS grado, f.nom_grupo AS grupo, a.asistencia, a.repite, a.consumio, a.repitio FROM focalizacion$semanaActual f LEFT JOIN grados g ON g.id = f.cod_grado left join asistencia_det$mes$anno a on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc and a.dia = $dia and f.Tipo_complemento = \"$complemento\" WHERE 1 = 1  ";
 
 if($sede != "" ){
 	$consulta .= " and f.cod_sede = $sede ";
@@ -102,6 +103,7 @@ if($grupo != "" ){
 
 $consulta .= " order by f.cod_grado, f.nom_grupo, f.ape1 ";
 
+//echo "<br><br>$consulta<br><br>";
 
 
 
@@ -110,7 +112,6 @@ $consulta .= " order by f.cod_grado, f.nom_grupo, f.ape1 ";
 
 
 
-//echo $consulta;
 
 $resultado = $Link->query($consulta);
 if($resultado->num_rows > 0){

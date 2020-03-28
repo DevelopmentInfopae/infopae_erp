@@ -19,6 +19,7 @@ if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){
 	$semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
 
 	$sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
+	$complemento = (isset($_POST["complemento"]) && $_POST["complemento"] != "") ? mysqli_real_escape_string($Link, $_POST["complemento"]) : "";
 
 	// Validar que la asistencia no este sellada
 	$anno = $annoAsistencia2D; 
@@ -43,7 +44,10 @@ if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){
 
 
 
-	$consulta = "select * from asistencia_enc$mes$anno where estado = \"2\" and mes = \"$mes\" and semana = \"$semanaActual\" and dia = \"$dia\" and cod_sede = \"$sede\"";
+	$consulta = "select * from asistencia_enc$mes$anno where estado = \"2\" and mes = \"$mes\" and semana = \"$semanaActual\" and dia = \"$dia\" and cod_sede = \"$sede\" and complemento = \"$complemento\" ";
+
+
+	
 	$resultado = $Link->query($consulta);
 	if($resultado->num_rows > 0){
 		$resultadoAJAX = array(

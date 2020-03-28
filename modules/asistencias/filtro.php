@@ -118,7 +118,7 @@
 
 											<div class="col-sm-4 form-group">
 												<label for="complemento">Complemento</label>
-												<select class="form-control" name="complemento" id="complemento">
+												<select class="form-control" name="complemento" id="complemento" required>
 													<option value="">Seleccionar</option>
 												</select>
 											</div>
