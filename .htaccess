@@ -1,0 +1,2 @@
+ErrorDocument 404 /infopae2019/404.php
+ErrorDocument 500 /infopae2019/500.php

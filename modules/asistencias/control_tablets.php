@@ -1,5 +1,6 @@
 <?php
 	include '../../header.php';
+	include 'functions/fn_fecha_asistencia.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
@@ -7,14 +8,10 @@
 	$titulo = "Control Tablets";
 	$institucionNombre = "";
 
-	date_default_timezone_set('America/Bogota');
-	$fecha = date("Y-m-d H:i:s");
-	$cacheBusting = date("YmdHis");
-
-	$dia = date("d");
-	$mes = date("m");
-	$anno = date("Y");
-	$anno2d = date("y");
+	$dia = $diaAsistencia;
+	$mes = $mesAsistencia;
+	$anno = $annoasistencia;
+	$anno2d = $annoAsistencia2D;
 
 
 

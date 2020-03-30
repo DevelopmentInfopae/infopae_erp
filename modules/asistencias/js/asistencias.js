@@ -175,6 +175,7 @@ function guardarAsistencia(){
 	var dia = "";
 
 
+
 	var bandera = 0;	
 	var asistencia = [];
 	var documento = "";
@@ -203,6 +204,7 @@ function guardarAsistencia(){
 	formData.append('dia', dia);
 
 	formData.append('sede', $('#sede').val());
+	formData.append('complemento', $('#complemento').val());
 	formData.append('grado', $('#grado').val());
 	formData.append('grupo', $('#grupo').val());
 	formData.append('banderaRegistros', $('#banderaRegistros').val());
@@ -306,6 +308,7 @@ function cargarEstudiantes(){
 
 	var semanaActual = $('#semanaActual').val();
 	var sede = $('#sede').val();
+	var complemento = $('#complemento').val();
 	var nivel = $('#nivel').val();
 	var grado = $('#grado').val();
 	var grupo = $('#grupo').val();
@@ -330,9 +333,9 @@ function cargarEstudiantes(){
 			mes: mes,
 			semana: semana,
 			dia: dia,
-
 			semanaActual: semanaActual,
 			sede: sede,
+			complemento: complemento,
 			nivel: nivel,
 			grado: grado,
 			grupo: grupo,

@@ -1,20 +1,21 @@
 <?php
-	include '../../header.php';
-	set_time_limit (0);
-	ini_set('memory_limit','6000M');
+include '../../header.php';
+include 'functions/fn_fecha_asistencia.php';
+set_time_limit (0);
+ini_set('memory_limit','6000M');
 
-	$periodoActual = $_SESSION["periodoActual"];
-	$titulo = "Asistencias";
-	$institucionNombre = "";
+$periodoActual = $_SESSION["periodoActual"];
+$titulo = "Asistencias";
+$institucionNombre = "";
 
-	date_default_timezone_set('America/Bogota');
-	$fecha = date("Y-m-d H:i:s");
-	$cacheBusting = date("YmdHis");
+$dia = $diaAsistencia;
+$mes = $mesAsistencia;
+$anno = $annoasistencia;
+	
+	
 
 
-	$dia = date("d");
-	$mes = date("m");
-	$anno = date("Y");
+
 
 	//Busqueda de la semana actual
 	$semanaActual = "";

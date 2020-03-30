@@ -1,23 +1,24 @@
 <?php
 	include '../../header.php';
+	require_once 'functions/fn_fecha_asistencia.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
 	$periodoActual = $_SESSION["periodoActual"];
 	$titulo = "Asistencias";
 	$institucionNombre = "";
-
-	date_default_timezone_set('America/Bogota');
-	$fecha = date("Y-m-d H:i:s");
-	$cacheBusting = date("YmdHis");
-
-
+	$dia = $diaAsistencia;
+	$mes = $mesAsistencia;
+	$anno = $annoasistencia;
+	
 
 
 
-	$dia = date("d");
-	$mes = date("m");
-	$anno = date("Y");
+
+	
+	var_dump($dia);
+	var_dump($mes);
+	var_dump($anno);
 
 
 
@@ -33,7 +34,7 @@
 		$semanaActual = $row["semana"];
 	}
 	// var_dump($_SESSION);
-	// var_dump($semanaActual);				
+	var_dump($semanaActual);
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
