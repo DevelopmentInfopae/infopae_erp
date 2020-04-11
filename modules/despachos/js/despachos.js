@@ -549,6 +549,89 @@ function despachoPorSede(despacho){
 
 function despachos_consolidado(){
 	var cant = 0;
+	var complementoActual = '';
+	var semana = 0;
+	var bandera = 0;
+	var despacho = 0;
+
+	// Ciclo para contar los despachos seleccionados.
+	$('tbody input:checked').each(function(){
+		if(bandera == 0){
+			cant++;
+			despacho = $(this).val();
+			var complemento =  $(this).attr("complemento");
+			console.log(complemento);
+			
+			// var semana =  $(this).attr("semana");
+			// var tipo =  $(this).attr("tipo");
+			// var sede =  $(this).attr("sede");
+			// var estado =  $(this).attr("estado");
+			// console.log(semana);
+			// console.log(tipo);
+			// console.log(sede);
+			// console.log(estado);
+
+
+
+
+
+
+
+			// console.log($("#semana"+despacho).val());
+			// console.log($("#tipo_"+despacho).val());
+
+			// if(bandera == 0){
+			// 	if(semana == 0){
+			// 		semana = $("#semana_"+despacho).val();
+			// 	} else{
+			// 		if(semana != $("#semana_"+despacho).val()){
+			// 			bandera++;
+			// 			Command: toastr.warning('Los despachos seleccionados deben ser de la misma <strong>semana</strong>', "Advertencia");
+			// 		}
+			// 	}
+			// }
+
+			if(bandera == 0){
+				if(complementoActual == ''){
+					complementoActual = complemento;
+				}
+				else{
+					if(complementoActual != complemento){
+						bandera++;
+						Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
+					}
+				}
+			}
+		}
+	});
+
+	if(cant == 0){
+		Command: toastr.warning('Debe seleccionar al menos un despacho para continuar', 'Advertencia');
+		bandera++;
+	}
+
+	if(bandera == 0){
+		$( ".soloJs" ).remove();
+		var rutaSeleccionada = $('#ruta option:selected').text();
+		$('#rutaNm').val(rutaSeleccionada);
+
+		$('#formDespachos').attr('action', 'despacho_consolidado.php');
+		$('#formDespachos').attr('method', 'post');
+		$('#formDespachos').submit();
+		$('#formDespachos').attr('method', 'get');
+	}
+}
+
+
+
+
+
+
+
+
+
+function covid19_despachos_consolidado(){
+	var cant = 0;
 	var tipo = '';
 	var semana = 0;
 	var bandera = 0;
@@ -596,12 +679,24 @@ function despachos_consolidado(){
 		var rutaSeleccionada = $('#ruta option:selected').text();
 		$('#rutaNm').val(rutaSeleccionada);
 
-		$('#formDespachos').attr('action', 'despacho_consolidado.php');
+		$('#formDespachos').attr('action', 'covid19_despacho_consolidado.php');
 		$('#formDespachos').attr('method', 'post');
 		$('#formDespachos').submit();
 		$('#formDespachos').attr('method', 'get');
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 function editar_despacho(){
 	console.log('Editar despacho.');
