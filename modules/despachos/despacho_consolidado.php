@@ -273,10 +273,24 @@ for ($i=0; $i < count($despachos) ; $i++)
 {
 	$despacho = $despachos[$i];
 	$numero = $despacho['num_doc'];
-	$consulta = "SELECT DISTINCT dd.id, dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion
-							FROM despachos_det$mesAnno dd
-							LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto
-							WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero  ";
+	
+	
+	
+	
+	// SELECT DISTINCT dd.id, dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion FROM despachos_det$mesAnno dd LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero  
+	
+	
+	
+	
+	
+	$consulta = " SELECT DISTINCT dd.id, dd.*, pmd.CantU1, CEILING(pmd.CantU2) as CantU2, CEILING(pmd.CantU3) as CantU3, CEILING(pmd.CantU4) as CantU4, CEILING(pmd.CantU5) as CantU5, pmd.CanTotalPresentacion, p.cantidadund2, p.cantidadund3, p.cantidadund4, p.cantidadund5, p.nombreunidad2, p.nombreunidad3, p.nombreunidad4, p.nombreunidad5 FROM despachos_det$mesAnno dd LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto LEFT JOIN productos$anno p ON dd.cod_Alimento = p.Codigo WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero ";
+
+	//echo "<br><br>$consulta<br><br>";
+
+
+
+
+
 
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1)
@@ -297,7 +311,18 @@ for ($i=0; $i < count($despachos) ; $i++)
 			$alimento['codigo'] = $row['cod_Alimento'];
 			$auxGrupo = $row['Id_GrupoEtario'];
 			$alimento['grupo'.$auxGrupo] = $row['Cantidad'];
-			$alimento['cantotalpresentacion'] = $row['CanTotalPresentacion'];
+			
+			
+			
+			
+			
+			
+			
+			$alimento['cantotalpresentacion'] = ($row['CantU2'] * $row['cantidadund2']) + ($row['CantU3'] * $row['cantidadund3']) + ($row['CantU4'] * $row['cantidadund4']) + ($row['CantU5'] * $row['cantidadund5']);
+
+
+
+
 			$alimento['cantu2'] = $row['CantU2'];
 			$alimento['cantu3'] = $row['CantU3'];
 			$alimento['cantu4'] = $row['CantU4'];
@@ -340,15 +365,27 @@ for ($i=1; $i < count($alimentos) ; $i++){
 			$encontrado++;
 			
 			
+			/*
+			CONSULTA DE CONTROL DE LA SUMA DE CANTIDADES
+			0307001 ACEITE
+			0303007 ARROZ BLANCO
+			*/
+			// if($alimento['codigo'] == '0307001'){
+			// 	echo "<br>Tenia:<br>";
+			// 	var_dump($alimentoTotal['cantotalpresentacion']);
+			// }
+
+
+
 			
-			//if($alimentoTotal['Num_Doc'] != $alimento['Num_Doc']){
+			if($alimentoTotal['Num_Doc'] != $alimento['Num_Doc']){
 				$alimentoTotal['cantotalpresentacion'] = $alimentoTotal['cantotalpresentacion'] + $alimento['cantotalpresentacion'];
 				$alimentoTotal['cantu2'] = $alimentoTotal['cantu2'] + $alimento['cantu2'];
 				$alimentoTotal['cantu3'] = $alimentoTotal['cantu3'] + $alimento['cantu3'];
 				$alimentoTotal['cantu4'] = $alimentoTotal['cantu4'] + $alimento['cantu4'];
 				$alimentoTotal['cantu5'] = $alimentoTotal['cantu5'] + $alimento['cantu5'];
 				$alimentoTotal['Num_Doc'] = $alimento['Num_Doc'];
-				//}
+			}
 				
 				
 				$alimentoTotal['grupo1'] = $alimentoTotal['grupo1'] + $alimento['grupo1'];
@@ -359,12 +396,17 @@ for ($i=1; $i < count($alimentos) ; $i++){
 				/*
 				CONSULTA DE CONTROL DE LA SUMA DE CANTIDADES
 				0307001 ACEITE
+				0303007 ARROZ BLANCO
 				*/
 				// if($alimento['codigo'] == '0307001'){
 				// 	var_dump($alimento['Num_Doc']);
 				// 	var_dump($alimento['cantotalpresentacion']);
 				// 	var_dump($alimentoTotal['cantotalpresentacion']);
 				// }
+
+
+
+
 			break;
 		}
 	}

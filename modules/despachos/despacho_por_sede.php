@@ -274,7 +274,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 
 	// CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
 	// where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'
-	// echo "<br><br>".$consulta."<br><br>";
+	//echo "<br><br>".$consulta."<br><br>";
 
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
