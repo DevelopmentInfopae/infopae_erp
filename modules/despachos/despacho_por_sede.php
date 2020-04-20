@@ -8,6 +8,7 @@
   ini_set('memory_limit','6000M');
   date_default_timezone_set('America/Bogota');
 
+  $ciclo = '';
   $mesAnno = '';
   $sangria = " * ";
   $largoNombre = 30;
