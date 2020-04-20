@@ -626,7 +626,8 @@ foreach ($sede_unicas as $key => $sede_unica){
 				$aux = substr($aux,0,$largoNombre);
 			}
 			// Impresión de Alimento (Nombre del alimento)
-			$pdf->Cell(49,4,$filaActual.' '.utf8_decode($aux),1,0,'L',FALSE);
+			//$pdf->Cell(49,4,$filaActual.' '.utf8_decode($aux),1,0,'L',FALSE);
+			$pdf->Cell(49,4,utf8_decode($aux),1,0,'L',FALSE);
 			$filaActual++;
 			
 
