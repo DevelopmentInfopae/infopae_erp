@@ -58,6 +58,11 @@ $annoActual = $tablaAnnoCompleto;
 $despachosRecibidos = $_POST;
 
 //var_dump($despachosRecibidos);
+
+
+
+
+
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
 
 $mes = '';
@@ -173,13 +178,14 @@ foreach ($despachosRecibidos as &$valor){
 }
 
 //var_dump($nomSedes);
+//var_dump($despachos);
 
 
 // Ordenando los despachos por la sede
-uasort($despachos, 'sort_by_orden');
-function sort_by_orden ($a, $b) {
-	return $a['cod_sede'] - $b['cod_sede'];
-}
+// uasort($despachos, 'sort_by_orden');
+// function sort_by_orden ($a, $b) {
+// 	return $a['cod_sede'] - $b['cod_sede'];
+// }
 
 
 // var_dump($semanasMostrar);
@@ -307,6 +313,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	if($indiceSedeActual >  0){
 		$pdf->AddPage();
 	}
+	//var_dump($sede_unica);
 
 
 
@@ -388,6 +395,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	}
 	$despachos = array_values(array_filter($despachos));
 	//var_dump($despachosSede);
+	//var_dump($despachos);
 
 	
 	/* INICIA EL PROCESMIENTO DE LOS DESPACHOS PARA IMPRIMIRLOS EN LAS PLANILLAS */
