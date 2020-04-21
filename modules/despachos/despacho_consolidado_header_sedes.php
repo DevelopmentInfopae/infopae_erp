@@ -237,10 +237,11 @@ if(strpos($semana, ',') !== false){
     $aux = "SEMANA: $semana";
 }
 
-$auxDias .= "\n".$aux; 
+//$auxDias .= "\n".$aux;
+$auxDiasSemanas = $auxDias."\n".$aux;
 
 $pdf->SetXY($current_x, $current_y+0.5);
-$pdf->MultiCell(45,3,$auxDias,0,'C',False);
+$pdf->MultiCell(45,3,$auxDiasSemanas,0,'C',False);
 
 
 

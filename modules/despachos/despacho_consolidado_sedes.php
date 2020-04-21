@@ -216,6 +216,10 @@ for ($i=0; $i < count($semanasMostrar) ; $i++)
 	$auxSemana = $auxSemana."'$semanasMostrar[$i]'";
 }
 
+
+
+
+
 $auxCiclos = '';
 //$auxCiclos = $ciclos[0];
 $auxCiclos = implode(',', $ciclos);
@@ -390,6 +394,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	$tg = [];
 	for ($i=0; $i < count($despachosSede) ; $i++){
 		$despacho = $despachosSede[$i];
+		//var_dump($despacho);
 		$numero = $despacho['num_doc'];
 
 		$consulta = " SELECT DISTINCT dd.id, dd.*, pmd.CantU1, CEILING(pmd.CantU2) as CantU2, CEILING(pmd.CantU3) as CantU3, CEILING(pmd.CantU4) as CantU4, CEILING(pmd.CantU5) as CantU5, pmd.CanTotalPresentacion, p.cantidadund2, p.cantidadund3, p.cantidadund4, p.cantidadund5, p.nombreunidad2, p.nombreunidad3, p.nombreunidad4, p.nombreunidad5 FROM despachos_det$mesAnno dd LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto LEFT JOIN productos$anno p ON dd.cod_Alimento = p.Codigo WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero ";
@@ -428,13 +433,25 @@ foreach ($sede_unicas as $key => $sede_unica){
 			}
 		}
 	}
+	//var_dump($numero);
 	//var_dump($alimentos);
 	
 	// Vamos unificar los alimentos para que no se repitan
-	$alimento = $alimentos[0];
-	if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
-	if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
-	if(!isset($alimento['grupo3'])){ $alimento['grupo3'] = 0;}else{ $totalGrupo3 = $totalesSedeCobertura['grupo3']; }
+	//var_dump($alimento);
+	
+	
+	if(isset($alimentos[0])){
+		$alimento = $alimentos[0];
+	}
+
+	if(isset($alimento['codigo'])){
+		if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
+		if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
+		if(!isset($alimento['grupo3'])){ $alimento['grupo3'] = 0;}else{ $totalGrupo3 = $totalesSedeCobertura['grupo3']; }
+	}
+
+
+
 	$alimentosTotales = array();
 	$alimentosTotales[] = $alimento;
 	for ($i=1; $i < count($alimentos) ; $i++){
@@ -503,6 +520,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	
 	
 	// Vamos a traer los datos que faltan para mostrar en la tabla
+
 	for ($i=0; $i < count($alimentosTotales) ; $i++){
 		$alimentoTotal = $alimentosTotales[$i];
 		$auxCodigo = $alimentoTotal['codigo'];
