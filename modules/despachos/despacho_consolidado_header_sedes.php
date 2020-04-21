@@ -230,24 +230,28 @@ $current_x = $pdf->GetX();
 $pdf->Cell(45,14.1,'',1,0,'L',False);
 
 
-$pdf->SetXY($current_x, $current_y+2);
-$pdf->MultiCell(45,4,$auxDias,0,'C',False);
-
-
-
-
-
-
-
-$pdf->SetXY($current_x, $current_y+9.4);
 
 if(strpos($semana, ',') !== false){
-	$aux = "SEMANAS: $semana";
+    $aux = "SEMANAS: $semana";
 }else{
-	$aux = "SEMANA: $semana";
+    $aux = "SEMANA: $semana";
 }
 
-$pdf->MultiCell(45,4.7,$aux,0,'C',False);
+$auxDias .= "\n".$aux; 
+
+$pdf->SetXY($current_x, $current_y+0.5);
+$pdf->MultiCell(45,3,$auxDias,0,'C',False);
+
+
+
+
+
+
+
+// $pdf->SetXY($current_x, $current_y+9.4);
+
+
+// $pdf->MultiCell(45,4.7,$aux,0,'C',False);
 
 $pdf->SetXY($current_x+45, $current_y);
 

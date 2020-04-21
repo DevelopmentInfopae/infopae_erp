@@ -807,9 +807,9 @@ foreach ($sede_unicas as $key => $sede_unica){
 	// }
 	if($filaActual > 19){
 		$pdf->AddPage();
+		include 'despacho_consolidado_footer_sedes.php';
+		include 'despacho_consolidado_header_sedes.php';
 	}
-	include 'despacho_consolidado_footer_sedes.php';
-	include 'despacho_consolidado_header_sedes.php';
 	include 'despacho_firma_planilla.php';
 	
 	/* TERMINA EL PROCESMIENTO DE LOS DESPACHOS PARA IMPRIMIRLOS EN LAS PLANILLAS */
