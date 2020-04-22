@@ -461,7 +461,14 @@ foreach ($sede_unicas as $key => $sede_unica){
 
 
 	$alimentosTotales = array();
-	$alimentosTotales[] = $alimento;
+
+	if(isset($alimento)){
+		$alimentosTotales[] = $alimento;
+	}
+
+
+
+
 	for ($i=1; $i < count($alimentos) ; $i++){
 		$alimento = $alimentos[$i];
 		if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
@@ -571,7 +578,12 @@ foreach ($sede_unicas as $key => $sede_unica){
 		$grupo[$kOrden] = $vOrden['grupo_alim'];
 	}
 	
-	array_multisort($sort['grupo_alim'], SORT_ASC,$alimentosTotales);
+
+	//var_dump($alimentosTotales);
+	if(count($alimentosTotales) > 0){
+		array_multisort($sort['grupo_alim'], SORT_ASC,$alimentosTotales);
+	}
+
 	
 	sort($grupo);
 	
