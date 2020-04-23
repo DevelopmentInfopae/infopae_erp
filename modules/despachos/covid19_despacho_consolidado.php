@@ -387,6 +387,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	if($indiceSedeActual >  0){
 		
 		$pdf->AddPage();
+		$tamannoFuente = 6;
 		$pdf->StartPageGroup();
 	}
 	//var_dump($sede_unica);
@@ -671,6 +672,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	
 	
 	$pdf->AddPage();
+	$tamannoFuente = 6;
 	include 'covid19_despacho_consolidado_footer.php';
 	include 'covid19_despacho_consolidado_header.php';
 
@@ -692,6 +694,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	
 	// if($filaActual > 19){
 	// 	$pdf->AddPage();
+	$tamannoFuente = 6;
 	// 	include 'covid19_despacho_consolidado_footer.php';
 	// 	include 'covid19_despacho_consolidado_header.php';
 	// }
@@ -700,6 +703,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	
 	if($filaActual > 13){
 		$pdf->AddPage();
+		$tamannoFuente = 6;
 	}
 	include 'covid19_despacho_firma_planilla.php';
 	
@@ -708,6 +712,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 
 	/* INICIA PAGINA ADICIONAL */
 	$pdf->AddPage();
+	$tamannoFuente = 6;
 	include 'covid19_despacho_consolidado_header_adicional.php';
 	for ($jj=0; $jj < 15; $jj++) { 
 		$pdf->Cell(4,$altoFila,'','BL',0,'C',False);

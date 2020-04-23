@@ -86,7 +86,7 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 
 
 $aux = $nomSede['nom_inst'];
-$aux = substr($aux, 0, 30); 
+$aux = substr($aux, 0, 29); 
 $pdf->Cell(36,4,utf8_decode($aux),0,0,'L',False);
 
 
@@ -106,7 +106,7 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 
 $aux = $nomSede['nom_sede'];
 //$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
-$aux = substr($aux, 0, 30); 
+$aux = substr($aux, 0, 29); 
 $pdf->Cell(36,4,utf8_decode($aux),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
@@ -222,7 +222,7 @@ $pdf->Cell(94,24,'','TBL',0,'C',False);
 
 
 /* Despues de los alimentos */
-
+$pdf->SetFont('Arial','B',$tamannoFuente);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+7+3.5);
