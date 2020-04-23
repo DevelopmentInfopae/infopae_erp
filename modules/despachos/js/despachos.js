@@ -635,8 +635,13 @@ function despachos_consolidado(){
 
 
 function covid19_despachos_consolidado(){
+
+
+
+
+
 	var cant = 0;
-	var tipo = '';
+	var complementoActual = '';
 	var semana = 0;
 	var bandera = 0;
 	var despacho = 0;
@@ -646,24 +651,22 @@ function covid19_despachos_consolidado(){
 		if(bandera == 0){
 			cant++;
 			despacho = $(this).val();
-
+			var complemento =  $(this).attr("complemento");
+			console.log(complemento);			
+			// var semana =  $(this).attr("semana");
+			// var tipo =  $(this).attr("tipo");
+			// var sede =  $(this).attr("sede");
+			// var estado =  $(this).attr("estado");
+			// console.log(semana);
+			// console.log(tipo);
+			// console.log(sede);
+			// console.log(estado);
 			if(bandera == 0){
-				if(semana == 0){
-					semana = $("#semana_"+despacho).val();
-				} else{
-					if(semana != $("#semana_"+despacho).val()){
-						bandera++;
-						Command: toastr.warning('Los despachos seleccionados deben ser de la misma <strong>semana</strong>', "Advertencia");
-					}
-				}
-			}
-
-			if(bandera == 0){
-				if(tipo == ''){
-					tipo = $("#tipo_"+despacho).val();
+				if(complementoActual == ''){
+					complementoActual = complemento;
 				}
 				else{
-					if(tipo != $("#tipo_"+despacho).val()){
+					if(complementoActual != complemento){
 						bandera++;
 						Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
 					}
@@ -679,7 +682,6 @@ function covid19_despachos_consolidado(){
 
 	if(bandera == 0){
 		$( ".soloJs" ).remove();
-
 		var rutaSeleccionada = $('#ruta option:selected').text();
 		$('#rutaNm').val(rutaSeleccionada);
 
@@ -688,6 +690,16 @@ function covid19_despachos_consolidado(){
 		$('#formDespachos').submit();
 		$('#formDespachos').attr('method', 'get');
 	}
+
+
+
+
+
+
+
+
+
+
 }
 
 

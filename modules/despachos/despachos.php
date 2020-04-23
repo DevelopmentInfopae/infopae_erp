@@ -705,7 +705,7 @@
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 
 
-	<script src="<?php echo $baseUrl; ?>/modules/despachos/js/despachos.js"></script>
+	<script src="<?php echo $baseUrl; ?>/modules/despachos/js/despachos.js?v=20200423"></script>
 	<script>
 		$(document).ready(function(){
 			
