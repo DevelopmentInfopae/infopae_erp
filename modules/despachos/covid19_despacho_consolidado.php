@@ -5,7 +5,10 @@ date_default_timezone_set('America/Bogota');
 
 include '../../config.php';
 require_once '../../autentication.php';
-require('../../fpdf181/fpdf.php');
+
+//require('../../fpdf181/fpdf.php');
+require 'pagegroup.php';
+
 require_once '../../db/conexion.php';
 include '../../php/funciones.php';
 
@@ -84,7 +87,7 @@ $nomSedes = array();
 $nomSede = array();
 
 foreach ($despachosRecibidos as &$valor){
-	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst, s.cod_inst
+	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst, s.cod_inst, s.cod_mun_sede
 	FROM despachos_enc$mesAnno de INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor";
 
 	//echo "<br><br>$consulta<br><br>";
@@ -108,6 +111,7 @@ foreach ($despachosRecibidos as &$valor){
 		$nomSede['nom_inst'] = $row['nom_inst'];
 		$nomSede['cod_sede'] = $row['cod_Sede'];
 		$nomSede['cod_inst'] = $row['cod_inst'];
+		$nomSede['cod_mun_sede'] = $row['cod_mun_sede'];
 		$nomSedes[$row['cod_Sede']] = $nomSede;
 
 		
@@ -264,9 +268,65 @@ $semana = $auxSemana;
 
 
 // Declaración de caracteristicas del PDF
-class PDF extends FPDF{
+//class PDF extends FPDF{
+class PDF extends PDF_PageGroup{
 	function Header(){}
-	function Footer(){}
+	function Footer(){
+		//$this->Cell(0, 6, 'Page '.$this->GroupPageNo().'/'.$this->PageGroupAlias(), 0, 0, 'C');
+		$tamannoFuente = 6;
+		//$this->SetY(-40);
+		// $this->Cell(0,2,utf8_decode(""),'B',0,'C',False);
+		$this->Ln(2);
+		$this->SetFont('Arial','B',$tamannoFuente);
+		$this->Cell(38,4,utf8_decode("Observaciones:"),'BLT',0,'L',False);
+		$this->Cell(0,4,utf8_decode(""),'BLTR',0,'C',False);
+		
+		$this->Ln(7);
+		$this->Cell(33,4,utf8_decode("Firma de quien entrega la RPC:"),0,0,'L',False);
+		$this->Cell(67,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(64,4,utf8_decode("Firma del responsable de la ETC (supervisión / interventoria):"),0,0,'L',False);
+		$this->Cell(67,4,utf8_decode(""),'B',0,'C',False);
+		
+		$this->Ln(7);
+		$this->Cell(35,4,utf8_decode("Nombre legible de quien entrega:"),0,0,'L',False);
+		$this->Cell(65,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(35,4,utf8_decode("Nombre legible de quien entrega:"),0,0,'L',False);
+		$this->Cell(96,4,utf8_decode(""),'B',0,'C',False);
+		
+		$this->Ln(7);
+		$this->Cell(18,4,utf8_decode("Cargo / función:"),0,0,'L',False);
+		$this->Cell(25,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(3,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(21,4,utf8_decode("Número telefónico:"),0,0,'L',False);
+		$this->Cell(33,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
+		
+		
+		
+		
+		$this->Cell(23,4,utf8_decode("Cargo / función ETC:"),0,0,'L',False);
+		$this->Cell(36,4,utf8_decode(""),'B',0,'C',False);
+		
+		$this->Cell(13,4,utf8_decode(""),0,0,'C',False);
+		
+		$this->Cell(23,4,utf8_decode("Número telefónico"),0,0,'L',False);
+		$this->Cell(36,4,utf8_decode(""),'B',0,'C',False);
+	
+		
+		$this->Ln(3.9);
+		$this->Cell(150,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(0,4,utf8_decode("Impreso por: InfoPAE - www.infopae.com.co"),0,0,'L',False);
+
+
+
+
+
+
+
+
+	}
 
 	var $angle=0;
 
@@ -301,8 +361,13 @@ class PDF extends FPDF{
 //CREACION DEL PDF
 // Creación del objeto de la clase heredada
 $pdf= new PDF('L','mm',array(330, 216));
+$pdf->StartPageGroup();
+
+
+
+
 $pdf->SetMargins(5, 5, 5);
-$pdf->SetAutoPageBreak(TRUE, 5);
+$pdf->SetAutoPageBreak(TRUE, 30);
 $pdf->AliasNbPages();
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(255,255,255);
@@ -316,17 +381,24 @@ $sede_unicas = array_unique($sedes);
 
 $indiceSedeActual = 0;
 foreach ($sede_unicas as $key => $sede_unica){
+	$pdf->StartPageGroup();
 	if($indiceSedeActual >  0){
+		
 		$pdf->AddPage();
+		$pdf->StartPageGroup();
 	}
 	//var_dump($sede_unica);
-
-
-
-
-
 	$filaActual = 1;
-	//$pdf->AddPage();
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -629,13 +701,6 @@ foreach ($sede_unicas as $key => $sede_unica){
 	}
 	include 'covid19_despacho_firma_planilla.php';
 	
-
-
-
-
-
-
-
 
 
 
