@@ -24,7 +24,8 @@ $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
 
 $hoy = date("d/m/Y");
-$fechaDespacho = $hoy;
+//$fechaDespacho = $hoy;
+$fechaDespacho = "";
 
 // Se va a recuperar el mes y el año para las tablaMesAnno
 $mesAnno = '';
@@ -85,6 +86,7 @@ $diasMostrar = array();
 $semanasMostrar = array();
 $nomSedes = array();
 $nomSede = array();
+$fechaElaboracion = array();
 
 foreach ($despachosRecibidos as &$valor){
 	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst, s.cod_inst, s.cod_mun_sede
@@ -114,7 +116,7 @@ foreach ($despachosRecibidos as &$valor){
 		$nomSede['cod_mun_sede'] = $row['cod_mun_sede'];
 		$nomSedes[$row['cod_Sede']] = $nomSede;
 
-		
+		$fechaElaboracion = $row['FechaHora_Elab'];
 
 
 
@@ -317,7 +319,7 @@ class PDF extends PDF_PageGroup{
 		
 		$this->Ln(3.9);
 		$this->Cell(150,4,utf8_decode(""),0,0,'C',False);
-		$this->Cell(0,4,utf8_decode("Impreso por: InfoPAE - www.infopae.com.co"),0,0,'L',False);
+		$this->Cell(0,10,utf8_decode("Impreso por: InfoPAE - www.infopae.com.co"),0,0,'L',False);
 
 
 
@@ -701,11 +703,38 @@ foreach ($sede_unicas as $key => $sede_unica){
 	}
 	include 'covid19_despacho_firma_planilla.php';
 	
+	
+
+
+	/* INICIA PAGINA ADICIONAL */
+	$pdf->AddPage();
+	include 'covid19_despacho_consolidado_header_adicional.php';
+	for ($jj=0; $jj < 15; $jj++) { 
+		$pdf->Cell(4,$altoFila,'','BL',0,'C',False);
+		$pdf->Cell(42,$altoFila,'','BL',0,'L',False);
+		$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
+		$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
+		$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+		$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+		$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+		$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+		foreach ($alimentosTotales as $alimento) {
+			$pdf->Cell($anchoCeldaAlimento,$altoFila,'','BL',0,'C',False);
+		}
+		$pdf->Cell(46,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(28,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(22,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
+		$pdf->Ln($altoFila);
+	}
+	/* TERMINA PAGINA ADICIONAL */
 
 
 
 
 
+	
+	
 	/* TERMINA EL PROCESMIENTO DE LOS DESPACHOS PARA IMPRIMIRLOS EN LAS PLANILLAS */
 }
 

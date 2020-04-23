@@ -29,7 +29,29 @@ $pdf->Cell(28,14,'','LTB',0,'C',False);
 $pdf->Cell(0,14,'','LTBR','C',False);
 
 $pdf->SetXY($current_x+87, $current_y+2.5);
-$pdf->MultiCell(167,3,utf8_decode(" Programa de Alimentación Escolar - PAE \n Atención en el marco del Estado de Emergencia, Económica, Social y Ecológica, derivado de la pandemia del COVID-19 \n Modalidad - ".$descripcionTipo),0,'C',False);
+
+
+
+
+
+
+
+
+$pdf->MultiCell(167,3,utf8_decode("Registro De Novedades - Repitentes Y/O Suplentes Del Programa De Alimentación Escolar - PAE\nAtención en el marco del Estado de Emergencia, Económica, Social y Ecológica, derivado de la pandemia del COVID-19\nModalidad - ".$descripcionTipo),0,'C',False);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 $pdf->SetXY($current_x+254, $current_y);

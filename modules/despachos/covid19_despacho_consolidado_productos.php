@@ -27,7 +27,9 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario){
 	$pdf->SetXY($posicionXGrupo, $posicionYGrupo);
 	$ancho_celda_grupo_alimenticio = count($grupo_alimentario) * $anchoCeldaAlimento;
 	/* Grupos de productos de a 8.5mm de ancho para cada producto */
+	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell($ancho_celda_grupo_alimenticio,3,utf8_decode($nombre_grupo),'BR',0,'C',False);
+	$pdf->SetFont('Arial','',$tamannoFuente);
 	$posicionYGrupo = $pdf->GetY();
 	$posicionXGrupo = $pdf->GetX();
 
