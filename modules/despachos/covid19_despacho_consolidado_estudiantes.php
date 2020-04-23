@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 //var_dump($totalEstudiantes);
 // var_dump($sede_unica);
 // var_dump($semanas);
@@ -25,7 +21,7 @@ if($resultado->num_rows >= 1){
 		$pdf->Cell(4,$altoFila,utf8_decode($estudianteIndice),'BL',0,'C',False);
 		
 		// Nombre del estudiante
-		$pdf->Cell(40,$altoFila,utf8_decode($row['nombre']),'BL',0,'L',False);
+		$pdf->Cell(42,$altoFila,utf8_decode($row['nombre']),'BL',0,'L',False);
 		$pdf->Cell(17,$altoFila,utf8_decode($row['num_doc']),'BL',0,'C',False);
 		
 		$pdf->Cell(17,$altoFila,utf8_decode(""),'BL',0,'C',False);
@@ -63,7 +59,7 @@ if($resultado->num_rows >= 1){
 		}
 		
 		
-		$pdf->Cell(48,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(46,$altoFila,utf8_decode(""),'BL',0,'C',False);
 		$pdf->Cell(28,$altoFila,utf8_decode(""),'BL',0,'C',False);
 		// Teléfono del acudiente
 		$pdf->Cell(22,$altoFila,utf8_decode(""),'BL',0,'C',False);
