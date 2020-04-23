@@ -37,23 +37,25 @@ $pdf->Cell(28,7,utf8_decode('CONTROL'),'B',7,'C',False);
 $pdf->Cell(28,7,utf8_decode('Versión 1'),0,7,'C',False);
 $pdf->SetXY($current_x+254+28, $current_y);
 $pdf->Cell(0,7,utf8_decode($fechaDespacho),'B',7,'C',False);
-$pdf->Cell(0,7,utf8_decode('Página '.$pdf->PageNo().' de {nb}'),0,0,'C',False);
+$pdf->Cell(0,7,utf8_decode('Página '.$pdf->GroupPageNo().' de '.$pdf->PageGroupAlias() ),0,0,'C',False);
+
+
 
 
 $pdf->Ln(7);
 $pdf->Ln(2);
 
-$pdf->Cell(4,4,'',0,0,'C',False);
+// $pdf->Cell(4,4,'',0,0,'C',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(19,4,'DEPARTAMENTO:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(17,4,'SANTANDER',0,0,'L',False);
+$pdf->Cell(17,4,$_SESSION['p_Departamento'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(6,4,'50',0,0,'L',False);
+$pdf->Cell(6,4,$_SESSION['p_CodDepartamento'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(12.5,4,'MUNICIPIO:',0,0,'L',False);
@@ -66,17 +68,28 @@ for ($ii=0; $ii < count($municipios) ; $ii++) {
   }
   $aux = $aux.$municipios[$ii];
 }
-$pdf->Cell(20,4,utf8_decode($aux),0,0,'L',False);
+$pdf->Cell(15,4,utf8_decode($aux),0,0,'L',False);
 
-// $pdf->SetFont('Arial','B',$tamannoFuente);
-// $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
-// $pdf->SetFont('Arial','',$tamannoFuente);
-// $pdf->Cell(9,4,'50001',0,0,'L',False);
+
+
+
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
+$pdf->SetFont('Arial','',$tamannoFuente);
+$pdf->Cell(9,4,$nomSede['cod_mun_sede'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(24.3,4,utf8_decode('NOMBRE INSTITUCÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(36,4,utf8_decode($nomSede['nom_inst']),0,0,'L',False);
+
+
+$aux = $nomSede['nom_inst'];
+$aux = substr($aux, 0, 30); 
+$pdf->Cell(36,4,utf8_decode($aux),0,0,'L',False);
+
+
+
+
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.3,4,'CODIGO DANE:',0,0,'L',False);
@@ -86,7 +99,13 @@ $pdf->Cell(18,4,$nomSede['cod_inst'],0,0,'L',False);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(17.3,4,'NOMBRE SEDE:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(36,4,utf8_decode($nomSede['nom_sede']),0,0,'L',False);
+
+
+
+$aux = $nomSede['nom_sede'];
+//$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
+$aux = substr($aux, 0, 30); 
+$pdf->Cell(36,4,utf8_decode($aux),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
@@ -95,12 +114,12 @@ $pdf->Cell(0,4,$nomSede['cod_sede'],0,0,'L',False);
 
 $pdf->Ln(4);
 
-$pdf->Cell(4,4,'',0,0,'C',False);
+//$pdf->Cell(4,4,'',0,0,'C',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(13.5,4,'OPERADOR:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(77.5,4,utf8_decode( $_SESSION['p_Operador'] ),0,0,'L',False);
+$pdf->Cell(72.5,4,utf8_decode( $_SESSION['p_Operador'] ),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,utf8_decode('CONTRATO N°:'),0,0,'L',False);
@@ -152,9 +171,9 @@ $pdf->Cell(4,24,'','TBL',0,'C',False);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+7+3.5);
-$pdf->MultiCell(34,2,utf8_decode("APELLIDOS Y NOMBRES DEL\nTITULAR"),0,'C',false);
+$pdf->MultiCell(40,2,utf8_decode("APELLIDOS Y NOMBRES DEL\nTITULAR"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(34,24,"",'TBL',0,'C',False);
+$pdf->Cell(40,24,"",'TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
@@ -217,9 +236,9 @@ $pdf->Cell(28,24,'','TBL',0,'C',False);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+6+3.5);
-$pdf->MultiCell(28,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
+$pdf->MultiCell(22,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(28,24,'','TBL',0,'C',False);
+$pdf->Cell(22,24,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();

@@ -8,9 +8,12 @@
 // var_dump($semanas);
 // var_dump($tipoComplemento);
 
-$consulta = " SELECT CONCAT(f.nom1, \" \", f.nom2, \" \", f.ape1, \" \", f.ape2) AS nombre, f.num_doc, f.cod_grado FROM focalizacion$semanas[0] f WHERE f.cod_sede = $sede_unica AND f.Tipo_complemento = \"$tipoComplemento\" ORDER BY f.cod_grado ASC, f.nom1  ASC ";
+$consulta = " SELECT CONCAT(f.ape1, \" \", f.ape2, \" \",f.nom1, \" \", f.nom2) AS nombre, f.num_doc, f.cod_grado FROM focalizacion$semanas[0] f WHERE f.cod_sede = $sede_unica AND f.Tipo_complemento = \"$tipoComplemento\" ORDER BY f.cod_grado ASC, f.ape1  ASC ";
 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+$altoFila = 8;
+$tamannoFuente = 5;
+$pdf->SetFont('Arial','',$tamannoFuente);
 
 if($resultado->num_rows >= 1){
 	$totalEstudiantes = $resultado->num_rows;
@@ -20,7 +23,9 @@ if($resultado->num_rows >= 1){
 
 		//$despacho['num_doc'] = $row['Num_Doc'];
 		$pdf->Cell(4,$altoFila,utf8_decode($estudianteIndice),'BL',0,'C',False);
-		$pdf->Cell(34,$altoFila,utf8_decode($row['nombre']),'BL',0,'C',False);
+		
+		// Nombre del estudiante
+		$pdf->Cell(40,$altoFila,utf8_decode($row['nombre']),'BL',0,'L',False);
 		$pdf->Cell(17,$altoFila,utf8_decode($row['num_doc']),'BL',0,'C',False);
 		
 		$pdf->Cell(17,$altoFila,utf8_decode(""),'BL',0,'C',False);
@@ -60,7 +65,8 @@ if($resultado->num_rows >= 1){
 		
 		$pdf->Cell(48,$altoFila,utf8_decode(""),'BL',0,'C',False);
 		$pdf->Cell(28,$altoFila,utf8_decode(""),'BL',0,'C',False);
-		$pdf->Cell(28,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		// Teléfono del acudiente
+		$pdf->Cell(22,$altoFila,utf8_decode(""),'BL',0,'C',False);
 		$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
 		$pdf->Ln($altoFila);
 		
@@ -70,7 +76,7 @@ if($resultado->num_rows >= 1){
 
 		
 		//var_dump($filaActual);
-		if($filaActual > 17){
+		if($filaActual > 15){
 			$filaActual = 1;
 			$pdf->AddPage();
 			// include 'covid19_despacho_consolidado_footer.php';
