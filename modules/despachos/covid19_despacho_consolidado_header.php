@@ -256,3 +256,7 @@ $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(0,24,'','TBLR',0,'C',False);
 
 $pdf->Ln(24);
+
+
+$tamannoFuente = 5;
+$pdf->SetFont('Arial','',$tamannoFuente);
