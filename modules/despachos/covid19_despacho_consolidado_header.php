@@ -74,49 +74,44 @@ $pdf->Cell(15,4,utf8_decode($aux),0,0,'L',False);
 
 
 
+
+// Se repite en el header adicional
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(9,4,$nomSede['cod_mun_sede'],0,0,'L',False);
+$pdf->Cell(7,4,$nomSede['cod_mun_sede'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(24.3,4,utf8_decode('NOMBRE INSTITUCÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
-
 $aux = $nomSede['nom_inst'];
 $aux = substr($aux, 0, 43); 
-$pdf->Cell(50,4,utf8_decode($aux),0,0,'L',False);
-
-
-
-
+$pdf->Cell(52,4,utf8_decode($aux),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.3,4,'CODIGO DANE:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(18,4,$nomSede['cod_inst'],0,0,'L',False);
+$pdf->Cell(15,4,$nomSede['cod_inst'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(17.3,4,'NOMBRE SEDE:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
-
-
 //$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
 $aux = $nomSede['nom_sede'];
 $aux = substr($aux, 0, 41); 
-$pdf->Cell(48,4,utf8_decode($aux),0,0,'L',False);
-
-
-
-
-
+$pdf->Cell(52,4,utf8_decode($aux),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(0,4,$nomSede['cod_sede'],0,0,'L',False);
+
+
+
+
 
 $pdf->Ln(4);
 
@@ -130,7 +125,7 @@ $pdf->Cell(72.5,4,utf8_decode( $_SESSION['p_Operador'] ),0,0,'L',False);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,utf8_decode('CONTRATO N°:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(9,4,'049',0,0,'L',False);
+$pdf->Cell(7,4,'049',0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(17.6,4,utf8_decode('MES ATENCIÓN:'),0,0,'L',False);
