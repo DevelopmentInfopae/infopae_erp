@@ -714,7 +714,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 			
 			$pdf->Cell(13.141, 4, $alimento['presentacion'], 1, 0, 'C', FALSE);
 	
-			if (strpos($alimento['componente'], "HUEVO") !== FALSE)
+			if (strpos($alimento['componente'], "HUEVO999") !== FALSE)
 			{
 				$total = 0;
 				foreach ($tg[$alimento['codigo']] as $key => $value) { $total += ceil($value); }
@@ -728,7 +728,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	
 			if($alimento['presentacion'] == 'u')
 			{
-				if (strpos($alimento['componente'], "HUEVO") !== FALSE)
+				if (strpos($alimento['componente'], "HUEVO999") !== FALSE)
 				{ $aux = ceil(0+$aux); }
 				else
 				{ $aux = round(0+$aux); }
