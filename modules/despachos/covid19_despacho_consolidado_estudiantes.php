@@ -1,4 +1,7 @@
 <?php
+
+
+
 //var_dump($totalEstudiantes);
 // var_dump($sede_unica);
 // var_dump($semanas);
@@ -8,8 +11,6 @@ $consulta = " SELECT CONCAT(f.ape1, \" \", f.ape2, \" \",f.nom1, \" \", f.nom2) 
 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 $altoFila = 8;
-$tamannoFuente = 5;
-$pdf->SetFont('Arial','',$tamannoFuente);
 
 if($resultado->num_rows >= 1){
 	$totalEstudiantes = $resultado->num_rows;
@@ -53,9 +54,11 @@ if($resultado->num_rows >= 1){
 
 		//var_dump($alimentosTotales);
 		foreach ($alimentosTotales as $alimento) {
-			$aux = $alimento['grupo1']+$alimento['grupo2']+$alimento['grupo3'];
+
+			//var_dump($alimento);
+			$aux = round($alimento['grupo1'])+round($alimento['grupo2'])+round($alimento['grupo3']);
 			$aux = $aux / $totalEstudiantes;
-			$aux = ceil($aux);
+			//$aux = ceil($aux);
 			//number_format($aux, 2, '.', '')
 			$pdf->Cell($anchoCeldaAlimento,$altoFila,utf8_decode($aux),'BL',0,'C',False);
 		}
