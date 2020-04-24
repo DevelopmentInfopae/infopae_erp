@@ -55,7 +55,9 @@ if($resultado->num_rows >= 1){
 		foreach ($alimentosTotales as $alimento) {
 			$aux = $alimento['grupo1']+$alimento['grupo2']+$alimento['grupo3'];
 			$aux = $aux / $totalEstudiantes;
-			$pdf->Cell($anchoCeldaAlimento,$altoFila,utf8_decode(number_format($aux, 2, '.', '')),'BL',0,'C',False);
+			$aux = ceil($aux);
+			//number_format($aux, 2, '.', '')
+			$pdf->Cell($anchoCeldaAlimento,$altoFila,utf8_decode($aux),'BL',0,'C',False);
 		}
 		
 		

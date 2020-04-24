@@ -711,6 +711,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 
 
 	/* INICIA PAGINA ADICIONAL */
+	$pdf->StartPageGroup();
 	$pdf->AddPage();
 	$tamannoFuente = 6;
 	include 'covid19_despacho_consolidado_header_adicional.php';
