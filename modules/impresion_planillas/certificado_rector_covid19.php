@@ -46,7 +46,9 @@ $pdf= new PDF('P','mm',array(215.9,279.4));
 $pdf->SetMargins(12, 12, 12, 12);
 $pdf->SetAutoPageBreak(false,5);
 $pdf->AliasNbPages();
-
+$pdf->SetTextColor(0,0,0);
+$pdf->SetFillColor(192,192,192);
+$pdf->SetDrawColor(0,0,0);
 
 $anno = $_SESSION['p_ano'];
 $anno2d = substr($anno,2);
@@ -75,6 +77,9 @@ INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
 LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
 WHERE sc.ano='$anno' AND sc.mes='$mes' AND s.cod_mun_sede='$municipio'";
 $consulta .= (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND s.cod_inst = '".$_POST["institucion"]."'" : "";
+
+//echo "<br><br>$consulta<br><br>";
+
 $resultado = $Link->query($consulta) or die ('Unable to execute query. Linea 78: '. mysqli_error($Link));
 
 if($resultado->num_rows >= 1){
@@ -139,8 +144,8 @@ if($resultado->num_rows >= 1){
 	}
 }
 
-if(count($entregasSedes)>0)
-{
+if(count($entregasSedes)>0){
+
 	$consultaSemanasMes = "SELECT DISTINCT SEMANA FROM planilla_semanas WHERE MES = '$mes'";
 	$resultadoSemanasMes = $Link->query($consultaSemanasMes) or die ("Error al consultar planillas_semanas: ". $Link->error);
 	if ($resultadoSemanasMes->num_rows > 0) {
@@ -180,111 +185,14 @@ if(count($entregasSedes)>0)
 		$diasSemana[$posicionesSemanaMes[$numeroSemana]][] = $diaSemana;
 	}
 
-	foreach ($instituciones as $institucion)
-	{
-		if (array_key_exists($institucion['cod_inst'], $entregasSedes))
-		{
+	
+	/* CICLO PRINCIPAL DE SEDES */
+	
+	foreach ($instituciones as $institucion){
+		
+		if (array_key_exists($institucion['cod_inst'], $entregasSedes)){
 			$pdf->AddPage();
-			$pdf->SetTextColor(0,0,0);
-			$pdf->SetFillColor(192,192,192);
-			$pdf->SetDrawColor(0,0,0);
-
-			$tamannoFuente = 8;
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-
-			$pdf->Cell(0,6,'DATOS GENERALES ',0,0,'C',true);
-			$pdf->Ln(10);
-
-			$x = $pdf->GetX();
-			$y = $pdf->GetY();
-
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(32,5,utf8_decode('OPERADOR:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(110,5,utf8_decode($_SESSION['p_Operador']),'R',0,'L',false);
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(25,5,utf8_decode('CONTRATO N°:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(30,5,$_SESSION['p_Contrato'],0,0,'L',false);
-			$pdf->SetX($x);
-			$pdf->Cell(0,5,'','B',5,'C',false);
-
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(32,5,utf8_decode('INSTITUCIÓN:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(110,5,utf8_decode($institucion['nom_inst']),'R',0,'L',false);
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(25,5,utf8_decode('CÓDIGO DANE:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(30,5,$institucion['cod_inst'],0,0,'L',false);
-			$pdf->SetX($x);
-			$pdf->Cell(0,5,'','B',5,'C',false);
-
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(32,5,utf8_decode('DEPARTAMENTO:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(110,5,utf8_decode(strtoupper($institucion['Departamento'])),'R',0,'L',false);
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(25,5,utf8_decode('CÓDIGO DANE:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(30,5,$_SESSION['p_CodDepartamento'],0,0,'L',false);
-			$pdf->SetX($x);
-			$pdf->Cell(0,5,'','B',5,'C',false);
-
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(32,5,utf8_decode('MUNICIPIO:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(110,5,utf8_decode($institucion['ciudad']),'R',0,'L',false);
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(25,5,utf8_decode('CÓDIGO DANE:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(30,5,$institucion['cod_mun_sede'],0,0,'L',false);
-			$pdf->SetX($x);
-			$pdf->Cell(0,5,'','B',5,'C',false);
-
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(32,5,utf8_decode('FECHA EJECUCIÓN:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(15,5,'Desde:','R',0,'L',false);
-			$pdf->Cell(40,5,utf8_decode($fechas[0]["DIA"]." de ".mesNombre($fechas[0]["MES"])." ". $fechas[0]["ANO"]),'R',0,'L',false);
-			$pdf->Cell(15,5,'Hasta:','R',0,'L',false);
-			$pdf->Cell(40,5,utf8_decode($fechas[1]["DIA"]." de ".mesNombre($fechas[1]["MES"])." ". $fechas[1]["ANO"]),'R',0,'L',false);
-			$pdf->SetX($x);
-			$pdf->Cell(0,5,'','B',5,'C',false);
-
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(32,5,utf8_decode('NOMBRE RECTOR:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(110,5,utf8_decode($institucion["nombre_rector"]),'R',0,'L',false);
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(25,5,utf8_decode('DOC. RECTOR:'),'R',0,'L',false);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->Cell(0,5,$institucion["documento_rector"],0,5,'L',false);
-			$pdf->SetX($x);
-
-			$pdf->SetXY($x, $y);
-			$pdf->Cell(0,30,'',1,0,'C',false);
-			$pdf->Ln(35);
-
-			$pdf->SetFont('Arial','B',$tamannoFuente);
-			$pdf->Cell(0,6,utf8_decode('CERTIFICACIÓN'),0,0,'C',true);
-			$pdf->Ln(8);
-			$pdf->SetFont('Arial','',$tamannoFuente);
-			$pdf->MultiCell(0,4,utf8_decode("El suscrito Rector de la Institución Educativa citada en el encabezado, certifica que se entregaron las siguientes raciones,    en las fechas señaladas y de acuerdo con la siguiente distribución:"),0,'C',false);
-			$pdf->Ln(3);
-
-			$x = $pdf->GetX();
-			$y = $pdf->GetY();
-			$pdf->SetXY($x, $y);
-			// $pdf->Cell(0,11,'',0,0,'C',true);
-
-			// $pdf->SetXY($x, $y+2);
-			$pdf->SetFont('Arial','B',$tamannoFuente-1);
-			$pdf->Cell(130,10,utf8_decode("NOMBRE DEL ESTABLECIMIENTO U CENTRO EDUCATIVO"),'LTB',0,'C',true);
-			$pdf->Cell(30,10,utf8_decode("TIPO RACIÓN"),'LTB',0,'C',true);
-			$pdf->Cell(0,10,utf8_decode("TOTAL, RACIONES"),'LTBR',0,'C',true);
-			$pdf->Ln(10);
-
+			include 'certificado_rector_covid19_header.php';
 			$totalesSemanas = array(0,0,0,0,0);
 
 			// Impresión de datos de la tabla.
@@ -304,7 +212,19 @@ if(count($entregasSedes)>0)
 			
 			$aux_x = $pdf->GetX();
 			$aux_y = $pdf->GetY();
+
+			$indiceFilas = 0;
+			$granTotal = 0;
 			foreach ($entregasSedesInstitucion as $entregasSedeInstitucion){
+
+
+
+
+
+
+
+
+				$indiceFilas++;
 				$pdf->SetFont('Arial','',$tamannoFuente-1);
 				$lineasTotales++;
 				if($banderaNombres == 0){
@@ -364,12 +284,48 @@ if(count($entregasSedes)>0)
 					}
 				}
 
+
+
+
+
+				//var_dump($_POST);
+				$consulta = "SELECT max(sc.num_est_focalizados) as estudiantes FROM sedes_cobertura sc WHERE sc.cod_sede = ".$entregasSedeInstitucion["cod_sede"]." AND sc.mes = ".$_POST['mes']." AND sc.semana BETWEEN ".$_POST['semana_inicial']." AND ".$_POST['semana_final'];
+				//echo "<br><br>$consulta<br><br>";
+				$resultado = $Link->query($consulta) or die ('Unable to execute query. Linea 62:'. mysqli_error($Link));
+				if($resultado->num_rows >= 1){
+					$row = $resultado->fetch_assoc();
+					$totalSemana = $row['estudiantes'];
+				}
+				
+				
+				
+				
+				
+
+
+
+
+
+				$granTotal += $totalSemana;
+
+
+
+
+
+
+
 				$pdf->Cell(0,4,$totalSemana,'LBR',0,'C',false);
 				// $pdf->SetX($aux_x);
 				// $pdf->Cell(45);
 				// $pdf->Cell(0,4,'','B',0,'C',false);
 				$pdf->Ln(4);
 
+				//var_dump($indiceFilas);
+				if($indiceFilas > 14){
+					include 'certificado_rector_covid19_footer.php';
+					$pdf->AddPage();
+					include 'certificado_rector_covid19_header.php';$indiceFilas = 0;
+				}
 			}
 			
 
@@ -408,295 +364,32 @@ if(count($entregasSedes)>0)
 			$pdf->Cell(160,4,'TOTAL:','LBR',0,'L',false);
 			$pdf->SetFont('Arial','',$tamannoFuente-1);
 
-			$granTotal = 0;
-			for($i = 0; $i < 5 ; $i++) {
-				//$pdf->Cell(23,4, $totalesSemanas[$i],'R',0,'C',false);
-				$granTotal = $granTotal + $totalesSemanas[$i];
-			}
+			
+			// for($i = 0; $i < 5 ; $i++) {
+			// 	//$pdf->Cell(23,4, $totalesSemanas[$i],'R',0,'C',false);
+			// 	$granTotal = $granTotal + $totalesSemanas[$i];
+			// }
 
 
 			$pdf->Cell(0,4,$granTotal,'BR',0,'C',false);
 
-			// Cuadro  exterior tabla
-			$pdf->SetXY($x, $y);
-			//var_dump($lineasTotales);
-			//$pdf->Cell(0,$lineasTotales*4+15,'',1,0,'C',false);
-			//Termina la tabla de sedes
-
-			$pdf->Ln(70);
-			$pdf->SetFont('Arial','',$tamannoFuente-1);
-			/*********************************************************/
-			// Consulta que retorna los tipo de complementos.
-			$texto_convenciones = "";
-			$consulta_tipo_complementos = "SELECT CODIGO AS codigo, DESCRIPCION as descripcion FROM tipo_complemento ORDER BY CODIGO";
-			$respuesta_tipo_complementos = $Link->query($consulta_tipo_complementos) or die("Error al consultar tipo_complemento: ". $Link->error);
-			if ($respuesta_tipo_complementos->num_rows > 0) {
-				while($registros_tipo_complementos = $respuesta_tipo_complementos->fetch_assoc()) {
-					$pdf->Cell(0,3,utf8_decode($registros_tipo_complementos["codigo"] .": ". $registros_tipo_complementos["descripcion"] .". "),0,4,'L',false);
-				}
-			}
-			/**********************************************************/
-
-			// Tebla tipos de caracterización.
-			$x = $pdf->GetX();
-			$y = $pdf->GetY();
-			$pdf->Cell(0,8,utf8_decode(''),0,0,'L',true);
-			$pdf->SetXY($x, $y);
-			$pdf->SetFont('Arial','B',$tamannoFuente-1);
-			$pdf->Cell(60,8,utf8_decode('DESCRIPCIÓN'),'R',0,'C',false);
-
-			/////////////////////////////////////////////////////////////////////////
-
-			// Consulta que retorna los complementos que han sido asignados en el transcurso del mes.
-			$complementos = [];
-			$resultadoComplementos = $Link->query("SELECT DISTINCT tipo_complem FROM entregas_res_".$mes.$_SESSION['periodoActual']." WHERE tipo_complem IS NOT NULL;") or die (mysqli_error($Link));
-			if ($resultadoComplementos->num_rows > 0)
-			{
-				while ($registrosComplementos = $resultadoComplementos->fetch_assoc())
-				{
-					$complementos[] = $registrosComplementos["tipo_complem"];
-				}
-			}
-			foreach ($complementos as $complemento)
-			{
-				$aux_x = $pdf->GetX();
-				$aux_y = $pdf->GetY();
-				$pdf->SetFont('Arial','B',$tamannoFuente-1.5);
-				
-				
-				$pdf->MultiCell((104/count($complementos)),4,utf8_decode("TOTAL, RACIONES\n". $complemento),0,'C',false);
-				$pdf->SetXY($aux_x, $aux_y);
-				$pdf->Cell((104/count($complementos)),8,utf8_decode(''),'R',0,'C',false);
-			}
-			/////////////////////////////////////////////////////////////////////////
-
-
-			$aux_x = $pdf->GetX();
-			$aux_y = $pdf->GetY();
-			$pdf->MultiCell(0,4,utf8_decode("No. DE TITULARES DE\nDERECHO"),0,'C',false);
-			$pdf->SetXY($aux_x, $aux_y);
-			$pdf->Cell(0,8,utf8_decode(''),'R',0,'C',false);
-
-			$pdf->SetXY($x, $y);
-			$pdf->Cell(0,8,utf8_decode(''),'B',0,'L',false);
-			$pdf->SetXY($x, $y);
-			$pdf->Cell(0,28,utf8_decode(''),1,0,'L',false);
-
-			$pdf->SetXY($x, $y);
-			$pdf->Ln(8);
-
-			// Consulta que retorna el orden de la prioridad del tipo de pocblación.
-			$prioridades = [];
-			$resultadoPrioridad = $Link->query("SELECT * FROM prioridad_caracterizacion ORDER BY orden") or die(mysql_error($Link));
-			if ($resultadoPrioridad->num_rows > 0)
-			{
-				while ($registrosPrioridad = $resultadoPrioridad->fetch_assoc())
-				{
-					$prioridades[] = $registrosPrioridad;
-				}
-			}
-
-			$totalEstudiantesEntregas = 0; //Variable para sacar el total de estudiantes contados en todas las características.
-			$totalComplementos1 = $totalComplementos2 = $totalComplementos3 = 0;
-			$condicionInstitucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND cod_inst = '".$_POST["institucion"]."'" : " AND cod_inst = '". $institucion['cod_inst'] ."'";
-			for ($i=0; $i < count($prioridades); $i++)
-			{
-				$pdf->SetFont('Arial','',$tamannoFuente-1);
-				$aux_x = $pdf->GetX();
-				$aux_y = $pdf->GetY();
-				$pdf->SetXY($aux_x, $aux_y);
-				$pdf->Cell(60,4,utf8_decode(strtoupper($prioridades[$i]["descripcion"])),'R',0,'L',false);
-				$columna = 1;
-				foreach ($complementos as $complemento)
-				{
-					$condicion = "";
-					if ($i == 1) {
-						$condicion .= " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"];
-					} else if ($i == 2) {
-						$condicion .= " AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"] . " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"];
-					}
-
-					$consultaCantidadComplemento = "SELECT IFNULL(SUM((". trim($camposDiasEntregasDias, "+ ") .")),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "' AND ". $prioridades[$i]["campo_entregas_res"] ." != " . $prioridades[$i]["valor_NA"] . $condicion;
-					$resultadoCantidadComplemento = $Link->query($consultaCantidadComplemento) or die (mysqli_error($Link));
-					if ($resultadoCantidadComplemento->num_rows > 0)
-					{
-						while ($registrosCantidadComplemento = $resultadoCantidadComplemento->fetch_assoc())
-						{
-							$cantidadComplemento = $registrosCantidadComplemento["cantidadComplemento"];
-						}
-					}
-					else
-					{
-						$cantidadComplemento = 0;
-					}
-
-					$pdf->Cell((104/count($complementos)),4,$cantidadComplemento,'R',0,'C',false);
-
-					if ($columna == 1)
-					{
-						$totalComplementos1 += $cantidadComplemento;
-					}
-					else if ($columna == 2)
-					{
-						$totalComplementos2 += $cantidadComplemento;
-					}
-					else
-					{
-						$totalComplementos3 += $cantidadComplemento;
-					}
-
-					$columna++;
-				}
-
-				$con_can_est_com = "SELECT COUNT(*) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion ." AND ". trim($camposDiasEntregasDias, "+ ") ." > 0";
-				$res_can_est_com = $Link->query($con_can_est_com) or die (mysql_error($Link));
-				if ($res_can_est_com->num_rows > 0)
-				{
-					while ($reg_can_est_com = $res_can_est_com->fetch_assoc())
-					{
-						$can_est_com = $reg_can_est_com["cantidad"];
-						$totalEstudiantesEntregas += $can_est_com;
-					}
-				}
-				else
-				{
-					$can_est_com = 0;
-				}
-
-				$pdf->Cell(0,4,$can_est_com,'R',0,'C',false);
-				$pdf->SetXY($aux_x, $aux_y);
-				$pdf->Cell(0,4,utf8_decode(''),'B',0,'L',false);
-				$pdf->Ln(4);
-			}
 
 
 
-		$aux_x = $pdf->GetX();
-		$aux_y = $pdf->GetY();
-		$pdf->SetXY($aux_x, $aux_y);
-		$pdf->Cell(60,4,utf8_decode('POBLACIÓN MAYORITARIA'),'R',0,'L',false);
-		$columna = 1;
-		foreach ($complementos as $complemento)
-		{
-			$condicion = "";
-			foreach ($prioridades as $prioridad)
-			{
-				$condicion .= " AND ". $prioridad["campo_entregas_res"] ." = " . $prioridad["valor_NA"];
-			}
-			$con_can_may = "SELECT IFNULL(SUM((". trim($camposDiasEntregasDias, "+ ") .")),0) AS cantidadComplemento FROM entregas_res_". $mes.$_SESSION['periodoActual'] ." WHERE 1 " . $condicionInstitucion ." AND tipo_complem = '" . $complemento . "'" . $condicion;
-			$res_can_may = $Link->query($con_can_may) or die (mysqli_error($Link));
-			if ($res_can_may->num_rows > 0) {
-				while ($reg_can_may = $res_can_may->fetch_assoc())
-				{
-					$cantidadMayoritaria = $reg_can_may["cantidadComplemento"];
-				}
-			}
-			else
-			{
-				$cantidadMayoritaria = 0;
-			}
 
-			$pdf->Cell((104/count($complementos)),4,$cantidadMayoritaria,'R',0,'C',false);
 
-			if ($columna == 1)
-			{
-				$totalComplementos1 += $cantidadMayoritaria;
-			}
-			else if ($columna == 2)
-			{
-				$totalComplementos2 += $cantidadMayoritaria;
-			}
-			else
-			{
-				$totalComplementos3 += $cantidadMayoritaria;
-			}
 
-			$columna++;
+
+
+			
+			
 		}
-
-		$condicionMayoritaria = " AND " . $prioridades[0]["campo_entregas_res"] . " = " . $prioridades[0]["valor_NA"]." AND " . $prioridades[1]["campo_entregas_res"] . " = " . $prioridades[1]["valor_NA"]." AND " . $prioridades[2]["campo_entregas_res"] . " = " . $prioridades[2]["valor_NA"]." "; //Variable para la condición de búsqueda de estudiantes de población mayoritaria, que no cumplen con ninguna caracterización.
-
-		$con_can_est_total = "SELECT COUNT(DISTINCT num_doc) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion.$condicionMayoritaria ." AND ". trim($camposDiasEntregasDias, "+ ") ." > 0";
-		$res_can_est_total = $Link->query($con_can_est_total) or die (mysql_error($Link));
-		if ($res_can_est_total->num_rows > 0) {
-			while ($reg_can_est_total = $res_can_est_total->fetch_assoc()) {
-				$can_est_total = $reg_can_est_total["cantidad"];
-				$totalEstudiantesEntregas += $can_est_total;
-			}
-		} else {
-			$can_est_total = 0;
-		}
-		$pdf->Cell(0,4,$can_est_total,'R',0,'C',false);
-		$pdf->SetXY($aux_x, $aux_y);
-		$pdf->Cell(0,4,utf8_decode(''),'B',0,'L',false);
+		
 		$pdf->Ln(4);
-
-		$pdf->SetFont('Arial','B',$tamannoFuente-1);
-		$aux_x = $pdf->GetX();
-		$aux_y = $pdf->GetY();
-		$pdf->SetXY($aux_x, $aux_y);
-		$pdf->Cell(60,4,utf8_decode('TOTAL'),'R',0,'L',false);
-		$columna = 1;
-		foreach ($complementos as $complemento) {
-			if ($columna == 1) {
-				$pdf->Cell((104/count($complementos)),4,$totalComplementos1,'R',0,'C',false);
-			} else if ($columna == 2) {
-				$pdf->Cell((104/count($complementos)),4,$totalComplementos2,'R',0,'C',false);
-			} else {
-				$pdf->Cell((104/count($complementos)),4,$totalComplementos3,'R',0,'C',false);
-			}
-			$columna++;
-		}
-		$pdf->Cell(0,4,utf8_decode($totalEstudiantesEntregas),'R',0,'C',false);
-		$pdf->SetXY($aux_x, $aux_y);
-		$pdf->Cell(0,4,utf8_decode(''),'B',0,'L',false);
-
-
-		$pdf->Ln(8);
-		$x = $pdf->GetX();
-		$y = $pdf->GetY();
-		$pdf->Cell(0,4,utf8_decode('OBSERVACIONES'),'B',0,'C',true);
-		$pdf->SetFont('Arial','',$tamannoFuente-1);
-		$pdf->SetXY($x, $y+4);
-		$pdf->MultiCell(0,4,"",0,'L',false);
-		$pdf->SetXY($x, $y);
-		$pdf->Cell(0,12,utf8_decode(''),1,0,'C',false);
-
-
-		$pdf->Ln(16);
-		$pdf->SetFont('Arial','',$tamannoFuente);
-		$pdf->Cell(0,4,utf8_decode('La presente certificación se expide como soporte de pago y con base en el registro diario de titulares de derecho, que se diligencia en cada institución'),0,4,'L',false);
-		$pdf->Cell(0,4,utf8_decode('educativa atendida. Decreto 1852 de 2015 capitulo 4 artículo 2.3.1.4.4, Resolución 29452 / 2017 capítulo 4 numeral 4.1.2 Aplicación de protocolo de'),0,4,'L',false);
-		$pdf->Cell(0,4,utf8_decode('Suplencia reportados en documento adicional a las planillas.'),0,4,'L',false);
-
-
-		$pdf->Ln(4);
-		$pdf->SetFont('Arial','B',$tamannoFuente);
-		$pdf->Cell(50,4,utf8_decode('PARA CONSTANCIA SE FIRMA EN:'),0,0,'L',false);
-		$pdf->Cell(30,4,utf8_decode(''),'B',0,'L',false);
-		$pdf->Cell(20,4,utf8_decode(' FECHA: DIA'),0,0,'L',false);
-		$pdf->Cell(35,4,utf8_decode(''),'B',0,'L',false);
-		$pdf->Cell(15,4,utf8_decode('DEL AÑO'),0,0,'L',false);
-		$pdf->Cell(15,4,utf8_decode(''),'B',0,'L',false);
-
-
-		$pdf->Ln(8);
-		$x = $pdf->GetX();
-		$y = $pdf->GetY();
-		$pdf->SetXY($x, $y);
-		$pdf->Cell(0,4,utf8_decode('FIRMA DEL RECTOR:'),1,12,'L',false);
-		$pdf->Cell(0,4,utf8_decode('NOMBRES Y APELLIDOS DEL RECTOR:'),'LRB',0,'L',false);
-
-		$pdf->Ln(14);
-		$x = $pdf->GetX();
-		$y = $pdf->GetY();
-		$pdf->SetFont('Arial','',$tamannoFuente-1);
-		$pdf->Cell(0,4,utf8_decode('Impreso por Software InfoPae'),0,0,'L',false);
-		$link = 'http://www.infopae.com.co';
-		$pdf->SetXY($x+45, $y);
-		$pdf->Write(4,'www.infopae.com.co',$link);
+		include 'certificado_rector_covid19_footer.php';
 	}
-	}
+
+
 
 	$pdf->Output();
 }
