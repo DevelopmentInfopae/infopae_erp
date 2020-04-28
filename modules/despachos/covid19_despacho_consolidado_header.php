@@ -65,7 +65,7 @@ $pdf->Cell(6,4,'ETC:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 //$pdf->Cell(14,4,$_SESSION['p_Departamento'],0,0,'L',False);
 $aux = strtoupper($_SESSION['p_Nombre ETC']);
-$pdf->Cell(39,4,$aux,0,0,'L',False);
+$pdf->Cell(39,4,utf8_decode($aux),0,0,'L',False);
 
 // $pdf->SetFont('Arial','B',$tamannoFuente);
 // $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
@@ -123,6 +123,11 @@ $pdf->Cell(0,4,$nomSede['cod_sede'],0,0,'L',False);
 
 
 
+
+
+
+
+
 $pdf->Ln(4);
 
 //$pdf->Cell(4,4,'',0,0,'C',False);
@@ -151,7 +156,13 @@ $pdf->Cell(10,4,utf8_decode('2020'),0,0,'L',False);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(24,4,utf8_decode('LUGAR DE ENTREGA:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(90,4,utf8_decode(''),'B',0,'L',False);
+
+
+
+$aux = utf8_decode(strtoupper($nomSede['direccion']));
+//$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
+$aux = substr($aux, 0, 75); 
+$pdf->Cell(90,4,$aux,'B',0,'L',False);
 $pdf->Cell(4,4,utf8_decode(''),0,0,'L',False);
 
 // $pdf->SetFont('Arial','B',$tamannoFuente);
@@ -163,7 +174,8 @@ $pdf->Cell(4,4,utf8_decode(''),0,0,'L',False);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(8,4,utf8_decode('ZONA:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(30,4,utf8_decode(''),'B',0,'L',False);
+$aux = utf8_decode(strtoupper($nomSede['zona']));
+$pdf->Cell(30,4,$aux,'B',0,'L',False);
 
 $pdf->Ln(4);
 $pdf->Ln(2);

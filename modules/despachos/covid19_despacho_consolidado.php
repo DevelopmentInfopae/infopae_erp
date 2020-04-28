@@ -89,8 +89,7 @@ $nomSede = array();
 $fechaElaboracion = array();
 
 foreach ($despachosRecibidos as &$valor){
-	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst, s.cod_inst, s.cod_mun_sede
-	FROM despachos_enc$mesAnno de INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor";
+	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst, s.cod_inst, s.cod_mun_sede , s.sector, s.direccion FROM despachos_enc$mesAnno de INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor";
 
 	//echo "<br><br>$consulta<br><br>";
 
@@ -115,6 +114,20 @@ foreach ($despachosRecibidos as &$valor){
 		$nomSede['cod_inst'] = $row['cod_inst'];
 		$nomSede['cod_mun_sede'] = $row['cod_mun_sede'];
 		$nomSede['municipio'] = $row['Ciudad'];
+		
+		
+		if($row['sector'] == 1){
+			$nomSede['zona'] = 'Rural';
+		} else {
+			$nomSede['zona'] = 'Urbano';
+		}
+
+		
+		$nomSede['direccion'] = $row['direccion'];
+
+
+
+
 		$nomSedes[$row['cod_Sede']] = $nomSede;
 
 		$fechaElaboracion = $row['FechaHora_Elab'];
