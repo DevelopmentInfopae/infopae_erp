@@ -6,7 +6,7 @@
 	 * @author Ricardo Farfán <ricardo@xlogam.com>
 	 */
 
-	$titulo = "Entregas Biometricas";
+	$titulo = "Registro de entregas vía QR - BarCode";
 	include '../../header.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
@@ -58,7 +58,7 @@
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
-			<h2>Completar entregas biometricas</h2>
+			<h2>Registro de entregas vía QR - BarCode</h2>
 			<ol class="breadcrumb">
 				<li>
 					<a href="<?php echo $baseUrl; ?>">Inicio</a>

@@ -47,9 +47,12 @@ if(isset($_GET["sede"]) && $_GET["sede"] != ""){
 	$dispositivoNombre = mysqli_real_escape_string($Link, $_GET['dispositivoNombre']);
 	$dispositivo = mysqli_real_escape_string($Link, $_GET['dispositivo']);
 	$nivelNombre = mysqli_real_escape_string($Link, $_GET['nivelNombre']);
-	$grado = mysqli_real_escape_string($Link, $_GET['grado']);
-	$gradoNombre = mysqli_real_escape_string($Link, $_GET['gradoNombre']);
-	$grupo = mysqli_real_escape_string($Link, $_GET['grupo']);
+	//$grado = mysqli_real_escape_string($Link, $_GET['grado']);
+	//$gradoNombre = mysqli_real_escape_string($Link, $_GET['gradoNombre']);
+	//$grupo = mysqli_real_escape_string($Link, $_GET['grupo']);
+	$grado = "";
+	$gradoNombre = "";
+	$grupo = "";
 }
 ?>
 
@@ -86,15 +89,15 @@ if(isset($_GET["sede"]) && $_GET["sede"] != ""){
 
 					<div class="color-oscuro border-oscuro">
 						<div class="row">
-							<div class="col-sm-4">
+							<div class="col-sm-9">
 								<h4>Sede: <br> <?= $sedeNombre ?></h4>
 							</div>
-							<div class="col-sm-2 ">
+							<div class="col-sm-3 ">
 								<h4>Dispositivo: <br> <?= $dispositivoNombre ?></h4>
 							</div>
-							<div class="col-sm-2 ">
+							<!-- <div class="col-sm-2 ">
 								<h4>Nivel: <br> <?= $nivelNombre ?></h4>
-							</div>
+							</div> -->
 							<?php if($grado != ''){ ?>
 								<div class="col-sm-2 ">
 									<h4>Grado: <br> <?= $gradoNombre ?></h4>
@@ -148,13 +151,13 @@ if(isset($_GET["sede"]) && $_GET["sede"] != ""){
 								</tr>
 							</thead>
 							<tbody class="entregas-qr">
-								<tr>
+								<!-- <tr>
 									<td>23/01/2020 8:08:00 A.M.</td>
 									<td>Pedro Jóse</td>
 									<td>Perez Gomez</td>
 									<td>Primero</td>
 									<td>101</td>
-								</tr>
+								</tr> -->
 							</tbody>
 							<tfoot>
 								<tr>

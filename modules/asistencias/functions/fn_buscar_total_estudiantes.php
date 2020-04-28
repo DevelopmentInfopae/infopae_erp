@@ -4,6 +4,7 @@ require_once '../../../config.php';
 
 $semanaActual = "";
 $sede = "";
+$complemento = "";
 $total = "";
 
 
@@ -18,20 +19,24 @@ if(isset($_POST['semana']) && $_POST['semana'] != ''){
 }
 
 
-
-
-
-
-
-
-
-
-
 if(isset($_POST['sede']) && $_POST['sede'] != ''){
-		$sede = mysqli_real_escape_string($Link, $_POST['sede']);
+	$sede = mysqli_real_escape_string($Link, $_POST['sede']);
+}
+if(isset($_POST['complemento']) && $_POST['complemento'] != ''){
+	$complemento = mysqli_real_escape_string($Link, $_POST['complemento']);
 }
 
-$consulta = " select count(distinct num_doc) as total from focalizacion$semanaActual where cod_sede = \"$sede\" ";
+$consulta = " select count(distinct num_doc) as total from focalizacion$semanaActual where cod_sede = \"$sede\" and Tipo_complemento = \"$complemento\" ";
+//echo "<br><br>$consulta<br><br>";
+
+
+
+
+
+
+
+
+
 $resultado = $Link->query($consulta) or die ('No se pudo cargar el total de estudiantes focalizados en  la sede. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$row = $resultado->fetch_assoc();

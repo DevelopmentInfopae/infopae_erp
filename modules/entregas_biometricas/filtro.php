@@ -20,7 +20,7 @@
 
 				<div class="ibox-content">
 
-					<div class="alert alert-success"> Seleccione los datos correspondientes a al grupo de estudiantes y dispositivo para los que se desea hacer el registro. </div>
+					<div class="alert alert-success"> Seleccione los datos correspondientes a la sede y dispositivo que va a realizar los registros. </div>
 					
 					<div class="row">
 						<div class="col-sm-12">
@@ -33,7 +33,7 @@
 
 								<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0 || $_SESSION["perfil"] == 5 || $_SESSION["perfil"] == 6 || $_SESSION["perfil"] == 3) { ?>
 										
-										<div class="col-sm-4 form-group">
+										<!-- <div class="col-sm-4 form-group">
 											<label for="mes">Mes</label>
 											<select class="form-control" name="mes" id="mes" required>
 												<option value="">Seleccione uno</option>
@@ -50,14 +50,14 @@
 												<option value="11">Noviembre</option>									
 												<option value="12">Diciembre</option>									
 											</select>
-										</div>
+										</div> -->
 
-										<div class="col-sm-4 form-group">
+										<!-- <div class="col-sm-4 form-group">
 											<label for="semana">Semana</label>
 											<select class="form-control" name="semana" id="semana" required>
 												<option value="">Seleccione uno</option>									
 											</select>
-										</div>
+										</div> -->
 
 										<!-- <div class="col-sm-4 form-group">
 											<label for="dia">Día</label>
@@ -93,17 +93,11 @@
 										<select class="form-control" name="sede" id="sede" required>
 											<option value="">Seleccione una</option>
 										</select>
-									</div>  
-
-
-									<?php if(!isset($ventanaRepitentes) || $ventanaRepitentes == 0){ ?>
-									<?php } ?>
-
-
+									</div>
 
 									<?php if($_SESSION["perfil"] != 5 && $_SESSION["perfil"] != 6){ ?>
 
-										<div class="col-sm-4 form-group">
+										<!-- <div class="col-sm-4 form-group">
 											<label for="nivel">Nivel</label>
 											<select class="form-control" name="nivel" id="nivel" required>
 												<option value="">Seleccione uno</option>
@@ -122,7 +116,7 @@
 											<select class="form-control" name="grupo" id="grupo">
 												<option value="">Todas</option>
 											</select>
-										</div>
+										</div> -->
 										
 										<div class="col-sm-4 form-group">
 											<label for="dispositivo">Dispositivo</label>

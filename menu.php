@@ -49,6 +49,14 @@
 
 <?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5 || $_SESSION['perfil'] == 9 ){ ?>
 
+	<li>
+		<a href="#"><i class="fas fa-fingerprint"></i> <span class="nav-label">Entregas Biometricas</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+			<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php"><span class="nav-label">Dashboard</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php"><span class="nav-label">Registrar entregas vía QR - BarCode</span></a> </li>
+		</ul>
+	</li>
+	
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/instituciones.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Instituciones</span></a> </li>
 
 
@@ -61,9 +69,6 @@
 		</ul>
 	</li>
 
-
-
-
 	<?php if( $_SESSION['perfil'] != 9 ){ ?>
 		<li>
 			<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
@@ -71,7 +76,7 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php"><span class="nav-label">Alimentos</span></a> </li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php"><span class="nav-label">Preparaciones</span></a> </li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref"><span class="nav-label">Aportes calúricos y nutricionales</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref"><span class="nav-label">Aportes calóricos y nutricionales</span></a> </li>
 			</ul>
 		</li>
 		<li>
@@ -107,6 +112,7 @@
 				<ul class="nav nav-third-level">
 					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/control_asistencia.php">Control de asistencia</a> </li>
 					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados.php">Certificados por institución</a> </li>
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados_covid19.php">Certificado Rector COVID19</a> </li>
 				</ul>
 			</li>
 			<li>

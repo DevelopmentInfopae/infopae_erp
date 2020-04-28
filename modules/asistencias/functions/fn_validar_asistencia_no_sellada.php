@@ -1,6 +1,7 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
+include 'fn_fecha_asistencia.php';
 
 //var_dump($_SESSION);
 
@@ -18,12 +19,12 @@ if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){
 	$semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
 
 	$sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
+	$complemento = (isset($_POST["complemento"]) && $_POST["complemento"] != "") ? mysqli_real_escape_string($Link, $_POST["complemento"]) : "";
 
 	// Validar que la asistencia no este sellada
-	$fecha = date("Y-m-d H:i:s");
-	$anno = date("y"); 
-	$mes = date("m");
-	$dia = date("d");
+	$anno = $annoAsistencia2D; 
+	$mes = $mesAsistencia;
+	$dia = $diaAsistencia;
 
 
 
@@ -43,7 +44,10 @@ if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){
 
 
 
-	$consulta = "select * from asistencia_enc$mes$anno where estado = \"2\" and mes = \"$mes\" and semana = \"$semanaActual\" and dia = \"$dia\" and cod_sede = \"$sede\"";
+	$consulta = "select * from asistencia_enc$mes$anno where estado = \"2\" and mes = \"$mes\" and semana = \"$semanaActual\" and dia = \"$dia\" and cod_sede = \"$sede\" and complemento = \"$complemento\" ";
+
+
+	
 	$resultado = $Link->query($consulta);
 	if($resultado->num_rows > 0){
 		$resultadoAJAX = array(

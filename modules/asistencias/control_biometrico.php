@@ -1,68 +1,61 @@
 <?php
-	$titulo = "Control dispositivos biométricos";
-	include '../../header.php';
-	set_time_limit (0);
-	ini_set('memory_limit','6000M');
+$titulo = "Control dispositivos biométricos";
+include '../../header.php';
+include 'functions/fn_fecha_asistencia.php';
+set_time_limit (0);
+ini_set('memory_limit','6000M');
 
-	$periodoActual = $_SESSION["periodoActual"];
-	
-	$institucionNombre = "";
+$periodoActual = $_SESSION["periodoActual"];
+$institucionNombre = "";
+$dia = $diaAsistencia;
+$mes = $mesAsistencia;
+$anno = $annoasistencia;
+$anno2d = $annoAsistencia2D;
 
-	date_default_timezone_set('America/Bogota');
-	$fecha = date("Y-m-d H:i:s");
-	$cacheBusting = date("YmdHis");
+$periodoActual = $_SESSION['periodoActual'];
 
-	$dia = date("d");
-	$mes = date("m");
-	$anno = date("Y");
-	$anno2d = date("y");
+$validacion = "Lector de Huella";
+$semanaActual = "";
+$municipio = "";
+$institucion = "";
+$sede = "";
 
-	$periodoActual = $_SESSION['periodoActual'];
-
-	$validacion = "Lector de Huella";
-	$semanaActual = "";
-	$municipio = "";
-	$institucion = "";
-	$sede = "";
-
-	if(isset($_GET['mes']) && $_GET['mes'] != ''){
-		$mes = mysqli_real_escape_string($Link, $_GET['mes']);
+if(isset($_GET['mes']) && $_GET['mes'] != ''){
+	$mes = mysqli_real_escape_string($Link, $_GET['mes']);
+}
+if(isset($_GET['semana']) && $_GET['semana'] != ''){
+	$semanaActual = mysqli_real_escape_string($Link, $_GET['semana']);
+}else{
+	//Busqueda de la semana actual
+	$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
+	//var_dump($consulta);				
+	$resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
+	if($resultado->num_rows >= 1){
+		$row = $resultado->fetch_assoc();
+		$semanaActual = $row["semana"];
 	}
-	if(isset($_GET['semana']) && $_GET['semana'] != ''){
-		$semanaActual = mysqli_real_escape_string($Link, $_GET['semana']);
-	}else{
-		//Busqueda de la semana actual
-		$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
-		//var_dump($consulta);				
-		$resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
-		if($resultado->num_rows >= 1){
-			$row = $resultado->fetch_assoc();
-			$semanaActual = $row["semana"];
-		}
-		//var_dump($semanaActual);
-	}
-	if(isset($_GET['dia']) && $_GET['dia'] != ''){
-		$dia = mysqli_real_escape_string($Link, $_GET['dia']);
-	}	
-	if(isset($_GET['municipio']) && $_GET['municipio'] != ''){
-		$municipio = mysqli_real_escape_string($Link, $_GET['municipio']);
-	}	
-	if(isset($_GET['institucion']) && $_GET['institucion'] != ''){
-		$institucion = mysqli_real_escape_string($Link, $_GET['institucion']);
-	}
-	if(isset($_GET['sede']) && $_GET['sede'] != ''){
-		$sede = mysqli_real_escape_string($Link, $_GET['sede']);
-	}
+	//var_dump($semanaActual);
+}
+if(isset($_GET['dia']) && $_GET['dia'] != ''){
+	$dia = mysqli_real_escape_string($Link, $_GET['dia']);
+}	
+if(isset($_GET['municipio']) && $_GET['municipio'] != ''){
+	$municipio = mysqli_real_escape_string($Link, $_GET['municipio']);
+}	
+if(isset($_GET['institucion']) && $_GET['institucion'] != ''){
+	$institucion = mysqli_real_escape_string($Link, $_GET['institucion']);
+}
+if(isset($_GET['sede']) && $_GET['sede'] != ''){
+	$sede = mysqli_real_escape_string($Link, $_GET['sede']);
+}
 
 
 
 
 
-	$mesTablaAsistencia = $mes;
-	$annoTablaAsistencia = $anno2d;
-	include 'functions/fn_validar_existencias_tablas.php';
-
-
+$mesTablaAsistencia = $mes;
+$annoTablaAsistencia = $anno2d;
+include 'functions/fn_validar_existencias_tablas.php';
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
@@ -128,7 +121,33 @@
 						//$consulta = " SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst,  s.nom_inst,  a.estado AS sellado , (select count(DISTINCT f.num_doc) AS total from focalizacion$semanaActual f WHERE f.cod_sede = s.cod_sede ) AS total, (SELECT SUM(a2.consumio + a2.repitio) AS cantidad FROM focalizacion$semanaActual f2 left join asistencia_det$mes$anno2d a2 ON f2.tipo_doc = a2.tipo_doc AND f2.num_doc = a2.num_doc WHERE f2.cod_sede = s.cod_sede AND a2.consumio IS not NULL and a2.dia = $dia ) AS entregado FROM sedes$periodoActual s LEFT JOIN asistencia_enc$mes$anno2d a ON s.cod_sede = a.cod_sede and a.dia = $dia WHERE s.tipo_validacion = \"tablet\" ";
 
 
-						$consulta = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst FROM sedes$periodoActual s WHERE s.tipo_validacion = \"Lector de Huella\""; 
+						$consulta = "SELECT DISTINCT(s.cod_sede), s.nom_sede, s.cod_inst, s.nom_inst FROM sedes$periodoActual s WHERE 
+						
+						
+						
+						
+						s.cod_sede IN (SELECT distinct cod_sede  FROM dispositivos)
+						
+						
+						
+						
+						
+						
+				
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						"; 
 						if($municipio != ""){
 							$consulta .= " and s.cod_mun_sede = \"$municipio\" ";	
 						}
@@ -138,7 +157,12 @@
 						if($sede != ""){
 							$consulta .= " and s.cod_sede = \"$sede\" ";	
 						}
+						
+						
 						//echo "<br><br>$consulta<br><br>";
+
+
+
 						$resultado = $Link->query($consulta) or die ('Carga de sedes:<br>'.$consulta.'<br>'. mysqli_error($Link));
 						if($resultado->num_rows >= 1){
 							while($row = $resultado->fetch_assoc()){

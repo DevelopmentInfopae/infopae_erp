@@ -457,9 +457,12 @@ if($resultado->num_rows >= 1){
 
     $aux = $alimento['componente'];
     $long_nombre=strlen($aux);
+    //var_dump($largoNombre);
+    $largoNombre =26;
     if($long_nombre > $largoNombre){
       $aux = substr($aux,0,$largoNombre);
     }
+    // Impresión de Alimento (Nombre del alimento)
     $pdf->Cell(44,4,utf8_decode($aux),1,0,'L',False);
 
     // Unidad de presentación
