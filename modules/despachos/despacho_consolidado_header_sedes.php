@@ -227,7 +227,11 @@ $pdf->SetXY($current_x+36.7, $current_y);
 $pdf->SetFillColor(255,255,255);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->Cell(45,14.1,'',1,0,'L',False);
+
+
+
+
+$pdf->Cell(45,14.1,$auxDias,1,0,'C',False);
 
 
 
@@ -241,7 +245,7 @@ if(strpos($semana, ',') !== false){
 $auxDiasSemanas = $auxDias."\n".$aux;
 
 $pdf->SetXY($current_x, $current_y+0.5);
-$pdf->MultiCell(45,3,$auxDiasSemanas,0,'C',False);
+//$pdf->MultiCell(45,3,$auxDiasSemanas,0,'C',False);
 
 
 
@@ -258,7 +262,20 @@ $pdf->SetXY($current_x+45, $current_y);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->Cell(57.8,14.1,'',1,0,'L',False);
+
+
+$pdf->Cell(57.8,14.1,'N/A','BR',0,'C',False);
+
+
+
+
+
+
+
+
+
+
+
 $pdf->SetXY($current_x, $current_y+2.35);
 //$pdf->SetFont('Arial','B',$tamannoFuente);
 //$pdf->Cell(57.8,4.7,'SEMANA: '.$auxSemana,0,0,'C',False);
@@ -273,7 +290,7 @@ if(strpos($auxCiclos, ',') !== false){
 }else{
 	$aux = "SEMANA: $auxCiclos";
 }
-$pdf->Cell(57.8,4.7,$aux,0,0,'C',False);
+//$pdf->Cell(57.8,4.7,$aux,0,0,'C',False);
 
 
 
@@ -288,8 +305,18 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 //$pdf->SetXY($current_x+34, $current_y+2.35);
 //$pdf->Cell(10,4.7,$auxSemana,0,4.7,'L',False);
 //$pdf->SetFont('Arial','B',$tamannoFuente);
+
+
+
 $pdf->SetXY($current_x, $current_y+7,05);
-$pdf->Cell(57.8,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
+//$pdf->Cell(57.8,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
+
+
+
+
+
+
+
 //$pdf->SetFont('Arial','',$tamannoFuente);
 //$pdf->SetXY($current_x+33, $current_y+7,05);
 //$pdf->Cell(57.8,4.7,$auxCiclos,0,0,'L',False);
@@ -297,7 +324,9 @@ $pdf->Cell(57.8,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
 $pdf->SetXY($current_x+57.8, $current_y);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->Cell(44.7,14.1,'',1,0,'L',False);
+//$pdf->Cell(44.7,14.1,'',1,0,'L',False);
+
+
 
 
 
@@ -328,7 +357,7 @@ $aux = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
 // $pdf->SetXY($current_x+2, $current_y+7.05);
 // $pdf->Cell(7,4.7,'JT:',0,0,'L',False);
 //$pdf->Cell(33,4.7,$jt,'B',0,'L',False);
-$pdf->Cell(0,14.1,$aux,0,0,'C',False);
+$pdf->Cell(0,14.1,$aux,'BR',0,'C',False);
 
 
 
