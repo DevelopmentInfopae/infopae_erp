@@ -74,25 +74,22 @@ $pdf->Ln(2);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(19,4,'DEPARTAMENTO:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(17,4,$_SESSION['p_Departamento'],0,0,'L',False);
+$pdf->Cell(14,4,$_SESSION['p_Departamento'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(6,4,$_SESSION['p_CodDepartamento'],0,0,'L',False);
+$pdf->Cell(3,4,$_SESSION['p_CodDepartamento'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(12.5,4,'MUNICIPIO:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
-$aux = '';
-for ($ii=0; $ii < count($municipios) ; $ii++) {
-  if($ii > 0){
-	$aux = $aux.", ";
-  }
-  $aux = $aux.$municipios[$ii];
-}
-$pdf->Cell(15,4,utf8_decode($aux),0,0,'L',False);
+$aux = $nomSede['municipio'];
+$aux = substr($aux, 0, 13); 
+$pdf->Cell(18,4,utf8_decode($aux),0,0,'L',False);
+
+
 
 // Se repite en el header adicional
 
@@ -106,7 +103,7 @@ $pdf->Cell(24.3,4,utf8_decode('NOMBRE INSTITUCÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
 $aux = $nomSede['nom_inst'];
-$aux = substr($aux, 0, 43); 
+$aux = substr($aux, 0, 42); 
 $pdf->Cell(52,4,utf8_decode($aux),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
@@ -120,7 +117,7 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 
 //$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
 $aux = $nomSede['nom_sede'];
-$aux = substr($aux, 0, 41); 
+$aux = substr($aux, 0, 42); 
 $pdf->Cell(52,4,utf8_decode($aux),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
@@ -139,12 +136,13 @@ $pdf->Ln(4);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(13.5,4,'OPERADOR:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(72.5,4,utf8_decode( $_SESSION['p_Operador'] ),0,0,'L',False);
+$pdf->Cell(65,4,utf8_decode( $_SESSION['p_Operador'] ),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,utf8_decode('CONTRATO N°:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(7,4,'049',0,0,'L',False);
+$aux = $_SESSION['p_NumContrato'];
+$pdf->Cell(25,4,$aux,0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(17.6,4,utf8_decode('MES ATENCIÓN:'),0,0,'L',False);
