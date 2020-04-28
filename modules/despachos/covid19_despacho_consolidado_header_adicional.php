@@ -15,8 +15,7 @@ $nomSede = $nomSedes[$sede_unica];
 // $codInstitucion = $nomSede['cod_inst'];
 // $nomSede = $nomSede['nom_sede'];
 // $codSede = $nomSede['cod_sede'];
-
-//var_dump($nomSede);
+// var_dump($nomSede);
 
 
 
@@ -34,29 +33,7 @@ $pdf->Cell(28,14,'','LTB',0,'C',False);
 $pdf->Cell(0,14,'','LTBR','C',False);
 
 $pdf->SetXY($current_x+87, $current_y+2.5);
-
-
-
-
-
-
-
-
 $pdf->MultiCell(167,3,utf8_decode($titulo),0,'C',False);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 $pdf->SetXY($current_x+254, $current_y);
@@ -66,7 +43,7 @@ $pdf->SetXY($current_x+254+28, $current_y);
 
 // $fechaElaboracion[0]
 $pdf->Cell(0,7,utf8_decode($fechaDespacho),'B',7,'C',False);
-$pdf->Cell(0,7,utf8_decode('Página 1 de 1'),0,0,'C',False);
+$pdf->Cell(0,7,utf8_decode('Página '.$pdf->GroupPageNo().' de '.$pdf->PageGroupAlias() ),0,0,'C',False);
 
 
 
@@ -76,59 +53,72 @@ $pdf->Ln(2);
 
 // $pdf->Cell(4,4,'',0,0,'C',False);
 
+
+//var_dump($_SESSION);
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(19,4,'DEPARTAMENTO:',0,0,'L',False);
+//$pdf->Cell(19,4,'DEPARTAMENTO:',0,0,'L',False);
+$pdf->Cell(6,4,'ETC:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(14,4,$_SESSION['p_Departamento'],0,0,'L',False);
+//$pdf->Cell(14,4,$_SESSION['p_Departamento'],0,0,'L',False);
+$aux = strtoupper($_SESSION['p_Nombre ETC']);
+$pdf->Cell(39,4,utf8_decode($aux),0,0,'L',False);
+
+// $pdf->SetFont('Arial','B',$tamannoFuente);
+// $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
+// $pdf->SetFont('Arial','',$tamannoFuente);
+// $pdf->Cell(3,4,$_SESSION['p_CodDepartamento'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(3,4,$_SESSION['p_CodDepartamento'],0,0,'L',False);
-
-$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(12.5,4,'MUNICIPIO:',0,0,'L',False);
+$pdf->Cell(13,4,'MUNICIPIO:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
 $aux = $nomSede['municipio'];
 $aux = substr($aux, 0, 13); 
-$pdf->Cell(18,4,utf8_decode($aux),0,0,'L',False);
+$pdf->Cell(25,4,utf8_decode($aux),0,0,'L',False);
+
+
 
 
 
 // Se repite en el header adicional
 
-$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(7,4,$nomSede['cod_mun_sede'],0,0,'L',False);
+// $pdf->SetFont('Arial','B',$tamannoFuente);
+// $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
+// $pdf->SetFont('Arial','',$tamannoFuente);
+// $pdf->Cell(7,4,$nomSede['cod_mun_sede'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(24.3,4,utf8_decode('NOMBRE INSTITUCÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
 $aux = $nomSede['nom_inst'];
-$aux = substr($aux, 0, 42); 
-$pdf->Cell(52,4,utf8_decode($aux),0,0,'L',False);
+//$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
+$aux = substr($aux, 0, 66); 
+$pdf->Cell(80,4,utf8_decode($aux),0,0,'L',False);
 
-$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(16.3,4,'CODIGO DANE:',0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(15,4,$nomSede['cod_inst'],0,0,'L',False);
+// $pdf->SetFont('Arial','B',$tamannoFuente);
+// $pdf->Cell(16.3,4,'CODIGO DANE:',0,0,'L',False);
+// $pdf->SetFont('Arial','',$tamannoFuente);
+// $pdf->Cell(15,4,$nomSede['cod_inst'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(17.3,4,'NOMBRE SEDE:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
-//$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
 $aux = $nomSede['nom_sede'];
-$aux = substr($aux, 0, 42); 
-$pdf->Cell(52,4,utf8_decode($aux),0,0,'L',False);
+//$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
+$aux = substr($aux, 0, 66); 
+$pdf->Cell(80,4,utf8_decode($aux),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(0,4,$nomSede['cod_sede'],0,0,'L',False);
+
+
+
+
+
 
 
 
@@ -162,19 +152,26 @@ $pdf->Cell(10,4,utf8_decode('2020'),0,0,'L',False);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(24,4,utf8_decode('LUGAR DE ENTREGA:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(34,4,utf8_decode(''),'B',0,'L',False);
+
+
+
+$aux = utf8_decode(strtoupper($nomSede['direccion']));
+//$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
+$aux = substr($aux, 0, 75); 
+$pdf->Cell(90,4,$aux,'B',0,'L',False);
 $pdf->Cell(4,4,utf8_decode(''),0,0,'L',False);
 
-$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(14,4,utf8_decode('DIRECCIÓN:'),0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(34,4,utf8_decode(''),'B',0,'L',False);
-$pdf->Cell(4,4,utf8_decode(''),0,0,'L',False);
+// $pdf->SetFont('Arial','B',$tamannoFuente);
+// $pdf->Cell(14,4,utf8_decode('DIRECCIÓN:'),0,0,'L',False);
+// $pdf->SetFont('Arial','',$tamannoFuente);
+// $pdf->Cell(34,4,utf8_decode(''),'B',0,'L',False);
+// $pdf->Cell(4,4,utf8_decode(''),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(8,4,utf8_decode('ZONA:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(20,4,utf8_decode(''),'B',0,'L',False);
+$aux = utf8_decode(strtoupper($nomSede['zona']));
+$pdf->Cell(30,4,$aux,'B',0,'L',False);
 
 $pdf->Ln(4);
 $pdf->Ln(2);
