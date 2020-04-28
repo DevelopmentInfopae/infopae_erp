@@ -1,4 +1,9 @@
 <?php
+$titulo = "Registro De Novedades - Repitentes Y/O Suplentes Del Programa De Alimentación Escolar - PAE\nAtención en el marco del Estado de Emergencia, Económica, Social y Ecológica, derivado de la pandemia del COVID-19\nModalidad - ".$descripcionTipo;
+
+
+
+
 $tamannoFuente = 6;
 $pdf->SetFont('Arial','',$tamannoFuente);
 //header
@@ -37,7 +42,7 @@ $pdf->SetXY($current_x+87, $current_y+2.5);
 
 
 
-$pdf->MultiCell(167,3,utf8_decode("Registro De Novedades - Repitentes Y/O Suplentes Del Programa De Alimentación Escolar - PAE\nAtención en el marco del Estado de Emergencia, Económica, Social y Ecológica, derivado de la pandemia del COVID-19\nModalidad - ".$descripcionTipo),0,'C',False);
+$pdf->MultiCell(167,3,utf8_decode($titulo),0,'C',False);
 
 
 

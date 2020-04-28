@@ -213,6 +213,7 @@ $ciclos = array_unique ($ciclos);
 sort($ciclos);
 
 $auxDias = "X ".$cantDias." DIAS ".$auxDias." ".$mes;
+$auxDias = 'MES DE '.$mes;
 $auxDias = strtoupper($auxDias);
 
 $auxSemana = '';
