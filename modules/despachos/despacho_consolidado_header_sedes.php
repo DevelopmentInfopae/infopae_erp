@@ -298,28 +298,37 @@ $pdf->SetXY($current_x+57.8, $current_y);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->Cell(44.7,14.1,'',1,0,'L',False);
-$pdf->SetXY($current_x+2, $current_y+2.35);
+
+
+
+
+//$pdf->SetXY($current_x+2, $current_y+2.35);
+$pdf->SetXY($current_x, $current_y);
 
 
 
 
 
-  $jm = '';
-  $jt = '';
+$jm = '';
+$jt = '';
 
-  // 2 es la jornada de la mañana
-  // 3 es la jornada de la tarde
-  if($jornada == 2){
-  $jm = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
-  }else if($jornada == 3){
+// 2 es la jornada de la mañana
+// 3 es la jornada de la tarde
+if($jornada == 2){
+$jm = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
+}else if($jornada == 3){
   $jt = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
-  }
-$pdf->Cell(7,4.7,'JM:',0,0,'L',False);
-$pdf->Cell(33,4.7,$jm,'B',0,'L',False);
-$pdf->SetXY($current_x+2, $current_y+7.05);
-$pdf->Cell(7,4.7,'JT:',0,0,'L',False);
-$pdf->Cell(33,4.7,$jt,'B',0,'L',False);
+}
 
+$aux = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
+
+
+// $pdf->Cell(7,4.7,'JM:',0,0,'L',False);
+// $pdf->Cell(33,4.7,$jm,'B',0,'L',False);
+// $pdf->SetXY($current_x+2, $current_y+7.05);
+// $pdf->Cell(7,4.7,'JT:',0,0,'L',False);
+//$pdf->Cell(33,4.7,$jt,'B',0,'L',False);
+$pdf->Cell(0,14.1,$aux,0,0,'C',False);
 
 
 
