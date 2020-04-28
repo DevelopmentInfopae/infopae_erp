@@ -114,6 +114,7 @@ foreach ($despachosRecibidos as &$valor){
 		$nomSede['cod_sede'] = $row['cod_Sede'];
 		$nomSede['cod_inst'] = $row['cod_inst'];
 		$nomSede['cod_mun_sede'] = $row['cod_mun_sede'];
+		$nomSede['municipio'] = $row['Ciudad'];
 		$nomSedes[$row['cod_Sede']] = $nomSede;
 
 		$fechaElaboracion = $row['FechaHora_Elab'];
