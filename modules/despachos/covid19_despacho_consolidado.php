@@ -685,10 +685,10 @@ foreach ($sede_unicas as $key => $sede_unica){
 	
 	
 	
-	$pdf->AddPage();
 	$tamannoFuente = 6;
-	include 'covid19_despacho_consolidado_footer.php';
-	include 'covid19_despacho_consolidado_header.php';
+	
+	//$pdf->AddPage();
+	//include 'covid19_despacho_consolidado_header.php';
 
 
 	
@@ -709,7 +709,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	// if($filaActual > 19){
 	// 	$pdf->AddPage();
 	$tamannoFuente = 6;
-	// 	include 'covid19_despacho_consolidado_footer.php';
+	// 	
 	// 	include 'covid19_despacho_consolidado_header.php';
 	// }
 	
@@ -719,7 +719,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 		$pdf->AddPage();
 		$tamannoFuente = 6;
 	}
-	include 'covid19_despacho_firma_planilla.php';
+	//include 'covid19_despacho_firma_planilla.php';
 	
 	
 
