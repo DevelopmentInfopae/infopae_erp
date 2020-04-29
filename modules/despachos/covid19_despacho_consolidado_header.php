@@ -64,7 +64,7 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(6,4,'ETC:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 //$pdf->Cell(14,4,$_SESSION['p_Departamento'],0,0,'L',False);
-$aux = strtoupper($_SESSION['p_Nombre ETC']);
+$aux = mb_strtoupper($_SESSION['p_Nombre ETC']);
 $pdf->Cell(39,4,utf8_decode($aux),0,0,'L',False);
 
 // $pdf->SetFont('Arial','B',$tamannoFuente);
