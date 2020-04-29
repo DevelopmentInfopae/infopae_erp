@@ -13,7 +13,7 @@ $pdf->MultiCell(146.45,17.29,'',1,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(146.45,5.7,utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'),0,5.7,'C',False);
-$pdf->Cell(146.45,5.7,utf8_decode('ORDEN DE PEDIDO DE VIVERES POR MUNICIPIO'),0,5.7,'C',False);
+$pdf->Cell(146.45,5.7,utf8_decode('REMISION DE ENTREGA A SEDES EDUCATIVAS ATENCIÓN EN EL MARCO DE EMERGENCIA ECONOMICA, SOCIAL Y ECOLOGICA COVID19'),0,5.7,'C',False);
 $pdf->Cell(146.45,5.7,utf8_decode($descripcionTipo),0,5.7,'C',False);
 $pdf->Ln(0.19);
 

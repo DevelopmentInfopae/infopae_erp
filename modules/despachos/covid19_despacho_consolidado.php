@@ -118,7 +118,7 @@ foreach ($despachosRecibidos as &$valor){
 		
 		if($row['sector'] == 1){
 			$nomSede['zona'] = 'Rural';
-		} else {
+		} elseif($row['sector'] == 2)  {
 			$nomSede['zona'] = 'Urbano';
 		}
 
