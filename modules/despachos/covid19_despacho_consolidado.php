@@ -120,6 +120,8 @@ foreach ($despachosRecibidos as &$valor){
 			$nomSede['zona'] = 'Rural';
 		} elseif($row['sector'] == 2)  {
 			$nomSede['zona'] = 'Urbano';
+		}else{
+			$nomSede['zona'] = '';
 		}
 
 		
@@ -687,9 +689,6 @@ foreach ($sede_unicas as $key => $sede_unica){
 	
 	$tamannoFuente = 6;
 	
-	//$pdf->AddPage();
-	//include 'covid19_despacho_consolidado_header.php';
-
 
 	
 
@@ -706,20 +705,8 @@ foreach ($sede_unicas as $key => $sede_unica){
 	
 	
 	
-	// if($filaActual > 19){
-	// 	$pdf->AddPage();
+	
 	$tamannoFuente = 6;
-	// 	
-	// 	include 'covid19_despacho_consolidado_header.php';
-	// }
-	
-	
-	
-	if($filaActual > 13){
-		$pdf->AddPage();
-		$tamannoFuente = 6;
-	}
-	//include 'covid19_despacho_firma_planilla.php';
 	
 	
 
