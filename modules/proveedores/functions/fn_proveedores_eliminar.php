@@ -7,9 +7,8 @@
 
   $consulta = "DELETE FROM proveedores WHERE ID = '$proveedor'";
   $resultado = $Link->query($consulta) or die ('Error al eliminar proveedor: '. mysqli_error($Link));
-  if ($resultado)
-  {
-    // Registro de la bitácora
+
+  if ($resultado) {
     $consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '67', 'Eliminó el proveedor : <strong>$razonSocial</strong>')";
     $Link->query($consultaBitacora) or die (mysqli_error($Link));
 
@@ -17,9 +16,7 @@
       'estado' => 1,
       'mensaje' => 'El proveedor ha sido eliminado exitosamente'
     ];
-  }
-  else
-  {
+  } else {
     $respuestaAJAX = [
       'estado' => 0,
       'mensaje' => 'El proveedor NO ha eliminado creado.'

@@ -10,7 +10,7 @@
 	$municipio = $_POST["municipio"];
 	$tipoUsuario = $_POST["tipoUsuario"];
 	$numeroDocumento = $_POST["numeroDocumento"];
-  $clave = sha1(strtoupper(substr($nombre, 0, 1)) . $numeroDocumento);
+    $clave = sha1(strtoupper(substr($nombre, 0, 1)) . $numeroDocumento);
 
   //Realizar la validación del correo electrónico.
   $consulta0 = "SELECT email FROM usuarios WHERE email LIKE '%$email%'";

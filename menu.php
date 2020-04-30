@@ -56,7 +56,7 @@
 			<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php"><span class="nav-label">Registrar entregas vía QR - BarCode</span></a> </li>
 		</ul>
 	</li>
-	
+
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/instituciones.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Instituciones</span></a> </li>
 
 
@@ -153,7 +153,7 @@
 
 
 				<li><a href="<?php echo $baseUrl; ?>/modules/intercambios/index.php">Menú</a></li>
-				
+
 				<!-- <li>
 					<a href="#"><span class="nav-label">Menús</span> <span class="fa arrow"></span></a>
 					<ul class="nav nav-third-level">
@@ -162,7 +162,7 @@
 						<li> <a href="<?//= $baseUrl; ?>/modules/intercambios/intercambio_dia_menu.php">Intercambio de día de menú</a> </li>
 					</ul>
 				</li> -->
-				
+
 			</ul>
 		</li>
 	<?php } ?>
@@ -230,7 +230,7 @@
 			<li> <a href="<?php echo $baseUrl; ?>/modules/bodegas"><span class="nav-label">Bodegas</span></a> </li>
 			<li><a href="<?= $baseUrl; ?>/modules/empleados">Empleados</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_vehiculos">Tipo vehiculo</a></li>
-			<li><a href="<?= $baseUrl; ?>/modules/tipo_despachos">Tipo despacho</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/tipo_despachos">Tipo alimentos</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_documentos">Tipo documento</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/discapacidad">Discapacidades</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/estrato">Estrato</a></li>
