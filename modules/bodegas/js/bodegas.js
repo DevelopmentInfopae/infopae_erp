@@ -319,7 +319,9 @@ function listarBodegasUsuario(codigoUsuario)
     columns:[
       { data: 'input', className: 'text-center'},
       { data: 'nombreUsuario'},
+      { data: 'ciudadBodegaEntrada'},
       { data: 'bodegaEntrada'},
+      { data: 'ciudadBodegaSalida'},
       { data: 'bodegaSalida'}
     ],
     buttons: [ {extend: 'excel', title: 'Bodegas', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3, 4 ] } } ],

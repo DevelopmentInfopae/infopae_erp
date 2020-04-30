@@ -258,8 +258,9 @@ if(count($entregasSedes)>0)
 			$pdf->Cell(110,5,utf8_decode($institucion["nombre_rector"]),'R',0,'L',false);
 			$pdf->SetFont('Arial','B',$tamannoFuente);
 			$pdf->Cell(25,5,utf8_decode('DOC. RECTOR:'),'R',0,'L',false);
+			$pdf->SetFont('Arial','',$tamannoFuente);
+			$pdf->Cell(0,5,$institucion["documento_rector"],0,5,'L',false);
 			$pdf->SetX($x);
-			$pdf->Cell(0,5,"",0,5,'C',false);
 
 			$pdf->SetXY($x, $y);
 			$pdf->Cell(0,30,'',1,0,'C',false);

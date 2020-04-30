@@ -1,19 +1,18 @@
 <?php
 	include '../../header.php';
+	include 'functions/fn_fecha_asistencia.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
+
+	//var_dump($_SESSION);
 
 	$periodoActual = $_SESSION["periodoActual"];
 	$titulo = "Informe de asistencias";
 	$institucionNombre = "";
-
-	date_default_timezone_set('America/Bogota');
-	$fecha = date("Y-m-d H:i:s");
-	$cacheBusting = date("YmdHis");
-
-	$dia = intval(date("d"));
-	$mes = date("m");
-	$anno = date("Y");		
+	$dia = $diaAsistencia;
+	$mes = $mesAsistencia;
+	$anno = $annoasistencia;
+	$semanaActual = null;
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
@@ -51,7 +50,8 @@
 				<div class="ibox-content">
 					<input type="hidden" id="semanaActual" value="<?php echo $semanaActual; ?>">
 					<input type="hidden" id="sede" value="">
-
+					<input type="hidden" id="validacion" name="validacion" value="Tablet">
+					
 
 					<div class="table-responsive table-asistencia">
 						<table class="table table-striped table-hover selectableRows dataTablesSedes" >

@@ -7,7 +7,7 @@ $x = 3;
 
 
 // Condición que oculta o muestra la sección de información de las raciones.
-if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
+if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8) {
 	$y = 158;
 	$altura = 5;
 	$pdf->SetXY($x, $y);
@@ -23,7 +23,7 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJM:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$altura,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4) ? $totales['entregas'] : "" ),"B",0,'C',False);
+	$pdf->Cell(10,$altura,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8) ? $totales['entregas'] : "" ),"B",0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
@@ -48,13 +48,13 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(72,$altura,utf8_decode('RACIONES MENSUALES PROGRAMADAS CAJT:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$altura,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? $totalProgramadoMes : ""), "B", 0, 'C', False);
+	$pdf->Cell(10,$altura,(($tipoComplemento == "CAJTRI" || $tipoComplemento == "CAJTPS") && ($tipoPlanilla != 1) ? $totalProgramadoMes : ""), "B", 0, 'C', False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJT:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$altura,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla == 4) ? $totales['entregas'] : "" ),"B",0,'C',False);
+	$pdf->Cell(10,$altura,(($tipoComplemento == "CAJTRI" || $tipoComplemento == "CAJTPS") && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8) ? $totales['entregas'] : "" ),"B",0,'C',False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
@@ -85,7 +85,7 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS ALMUERZOS:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(10,$altura,(($tipoComplemento == "APS" && $tipoPlanilla == 4) ? $totales['entregas'] : "" ), "B", 0, 'C', False);
+	$pdf->Cell(10,$altura,(($tipoComplemento == "APS" && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8)) ? $totales['entregas'] : "" ), "B", 0, 'C', False);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
@@ -119,7 +119,7 @@ $pdf->Ln(1);
 $pdf->SetTextColor(0,0,0);
 $pdf->Cell(0,30,'',1,36,'C',False);
 
-if ($tipoPlanilla == 5 || $tipoPlanilla == 6 || $tipoPlanilla == 7 || $tipoPlanilla == 8) {
+if ($tipoPlanilla == 5 || $tipoPlanilla == 6 /*|| $tipoPlanilla == 7 || $tipoPlanilla == 8*/) {
 	$pdf->SetXY($x, $y+1);
 } else {
 	$pdf->SetXY($x, $y+23);

@@ -5,8 +5,6 @@
   $periodoActual = $_SESSION['periodoActual'];
 
   $codigoDANE = $_SESSION['p_Municipio'];
-
-  // var_dump($_SESSION);
 ?>
 
 <style type="text/css">
@@ -23,15 +21,15 @@
         <strong><?php echo $titulo; ?></strong>
       </li>
     </ol>
-  </div><!-- /.col -->
+  </div>
   <div class="col-lg-4">
     <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
       <div class="title-action">
         <button class="btn btn-primary" onclick="window.location.href = '<?php echo $baseUrl; ?>/modules/insumos/despacho_insumo.php';"><span class="fa fa-plus"></span>  Nuevo</button>
       </div>
     <?php } ?>
-  </div><!-- /.col -->
-</div><!-- /.row -->
+  </div>
+</div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
@@ -73,23 +71,23 @@
             <div id="fechaDiasDespachos">
               <div class="form-group col-sm-3">
                 <label>Desde</label>
-                <div class="compositeDate">
+                <!-- <div class="compositeDate"> -->
                   <div class="nopadding">
                     <select name="mes_inicio" id="mes_inicio" class="form-control ">
                     <?php echo $opciones; ?>
                     </select>
                   </div>
-                </div>
+                <!-- </div> -->
               </div>
               <div class="form-group col-sm-3">
                 <label>Hasta</label>
-                <div class="compositeDate">
+                <!-- <div class="compositeDate"> -->
                   <div class="nopadding">
                     <select name="mes_fin" id="mes_fin" class="form-control ">
                     <?php echo $opciones; ?>
                     </select>
                   </div>
-                </div>
+                <!-- </div> -->
               </div>
             </div>
             <div class="form-group col-sm-3">
@@ -158,13 +156,13 @@
               </select>
             </div>
             <input type="hidden" name="buscar" value="1">
+            <div class="col-sm-12">
+              <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
+              <?php if (isset($_POST['buscar'])): ?>
+                <button class="btn btn-primary" onclick="location.href='despachos.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
+              <?php endif ?>
+            </div>
           </form>
-          <div class="col-sm-12">
-            <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
-            <?php if (isset($_POST['buscar'])): ?>
-              <button class="btn btn-primary" onclick="location.href='despachos.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
-            <?php endif ?>
-          </div>
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
     </div><!-- /.col-lg-12 -->
@@ -293,24 +291,13 @@
 
     $consulta = "";
 
-    // $consulta = "SELECT
-    //                  pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst
-    //               FROM
-    //                 insumosmov$numtabla AS pmov
-    //                   INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
-    //                   INNER JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
-    //                   INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
-    //                   $inners $condiciones
-    //                   LEFT JOIN ubicacion as u ON u.codigoDANE = sede.cod_mun_sede
-    //               LIMIT 2000;";
-
     for ($i=$num_mes_inicio; $i <= $num_mes_fin ; $i++) {
        $consulta.="SELECT
-                     pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst, '".($i < 10 ? "0".$i : $i)."' as mesDespacho
+                     pmov.Tipo, pmov.Numero, u.Ciudad, pmov.Aprobado, pmov.FechaMYSQL, bodegas.NOMBRE as nomBodegaOrigen, IF (b2.NOMBRE IS NULL, 'No existe bodega', b2.NOMBRE) as nomBodegaDestino, pmov.Id, pmov.BodegaDestino, sede.cod_inst, '".($i < 10 ? "0".$i : $i)."' as mesDespacho
                   FROM
                     insumosmov".($i < 10 ? "0".$i : $i).$_SESSION['periodoActual']." AS pmov
                       INNER JOIN bodegas ON bodegas.ID = pmov.BodegaOrigen
-                      INNER JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
+                      LEFT JOIN bodegas as b2 ON b2.ID = pmov.BodegaDestino
                       INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
                       $inners $condiciones
                       LEFT JOIN ubicacion as u ON u.codigoDANE = sede.cod_mun_sede
@@ -320,15 +307,13 @@
 
       $consulta = trim($consulta, "UNION ALL ");
 }
-
-// echo $consulta;
 ?>
               <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
-        </div><!-- /.ibox-content -->
-      </div><!-- /.ibox float-e-margins -->
-    </div><!-- /.col-lg-12 -->
-  </div><!-- /.row -->
-</div><!-- /.wrapper wrapper-content animated fadeInRight -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <form method="POST" action="editar_despacho_insumo.php" id="editar_despacho">
   <input type="hidden" name="id_despacho" id="id_despacho">
@@ -375,8 +360,7 @@
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/insumos/js/despachos.js"></script>
 
-  <script type="text/javascript">
-  console.log('Aplicando Data Table');
+<script type="text/javascript">
   dataset1 = $('#tablaTrazabilidad').DataTable({
     ajax: {
         method: 'POST',

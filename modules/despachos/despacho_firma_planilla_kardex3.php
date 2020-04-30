@@ -4,7 +4,7 @@
 
   $current_y = $pdf->GetY();
   $current_x = $pdf->GetX();
-  
+
   $pdf->SetXY($current_x, $current_y);
 
   $pdf->SetFont('Arial','B',8);

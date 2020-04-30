@@ -1,9 +1,13 @@
 <?php
+require_once '../../../db/conexion.php';
+require_once '../../../config.php';
 
+$periodoActual = $_SESSION['periodoActual'];
+$codigoMenu = "";
 
 //menu
 // SELECT p.* FROM planilla_semanas ps
-// LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo 
+// LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo 
 // WHERE ps.MES = "05" AND ps.SEMANA = "16" AND ps.DIA = "2"
 // AND p.Cod_Tipo_complemento = "APS"
 // AND p.Cod_Grupo_Etario = "1"
@@ -14,8 +18,6 @@
 // SELECT f.id as idFichaTecnica,fd.* FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo 
 // WHERE fd.IdFT = '424'
 
-require_once '../../../db/conexion.php';
-require_once '../../../config.php';
 
 $mes = '';
 $semana = '';
@@ -41,7 +43,7 @@ if(isset($_POST['grupoEtario']) && $_POST['grupoEtario'] != ''){
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " SELECT p.* FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND ps.DIA = \"$dia\"AND p.Cod_Tipo_complemento = \"$tipoComplemento\"AND p.Cod_Grupo_Etario = \"$grupoEtario\"AND  p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
+$consulta = " SELECT p.* FROM planilla_semanas ps LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND ps.DIA = \"$dia\"AND p.Cod_Tipo_complemento = \"$tipoComplemento\"AND p.Cod_Grupo_Etario = \"$grupoEtario\"AND  p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
 
 //echo $consulta;
 

@@ -8,7 +8,19 @@
   // $municipio   = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
   // $institucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? mysqli_real_escape_string($Link, $_POST["institucion"]) : "";
 
-  $consultaNovedad = " SELECT np.id, s.nom_inst, s.nom_sede, np.fecha_hora, np.APS, np.CAJMRI, np.CAJMPS, np.Semana, np.observaciones FROM novedades_priorizacion np LEFT JOIN sedes$periodoActual s ON np.cod_sede = s.cod_sede order by np.id desc ";
+  $consultaNovedad = " SELECT
+                        np.id,
+                        s.nom_inst,
+                        s.nom_sede,
+                        np.fecha_hora,
+                        np.APS,
+                        np.CAJMRI,
+                        np.CAJMPS,
+                        np.Semana,
+                        np.observaciones
+                      FROM
+                        novedades_priorizacion np LEFT JOIN sedes$periodoActual s ON np.cod_sede = s.cod_sede
+                      ORDER BY np.id DESC";
   $resultadoNovedades = $Link->query($consultaNovedad);
   if($resultadoNovedades->num_rows > 0){
     while($registrosSedes = $resultadoNovedades->fetch_assoc()) {

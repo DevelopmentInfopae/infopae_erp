@@ -1,10 +1,10 @@
 <?php
-$Hostname = "192.254.194.178";
-$Username = "infopae_sylvia";
-$Password = "Sylopez18";
-$Database = "infopae_infopae2019";
+$Hostname = "localhost";
+$Username = "root";
+$Password = "";
+$Database = "infopae2019";
+$Link = new mysqli($Hostname, $Username, $Password, $Database);
 
-// $Hostname = "localhost";
-// $Username = "root";
-// $Password = "arena3a";
-// $Database = "infopae2_17";
+if ($Link->connect_errno) { echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error; }
+
+$Link->set_charset("utf8");

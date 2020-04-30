@@ -669,7 +669,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Section Scripts -->
-<script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js?v=20191209"></script>
 
 <script type="text/javascript">/*
   console.log('Aplicando Data Table');

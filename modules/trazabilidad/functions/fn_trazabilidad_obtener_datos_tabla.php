@@ -1,4 +1,4 @@
-<?php 
+<?php
   require_once '../../../config.php';
   require_once '../../../db/conexion.php';
 
@@ -6,9 +6,15 @@
 
   $data = [];
 
-  $respuesta = $Link->query($consulta);
+  $respuesta = $Link->query($consulta) or die('Error realizar la consulta: '. $Link->error);
   if ($respuesta->num_rows > 0) {
   	while ($datos = $respuesta->fetch_assoc()) {
+      if ($datos['Umedida'] == 'u') {
+        $datos['Cantidad'] = number_format((float) $datos['Cantidad'], 0, ',', '.');
+      } else {
+        $datos['Cantidad'] = number_format((float) $datos['Cantidad'], 2, ',', '.');
+      }
+
   		$data[] = $datos;
   	}
   }

@@ -2,6 +2,8 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
+$periodoActual = $_SESSION['periodoActual'];
+
 //var_dump($_POST);
 
 $mes = '';
@@ -27,22 +29,9 @@ if(isset($_POST['menusSeleccionados']) && $_POST['menusSeleccionados'] != ''){
 }
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
-
-$consulta = " SELECT p.* FROM productos19 p WHERE p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 AND p.Codigo NOT IN ( $menusSeleccionados ) 
-
-
-
-AND
-p.Orden_Ciclo IN (SELECT menu FROM planilla_semanas ps 
-
-
-
-WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" )
-
-
-";
-
-//echo $consulta;
+$consulta = " SELECT p.* FROM productos$periodoActual p WHERE p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 AND p.Codigo NOT IN ( $menusSeleccionados ) ";
+/* AND p.Orden_Ciclo IN (SELECT menu FROM planilla_semanas ps WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" ) */
+//echo "<br><br>$consulta<br><br>";
 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los municipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){

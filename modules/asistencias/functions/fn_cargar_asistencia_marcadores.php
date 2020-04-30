@@ -1,6 +1,7 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
+include 'fn_fecha_asistencia.php';
 
 $semanaActual = "";
 $sede = "";
@@ -10,11 +11,14 @@ if(isset($_POST['semanaActual']) && $_POST['semanaActual'] != ''){
 		$semanaActual = mysqli_real_escape_string($Link, $_POST['semanaActual']);
 }
 if(isset($_POST['sede']) && $_POST['sede'] != ''){
-		$sede = mysqli_real_escape_string($Link, $_POST['sede']);
+	$sede = mysqli_real_escape_string($Link, $_POST['sede']);
+}
+if(isset($_POST['complemento']) && $_POST['complemento'] != ''){
+	$complemento = mysqli_real_escape_string($Link, $_POST['complemento']);
 }
 
-$fecha = date("Y-m-d H:i:s");
-$anno = date("y"); 
+
+$anno = $annoAsistencia2D; 
 
 
 
@@ -22,13 +26,13 @@ $anno = date("y");
 if(isset($_POST['mes']) && $_POST['mes'] != ""){
 	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
 }else{
-	$mes = date("m");
+	$mes = $mesAsistencia;
 }
 
 if(isset($_POST['dia']) && $_POST['dia'] != ""){
 	$dia = mysqli_real_escape_string($Link, $_POST['dia']);
 }else{
-	$dia = intval(date("d"));
+	$dia = $diaAsistencia;
 }
 
 
@@ -41,11 +45,9 @@ if(isset($_POST['dia']) && $_POST['dia'] != ""){
 
 
 
-$consulta = "select a.* from asistencia_det$mes$anno a 
-left join focalizacion$semanaActual f on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc
-where a.dia = $dia and f.cod_sede = '$sede'";
+$consulta = "select a.* from asistencia_det$mes$anno a left join focalizacion$semanaActual f on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc where a.dia = $dia and f.cod_sede = '$sede' and f.Tipo_complemento = \"$complemento\" ";
 
-// echo "<br>$consulta<br>";
+//echo "<br>$consulta<br>";
 
 $resultadoAJAX = array(
 	"estado" => 0,

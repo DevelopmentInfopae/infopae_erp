@@ -29,6 +29,7 @@ if ($respuesta_planilla_dias->num_rows > 0) {
 	}
 }
 
+
 $consulta_planilla_semanas = "SELECT DIA AS dia FROM planilla_semanas WHERE MES = '$mes' AND SEMANA = '$semana';";
 $respuesta_planilla_semanas = $Link->query($consulta_planilla_semanas) or die("Error al consulta planilla_semanas: ". $Link->error);
 if ($respuesta_planilla_semanas->num_rows > 0) {
@@ -66,6 +67,11 @@ foreach ($planilla_dias as $clave_dia => $valor_dia) {
 	$fila++;
 }
 
+// echo '<pre>';
+// print_r($cadena_dias_entregas);
+// echo '</pre>';
+// exit();
+
 $consulta_entregas = "SELECT
 	tdc.Abreviatura AS abreviatura,
 	enr.num_doc AS numero_documento,
@@ -97,32 +103,33 @@ $consulta_entregas = "SELECT
 	trim($cadena_dias_entregas, ", ") .
 " FROM entregas_res_$mes$periodo_actual enr
 INNER JOIN tipodocumento tdc ON tdc.id = enr.tipo_doc
-INNER JOIN estrato est ON est.id = enr.cod_estrato
+LEFT JOIN estrato est ON est.id = enr.cod_estrato
 INNER JOIN discapacidades dis ON dis.id = enr.cod_discap
-INNER JOIN etnia etn ON etn.id = enr.etnia
-INNER JOIN pobvictima pvc ON pvc.id = enr.cod_pob_victima
+LEFT JOIN etnia etn ON etn.id = enr.etnia
+LEFT JOIN pobvictima pvc ON pvc.id = enr.cod_pob_victima
 INNER JOIN sedes$periodo_actual sed ON sed.cod_sede = enr.cod_sede
 INNER JOIN jornada jor ON jor.id = enr.cod_jorn_est
 INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede;";
+
 $respuesta_entregas = $Link->query($consulta_entregas) or die("Error al consultar prioriozacion$semana: ". $Link->error);
 if ($respuesta_entregas->num_rows > 0){
 	$excel = new Spreadsheet();
 	$archivo = $excel->getActiveSheet();
 
 	$estilos_titulos = [
-  'font'  => [
-      'bold'  => true,
-      'color' => ['rgb' => '000000'],
-      'size'  => 11,
-      'name'  => 'Calibri'
-  ]];
+		'font'  => [
+		  'bold'  => true,
+		  'color' => ['rgb' => '000000'],
+		  'size'  => 11,
+		  'name'  => 'Calibri'
+	]];
 
 	$columna = "A";
 
-  for ($i = 0; $i < count($titulos_columnas); $i++) {
-  	$archivo->setCellValue($columna ."1", $titulos_columnas[$i])->getStyle($columna ."1")->applyFromArray($estilos_titulos);
-  	$columna++;
-  }
+	for ($i = 0; $i < count($titulos_columnas); $i++) {
+		$archivo->setCellValue($columna ."1", $titulos_columnas[$i])->getStyle($columna ."1")->applyFromArray($estilos_titulos);
+		$columna++;
+	}
 
 	$fila = 2;
 	while($registros_entregas = $respuesta_entregas->fetch_assoc()){
@@ -137,7 +144,7 @@ if ($respuesta_entregas->num_rows > 0){
 	}
 
 	foreach(range("A", "Z") as $columna2) {
-    $archivo->getColumnDimension($columna2)->setAutoSize(true);
+    	$archivo->getColumnDimension($columna2)->setAutoSize(true);
 	}
 
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

@@ -15,10 +15,8 @@
                 proveedores pro;";
 
   $resultado = $Link->query($consulta);
-  if($resultado->num_rows > 0)
-  {
-    while($registros = $resultado->fetch_assoc())
-    {
+  if($resultado->num_rows > 0) {
+    while($registros = $resultado->fetch_assoc()) {
       $registros['input'] = '<div class="btn-group">
                                 <div class="dropdown">
                                   <button class="btn btn-primary btn-sm" id="dLabel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -26,7 +24,6 @@
                                   </button>
                                   <ul class="dropdown-menu pull-right" aria-labelledby="dLabel">
                                     <li><a href="#" class="editarProveedores" data-idProveedor="'. $registros["idProveedor"] .'"><i class="fa fa-pencil fa-lg"></i> Editar</a></li>
-                                    <li><a href="#" class="confirmarEliminarProveedores" data-idProveedor="'. $registros["idProveedor"] .'" data-razonsocialproveedor="'. $registros['razonsocialProveedor'] .'"><i class="fa fa-trash fa-lg"></i> Eliminar</a></li>
                                   </ul>
                                 </div>
                               </div>';

@@ -16,18 +16,25 @@ $pdf->SetFont('Arial','B',$tamannoFuente-1);
 $pdf->Cell(31.4);
 $pdf->Cell(60,8,utf8_decode('DESCRIPCIÓN'),1,0,'C',true);
 
+$X = $pdf->GetX();
+$Y = $pdf->GetY();
+$pdf->Cell(104, 4, "TOTAL DE RACIONES",1,0,'C',TRUE);
 // Ciclo para dibujar el encabezado de los tipos de complemento.
+
+$pdf->SetXY($X, $Y+4);
 foreach ($complementos as $complemento) {
 	$aux_x = $pdf->GetX();
 	$aux_y = $pdf->GetY();
 	$pdf->SetFont('Arial','B',$tamannoFuente-1.5);
-	$pdf->MultiCell((104/count($complementos)),4,utf8_decode("TOTAL RACIONES\n". $complemento),1,'C',true);
+	$pdf->MultiCell((104/count($complementos)),4,utf8_decode($complemento),1,'C',true);
+	// $pdf->MultiCell((104/count($complementos)),4,utf8_decode("TOTAL RACIONES\n". $complemento),1,'C',true);
 	$pdf->SetXY($aux_x, $aux_y);
-	$pdf->Cell((104/count($complementos)),8,utf8_decode(''),'R',0,'C',false);
+	$pdf->Cell((104/count($complementos)),8, "",'R',0,'C',false);
 }
 
 $aux_x = $pdf->GetX();
 $aux_y = $pdf->GetY();
+$pdf->SetXY($X+104, $Y);
 $pdf->MultiCell(100,4,utf8_decode("No. DE TITULARES DE\nDERECHO"),1,'C',true);
 $pdf->SetXY($x, $y);
 $pdf->Ln(8);

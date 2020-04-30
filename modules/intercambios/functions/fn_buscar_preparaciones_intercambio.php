@@ -14,6 +14,7 @@ if(isset($_POST['menu']) && $_POST['menu'] != ''){
 
 // Consultando en ficha tecnicamediante el codigo para encontrar el id de la ficha tecnica.
 $consulta = " SELECT Id FROM fichatecnica f WHERE f.Codigo = \"$codigoMenu\" ";
+// echo "<br><br>$consulta<br><br>"; 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$row = $resultado->fetch_assoc();

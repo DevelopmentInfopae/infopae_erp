@@ -55,13 +55,13 @@ if (isset($_POST['sedes'])) {
 // exit(var_dump($sedes));
 
 if (isset($_POST['tablaMesInicio'])) {
-	$tablaMesInicio = str_replace("0", "", $_POST['tablaMesInicio']);
+	$tablaMesInicio = $_POST['tablaMesInicio'] < 10 ? str_replace("0", "", $_POST['tablaMesInicio']) : $_POST['tablaMesInicio'];
 } else {
 	echo "<script>alert('No se ha definido mes.');</script>";
 }
 
 if (isset($_POST['tablaMesFin'])) {
-	$tablaMesFin = str_replace("0", "", $_POST['tablaMesFin']);
+	$tablaMesFin = $_POST['tablaMesFin'] < 10 ? str_replace("0", "", $_POST['tablaMesFin']) : $_POST['tablaMesFin'];
 } else {
 	echo "<script>alert('No se ha definido mes.');</script>";
 }
@@ -85,27 +85,9 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 
 	class PDF extends FPDF
 	{
-
-		function setData($fecha, $dpto, $sedes, $productos, $fontSize, $alturaRenglon, $maxEstudiantes, $maxManipuladoras, $nom_inst, $ciudad_despacho, $mesInicio, $mesFin, $coberturaComplemento){
-			$this->fecha = $fecha;
-			// setlocale(LC_TIME, 'es');
-			// $fecha = DateTime::createFromFormat('!m', $mes);
-			// $mes = ucfirst(strftime("%B", $fecha->getTimestamp())); // marzo
-			$this->mes = "De ".mesNombre($mesInicio)." a ".mesNombre($mesFin);
-			$this->dpto = $dpto;
-			$this->sedes = $sedes;
-			$this->productos = $productos;
-			$this->fontSize = $fontSize;
-			$this->alturaRenglon = $alturaRenglon;
-			$this->maxEstudiantes = $maxEstudiantes;
-			$this->maxManipuladoras = $maxManipuladoras;
-			$this->nom_inst = $nom_inst;
-			$this->ciudad_despacho = $ciudad_despacho;
-			$this->coberturaComplemento = $coberturaComplemento;
-		}
-
 		function Header()
 		{
+			$this->mes = "De ".mesNombre($mesInicio)." a ".mesNombre($mesFin);
 			$logoInfopae = '../'.$_SESSION['p_Logo ETC'];
 		    $this->SetFont('Arial','B',$this->fontSize);
 		    $this->Image($logoInfopae,28,8,100, 15.92,'jpg', '');
@@ -209,7 +191,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		    $this->SetFont('Arial','B',$this->fontSize);
 
 
-		    $this->Cell(36,15,utf8_decode("FIRMA MANIPULADORA"),'TBR',0,'C');
+		    $this->Cell(36,15,utf8_decode("FIRMA QUIÉN RECIBE"),'TBR',0,'C');
 
 
 		    $this->Ln();
@@ -233,6 +215,8 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 
 
 $sedeTabla = "sedes".$_SESSION['periodoActual'];
+
+// exit($tablaMesInicio." - ".$tablaMesFin);
 
 for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 
@@ -287,38 +271,6 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 			}
 		}
 
-
-		// if (count($EstudiantesContados) == 0) {
-		// 	$EstudiantesContados[$i][$codigo_inst] = 1;
-		// }
-
-		// if (count($EstudiantesContados) > 0 && !isset($EstudiantesContados[$i])) {
-		// } else {
-
-		// 	$sumaCoberturasEtario = "";
-
-		// 	foreach ($gruposEtarios as $ID => $DESCRIPCION) {
-		// 		$sumaCoberturasEtario.=" MAX(Etario".$ID."_APS+Etario".$ID."_CAJMRI+Etario".$ID."_CAJTRI+Etario".$ID."_CAJMPS) as Etario".$ID." ,";
-		//     }
-
-		//     $sumaCoberturasEtario = trim($sumaCoberturasEtario, " ,");
-
-		// 	$consultaEtariosCobertura = "SELECT MAX(APS) + MAX(CAJMPS)+ MAX(CAJMRI)+ MAX(CAJTRI) AS cant_Estudiantes, $sumaCoberturasEtario FROM sedes_cobertura WHERE cod_sede = '".$sede."' and mes= '".($i < 10 ? "0".$i : $i)."' GROUP BY cod_sede";
-		// 	$resultadoEtariosCobertura = $Link->query($consultaEtariosCobertura);
-		// 	if ($resultadoEtariosCobertura->num_rows > 0) {
-		// 		if ($EtariosCobertura = $resultadoEtariosCobertura->fetch_assoc()) {
-		// 			if (!isset($maxEstudiantes[$codigo_inst])) {
-		// 				$maxEstudiantes[$codigo_inst] = $EtariosCobertura["cant_Estudiantes"];
-		// 			} else {
-		// 				$maxEstudiantes[$codigo_inst] += $EtariosCobertura["cant_Estudiantes"];
-		// 			}
-
-		// 			// $maxEstudiantes += $EtariosCobertura["cant_Estudiantes"];
-		// 		}
-		// 	}
-
-		// }
-
 		$inst_cobertura_sede_sumada = [];
 		$inst_estudiante_sede_sumada = [];
 
@@ -330,22 +282,12 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 				if (!isset($maxEstudiantes[$codigo_inst])) {
 					$maxEstudiantes[$codigo_inst] = $Despacho["Cobertura"];
 				}
-				// else {
-				// 	if (!isset($inst_estudiante_sede_sumada[$codigo_inst][$sede])) {
-				// 		$maxEstudiantes[$codigo_inst] += $Despacho["Cobertura"];
-				// 		$inst_estudiante_sede_sumada[$codigo_inst][$sede] = 1;
-				// 	}
-				// }
 
 				if (!isset($coberturaComplemento[$codigo_inst][$Despacho['Complemento']])) {
 					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] = $Despacho["Cobertura"];
+				} else {
+					$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];
 				}
-				// else {
-				// 	if (!isset($inst_cobertura_sede_sumada[$codigo_inst][$sede])) {
-				// 		$coberturaComplemento[$codigo_inst][$Despacho['Complemento']] += $Despacho["Cobertura"];
-				// 		$inst_cobertura_sede_sumada[$codigo_inst][$sede] = 1;
-				// 	}
-				// }
 
 			    $consultaDetalles = "SELECT producto.id as pId, producto.NombreUnidad1, producto.NombreUnidad2, producto.NombreUnidad3, producto.NombreUnidad4, producto.NombreUnidad5, producto.CantidadUnd2, insmovdet.* FROM $insumosmovdet AS insmovdet
 			    					INNER JOIN productos".$_SESSION['periodoActual']." as producto ON producto.Codigo = insmovdet.CodigoProducto
@@ -385,7 +327,20 @@ $alturaRenglon = 6;
 
 	foreach ($dataInst as $cod_inst => $sedes) {
 
-		$pdf->setData($fecha_despacho, $dpto, $dataInst, $productos, $fontSize, $alturaRenglon, (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0), $maxManipuladoras[$cod_inst], $nom_inst[$cod_inst], $ciudad_despacho[$cod_inst], $tablaMesInicio, $tablaMesFin, $coberturaComplemento[$cod_inst]);
+		$pdf->fecha = $fecha_despacho;
+		$pdf->dpto = $dpto;
+		$pdf->sedes = $dataInst;
+		$pdf->productos = $productos;
+		$pdf->fontSize = $fontSize;
+		$pdf->alturaRenglon = $alturaRenglon;
+		$pdf->maxEstudiantes = (isset($maxEstudiantes[$cod_inst]) ? $maxEstudiantes[$cod_inst] : 0);
+		$pdf->maxManipuladoras = $maxManipuladoras[$cod_inst];
+		$pdf->nom_inst = $nom_inst[$cod_inst];
+		$pdf->ciudad_despacho = $ciudad_despacho[$cod_inst];
+		$pdf->mesInicio = $tablaMesInicio;
+		$pdf->mesFin = $tablaMesFin;
+		$pdf->coberturaComplemento = $coberturaComplemento[$cod_inst];
+
 		$pdf->AddPage();
 		$pdf->SetFont('Arial','',$fontSize);
 

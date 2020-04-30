@@ -3,8 +3,7 @@ $(document).ready(function(){
 	datatables = $('.dataTablesNovedadesPriorizacion').DataTable({
 		ajax: {
 			method: 'POST',
-			url: 'functions/fn_novedades_menu_buscar_datatables.php',
-			dataSrc: ""
+			url: 'functions/fn_novedades_menu_buscar_datatables.php'
 		},
 		columns:[
 			{ data: 'mes', className: "text-center" },
@@ -16,7 +15,10 @@ $(document).ready(function(){
 			{ data: 'fecha_vencimiento' },
 			{ data: 'estado', className: "text-center" }
 		],
-		buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0,1,2,3,4,5,6,7] } } ],
+		buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel'
+		//, exportOptions: { columns: [0,1,2,3,4,5,6,7] } 
+	
+		} ],
 		dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
 		oLanguage: {
 			sLengthMenu: 'Mostrando _MENU_ registros',

@@ -1,7 +1,6 @@
 <?php
-  session_start();
   include '../config.php';
-  //$periodoActualCompleto = $_POST['periodoActual'];
+  $periodoActualCompleto = $_SESSION['periodoActualCompleto'];
 
 
 

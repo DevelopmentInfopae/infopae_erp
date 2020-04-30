@@ -52,7 +52,7 @@ if ($tipoPlanilla != 6)
 								(SELECT SUM(".$tipoComplemento.") FROM priorizacion".$semana." WHERE cod_sede = '".$codigoSede."') *
 							    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM AND MES = MS)
 							) AS total_entregas
-							FROM planilla_semanas WHERE SEMANA = '".$semana."';";
+							FROM planilla_semanas WHERE SEMANA = '".$semana."' AND MES = '".$mes."';";
 
 
 		$resTotalEntregado = $Link->query($consTotalEntregado);
