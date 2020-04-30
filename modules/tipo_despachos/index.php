@@ -1,6 +1,6 @@
 <?php
   include '../../header.php';
-  $titulo = 'Tipo Despachos';
+  $titulo = 'Tipo Alimentos';
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
