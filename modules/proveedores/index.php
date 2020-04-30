@@ -36,6 +36,8 @@
                 <th>Nombre comercial</th>
                 <th>Razón Social</th>
                 <th>Correo electrónico</th>
+                <th>Municipio</th>
+                <th>Compras locales</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </thead>
@@ -48,6 +50,8 @@
                 <th>Nombre comercial</th>
                 <th>Razón Social</th>
                 <th>Correo electrónico</th>
+                <th>Municipio</th>
+                <th>Compras locales</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </tfoot>
@@ -109,6 +113,8 @@
       {data: 'nombreComercialProveedor'},
       {data: 'razonsocialProveedor'},
       {data: 'emailProveedor'},
+      {data: 'municipio'},
+      {data: 'comprasLocales', className: 'text-center'},
       {data: 'input', className: 'text-center'},
     ],
     buttons: [ {extend: 'excel', title: 'Proveedores', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3 ] } } ],
