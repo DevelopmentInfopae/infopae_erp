@@ -163,7 +163,7 @@
 						                <select class="form-control select2" name="municipio" id="municipio" required>
 						                	<?php
 						                      	$parametro_municipio = (! empty($codigo_municipio)) ? "AND CodigoDANE = '$codigo_municipio'" : "";
-						                      	$consulta_municipios = "SELECT CodigoDANE AS codigo, Ciudad AS nombre, Departamento AS departamento FROM ubicacion WHERE CodigoDANE LIKE '$codigo_departamento%' $parametro_municipio ORDER BY Ciudad ASC;";
+						                      	$consulta_municipios = "SELECT CodigoDANE AS codigo, Ciudad AS nombre, Departamento AS departamento FROM ubicacion ORDER BY Ciudad ASC;";
 						                      	$respuesta_consulta_municipios = $Link->query($consulta_municipios) or die('Error al consultar municipios: '. $Link->error);
 						                      	if (! empty($respuesta_consulta_municipios->num_rows)) {
 						                        	while($municipio = $respuesta_consulta_municipios->fetch_object()) {
