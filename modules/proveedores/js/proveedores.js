@@ -4,6 +4,7 @@ $(document).ready(function(){
 	$(document).on('change', '#tipoJuridico', function() { obtenerTipoRegimen(); obtenerTipoDocumento(); })
 	$(document).on('click', '#crearProveedor', function() { crearProveedor(); });
 	$(document).on('click', '.editarProveedores', function() { editarProveedores($(this).data('idproveedor')); });
+	$(document).on('click', '#tablaProveedores tbody td:nth-child(-n+6)', function(){ editarProveedores($(this).parent().attr('id')); });
 	$(document).on('click', '#guardarProveedor', function() { guardarProveedor(false); });
 	$(document).on('click', '#actualizarProveedor', function() { actualizarProveedor(false); });
 	$(document).on('click', '#eliminarProveedor', function() { eliminarProveedor(); });
