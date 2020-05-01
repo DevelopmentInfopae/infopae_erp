@@ -29,7 +29,7 @@
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
-          <table id="tablaEmpleados" class="table table-striped table-hover selectableRows">
+          <table id="tablaProveedores" class="table table-striped table-hover selectableRows">
             <thead>
               <tr>
                 <th>Nit</th>
@@ -103,7 +103,7 @@
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/proveedores/js/proveedores.js"></script>
 <script>
-  $('#tablaEmpleados').DataTable({
+  $('#tablaProveedores').DataTable({
     ajax: {
       method: 'post',
       url: 'functions/fn_proveedores_listar.php'
@@ -136,6 +136,10 @@
     },
     pageLength: 25,
     responsive: true,
+    rowCallback: function(row, data) {
+      row.id = data.idProveedor;
+      row.className = "editar_proveedor";
+    },
     preDrawCallback: function() {
       $('#loader').fadeIn();
     }
