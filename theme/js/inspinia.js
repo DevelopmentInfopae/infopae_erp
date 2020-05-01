@@ -177,6 +177,11 @@ $(document).ready(function () {
     $('.full-height-scroll').slimscroll({
         height: '100%'
     })
+
+    $(document).on('change, keyup', '.only_number',function(){
+        this.value = this.value.replace(/[^0-9]/g,'');
+        $(this).prop('title', formatNumber($(this).val()));
+    });
 });
 
 
