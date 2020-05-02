@@ -97,10 +97,27 @@
 			<ul class="nav nav-second-level">
 				<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
 				<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
-				<li><a href="<?php echo $baseUrl; ?>/modules/ordenes_compra/ordenes.php">Órdenes de compra</a></li>
+				<!-- <li><a href="<?php //echo $baseUrl; ?>/modules/ordenes_compra/ordenes.php">Órdenes de compra</a></li> -->
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/despachos.php"><span class="nav-label">Insumos</span></a> </li>
 			</ul>
 		</li>
+
+
+
+
+
+		<li> <a href="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/ordenes_de_compra.php"><i class="fa fa-truck"></i> <span class="nav-label">Ordenes de compra</span></a> </li>
+
+
+
+
+
+
+
+
+
+
+
 	<?php } ?>
 	<li>
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
