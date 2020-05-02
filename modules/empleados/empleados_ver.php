@@ -1,65 +1,63 @@
 <?php
 	include '../../header.php';
-	$titulo = 'Actualizar empleado';
+	$titulo = 'Ver empleado';
 $periodoActual = $_SESSION["periodoActual"];
 
-  $idEmpleado = (isset($_POST['idEmpleado']) && $_POST['idEmpleado'] != '') ? mysqli_real_escape_string($Link, $_POST['idEmpleado']) : '';
-	$consulta0 = "SELECT * FROM empleados WHERE ID = '$idEmpleado'";
-	$resultado0 = $Link->query($consulta0) or die ("Error al consultar datos del empleado: ". mysqli_error($Link));
-	if ($resultado0->num_rows > 0)
-	{
-		$registros0 = $resultado0->fetch_assoc();
-		$tipoDocumento = $registros0['TipoDoc'];
-		$foto = $registros0['Foto'];
-		$cedulaEmpleado = $registros0['Nitcc'];
-		$libretaMilitar = $registros0['LibretaMilitar'];
-		$estadoCivil = $registros0['EstadoCivil'];
-		$primerNombre = $registros0['PrimerNombre'];
-		$segundoNombre = $registros0['SegundoNombre'];
-		$primerApellido = $registros0['PrimerApellido'];
-		$segundoApellido = $registros0['SegundoApellido'];
-		$email = $registros0['Email'];
-		$direccion = $registros0['Direccion'];
-		$telefono = $registros0['Telefono1'];
-		$telefono2 = $registros0['Telefono2'];
-		$departamentoResidenciaString = substr($registros0['Ciudad'], 0, 2);
-		$departamentoResidencia = (int) substr($registros0['Ciudad'], 0, 2);
-		$municipioResidencia = $registros0['Ciudad'];
-		$barrio = $registros0['Barrio'];
-		$tipoSangre = $registros0['TipoSangre'];
-		$departamentoNacimientoString = substr($registros0['LugarNacimiento'], 0, 2);
-		$departamentoNacimiento = (int) substr($registros0['LugarNacimiento'], 0, 2);
-		$municipioNacimiento = $registros0['LugarNacimiento'];
-		$fechaNacimiento = $registros0['FechaNacimiento'];
-		$sexo = $registros0['Sexo'];
-		$profesion = $registros0['Profesion'];
-		$cargo = $registros0['Cargo'];
-		$nivelEstudio = $registros0['NivelEstudio'];
-		$numeroContrato = $registros0['Contrato'];
-		$tallaPantalon = $registros0['TallaPantalon'];
-		$tallaCamisa = $registros0['TallaCamisa'];
-		$numeroCalzado = $registros0['NumeroCalzado'];
-
-		$datos_man = false;
-		$datos_sede_man = false;
-		if ($registros0['tipo'] == 2) {
-			$consulta_man = "SELECT * FROM manipuladoras_sedes WHERE estado = 1 AND documento = ".$cedulaEmpleado;
-			$resultado_man = $Link->query($consulta_man);
-			if ($resultado_man->num_rows > 0) {
-				while ($datman = $resultado_man->fetch_assoc()) {
-					$datos_man[$datman['ID']] = $datman;
-					$consulta_sede_man = "SELECT instituciones.cod_mun as cod_mun_inst, sedes.* FROM sedes$periodoActual as sedes 
-											INNER JOIN instituciones ON sedes.cod_inst = instituciones.codigo_inst
-										WHERE sedes.cod_sede = ".$datos_man[$datman['ID']]['cod_sede'];
-					$resultados_sede_man = $Link->query($consulta_sede_man);
-					if ($resultados_sede_man->num_rows > 0) {
-						$datos_sede_man[$datman['ID']] = $resultados_sede_man->fetch_assoc();
-					}
+$idEmpleado = (isset($_POST['codigoEmpleado']) && $_POST['codigoEmpleado'] != '') ? mysqli_real_escape_string($Link, $_POST['codigoEmpleado']) : '';
+$consulta0 = "SELECT * FROM empleados WHERE ID = '$idEmpleado'";
+$resultado0 = $Link->query($consulta0) or die ("Error al consultar datos del empleado: ". mysqli_error($Link));
+if ($resultado0->num_rows > 0)
+{
+	$registros0 = $resultado0->fetch_assoc();
+	$tipoDocumento = $registros0['TipoDoc'];
+	$foto = $registros0['Foto'];
+	$cedulaEmpleado = $registros0['Nitcc'];
+	$libretaMilitar = $registros0['LibretaMilitar'];
+	$estadoCivil = $registros0['EstadoCivil'];
+	$primerNombre = $registros0['PrimerNombre'];
+	$segundoNombre = $registros0['SegundoNombre'];
+	$primerApellido = $registros0['PrimerApellido'];
+	$segundoApellido = $registros0['SegundoApellido'];
+	$email = $registros0['Email'];
+	$direccion = $registros0['Direccion'];
+	$telefono = $registros0['Telefono1'];
+	$telefono2 = $registros0['Telefono2'];
+	$departamentoResidenciaString = substr($registros0['Ciudad'], 0, 2);
+	$departamentoResidencia = (int) substr($registros0['Ciudad'], 0, 2);
+	$municipioResidencia = $registros0['Ciudad'];
+	$barrio = $registros0['Barrio'];
+	$tipoSangre = $registros0['TipoSangre'];
+	$departamentoNacimientoString = substr($registros0['LugarNacimiento'], 0, 2);
+	$departamentoNacimiento = (int) substr($registros0['LugarNacimiento'], 0, 2);
+	$municipioNacimiento = $registros0['LugarNacimiento'];
+	$fechaNacimiento = $registros0['FechaNacimiento'];
+	$sexo = $registros0['Sexo'];
+	$profesion = $registros0['Profesion'];
+	$cargo = $registros0['Cargo'];
+	$nivelEstudio = $registros0['NivelEstudio'];
+	$numeroContrato = $registros0['Contrato'];
+	$tallaPantalon = $registros0['TallaPantalon'];
+	$tallaCamisa = $registros0['TallaCamisa'];
+	$numeroCalzado = $registros0['NumeroCalzado'];
+	$datos_man = false;
+	$datos_sede_man = false;
+	if ($registros0['tipo'] == 2) {
+		$consulta_man = "SELECT * FROM manipuladoras_sedes WHERE estado = 1 AND documento = ".$cedulaEmpleado;
+		$resultado_man = $Link->query($consulta_man);
+		if ($resultado_man->num_rows > 0) {
+			while ($datman = $resultado_man->fetch_assoc()) {
+				$datos_man[$datman['ID']] = $datman;
+				$consulta_sede_man = "SELECT instituciones.cod_mun as cod_mun_inst, sedes.* FROM sedes$periodoActual as sedes 
+										INNER JOIN instituciones ON sedes.cod_inst = instituciones.codigo_inst
+									WHERE sedes.cod_sede = ".$datos_man[$datman['ID']]['cod_sede'];
+				$resultados_sede_man = $Link->query($consulta_sede_man);
+				if ($resultados_sede_man->num_rows > 0) {
+					$datos_sede_man[$datman['ID']] = $resultados_sede_man->fetch_assoc();
 				}
 			}
 		}
-
 	}
+}
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -89,7 +87,6 @@ $periodoActual = $_SESSION["periodoActual"];
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
-          <form id="formEditarEmpleado" action="function/fn_empleados_crear.php" method="post">
           	<div class="row">
     			<div class="col-sm-12">
     				<div class="row">
@@ -98,14 +95,6 @@ $periodoActual = $_SESSION["periodoActual"];
 								<div class="fileinput fileinput-new" data-provides="fileinput">
 								  <div class="fileinput-preview thumbnail img-circle" data-trigger="fileinput" style="width: 150px; height: 150px; padding: 0px;">
 								  	<img class="img-responsive" <?php if ($foto != "") { ?> src="<?php echo $foto; ?>" <?php } ?> alt="">
-								  </div>
-								  <div class="text-center">
-								    <span class="btn btn-default btn-file">
-							    		<span class="fileinput-new">seleccionar</span>
-							    		<span class="fileinput-exists">Cambiar</span>
-								    	<input type="file" name="foto" id="foto" accept="image/jpg, image/jpeg, image/png">
-								    </span>
-								    <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Quitar</a>
 								  </div>
 								</div>
 								<input type="hidden" nombre="fotoCargada" id="fotoCargada" value=" <?php echo $foto; ?> ">
@@ -138,53 +127,69 @@ $periodoActual = $_SESSION["periodoActual"];
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
-								    <label for="numeroDocumento">Número documento</label>
-								    <input type="text" name="numeroDocumento" id="numeroDocumento" class="form-control form-data" value="<?= $cedulaEmpleado ?>">
+									<fieldset disabled>
+									    <label for="numeroDocumento">Número documento</label>
+									    <input type="text" name="numeroDocumento" id="numeroDocumento" class="form-control form-data" value="<?= $cedulaEmpleado ?>">
+									</fieldset>
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
-									<label for="libretaMilitar">Libreta militar</label>
-									<input type="number" class="form-control form-data" name="libretaMilitar" id="libretaMilitar" value="<?php echo $libretaMilitar; ?>">
+									<fieldset disabled>
+										<label for="libretaMilitar">Libreta militar</label>
+										<input type="number" class="form-control form-data" name="libretaMilitar" id="libretaMilitar" value="<?php echo $libretaMilitar; ?>">
+									</fieldset>
 								</div>
 	        				</div>
 	        				<div class="row">
 	        					<div class="form-group col-sm-6 col-md-4">
-									<label for="estadoCivil">Estado civil</label>
-									<select class="form-control form-data" name="estadoCivil" id="estadoCivil">
-										<option value="">Seleccione uno</option>
-										<option value="Soltero/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Soltero/a'){ echo 'selected'; } ?>>Soltero/a</option>
-										<option value="Comprometido/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Comprometido/a'){ echo 'selected'; } ?>>Comprometido/a</option>
-										<option value="Casado/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Casado/a'){ echo 'selected'; } ?>>Casado/a</option>
-										<option value="Unión libre" <?php if(isset($estadoCivil) && $estadoCivil == 'Unión libre'){ echo 'selected'; } ?>>Unión libre</option>
-										<option value="Divorciado/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Divorciado/a'){ echo 'selected'; } ?>>Divorciado/a</option>
-										<option value="Viudo/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Viudo/a'){ echo 'selected'; } ?>>Viudo/a</option>
-									</select>
+									<fieldset disabled>
+										<label for="estadoCivil">Estado civil</label>
+										<select class="form-control form-data" name="estadoCivil" id="estadoCivil">
+											<option value="">Seleccione uno</option>
+											<option value="Soltero/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Soltero/a'){ echo 'selected'; } ?>>Soltero/a</option>
+											<option value="Comprometido/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Comprometido/a'){ echo 'selected'; } ?>>Comprometido/a</option>
+											<option value="Casado/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Casado/a'){ echo 'selected'; } ?>>Casado/a</option>
+											<option value="Unión libre" <?php if(isset($estadoCivil) && $estadoCivil == 'Unión libre'){ echo 'selected'; } ?>>Unión libre</option>
+											<option value="Divorciado/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Divorciado/a'){ echo 'selected'; } ?>>Divorciado/a</option>
+											<option value="Viudo/a" <?php if(isset($estadoCivil) && $estadoCivil == 'Viudo/a'){ echo 'selected'; } ?>>Viudo/a</option>
+										</select>
+									</fieldset>
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
-									<label for="primerNombre">Primer nombre</label>
-									<input type="text" class="form-control form-data" name="primerNombre" id="primerNombre" value="<?php echo $primerNombre; ?>" required>
+									<fieldset disabled>
+										<label for="primerNombre">Primer nombre</label>
+										<input type="text" class="form-control form-data" name="primerNombre" id="primerNombre" value="<?php echo $primerNombre; ?>" required>
+									</fieldset>
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
-									<label for="segundoNombre">Segundo nombre</label>
-									<input type="text" class="form-control form-data" name="segundoNombre" id="segundoNombre" value="<?php echo $segundoNombre; ?>">
+									<fieldset disabled>
+										<label for="segundoNombre">Segundo nombre</label>
+										<input type="text" class="form-control form-data" name="segundoNombre" id="segundoNombre" value="<?php echo $segundoNombre; ?>">
+									</fieldset>
 								</div>
 	        				</div>
 	        				<div class="row">
 	        					<div class="form-group col-sm-6 col-md-4">
+									<fieldset disabled>
 									<label for="primerApellido">Primer apellido</label>
 									<input type="text" class="form-control form-data" name="primerApellido" id="primerApellido" value="<?php echo $primerApellido; ?>" required>
+									</fieldset>
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
+									<fieldset disabled>
 									<label for="segundoApellido">Segundo apellido</label>
 									<input type="text" class="form-control form-data" name="segundoApellido" id="segundoApellido" value="<?php echo $segundoApellido; ?>">
+									</fieldset>
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
+									<fieldset disabled>
 									<label for="email">Email</label>
 									<input type="email" class="form-control form-data" name="email" id="email" value="<?php echo $email; ?>" readOnly required>
+									</fieldset>
 								</div>
 	        				</div>
 	        			</div>
@@ -194,6 +199,7 @@ $periodoActual = $_SESSION["periodoActual"];
 					<div class="row">
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="departamentoResidencia">Departamento de residencia</label>
 							<select class="form-control form-data" name="departamentoResidencia" id="departamentoResidencia" required>
 								<option value="">Seleccione uno</option>
@@ -211,9 +217,11 @@ $periodoActual = $_SESSION["periodoActual"];
 							    }
 							  ?>
 							</select>
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="municipioResidencia">Municipio de residencia</label>
 							<select class="form-control form-data" name="municipioResidencia" id="municipioResidencia" required>
 								<option value="">Seleccione uno</option>
@@ -231,32 +239,42 @@ $periodoActual = $_SESSION["periodoActual"];
 							    }
 							  ?>
 							</select>
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="direccion">Dirección</label>
 							<input type="text" class="form-control form-data" name="direccion" id="direccion" value="<?php echo $direccion; ?>" required>
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="barrio">Barrio</label>
 							<input type="text" class="form-control form-data" name="barrio" id="barrio" value="<?php echo $barrio; ?>">
+									</fieldset>
 						</div>
 
 					</div>
 					<div class="row">
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="telefono">Teléfono Fijo</label>
 							<input type="tel" class="form-control form-data" name="telefono" id="telefono" value="<?php echo $telefono; ?>" required>
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="telefono2">Teléfono Móvil</label>
 							<input type="tel" class="form-control form-data" name="telefono2" id="telefono2" value="<?php echo $telefono2; ?>">
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="departamentoNacimiento">Departamento de nacimiento</label>
 							<select class="form-control form-data" name="departamentoNacimiento" id="departamentoNacimiento" required>
 								<option value="">Seleccione uno</option>
@@ -274,9 +292,11 @@ $periodoActual = $_SESSION["periodoActual"];
 							    }
 							  ?>
 							</select>
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="municipioNacimiento">Municipio de nacimiento</label>
 							<select class="form-control form-data" name="municipioNacimiento" id="municipioNacimiento" required>
 								<option value="">Seleccione uno</option>
@@ -294,6 +314,7 @@ $periodoActual = $_SESSION["periodoActual"];
 							    }
 							  ?>
 							</select>
+									</fieldset>
 						</div>
 
 					</div>
@@ -301,11 +322,14 @@ $periodoActual = $_SESSION["periodoActual"];
 					<div class="row">
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="fechaNacimiento">Fecha de nacimiento</label>
 							<input type="date" class="form-control form-data" name="fechaNacimiento" id="fechaNacimiento" value="<?php echo $fechaNacimiento; ?>"  required>
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="tipoSangre">Tipo de sangre</label>
 							<select class="form-control form-data" name="tipoSangre" id="tipoSangre">
 								<option value="">Seleccione uno</option>
@@ -318,17 +342,20 @@ $periodoActual = $_SESSION["periodoActual"];
 								<option value="AB+"<?php if(isset($tipoSangre) && $tipoSangre == 'AB+'){ echo 'selected'; } ?>>AB positivo</option>
 								<option value="AB-"<?php if(isset($tipoSangre) && $tipoSangre == 'AB-'){ echo 'selected'; } ?>>AB negativo</option>
 							</select>
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label for="sexo">Género</label> <br>
 							  <label>
-							    <input type="radio" name="sexo" id="sexo1" class="form-data" value="M" <?php if(isset($sexo) && $sexo == 'M'){ echo 'checked'; } ?> required> Masculino
+							    <input type="radio" name="sexo" id="sexo1" class="form-data" disabled value="M" <?php if(isset($sexo) && $sexo == 'M'){ echo 'checked'; } ?> required> Masculino
 							  </label>
 							  <label>
-							    <input type="radio" name="sexo" id="sexo2" class="form-data" value="F" <?php if(isset($sexo) && $sexo == 'F'){ echo 'checked'; } ?> required> Femenino
+							    <input type="radio" name="sexo" id="sexo2" class="form-data" disabled value="F" <?php if(isset($sexo) && $sexo == 'F'){ echo 'checked'; } ?> required> Femenino
 							  </label>
 							<label for="sexo" class="error" style="display: none;"></label>
+									</fieldset>
 						</div>
 
 					</div>
@@ -336,44 +363,59 @@ $periodoActual = $_SESSION["periodoActual"];
 					<div class="row">
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 						    <label for="profesion">Profesión</label>
 						    <input type="text" class="form-control form-data" name="profesion" id="profesion" value="<?php echo $profesion; ?>">
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 						    <label for="cargo">Cargo</label>
 						    <input type="text" class="form-control form-data" name="cargo" id="cargo" value="<?php echo $cargo; ?>">
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 						    <label for="nivelEstudio">Nivel de estudio</label>
 						    <input type="text" class="form-control form-data" name="nivelEstudio" id="nivelEstudio" value="<?php echo $nivelEstudio; ?>">
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 			                <label for="numeroContrato">Número contrato</label>
 			                <input type="text" class="form-control form-data" name="numeroContrato" id="numeroContrato" value="<?php echo $numeroContrato; ?>">
+									</fieldset>
 						</div>
 
 					</div>
 
 					<div class="row">
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 			                <label for="tallaPantalon">Talla pantalón</label>
 			                <input type="text" class="form-control form-data" name="tallaPantalon" id="tallaPantalon" value="<?php echo $tallaPantalon; ?>">
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 			                <label for="tallaCamisa">Talla camisa</label>
 			                <input type="text" class="form-control form-data" name="tallaCamisa" id="tallaCamisa" value="<?php echo $tallaCamisa; ?>">
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 			                <label for="numeroCalzado">Número calzado</label>
 			                <input type="text" class="form-control form-data" name="numeroCalzado" id="numeroCalzado" value="<?php echo $numeroCalzado; ?>">
+									</fieldset>
 						</div>
 
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label>Tipo</label>
 							<select name="tipo" id="tipo" class="form-control form-data form-data" data-edit="1">
 								<option value="">Seleccione...</option>
@@ -382,12 +424,14 @@ $periodoActual = $_SESSION["periodoActual"];
 								<option value="3" <?= $registros0['tipo'] == '3' ? 'selected' : '' ?>>Contratista</option>
 								<option value="4" <?= $registros0['tipo'] == '4' ? 'selected' : '' ?>>Transportador</option>
 							</select>
+									</fieldset>
 						</div>
 
 					</div>
 
 					<div class="row">
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label>Tipo contrato</label>
 							<select name="TipoContrato" id="TipoContrato" class="form-control form-data" required>
 								<option value="1" <?= $registros0['TipoContrato'] == '1' ? 'selected' : '' ?>>OPS</option>
@@ -395,18 +439,25 @@ $periodoActual = $_SESSION["periodoActual"];
 								<option value="3" <?= $registros0['TipoContrato'] == '3' ? 'selected' : '' ?>>Obra labor</option>
 								<option value="4" <?= $registros0['TipoContrato'] == '4' ? 'selected' : '' ?>>Servicios</option>
 							</select>
+									</fieldset>
 						</div>
 						<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
+									<fieldset disabled>
 							<label>Valor Base Mes</label>
 							<input type="text" name="ValorBaseMes" id="ValorBaseMes" value="<?= $registros0['ValorBaseMes'] ?>" class="form-control form-data only_number">
+									</fieldset>
 						</div>
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label>Fecha inicio contrato</label>
 							<input type="date" name="FechaInicalContrato" id="FechaInicalContrato" value="<?= $registros0['FechaInicalContrato'] ?>" class="form-control form-data">
+									</fieldset>
 						</div>
 						<div class="form-group col-sm-6 col-md-3">
+									<fieldset disabled>
 							<label>Fecha fin contrato</label>
 							<input type="date" name="FechaFinalContrato" id="FechaFinalContrato" value="<?= $registros0['FechaFinalContrato'] ?>" class="form-control form-data">
+									</fieldset>
 						</div>
 					</div>
 
@@ -421,7 +472,6 @@ $periodoActual = $_SESSION["periodoActual"];
 										<th>Sede</th>
 										<th>Estado</th>
 										<th>
-											<button type="button" class="btn-sm btn-default add_fila_manipuladora"><span class="fa fa-plus"></span></button>
 										</th>
 									</tr>
 								</thead>
@@ -430,6 +480,7 @@ $periodoActual = $_SESSION["periodoActual"];
 										<tr>
 											<td>
 												<input type="hidden" name="id_manipulador[]" value="<?= $ID ?>">
+									<fieldset disabled>
 												<select name="manipulador_tipo_complemento[]" class="form-control manipulador_tipo_complemento">
 													<?php 
 													$consulta = "SELECT * FROM tipo_complemento";
@@ -443,8 +494,10 @@ $periodoActual = $_SESSION["periodoActual"];
 													}
 													 ?>
 												</select>
+									</fieldset>
 											</td>
 											<td>
+									<fieldset disabled>
 												<select class="form-control manipulador_municipio" name="manipulador_municipio[]">
 													<?php if ($datos_sede_man && isset($datos_sede_man[$ID])): ?>
 													<?php
@@ -462,8 +515,10 @@ $periodoActual = $_SESSION["periodoActual"];
 												  ?>
 												<?php endif ?>
 												</select>
+									</fieldset>
 											</td>
 											<td>
+									<fieldset disabled>
 												<select class="form-control manipulador_institucion" name="manipulador_institucion[]">
 													<?php if ($datos_sede_man && isset($datos_sede_man[$ID])): ?>
 														<?php 
@@ -478,8 +533,10 @@ $periodoActual = $_SESSION["periodoActual"];
 														 ?>
 													<?php endif ?>
 												</select>
+									</fieldset>
 											</td>
 											<td>
+									<fieldset disabled>
 												<select class="form-control manipulador_sede" name="manipulador_sede[]">
 													<?php if ($datos_sede_man && isset($datos_sede_man[$ID])): ?>
 														<?php 
@@ -493,12 +550,15 @@ $periodoActual = $_SESSION["periodoActual"];
 														 ?>
 													<?php endif ?>
 												</select>
+									</fieldset>
 											</td>
 											<td>
+									<fieldset disabled>
 												<select name="estado_manipulador[]" class="form-control form-data">
 													<option value="1" <?= $dato_manipulador['cod_sede'] == 1 ? 'selected' : '' ?>>Activo</option>
 													<option value="0" <?= $dato_manipulador['cod_sede'] == 0 ? 'selected' : '' ?>>Inactivo</option>
 												</select>
+									</fieldset>
 											</td>
 										</tr>
 									<?php endforeach ?>
@@ -511,28 +571,17 @@ $periodoActual = $_SESSION["periodoActual"];
 							<label>Estado</label><br>
 			                <!-- <div class="radio"> -->
 							  <label>
-							    <input type="radio" name="estado" id="estado1" value="1" class="form-data"  <?php if($registros0['estado'] == 1){ echo 'checked'; } ?>  required> Activo
+							    <input type="radio" name="estado" id="estado1" value="1" disabled class="form-data"  <?php if($registros0['estado'] == 1){ echo 'checked'; } ?>  required> Activo
 							  </label>
 							  <label>
-							    <input type="radio" name="estado" id="estado2" value="0" class="form-data" <?php if($registros0['estado'] == 0){ echo 'checked'; } ?> required> Inactivo
+							    <input type="radio" name="estado" id="estado2" value="0" disabled class="form-data" <?php if($registros0['estado'] == 0){ echo 'checked'; } ?> required> Inactivo
 							  </label>
 							<!-- </div> -->
 							<label for="estado" class="error" style="display: none;"></label>
 						</div>
 					</div>
-
     			</div>
           	</div>
-          	<div class="row">
-          		<div class="col-sm12">
-          			<div class="row-">
-          				<div class="col-sm-3 col-lg-2 text-center">
-      							<a href="#" class="btn btn-primary" id="actualizarEmpleadoContinuar"><i class="fa fa-check "></i> Guardar y Continuar </a>
-          				</div>
-          			</div>
-          		</div>
-          	</div>
-          </form>
         </div>
       </div>
     </div>

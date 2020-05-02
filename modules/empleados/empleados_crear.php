@@ -211,7 +211,7 @@
 
 		              <div class="form-group col-sm-6 col-md-3">
 		                <label for="fechaNacimiento">Fecha de nacimiento</label>
-		                <input type="text" class="form-control form-data datepicker" name="fechaNacimiento" id="fechaNacimiento" value=""  required>
+		                <input type="date" class="form-control form-data" name="fechaNacimiento" id="fechaNacimiento" value=""  required>
 		              </div>
 
 		            <div class="form-group col-sm-6 col-md-3">
@@ -234,10 +234,10 @@
 		                <label>Género</label><br>
 		                <!-- <div class="radio"> -->
 						  <label>
-						    <input type="radio" name="sexo" id="sexo1" value="M" required> Masculino
+						    <input type="radio" name="sexo" id="sexo1" class="form-data" value="M" required> Masculino
 						  </label>
 						  <label>
-						    <input type="radio" name="sexo" id="sexo2" value="F" required> Femenino
+						    <input type="radio" name="sexo" id="sexo2" class="form-data" value="F" required> Femenino
 						  </label>
 						<!-- </div> -->
 						<label for="sexo" class="error" style="display: none;"></label>
@@ -267,7 +267,7 @@
 		                	<option value="Primaria">Primaria</option>
 		                	<option value="Secundaria">Secundaria</option>
 		                	<option value="Pregrado">Pregrado</option>
-		                	<option value="Especialización">Ninguno</option>
+		                	<option value="Especialización">Especialización</option>
 		                	<option value="Maestría">Maestría</option>
 		                </select>
 					</div>
@@ -278,7 +278,6 @@
 					</div>
 
 				</div>
-
 				<div class="row">
 
 					<div class="form-group col-sm-6 col-md-3">
@@ -298,7 +297,7 @@
 
 					<div class="form-group col-sm-6 col-md-3">
 						<label>Tipo</label>
-						<select name="tipo" id="tipo" class="form-control form-data">
+						<select name="tipo" id="tipo" class="form-control form-data" data-edit="0" required>
 							<option value="">Seleccione...</option>
 							<option value="1">Empleado</option>
 							<option value="2">Manipulador(a)</option>
@@ -308,47 +307,83 @@
 					</div>
 				</div>
 
-				<div class="row div_manipulador" style="display: none;">
-
+				<div class="row">
 					<div class="form-group col-sm-6 col-md-3">
-						<label>Tipo de Complemento</label>
-						<select name="manipulador_tipo_complemento" id="manipulador_tipo_complemento" class="form-control form-data">
+						<label>Tipo contrato</label>
+						<select name="TipoContrato" id="TipoContrato" class="form-control form-data" required>
 							<option value="">Seleccione...</option>
-							<?php 
-							$consulta = "SELECT * FROM tipo_complemento";
-							$result = $Link->query($consulta);
-							if ($result->num_rows > 0) {
-								while($tcom = $result->fetch_assoc()){ ?>
-
-									<option value="<?= $tcom['CODIGO'] ?>"><?= $tcom['CODIGO'] ?></option>
-
-								<?php }
-							}
-							 ?>
+							<option value="1">OPS</option>
+							<option value="2">Nómina</option>
+							<option value="3">Obra labor</option>
+							<option value="4">Servicios</option>
 						</select>
 					</div>
-
+					<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
+						<label>Valor Base Mes</label>
+						<input type="text" name="ValorBaseMes" id="ValorBaseMes" class="form-control form-data only_number">
+					</div>
 					<div class="form-group col-sm-6 col-md-3">
-						<label for="manipulador_municipio">Municipio</label>
-						<select class="form-control form-data" name="manipulador_municipio" id="manipulador_municipio">
-							<option value="">Seleccione uno</option>
-						</select>
+						<label>Fecha inicio contrato</label>
+						<input type="date" name="FechaInicalContrato" id="FechaInicalContrato" class="form-control form-data">
 					</div>
-
 					<div class="form-group col-sm-6 col-md-3">
-						<label for="manipulador_institucion">Institución</label>
-						<select class="form-control form-data" name="manipulador_institucion" id="manipulador_institucion">
-							<option value="">Seleccione uno</option>
-						</select>
+						<label>Fecha fin contrato</label>
+						<input type="date" name="FechaFinalContrato" id="FechaFinalContrato" class="form-control form-data">
 					</div>
+				</div>
 
-					<div class="form-group col-sm-6 col-md-3">
-						<label for="manipulador_sede">Sede</label>
-						<select class="form-control form-data" name="manipulador_sede" id="manipulador_sede">
-							<option value="">Seleccione uno</option>
-						</select>
+				<div class="row div_manipulador" style="display: none;">
+					<div class="col-sm-12 col-md-12">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Tipo complemento</th>
+									<th>Municipio</th>
+									<th>Institución</th>
+									<th>Sede</th>
+									<th>
+										<button type="button" class="btn-sm btn-default add_fila_manipuladora"><span class="fa fa-plus"></span></button>
+									</th>
+								</tr>
+							</thead>
+							<tbody id="manipulador_tbody">
+								<tr>
+									<td>
+										<select name="manipulador_tipo_complemento[]" id="manipulador_tipo_complemento" class="form-control form-data">
+											<option value="">Seleccione...</option>
+											<?php 
+											$consulta = "SELECT * FROM tipo_complemento";
+											$result = $Link->query($consulta);
+											if ($result->num_rows > 0) {
+												while($tcom = $result->fetch_assoc()){ ?>
+
+													<option value="<?= $tcom['CODIGO'] ?>"><?= $tcom['CODIGO'] ?></option>
+
+												<?php }
+											}
+											 ?>
+										</select>
+									</td>
+									<td>
+										<select class="form-control form-data" name="manipulador_municipio[]" id="manipulador_municipio">
+											<option value="">Seleccione uno</option>
+										</select>
+									</td>
+									<td>
+										<select class="form-control form-data" name="manipulador_institucion[]" id="manipulador_institucion">
+											<option value="">Seleccione uno</option>
+										</select>
+									</td>
+									<td>
+										<select class="form-control form-data" name="manipulador_sede[]" id="manipulador_sede">
+											<option value="">Seleccione uno</option>
+										</select>
+									</td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-
 				</div>
 				<div class="row">
 					<div class="form-group col-sm-6 col-md-3">

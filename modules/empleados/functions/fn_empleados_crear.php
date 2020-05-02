@@ -32,14 +32,22 @@
   $departamentoNacimiento = (isset($_POST['departamentoNacimiento']) && $_POST['departamentoNacimiento'] != '') ? mysqli_real_escape_string($Link, $_POST['departamentoNacimiento']) : '';
   // Nuevos campos
   $tipoEmpleado = (isset($_POST['tipo']) && $_POST['tipo'] != '') ? mysqli_real_escape_string($Link, $_POST['tipo']) : 0;
-  $manipulador_municipio = (isset($_POST['manipulador_municipio']) && $_POST['manipulador_municipio'] != '') ? mysqli_real_escape_string($Link, $_POST['manipulador_municipio']) : '';
-  $manipulador_institucion = (isset($_POST['manipulador_institucion']) && $_POST['manipulador_institucion'] != '') ? mysqli_real_escape_string($Link, $_POST['manipulador_institucion']) : '';
-  $manipulador_sede = (isset($_POST['manipulador_sede']) && $_POST['manipulador_sede'] != '') ? mysqli_real_escape_string($Link, $_POST['manipulador_sede']) : '';
-  $manipulador_tipo_complemento = (isset($_POST['manipulador_tipo_complemento']) && $_POST['manipulador_tipo_complemento'] != '') ? mysqli_real_escape_string($Link, $_POST['manipulador_tipo_complemento']) : '';
+
+  $manipulador_tipo_complemento = (isset($_POST['manipulador_tipo_complemento']) && $_POST['manipulador_tipo_complemento'] != '') ? ($_POST['manipulador_tipo_complemento']) : '';
+  $manipulador_municipio = (isset($_POST['manipulador_municipio']) && $_POST['manipulador_municipio'] != '') ? ($_POST['manipulador_municipio']) : '';
+  $manipulador_institucion = (isset($_POST['manipulador_institucion']) && $_POST['manipulador_institucion'] != '') ? ($_POST['manipulador_institucion']) : '';
+  $manipulador_sede = (isset($_POST['manipulador_sede']) && $_POST['manipulador_sede'] != '') ? ($_POST['manipulador_sede']) : '';
 
   $estado = (isset($_POST['estado']) && $_POST['estado'] != '') ? mysqli_real_escape_string($Link, $_POST['estado']) : 0;
-  $crear_usuario = (isset($_POST['crear_usuario']) && $_POST['crear_usuario'] != '') ? mysqli_real_escape_string($Link, $_POST['crear_usuario']) : false;
+  $crear_usuario = (isset($_POST['crear_usuario']) && $_POST['crear_usuario'] != 'false') ? mysqli_real_escape_string($Link, $_POST['crear_usuario']) : false;
+
+  $TipoContrato = (isset($_POST['TipoContrato']) && $_POST['TipoContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['TipoContrato']) : '';
+  $ValorBaseMes = (isset($_POST['ValorBaseMes']) && $_POST['ValorBaseMes'] != '') ? mysqli_real_escape_string($Link, $_POST['ValorBaseMes']) : '';
+  $FechaInicalContrato = (isset($_POST['FechaInicalContrato']) && $_POST['FechaInicalContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['FechaInicalContrato']) : '';
+  $FechaFinalContrato = (isset($_POST['FechaFinalContrato']) && $_POST['FechaFinalContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['FechaFinalContrato']) : '';
+
   $clave = sha1(strtoupper(substr($primerNombre, 0, 1)) . $numeroDocumento);
+  // exit(var_dump($crear_usuario));
   // Validar que el código del empleado no exista en empleados.
   $consulta0 = "SELECT * FROM empleados WHERE Nitcc = '$numeroDocumento';";
   $resultado0 = $Link->query($consulta0) or die('Error al consultar el número de documento de empleado: '. mysqli_error($Link));
@@ -91,7 +99,7 @@ if (isset($_FILES["foto"]["name"])){
   }
 }
 
-  $consulta = "INSERT INTO empleados  (Nitcc, Nombre, Direccion, Telefono1, Telefono2, FechaNacimiento, LugarNacimiento, Sexo, LibretaMilitar, TipoSangre, EstadoCivil, Ciudad, Profesion, Barrio, Email, NivelEstudio, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Cargo, TallaPantalon, TallaCamisa, NumeroCalzado, TipoDoc, FechaCreacion, Contrato, Tipo, Estado)
+  $consulta = "INSERT INTO empleados  (Nitcc, Nombre, Direccion, Telefono1, Telefono2, FechaNacimiento, LugarNacimiento, Sexo, LibretaMilitar, TipoSangre, EstadoCivil, Ciudad, Profesion, Barrio, Email, NivelEstudio, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Cargo, TallaPantalon, TallaCamisa, NumeroCalzado, TipoDoc, FechaCreacion, Contrato, Tipo, TipoContrato, ValorBaseMes, FechaInicalContrato, FechaFinalContrato, Estado)
               VALUES (
                 '$numeroDocumento',
                 '$nombreCompleto',
@@ -121,12 +129,17 @@ if (isset($_FILES["foto"]["name"])){
                 '". date('Y-m-d H-i-s') ."',
                 '$numeroContrato',
                 '$tipoEmpleado',
+                '$TipoContrato',
+                '$ValorBaseMes',
+                '$FechaInicalContrato',
+                '$FechaFinalContrato',
                 '$estado'
               )";
   $resultado = $Link->query($consulta) or die ('Error al insertar empleados: '. mysqli_error($Link));
   if ($resultado)
   {
     $id = $Link->insert_id;
+    $rutaFoto = NULL;
     if (isset($_FILES["foto"])) {
       $rutaFoto = "../../upload/usuarios/E" . $id . ".jpg";
       $subido = move_uploaded_file($_FILES["foto"]["tmp_name"], "../" . $rutaFoto);
@@ -137,22 +150,30 @@ if (isset($_FILES["foto"]["name"])){
     }
 
     if ($tipoEmpleado == 2) {
-      $consulta = "INSERT INTO `manipuladoras_sedes`
-                    (
-                      `documento`,
-                      `tipo_complem`,
-                      `cod_sede`,
-                      `estado`
-                    )
-                    VALUES
-                    (
-                      '$numeroDocumento',
-                      '$manipulador_tipo_complemento',
-                      '$manipulador_sede',
-                      '$estado'
-                    );
-                    ";
-      $resultado = $Link->query($consulta) or die ('Error al insertar manipuladoras_sedes : '. mysqli_error($Link));
+      $manipulador_tipo_complemento   = json_decode($manipulador_tipo_complemento);
+      $manipulador_municipio          = json_decode($manipulador_municipio);
+      $manipulador_institucion        = json_decode($manipulador_institucion);
+      $manipulador_sede               = json_decode($manipulador_sede);
+      foreach ($manipulador_tipo_complemento as $index => $mtc) {
+        $consulta = "INSERT INTO `manipuladoras_sedes`
+                      (
+                        `documento`,
+                        `tipo_complem`,
+                        `cod_sede`,
+                        `estado`
+                      )
+                      VALUES
+                      (
+                        '$numeroDocumento',
+                        '".$mtc->{$index}."',
+                        '".$manipulador_sede[$index]->{$index}."',
+                        '1'
+                      );
+                      ";
+        $resultado = $Link->query($consulta) or die ('Error al insertar manipuladoras_sedes : '. mysqli_error($Link));
+      }
+
+
     }
 
     if ($crear_usuario) {
@@ -202,6 +223,7 @@ if (isset($_FILES["foto"]["name"])){
       'estado' => 1,
       'mensaje' => 'El empleado ha sido creado exitosamente'
     ];
+
   }
   else
   {
