@@ -10,7 +10,10 @@
                 emp.Nitcc AS cedulaEmpleado,
                 emp.Nombre AS nombreEmpleado,
                 emp.Email AS emailEmpleado,
-                ubi.Ciudad AS ciudadEmpleado
+                ubi.Ciudad AS ciudadEmpleado,
+                emp.tipo AS tipoEmpleado,
+                emp.Cargo AS cargoEmpleado,
+                emp.estado AS estadoEmpleado
               FROM
                 empleados emp
               LEFT JOIN ubicacion ubi ON ubi.CodigoDANE = emp.Ciudad;";

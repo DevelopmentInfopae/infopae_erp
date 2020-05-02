@@ -35,6 +35,9 @@
                 <th>Nombres y apellidos</th>
                 <th>Correo electrónico</th>
                 <th>Municipio</th>
+                <th>Tipo Empleado</th>
+                <th>Cargo</th>
+                <th>Estado</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </thead>
@@ -47,6 +50,9 @@
                 <th>Nombres y apellidos</th>
                 <th>Correo electrónico</th>
                 <th>Municipio</th>
+                <th>Tipo Empleado</th>
+                <th>Cargo</th>
+                <th>Estado</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </tfoot>
@@ -96,6 +102,16 @@
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/empleados/js/empleados.js"></script>
 <script>
+
+
+function estado_empleado(x){
+  return x+"AA";
+}
+
+function estado_empleado(x){
+  return x+"AA";
+}
+
   $('#tablaEmpleados').DataTable({
     ajax: {
       method: 'post',
@@ -106,8 +122,38 @@
       {data: 'nombreEmpleado'},
       {data: 'emailEmpleado'},
       {data: 'ciudadEmpleado'},
+      {data: 'tipoEmpleado', "mRender" : function ( data, type, full ) 
+        {
+          if (data == 1) {
+            return 'Empleado(a)';
+          } else if (data == 2) {
+            return 'Manipulador(a)';
+          } else if (data == 3) {
+            return 'Contratista';
+          } else if (data == 4) {
+            return 'Transportador';
+          } else  {
+            return data;
+          }
+        }
+    },
+      {data: 'cargoEmpleado'},
+      {data: 'estadoEmpleado', "mRender" : function ( data, type, full ) 
+        {
+          if (data == 1) {
+            return 'Activo';
+          } else  {
+            return 'Inactivo';
+          }
+        }
+      },
       {data: 'input', className: 'text-center'},
     ],
+    fnRowCallback: function (nRow, aData, iDisplayIndex)
+    {
+        nRow.setAttribute('data-idempleado', aData['idEmpleado']);
+        return nRow;
+    },
     buttons: [ {extend: 'excel', title: 'Empleados', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3, 4, 5 ] } } ],
     dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"clear"><"html5buttons"B>',
     order: [ 1, 'asc' ],
@@ -145,7 +191,7 @@
 </script>
 
 
-<form action="empleados_ver.php" method="post" name="formVerEmpleado" id="formVerEmpleado">
+<form action="empleados_ver.php" method="post" name="formVerEmpleado" id="formVerEmpleado" target="_blank">
   <input type="hidden" name="codigoEmpleado" id="codigoEmpleado">
 </form>
 
