@@ -30,13 +30,15 @@
                                   </button>
                                   <ul class="dropdown-menu pull-right" aria-labelledby="dLabel">
                                     <li><a href="#" class="editarEmpleado" data-idempleado="'. $registros["idEmpleado"] .'"><i class="fa fa-pencil fa-lg"></i> Editar</a></li>
-                                    <li><a href="#" class="confirmarEliminarEmpleado" data-idempleado="'. $registros["idEmpleado"] .'"><i class="fa fa-trash fa-lg"></i> Eliminar</a></li>
                                   </ul>
                                 </div>
                               </div>';
       $datosTabla[] = $registros;
     }
   }
+
+  
+                                    // <li><a href="#" class="confirmarEliminarEmpleado" data-idempleado="'. $registros["idEmpleado"] .'"><i class="fa fa-trash fa-lg"></i> Eliminar</a></li>
 
   $respuestaAJAX = [
     'sEcho' => 1,
