@@ -42,7 +42,7 @@ if ($resultado0->num_rows > 0)
 	$datos_man = false;
 	$datos_sede_man = false;
 	if ($registros0['tipo'] == 2) {
-		$consulta_man = "SELECT * FROM manipuladoras_sedes WHERE estado = 1 AND documento = ".$cedulaEmpleado;
+		$consulta_man = "SELECT * FROM manipuladoras_sedes WHERE documento = ".$cedulaEmpleado;
 		$resultado_man = $Link->query($consulta_man);
 		if ($resultado_man->num_rows > 0) {
 			while ($datman = $resultado_man->fetch_assoc()) {
@@ -416,7 +416,7 @@ if ($resultado0->num_rows > 0)
 
 						<div class="form-group col-sm-6 col-md-3">
 									<fieldset disabled>
-							<label>Tipo</label>
+							<label>Tipo Empleado</label>
 							<select name="tipo" id="tipo" class="form-control form-data form-data" data-edit="1">
 								<option value="">Seleccione...</option>
 								<option value="1" <?= $registros0['tipo'] == '1' ? 'selected' : '' ?>>Empleado</option>
@@ -555,8 +555,8 @@ if ($resultado0->num_rows > 0)
 											<td>
 									<fieldset disabled>
 												<select name="estado_manipulador[]" class="form-control form-data">
-													<option value="1" <?= $dato_manipulador['cod_sede'] == 1 ? 'selected' : '' ?>>Activo</option>
-													<option value="0" <?= $dato_manipulador['cod_sede'] == 0 ? 'selected' : '' ?>>Inactivo</option>
+													<option value="1" <?= $dato_manipulador['estado'] == 1 ? 'selected' : '' ?>>Activo</option>
+													<option value="0" <?= $dato_manipulador['estado'] == 0 ? 'selected' : '' ?>>Inactivo</option>
 												</select>
 									</fieldset>
 											</td>
