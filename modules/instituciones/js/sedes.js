@@ -356,3 +356,26 @@ function subir_archivo_manipuladoras() {
  }
 });
 }
+
+function calcular_manipuladoras(){
+  $('#loader').fadeIn();
+  $.ajax({
+    type: "POST",
+    url: "functions/fn_actualizar_manipuladoras_requeridas.php"
+  }).done(function(data){
+    if (data == 1) {
+      Command: toastr.success(
+        "El número requerido de manipuladoras para todas las sedes se han actualizado",
+        "Actualizado con éxito",
+        { onHidden : function(){ $('#loader').fadeOut(); } }
+        );
+    }
+  }).fail(function(data){
+    console.log(data);
+    Command: toastr.success(
+        "Hubo un error al actualizar, contacte con el administrador",
+        "Error al actualizar",
+        { onHidden : function(){ $('#loader').fadeOut(); } }
+        );
+  });
+}

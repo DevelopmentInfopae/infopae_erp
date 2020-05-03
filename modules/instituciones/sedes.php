@@ -516,6 +516,7 @@
                       '</button>'+
                       '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+
                         '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><i class="fa fa-file-pdf-o"></i> Exportar </a></li>'+
+                        '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="calcular_manipuladoras();"><i class="fa fa-refresh"></i> Actualizar número de manipuladoras requeridas </a></li>'+
                         '<li class="divider"></li>'+
                         '<li>'+
                           '<a class="fileinput fileinput-new" data-provides="fileinput">'+
@@ -548,6 +549,7 @@
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.xlsx" dowload> <i class="fa fa-download"></i> Descarga plantilla sedes.XLSX </a></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/priorizacion/Plantilla_Priorizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla priorización .CSV</a></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/focalizacion/Plantilla_Focalizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla focalización .CSV</a></li>'+
+                        '<li><a href="#" onclick="$(\'#exportarManipuladoras\').submit();"> <i class="fa fa-download"></i> Generar archivo manipuladoras </a></li>'+
                         '<li><a id="descargarPlantillaManipuladoras"> <i class="fa fa-download"></i> Descarga plantilla manipuladoras.CSV</a></li>'+
                         '<ul>'+
                       '</ul>'+
@@ -561,6 +563,9 @@
     <input type="hidden" name="codSede" id="codSede">
     <input type="hidden" name="nomSede" id="nomSede">
     <input type="hidden" name="nomInst" id="nomInst">
+  </form>
+
+  <form action="exportar_manipuladoras_requeridas.php" method="post" name="exportarManipuladoras" id="exportarManipuladoras">
   </form>
 
   <form action="sede_editar.php" method="post" name="formEditarSede" id="formEditarSede">
