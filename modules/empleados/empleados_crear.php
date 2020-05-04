@@ -296,7 +296,7 @@
 					</div>
 
 					<div class="form-group col-sm-6 col-md-3">
-						<label>Tipo</label>
+						<label>Tipo Empleado</label>
 						<select name="tipo" id="tipo" class="form-control form-data" data-edit="0" required>
 							<option value="">Seleccione...</option>
 							<option value="1">Empleado</option>

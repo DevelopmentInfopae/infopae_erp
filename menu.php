@@ -246,6 +246,7 @@
 			</li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/bodegas"><span class="nav-label">Bodegas</span></a> </li>
 			<li><a href="<?= $baseUrl; ?>/modules/empleados">Empleados</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/nomina/nueva_nomina.php">Nómina</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_vehiculos">Tipo vehiculo</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_despachos">Tipo alimentos</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_documentos">Tipo documento</a></li>

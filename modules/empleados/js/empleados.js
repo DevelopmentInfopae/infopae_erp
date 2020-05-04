@@ -24,7 +24,6 @@ $(document).ready(function(){
 	// $(document).on('change', '#numeroDocumento', function() { cargarDatosUsuario($(this).val()); });
 
 	//Configuración de los radio button
-	$('input').iCheck({ radioClass: "iradio_square-green" });
 
 	// Configuración del plugin toastr.
   toastr.options = {
