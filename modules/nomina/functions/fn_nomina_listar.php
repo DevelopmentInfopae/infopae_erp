@@ -16,14 +16,14 @@ $consulta = "SELECT
                   empleados.tipo,
                   ubicacion.ciudad,
                   sedes.nom_sede,
-                  pagos_nomina.tipo_complem,
+                  GROUP_CONCAT(pagos_nomina.tipo_complem, ', ') AS tipo_complem,
                   SUM(pagos_nomina.auxilio_transporte + pagos_nomina.auxilio_extra + pagos_nomina.otros_devengados) as total_devengados,
                   SUM(pagos_nomina.desc_eps + pagos_nomina.desc_afp + pagos_nomina.otros_deducidos + pagos_nomina.retefuente + pagos_nomina.reteica) as tota_deducidos,
                   SUM(pagos_nomina.total_pagado) as total_pagado
               FROM pagos_nomina 
-                INNER JOIN empleados ON empleados.Nitcc = pagos_nomina.doc_empleado
-                INNER JOIN ubicacion ON ubicacion.CodigoDANE = pagos_nomina.cod_mun_sede
-                INNER JOIN sedes$periodoActual as sedes ON sedes.cod_sede = pagos_nomina.cod_sede
+                LEFT JOIN empleados ON empleados.Nitcc = pagos_nomina.doc_empleado
+                LEFT JOIN ubicacion ON ubicacion.CodigoDANE = pagos_nomina.cod_mun_sede
+                LEFT JOIN sedes$periodoActual as sedes ON sedes.cod_sede = pagos_nomina.cod_sede
               GROUP BY pagos_nomina.numero";
 // exit($consulta);
 $resultado = $Link->query($consulta);
