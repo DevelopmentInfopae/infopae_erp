@@ -70,7 +70,14 @@ foreach ($despachosRecibidos as &$valor){
 	
 	
 	
-	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada , p.Nombrecomercial FROM orden_compra_enc$mesAnno de INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO LEFT JOIN proveedores p ON p.Nitcc = de.proveedor WHERE Tipo_Doc = 'OCOS' AND de.Num_Doc = $valor ";
+	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada , p.Nombrecomercial, td.Descripcion AS tipo_despacho
+	
+	
+	
+	
+	FROM orden_compra_enc$mesAnno de INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO LEFT JOIN proveedores p ON p.Nitcc = de.proveedor 
+	LEFT JOIN tipo_despacho td ON td.Id = de.TipoDespacho
+	WHERE Tipo_Doc = 'OCOS' AND de.Num_Doc = $valor ";
 
 
 	//echo "<br><br>$consulta<br><br>";
@@ -92,6 +99,8 @@ foreach ($despachosRecibidos as &$valor){
 		$jornada = $row['jornada'];
 		$nombre_proveedor =$row["Nombrecomercial"];
 		$rutaMunicipio =$row["rutaMunicipio"];
+		$tipoDespacho = $row['tipo_despacho'];
+
 
 		$aux = $row['FechaHora_Elab'];
 		$aux = strtotime($aux);
@@ -798,6 +807,8 @@ for ($i = 2; $i <= 5; $i++)
 		$pdf->Cell(9.3,4,'','B',0,'C',FALSE);
 		
 	}
+
+
 }
 
 // $current_y = $pdf->GetY();
@@ -808,6 +819,14 @@ for ($i = 2; $i <= 5; $i++)
 // 	include 'formato_orden_compra_header.php';
 // }
 
+
+//echo $indiceLinea;
+if($indiceLinea >= 35){
+	$pdf->AddPage();
+	$indiceLinea = 0;
+}
 include 'despacho_firma_planilla.php';
+
+
 
 $pdf->Output();

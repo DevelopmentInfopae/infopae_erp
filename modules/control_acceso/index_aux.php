@@ -8,20 +8,20 @@
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-md-6 col-lg-8">
-		<h2>Ordenes de Compra</h2>
+		<h2>Despachos</h2>
 		<ol class="breadcrumb">
 		  <li>
 			<a href="<?php echo $baseUrl; ?>">Home</a>
 		  </li>
 		  <li class="active">
-			<strong>Ordenes de Compra</strong>
+			<strong>Despachos</strong>
 		  </li>
 		</ol>
 	</div>
 	<div class="col-md-6 col-lg-4">
 		<div class="title-action">
 			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-				<a href="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/orden_de_compra_nueva.php" target="_self" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo</a>
+				<a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo</a>
 			<?php } ?>
 		</div>
 	</div>
@@ -33,7 +33,7 @@
 			<div class="ibox float-e-margins">
 				<div class="ibox-content contentBackground">
 					<h2>Parámetros de Consulta</h2>
-					<form class="col-lg-12" action="ordenes_de_compra.php" name="formDespachos" id="formDespachos" method="post" target="_blank">
+					<form class="col-lg-12" action="despachos.php" name="formDespachos" id="formDespachos" method="post" target="_blank">
 						<div class="row">
 							<div class="col-sm-6 col-md-3 form-group">
 								<label for="fechaInicial">Fecha Inicial</label>
@@ -328,15 +328,21 @@
 		echo "<br> <h3>Debe seleccionar el mes inicial.</h3> ";
 	  }else{
 		$tablaAnno = $_SESSION['periodoActual'];
-		  $consulta = " show tables like 'orden_compra_det$tablaMes$tablaAnno' ";
+		$consulta = " show tables like 'productosmov$tablaMes$tablaAnno' ";
+		$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+		$existe = $result->num_rows;
+		if($existe > 0){
+		  $consulta = " show tables like 'despachos_enc$tablaMes$tablaAnno' ";
 		  $result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		  $existe = $result->num_rows;
 		  if($existe <= 0){
 			$bandera++;
 			echo "<br> <h3>No se encontraron registros para este periodo.</h3> ";
 		  }
-
-		  
+		}else{
+		  $bandera++;
+		  echo "<br> <h3>No se encontraron registros para este periodo.</h3> ";
+		}
 	  }
 	  if($bandera == 0){
 		?>
@@ -344,56 +350,37 @@
 
 
 <?php
-		//   $consulta = " SELECT
-		//   de.Num_OCO,
-		//   s.cod_mun_sede,
-		//   s.cod_inst,
-		//   s.cod_sede,
-		//   de.Num_doc,
-		//   de.FechaHora_Elab,
-		//   de.Semana,
-		//   de.Dias,
-		//   de.Tipo_Complem,
-		//   de.tipodespacho,
-		//   td.Descripcion as tipodespacho_nm,
-		//   de.estado,
-		//   u.Ciudad,
-		//   b.NOMBRE AS bodegaOrigen,
-		//   s.nom_sede AS bodegaDestino
-		//   FROM
-		//   orden_compra_enc$tablaMes$tablaAnno de
-		//   LEFT JOIN
-		//   sedes$tablaAnno s ON s.cod_sede = de.cod_Sede
-		//   LEFT JOIN
-		//   ubicacion u ON u.codigoDANE = s.cod_mun_sede and u.ETC = 0
-		//   LEFT JOIN
-		//   productosmov$tablaMes$tablaAnno pm ON pm.Numero = de.Num_doc
-		//   AND pm.Documento = 'DES'
-		//   LEFT JOIN
-		//   bodegas b ON b.ID = pm.BodegaOrigen
+		  $consulta = " SELECT
+		  s.cod_mun_sede,
+		  s.cod_inst,
+		  s.cod_sede,
+		  de.Num_doc,
+		  de.FechaHora_Elab,
+		  de.Semana,
+		  de.Dias,
+		  de.Tipo_Complem,
+		  de.tipodespacho,
+		  td.Descripcion as tipodespacho_nm,
+		  de.estado,
+		  u.Ciudad,
+		  b.NOMBRE AS bodegaOrigen,
+		  s.nom_sede AS bodegaDestino
+		  FROM
+		  despachos_enc$tablaMes$tablaAnno de
+		  LEFT JOIN
+		  sedes$tablaAnno s ON s.cod_sede = de.cod_Sede
+		  LEFT JOIN
+		  ubicacion u ON u.codigoDANE = s.cod_mun_sede and u.ETC = 0
+		  LEFT JOIN
+		  productosmov$tablaMes$tablaAnno pm ON pm.Numero = de.Num_doc
+		  AND pm.Documento = 'DES'
+		  LEFT JOIN
+		  bodegas b ON b.ID = pm.BodegaOrigen
 
-		//   LEFT JOIN tipo_despacho td ON td.Id = de.tipodespacho
+		  LEFT JOIN tipo_despacho td ON td.Id = de.tipodespacho
 
-		//   where 1=1
-
-
-
-
-
-
-		//    ";
-
-		$consulta = " SELECT de.Num_OCO, s.cod_mun_sede, s.cod_inst, s.cod_sede, de.Num_doc, de.FechaHora_Elab, de.Semana, de.Dias, de.Tipo_Complem, de.tipodespacho, td.Descripcion AS tipodespacho_nm, de.estado, u.Ciudad, s.nom_sede AS bodegaDestino, p.* FROM orden_compra_enc$tablaMes$tablaAnno de LEFT JOIN sedes$tablaAnno s ON s.cod_sede = de.cod_Sede LEFT JOIN ubicacion u ON u.codigoDANE = s.cod_mun_sede AND u.ETC = 0 LEFT JOIN tipo_despacho td ON td.Id = de.tipodespacho LEFT JOIN proveedores p on p.Nitcc = de.proveedor WHERE 1=1 ";
-
-
-
-
-
-
-
-
-
-
+		  where 1=1
+		   ";
 
 			if (isset($_GET["pb_semana"]) && $_GET["pb_semana"] == "") {
 				if(isset($_GET["pb_diai"]) && $_GET["pb_diai"] != "" ){
@@ -446,8 +433,6 @@
 			$consulta = $consulta." and s.cod_sede in (select cod_sede from rutasedes where IDRUTA = $ruta)";
 		  }
 
-		  $consulta = $consulta."GROUP BY(de.Num_OCO)";
-		  //echo "<br><br>$consulta<br><br>";
 
 		  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 ?>
@@ -555,13 +540,11 @@
 				  <th>Semana</th>
 				  <th>Dias</th>
 				  <th>Tipo Ración</th>
-				  <th>Tipo Alimento</th>
-				  <!-- <th> Municipio </th> -->
-				  <th>Documento Proveedor</th>
-				  <th>Nombre Proveedor</th>
-		
-				  <!-- <th> Bodega Destino </th> -->
-				  <!-- <th>Estado</th> -->
+				  <th>Tipo Despacho</th>
+				  <th> Municipio </th>
+				  <th>Bodega Origen</th>
+				  <th> Bodega Destino </th>
+				  <th>Estado</th>
 				</tr>
 			  </thead>
 			  <tbody>
@@ -577,7 +560,7 @@
 
 
 
-					  
+
 
 					</td>
 
@@ -586,27 +569,27 @@
 
 
 
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Num_OCO']; ?></td>
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['FechaHora_Elab']; ?></td>
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Num_doc']; ?></td>
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['FechaHora_Elab']; ?></td>
 
 
 
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" >
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" >
 					  <?php echo $row['Semana']; ?>
 					  <input class="soloJs" type="hidden" name="semana_<?php echo $row['Num_doc']; ?>" id="semana_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['Semana']; ?>">
 					</td>
 
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" >
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" >
 					  <?php echo $row['Dias']; ?>
 					</td>
 
 
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" >
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" >
 					  <?php echo $row['Tipo_Complem']; ?>
 					  <input class="soloJs" type="hidden" name="tipo_<?php echo $row['Num_doc']; ?>" id="tipo_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['Tipo_Complem']; ?>">
 					</td>
 
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" >
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" >
 					  <?php echo $row['tipodespacho_nm']; ?>
 					  <input class="soloJs" type="hidden" name="tipodespacho_<?php echo $row['Num_doc']; ?>" id="tipodespacho_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['tipodespacho']; ?>">
 
@@ -615,12 +598,32 @@
 					</td>
 
 
-					<!-- <td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Ciudad']; ?></td> -->
-					<!-- <td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['bodegaDestino']; ?></td> -->
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Ciudad']; ?></td>
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['bodegaOrigen']; ?></td>
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['bodegaDestino']; ?></td>
+
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');">
+					  <?php
+					  $estado = $row['estado'];
+					  switch ($estado) {
+						case 0:
+						echo "Eliminado";
+						break;
+						case 1:
+						echo "Despachado";
+						break;
+						case 2:
+						echo "Pendiente";
+						break;
+						default:
+						echo $estado;
+						break;
+					  }
+					  ?>
 
 
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Nitcc']; ?></td>
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Nombrecomercial']; ?></td>
+					  <input class="soloJs" type="hidden" name="estado_<?php echo $row['Num_doc']; ?>" id="estado_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['estado']; ?>">
+					</td>
 
 				  </tr>
 				  <?php } } ?>
@@ -637,12 +640,11 @@
 				  <th>Semana</th>
 				  <th>Dias</th>
 				  <th>Tipo Ración</th>
-				  <th>Tipo Alimento</th>
-				  <!-- <th> Municipio </th> -->
-				  <th>Documento Proveedor</th>
-				  <th>Nombre Proveedor</th>
-				  <!-- <th> Bodega Destino </th> -->
-				  <!-- <th>Estado</th> -->
+				  <th>Tipo Despacho</th>
+				  <th> Municipio </th>
+				  <th>Bodega Origen</th>
+				  <th> Bodega Destino </th>
+				  <th>Estado</th>
 				</tr>
 				</tfoot>
 							</table>
@@ -703,34 +705,34 @@
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 
 
-	<script src="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/js/ordenes_de_compra.js?v=20200423"></script>
+	<script src="<?php echo $baseUrl; ?>/modules/despachos/js/despachos.js?v=20200423"></script>
 	<script>
-		// $(document).ready(function(){
-			
-		// 	var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
-			
-		// 	// Menu para COVID
-		// 	botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
-			
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
-			
-		// 	<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-		// 		botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';
-		// 		botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a></li>';
-		// 		botonAcciones += '<li><a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a></li>';
-		// 	botonAcciones += '<?php } ?>';
-		// 	botonAcciones += '</ul></div>';
+		$(document).ready(function(){
 
-		// 	$('.containerBtn').html(botonAcciones);
+			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
+			botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
+			botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
+			botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
+			botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
+			botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
+			botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
+			botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
 
-		// });
+			// Menu para COVID
+			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
+
+			botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
+
+			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+				botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';
+				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a></li>';
+				botonAcciones += '<li><a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a></li>';
+			botonAcciones += '<?php } ?>';
+			botonAcciones += '</ul></div>';
+
+			$('.containerBtn').html(botonAcciones);
+
+		});
 	</script>
 
 
@@ -739,13 +741,13 @@
 
 <?php mysqli_close($Link); ?>
 
-<form action="formato_orden_compra.php" method="post" name="formDespachoPorSede" id="formDespachoPorSede" target="_blank">
-  <input type="hidden" name="AnnoI" id="AnnoI" value="">
-  <input type="hidden" name="MesI" id="MesI" value="">
-  <input type="hidden" name="ordenCompra" id="ordenCompra" value="">
+<form action="despacho_por_sede.php" method="post" name="formDespachoPorSede" id="formDespachoPorSede" target="_blank">
+  <input type="hidden" name="despachoAnnoI" id="despachoAnnoI" value="">
+  <input type="hidden" name="despachoMesI" id="despachoMesI" value="">
+  <input type="hidden" name="despacho" id="despacho" value="">
 </form>
 
-<form action="ordenes_de_compra.php" id="parametrosBusqueda" method="get">
+<form action="despachos.php" id="parametrosBusqueda" method="get">
   <input type="hidden" id="pb_annoi" name="pb_annoi" value="">
   <input type="hidden" id="pb_mesi" name="pb_mesi" value="">
   <input type="hidden" id="pb_diai" name="pb_diai" value="">
