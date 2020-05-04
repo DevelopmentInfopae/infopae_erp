@@ -69,6 +69,7 @@ if ($tipo == 2) {
 	$consulta = "SELECT 
 						sedes_cobertura.semana, 
 						empleados.nombre, 
+						empleados.ID, 
 						empleados.Nitcc, 
 						empleados.TipoContrato, 
 						empleados.tipo, 
@@ -80,7 +81,7 @@ if ($tipo == 2) {
 						$txt_complementos 
 				FROM manipuladoras_sedes 
 					INNER JOIN empleados ON empleados.Nitcc = manipuladoras_sedes.documento
-				    INNER JOIN sedes20 as sedes ON sedes.cod_sede = manipuladoras_sedes.cod_sede
+				    INNER JOIN sedes$periodoActual as sedes ON sedes.cod_sede = manipuladoras_sedes.cod_sede
 				    INNER JOIN sedes_cobertura ON sedes_cobertura.cod_sede = manipuladoras_sedes.cod_sede
 				    INNER JOIN ubicacion ON ubicacion.CodigoDANE = sedes.cod_mun_sede
 				WHERE manipuladoras_sedes.estado = 1
@@ -111,6 +112,7 @@ if ($tipo == 2) {
 				$datos[$data['Nitcc']][$data['cod_sede']][$data['tipo_complem']]['num_estudiantes'] = $data[$data['tipo_complem']];
 				$datos[$data['Nitcc']][$data['cod_sede']][$data['tipo_complem']]['num_registros'] = ($data[$data['tipo_complem']] > 0 ? 1 : 0);
 				$datos[$data['Nitcc']][$data['cod_sede']][$data['tipo_complem']]['semanas'][$data['semana']] = $data[$data['tipo_complem']];
+				$datos[$data['Nitcc']][$data['cod_sede']][$data['tipo_complem']]['ID'] = $data['ID'];
 			} else {
 				$datos[$data['Nitcc']][$data['cod_sede']][$data['tipo_complem']]['num_estudiantes'] += $data[$data['tipo_complem']];
 				$datos[$data['Nitcc']][$data['cod_sede']][$data['tipo_complem']]['num_registros'] += ($data[$data['tipo_complem']] > 0 ? 1 : 0);
@@ -212,11 +214,14 @@ $tipo_contrato = [
 					4 => 'Servicios',
 				];
 // exit(json_encode($resultados));
+$num = 0;
 foreach ($resultados as $row) {
 	if ($row['liquidacion'] > 0) {
 		$html .= '<tr>
 					<td>
-						<input type="checkbox" class="i-checks" value="'.$row['Nitcc'].'" nam="doc_empleado[]">
+						<input type="checkbox" class="i-checks" name="key['.$num.']" value="'.$num.'">
+						<input type="hidden" name="doc_empleado['.$num.']" value="'.$row['Nitcc'].'">
+						<input type="hidden" name="id_empleado['.$num.']" value="'.$row['ID'].'">
 					</td>
 					<td>
 						'.$row['nombre'].'
@@ -226,40 +231,49 @@ foreach ($resultados as $row) {
 					</td>
 					<td>
 						'.$tipo_contrato[$row['TipoContrato']].'
-						<input type="hidden" name="tipo_contrato[]" value="'.$row['TipoContrato'].'">
-						<input type="hidden" name="tipo_emp[]" value="'.$row['tipo'].'">
+						<input type="hidden" name="tipo_contrato['.$num.']" value="'.$row['TipoContrato'].'">
+						<input type="hidden" name="tipo_emp['.$num.']" value="'.$row['tipo'].'">
 					</td>
 					<td>
 						'.$row['Ciudad'].'
-						<input type="hidden" name="municipio_sede[]" value="'.$row['CodigoDANE'].'">
+						<input type="hidden" name="municipio_sede['.$num.']" value="'.$row['CodigoDANE'].'">
 					</td>
 					<td>
 						'.$row['nom_sede'].'
-						<input type="hidden" name="cod_sede[]" value="'.$row['cod_sede'].'">
+						<input type="hidden" name="cod_sede['.$num.']" value="'.$row['cod_sede'].'">
 					</td>
 					<td>
 						'.$row['tipo_complem'].'
-						<input type="hidden" name="tipo_comple[]" value="'.$row['tipo_complem'].'">
+						<input type="hidden" name="tipo_comple['.$num.']" value="'.$row['tipo_complem'].'">
 					</td>
 					<td>
 						'.$row['media'].'
-						<input type="hidden" name="cobertura_prom[]" value="'.$row['media'].'">
+						<input type="hidden" name="cobertura_prom['.$num.']" value="'.$row['media'].'">
 					</td>
 					<td>
-						'.$row['tipo_liquidacion'].'
-					</td>
+						'.$row['tipo_liquidacion'];
+					$tip_liq = "";
+					foreach ($row['liquidaciones'] as $semana => $lqd) {
+						if ($tip_liq != $lqd['tipo'] && $lqd['valor'] > 0) {
+							$tip_liq = $lqd['tipo'];
+							$html.='<input type="hidden" name="liquida_por['.$num.'][]" value="'.$lqd['tipo'].'">';
+							$html.='<input type="hidden" name="valor_base['.$num.'][]" value="'.$lqd['valor_base'].'">';
+						}
+					}
+		$html .= '</td>
 					<td>
 						'.$row['dias_contratados'].'
-						<input type="hidden" name="dias_contrato[]" value="'.$row['dias_contratados'].'">
+						<input type="hidden" name="dias_contrato['.$num.']" value="'.$row['dias_contratados'].'">
 					</td>
 					<td>
-						<input type="text" name="dias_laborados[]" class="form-control only_number dias_laborados" value="'.$row['dias_laborados'].'" data-max="'.$row['dias_contratados'].'" data-original="'.$row['dias_laborados'].'">
+						<input type="text" name="dias_laborados['.$num.']" class="form-control only_number dias_laborados" value="'.$row['dias_laborados'].'" data-max="'.$row['dias_contratados'].'" data-original="'.$row['dias_laborados'].'">
 					</td>
 					<td>
 						'.$row['liquidacion'].'
-						<input type="hidden" name="total_pagado[]" value="'.$row['liquidacion'].'">
+						<input type="hidden" name="total_pagado['.$num.']" value="'.$row['liquidacion'].'">
 					</td>
 				</tr>';
+		$num++;
 	}
 }
 
