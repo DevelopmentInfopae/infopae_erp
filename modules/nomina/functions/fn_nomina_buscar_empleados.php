@@ -122,32 +122,32 @@ if ($tipo == 2) {
 		}
 		foreach ($datos as $nitcc => $sedes) {
 			foreach ($sedes as $cod_sede => $complementos) {
-				$entregas_res = [];
-				$entregas_res_consulta = "SELECT 
-				SUM(D1) as D1, SUM(D2) as D2, SUM(D3) as D3, SUM(D4) as D4, SUM(D5) as D5, SUM(D6) as D6, SUM(D7) as D7, SUM(D8) as D8, SUM(D9) as D9, SUM(D10) as D10, 
-				SUM(D11) as D11, SUM(D12) as D12, SUM(D13) as D13, SUM(D14) as D14, SUM(D15) as D15, SUM(D16) as D16, SUM(D17) as D17, SUM(D18) as D18, SUM(D19) as D19, SUM(D20) as D20, 
-				SUM(D21) as D21, SUM(D22) as D22, SUM(D23) as D23, SUM(D24) as D24, SUM(D25) as D25, SUM(D26) as D26, SUM(D27) as D27, SUM(D28) as D28, SUM(D29) as D29, SUM(D30) as D30, 
-				SUM(D31) as D31
-				FROM entregas_res_".$mes.$periodoActual." WHERE cod_sede = '".$cod_sede."';";
-				$resultado_entregas_res_consulta = $Link->query($entregas_res_consulta) or die ('Error al consultar entregas_res: '. mysqli_error($Link));
-				if ($resultado_entregas_res_consulta->num_rows > 0) {
-					$entregas_res = $resultado_entregas_res_consulta->fetch_assoc();
-				}
-				$semanas_num_dias = [];
-				foreach ($dias_semanas as $semana => $diasD) {
-					foreach ($diasD as $D => $dia_fecha) {
-						if ($entregas_res[$D] > 0) {
-							if (!isset($semanas_num_dias[$semana])) {
-								$semanas_num_dias[$semana] = 1;
-							} else {
-								$semanas_num_dias[$semana] += 1;
+				foreach ($complementos as $complemento => $datos) {
+					$entregas_res = [];
+					$entregas_res_consulta = "SELECT 
+					SUM(D1) as D1, SUM(D2) as D2, SUM(D3) as D3, SUM(D4) as D4, SUM(D5) as D5, SUM(D6) as D6, SUM(D7) as D7, SUM(D8) as D8, SUM(D9) as D9, SUM(D10) as D10, 
+					SUM(D11) as D11, SUM(D12) as D12, SUM(D13) as D13, SUM(D14) as D14, SUM(D15) as D15, SUM(D16) as D16, SUM(D17) as D17, SUM(D18) as D18, SUM(D19) as D19, SUM(D20) as D20, 
+					SUM(D21) as D21, SUM(D22) as D22, SUM(D23) as D23, SUM(D24) as D24, SUM(D25) as D25, SUM(D26) as D26, SUM(D27) as D27, SUM(D28) as D28, SUM(D29) as D29, SUM(D30) as D30, 
+					SUM(D31) as D31
+					FROM entregas_res_".$mes.$periodoActual." WHERE cod_sede = '".$cod_sede."' AND tipo_complem = '".$complemento."';";
+					$resultado_entregas_res_consulta = $Link->query($entregas_res_consulta) or die ('Error al consultar entregas_res: '. mysqli_error($Link));
+					if ($resultado_entregas_res_consulta->num_rows > 0) {
+						$entregas_res = $resultado_entregas_res_consulta->fetch_assoc();
+					}
+					$semanas_num_dias = [];
+					foreach ($dias_semanas as $semana => $diasD) {
+						foreach ($diasD as $D => $dia_fecha) {
+							if ($entregas_res[$D] > 0) {
+								if (!isset($semanas_num_dias[$semana])) {
+									$semanas_num_dias[$semana] = 1;
+								} else {
+									$semanas_num_dias[$semana] += 1;
+								}
 							}
 						}
 					}
-				}
-				// exit($entregas_res_consulta);
-				// exit(json_encode($semanas_num_dias));
-				foreach ($complementos as $complemento => $datos) {
+					// exit($entregas_res_consulta);
+					// exit(json_encode($semanas_num_dias));
 					$liquidaciones = [];
 					$media = ($datos['num_registros'] > 0 ? round($datos['num_estudiantes'] / $datos['num_registros']) : 0);
 					$datos['media'] = $media;
