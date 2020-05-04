@@ -39,7 +39,7 @@ $pdf->Cell(0,2.5,utf8_decode('ORDEN DE COMPRA A PROVEEDORES Nº ').utf8_decode($
 
 
 $pdf->Cell(0,2.5,utf8_decode($descripcionTipo),0,2.5,'C',False);
-$pdf->Cell(0,2.5,utf8_decode('Todos'),0,2.5,'C',False);
+$pdf->Cell(0,2.5,utf8_decode($tipoDespacho),0,2.5,'C',False);
 $pdf->Ln(0);
 
 $current_y = $pdf->GetY();

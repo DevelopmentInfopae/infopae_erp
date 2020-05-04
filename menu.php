@@ -118,6 +118,9 @@
 
 
 
+
+
+
 	<?php } ?>
 	<li>
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
@@ -209,7 +212,7 @@
 
 
 
-
+<li> <a href="<?php echo $baseUrl; ?>/modules/control_acceso/listado.php"><i class="far fa-clock"></i> <span class="nav-label">Control de Acceso</span></a> </li>
 
 
 
