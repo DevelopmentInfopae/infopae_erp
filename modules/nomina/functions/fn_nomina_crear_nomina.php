@@ -40,12 +40,18 @@ $liquida_por_arr = [
 						'Mes' => 3,
 						'Factura' => 4,
 					];
-
+// exit(json_encode($valor_base));
+$nit = 0;
 if (count($key) > 0) {
 	foreach ($key as $id_row => $row) {
-		$ref = 1;
 		foreach ($liquida_por[$row] as $num_lqp => $txt_liquida_por) {
-			$vlr_base = $valor_base[$num_lqp][$num_lqp];
+			if ($nit != $documento[$row]) {
+				if ($nit != 0) {
+					$consecutivo++;		
+				}
+				$nit = $documento[$row];
+			}
+			$vlr_base = $valor_base[$row][$num_lqp];
 			// exit(json_encode($vlr_base));
 			$insert = "
 			INSERT INTO `pagos_nomina`
@@ -93,12 +99,12 @@ if (count($key) > 0) {
 			'".$_SESSION["idUsuario"]."'
 			);";
 			$Link->query($insert) or die (mysqli_error($Link));
-			$consecutivo++;
-			$update_documento = "UPDATE documentos SET Consecutivo = '".$consecutivo."' WHERE id = '".$data_documento['Id']."'";
-			$Link->query($update_documento);
 		}
 	}
 }
+$consecutivo++;
+$update_documento = "UPDATE documentos SET Consecutivo = '".$consecutivo."' WHERE id = '".$data_documento['Id']."'";
+$Link->query($update_documento);
 // exit($insert);
 $respuestaAJAX = [
   'estado' => 1,

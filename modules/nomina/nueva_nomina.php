@@ -11,7 +11,7 @@
         <a href="<?php echo $baseUrl; ?>">Home</a>
       </li>
       <li>
-      	<a href="<?php echo $baseUrl . '/modules/nomina'; ?>">Empleados</a>
+      	<a href="<?php echo $baseUrl . '/modules/nomina'; ?>">Nomina</a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>

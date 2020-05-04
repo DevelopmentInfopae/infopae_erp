@@ -123,6 +123,23 @@ if ($tipo == 2) {
 		foreach ($datos as $nitcc => $sedes) {
 			foreach ($sedes as $cod_sede => $complementos) {
 				foreach ($complementos as $complemento => $datos) {
+
+					$consulta_existe = "SELECT * FROM pagos_nomina WHERE 
+											doc_empleado = '".$nitcc."' 
+											AND cod_sede = '".$cod_sede."'
+											AND tipo_complem = '".$complemento."'
+											AND mes = '".$mes."'
+											AND
+											(
+												(semquin_inicial <= '".$semana_inicial."' AND semquin_final >= '".$semana_inicial."') 
+												OR 
+												(semquin_inicial <= '".$semana_final."' AND semquin_final >= '".$semana_final."')
+											)";
+					$resulta_existe = $Link->query($consulta_existe);
+					if ($resulta_existe->num_rows > 0) {
+						continue;
+					}
+
 					$entregas_res = [];
 					$entregas_res_consulta = "SELECT 
 					SUM(D1) as D1, SUM(D2) as D2, SUM(D3) as D3, SUM(D4) as D4, SUM(D5) as D5, SUM(D6) as D6, SUM(D7) as D7, SUM(D8) as D8, SUM(D9) as D9, SUM(D10) as D10, 
