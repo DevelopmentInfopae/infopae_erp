@@ -12,6 +12,12 @@
 
     $dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
     if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
+    $consulta_parametros = "SELECT * FROM parametros WHERE id = 1";
+    $result_parametros = $Link->query($consulta_parametros);
+    $parametros = false;
+    if ($result_parametros->num_rows > 0) {
+        $parametros = $result_parametros->fetch_assoc();
+    }
 ?>
 
 <!DOCTYPE html>
