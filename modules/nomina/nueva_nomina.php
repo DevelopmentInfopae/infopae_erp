@@ -20,7 +20,7 @@
   </div>
   <div class="col-lg-4">
     <div class="title-action">
-      <a href="#" class="btn btn-primary" id="guardarEmpleado"><i class="fa fa-check "></i> Guardar </a>
+      <a href="#" class="btn btn-primary" id="crear_nomina"><i class="fa fa-check "></i> Guardar </a>
     </div>
   </div>
 </div>

@@ -6,6 +6,7 @@ $(document).ready(function(){
 	$(document).on('click', '#aplicar_filtro', function(){ buscar_empleados(); });
 	$(document).on('change', '#semana_inicial, #semana_final', function(){ validar_semanas(); });
 	$(document).on('keyup', '.dias_laborados', function(){ validar_dias_laborados($(this)); });
+	$(document).on('click', '#crear_nomina', function(){ crear_nomina(); });
 
 	$('input').iCheck({
 	     radioClass: 'iradio_square-green',
@@ -133,4 +134,51 @@ function validar_dias_laborados(input){
 	if (input.val() > max) {
 		input.val(original);
 	}
+}
+
+function crear_nomina(){
+	data1 = $('#form_filtrar_empleados').serialize();
+	data2 = $('#form_crear_nomina').serialize();
+
+	data = data1+'&'+data2;
+	$('#loader').fadeIn();
+	$.ajax({
+		url : 'functions/fn_nomina_crear_nomina.php',
+		type : 'POST',
+		data : data,
+		dataType : 'JSON'
+	}).done(function(data){
+		if (data.estado == 1) {
+			Command: toastr.success(
+				'Se registró correctamente la liquidación',
+				'Guardado correctamente',
+				{ onHidden: function()
+					{
+						$('#loader').fadeOut();
+						location.reload();
+					}
+				}
+			);
+		} else {
+			Command: toastr.error(
+				'Ocurrió un error al guardar, contacte con el administrador',
+				'Error',
+				{ onHidden: function()
+					{
+						$('#loader').fadeOut();
+					}
+				}
+			);
+		}
+	}).fail(function(data){
+		Command: toastr.error(
+			'Ocurrió un error al guardar, contacte con el administrador',
+			'Error',
+			{ onHidden: function()
+				{
+					$('#loader').fadeOut();
+				}
+			}
+		);
+	});
 }
