@@ -153,7 +153,6 @@
 
 
 				<li><a href="<?php echo $baseUrl; ?>/modules/intercambios/index.php">Menú</a></li>
-				<li><a href="<?= $baseUrl; ?>/modules/nomina/nueva_nomina.php">Nómina</a></li>
 
 				<!-- <li>
 					<a href="#"><span class="nav-label">Menús</span> <span class="fa arrow"></span></a>
@@ -167,6 +166,8 @@
 			</ul>
 		</li>
 	<?php } ?>
+
+		<li><a href="<?= $baseUrl; ?>/modules/nomina"><i class="fa fa-th-large"></i>  Nómina</a></li>
 
 
 

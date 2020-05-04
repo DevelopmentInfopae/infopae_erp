@@ -58,7 +58,23 @@
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 
     <link href="<?php echo $baseUrl; ?>/theme/css/style.css" rel="stylesheet">
-
+    <script type="text/javascript">
+            
+        var meses_texto = {
+                    '01' : 'Enero',
+                    '02' : 'Febrero',
+                    '03' : 'Marzo',
+                    '04' : 'Abril',
+                    '05' : 'Mayo',
+                    '06' : 'Junio',
+                    '07' : 'Julio',
+                    '08' : 'Agosto',
+                    '09' : 'Septiembre',
+                    '10' : 'Octubre',
+                    '11' : 'Noviembre',
+                    '12' : 'Diciembre'
+                  };
+    </script>
 </head>
 <body>
     <div id="wrapper">

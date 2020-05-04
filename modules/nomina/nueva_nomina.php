@@ -111,7 +111,7 @@
 						</div>
 						<div class="row">
 							<div class="form-group col-sm-12 col-md-12">
-								<button type="button" class="btn btn-success" id="aplicar_filtro">Buscar</button>
+								<button type="button" class="btn btn-primary" id="aplicar_filtro">Buscar</button>
 							</div>
 						</div>
 					</form>
