@@ -821,7 +821,7 @@ for ($i = 2; $i <= 5; $i++)
 
 
 //echo $indiceLinea;
-if($indiceLinea >= 35){
+if($indiceLinea > 35){
 	$pdf->AddPage();
 	$indiceLinea = 0;
 }
