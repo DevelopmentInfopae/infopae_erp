@@ -1,4 +1,6 @@
 $(document).ready(function(){
+  	$(document).on('ifChecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('check'); });
+  	$(document).on('ifUnchecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('uncheck'); });
 	$(document).on('change', '#tipo', function(){ cambia_tipo($(this)); });
 	$(document).on('change', '#mes', function(){ cambia_mes($(this)); });
 	$(document).on('change', '#municipio', function(){ cambia_municipio($(this)); });
@@ -7,6 +9,7 @@ $(document).ready(function(){
 	$(document).on('change', '#semana_inicial, #semana_final', function(){ validar_semanas(); });
 	$(document).on('keyup', '.dias_laborados', function(){ validar_dias_laborados($(this)); });
 	$(document).on('click', '#crear_nomina', function(){ crear_nomina(); });
+	$(document).on('change', '.dias_incapacidad', function(){ cambia_dias_incapacidad($(this)); });
 
 	$('input').iCheck({
 	     radioClass: 'iradio_square-green',
@@ -204,4 +207,24 @@ function crear_nomina(){
 			}
 		);
 	});
+}
+
+function cambia_dias_incapacidad(input){
+	console.log('ENTRA ');
+	var index = $('.dias_incapacidad').index(input);
+	var aux_transporte = $('.aux_transporte').eq(index);
+	var aux_transporte_x_dia = aux_transporte.data('transportexdia');
+	var aux_transporte_origin = aux_transporte.data('transporteorigin');
+	total_discount_aux_transporte = aux_transporte_x_dia * input.val();
+	aux_transporte_vlr = aux_transporte_origin - total_discount_aux_transporte;
+	aux_transporte.val(aux_transporte_vlr);
+	$('.transporte_txt').eq(index).text(aux_transporte_vlr);
+	$('.desc_auxtrans_incap').eq(index).val(total_discount_aux_transporte);
+	deducidos = $('.deducidos').eq(index);
+	deducidosorigin = deducidos.data('deducidosorigin');
+	total_deducidos = (deducidosorigin + total_discount_aux_transporte);
+	deducidos.val(total_deducidos);
+	valor_base = $('.valor_base').eq(index).val();
+	total = parseFloat(valor_base) + parseFloat(aux_transporte_origin) - parseFloat(total_deducidos); 
+	$('.total_pagado').eq(index).val(total);
 }
