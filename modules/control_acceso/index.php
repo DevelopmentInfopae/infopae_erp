@@ -119,13 +119,7 @@ include '../../config.php';
 					
 					var aux = "<img src=\""+data.foto+"\" alt=\"Foto de perfil\">";
 					$('.registro-foto__foto').html(aux);
-
-
-		
-
-					
-					
-					
+					setTimeout(limpiarCampos, 3000);
 				}
 				else{
 					$('.mensaje-validacion').removeClass('mensaje-validacion__autorizado');
@@ -174,6 +168,23 @@ include '../../config.php';
 
 		});
 	});
+
+
+function limpiarCampos(){
+	$('.mensaje-validacion').removeClass('mensaje-validacion__autorizado');
+	$('.mensaje-validacion').removeClass('mensaje-validacion__rechazado');
+	$('.mensaje-validacion').html('');
+
+	$('.registro-foto__entrada').removeClass('activado');
+	$('.registro-foto__salida').removeClass('activado');
+
+	$('.registro-foto__entrada').removeClass('negado');
+	$('.registro-foto__salida').removeClass('negado');
+
+	$('.nombre').html('');
+	$('.cargo').html('');
+	$('.registro-foto__foto').html('');
+}
 
 
 </script>
