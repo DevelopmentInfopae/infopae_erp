@@ -32,6 +32,12 @@ $desc_afp = isset($_POST['desc_afp']) ? $_POST['desc_afp'] : null;
 $desc_auxtrans_incap = isset($_POST['desc_auxtrans_incap']) ? $_POST['desc_auxtrans_incap'] : null;
 $otros_devengados = isset($_POST['otros_devengados']) ? $_POST['otros_devengados'] : null;
 
+//TRANSPORTISTA
+$numfac_cxc = isset($_POST['numfac_cxc']) ? $_POST['numfac_cxc'] : null;
+$concepto = isset($_POST['concepto']) ? $_POST['concepto'] : null;
+$retefuente = isset($_POST['retefuente']) ? $_POST['retefuente'] : null;
+$reteica = isset($_POST['reteica']) ? $_POST['reteica'] : null;
+
 $mes = isset($_POST['mes']) ? $_POST['mes'] : null;
 $semana_inicial = isset($_POST['semana_inicial']) ? $_POST['semana_inicial'] : null;
 $semana_final = isset($_POST['semana_final']) ? $_POST['semana_final'] : null;
@@ -59,7 +65,7 @@ $nit = 0;
 if (count($key) > 0) {
 	foreach ($key as $id_row => $row) {
 
-		if ($tipo == 1) {
+		if ($tipo == 1 || $tipo == 3) {
 
 			if ($nit != $documento[$row]) {
 				if ($nit != 0) {
@@ -192,6 +198,57 @@ if (count($key) > 0) {
 				$Link->query($insert) or die (mysqli_error($Link));
 			}
 
+		} else if ($tipo == 4) {
+			if ($nit != $documento[$row]) {
+				if ($nit != 0) {
+					$consecutivo++;		
+				}
+				$nit = $documento[$row];
+			}
+			$insert = "
+			INSERT INTO `pagos_nomina`
+			(
+			`documento`,
+			`numero`,
+			`Fecha`,
+			`tipo_empleado`,
+			`mes`,
+			`semquin_inicial`,
+			`semquin_final`,
+			`doc_empleado`,
+			`tipo_contrato`,
+			`cod_mun_sede`,
+			`liquida_por`,
+			`valor_base`,
+			`total_pagado`,
+			`numfac_cxc`,
+			`concepto`,
+			`retefuente`,
+			`reteica`,
+			`id_usuario`
+			)
+			VALUES
+			(
+			'".$prefijo."',
+			'".$consecutivo."',
+			'".date('Y-m-d H:i:s')."',
+			'".$tipo_emp[$row]."',
+			'".$mes."',
+			'".$semana_inicial."',
+			'".$semana_final."',
+			'".$documento[$row]."',
+			'".$tipo_contrato[$row]."',
+			'".$municipio_sede[$row]."',
+			'".$liquida_por_arr[$liquida_por[$row]]."',
+			'".$valor_base[$row]."',
+			'".$total_pagado[$row]."',
+			'".$numfac_cxc[$row]."',
+			'".$concepto[$row]."',
+			'".$retefuente[$row]."',
+			'".$reteica[$row]."',
+			'".$_SESSION["idUsuario"]."'
+			);";
+			$Link->query($insert) or die (mysqli_error($Link));
 		}
 	}
 	$consecutivo++;

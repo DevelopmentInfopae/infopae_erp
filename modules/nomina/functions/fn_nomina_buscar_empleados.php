@@ -507,6 +507,127 @@ if ($tipo == 2) {
 					</tr>
 				</tfoot>
 			</table>';
+} else if ($tipo == 4) {
+
+	$consulta = "SELECT empleados.*, ubicacion.Ciudad as mun_empleado FROM empleados 
+					INNER JOIN ubicacion ON ubicacion.CODIGODANE = empleados.Ciudad
+					WHERE estado = 1 AND tipo = '".$tipo."'
+				".($municipio ? "Ciudad = '".$municipio."'" : "")."
+				;";
+	$result = $Link->query($consulta);
+	$empleados = [];
+	if ($result->num_rows > 0) {
+		while ($data = $result->fetch_assoc()) {
+			$consulta_existe = "SELECT * FROM pagos_nomina WHERE 
+						doc_empleado = '".$data['Nitcc']."'
+						AND mes = '".$mes."'
+						AND
+						(
+							(semquin_inicial <= '".$semana_inicial."' AND semquin_final >= '".$semana_inicial."') 
+							OR 
+							(semquin_inicial <= '".$semana_final."' AND semquin_final >= '".$semana_final."')
+						)";
+			$resulta_existe = $Link->query($consulta_existe);
+			if ($resulta_existe->num_rows > 0) {
+				continue;
+			} else {
+				$empleados[] = $data;
+			}
+		}
+	}
+
+	$html = '<table class="table" id="box-table-a">
+				<thead>
+					<tr>
+	                    <th style="width: 8.33%;" class="col-sm-1 text-center">
+	                      <input type="checkbox" class="i-checks" name="selectVarios" id="selectVarios" value="">
+	                    </th>
+	                    <th style="width: 8.33%;">Nombre</th>
+	                    <th style="width: 8.33%;">Cédula</th>
+	                    <th style="width: 8.33%;">Tipo Contrato</th>
+	                    <th style="width: 8.33%;">Municipio</th>
+	                    <th style="width: 8.33%;">Liquida por</th>
+	                    <th style="width: 8.33%;">Número</th>
+	                    <th style="width: 8.33%;">Concepto</th>
+	                    <th style="width: 8.33%;">Valor base</th>
+	                    <th style="width: 8.33%;">Rete Fuente</th>
+	                    <th style="width: 8.33%;">Rete ICA</th>
+	                    <th style="width: 8.33%;">Valor a pagar</th>
+					</tr>
+				</thead>
+				<tbody>';
+	$num = 1;
+	if (count($empleados) > 0) {
+		$status = 1;
+		$num = 1;
+		foreach ($empleados as $empleado) {
+			$html.='<tr>
+						<td>
+							<input type="checkbox" class="i-checks" name="key['.$num.']" value="'.$num.'">
+							<input type="hidden" name="doc_empleado['.$num.']" value="'.$empleado['Nitcc'].'">
+							<input type="hidden" name="id_empleado['.$num.']" value="'.$empleado['ID'].'">
+						</td>
+						<td>
+							'.$empleado['Nombre'].'
+						</td>
+						<td>
+							'.$empleado['Nitcc'].'
+						</td>
+						<td>
+							'.$tipo_contrato[$empleado['TipoContrato']].'
+							<input type="hidden" name="tipo_contrato['.$num.']" value="'.$empleado['TipoContrato'].'">
+							<input type="hidden" name="tipo_emp['.$num.']" value="'.$empleado['tipo'].'">
+						</td>
+						<td>
+							'.$empleado['mun_empleado'].'
+							<input type="hidden" name="municipio_sede['.$num.']" value="'.$empleado['Ciudad'].'">
+						</td>
+						<td>
+							Factura
+							<input type="hidden" name="liquida_por['.$num.']" value="Factura">
+						</td>
+						<td>
+							<input type="text" name="numfac_cxc['.$num.']" class="form-control" required>
+						</td>
+						<td>
+							<input type="text" name="concepto['.$num.']" class="form-control">
+						</td>
+						<td>
+							<input type="text" name="valor_base['.$num.']" class="form-control only_number valor_base" required>
+						</td>
+						<td>
+							<input type="text" name="retefuente['.$num.']" class="form-control only_number retefuente" data-percent="'.$parametrosnomina_datos['retefuente_servicios'].'" value="0" readonly>
+						</td>
+						<td>
+							<input type="text" name="reteica['.$num.']" class="form-control only_number reteica" data-percent="'.$parametrosnomina_datos['reteica'].'" value="0" readonly>
+						</td>
+						<td>
+							<input type="text" name="total_pagado['.$num.']" class="form-control only_number total_pagado" value="0" readonly>
+						</td>
+					</tr>';
+		}
+	} else {
+		$status = 0;
+	}
+	$html .= 	'</tbody>
+				<tfoot>
+					<tr>
+	                    <th style="width: 8.33%;" class="col-sm-1 text-center">
+	                    </th>
+	                    <th style="width: 8.33%;">Nombre</th>
+	                    <th style="width: 8.33%;">Cédula</th>
+	                    <th style="width: 8.33%;">Tipo Contrato</th>
+	                    <th style="width: 8.33%;">Municipio</th>
+	                    <th style="width: 8.33%;">Liquida por</th>
+	                    <th style="width: 8.33%;">Número</th>
+	                    <th style="width: 8.33%;">Concepto</th>
+	                    <th style="width: 8.33%;">Valor base</th>
+	                    <th style="width: 8.33%;">Rete Fuente</th>
+	                    <th style="width: 8.33%;">Rete ICA</th>
+	                    <th style="width: 8.33%;">Valor a pagar</th>
+					</tr>
+				</tfoot>
+			</table>';
 }
 $data = ['status' => $status, 'html' => $html];
 echo json_encode($data);

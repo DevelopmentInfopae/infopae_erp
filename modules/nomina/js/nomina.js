@@ -10,6 +10,7 @@ $(document).ready(function(){
 	$(document).on('keyup', '.dias_laborados', function(){ validar_dias_laborados($(this)); });
 	$(document).on('click', '#crear_nomina', function(){ crear_nomina(); });
 	$(document).on('change', '.dias_incapacidad', function(){ cambia_dias_incapacidad($(this)); });
+	$(document).on('change', '.valor_base', function(){ cambia_valor_base($(this)); });
 
 	$('input').iCheck({
 	     radioClass: 'iradio_square-green',
@@ -49,6 +50,10 @@ function cambia_tipo(select){
 	if (tipo_select == 2) {
 		$('.manipuladora_mostrar').fadeIn();
 		$('.manipuladora_ocultar').fadeOut();
+	} else if(tipo_select == 4){
+		$('.manipuladora_mostrar').fadeOut();
+		$('.manipuladora_ocultar').fadeOut();
+		$('.transportador_mostrar').fadeIn();
 	} else {
 		$('.manipuladora_ocultar').fadeIn();
 		$('.manipuladora_mostrar').fadeOut();
@@ -165,52 +170,52 @@ function validar_dias_laborados(input){
 function crear_nomina(){
 	data1 = $('#form_filtrar_empleados').serialize();
 	data2 = $('#form_crear_nomina').serialize();
-
-	data = data1+'&'+data2;
-	$('#loader').fadeIn();
-	$.ajax({
-		url : 'functions/fn_nomina_crear_nomina.php',
-		type : 'POST',
-		data : data,
-		dataType : 'JSON'
-	}).done(function(data){
-		if (data.estado == 1) {
-			Command: toastr.success(
-				data.mensaje,
-				'Guardado correctamente',
-				{ onHidden: function()
-					{
-						$('#loader').fadeOut();
-						location.reload();
+	if ($('#form_crear_nomina').valid()) {
+		data = data1+'&'+data2;
+		$('#loader').fadeIn();
+		$.ajax({
+			url : 'functions/fn_nomina_crear_nomina.php',
+			type : 'POST',
+			data : data,
+			dataType : 'JSON'
+		}).done(function(data){
+			if (data.estado == 1) {
+				Command: toastr.success(
+					data.mensaje,
+					'Guardado correctamente',
+					{ onHidden: function()
+						{
+							$('#loader').fadeOut();
+							location.reload();
+						}
 					}
-				}
-			);
-		} else if (data.estado == 0) {
-			Command: toastr.warning(
-				data.mensaje,
-				'Advertencia',
-				{ onHidden: function()
-					{
-						$('#loader').fadeOut();
+				);
+			} else if (data.estado == 0) {
+				Command: toastr.warning(
+					data.mensaje,
+					'Advertencia',
+					{ onHidden: function()
+						{
+							$('#loader').fadeOut();
+						}
 					}
-				}
-			);
-		}
-	}).fail(function(data){
-		Command: toastr.error(
-			'Ocurrió un error al guardar, contacte con el administrador',
-			'Error',
-			{ onHidden: function()
-				{
-					$('#loader').fadeOut();
-				}
+				);
 			}
-		);
-	});
+		}).fail(function(data){
+			Command: toastr.error(
+				'Ocurrió un error al guardar, contacte con el administrador',
+				'Error',
+				{ onHidden: function()
+					{
+						$('#loader').fadeOut();
+					}
+				}
+			);
+		});
+	}
 }
 
 function cambia_dias_incapacidad(input){
-	console.log('ENTRA ');
 	var index = $('.dias_incapacidad').index(input);
 	var aux_transporte = $('.aux_transporte').eq(index);
 	var aux_transporte_x_dia = aux_transporte.data('transportexdia');
@@ -227,4 +232,20 @@ function cambia_dias_incapacidad(input){
 	valor_base = $('.valor_base').eq(index).val();
 	total = parseFloat(valor_base) + parseFloat(aux_transporte_origin) - parseFloat(total_deducidos); 
 	$('.total_pagado').eq(index).val(total);
+}
+
+function cambia_valor_base(input){
+	var index = $('.valor_base').index(input);
+	var retefuente = $('.retefuente').eq(index);
+	var retefuente_perc = parseFloat(retefuente.data('percent'));
+	var reteica = $('.reteica').eq(index);
+	var reteica_perc = parseFloat(reteica.data('percent'));
+	var total_pagado = $('.total_pagado').eq(index);
+	var valor_base = parseFloat(input.val());
+	rete_fuente = valor_base * retefuente_perc;
+	rete_ica = valor_base * reteica_perc;
+	retefuente.val(rete_fuente);
+	reteica.val(rete_ica);
+	total = valor_base - rete_fuente - rete_ica;
+	total_pagado.val(total);
 }
