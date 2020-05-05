@@ -211,6 +211,36 @@
 
 
 
+<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 || $_SESSION['perfil'] == 5 || $_SESSION['perfil'] == 6 ){ ?>
+	<li>
+		<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Asistencias</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+
+			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 ){ ?>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias">Toma de asistencia</a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/repitentes.php"> Selección de repitentes </a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/consumo.php"> Registro de consumos </a> </li>
+			<?php } ?>
+
+			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5  || $_SESSION['perfil'] == 6 ){ ?>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/informe_asistencia.php"> Informe de asistencia </a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/registro_biometrico.php"> Registro Biometrico </a> </li>
+			<?php } ?>
+
+			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 3 ){ ?>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/control_tablets.php"> Control de toma de asistencias </a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/control_biometrico.php"> Control del registro biometrico </a> </li>
+			<?php } ?>
+
+		</ul>
+	</li>
+<?php } ?>
+
+
+
+
+
+
 
 <li> <a href="<?php echo $baseUrl; ?>/modules/control_acceso/listado.php"><i class="far fa-clock"></i> <span class="nav-label">Control de Acceso</span></a> </li>
 
@@ -265,30 +295,6 @@
 
 
 
-<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 || $_SESSION['perfil'] == 5 || $_SESSION['perfil'] == 6 ){ ?>
-	<li>
-		<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Asistencias</span><span class="fa arrow"></span></a>
-		<ul class="nav nav-second-level collapse">
-
-			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 ){ ?>
-				<li> <a href="<?= $baseUrl; ?>/modules/asistencias">Toma de asistencia</a> </li>
-				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/repitentes.php"> Selección de repitentes </a> </li>
-				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/consumo.php"> Registro de consumos </a> </li>
-			<?php } ?>
-
-			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5  || $_SESSION['perfil'] == 6 ){ ?>
-				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/informe_asistencia.php"> Informe de asistencia </a> </li>
-				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/registro_biometrico.php"> Registro Biometrico </a> </li>
-			<?php } ?>
-
-			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 3 ){ ?>
-				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/control_tablets.php"> Control de toma de asistencias </a> </li>
-				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/control_biometrico.php"> Control del registro biometrico </a> </li>
-			<?php } ?>
-
-		</ul>
-	</li>
-<?php } ?>
 
 
 
