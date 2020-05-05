@@ -1,6 +1,6 @@
 <?php
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(0,5,'D: Cumple  ND: No Cumple','TLR',5,'L',False);
+$pdf->Cell(0,5,'D: Disponible  ND: No Disponible','TLR',5,'L',False);
 $pdf->Cell(0,5,'OBSERVACIONES:','BLR',5,'L',False);
 $pdf->Cell(0,5,'','BLR',5,'L',False);
 $pdf->Cell(0,5,'','BLR',5,'L',False);
