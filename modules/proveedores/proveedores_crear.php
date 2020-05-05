@@ -153,7 +153,7 @@
 						                <label for="tipoalimento">Tipo alimento</label>
 						                <select class="form-control select2" name="tipoalimento[]" id="tipoalimento" multiple="multiple" required>
 						                	<?php
-						                		$consulta_tipo_alimento = "SELECT * FROM tipo_despacho WHERE Id != 99";
+						                		$consulta_tipo_alimento = "SELECT * FROM tipo_despacho";
 					                			$respuesta_tipo_alimento = $Link->query($consulta_tipo_alimento) or die('Error al consultar tipo documentos: '. $Link->error);
 
 					                			if (! empty($respuesta_tipo_alimento->num_rows)) {
@@ -177,7 +177,7 @@
           				</div>
 
 			          	<div class="row">
-	          				<div class="col-sm-3 col-lg-2 text-center">
+	          				<div class="col-sm-12">
 	      						<a href="#" class="btn btn-primary" id="guardarProveedorContinuar"><i class="fa fa-check "></i> Guardar </a>
 	          				</div>
 			          	</div>

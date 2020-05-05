@@ -180,18 +180,21 @@
 						                <label for="tipoalimento">Tipo alimento</label>
 						                <select class="form-control select2" name="tipoalimento[]" id="tipoalimento" multiple="multiple" required>
 						                	<?php
-						                		$consulta_tipo_alimento = "SELECT * FROM tipo_despacho WHERE Id != 99";
+						                		$consulta_tipo_alimento = "SELECT * FROM tipo_despacho";
 					                			$respuesta_tipo_alimento = $Link->query($consulta_tipo_alimento) or die('Error al consultar tipo documentos: '. $Link->error);
 
 					                			if (! empty($respuesta_tipo_alimento->num_rows)) {
 						                        	while($tipoalimento = $respuesta_tipo_alimento->fetch_object()) {
+					                        			$selected = "";
+
 						                        		foreach ($tipoalimentos as $alimento) {
 						                        			if ($alimento == $tipoalimento->Id) {
-					                          					echo '<option value="'. $tipoalimento->Id .'" selected>'. $tipoalimento->Descripcion .'</option>';
-						                        			} else {
-					                          					echo '<option value="'. $tipoalimento->Id .'">'. $tipoalimento->Descripcion .'</option>';
+					                        					$selected = "selected";
+					                        					break;
 						                        			}
 						                        		}
+
+			                          					echo '<option value="'. $tipoalimento->Id .'" '. $selected .'>'. $tipoalimento->Descripcion .'</option>';
 						                        	}
 						                      	}
 						                	?>
@@ -215,142 +218,6 @@
 	          				</div>
 			          	</div>
           			</form>
-          <!-- <form id="formEditarProveedor" action="function/fn_proveedor_editar.php" method="post">
-          	<div class="row">
-        			<div class="col-sm-12">
-        				<div class="row">
-
-									<div class="form-group col-sm-6 col-md-3">
-										<fieldset disabled>
-			                <label for="tipoDocumento">Tipo documento</label>
-			                <select class="form-control disabled" name="tipoDocumento" id="tipoDocumento"  required>
-			                	<option value="">Seleccione uno</option>
-			                	<?php
-			                    $consulta = "SELECT id AS idTipoDocumento, nombre AS nombreTipoDocumento FROM tipodocumento;";
-			                    $resultado = $Link->query($consulta) or die ('Error al listar los usuarios: . '. mysqli_error($Link));
-			                    if($resultado){
-			                      while($registros = $resultado->fetch_assoc()){
-			                  ?>
-			                        <option value="<?= $registros['idTipoDocumento']; ?>" <?php if(isset($tipoDocumento) && $tipoDocumento == $registros['idTipoDocumento']) { echo 'selected'; } ?>>
-			                          <?= $registros['nombreTipoDocumento']; ?>
-			                        </option>
-			                  <?php
-			                      }
-			                    }
-			                  ?>
-			                </select>
-										</fieldset>
-										<input type="hidden" name="idProveedor" id="idProveedor" value="<?= $idProveedor; ?>">
-		              </div>
-
-	        				<div class="form-group col-sm-6 col-md-3">
-	        					<fieldset disabled>
-			                <label for="numeroDocumento">Número documento</label>
-			                <select class="form-control" name="numeroDocumento" id="numeroDocumento" required>
-			                	<option value="">Seleccione uno</option>
-			                	<?php
-			                    $consulta1= "SELECT usu.num_doc AS cedulaEmpleado FROM usuarios usu WHERE usu.id_perfil = '2' AND usu.Tipo_Usuario = 'Proveedor';";
-			                    $resultado1 = $Link->query($consulta1) or die ('Error al listar los usuarios: . '. mysqli_error($Link));
-			                    if($resultado1){
-			                      while($registros1 = $resultado1->fetch_assoc()){
-			                  ?>
-			                        <option value="<?= $registros1['cedulaEmpleado']; ?>" <?php if(isset($numeroDocumento) && $numeroDocumento == $registros1['cedulaEmpleado']){ echo 'selected'; } ?>>
-			                          <?= $registros1['cedulaEmpleado']; ?>
-			                        </option>
-			                  <?php
-			                      }
-			                    }
-			                  ?>
-			                </select>
-		              	</fieldset>
-		                <input type="hidden" name="numeroDocumentohidden" id="numeroDocumentohidden" value="<?= $numeroDocumento; ?>">
-		              </div>
-
-									<div class="form-group col-sm-6 col-md-3">
-		                <label for="nombreComercial">Nombre comercial</label>
-		                <input type="text" class="form-control" name="nombreComercial" id="nombreComercial" value="<?= $nombreComercial; ?>" required>
-		              </div>
-
-		              <div class="form-group col-sm-6 col-md-3">
-		                <label for="tipoJuridico">Tipo jurídico</label>
-		                <select class="form-control" name="tipoJuridico" id="tipoJuridico" required>
-		                	<option value="">Seleccione uno</option>
-		                	<option value="Régimen común" <?php if(isset($tipoJuridico) && $tipoJuridico == 'Régimen común'){ echo 'selected'; } ?>>Régimen común</option>
-		                	<option value="Régimen simplificado" <?php if(isset($tipoJuridico) && $tipoJuridico == 'Régimen simplificado'){ echo 'selected'; } ?>>Régimen simplificado</option>
-		                </select>
-		              </div>
-
-        				</div>
-
-        				<div class="row">
-
-        					<div class="form-group col-sm-6 col-md-3">
-		                <label for="primerNombre">Primer nombre</label>
-		                <input type="text" class="form-control" name="primerNombre" id="primerNombre" value="<?= $primerNombre; ?>" required>
-		              </div>
-
-									<div class="form-group col-sm-6 col-md-3">
-		                <label for="segundoNombre">Segundo nombre</label>
-		                <input type="text" class="form-control" name="segundoNombre" id="segundoNombre" value="<?= $segundoNombre; ?>">
-		              </div>
-
-		              <div class="form-group col-sm-6 col-md-3">
-		                <label for="primerApellido">Primer apellido</label>
-		                <input type="text" class="form-control" name="primerApellido" id="primerApellido" value="<?= $primerApellido; ?>" required>
-		              </div>
-
-		              <div class="form-group col-sm-6 col-md-3">
-		                <label for="segundoApellido">Segundo apellido</label>
-		                <input type="text" class="form-control" name="segundoApellido" id="segundoApellido" value="<?= $segundoApellido; ?>">
-		              </div>
-
-        				</div>
-
-								<div class="row">
-
-									<div class="form-group col-sm-6 col-md-3">
-		                <label for="email">Email</label>
-		                <input type="email" class="form-control" name="email" id="email" value="<?= $email; ?>" readOnly required>
-		              </div>
-
-		              <div class="form-group col-sm-6 col-md-3">
-		                <label for="direccion">Dirección</label>
-		                <input type="text" class="form-control" name="direccion" id="direccion" value="<?= $direccion; ?>" required>
-		              </div>
-
-									<div class="form-group col-sm-6 col-md-3">
-		                <label for="telefono">Teléfono 1</label>
-		                <input type="text" class="form-control" name="telefono" id="telefono" value="<?= $telefono; ?>" required>
-									</div>
-
-									<div class="form-group col-sm-6 col-md-3">
-		                <label for="telefono2">Teléfono 2</label>
-		                <input type="text" class="form-control" name="telefono2" id="telefono2" value="<?= $telefono2; ?>">
-									</div>
-
-								</div>
-
-								<div class="row">
-
-									<div class="form-group col-sm-6 col-md-3">
-		                <label for="digitoVerificacion">Dígito verificación</label>
-		                <input type="text" class="form-control" name="digitoVerificacion" id="digitoVerificacion" value="<?= $digitoVerificacion; ?>">
-									</div>
-
-								</div>
-
-        			</div>
-          	</div>
-          	<div class="row">
-          		<div class="col-sm12">
-          			<div class="row-">
-          				<div class="col-sm-3 col-lg-2 text-center">
-      							<a href="#" class="btn btn-primary" id="actualizarProveedorContinuar"><i class="fa fa-check "></i> Guardar y Continuar </a>
-          				</div>
-          			</div>
-          		</div>
-          	</div>
-          </form> -->
         </div>
       </div>
     </div>
