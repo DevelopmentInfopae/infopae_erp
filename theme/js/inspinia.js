@@ -179,7 +179,7 @@ $(document).ready(function () {
     })
 
     $(document).on('change, keyup', '.only_number',function(){
-        this.value = this.value.replace(/[^0-9]/g,'');
+        this.value = this.value.replace(/[^0-9.]/g,'');
     });
 });
 

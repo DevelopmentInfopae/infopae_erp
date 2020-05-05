@@ -191,6 +191,9 @@ if ($tipo == 2) {
 					$liquidacion = 0;
 					$tipo_liquidacion = "";
 					foreach ($datos['semanas'] as $semana => $estudiantes) {
+						if (!isset($valoresnomina_datos[$datos['tipo_complem']])) {
+							continue;
+						}
 						foreach ($valoresnomina_datos[$datos['tipo_complem']] as $tipo => $valoresnomina) {
 							if ($valoresnomina['min'] <= $estudiantes && $valoresnomina['max'] >= $estudiantes) {
 								$vlr_dia = 0;
@@ -238,7 +241,7 @@ if ($tipo == 2) {
 		}
 	}
 
-	$html = '<table class="table">
+	$html = '<table class="table" id="box-table-a">
 				<thead>
 					<tr>
 	                    <th style="width: 3.33%;" class="col-sm-1 text-center">
@@ -350,28 +353,34 @@ if ($tipo == 2) {
 				</tfoot>
 			</table>';			
 } else if ($tipo == 1 || $tipo == 3) {
-	$consulta = "SELECT * FROM empleados WHERE tipo = '".$tipo."'
+	$consulta = "SELECT empleados.*, ubicacion.Ciudad as mun_empleado FROM empleados 
+					INNER JOIN ubicacion ON ubicacion.CODIGODANE = empleados.Ciudad
+					WHERE estado = 1 AND tipo = '".$tipo."'
 				".($municipio ? "Ciudad = '".$municipio."'" : "")."
 				;";
 	$result = $Link->query($consulta);
 	$empleados = [];
 	if ($result->num_rows > 0) {
 		while ($data = $result->fetch_assoc()) {
-			$empleados[] = $data;
+			$consulta_existe = "SELECT * FROM pagos_nomina WHERE 
+						doc_empleado = '".$data['Nitcc']."'
+						AND mes = '".$mes."'
+						AND
+						(
+							(semquin_inicial <= '".$semana_inicial."' AND semquin_final >= '".$semana_inicial."') 
+							OR 
+							(semquin_inicial <= '".$semana_final."' AND semquin_final >= '".$semana_final."')
+						)";
+			$resulta_existe = $Link->query($consulta_existe);
+			if ($resulta_existe->num_rows > 0) {
+				continue;
+			} else {
+				$empleados[] = $data;
+			}
 		}
 	}
 
-	$dias_laborados = 30;
-	$aux_transporte = $parametrosnomina_datos['auxilio_trans'];
-
-	$aux_transporte_x_dia = $parametrosnomina_datos['auxilio_trans'] / $dias_laborados;
-
-	if ($semana_inicial == $semana_final) {
-		$dias_laborados = $dias_laborados / 2;
-		$aux_transporte = $aux_transporte / 2;
-	}
-
-	$html = '<table class="table">
+	$html = '<table class="table" id="box-table-a">
 				<thead>
 					<tr>
 	                    <th style="width: 7.14%;" class="col-sm-1 text-center">
@@ -381,7 +390,7 @@ if ($tipo == 2) {
 	                    <th style="width: 7.14%;">Cédula</th>
 	                    <th style="width: 7.14%;">Tipo Contrato</th>
 	                    <th style="width: 7.14%;">Municipio</th>
-	                    <th style="width: 7.14%;">Liquida po</th>
+	                    <th style="width: 7.14%;">Liquida por</th>
 	                    <th style="width: 7.14%;">Valor base</th>
 	                    <th style="width: 7.14%;">Días contratados</th>
 	                    <th style="width: 7.14%;">Días laborados</th>
@@ -397,6 +406,22 @@ if ($tipo == 2) {
 	if (count($empleados) > 0) {
 		$status = 1;
 		foreach ($empleados as $empleado) {
+
+			$dias_laborados = 30;
+			$valor_base_mes = $empleado['ValorBaseMes'];
+			$valor_base_mes_x_dia = $valor_base_mes / $dias_laborados;
+			$aux_transporte = $parametrosnomina_datos['auxilio_trans'];
+			$desc_eps = $semana_final == '02' ? $valor_base_mes * $parametrosnomina_datos['desc_eps'] : 0;
+			$desc_afp = $semana_final == '02' ? $valor_base_mes * $parametrosnomina_datos['desc_afp'] : 0;
+			$total_discount = $desc_eps + $desc_afp;
+			if ($semana_inicial == $semana_final) {
+				$dias_laborados = $dias_laborados / 2;
+				$aux_transporte = $aux_transporte / 2;
+				$valor_base_mes = $valor_base_mes / 2;
+			}
+			$aux_transporte_x_dia = $aux_transporte / $dias_laborados;
+			$total_devengado = $aux_transporte + $valor_base_mes - $total_discount;
+			$aux_transporte_x_dia = number_format($aux_transporte_x_dia, 2, '.', '');
 			$html.='
 					<tr>
 						<td>
@@ -416,43 +441,43 @@ if ($tipo == 2) {
 							<input type="hidden" name="tipo_emp['.$num.']" value="'.$empleado['tipo'].'">
 						</td>
 						<td>
-							'.$empleado['Ciudad'].'
+							'.$empleado['mun_empleado'].'
 							<input type="hidden" name="municipio_sede['.$num.']" value="'.$empleado['Ciudad'].'">
 						</td>
 						<td>
 							Mes
 							<input type="hidden" name="liquida_por['.$num.']" value="Mes">
 						</td>
-						<td>
-							<input type="text" name="valor_base['.$num.']" class="form-control only_number">
+						<td> 
+							<input type="text" name="valor_base['.$num.']" data-basemesxdia="'.$valor_base_mes_x_dia.'" class="form-control only_number valor_base" value="'.$empleado['ValorBaseMes'].'" readonly>
 						</td>
 						<td>
 							'.$dias_laborados.'
 							<input type="hidden" name="dias_contrato['.$num.']" value="'.$dias_laborados.'">
 						</td>
 						<td>
-							<input type="text" name="dias_laborados['.$num.']" class="form-control only_number" value="'.$dias_laborados.'">
+							<input type="text" name="dias_laborados['.$num.']" class="form-control only_number" value="'.$dias_laborados.'" readonly>
 						</td>
 						<td>
-							<input type="text" name="dias_incapacidad['.$num.']" class="form-control only_number" value="0">
+							<input type="text" name="dias_incapacidad['.$num.']" class="form-control only_number dias_incapacidad" value="0">
 						</td>
 						<td>
-							'.$aux_transporte.'
-							<input type="hidden" name="auxilio_transporte['.$num.']" value="'.$aux_transporte.'" data-transportexdia="'.$aux_transporte_x_dia.'">
+							<span class="transporte_txt">'.$aux_transporte.'</span>
+							<input type="hidden" name="auxilio_transporte['.$num.']" value="'.$aux_transporte.'" data-transporteorigin="'.$aux_transporte.'" data-transportexdia="'.$aux_transporte_x_dia.'" class="aux_transporte">
 						</td>
 						<td>
 							0
 							<input type="hidden" name="auxilio_extra['.$num.']" value="0">
 						</td>
 						<td>
-							<input type="text" name="otros_devengados['.$num.']" class="form-control only_number" value="0">
-							<input type="hidden" name="desc_eps['.$num.']" value="0">
-							<input type="hidden" name="desc_afp['.$num.']" value="0">
-							<input type="hidden" name="desc_auxtrans_incap['.$num.']" value="0">
-							<input type="hidden" name="otros_deducidos['.$num.']" value="0">
+							<input type="text" name="otros_deducidos['.$num.']"  data-deducidosorigin="'.$total_discount.'" class="form-control only_number deducidos" value="'.$total_discount.'" readonly>
+							<input type="hidden" name="desc_eps['.$num.']" value="'.$desc_eps.'">
+							<input type="hidden" name="desc_afp['.$num.']" value="'.$desc_afp.'">
+							<input type="hidden" class="desc_auxtrans_incap" name="desc_auxtrans_incap['.$num.']" value="0">
+							<input type="hidden" name="otros_devengados['.$num.']" value="0">
 						</td>
 						<td>
-							<input type="text" name="total_pagado['.$num.']" class="form-control only_number" value="0">
+							<input type="text" name="total_pagado['.$num.']" class="form-control only_number total_pagado" value="'.$total_devengado.'" readonly>
 						</td>
 					</tr>
 			';
@@ -470,7 +495,7 @@ if ($tipo == 2) {
 	                    <th style="width: 7.14%;">Cédula</th>
 	                    <th style="width: 7.14%;">Tipo Contrato</th>
 	                    <th style="width: 7.14%;">Municipio</th>
-	                    <th style="width: 7.14%;">Liquida po</th>
+	                    <th style="width: 7.14%;">Liquida por</th>
 	                    <th style="width: 7.14%;">Valor base</th>
 	                    <th style="width: 7.14%;">Días contratados</th>
 	                    <th style="width: 7.14%;">Días laborados</th>
