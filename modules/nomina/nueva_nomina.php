@@ -49,13 +49,15 @@
 								</select>
 							</div>
 							<div class="form-group col-sm-6 col-md-3">
-								<label>Semana Inicial</label>
+								<label class="manipuladora_mostrar">Semana Inicial</label>
+								<label class="manipuladora_ocultar" style="display: none;">Quincena Inicial</label>
 								<select name="semana_inicial" id="semana_inicial" class="form-control" required>
 									<option value="">Seleccione primero el mes</option>
 								</select>
 							</div>
 							<div class="form-group col-sm-6 col-md-3">
-								<label>Semana Final</label>
+								<label class="manipuladora_mostrar">Semana Final</label>
+								<label class="manipuladora_ocultar" style="display: none;">Quincena Final</label>
 								<select name="semana_final" id="semana_final" class="form-control" required>
 									<option value="">Seleccione primero el mes</option>
 								</select>
@@ -81,19 +83,19 @@
 									?>
 								</select>
 							</div>
-							<div class="form-group col-sm-6 col-md-3">
+							<div class="form-group col-sm-6 col-md-3 manipuladora_mostrar">
 								<label>Institución</label>
 								<select name="institucion" id="institucion" class="form-control">
 									<option value="">Todas las instituciones</option>
 								</select>
 							</div>
-							<div class="form-group col-sm-6 col-md-3">
+							<div class="form-group col-sm-6 col-md-3 manipuladora_mostrar">
 								<label>Sede</label>
 								<select name="sede" id="sede" class="form-control">
 									<option value="">Todas las sedes</option>
 								</select>
 							</div>
-							<div class="form-group col-sm-6 col-md-3">
+							<div class="form-group col-sm-6 col-md-3 manipuladora_mostrar">
 								<label>Tipo complemento</label>
 								<select name="tipo_complemento" id="tipo_complemento" class="form-control">
 									<option value="">Todos los complementos</option>
@@ -116,47 +118,8 @@
 						</div>
 					</form>
 					<form id="form_crear_nomina" method="post">
-						<div class="row">
-							<table class="table">
-								<thead>
-									<tr>
-				                        <th style="width: 3.33%;" class="col-sm-1 text-center">
-				                          <input type="checkbox" class="i-checks" name="selectVarios" id="selectVarios" value="">
-				                        </th>
-				                        <th style="width: 13.33%;">Nombre</th>
-				                        <th style="width: 8.33%;">Cédula</th>
-				                        <th style="width: 8.33%;">Tipo Contrato</th>
-				                        <th style="width: 8.33%;">Municipio</th>
-				                        <th style="width: 8.33%;">Sede</th>
-				                        <th style="width: 8.33%;">Tipo Complemento</th>
-				                        <th style="width: 8.33%;">Cobertura Prom.</th>
-				                        <th style="width: 8.33%;">Liquida por</th>
-				                        <th style="width: 8.33%;">Días contratados</th>
-				                        <th style="width: 8.33%;">Días laborados</th>
-				                        <th style="width: 8.33%;">Valor a pagar</th>
-									</tr>
-								</thead>
-								<tbody id="tbody_empleados">
-									
-								</tbody>
-								<tfoot>
-									<tr>
-				                        <th style="width: 3.33%;" class="col-sm-1 text-center">
-				                        </th>
-				                        <th style="width: 13.33%;">Nombre</th>
-				                        <th style="width: 8.33%;">Cédula</th>
-				                        <th style="width: 8.33%;">Tipo Contrato</th>
-				                        <th style="width: 8.33%;">Municipio</th>
-				                        <th style="width: 8.33%;">Sede</th>
-				                        <th style="width: 8.33%;">Tipo Complemento</th>
-				                        <th style="width: 8.33%;">Cobertura Prom.</th>
-				                        <th style="width: 8.33%;">Liquida por</th>
-				                        <th style="width: 8.33%;">Días contratados</th>
-				                        <th style="width: 8.33%;">Días laborados</th>
-				                        <th style="width: 8.33%;">Valor a pagar</th>
-									</tr>
-								</tfoot>
-							</table>
+						<div class="row div_table" >
+							
 						</div>
 					</form>
 				</div>

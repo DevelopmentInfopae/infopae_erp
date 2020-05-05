@@ -18,6 +18,9 @@ if ($tipo == 2) {
 			$cnt++;
 		}
 	}
+} else {
+	$html .= "<option value='01' data-num='1'>01</option>";
+	$html .= "<option value='02' data-num='2'>02</option>";
 }
 
 echo $html;

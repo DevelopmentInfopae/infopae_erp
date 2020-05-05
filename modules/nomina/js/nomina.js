@@ -42,6 +42,15 @@ function cambia_tipo(select){
 	}).fail(function(data){
 		console.log(data);
 	});
+
+	if (tipo_select == 2) {
+		$('.manipuladora_mostrar').fadeIn();
+		$('.manipuladora_ocultar').fadeOut();
+	} else {
+		$('.manipuladora_ocultar').fadeIn();
+		$('.manipuladora_mostrar').fadeOut();
+	}
+
 }
 
 function cambia_mes(select){
@@ -95,9 +104,23 @@ function buscar_empleados(){
 		$.ajax({
 			url : 'functions/fn_nomina_buscar_empleados.php',
 			type : 'POST',
-			data : datos
+			data : datos,
+			dataType : 'JSON'
 		}).done(function(data){
-			$('#tbody_empleados').html(data);
+
+			if (data.status == 0) {
+				Command: toastr.warning(
+					'No se encontró registros para el filtro aplicado',
+					'Sin registros',
+					{ onHidden: function()
+						{
+							$('#loader').fadeOut();
+						}
+					}
+				);
+			}
+
+			$('.div_table').html(data.html);
 			$('input').iCheck({
 			     radioClass: 'iradio_square-green',
 		 		 checkboxClass: 'icheckbox_square-green',
@@ -150,7 +173,7 @@ function crear_nomina(){
 	}).done(function(data){
 		if (data.estado == 1) {
 			Command: toastr.success(
-				'Se registró correctamente la liquidación',
+				data.mensaje,
 				'Guardado correctamente',
 				{ onHidden: function()
 					{
@@ -159,10 +182,10 @@ function crear_nomina(){
 					}
 				}
 			);
-		} else {
-			Command: toastr.error(
-				'Ocurrió un error al guardar, contacte con el administrador',
-				'Error',
+		} else if (data.estado == 0) {
+			Command: toastr.warning(
+				data.mensaje,
+				'Advertencia',
 				{ onHidden: function()
 					{
 						$('#loader').fadeOut();
