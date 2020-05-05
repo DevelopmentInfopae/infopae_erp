@@ -727,7 +727,7 @@
 				botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';
 				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a></li>';
 				botonAcciones += '<li><a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a></li>';
-			botonAcciones += '<?php } ?>';
+			<?php } ?>
 			botonAcciones += '</ul></div>';
 
 			$('.containerBtn').html(botonAcciones);

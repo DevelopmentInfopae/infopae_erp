@@ -73,7 +73,7 @@
 
 
 					<?php
-					$consulta = " SELECT  DATE_FORMAT(cp.fecha, \"%d/%m/%Y %H:%I:%S\") AS fecha, IF(cp.tipo = 1, \"Entrada\", \"Salida\") as evento, e.Nombre, e.Nitcc, e.cargo FROM control_personal cp LEFT JOIN empleados e ON cp.num_doc = e.Nitcc ORDER BY cp.ID desc ";
+					$consulta = " SELECT  DATE_FORMAT(cp.fecha, \"%d/%m/%Y %H:%i:%s\") AS fecha, IF(cp.tipo = 1, \"Entrada\", \"Salida\") as evento, e.Nombre, e.Nitcc, e.cargo FROM control_personal cp LEFT JOIN empleados e ON cp.num_doc = e.Nitcc ORDER BY cp.ID desc ";
 					//echo "<br><br>$consulta2<br><br>";
 					
 					
