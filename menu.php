@@ -271,6 +271,8 @@
 <?php } ?>
 
 
-
-
-
+<?php if( $_SESSION['perfil'] == 0) { ?>
+	<li class="active">
+		<a href="<?= $baseUrl; ?>/modules/fqrs/index.php"><i class="fa fa-question"></i> <span class="nav-label">FQRS</span></a>
+	</li>
+<?php } ?>
