@@ -24,7 +24,7 @@ $consulta = "SELECT
                 LEFT JOIN empleados ON empleados.Nitcc = pagos_nomina.doc_empleado
                 LEFT JOIN ubicacion ON ubicacion.CodigoDANE = pagos_nomina.cod_mun_sede
                 LEFT JOIN sedes$periodoActual as sedes ON sedes.cod_sede = pagos_nomina.cod_sede
-              GROUP BY pagos_nomina.numero";
+              GROUP BY pagos_nomina.numero ORDER BY pagos_nomina.mes DESC";
 // exit($consulta);
 $resultado = $Link->query($consulta);
 if($resultado->num_rows > 0)
