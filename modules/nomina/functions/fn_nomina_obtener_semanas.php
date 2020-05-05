@@ -8,7 +8,7 @@ $tipo = $_POST['tipo'];
 
 $html = "<option value=''>Seleccione...</option>";
 
-if ($tipo == 2) {
+if ($tipo == 2 || $tipo == 4) {
 	$consulta = "SELECT SEMANA FROM planilla_semanas WHERE MES = '".$mes."' GROUP BY SEMANA";
 	$result = $Link->query($consulta);
 	if ($result->num_rows > 0) {

@@ -49,15 +49,15 @@
 								</select>
 							</div>
 							<div class="form-group col-sm-6 col-md-3">
-								<label class="manipuladora_mostrar">Semana Inicial</label>
-								<label class="manipuladora_ocultar" style="display: none;">Quincena Inicial</label>
+								<label class="manipuladora_mostrar transportador_mostrar">Semana Inicial</label>
+								<label class="manipuladora_ocultar transportador_ocultar" style="display: none;">Quincena Inicial</label>
 								<select name="semana_inicial" id="semana_inicial" class="form-control" required>
 									<option value="">Seleccione primero el mes</option>
 								</select>
 							</div>
 							<div class="form-group col-sm-6 col-md-3">
-								<label class="manipuladora_mostrar">Semana Final</label>
-								<label class="manipuladora_ocultar" style="display: none;">Quincena Final</label>
+								<label class="manipuladora_mostrar transportador_mostrar">Semana Final</label>
+								<label class="manipuladora_ocultar transportador_ocultar" style="display: none;">Quincena Final</label>
 								<select name="semana_final" id="semana_final" class="form-control" required>
 									<option value="">Seleccione primero el mes</option>
 								</select>
