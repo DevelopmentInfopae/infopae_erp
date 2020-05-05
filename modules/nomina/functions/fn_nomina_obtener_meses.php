@@ -28,6 +28,10 @@ if ($tipo == 2) {
 			$html.="<option value='".$data['MES']."'>".$meses[$data['MES']]."</option>";
 		}
 	}
+} else {
+	foreach ($meses as $num_mes => $nom_mes) {
+		$html.="<option value='".$num_mes."'>".$nom_mes."</option>";
+	}
 }
 
 echo $html;

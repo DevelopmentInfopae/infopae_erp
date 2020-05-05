@@ -14,6 +14,9 @@ $tipo_comple = isset($_POST['tipo_comple']) ? $_POST['tipo_comple'] : null;
 $cobertura_prom = isset($_POST['cobertura_prom']) ? $_POST['cobertura_prom'] : null;
 $liquida_por = isset($_POST['liquida_por']) ? $_POST['liquida_por'] : null;
 $valor_base = isset($_POST['valor_base']) ? $_POST['valor_base'] : null;
+$valor_semana = isset($_POST['valor_semana']) ? $_POST['valor_semana'] : null;
+$dias_contratados_semana = isset($_POST['dias_contratados_semana']) ? $_POST['dias_contratados_semana'] : null;
+$dias_laborados_semana = isset($_POST['dias_laborados_semana']) ? $_POST['dias_laborados_semana'] : null;
 $dias_contrato = isset($_POST['dias_contrato']) ? $_POST['dias_contrato'] : null;
 $dias_laborados = isset($_POST['dias_laborados']) ? $_POST['dias_laborados'] : null;
 $total_pagado = isset($_POST['total_pagado']) ? $_POST['total_pagado'] : null;
@@ -52,6 +55,9 @@ if (count($key) > 0) {
 				$nit = $documento[$row];
 			}
 			$vlr_base = $valor_base[$row][$num_lqp];
+			$vlr_semana = $valor_semana[$row][$num_lqp];
+			$dias_lab_semana = $dias_laborados_semana[$row][$num_lqp];
+			$dias_con_semana = $dias_contratados_semana[$row][$num_lqp];
 			// exit(json_encode($vlr_base));
 			$insert = "
 			INSERT INTO `pagos_nomina`
@@ -92,22 +98,28 @@ if (count($key) > 0) {
 			'".$tipo_comple[$row]."',
 			'".$cobertura_prom[$row]."',
 			'".$liquida_por_arr[$txt_liquida_por]."',
-			'".$dias_contrato[$row]."',
-			'".$dias_laborados[$row]."',
+			'".$dias_con_semana."',
+			'".$dias_lab_semana."',
 			'".$vlr_base."',
-			'".$total_pagado[$row]."',
+			'".$vlr_semana."',
 			'".$_SESSION["idUsuario"]."'
 			);";
 			$Link->query($insert) or die (mysqli_error($Link));
 		}
 	}
+	$consecutivo++;
+	$update_documento = "UPDATE documentos SET Consecutivo = '".$consecutivo."' WHERE id = '".$data_documento['Id']."'";
+	$Link->query($update_documento);
+	// exit($insert);
+	$respuestaAJAX = [
+	  'estado' => 1,
+	  'mensaje' => 'Registros creados correctamente'
+	];
+	echo json_encode($respuestaAJAX);
+} else {
+	$respuestaAJAX = [
+	  'estado' => 0,
+	  'mensaje' => 'No se seleccionó ninguna liquidación, por favor seleccione al menos una'
+	];
+	echo json_encode($respuestaAJAX);
 }
-$consecutivo++;
-$update_documento = "UPDATE documentos SET Consecutivo = '".$consecutivo."' WHERE id = '".$data_documento['Id']."'";
-$Link->query($update_documento);
-// exit($insert);
-$respuestaAJAX = [
-  'estado' => 1,
-  'mensaje' => 'El empleado ha sido creado exitosamente'
-];
-echo json_encode($respuestaAJAX);

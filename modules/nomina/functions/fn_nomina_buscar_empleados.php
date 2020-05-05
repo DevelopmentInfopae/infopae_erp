@@ -5,6 +5,19 @@ require_once '../../../config.php';
 
 $periodoActual = $_SESSION['periodoActual'];
 
+$tipo_empleado = [
+					1 => 'Empleado',
+					2 => 'Manipulador',
+					3 => 'Contratista',
+					4 => 'Transportador',
+				];
+$tipo_contrato = [
+					1 => 'OPS',
+					2 => 'Nómina',
+					3 => 'Obra labor',
+					4 => 'Servicios',
+				];
+
 $tipo = $_POST['tipo'] != '' ? $_POST['tipo'] : null;
 $mes = $_POST['mes'] != '' ? $_POST['mes'] : null;
 $semana_inicial = $_POST['semana_inicial'] != '' ? $_POST['semana_inicial'] : null;
@@ -59,6 +72,13 @@ if ($resultado_semanas_consulta->num_rows > 0) {
 			}
 		}
 	}
+}
+
+$parametrosnomina_datos = []; //PARAMETROS DE NÓMINA
+$parametrosnomina_consulta = "SELECT * FROM parametros_nomina";
+$parametrosnomina_result = $Link->query($parametrosnomina_consulta);
+if ($parametrosnomina_result->num_rows > 0) {
+	$parametrosnomina_datos = $parametrosnomina_result->fetch_assoc();
 }
 
 $datos = [];
@@ -175,18 +195,20 @@ if ($tipo == 2) {
 							if ($valoresnomina['min'] <= $estudiantes && $valoresnomina['max'] >= $estudiantes) {
 								$vlr_dia = 0;
 								if ($tipo == 1) {
-									$liquidaciones[$semana]['tipo'] = 'Día';
+									$tipo = 'Día';
+									$liquidaciones[$tipo]['tipo'] = $tipo;
 									$vlr_dia = $valoresnomina['valor'];
 								} else if ($tipo == 2) {
-									$liquidaciones[$semana]['tipo'] = 'Ración';
+									$tipo = 'Ración';
+									$liquidaciones[$tipo]['tipo'] = $tipo;
 									$vlr_dia = $valoresnomina['valor'] * $estudiantes;
 								}
 								$dias = isset($semanas_num_dias[$semana]) ? $semanas_num_dias[$semana] : 0;
 								$vlr_semana = $dias * $vlr_dia;
-								$liquidaciones[$semana]['valor'] = $vlr_semana;
-								$liquidaciones[$semana]['dias_contratados'] = count($dias_semanas[$semana]);
-								$liquidaciones[$semana]['dias_laborados'] = $dias;
-								$liquidaciones[$semana]['valor_base'] = $valoresnomina['valor'];
+								$liquidaciones[$tipo]['valor'] = isset($liquidaciones[$tipo]['valor']) ? $liquidaciones[$tipo]['valor'] + $vlr_semana : $vlr_semana;
+								$liquidaciones[$tipo]['dias_contratados'] = isset($liquidaciones[$tipo]['dias_contratados']) ? $liquidaciones[$tipo]['dias_contratados'] + count($dias_semanas[$semana]) : count($dias_semanas[$semana]);
+								$liquidaciones[$tipo]['dias_laborados'] = isset($liquidaciones[$tipo]['dias_laborados']) ? $liquidaciones[$tipo]['dias_laborados'] + $dias : $dias;
+								$liquidaciones[$tipo]['valor_base'] = $valoresnomina['valor'];
 								$liquidacion += $vlr_semana;
 								if (!isset($datos['dias_contratados'])) {
 									$datos['dias_contratados'] = count($dias_semanas[$semana]);
@@ -198,8 +220,8 @@ if ($tipo == 2) {
 								} else {
 									$datos['dias_laborados'] += $dias;
 								}
-								if ($tipo_liquidacion != "/".$liquidaciones[$semana]['tipo']) {
-									$tipo_liquidacion .= "/".$liquidaciones[$semana]['tipo'];
+								if ($tipo_liquidacion != "/".$liquidaciones[$tipo]['tipo']) {
+									$tipo_liquidacion .= "/".$liquidaciones[$tipo]['tipo'];
 								}
 								break;
 							}
@@ -215,83 +237,251 @@ if ($tipo == 2) {
 			}
 		}
 	}
-}
 
-$html = "";
-$tipo_empleado = [
-					1 => 'Empleado',
-					2 => 'Manipulador',
-					3 => 'Contratista',
-					4 => 'Transportador',
-				];
-$tipo_contrato = [
-					1 => 'OPS',
-					2 => 'Nómina',
-					3 => 'Obra labor',
-					4 => 'Servicios',
-				];
-// exit(json_encode($resultados));
-$num = 0;
-foreach ($resultados as $row) {
-	if ($row['liquidacion'] > 0) {
-		$html .= '<tr>
-					<td>
-						<input type="checkbox" class="i-checks" name="key['.$num.']" value="'.$num.'">
-						<input type="hidden" name="doc_empleado['.$num.']" value="'.$row['Nitcc'].'">
-						<input type="hidden" name="id_empleado['.$num.']" value="'.$row['ID'].'">
-					</td>
-					<td>
-						'.$row['nombre'].'
-					</td>
-					<td>
-						'.$row['Nitcc'].'
-					</td>
-					<td>
-						'.$tipo_contrato[$row['TipoContrato']].'
-						<input type="hidden" name="tipo_contrato['.$num.']" value="'.$row['TipoContrato'].'">
-						<input type="hidden" name="tipo_emp['.$num.']" value="'.$row['tipo'].'">
-					</td>
-					<td>
-						'.$row['Ciudad'].'
-						<input type="hidden" name="municipio_sede['.$num.']" value="'.$row['CodigoDANE'].'">
-					</td>
-					<td>
-						'.$row['nom_sede'].'
-						<input type="hidden" name="cod_sede['.$num.']" value="'.$row['cod_sede'].'">
-					</td>
-					<td>
-						'.$row['tipo_complem'].'
-						<input type="hidden" name="tipo_comple['.$num.']" value="'.$row['tipo_complem'].'">
-					</td>
-					<td>
-						'.$row['media'].'
-						<input type="hidden" name="cobertura_prom['.$num.']" value="'.$row['media'].'">
-					</td>
-					<td>
-						'.$row['tipo_liquidacion'];
-					$tip_liq = "";
-					foreach ($row['liquidaciones'] as $semana => $lqd) {
-						if ($tip_liq != $lqd['tipo'] && $lqd['valor'] > 0) {
-							$tip_liq = $lqd['tipo'];
-							$html.='<input type="hidden" name="liquida_por['.$num.'][]" value="'.$lqd['tipo'].'">';
-							$html.='<input type="hidden" name="valor_base['.$num.'][]" value="'.$lqd['valor_base'].'">';
-						}
-					}
-		$html .= '</td>
-					<td>
-						'.$row['dias_contratados'].'
-						<input type="hidden" name="dias_contrato['.$num.']" value="'.$row['dias_contratados'].'">
-					</td>
-					<td>
-						<input type="text" name="dias_laborados['.$num.']" class="form-control only_number dias_laborados" value="'.$row['dias_laborados'].'" data-max="'.$row['dias_contratados'].'" data-original="'.$row['dias_laborados'].'">
-					</td>
-					<td>
-						'.$row['liquidacion'].'
-						<input type="hidden" name="total_pagado['.$num.']" value="'.$row['liquidacion'].'">
-					</td>
-				</tr>';
-		$num++;
+	$html = '<table class="table">
+				<thead>
+					<tr>
+	                    <th style="width: 3.33%;" class="col-sm-1 text-center">
+	                      <input type="checkbox" class="i-checks" name="selectVarios" id="selectVarios" value="">
+	                    </th>
+	                    <th style="width: 13.33%;">Nombre</th>
+	                    <th style="width: 8.33%;">Cédula</th>
+	                    <th style="width: 8.33%;">Tipo Contrato</th>
+	                    <th style="width: 8.33%;">Municipio</th>
+	                    <th style="width: 8.33%;">Sede</th>
+	                    <th style="width: 8.33%;">Tipo Complemento</th>
+	                    <th style="width: 8.33%;">Cobertura Prom.</th>
+	                    <th style="width: 8.33%;">Liquida por</th>
+	                    <th style="width: 8.33%;">Días contratados</th>
+	                    <th style="width: 8.33%;">Días laborados</th>
+	                    <th style="width: 8.33%;">Valor a pagar</th>
+					</tr>
+				</thead>
+				<tbody>';
+	// exit(json_encode($resultados));
+	$num = 0;
+	if (count($resultados) > 0) {
+		$status = 1;
+		foreach ($resultados as $row) {
+			if ($row['liquidacion'] > 0) {
+				$html .= '<tr>
+							<td>
+								<input type="checkbox" class="i-checks" name="key['.$num.']" value="'.$num.'">
+								<input type="hidden" name="doc_empleado['.$num.']" value="'.$row['Nitcc'].'">
+								<input type="hidden" name="id_empleado['.$num.']" value="'.$row['ID'].'">
+							</td>
+							<td>
+								'.$row['nombre'].'
+							</td>
+							<td>
+								'.$row['Nitcc'].'
+							</td>
+							<td>
+								'.$tipo_contrato[$row['TipoContrato']].'
+								<input type="hidden" name="tipo_contrato['.$num.']" value="'.$row['TipoContrato'].'">
+								<input type="hidden" name="tipo_emp['.$num.']" value="'.$row['tipo'].'">
+							</td>
+							<td>
+								'.$row['Ciudad'].'
+								<input type="hidden" name="municipio_sede['.$num.']" value="'.$row['CodigoDANE'].'">
+							</td>
+							<td>
+								'.$row['nom_sede'].'
+								<input type="hidden" name="cod_sede['.$num.']" value="'.$row['cod_sede'].'">
+							</td>
+							<td>
+								'.$row['tipo_complem'].'
+								<input type="hidden" name="tipo_comple['.$num.']" value="'.$row['tipo_complem'].'">
+							</td>
+							<td>
+								'.$row['media'].'
+								<input type="hidden" name="cobertura_prom['.$num.']" value="'.$row['media'].'">
+							</td>
+							<td>
+								'.$row['tipo_liquidacion'];
+							$tip_liq = "";
+							foreach ($row['liquidaciones'] as $tipo_liq => $lqd) {
+								if ($tip_liq != $lqd['tipo'] && $lqd['valor'] > 0) {
+									$tip_liq = $lqd['tipo'];
+									$html.='<input type="hidden" name="liquida_por['.$num.'][]" value="'.$lqd['tipo'].'">';
+									$html.='<input type="hidden" name="valor_base['.$num.'][]" value="'.$lqd['valor_base'].'">';
+									$html.='<input type="hidden" name="valor_semana['.$num.'][]" value="'.$lqd['valor'].'">';
+									$html.='<input type="hidden" name="dias_contratados_semana['.$num.'][]" value="'.$lqd['dias_contratados'].'">';
+									$html.='<input type="hidden" name="dias_laborados_semana['.$num.'][]" value="'.$lqd['dias_laborados'].'">';
+								}
+							}
+				$html .= '</td>
+							<td>
+								'.$row['dias_contratados'].'
+								<input type="hidden" name="dias_contrato['.$num.']" value="'.$row['dias_contratados'].'">
+							</td>
+							<td>
+								<input type="text" name="dias_laborados['.$num.']" class="form-control only_number dias_laborados" value="'.$row['dias_laborados'].'" data-max="'.$row['dias_contratados'].'" data-original="'.$row['dias_laborados'].'">
+							</td>
+							<td>
+								'.$row['liquidacion'].'
+								<input type="hidden" name="total_pagado['.$num.']" value="'.$row['liquidacion'].'">
+							</td>
+						</tr>';
+				$num++;
+			}
+		}
+	} else {
+		$status = 0;
 	}
-}
 
-echo $html;
+	$html .= '</tbody>
+				<tfoot>
+					<tr>
+		                <th style="width: 3.33%;" class="col-sm-1 text-center">
+		                </th>
+		                <th style="width: 13.33%;">Nombre</th>
+		                <th style="width: 8.33%;">Cédula</th>
+		                <th style="width: 8.33%;">Tipo Contrato</th>
+		                <th style="width: 8.33%;">Municipio</th>
+		                <th style="width: 8.33%;">Sede</th>
+		                <th style="width: 8.33%;">Tipo Complemento</th>
+		                <th style="width: 8.33%;">Cobertura Prom.</th>
+		                <th style="width: 8.33%;">Liquida por</th>
+		                <th style="width: 8.33%;">Días contratados</th>
+		                <th style="width: 8.33%;">Días laborados</th>
+		                <th style="width: 8.33%;">Valor a pagar</th>
+					</tr>
+				</tfoot>
+			</table>';			
+} else if ($tipo == 1 || $tipo == 3) {
+	$consulta = "SELECT * FROM empleados WHERE tipo = '".$tipo."'
+				".($municipio ? "Ciudad = '".$municipio."'" : "")."
+				;";
+	$result = $Link->query($consulta);
+	$empleados = [];
+	if ($result->num_rows > 0) {
+		while ($data = $result->fetch_assoc()) {
+			$empleados[] = $data;
+		}
+	}
+
+	$dias_laborados = 30;
+	$aux_transporte = $parametrosnomina_datos['auxilio_trans'];
+
+	$aux_transporte_x_dia = $parametrosnomina_datos['auxilio_trans'] / $dias_laborados;
+
+	if ($semana_inicial == $semana_final) {
+		$dias_laborados = $dias_laborados / 2;
+		$aux_transporte = $aux_transporte / 2;
+	}
+
+	$html = '<table class="table">
+				<thead>
+					<tr>
+	                    <th style="width: 7.14%;" class="col-sm-1 text-center">
+	                      <input type="checkbox" class="i-checks" name="selectVarios" id="selectVarios" value="">
+	                    </th>
+	                    <th style="width: 7.14%;">Nombre</th>
+	                    <th style="width: 7.14%;">Cédula</th>
+	                    <th style="width: 7.14%;">Tipo Contrato</th>
+	                    <th style="width: 7.14%;">Municipio</th>
+	                    <th style="width: 7.14%;">Liquida po</th>
+	                    <th style="width: 7.14%;">Valor base</th>
+	                    <th style="width: 7.14%;">Días contratados</th>
+	                    <th style="width: 7.14%;">Días laborados</th>
+	                    <th style="width: 7.14%;">Días Incapacidad</th>
+	                    <th style="width: 7.14%;">Aux. transporte</th>
+	                    <th style="width: 7.14%;">Otros devengados</th>
+	                    <th style="width: 7.14%;">Otros deducidos</th>
+	                    <th style="width: 7.14%;">Valor a pagar</th>
+					</tr>
+				</thead>
+			<tbody>';
+	$num = 1;
+	if (count($empleados) > 0) {
+		$status = 1;
+		foreach ($empleados as $empleado) {
+			$html.='
+					<tr>
+						<td>
+							<input type="checkbox" class="i-checks" name="key['.$num.']" value="'.$num.'">
+							<input type="hidden" name="doc_empleado['.$num.']" value="'.$empleado['Nitcc'].'">
+							<input type="hidden" name="id_empleado['.$num.']" value="'.$empleado['ID'].'">
+						</td>
+						<td>
+							'.$empleado['Nombre'].'
+						</td>
+						<td>
+							'.$empleado['Nitcc'].'
+						</td>
+						<td>
+							'.$tipo_contrato[$empleado['TipoContrato']].'
+							<input type="hidden" name="tipo_contrato['.$num.']" value="'.$empleado['TipoContrato'].'">
+							<input type="hidden" name="tipo_emp['.$num.']" value="'.$empleado['tipo'].'">
+						</td>
+						<td>
+							'.$empleado['Ciudad'].'
+							<input type="hidden" name="municipio_sede['.$num.']" value="'.$empleado['Ciudad'].'">
+						</td>
+						<td>
+							Mes
+							<input type="hidden" name="liquida_por['.$num.']" value="Mes">
+						</td>
+						<td>
+							<input type="text" name="valor_base['.$num.']" class="form-control only_number">
+						</td>
+						<td>
+							'.$dias_laborados.'
+							<input type="hidden" name="dias_contrato['.$num.']" value="'.$dias_laborados.'">
+						</td>
+						<td>
+							<input type="text" name="dias_laborados['.$num.']" class="form-control only_number" value="'.$dias_laborados.'">
+						</td>
+						<td>
+							<input type="text" name="dias_incapacidad['.$num.']" class="form-control only_number" value="0">
+						</td>
+						<td>
+							'.$aux_transporte.'
+							<input type="hidden" name="auxilio_transporte['.$num.']" value="'.$aux_transporte.'" data-transportexdia="'.$aux_transporte_x_dia.'">
+						</td>
+						<td>
+							0
+							<input type="hidden" name="auxilio_extra['.$num.']" value="0">
+						</td>
+						<td>
+							<input type="text" name="otros_devengados['.$num.']" class="form-control only_number" value="0">
+							<input type="hidden" name="desc_eps['.$num.']" value="0">
+							<input type="hidden" name="desc_afp['.$num.']" value="0">
+							<input type="hidden" name="desc_auxtrans_incap['.$num.']" value="0">
+							<input type="hidden" name="otros_deducidos['.$num.']" value="0">
+						</td>
+						<td>
+							<input type="text" name="total_pagado['.$num.']" class="form-control only_number" value="0">
+						</td>
+					</tr>
+			';
+			$num++;
+		}
+	} else {
+		$status = 0;
+	}
+	$html .= '</tbody>
+				<tfoot>
+					<tr>
+	                    <th style="width: 7.14%;" class="col-sm-1 text-center">
+	                    </th>
+	                    <th style="width: 7.14%;">Nombre</th>
+	                    <th style="width: 7.14%;">Cédula</th>
+	                    <th style="width: 7.14%;">Tipo Contrato</th>
+	                    <th style="width: 7.14%;">Municipio</th>
+	                    <th style="width: 7.14%;">Liquida po</th>
+	                    <th style="width: 7.14%;">Valor base</th>
+	                    <th style="width: 7.14%;">Días contratados</th>
+	                    <th style="width: 7.14%;">Días laborados</th>
+	                    <th style="width: 7.14%;">Días Incapacidad</th>
+	                    <th style="width: 7.14%;">Aux. transporte</th>
+	                    <th style="width: 7.14%;">Otros devengados</th>
+	                    <th style="width: 7.14%;">Otros deducidos</th>
+	                    <th style="width: 7.14%;">Valor a pagar</th>
+					</tr>
+				</tfoot>
+			</table>';
+}
+$data = ['status' => $status, 'html' => $html];
+echo json_encode($data);
