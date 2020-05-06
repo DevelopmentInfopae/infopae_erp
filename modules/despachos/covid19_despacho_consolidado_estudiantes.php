@@ -18,6 +18,11 @@ if($resultado->num_rows >= 1){
 	//for ($estudianteIndice=1; $estudianteIndice < 98; $estudianteIndice++) { $row = $resultado->fetch_assoc();
 	while($row = $resultado->fetch_assoc()){
 
+		if($filaActual == 1){
+			$pdf->AddPage();
+			include 'covid19_despacho_consolidado_header.php';
+		}
+
 		//$despacho['num_doc'] = $row['Num_Doc'];
 		$pdf->Cell(4,$altoFila,utf8_decode($estudianteIndice),'BL',0,'C',False);
 		
@@ -76,13 +81,13 @@ if($resultado->num_rows >= 1){
 		$filaActual++;
 
 		
-		//var_dump($filaActual);
 		if($filaActual > 15){
 			$filaActual = 1;
-			$pdf->AddPage();
-			// include 'covid19_despacho_consolidado_footer.php';
-			include 'covid19_despacho_consolidado_header.php';
 		}
+
+
+
+
 	}
 }
 
