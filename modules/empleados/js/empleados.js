@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	set_select();
   	$(document).on('click', '#tablaEmpleados tbody td:nth-child(-n+6)', function(){ verEmpleado($(this)); });
 	$(document).on('click', '#crearEmpleado', function() { crearEmpleado(); });
 	$(document).on('click', '.editarEmpleado', function() { editarEmpleado($(this).data('idempleado')); });
@@ -589,4 +590,8 @@ function tipoContrato(select){
 		$('#ValorBaseMes').prop('required', false);
 	}
 
+}
+
+function set_select(){
+	$('select.form-control').select2({width : "100%"});
 }

@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	set_select();
   	$(document).on('ifChecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('check'); });
   	$(document).on('ifUnchecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('uncheck'); });
 	$(document).on('change', '#tipo', function(){ cambia_tipo($(this)); });
@@ -222,14 +223,14 @@ function cambia_dias_incapacidad(input){
 	var aux_transporte_origin = aux_transporte.data('transporteorigin');
 	total_discount_aux_transporte = aux_transporte_x_dia * input.val();
 	aux_transporte_vlr = aux_transporte_origin - total_discount_aux_transporte;
-	aux_transporte.val(aux_transporte_vlr);
+	// aux_transporte.val(aux_transporte_vlr);
 	$('.transporte_txt').eq(index).text(aux_transporte_vlr);
 	$('.desc_auxtrans_incap').eq(index).val(total_discount_aux_transporte);
 	deducidos = $('.deducidos').eq(index);
 	deducidosorigin = deducidos.data('deducidosorigin');
 	total_deducidos = (deducidosorigin + total_discount_aux_transporte);
 	deducidos.val(total_deducidos);
-	valor_base = $('.valor_base').eq(index).val();
+	valor_base = $('.valor_base').eq(index).data('basemes');
 	total = parseFloat(valor_base) + parseFloat(aux_transporte_origin) - parseFloat(total_deducidos); 
 	$('.total_pagado').eq(index).val(total);
 }
@@ -248,4 +249,8 @@ function cambia_valor_base(input){
 	reteica.val(rete_ica);
 	total = valor_base - rete_fuente - rete_ica;
 	total_pagado.val(total);
+}
+
+function set_select(){
+	$('select.form-control').select2({width : "100%"});
 }

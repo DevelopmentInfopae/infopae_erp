@@ -356,7 +356,7 @@ if ($tipo == 2) {
 	$consulta = "SELECT empleados.*, ubicacion.Ciudad as mun_empleado FROM empleados 
 					INNER JOIN ubicacion ON ubicacion.CODIGODANE = empleados.Ciudad
 					WHERE estado = 1 AND tipo = '".$tipo."'
-				".($municipio ? "Ciudad = '".$municipio."'" : "")."
+				".($municipio ? "AND empleados.Ciudad = '".$municipio."'" : "")."
 				;";
 	$result = $Link->query($consulta);
 	$empleados = [];
@@ -449,7 +449,7 @@ if ($tipo == 2) {
 							<input type="hidden" name="liquida_por['.$num.']" value="Mes">
 						</td>
 						<td> 
-							<input type="text" name="valor_base['.$num.']" data-basemesxdia="'.$valor_base_mes_x_dia.'" class="form-control only_number valor_base" value="'.$empleado['ValorBaseMes'].'" readonly>
+							<input type="text" name="valor_base['.$num.']" data-basemes="'.$valor_base_mes.'" data-basemesxdia="'.$valor_base_mes_x_dia.'" class="form-control only_number valor_base" value="'.$empleado['ValorBaseMes'].'" readonly>
 						</td>
 						<td>
 							'.$dias_laborados.'
@@ -512,7 +512,7 @@ if ($tipo == 2) {
 	$consulta = "SELECT empleados.*, ubicacion.Ciudad as mun_empleado FROM empleados 
 					INNER JOIN ubicacion ON ubicacion.CODIGODANE = empleados.Ciudad
 					WHERE estado = 1 AND tipo = '".$tipo."'
-				".($municipio ? "Ciudad = '".$municipio."'" : "")."
+				".($municipio ? "AND empleados.Ciudad = '".$municipio."'" : "")."
 				;";
 	$result = $Link->query($consulta);
 	$empleados = [];
