@@ -58,9 +58,11 @@
     </ol>
   </div>
   <div class="col-lg-4">
-    <div class="title-action">
-      <a href="#" class="btn btn-primary" id="boton_editar_caso"><i class="fa fa-check "></i> Guardar </a>
-    </div>
+  	<?php if ($caso->id_estado == 0) { ?>
+	    <div class="title-action">
+	      <a href="#" class="btn btn-primary" id="boton_editar_caso"><i class="fa fa-check "></i> Guardar </a>
+	    </div>
+	<?php } ?>
   </div>
 </div>
 
@@ -168,7 +170,7 @@
     				</div>
     			</div>
         	</div>
-
+			<br>
         	<div class="row">
 				<div class="col-sm-12">
         			<div class="row">
@@ -207,7 +209,7 @@
 	    				</div>
 	    			</div>
 	        	</div>
-
+				<br>
 	        	<div class="row">
 					<div class="col-sm-12">
 	        			<div class="row">
