@@ -12,7 +12,7 @@
 				    	WHEN 'F' THEN 'Felicitaciones'
 				    	WHEN 'Q' THEN 'Queja'
 				    	WHEN 'R' THEN 'Reclamo'
-				    	WHEN 'R' THEN 'Sugerencia'
+				    	WHEN 'S' THEN 'Sugerencia'
 				    END AS tipo_caso,
 				    tp.Descripción AS tipo_persona,
 				    f.nombre_completo AS nombre_persona,
