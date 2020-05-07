@@ -188,8 +188,7 @@
 	<?php } ?>
 
 		<li><a href="<?= $baseUrl; ?>/modules/nomina"><i class="fa fa-th-large"></i>  Nómina</a></li>
-
-
+		<li><a href="<?= $baseUrl; ?>/modules/fqrs/index.php"><i class="fa fa-question"></i> <span class="nav-label">FQRS</span></a></li>
 
 	<li>
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Informes</span><span class="fa arrow"></span></a>
@@ -291,16 +290,5 @@
 			<li><a href="<?= $baseUrl; ?>/modules/jornadas">Jornada</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/poblacion_victima">Población victima</a></li>
 		</ul>
-	</li>
-<?php } ?>
-
-
-
-
-
-
-<?php if( $_SESSION['perfil'] == 0) { ?>
-	<li class="active">
-		<a href="<?= $baseUrl; ?>/modules/fqrs/index.php"><i class="fa fa-question"></i> <span class="nav-label">FQRS</span></a>
 	</li>
 <?php } ?>

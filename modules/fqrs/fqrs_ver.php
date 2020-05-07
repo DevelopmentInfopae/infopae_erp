@@ -19,7 +19,7 @@
 				    f.num_doc AS numero_documento,
 				    f.nombre_completo AS nombre_persona,
 				    f.estado AS id_estado,
-				    IF (f.estado = 0, 'Abierto', 'Cerrado') AS estado,
+				    IF (f.estado = 0, '<span class=\"label label-warning\">Abierto</span>', '<span class=\"label label-primary\">Cerrado</span>') AS estado,
 				    f.fecha_creacion,
 					f.direccion,
 					f.telefono,
