@@ -18,7 +18,7 @@
 				    f.nombre_completo AS nombre_persona,
 				    td.nombre AS tipo_documento,
 				    f.num_doc AS numero_documento,
-				    IF (f.estado = 0, 'Abierto', 'Cerrado') AS estado,
+				    IF (f.estado = 0, '<span class=\"label label-warning\">Abierto</span>', '<span class=\"label label-primary\">Cerrado</span>') AS estado,
 				    f.fecha_creacion
 				FROM fqrs f
 					INNER JOIN ubicacion u ON u.CodigoDANE = f.cod_mun
