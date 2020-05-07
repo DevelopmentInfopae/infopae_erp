@@ -1,7 +1,6 @@
 <?php
   require_once '../../../db/conexion.php';
   require_once '../../../config.php';
-
   $sexo = (isset($_POST['sexo']) && $_POST['sexo'] != '') ? $_POST['sexo'] : '';
   $email = (isset($_POST['email']) && $_POST['email'] != '') ? mysqli_real_escape_string($Link, $_POST['email']) : '';
   $cargo = (isset($_POST['cargo']) && $_POST['cargo'] != '') ? mysqli_real_escape_string($Link, $_POST['cargo']) : '';
@@ -31,7 +30,24 @@
   $municipioNacimiento = (isset($_POST['municipioNacimiento']) && $_POST['municipioNacimiento'] != '') ? mysqli_real_escape_string($Link, $_POST['municipioNacimiento']) : '';
   $departamentoResidencia = (isset($_POST['departamentoResidencia']) && $_POST['departamentoResidencia'] != '') ? mysqli_real_escape_string($Link, $_POST['departamentoResidencia']) : '';
   $departamentoNacimiento = (isset($_POST['departamentoNacimiento']) && $_POST['departamentoNacimiento'] != '') ? mysqli_real_escape_string($Link, $_POST['departamentoNacimiento']) : '';
+  // Nuevos campos
+  $tipoEmpleado = (isset($_POST['tipo']) && $_POST['tipo'] != '') ? mysqli_real_escape_string($Link, $_POST['tipo']) : 0;
 
+  $manipulador_tipo_complemento = (isset($_POST['manipulador_tipo_complemento']) && $_POST['manipulador_tipo_complemento'] != '') ? ($_POST['manipulador_tipo_complemento']) : '';
+  $manipulador_municipio = (isset($_POST['manipulador_municipio']) && $_POST['manipulador_municipio'] != '') ? ($_POST['manipulador_municipio']) : '';
+  $manipulador_institucion = (isset($_POST['manipulador_institucion']) && $_POST['manipulador_institucion'] != '') ? ($_POST['manipulador_institucion']) : '';
+  $manipulador_sede = (isset($_POST['manipulador_sede']) && $_POST['manipulador_sede'] != '') ? ($_POST['manipulador_sede']) : '';
+
+  $estado = (isset($_POST['estado']) && $_POST['estado'] != '') ? mysqli_real_escape_string($Link, $_POST['estado']) : 0;
+  $crear_usuario = (isset($_POST['crear_usuario']) && $_POST['crear_usuario'] != 'false') ? mysqli_real_escape_string($Link, $_POST['crear_usuario']) : false;
+
+  $TipoContrato = (isset($_POST['TipoContrato']) && $_POST['TipoContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['TipoContrato']) : '';
+  $ValorBaseMes = (isset($_POST['ValorBaseMes']) && $_POST['ValorBaseMes'] != '') ? mysqli_real_escape_string($Link, $_POST['ValorBaseMes']) : '';
+  $FechaInicalContrato = (isset($_POST['FechaInicalContrato']) && $_POST['FechaInicalContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['FechaInicalContrato']) : '';
+  $FechaFinalContrato = (isset($_POST['FechaFinalContrato']) && $_POST['FechaFinalContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['FechaFinalContrato']) : '';
+
+  $clave = sha1(strtoupper(substr($primerNombre, 0, 1)) . $numeroDocumento);
+  // exit(var_dump($crear_usuario));
   // Validar que el código del empleado no exista en empleados.
   $consulta0 = "SELECT * FROM empleados WHERE Nitcc = '$numeroDocumento';";
   $resultado0 = $Link->query($consulta0) or die('Error al consultar el número de documento de empleado: '. mysqli_error($Link));
@@ -56,8 +72,34 @@
     exit(json_encode($respuestaAJAX));
   }
 
+if (isset($_FILES["foto"]["name"])){
+  $dimensiones = getimagesize($_FILES["foto"]["tmp_name"]);
 
-  $consulta = "INSERT INTO empleados  (Nitcc, Nombre, Direccion, Telefono1, Telefono2, FechaNacimiento, LugarNacimiento, Sexo, LibretaMilitar, TipoSangre, EstadoCivil, Ciudad, Profesion, Barrio, Email, NivelEstudio, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Cargo, TallaPantalon, TallaCamisa, NumeroCalzado, TipoDoc, FechaCreacion, Contrato)
+  // Valida el ratio/aspecto permitido
+  if ($dimensiones[0] != $dimensiones[1])
+  {
+    $resultadoAJAX = array(
+      "estado" => 0,
+      "mensaje" => "Por favor ingresar una imagen de ratio aspecto 1:1 o cuadrada tipo documento."
+    );
+    exit(json_encode($respuestaAJAX));
+  } else if($_FILES["foto"]["size"] > 5120000){ // Valida el tamaño permitido
+    $resultadoAJAX = array(
+      "estado" => 0,
+      "mensaje" => "La imagen supera el tamaño permitido 5 MegaBytes. Por favor ingresar una imagen de igual o menor tamaño"
+    );
+    exit(json_encode($respuestaAJAX));
+  } else if($_FILES["foto"]["type"] != "image/jpg" && $_FILES["foto"]["type"] != "image/jpeg" && $_FILES["foto"]["type"] != "image/png"){ // Valida tipo de imagen permitido
+    // Se ejecuta la consulta para guardar el usuario.
+    $resultadoAJAX = array(
+      "estado" => 0,
+      "mensaje" => "La extensión del la imagen no es la permitida. Tipo de archivo permitido: .jpg, .jpeg"
+    );
+    exit(json_encode($respuestaAJAX));
+  }
+}
+
+  $consulta = "INSERT INTO empleados  (Nitcc, Nombre, Direccion, Telefono1, Telefono2, FechaNacimiento, LugarNacimiento, Sexo, LibretaMilitar, TipoSangre, EstadoCivil, Ciudad, Profesion, Barrio, Email, NivelEstudio, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Cargo, TallaPantalon, TallaCamisa, NumeroCalzado, TipoDoc, FechaCreacion, Contrato, Tipo, TipoContrato, ValorBaseMes, FechaInicalContrato, FechaFinalContrato, Estado)
               VALUES (
                 '$numeroDocumento',
                 '$nombreCompleto',
@@ -85,13 +127,93 @@
                 '$numeroCalzado',
                 '$tipoDocumento',
                 '". date('Y-m-d H-i-s') ."',
-                '$numeroContrato')";
+                '$numeroContrato',
+                '$tipoEmpleado',
+                '$TipoContrato',
+                '$ValorBaseMes',
+                '$FechaInicalContrato',
+                '$FechaFinalContrato',
+                '$estado'
+              )";
   $resultado = $Link->query($consulta) or die ('Error al insertar empleados: '. mysqli_error($Link));
   if ($resultado)
   {
+    $id = $Link->insert_id;
+    $rutaFoto = NULL;
+    if (isset($_FILES["foto"])) {
+      $rutaFoto = "../../upload/usuarios/E" . $id . ".jpg";
+      $subido = move_uploaded_file($_FILES["foto"]["tmp_name"], "../" . $rutaFoto);
+      if ($subido){
+        $consulta2 = " UPDATE empleados SET foto = '$rutaFoto' WHERE id = '$id' ";
+        $resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
+      }
+    }
+
+    if ($tipoEmpleado == 2) {
+      $manipulador_tipo_complemento   = json_decode($manipulador_tipo_complemento);
+      $manipulador_municipio          = json_decode($manipulador_municipio);
+      $manipulador_institucion        = json_decode($manipulador_institucion);
+      $manipulador_sede               = json_decode($manipulador_sede);
+      foreach ($manipulador_tipo_complemento as $index => $mtc) {
+        $consulta = "INSERT INTO `manipuladoras_sedes`
+                      (
+                        `documento`,
+                        `tipo_complem`,
+                        `cod_sede`,
+                        `estado`
+                      )
+                      VALUES
+                      (
+                        '$numeroDocumento',
+                        '".$mtc->{$index}."',
+                        '".$manipulador_sede[$index]->{$index}."',
+                        '1'
+                      );
+                      ";
+        $resultado = $Link->query($consulta) or die ('Error al insertar manipuladoras_sedes : '. mysqli_error($Link));
+      }
+
+
+    }
+
+    if ($crear_usuario) {
+      $consulta = "INSERT INTO `usuarios`
+                  (
+                    `nombre`,
+                    `clave`,
+                    `direccion`,
+                    `cod_mun`,
+                    `telefono`,
+                    `foto`,
+                    `email`,
+                    `id_perfil`,
+                    `nueva_clave`,
+                    `num_doc`,
+                    `Tipo_Usuario`,
+                    `Estado`
+                  )
+                  VALUES
+                  (
+                    '$nombreCompleto',
+                    '$clave',
+                    '$direccion',
+                    '$municipioResidencia',
+                    '$telefono',
+                    '$rutaFoto',
+                    '$email',
+                    '2',
+                    '0',
+                    '$numeroDocumento',
+                    'Empleado',
+                    '1'
+                  );
+                  ";
+      $resultado = $Link->query($consulta) or die ('Error al insertar usuario: '. mysqli_error($Link));
+    }
+
     // Se actualiza los datos de usuario.
-    $consulta2 = "UPDATE usuarios SET nombre = '$nombreCompleto', direccion = '$direccion', telefono = '$telefono' WHERE num_doc = '$numeroDocumento';";
-    $resultado2 = $Link->query($consulta2) or die ('Error al actualizar datos de usuario: '. mysqli_error($Link));
+    // $consulta2 = "UPDATE usuarios SET nombre = '$nombreCompleto', direccion = '$direccion', telefono = '$telefono' WHERE num_doc = '$numeroDocumento';";
+    // $resultado2 = $Link->query($consulta2) or die ('Error al actualizar datos de usuario: '. mysqli_error($Link));
 
     // Registro de la bitácora
     $consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '62', 'Creó el empleado <strong>$nombreCompleto</strong>')";
@@ -101,6 +223,7 @@
       'estado' => 1,
       'mensaje' => 'El empleado ha sido creado exitosamente'
     ];
+
   }
   else
   {

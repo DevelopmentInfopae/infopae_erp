@@ -11,7 +11,7 @@ $annoasistencia = date("Y");
 $annoAsistencia2D = date("y");
 
 // OJO
-$diaAsistencia = '27';
-$mesAsistencia = '02';
-$annoasistencia = '2020';
-$annoAsistencia2D = '20';
+// $diaAsistencia = '27';
+// $mesAsistencia = '02';
+// $annoasistencia = '2020';
+// $annoAsistencia2D = '20';

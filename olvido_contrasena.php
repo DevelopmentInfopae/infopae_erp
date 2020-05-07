@@ -47,7 +47,7 @@
           
               </form>
               <div id="debug"></div>
-            <p class="m-t"> <small>&copy; 2018</small> </p>
+            <p class="m-t"> <small>&copy; 2020</small> </p>
         </div>
     </div>
 
