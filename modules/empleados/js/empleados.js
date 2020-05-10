@@ -11,14 +11,15 @@ $(document).ready(function(){
 	$(document).on('click', '.confirmarEliminarEmpleado', function() { confirmarEliminarEmpleado($(this).data('idempleado')); });
 	$(document).on('change', '#departamentoNacimiento', function() { cargarMunicipios($(this).val(), true); });
 	$(document).on('change', '#departamentoResidencia', function() { cargarMunicipios($(this).val(), false); });
-	$(document).on('change', '#tipo', function() { tipoEmpleado($(this).val()); });
+	$(document).on('change', '#tipo', function() { tipoEmpleado($(this).val());});
 	$(document).on('change', '#manipulador_municipio', function() { buscar_institucion(); });
 	$(document).on('change', '#manipulador_institucion', function() { buscar_sede(); });
 	$(document).on('click', '.add_fila_manipuladora', function() { add_fila_manipuladora(); });
 	$(document).on('change', '.manipulador_municipio', function() { buscar_institucion_2($(this)); });
 	$(document).on('change', '.manipulador_institucion', function() { buscar_sede_2($(this)); });
 	$(document).on('click', '.delete_row', function() { delete_fila_manipuladora($(this)); });
-	$(document).on('change', '#TipoContrato', function() { tipoContrato($(this)); });
+	$(document).on('change', '#TipoContrato', function() { tipoContrato($(this)); campos_nomina()});
+	$(document).on('select2:select', '#SalarioIntegral', function() { campos_nomina(); });
 
 
 
@@ -582,7 +583,7 @@ $(document).on('ifChecked', '#estado1', function(){
 function tipoContrato(select){
 	tipoc = select.val();
 
-	if (tipoc == 1 || tipoc == 2) {
+	if (tipoc == 1 || tipoc == 2 || tipoc == 3) {
 		$('.div_base_mes').fadeIn();
 		$('#ValorBaseMes').prop('required', true);
 	} else {
@@ -594,4 +595,82 @@ function tipoContrato(select){
 
 function set_select(){
 	$('select.form-control').select2({width : "100%"});
+}
+
+function campos_nomina(){
+	console.log('aaa');
+	TipoContrato = $('#TipoContrato').val();
+	SalarioIntegral = $('#SalarioIntegral').val();
+
+	//2
+	$('#TipoServicio').select2({'disabled':false});
+	$('#FechaInicalContrato').prop('required', false);
+	$('#FechaFinalContrato').prop('required', false);
+	$('#DuracionDias').prop('required', false);
+	//1
+	$('#SalarioIntegral').select2({'disabled':false});
+	$('#auxilio_transporte').prop('disabled', false);
+	$('#afp_entidad').select2({'disabled': false});
+	$('#eps_entidad').select2({'disabled': false});
+	$('#arl_riesgo').select2({'disabled': false});
+	//4
+	$('#FechaInicalContrato').prop('disabled', false);
+	$('#FechaFinalContrato').prop('disabled', false);
+	//3
+	$('#auxilio_extra').prop('disabled', false);
+	//salario integral 0
+	$('#auxilio_transporte').prop('required', false);
+	$('#afp_entidad').prop('required', false);
+	$('#eps_entidad').prop('required', false);
+	$('#arl_riesgo').prop('required', false);
+	$('#caja').select2({'disabled':false});
+	$('#icbf').select2({'disabled':false});
+	$('#sena').select2({'disabled':false});
+
+	if (TipoContrato == 2 && (SalarioIntegral == 0 || SalarioIntegral == 1)) {
+		$('#TipoServicio').select2('val', 0);
+		$('#TipoServicio').select2({'disabled':true});
+		$('#FechaInicalContrato').prop('required', true);
+		$('#FechaFinalContrato').prop('required', true);
+		$('#DuracionDias').prop('required', true);
+		if (SalarioIntegral == 0) {
+			$('#auxilio_transporte').prop('required', true);
+			$('#afp_entidad').prop('required', true);
+			$('#eps_entidad').prop('required', true);
+			$('#arl_riesgo').prop('required', true);
+			$('#caja').select2('val', 1);
+			$('#caja').select2({'disabled':true});
+			$('#icbf').select2('val', 1);
+			$('#icbf').select2({'disabled':true});
+			$('#sena').select2('val', 1);
+			$('#sena').select2({'disabled':true});
+		}
+	} else if (TipoContrato == 1 || TipoContrato == 4) {
+		$('#SalarioIntegral').select2('val', 0);
+		$('#SalarioIntegral').select2({'disabled':true});
+		$('#FechaInicalContrato').prop('required', true);
+		$('#auxilio_transporte').prop('disabled', true);
+		$('#afp_entidad').select2({'disabled': true});
+		$('#eps_entidad').select2({'disabled': true});
+		$('#arl_riesgo').select2({'disabled': true});
+		$('#caja').select2({'disabled':true});
+		$('#icbf').select2({'disabled':true});
+		$('#sena').select2({'disabled':true});
+		if (TipoContrato == 1) {
+			$('#DuracionDias').prop('required', true);
+		} else if (TipoContrato == 4) {
+			$('#FechaFinalContrato').prop('disabled', true);
+		}
+	} else if (TipoContrato == 3) {
+		$('#TipoServicio').select2('val', 0);
+		$('#TipoServicio').select2({'disabled':true});
+		$('#SalarioIntegral').select2('val', 0);
+		$('#SalarioIntegral').select2({'disabled':true});
+		$('#FechaInicalContrato').prop('required', true);
+		$('#DuracionDias').prop('required', true);
+		$('#auxilio_transporte').prop('disabled', true);
+		$('#auxilio_extra').prop('disabled', true);
+	}
+
+
 }
