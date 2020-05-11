@@ -77,7 +77,6 @@ if ($resultado0->num_rows > 0)
   </div>
   <div class="col-lg-4">
     <div class="title-action">
-      <a href="#" class="btn btn-primary" id="actualizarEmpleado"><i class="fa fa-check "></i> Guardar </a>
     </div>
   </div>
 </div>

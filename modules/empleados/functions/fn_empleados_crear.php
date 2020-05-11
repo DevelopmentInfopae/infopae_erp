@@ -1,6 +1,7 @@
 <?php
   require_once '../../../db/conexion.php';
   require_once '../../../config.php';
+
   $sexo = (isset($_POST['sexo']) && $_POST['sexo'] != '') ? $_POST['sexo'] : '';
   $email = (isset($_POST['email']) && $_POST['email'] != '') ? mysqli_real_escape_string($Link, $_POST['email']) : '';
   $cargo = (isset($_POST['cargo']) && $_POST['cargo'] != '') ? mysqli_real_escape_string($Link, $_POST['cargo']) : '';
@@ -45,6 +46,22 @@
   $ValorBaseMes = (isset($_POST['ValorBaseMes']) && $_POST['ValorBaseMes'] != '') ? mysqli_real_escape_string($Link, $_POST['ValorBaseMes']) : '';
   $FechaInicalContrato = (isset($_POST['FechaInicalContrato']) && $_POST['FechaInicalContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['FechaInicalContrato']) : '';
   $FechaFinalContrato = (isset($_POST['FechaFinalContrato']) && $_POST['FechaFinalContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['FechaFinalContrato']) : '';
+
+$TipoServicio = (isset($_POST['TipoServicio']) && $_POST['TipoServicio'] != '') ? mysqli_real_escape_string($Link, $_POST['TipoServicio']) : null;
+$SalarioIntegral = (isset($_POST['SalarioIntegral']) && $_POST['SalarioIntegral'] != '') ? mysqli_real_escape_string($Link, $_POST['SalarioIntegral']) : null;  
+$DuracionDias = (isset($_POST['DuracionDias']) && $_POST['DuracionDias'] != '') ? mysqli_real_escape_string($Link, $_POST['DuracionDias']) : null;
+$auxilio_transporte = (isset($_POST['auxilio_transporte']) && $_POST['auxilio_transporte'] != '') ? mysqli_real_escape_string($Link, $_POST['auxilio_transporte']) : null; 
+$auxilio_extra = (isset($_POST['auxilio_extra']) && $_POST['auxilio_extra'] != '') ? mysqli_real_escape_string($Link, $_POST['auxilio_extra']) : 0; 
+$afp_entidad = (isset($_POST['afp_entidad']) && $_POST['afp_entidad'] != '') ? mysqli_real_escape_string($Link, $_POST['afp_entidad']) : null; 
+$eps_entidad = (isset($_POST['eps_entidad']) && $_POST['eps_entidad'] != '') ? mysqli_real_escape_string($Link, $_POST['eps_entidad']) : null; 
+$arl_riesgo = (isset($_POST['arl_riesgo']) && $_POST['arl_riesgo'] != '') ? mysqli_real_escape_string($Link, $_POST['arl_riesgo']) : null; 
+$caja = (isset($_POST['caja']) && $_POST['caja'] != '') ? mysqli_real_escape_string($Link, $_POST['caja']) : null;
+$icbf = (isset($_POST['icbf']) && $_POST['icbf'] != '') ? mysqli_real_escape_string($Link, $_POST['icbf']) : null; 
+$sena = (isset($_POST['sena']) && $_POST['sena'] != '') ? mysqli_real_escape_string($Link, $_POST['sena']) : null; 
+$Forma_pago = (isset($_POST['Forma_pago']) && $_POST['Forma_pago'] != '') ? mysqli_real_escape_string($Link, $_POST['Forma_pago']) : null; 
+$Banco = (isset($_POST['Banco']) && $_POST['Banco'] != '') ? mysqli_real_escape_string($Link, $_POST['Banco']) : null; 
+$Tipo_Cuenta = (isset($_POST['Tipo_cuenta']) && $_POST['Tipo_cuenta'] != '') ? mysqli_real_escape_string($Link, $_POST['Tipo_cuenta']) : null; 
+$Numero_Cuenta = (isset($_POST['Numero_Cuenta']) && $_POST['Numero_Cuenta'] != '') ? mysqli_real_escape_string($Link, $_POST['Numero_Cuenta']) : null;
 
   $clave = sha1(strtoupper(substr($primerNombre, 0, 1)) . $numeroDocumento);
   // exit(var_dump($crear_usuario));
@@ -99,7 +116,7 @@ if (isset($_FILES["foto"]["name"])){
   }
 }
 
-  $consulta = "INSERT INTO empleados  (Nitcc, Nombre, Direccion, Telefono1, Telefono2, FechaNacimiento, LugarNacimiento, Sexo, LibretaMilitar, TipoSangre, EstadoCivil, Ciudad, Profesion, Barrio, Email, NivelEstudio, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Cargo, TallaPantalon, TallaCamisa, NumeroCalzado, TipoDoc, FechaCreacion, Contrato, Tipo, TipoContrato, ValorBaseMes, FechaInicalContrato, FechaFinalContrato, Estado)
+  $consulta = "INSERT INTO empleados  (Nitcc, Nombre, Direccion, Telefono1, Telefono2, FechaNacimiento, LugarNacimiento, Sexo, LibretaMilitar, TipoSangre, EstadoCivil, Ciudad, Profesion, Barrio, Email, NivelEstudio, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Cargo, TallaPantalon, TallaCamisa, NumeroCalzado, TipoDoc, FechaCreacion, Contrato, Tipo, TipoContrato, ValorBaseMes, FechaInicalContrato, FechaFinalContrato, TipoServicio, SalarioIntegral, DuracionDias, auxilio_transporte, auxilio_extra, afp_entidad, eps_entidad, arl_riesgo, caja, icbf, sena, Forma_pago, Banco, Tipo_Cuenta, Numero_Cuenta, Estado)
               VALUES (
                 '$numeroDocumento',
                 '$nombreCompleto',
@@ -133,6 +150,21 @@ if (isset($_FILES["foto"]["name"])){
                 '$ValorBaseMes',
                 '$FechaInicalContrato',
                 '$FechaFinalContrato',
+                '$TipoServicio',
+                '$SalarioIntegral',
+                '$DuracionDias',
+                '$auxilio_transporte',
+                '$auxilio_extra',
+                '$afp_entidad',
+                '$eps_entidad',
+                '$arl_riesgo',
+                '$caja',
+                '$icbf',
+                '$sena',
+                '$Forma_pago',
+                '$Banco',
+                '$Tipo_Cuenta',
+                '$Numero_Cuenta',
                 '$estado'
               )";
   $resultado = $Link->query($consulta) or die ('Error al insertar empleados: '. mysqli_error($Link));
