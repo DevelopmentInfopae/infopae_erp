@@ -136,7 +136,8 @@
           ],
           fnRowCallback: function (nRow, aData, iDisplayIndex)
           {
-              // nRow.setAttribute('data-idempleado', aData['idEmpleado']);
+              nRow.setAttribute('data-nitempleado', aData['Nitcc']);
+              nRow.setAttribute('data-numnomina', aData['numero_nomina']);
               return nRow;
           },
           buttons: [ {extend: 'excel', title: 'Empleados', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3, 4, 5 ] } } ],
@@ -176,3 +177,8 @@
     });
 
 </script>
+
+<form action="nomina_comprobante_formato.php" method="post" name="formVerNomina" id="formVerNomina" target="_blank">
+  <input type="hidden" name="nitEmpleado" id="nitEmpleado">
+  <input type="hidden" name="num_liq" id="num_liq">
+</form>
