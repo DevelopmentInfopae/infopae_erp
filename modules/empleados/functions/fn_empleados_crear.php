@@ -116,7 +116,7 @@ if (isset($_FILES["foto"]["name"])){
   }
 }
 
-  $consulta = "INSERT INTO empleados  (Nitcc, Nombre, Direccion, Telefono1, Telefono2, FechaNacimiento, LugarNacimiento, Sexo, LibretaMilitar, TipoSangre, EstadoCivil, Ciudad, Profesion, Barrio, Email, NivelEstudio, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Cargo, TallaPantalon, TallaCamisa, NumeroCalzado, TipoDoc, FechaCreacion, Contrato, Tipo, TipoContrato, ValorBaseMes, FechaInicalContrato, FechaFinalContrato, TipoServicio, SalarioIntegral, DuracionDias, auxilio_transporte, auxilio_extra, afp_entidad, eps_entidad, arl_riesgo, caja, icbf, sena, Forma_pago, Banco, Tipo_Cuenta, Numero_Cuenta, Estado)
+  $consulta = "INSERT INTO empleados  (Nitcc, Nombre, Direccion, Telefono1, Telefono2, FechaNacimiento, LugarNacimiento, Sexo, LibretaMilitar, TipoSangre, EstadoCivil, Ciudad, Profesion, Barrio, Email, NivelEstudio, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Cargo, TallaPantalon, TallaCamisa, NumeroCalzado, TipoDoc, FechaCreacion, Contrato, Tipo, TipoContrato, ValorBaseMes, FechaInicalContrato, FechaFinalContrato, TipoServicio, SalarioIntegral, DuracionDias, auxilio_transporte, auxilio_extra, afp_entidad, eps_entidad, arl_riesgo, caja, icbf, sena, Forma_pago, Banco, Tipo_cuenta, Numero_Cuenta, Estado)
               VALUES (
                 '$numeroDocumento',
                 '$nombreCompleto',

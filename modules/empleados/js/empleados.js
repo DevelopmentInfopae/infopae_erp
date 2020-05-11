@@ -516,7 +516,6 @@ function tipoEmpleado(tipo){
 			}
 		});
 	} else if (tipo == 1 || tipo == 3) {
-		$('#TipoContrato').val('');
 		$.each(options, function(index, option){
 			$(option).prop('disabled', false);
 		});
