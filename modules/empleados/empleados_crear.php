@@ -318,21 +318,27 @@
 							<option value="4">Servicios</option>
 						</select>
 					</div>
-					<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
-						<label>Valor Base Mes</label>
-						<input type="text" name="ValorBaseMes" id="ValorBaseMes" class="form-control form-data only_number">
-					</div>
 					<div class="form-group col-sm-6 col-md-3">
 						<label>Fecha inicio contrato</label>
 						<input type="date" name="FechaInicalContrato" id="FechaInicalContrato" class="form-control form-data">
 					</div>
+					<div class="form-group col-sm-6 col-md-3">	
+						<label>Duración días</label>
+						<input type="text" name="DuracionDias" id="DuracionDias" class="form-control form-data only_number" required>
+					</div>
 					<div class="form-group col-sm-6 col-md-3">
 						<label>Fecha fin contrato</label>
-						<input type="date" name="FechaFinalContrato" id="FechaFinalContrato" class="form-control form-data">
+						<fieldset disabled>
+							<input type="date" name="FechaFinalContrato" id="FechaFinalContrato" class="form-control form-data">
+						</fieldset>
 					</div>
 				</div>
 
 				<div class="row">	
+					<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
+						<label>Valor Base Mes</label>
+						<input type="text" name="ValorBaseMes" id="ValorBaseMes" class="form-control form-data only_number">
+					</div>
 					<div class="form-group col-sm-6 col-md-3">	
 						<label>Tipo servicio</label>
 						<select name="TipoServicio" id="TipoServicio" class="form-control form-data" required>	
@@ -349,10 +355,6 @@
 							<option value="0">No</option>
 							<option value="1">Si</option>
 						</select>
-					</div>
-					<div class="form-group col-sm-6 col-md-3">	
-						<label>Duración días</label>
-						<input type="text" name="DuracionDias" id="DuracionDias" class="form-control form-data only_number" required>
 					</div>
 					<div class="form-group col-sm-6 col-md-3">	
 						<label>Aux. transporte</label>

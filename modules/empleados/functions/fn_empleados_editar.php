@@ -53,8 +53,8 @@ $caja = (isset($_POST['caja']) && $_POST['caja'] != '') ? mysqli_real_escape_str
 $icbf = (isset($_POST['icbf']) && $_POST['icbf'] != '') ? mysqli_real_escape_string($Link, $_POST['icbf']) : 0; 
 $sena = (isset($_POST['sena']) && $_POST['sena'] != '') ? mysqli_real_escape_string($Link, $_POST['sena']) : 0; 
 $Forma_pago = (isset($_POST['Forma_pago']) && $_POST['Forma_pago'] != '') ? mysqli_real_escape_string($Link, $_POST['Forma_pago']) : null; 
-$Banco = (isset($_POST['Banco']) && $_POST['Banco'] != '') ? mysqli_real_escape_string($Link, $_POST['Banco']) : null; 
-$Tipo_Cuenta = (isset($_POST['Tipo_cuenta']) && $_POST['Tipo_cuenta'] != '') ? mysqli_real_escape_string($Link, $_POST['Tipo_cuenta']) : null; 
+$Banco = (isset($_POST['Banco']) && $_POST['Banco'] != '') ? mysqli_real_escape_string($Link, $_POST['Banco']) : 0; 
+$Tipo_Cuenta = (isset($_POST['Tipo_cuenta']) && $_POST['Tipo_cuenta'] != '') ? mysqli_real_escape_string($Link, $_POST['Tipo_cuenta']) : 0; 
 $Numero_Cuenta = (isset($_POST['Numero_Cuenta']) && $_POST['Numero_Cuenta'] != '') ? mysqli_real_escape_string($Link, $_POST['Numero_Cuenta']) : null;
 
   $manipulador_tipo_complemento = (isset($_POST['manipulador_tipo_complemento']) && $_POST['manipulador_tipo_complemento'] != '') ? ($_POST['manipulador_tipo_complemento']) : '';

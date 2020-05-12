@@ -138,6 +138,7 @@
           {
               nRow.setAttribute('data-nitempleado', aData['Nitcc']);
               nRow.setAttribute('data-numnomina', aData['numero_nomina']);
+              nRow.setAttribute('data-tipo', aData['tipo']);
               return nRow;
           },
           buttons: [ {extend: 'excel', title: 'Empleados', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3, 4, 5 ] } } ],
