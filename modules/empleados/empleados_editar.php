@@ -138,8 +138,11 @@ $periodoActual = $_SESSION["periodoActual"];
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
+									<fieldset disabled>
+										
 								    <label for="numeroDocumento">Número documento</label>
 								    <input type="text" name="numeroDocumento" id="numeroDocumento" class="form-control form-data" value="<?= $cedulaEmpleado ?>">
+									</fieldset>
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
@@ -396,22 +399,28 @@ $periodoActual = $_SESSION["periodoActual"];
 								<option value="4" <?= $registros0['TipoContrato'] == '4' ? 'selected' : '' ?>>Servicios</option>
 							</select>
 						</div>
-						<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
-							<label>Valor Base Mes</label>
-							<input type="text" name="ValorBaseMes" id="ValorBaseMes" value="<?= $registros0['ValorBaseMes'] ?>" class="form-control form-data only_number">
-						</div>
 						<div class="form-group col-sm-6 col-md-3">
 							<label>Fecha inicio contrato</label>
 							<input type="date" name="FechaInicalContrato" id="FechaInicalContrato" value="<?= $registros0['FechaInicalContrato'] ?>" class="form-control form-data">
 						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Duración días</label>
+							<input type="text" name="DuracionDias" id="DuracionDias" class="form-control form-data only_number" value="<?= $registros0['DuracionDias'] ?>" required>
+						</div>
 						<div class="form-group col-sm-6 col-md-3">
 							<label>Fecha fin contrato</label>
-							<input type="date" name="FechaFinalContrato" id="FechaFinalContrato" value="<?= $registros0['FechaFinalContrato'] ?>" class="form-control form-data">
+							<fieldset disabled>
+								<input type="date" name="FechaFinalContrato" id="FechaFinalContrato" value="<?= $registros0['FechaFinalContrato'] ?>" class="form-control form-data">
+							</fieldset>
 						</div>
 					</div>
 
 					<!--  -->
 					<div class="row">	
+						<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
+							<label>Valor Base Mes</label>
+							<input type="text" name="ValorBaseMes" id="ValorBaseMes" value="<?= $registros0['ValorBaseMes'] ?>" class="form-control form-data only_number">
+						</div>
 						<div class="form-group col-sm-6 col-md-3">	
 							<label>Tipo servicio</label>
 							<select name="TipoServicio" id="TipoServicio" class="form-control form-data" required>	
@@ -428,10 +437,6 @@ $periodoActual = $_SESSION["periodoActual"];
 								<option value="0" <?= $registros0['SalarioIntegral'] == 0 ? 'selected' : '' ?> >No</option>
 								<option value="1" <?= $registros0['SalarioIntegral'] == 1 ? 'selected' : '' ?> >Si</option>
 							</select>
-						</div>
-						<div class="form-group col-sm-6 col-md-3">	
-							<label>Duración días</label>
-							<input type="text" name="DuracionDias" id="DuracionDias" class="form-control form-data only_number" value="<?= $registros0['DuracionDias'] ?>" required>
 						</div>
 						<div class="form-group col-sm-6 col-md-3">	
 							<label>Aux. transporte</label>
@@ -728,6 +733,9 @@ $periodoActual = $_SESSION["periodoActual"];
 	$(document).ready(function(){
 		$('#tipo').trigger('change');
 		$('#TipoContrato').trigger('change');
+		$('#Salario').trigger('change');
+		$('#TipoContrato').trigger('select2:select');
+		$('#Forma_pago').trigger('change');
 	});
 </script>
 <?php mysqli_close($Link); ?>

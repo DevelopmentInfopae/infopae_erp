@@ -259,7 +259,20 @@ function set_select(){
 function verNomina(control){
   nitempleado = control.parent().data('nitempleado');
   numnomina = control.parent().data('numnomina');
-  $('#formVerNomina #nitEmpleado').val(nitempleado);
-  $('#formVerNomina #num_liq').val(numnomina);
-  $('#formVerNomina').submit();
+  tipo = control.parent().data('tipo');
+  if (tipo == 2) {
+	  $('#formVerNomina #nitEmpleado').val(nitempleado);
+	  $('#formVerNomina #num_liq').val(numnomina);
+	  $('#formVerNomina').submit();
+  } else {
+  	Command: toastr.warning(
+					'No hay ninguna previsualización para este tipo de empleado',
+					'Sin previsualización',
+					{ onHidden: function()
+						{
+							$('#loader').fadeOut();
+						}
+					}
+				);
+  }
 }
