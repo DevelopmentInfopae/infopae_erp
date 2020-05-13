@@ -12,6 +12,19 @@
 
     $dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
     if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
+    $consulta_parametros = "SELECT * FROM parametros WHERE id = 1";
+    $result_parametros = $Link->query($consulta_parametros);
+    $parametros = false;
+    if ($result_parametros->num_rows > 0) {
+        $parametros = $result_parametros->fetch_assoc();
+    }
+
+    $consulta_parametros_nomina = "SELECT * FROM parametros_nomina";
+    $result_parametros_nomina = $Link->query($consulta_parametros_nomina);
+    $parametros_nomina = false;
+    if ($result_parametros_nomina->num_rows > 0) {
+        $parametros_nomina = $result_parametros_nomina->fetch_assoc();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -52,7 +65,26 @@
     <link href="<?php echo $baseUrl; ?>/theme/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 
     <link href="<?php echo $baseUrl; ?>/theme/css/style.css" rel="stylesheet">
+    <script type="text/javascript">
+            
+        var meses_texto = {
+                    '01' : 'Enero',
+                    '02' : 'Febrero',
+                    '03' : 'Marzo',
+                    '04' : 'Abril',
+                    '05' : 'Mayo',
+                    '06' : 'Junio',
+                    '07' : 'Julio',
+                    '08' : 'Agosto',
+                    '09' : 'Septiembre',
+                    '10' : 'Octubre',
+                    '11' : 'Noviembre',
+                    '12' : 'Diciembre'
+                  };
 
+        var parametros = JSON.parse('<?= json_encode($parametros) ?>');          
+        var parametros_nomina = JSON.parse('<?= json_encode($parametros_nomina) ?>');          
+    </script>
 </head>
 <body>
     <div id="wrapper">
