@@ -467,7 +467,7 @@
 
 
 <hr>
-				<!-- <div class="row">
+				<div class="row">
 
 				  <div class="col-xs-6 flexMid">
 					<label for="seleccionarVarios">Seleccionar Todos</label>
@@ -478,7 +478,7 @@
 
 							<div class="pull-right dropdown">
 
-								<button data-toggle="dropdown" class="dropdown-toggle btn-white" title="Generar Planilla">
+								<!-- <button data-toggle="dropdown" class="dropdown-toggle btn-white" title="Generar Planilla">
 									<i class="fa fa-file-pdf-o"></i>
 								</button>
 								<ul class="dropdown-menu m-t-xs">
@@ -488,27 +488,25 @@
 									<li><a href="#" onclick="despachos_mixta()">Mixta</a></li>
 									<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>
 									<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>
-								</ul>
+								</ul> -->
 
 							   <div class="dropdown pull-right" id="">
 								<button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button>
 								<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">
-								  <li><a href="#" onclick="despachos_por_sede()">Individual</a></li>
+								  <!-- <li><a href="#" onclick="despachos_por_sede()">Individual</a></li>
 								  <li><a href="#" onclick="despachos_kardex()">Kardex</a></li>
 								  <li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>
 								  <li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>
-								  <li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>
+								  <li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li> -->
 								  <?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-									<li>
+									<!-- <li>
 									  <a href="#" onclick="editar_despacho()">Editar Despacho</a>
 									</li>
 									<li>
 									  <a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a>
-									</li>
-									<li>
-									  <a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a>
-									</li>
+									</li> -->
 								  <?php } ?>
+									<li> <a href="#" onclick="eliminar_orden()">Eliminar Orden</a> </li>
 								</ul>
 							  </div>
 
@@ -516,7 +514,7 @@
 							</div>
 					  </div>
 
-				</div> -->
+				</div>
 
 
 
@@ -571,7 +569,7 @@
 				  <tr>
 					<td class="text-center">
 
-						<input type="checkbox" class="i-checks despachos" value="<?php echo $row['Num_doc']; ?>" name="<?php echo $row['Num_doc']; ?>"id="<?php echo $row['Num_doc']; ?>"<?php if($row['estado'] == 0){echo " disabled "; } ?> semana="<?php echo $row['Semana']; ?>" complemento="<?php echo $row['Tipo_Complem'];?>" tipo="<?php echo $row['tipodespacho'];?>" sede="<?php echo $row['cod_sede'];?>" estado="<?php echo $row['estado'];?>"/>
+						<input type="checkbox" class="i-checks despachos" value="<?php echo $row['Num_OCO']; ?>" name="<?php echo $row['Num_doc']; ?>"id="<?php echo $row['Num_doc']; ?>"<?php if($row['estado'] == 0){echo " disabled "; } ?> semana="<?php echo $row['Semana']; ?>" complemento="<?php echo $row['Tipo_Complem'];?>" tipo="<?php echo $row['tipodespacho'];?>" sede="<?php echo $row['cod_sede'];?>" estado="<?php echo $row['estado'];?>"/>
 
 
 
