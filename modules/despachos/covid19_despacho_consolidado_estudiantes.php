@@ -39,16 +39,16 @@ if($resultado->num_rows >= 1){
 		$media = "";
 
 		if( $row['cod_grado'] < 1){
-			$prescolar = "X";
+			$prescolar = $row['cod_grado'];
 		}
 		if( $row['cod_grado'] >= 1 && $row['cod_grado'] <= 5 ){
-			$primaria = "X";
+			$primaria = $row['cod_grado'];
 		}
-		if( $row['cod_grado'] >= 6 && $row['cod_grado'] <= 8 ){
-			$basica = "X";
+		if( $row['cod_grado'] >= 6 && $row['cod_grado'] <= 9 ){
+			$basica = $row['cod_grado'];
 		}
-		if( $row['cod_grado'] >= 9 ){
-			$media = "X";
+		if( $row['cod_grado'] >= 10 ){
+			$media = $row['cod_grado'];
 		}
 
 		$pdf->Cell(3.25,$altoFila,utf8_decode($prescolar),'BL',0,'C',False);
