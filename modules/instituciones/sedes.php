@@ -125,6 +125,7 @@
                       <tr>
                         <th>Código sede</th>
                         <th>Nombre sede</th>
+                        <th>Zona sede</th>
                         <th>Código institución</th>
                         <th>Nombre institución</th>
                         <th>Coordinador</th>
@@ -140,6 +141,7 @@
                       <tr>
                         <th>Código sede</th>
                         <th>Nombre sede</th>
+                        <th>Zona sede</th>
                         <th>Código institución</th>
                         <th>Nombre institución</th>
                         <th>Coordinador</th>
@@ -402,6 +404,15 @@
       columns:[
         { data: 'codigoSede'},
         { data: 'nombreSede'},
+        { data: 'sectorSede', "mRender" : function(data){
+          if (data == 1) {
+            return "Rural";
+          } else if (data == 2) {
+            return "Urbano";
+          } else  {
+            return "No registra";
+          }
+        }},
         { data: 'codigoInstitucion'},
         { data: 'nombreInstitucion'},
         { data: 'nombreCoordinador'},
