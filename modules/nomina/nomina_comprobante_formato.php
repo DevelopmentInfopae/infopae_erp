@@ -16,7 +16,7 @@ class PDF extends FPDF
         // $this->RoundedRect(13, 7, 117, 29, 3, '1234', '');
         $this->SetTitle(utf8_decode('Factura de venta'));
         //izquierda
-  		$this->Image($this->parametros["LogoOperador"], 13 ,7, 90, 25,'jpg', '');
+  		  $this->Image($this->parametros["LogoOperador"], 13 ,7, 90, 25,'png', '');
         $cx = 110;
         $cy = 9;
         $this->setXY($cx, $cy);

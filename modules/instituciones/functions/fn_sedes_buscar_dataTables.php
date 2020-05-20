@@ -12,6 +12,7 @@
   $consultaSedes = "SELECT
                       sed.cod_sede AS codigoSede,
                       sed.nom_sede AS nombreSede,
+                      sed.sector AS sectorSede,
                       sed.cod_inst AS codigoInstitucion,
                       sed.nom_inst AS nombreInstitucion,
                       usu.nombre AS nombreCoordinador,

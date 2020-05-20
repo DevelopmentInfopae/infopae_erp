@@ -50,7 +50,7 @@
 $TipoServicio = (isset($_POST['TipoServicio']) && $_POST['TipoServicio'] != '') ? mysqli_real_escape_string($Link, $_POST['TipoServicio']) : null;
 $SalarioIntegral = (isset($_POST['SalarioIntegral']) && $_POST['SalarioIntegral'] != '') ? mysqli_real_escape_string($Link, $_POST['SalarioIntegral']) : null;  
 $DuracionDias = (isset($_POST['DuracionDias']) && $_POST['DuracionDias'] != '') ? mysqli_real_escape_string($Link, $_POST['DuracionDias']) : null;
-$auxilio_transporte = (isset($_POST['auxilio_transporte']) && $_POST['auxilio_transporte'] != '') ? mysqli_real_escape_string($Link, $_POST['auxilio_transporte']) : null; 
+$auxilio_transporte = (isset($_POST['auxilio_transporte']) && $_POST['auxilio_transporte'] != '') ? mysqli_real_escape_string($Link, $_POST['auxilio_transporte']) : 0; 
 $auxilio_extra = (isset($_POST['auxilio_extra']) && $_POST['auxilio_extra'] != '') ? mysqli_real_escape_string($Link, $_POST['auxilio_extra']) : 0; 
 $afp_entidad = (isset($_POST['afp_entidad']) && $_POST['afp_entidad'] != '') ? mysqli_real_escape_string($Link, $_POST['afp_entidad']) : null; 
 $eps_entidad = (isset($_POST['eps_entidad']) && $_POST['eps_entidad'] != '') ? mysqli_real_escape_string($Link, $_POST['eps_entidad']) : null; 
@@ -88,6 +88,31 @@ $Numero_Cuenta = (isset($_POST['Numero_Cuenta']) && $_POST['Numero_Cuenta'] != '
     ];
     exit(json_encode($respuestaAJAX));
   }
+
+  // Validar que el email del empleado no exista.
+  $consulta1 = "SELECT * FROM usuarios WHERE email = '$email';";
+  $resultado1 = $Link->query($consulta1) or die('Error al consultar el email del empleado: '. mysqli_error($Link));
+  if ($resultado1->num_rows > 0)
+  {
+    $respuestaAJAX = [
+      'estado' => 0,
+      'mensaje' => 'No es posible crear el empleado debido a que el correo ya se encuentra registrado para un usuario.'
+    ];
+    exit(json_encode($respuestaAJAX));
+  }
+
+  // Validar que el email del empleado no exista.
+  $consulta1 = "SELECT * FROM usuarios WHERE num_doc  = '$numeroDocumento';";
+  $resultado1 = $Link->query($consulta1) or die('Error al consultar el email del empleado: '. mysqli_error($Link));
+  if ($resultado1->num_rows > 0)
+  {
+    $respuestaAJAX = [
+      'estado' => 0,
+      'mensaje' => 'No es posible crear el empleado debido a que el n° de documento ya se encuentra registrado para un usuario.'
+    ];
+    exit(json_encode($respuestaAJAX));
+  }
+
 
 if (isset($_FILES["foto"]["name"])){
   $dimensiones = getimagesize($_FILES["foto"]["tmp_name"]);

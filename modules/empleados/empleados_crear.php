@@ -335,6 +335,14 @@
 				</div>
 
 				<div class="row">	
+					<div class="form-group col-sm-6 col-md-3">	
+						<label>Salario Integral</label>
+						<select name="SalarioIntegral" id="SalarioIntegral" class="form-control form-data" required>	
+							<option value="">Seleccione...</option>
+							<option value="0">No</option>
+							<option value="1">Si</option>
+						</select>
+					</div>
 					<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
 						<label>Valor Base Mes</label>
 						<input type="text" name="ValorBaseMes" id="ValorBaseMes" class="form-control form-data only_number">
@@ -348,14 +356,6 @@
 							<option value="2">Honorarios</option>
 						</select>
 					</div>	
-					<div class="form-group col-sm-6 col-md-3">	
-						<label>Salario Integral</label>
-						<select name="SalarioIntegral" id="SalarioIntegral" class="form-control form-data" required>	
-							<option value="">Seleccione...</option>
-							<option value="0">No</option>
-							<option value="1">Si</option>
-						</select>
-					</div>
 					<div class="form-group col-sm-6 col-md-3">	
 						<label>Aux. transporte</label>
 						<select name="auxilio_transporte" id="auxilio_transporte" class="form-control form-data" required>	
@@ -373,12 +373,26 @@
 					<div class="form-group col-sm-6 col-md-3">	
 						<label>AFP Entidad</label>
 						<select name="afp_entidad" id="afp_entidad" class="form-control form-data" required>	
-							<option value="">Seleccione...</option>
+							<?php 
+							$consulta_afp = "SELECT * FROM nomina_entidad WHERE Entidad = 'NINGUNA' AND tipo = 2";
+							$resultado_afp = $Link->query($consulta_afp);
+							if ($resultado_afp->num_rows > 0) {
+								while ($afp = $resultado_afp->fetch_assoc()) { 
+									?>
+									<option value="<?= $afp['ID'] ?>"><?= $afp['Entidad'] ?></option>
+								<?php }
+							}
+							 ?>
 							<?php 
 							$consulta_afp = "SELECT * FROM nomina_entidad WHERE tipo = 2";
 							$resultado_afp = $Link->query($consulta_afp);
 							if ($resultado_afp->num_rows > 0) {
-								while ($afp = $resultado_afp->fetch_assoc()) { ?>
+								while ($afp = $resultado_afp->fetch_assoc()) { 
+									if ($afp['Entidad'] == 'NINGUNA') {
+										continue;
+									}
+
+									?>
 									<option value="<?= $afp['ID'] ?>"><?= $afp['Entidad'] ?></option>
 								<?php }
 							}
@@ -388,12 +402,26 @@
 					<div class="form-group col-sm-6 col-md-3">	
 						<label>EPS Entidad</label>
 						<select name="eps_entidad" id="eps_entidad" class="form-control form-data" required>	
-							<option value="">Seleccione...</option>
+							<?php 
+							$consulta_eps = "SELECT * FROM nomina_entidad WHERE Entidad = 'NINGUNA' AND tipo = 1";
+							$resultado_eps = $Link->query($consulta_eps);
+							if ($resultado_eps->num_rows > 0) {
+								while ($eps = $resultado_eps->fetch_assoc()) { 
+									?>
+									<option value="<?= $eps['ID'] ?>"><?= $eps['Entidad'] ?></option>
+								<?php }
+							}
+							 ?>
 							<?php 
 							$consulta_eps = "SELECT * FROM nomina_entidad WHERE tipo = 1";
 							$resultado_eps = $Link->query($consulta_eps);
 							if ($resultado_eps->num_rows > 0) {
-								while ($eps = $resultado_eps->fetch_assoc()) { ?>
+								while ($eps = $resultado_eps->fetch_assoc()) { 
+									if ($eps['Entidad'] == 'NINGUNA') {
+										continue;
+									}
+
+									?>
 									<option value="<?= $eps['ID'] ?>"><?= $eps['Entidad'] ?></option>
 								<?php }
 							}
@@ -403,9 +431,17 @@
 					<div class="form-group col-sm-6 col-md-3">	
 						<label>ARL Riesgo</label>
 						<select name="arl_riesgo" id="arl_riesgo" class="form-control form-data" required>	
-							<option value="">Seleccione...</option>
 							<?php 
-							$consulta_arl = "SELECT * FROM nomina_riesgos";
+							$consulta_arl = "SELECT * FROM nomina_riesgos WHERE Porcentaje = 0";
+							$resultado_arl = $Link->query($consulta_arl);
+							if ($resultado_arl->num_rows > 0) {
+								while ($arl = $resultado_arl->fetch_assoc()) { ?>
+									<option value="<?= $arl['ID'] ?>"><?= $arl['Tipo']." (".$arl['Porcentaje'].")" ?></option>
+								<?php }
+							}
+							 ?>
+							<?php 
+							$consulta_arl = "SELECT * FROM nomina_riesgos WHERE Porcentaje > 0";
 							$resultado_arl = $Link->query($consulta_arl);
 							if ($resultado_arl->num_rows > 0) {
 								while ($arl = $resultado_arl->fetch_assoc()) { ?>
@@ -455,9 +491,17 @@
 					<div class="form-group col-sm-6 col-md-3">	
 						<label>Banco</label>
 						<select name="Banco" id="Banco" class="form-control form-data" required>	
-							<option value="">Seleccione...</option>
 							<?php 
-							$consulta_banco = "SELECT * FROM bancos";
+							$consulta_banco = "SELECT * FROM bancos WHERE Descripcion = 'No Aplica'";
+							$resultado_banco = $Link->query($consulta_banco);
+							if ($resultado_banco->num_rows > 0) {
+								while ($banco = $resultado_banco->fetch_assoc()) { ?>
+									<option value="<?= $banco['ID'] ?>"><?= $banco['Descripcion'] ?></option>
+								<?php }
+							}
+							 ?>
+							<?php 
+							$consulta_banco = "SELECT * FROM bancos WHERE Descripcion != 'No Aplica'";
 							$resultado_banco = $Link->query($consulta_banco);
 							if ($resultado_banco->num_rows > 0) {
 								while ($banco = $resultado_banco->fetch_assoc()) { ?>
@@ -470,7 +514,7 @@
 					<div class="form-group col-sm-6 col-md-3">	
 						<label>Tipo de cuenta</label>
 						<select name="Tipo_cuenta" id="Tipo_cuenta" class="form-control form-data" required>	
-							<option value="">Seleccione...</option>
+							<option value="">No Aplica</option>
 							<option value="1">Ahorros</option>
 							<option value="2">Corriente</option>
 						</select>

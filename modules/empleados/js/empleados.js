@@ -178,13 +178,13 @@ function guardarEmpleado(continuar)
 							{
 								if(continuar)
 								{
-                  $("#formCrearEmpleado")[0].reset();
-                  $('#loader').fadeOut();
-                }
-                else
-                {
-                  window.open('index.php', '_self');
-                }
+				                  $("#formCrearEmpleado")[0].reset();
+				                  $('#loader').fadeOut();
+				                }
+				                else
+				                {
+				                  window.open('index.php', '_self');
+				                }
 							}
 						}
 					);
@@ -691,6 +691,9 @@ function calcular_fecha_final(input){
 	fecha.setDate(fecha.getDate() + dias);
 	dia = fecha.getDate() < 10 ? "0"+fecha.getDate() : fecha.getDate();
 	mes = fecha.getMonth() < 10 ? "0"+fecha.getMonth() : fecha.getMonth();
+	if (mes == '00') {
+		mes = '12';
+	}
 	$('#FechaFinalContrato').val(fecha.getFullYear()+"-"+mes+"-"+dia);
 	console.log(fecha.getFullYear()+"-"+mes+"-"+dia);
 }
