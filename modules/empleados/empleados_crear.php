@@ -379,7 +379,7 @@
 							if ($resultado_afp->num_rows > 0) {
 								while ($afp = $resultado_afp->fetch_assoc()) { 
 									?>
-									<option value="<?= $afp['ID'] ?>"><?= $afp['Entidad'] ?></option>
+									<option value="<?= $afp['ID'] ?>" data-default="1"><?= $afp['Entidad'] ?></option>
 								<?php }
 							}
 							 ?>
@@ -408,7 +408,7 @@
 							if ($resultado_eps->num_rows > 0) {
 								while ($eps = $resultado_eps->fetch_assoc()) { 
 									?>
-									<option value="<?= $eps['ID'] ?>"><?= $eps['Entidad'] ?></option>
+									<option value="<?= $eps['ID'] ?>" data-default="1"><?= $eps['Entidad'] ?></option>
 								<?php }
 							}
 							 ?>
@@ -436,7 +436,7 @@
 							$resultado_arl = $Link->query($consulta_arl);
 							if ($resultado_arl->num_rows > 0) {
 								while ($arl = $resultado_arl->fetch_assoc()) { ?>
-									<option value="<?= $arl['ID'] ?>"><?= $arl['Tipo']." (".$arl['Porcentaje'].")" ?></option>
+									<option value="<?= $arl['ID'] ?>" data-default="1"><?= $arl['Tipo']." (".$arl['Porcentaje'].")" ?></option>
 								<?php }
 							}
 							 ?>

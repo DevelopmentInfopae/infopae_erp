@@ -460,7 +460,7 @@ $periodoActual = $_SESSION["periodoActual"];
 								$resultado_afp = $Link->query($consulta_afp);
 								if ($resultado_afp->num_rows > 0) {
 									while ($afp = $resultado_afp->fetch_assoc()) { ?>
-										<option value="<?= $afp['ID'] ?>" <?= $registros0['afp_entidad'] == $afp['ID'] ? 'selected' : '' ?> ><?= $afp['Entidad'] ?></option>
+										<option value="<?= $afp['ID'] ?>" <?= $registros0['afp_entidad'] == $afp['ID'] ? 'selected' : '' ?> <?= $afp['Entidad'] == 'NINGUNA' ? 'data-default="1"' : '' ?>><?= $afp['Entidad'] ?></option>
 									<?php }
 								}
 								 ?>
@@ -474,7 +474,7 @@ $periodoActual = $_SESSION["periodoActual"];
 								$resultado_eps = $Link->query($consulta_eps);
 								if ($resultado_eps->num_rows > 0) {
 									while ($eps = $resultado_eps->fetch_assoc()) { ?>
-										<option value="<?= $eps['ID'] ?>" <?= $registros0['eps_entidad'] == $eps['ID'] ? 'selected' : '' ?> ><?= $eps['Entidad'] ?></option>
+										<option value="<?= $eps['ID'] ?>" <?= $registros0['eps_entidad'] == $eps['ID'] ? 'selected' : '' ?> <?= $eps['Entidad'] == 'NINGUNA' ? 'data-default="1"' : '' ?>><?= $eps['Entidad'] ?></option>
 									<?php }
 								}
 								 ?>
@@ -488,7 +488,7 @@ $periodoActual = $_SESSION["periodoActual"];
 								$resultado_arl = $Link->query($consulta_arl);
 								if ($resultado_arl->num_rows > 0) {
 									while ($arl = $resultado_arl->fetch_assoc()) { ?>
-										<option value="<?= $arl['ID'] ?>" <?= $registros0['arl_riesgo'] == $arl['ID'] ? 'selected' : '' ?> ><?= $arl['Tipo']." (".$arl['Porcentaje'].")" ?></option>
+										<option value="<?= $arl['ID'] ?>" <?= $registros0['arl_riesgo'] == $arl['ID'] ? 'selected' : '' ?> <?= $arl['Porcentaje'] == 0 ? 'data-default="1"' : '' ?>><?= $arl['Tipo']." (".$arl['Porcentaje'].")" ?></option>
 									<?php }
 								}
 								 ?>

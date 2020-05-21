@@ -61,7 +61,7 @@
                                               i.estado AS estadoInstitucion 
                                         FROM instituciones i 
                                             LEFT JOIN ubicacion u ON i.cod_mun = u.CodigoDANE 
-                                            LEFT JOIN sedes$periodoActual s ON S.cod_inst = i.codigo_inst
+                                            LEFT JOIN sedes$periodoActual s ON s.cod_inst = i.codigo_inst
                                         GROUP BY i.id
                                         ORDER BY i.nom_inst ASC ";
                           $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
