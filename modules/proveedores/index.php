@@ -38,6 +38,7 @@
                 <th>Correo electrónico</th>
                 <th>Municipio</th>
                 <th>Compras locales</th>
+                <th>Estado</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </thead>
@@ -52,6 +53,7 @@
                 <th>Correo electrónico</th>
                 <th>Municipio</th>
                 <th>Compras locales</th>
+                <th>Estado</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </tfoot>
@@ -115,6 +117,7 @@
       {data: 'emailProveedor'},
       {data: 'municipio'},
       {data: 'comprasLocales', className: 'text-center'},
+      {data: 'estado'},
       {data: 'input', className: 'text-center'},
     ],
     buttons: [ {extend: 'excel', title: 'Proveedores', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3 ] } } ],

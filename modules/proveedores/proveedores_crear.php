@@ -172,6 +172,14 @@
 						                	<option value="0">NO</option>
 						                </select>
 					              	</div>
+
+					              	<div class="form-group col-sm-6 col-md-3">
+						                <label for="estado">Estado</label>
+						                <select class="form-control" name="estado" id="estado" required>
+						                	<option value="1">Activo</option>
+						                	<option value="0">Inactivo</option>
+						                </select>
+					              	</div>
 								</div>
         					</div>
           				</div>

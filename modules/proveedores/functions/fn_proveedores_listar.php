@@ -12,7 +12,8 @@
                 pro.RazonSocial AS razonsocialProveedor,
                 pro.Email AS emailProveedor,
                 ubi.Ciudad AS municipio,
-                pro.compraslocales AS comprasLocales
+                pro.compraslocales AS comprasLocales,
+                IF (pro.estado = 0, 'Inactivo', 'Activo') AS estado
               FROM
                 proveedores pro
               INNER JOIN
