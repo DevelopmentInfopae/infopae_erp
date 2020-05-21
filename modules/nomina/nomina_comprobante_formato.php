@@ -213,7 +213,7 @@ if ($result_parametros->num_rows > 0) {
     $parametros = $result_parametros->fetch_assoc();
 }
 $pdf->parametros = $parametros;
-$pdf->enc_font = 13;
+$pdf->enc_font = 12;
 $pdf->title_font = 9;
 $pdf->body_font = 8;
 $pdf->SetFillColor(208, 208, 208);
@@ -317,6 +317,7 @@ if($resultado->num_rows > 0)
   	}
 
   	if ($print_new_inst == true) {
+        $pdf->ln(4);
         $pdf->SetFont('Arial','B',$pdf->enc_font);
         $pdf->Cell(66, 7, utf8_decode('Institución '),'',0,'L',0);
         $pdf->SetFont('Arial','',$pdf->enc_font);
@@ -330,6 +331,7 @@ if($resultado->num_rows > 0)
         $pdf->SetFont('Arial','',$pdf->enc_font);
         $pdf->MultiCell(130, 7, utf8_decode(ucwords(mb_strtolower($pdf->sed))),'','L',0);
         $pdf->SetFont('Arial','',$pdf->body_font);
+        $pdf->ln(4);
   	}
 
     $pdf->Cell(28, 7, utf8_decode($registros['tipo_complem']),'B',0,'C',0);

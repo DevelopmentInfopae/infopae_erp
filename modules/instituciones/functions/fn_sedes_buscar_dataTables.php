@@ -7,12 +7,14 @@
   $periodoActual = $_SESSION['periodoActual'];
   $institucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? mysqli_real_escape_string($Link, $_POST["institucion"]) : "";
   $municipio   = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? ($_POST["municipio"] == "0") ? "" : mysqli_real_escape_string($Link, $_POST["municipio"]) : "";
+  $region = isset($_POST["region"]) ? $_POST["region"] : false;
 
 
   $consultaSedes = "SELECT
                       sed.cod_sede AS codigoSede,
                       sed.nom_sede AS nombreSede,
                       sed.sector AS sectorSede,
+                      ".($region ? "ubicacion.region," : "")."
                       sed.cod_inst AS codigoInstitucion,
                       sed.nom_inst AS nombreInstitucion,
                       usu.nombre AS nombreCoordinador,
@@ -22,6 +24,7 @@
                     FROM sedes$periodoActual sed
                     LEFT JOIN usuarios usu ON usu.id = sed.id_coordinador
                     LEFT JOIN jornada jor ON jor.id = sed.jornada
+                    LEFT JOIN ubicacion ON ubicacion.CodigoDANE = sed.cod_mun_sede
                     WHERE 1=1 ";
   if($municipio  != ""){ $consultaSedes .= " AND cod_mun_sede = '" . $_POST['municipio'] . "' "; }
   if($institucion != ""){ $consultaSedes .= " AND cod_inst = '" . $_POST['institucion'] . "' "; }
