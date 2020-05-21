@@ -653,8 +653,14 @@ function campos_nomina(){
 		$('#auxilio_transporte').prop('disabled', true);
 		$('#afp_entidad').select2({'disabled': true});
 		$('#eps_entidad').select2({'disabled': true});
+		arlr = 0;
+		$('#arl_riesgo option').each(function(index, option){
+			if ($(option).data('default')) {
+				arlr = $(option).val();
+			}
+		});
 		$('#arl_riesgo').select2({'disabled': true});
-		$('#arl_riesgo').select2('val', '');
+		$('#arl_riesgo').select2('val', arlr);
 		$('#caja').select2({'disabled':true});
 		$('#caja').select2('val', 0);
 		$('#icbf').select2({'disabled':true});
@@ -686,11 +692,16 @@ function calcular_fecha_final(input){
 	fecha_anio = fecha[0];
 	fecha_mes = fecha[1];
 	fecha_dia = fecha[2];
-	var fecha = new Date(fecha_anio, fecha_mes, fecha_dia);
+	var fecha = new Date();
 	var dias = parseInt(input.val()-1); // Número de días a agregar
+	fecha.setFullYear(fecha_anio);
+	fecha.setMonth(fecha_mes);
+	fecha.setDate(fecha_dia);
 	fecha.setDate(fecha.getDate() + dias);
+
 	dia = fecha.getDate() < 10 ? "0"+fecha.getDate() : fecha.getDate();
-	mes = fecha.getMonth() < 10 ? "0"+fecha.getMonth() : fecha.getMonth();
+	mes = fecha.getMonth()+1;
+	mes = mes < 10 ? "0"+mes : mes;
 	if (mes == '00') {
 		mes = '12';
 	}

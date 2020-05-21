@@ -539,6 +539,7 @@
                       '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+
                         '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><i class="fa fa-file-pdf-o"></i> Exportar </a></li>'+
                         '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="calcular_manipuladoras();"><i class="fa fa-refresh"></i> Actualizar número de manipuladoras requeridas </a></li>'+
+                        '<li><a href="'+ $('#inputBaseUrl').val() +'/modules/instituciones/sedes.php<?= isset($_GET['region']) ? "" : "?region=1" ?>"><i class="fa fa-eye"></i> Ver zona </a></li>'+
                         '<li class="divider"></li>'+
                         '<li>'+
                           '<a class="fileinput fileinput-new" data-provides="fileinput">'+
@@ -573,7 +574,6 @@
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/focalizacion/Plantilla_Focalizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla focalización .CSV</a></li>'+
                         '<li><a href="#" onclick="$(\'#exportarManipuladoras\').submit();"> <i class="fa fa-download"></i> Generar archivo manipuladoras </a></li>'+
                         '<li><a id="descargarPlantillaManipuladoras"> <i class="fa fa-download"></i> Descarga plantilla manipuladoras.CSV</a></li>'+
-                        '<li><a href="'+ $('#inputBaseUrl').val() +'/modules/instituciones/sedes.php<?= isset($_GET['region']) ? "" : "?region=1" ?>"><i class="fa fa-eye"></i> Ver zona </a></li>'+
                         '<ul>'+
                       '</ul>'+
                     '</div>';
