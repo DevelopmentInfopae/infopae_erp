@@ -17,6 +17,8 @@
   $nombreCompleto = $primerNombre . ' ' . (($segundoNombre != '') ? $segundoNombre.' ' : '') . $primerApellido . ' ' . (($segundoApellido != '') ? $segundoApellido : '');
   $numeroDocumentohidden = (isset($_POST['numeroDocumentohidden']) && $_POST['numeroDocumentohidden'] != '') ? mysqli_real_escape_string($Link, $_POST['numeroDocumentohidden']) : '';
   $idProveedor = (isset($_POST['idProveedor']) && $_POST['idProveedor'] != '') ? mysqli_real_escape_string($Link, $_POST['idProveedor']) : '';
+  $estado = (isset($_POST['estado']) && $_POST['estado'] != '') ? mysqli_real_escape_string($Link, $_POST['estado']) : '';
+
 
   $tipoalimento = (isset($_POST['tipoalimento']) && $_POST['tipoalimento'] != '') ? implode($_POST['tipoalimento'], ",") : '';
   foreach ($_POST['tipoalimento'] as $tipo_alimento) {
@@ -38,7 +40,8 @@
                 SegundoApellido = '$segundoApellido',
                 TipoAlimento = '$tipoalimento',
                 cod_municipio = '$municipio',
-                compraslocales = '$compraslocales'
+                compraslocales = '$compraslocales',
+                estado = '$estado'
               WHERE Id = '$idProveedor';";
   $resultado = $Link->query($consulta) or die ('Error al actualizar proveedor: '. mysqli_error($Link));
   if ($resultado) {

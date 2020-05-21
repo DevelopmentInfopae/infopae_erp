@@ -20,6 +20,7 @@
   $municipio = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST['municipio']) : '';
   $compraslocales = (isset($_POST['compraslocales']) && $_POST['compraslocales'] != '') ? mysqli_real_escape_string($Link, $_POST['compraslocales']) : '';
   $nombreCompleto = $primerNombre . ' ' . (($segundoNombre != '') ? $segundoNombre.' ' : '') . $primerApellido . ' ' . (($segundoApellido != '') ? $segundoApellido : '');
+  $estado = (isset($_POST['estado']) && $_POST['estado'] != '') ? mysqli_real_escape_string($Link, $_POST['estado']) : '';
 
   $tipoalimento = (isset($_POST['tipoalimento']) && $_POST['tipoalimento'] != '') ? implode($_POST['tipoalimento'], ",") : '';
   foreach ($_POST['tipoalimento'] as $tipo_alimento) {
@@ -53,7 +54,7 @@
     exit(json_encode($respuestaAJAX));
   }
 
-  $consulta = "INSERT INTO proveedores (TipoDocumento, Nitcc, DigitoVerificacion, TipoJuridico, TipoRegimen, Nombrecomercial, RazonSocial, Direccion, Telefono1, Telefono2, Email, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, TipoAlimento, cod_municipio, compraslocales, FechaCreacion)
+  $consulta = "INSERT INTO proveedores (TipoDocumento, Nitcc, DigitoVerificacion, TipoJuridico, TipoRegimen, Nombrecomercial, RazonSocial, Direccion, Telefono1, Telefono2, Email, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, TipoAlimento, cod_municipio, compraslocales, FechaCreacion, estado)
               VALUES (
                 '$tipoDocumento',
                 '$numeroDocumento',
@@ -73,7 +74,8 @@
                 '$tipoalimento',
                 '$municipio',
                 '$compraslocales',
-                '". date('Y-m-d H-i-s') ."')";
+                '". date('Y-m-d H-i-s') ."',
+                '$estado')";
   $resultado = $Link->query($consulta) or die ('Error al insertar proveedores: '. mysqli_error($Link));
   if ($resultado) {
     $clave = sha1(strtoupper(substr($primerNombre, 0, 1)) . $numeroDocumento);

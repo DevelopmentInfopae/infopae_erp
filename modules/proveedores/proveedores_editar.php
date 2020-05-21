@@ -28,6 +28,7 @@
 		$municipio = $registros0['cod_municipio'];
 		$tipoalimentos = explode(",", $registros0['TipoAlimento']);
 		$compraslocales = $registros0['compraslocales'];
+		$estado = $registros0["estado"];
 	}
 ?>
 
@@ -206,6 +207,14 @@
 						                <select class="form-control" name="compraslocales" id="compraslocales" required>
 						                	<option value="1" <?= ($compraslocales == 1) ? "selected" : ""; ?>>SI</option>
 						                	<option value="0" <?= ($compraslocales == 0) ? "selected" : ""; ?>>NO</option>
+						                </select>
+					              	</div>
+
+					              	<div class="form-group col-sm-6 col-md-3">
+						                <label for="estado">Estado</label>
+						                <select class="form-control" name="estado" id="estado" required>
+						                	<option value="1" <?= ($estado == 1) ? "selected" : ""; ?>>Activo</option>
+						                	<option value="0" <?= ($estado == 0) ? "selected" : ""; ?>>Inactivo</option>
 						                </select>
 					              	</div>
 								</div>
