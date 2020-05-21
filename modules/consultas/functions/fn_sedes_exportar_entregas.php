@@ -51,7 +51,36 @@ if ($respuesta_semanas_mes->num_rows > 0) {
 	}
 }
 
-$titulos_columnas = ["Abreviatura", "Número documento", "Primer apellido", "Segundo apellido", "Primer nombre", "Segundo nombre", "Género", "Dirección", "Teléfono", "Fecha nacimiento", "Estrato", "Sisben", "Discapacidad", "Etnia", "Poblacion victima", "Código municipio", "Nombre municipio", "Código institucion", "Nombre institución", "Código sede", "Nombre sede", "Grado", "Grupo", "Jornada", "Edad", "Residencia", "Complemento"];
+$titulos_columnas = [
+						"Abreviatura", 
+						"Número documento", 
+						"Primer apellido", 
+						"Segundo apellido", 
+						"Primer nombre", 
+						"Segundo nombre", 
+						"Género", 
+						"Dirección", 
+						"Teléfono", 
+						"Fecha nacimiento", 
+						"Estrato", 
+						"Sisben", 
+						"Discapacidad", 
+						"Etnia", 
+						"Poblacion victima", 
+						"Código municipio", 
+						"Nombre municipio", 
+						"Región", 
+						"Zona", 
+						"Código institucion", 
+						"Nombre institución", 
+						"Código sede", 
+						"Nombre sede", 
+						"Grado", 
+						"Grupo", 
+						"Jornada", 
+						"Edad", 
+						"Complemento"
+					];
 $fila = 0;
 $cadena_dias_entregas = "";
 foreach ($planilla_dias as $clave_dia => $valor_dia) {
@@ -88,17 +117,18 @@ $consulta_entregas = "SELECT
 	dis.nombre AS nombre_discapacidad,
 	etn.DESCRIPCION AS nombre_etnia,
 	pvc.nombre AS nombre_poblacion_victima,
+	sed.cod_mun_sede AS codigo_municipio,
+	ubi.Departamento AS nombre_municipio,
+	ubi.region as region,
+	if(enr.zona_res_est = 1, 'Rural', 'Urbano') AS residencia,
 	enr.cod_inst AS codigo_institucion,
 	sed.nom_inst AS nombre_institucion,
 	enr.cod_sede AS codigo_sede,
 	sed.nom_sede AS nombre_sede,
-	sed.cod_mun_sede AS codigo_municipio,
-	ubi.Departamento AS nombre_municipio,
 	enr.cod_grado AS grado,
 	enr.nom_grupo AS grupo,
 	jor.nombre AS jornada,
 	enr.edad AS edad,
-	if(enr.zona_res_est = 1, 'Urbano', 'Rural') AS residencia,
 	enr.tipo_complem$posicion_semana AS complemento, ".
 	trim($cadena_dias_entregas, ", ") .
 " FROM entregas_res_$mes$periodo_actual enr
@@ -135,8 +165,8 @@ if ($respuesta_entregas->num_rows > 0){
 	while($registros_entregas = $respuesta_entregas->fetch_assoc()){
 		$columna_entregas = "A";
 		foreach ($registros_entregas as $clave_entregas => $valor_entregas) {
-			$archivo->setCellValue($columna_entregas . $fila, $valor_entregas);
-
+			$archivo->setCellValueExplicit($columna_entregas . $fila, $valor_entregas, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			// $archivo->setCellValue($columna_entregas . $fila, $valor_entregas);
 			$columna_entregas++;
 		}
 

@@ -51,7 +51,7 @@ $periodoActual = $_SESSION['periodoActual'];
 					?>
 					<div class="row">
 						<div class="col-sm-12">
-							<form class="" action="" method="POST">
+							<form class="" action="index.php<?= isset($_GET['region']) ? "?region=1" : "" ?>" method="POST">
 								<div class="row">
 									<div class="col-sm-3 form-group">
 										<label for="semana">Semana</label>
@@ -101,11 +101,6 @@ $periodoActual = $_SESSION['periodoActual'];
 	</div>
 </div>
 
-
-
-
-
-
 <?php
 if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 	$semana = $_POST['semana'];
@@ -125,8 +120,9 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 	} else {
  		$cod_sede = "";
 	}
-
+}
 ?>
+
 
 <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
@@ -150,61 +146,89 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 								<th>Jornada</th>
 								<th>Edad</th>
 								<th>Tipo complemento</th>
+								<?php if (isset($_GET['region'])): ?>
+									<th>Zona</th>
+									<th>Región</th>
+								<?php endif ?>
 								<th>Acciones</th>
 							</tr>
 						</thead>
 						<tbody>
 							<?php
+							if( isset($_POST['semana']) && $_POST['semana'] !='' ){
+								$consulta = "SELECT 
+													f.num_doc, 
+													f.activo, 
+													t.Abreviatura AS tipo_doc, 
+													CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre, 
+													f.genero, 
+													g.nombre as grado, 
+													f.nom_grupo, 
+													jor.nombre as jornada, 
+													f.edad, 
+													f.Tipo_complemento, 
+													GROUP_CONCAT(f.Tipo_complemento) as complementos,
+													f.zona_res_est as zona,
+													ubicacion.region as region 
+											FROM focalizacion$semana f 
+												LEFT JOIN tipodocumento t ON t	.id = f.tipo_doc 
+												LEFT JOIN grados g ON g.id = f.cod_grado  
+												LEFT JOIN ubicacion ON ubicacion.CodigoDANE = f.cod_mun_res
+												LEFT JOIN jornada jor ON jor.id = f.cod_jorn_est ".$cod_inst.$cod_sede."
+											GROUP BY f.num_doc order by f.nom1 asc";
 
-							$consulta = " SELECT f.num_doc, f.activo, t.Abreviatura AS tipo_doc, CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre, f.genero, g.nombre as grado, f.nom_grupo, jor.nombre as jornada, f.edad, f.Tipo_complemento, GROUP_CONCAT(f.Tipo_complemento) as complementos FROM focalizacion$semana f LEFT JOIN tipodocumento t ON t	.id = f.tipo_doc LEFT JOIN grados g ON g.id = f.cod_grado LEFT JOIN jornada jor ON jor.id = f.cod_jorn_est ".$cod_inst.$cod_sede." GROUP BY f.num_doc order by f.nom1 asc";
-
-							$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-							if($resultado->num_rows >= 1){
-								while($row = $resultado->fetch_assoc()){ ?>
-								<tr numDoc="<?php echo $row['num_doc']; ?>" tipoDoc="<?php echo $row['tipo_doc']; ?>" style="cursor:pointer">
-									<td><?php echo $row['num_doc']; ?></td>
-									<td><?php echo $row['tipo_doc']; ?></td>
-									<td><?php echo $row['nombre']; ?></td>
-									<td style="text-align_center;"><?php echo $row['genero']; ?></td>
-									<td><?php echo $row['grado']; ?></td>
-									<td style="text-align:center;"><?php echo $row['nom_grupo']; ?></td>
-									<td><?php echo $row['jornada']; ?></td>
-									<td style="text-align:center;"><?php echo $row['edad']; ?></td>
-									<td style="text-align:center;"><?php echo $row['complementos']; ?></td>
-									<td><div class="btn-group">
-			                          <div class="dropdown">
-			                            <button class="btn btn-primary btn-sm" type="button" id="accionesProducto" data-toggle="dropdown" aria-haspopup="true">
-			                              Acciones
-			                              <span class="caret"></span>
-			                            </button>
-			                            <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
-			                           	<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
-			                           		<li><a onclick="editarTitular(<?php echo $row['num_doc']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
-			                                <?php if ($row['activo'] == 1): ?>
-			                                <li data-idtitular="<?php echo $row['num_doc']; ?>" data-accion="1"><a> Estado : <input class="form-control estadoEst" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" checked></a></li>
-			                               	<?php elseif($row['activo'] == 0): ?>
-			                                <li data-idtitular="<?php echo $row['num_doc']; ?>" data-accion="0"><a> Estado : <input class="form-control estadoEst" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" ></a></li>
-			                                <?php endif ?>
-			                            <?php else: ?>
-			                                <?php if ($row['activo'] == 1): ?>
-			                                <li>
-			                                  <a><span class="fa fa-check"></span> Estado : <b>Activo</b></a>
-			                                </li>
-			                               	<?php elseif($row['activo'] == 0): ?>
-			                               	<li>
-			                                  <a></span> Estado : <b>Inactivo</b></a>
-			                                </li>
-			                                <?php endif ?>
-			                           	<?php endif ?>
-			                               <li>
-			                                <a><span class="fa fa-file-excel-o"></span> Exportar</a>
-			                               </li>
-			                            </ul>
-			                          </div>
-			                        </div>
-			                    	</td>
-								</tr>
-								<?php }
+								$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+								if($resultado->num_rows >= 1){
+									while($row = $resultado->fetch_assoc()){ ?>
+									<tr numDoc="<?php echo $row['num_doc']; ?>" tipoDoc="<?php echo $row['tipo_doc']; ?>" style="cursor:pointer">
+										<td><?php echo $row['num_doc']; ?></td>
+										<td><?php echo $row['tipo_doc']; ?></td>
+										<td><?php echo $row['nombre']; ?></td>
+										<td style="text-align_center;"><?php echo $row['genero']; ?></td>
+										<td><?php echo $row['grado']; ?></td>
+										<td style="text-align:center;"><?php echo $row['nom_grupo']; ?></td>
+										<td><?php echo $row['jornada']; ?></td>
+										<td style="text-align:center;"><?php echo $row['edad']; ?></td>
+										<td style="text-align:center;"><?php echo $row['complementos']; ?></td>
+										<?php if (isset($_GET['region'])): ?>
+											<td><?= $row['zona'] == 1 ? 'Rural' : 'Urbano' ?></td>
+											<td><?= $row['region'] ?></td>
+										<?php endif ?>
+										<td><div class="btn-group">
+				                          <div class="dropdown">
+				                            <button class="btn btn-primary btn-sm" type="button" id="accionesProducto" data-toggle="dropdown" aria-haspopup="true">
+				                              Acciones
+				                              <span class="caret"></span>
+				                            </button>
+				                            <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
+				                           	<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
+				                           		<li><a onclick="editarTitular(<?php echo $row['num_doc']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
+				                                <?php if ($row['activo'] == 1): ?>
+				                                <li data-idtitular="<?php echo $row['num_doc']; ?>" data-accion="1"><a> Estado : <input class="form-control estadoEst" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" checked></a></li>
+				                               	<?php elseif($row['activo'] == 0): ?>
+				                                <li data-idtitular="<?php echo $row['num_doc']; ?>" data-accion="0"><a> Estado : <input class="form-control estadoEst" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" ></a></li>
+				                                <?php endif ?>
+				                            <?php else: ?>
+				                                <?php if ($row['activo'] == 1): ?>
+				                                <li>
+				                                  <a><span class="fa fa-check"></span> Estado : <b>Activo</b></a>
+				                                </li>
+				                               	<?php elseif($row['activo'] == 0): ?>
+				                               	<li>
+				                                  <a></span> Estado : <b>Inactivo</b></a>
+				                                </li>
+				                                <?php endif ?>
+				                           	<?php endif ?>
+				                               <li>
+				                                <a><span class="fa fa-file-excel-o"></span> Exportar</a>
+				                               </li>
+				                            </ul>
+				                          </div>
+				                        </div>
+				                    	</td>
+									</tr>
+									<?php }
+								}
 							}
 							?>
 						</tbody>
@@ -219,6 +243,10 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 								<th>Jornada</th>
 								<th>Edad</th>
 								<th>Tipo COMP</th>
+								<?php if (isset($_GET['region'])): ?>
+									<th>Zona</th>
+									<th>Región</th>
+								<?php endif ?>
 								<th>Acciones</th>
 							</tr>
 						</tfoot>
@@ -233,7 +261,7 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
      </div>
  </div>
 
-<?php } ?>
+
 
 <!-- Ventana de formulario de exportación para la priorización -->
 <div class="modal inmodal fade" id="ventana_formulario_exportar_focalizacion" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
@@ -350,7 +378,7 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
     pageLength: 25,
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-    buttons : [{extend:'excel', title:'Titulares_semana', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8]}}],
+    buttons : [{extend:'excel', title:'Titulares_semana', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10]}}],
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',
@@ -366,7 +394,16 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
       }
     }
     }).on("draw", function(){jQuery('.estadoEst').bootstrapToggle();});
-   var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li></ul></div>';
+   var btnAcciones = '<div class="dropdown pull-right" id="">'+
+	   						'<button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span>'+
+	   						'</button>'+
+	   						'<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">'+
+		   						'<li>'+
+		   							'<a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a>'+
+		   						'</li>'+
+                        		'<li><a href="'+ $('#inputBaseUrl').val() +'/modules/titulares_derecho/index.php<?= isset($_GET['region']) ? "" : "?region=1" ?>"><i class="fa fa-eye"></i> Ver zona </a></li>'+
+		   					'</ul>'+
+	   				  '</div>';
 
   $('.containerBtn').html(btnAcciones);
 

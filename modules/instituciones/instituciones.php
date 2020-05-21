@@ -39,6 +39,10 @@
                         <tr>
     						            <th>Municipio</th>
                             <th>Institución</th>
+                            <?php if (isset($_GET['region'])): ?>
+                              <th>Zona</th>
+                              <th>Región</th>
+                            <?php endif ?>
                             <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
                             <th class="text-center">Acciones</th>
                             <?php } ?>
@@ -47,13 +51,29 @@
                       <tbody>
                           <?php
                           $periodoActual = $_SESSION['periodoActual'];
-                          $consulta = " SELECT i.id, i.nom_inst, i.codigo_inst, u.Ciudad AS ciudad, i.estado AS estadoInstitucion FROM instituciones i LEFT JOIN ubicacion u ON i.cod_mun = u.CodigoDANE ORDER BY i.nom_inst ASC ";
+                          $consulta = " SELECT 
+                                              i.id, 
+                                              i.nom_inst, 
+                                              i.codigo_inst, 
+                                              u.Ciudad AS ciudad, 
+                                              u.Region AS region, 
+                                              s.sector AS sector,
+                                              i.estado AS estadoInstitucion 
+                                        FROM instituciones i 
+                                            LEFT JOIN ubicacion u ON i.cod_mun = u.CodigoDANE 
+                                            LEFT JOIN sedes$periodoActual s ON S.cod_inst = i.codigo_inst
+                                        GROUP BY i.id
+                                        ORDER BY i.nom_inst ASC ";
                           $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                           if($resultado->num_rows >= 1){
                               while($row = $resultado->fetch_assoc()) { ?>
                                 <tr codInst="<?php echo $row["codigo_inst"]; ?>" nomInst="<?php echo $row["nom_inst"]; ?>">
                 									<td><?php echo $row["ciudad"]; ?></td>
                 									<td><?php echo $row["nom_inst"]; ?></td>
+                                  <?php if (isset($_GET['region'])): ?>
+                                    <td><?php echo $row["sector"] == 1 ? "Rural" : "Urbano"; ?></td>
+                                    <td><?php echo $row["region"]; ?></td>
+                                  <?php endif ?>
                                   <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
                                   <td class="text-center">
                                     <div class="btn-group">
@@ -183,6 +203,7 @@
                               '<li class="divider"></li>'+
                               '<li><a href="'+ $('#inputBaseUrl').val() +'/download/instituciones/Plantilla_Instituciones.csv"><i class="fa fa-download"></i> Descarga Plantilla .CSV </a></li>'+
                               '<li><a href="'+ $('#inputBaseUrl').val() +'/download/instituciones/Plantilla_Instituciones.xlsx"><i class="fa fa-download"></i> Descarga Plantilla .XLSX </a></li>'+
+                              '<li><a href="'+ $('#inputBaseUrl').val() +'/modules/instituciones/instituciones.php<?= isset($_GET['region']) ? "" : "?region=1" ?>"><i class="fa fa-eye"></i> Ver zona </a></li>'+
                             '</ul>'+
                           '</div>';
       $('.containerBtn').html(botonAcciones);
