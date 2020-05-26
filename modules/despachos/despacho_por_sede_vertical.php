@@ -14,10 +14,6 @@ $largoNombre = 28;
 $tamannoFuente = 5;
 $altoFila = 2.5;
 
-
-
-
-
 if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho'])) {
 	// Se va a recuperar el mes y el año para las tablaMesAnno
 	$mes = $_POST['despachoMesI'];
@@ -308,6 +304,8 @@ for ($k=0; $k < count($_POST) ; $k++){
 	$filas = 0;
 	$grupoAlimActual = '';
 
+
+	$tamannoFuente = 5.4;
 	for ($i=0; $i < count($alimentos ) ; $i++) {
 		$filas++;
 		$pdf->SetFont('Arial','',$tamannoFuente);
@@ -410,9 +408,43 @@ for ($k=0; $k < count($_POST) ; $k++){
 				}
 				$pdf->Cell(11,$altoFila,$aux,'R',0,'C',False);
 
+				
+				
 				// CANTIDAD ENTREGADA
 				//$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
-				$pdf->Cell(16,$altoFila,'','R',0,'C',False);
+				if($alimento['cantotalpresentacion'] > 0){
+					$aux = 0+$alimento['cantotalpresentacion'];
+					$aux = number_format($aux, 2, '.', '');
+				}
+				if ($alimento['presentacion'] == 'u') {
+					if (strpos($alimento['componente'], "HUEVO") !== FALSE) {
+						$aux = ceil(0+$alimento['cant_total']);
+						// echo $alimento['componente']."</br>";
+					} else {
+						$aux = round(0+$alimento['cant_total']);
+					}
+				} else {
+					$aux = number_format($alimento['cant_total'], 2, '.', '');
+				}
+
+				// CANTIDAD ENTREGADA
+				if( $alimento['cantu2'] > 0 || $alimento['cantu3'] > 0 || $alimento['cantu4'] > 0 || $alimento['cantu5'] > 0 ){
+					$pdf->Cell(16,$altoFila,'','R',0,'C',False);
+				}else{
+					$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
+				}
+
+
+
+
+
+
+
+
+
+
+
+				//$pdf->Cell(16,$altoFila,'','R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 	
@@ -464,12 +496,12 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$pdf->Cell(11,$altoFila,'','R',0,'C',False);
 
 				// 	CANTIDAD TOTAL
-				$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-				$pdf->Cell(11,$altoFila,$aux,'R',0,'C',False);
+				$pdf->Cell(11,$altoFila,'','R',0,'C',False);
 				
 				// CANTIDAD ENTREGADA
 				//$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
-				$pdf->Cell(16,$altoFila,'','R',0,'C',False);
+				$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+				$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 	
@@ -519,12 +551,12 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$pdf->Cell(11,$altoFila,'','R',0,'C',False);
 
 				// 	CANTIDAD TOTAL
-				$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-				$pdf->Cell(11,$altoFila,$aux,'R',0,'C',False);
+				$pdf->Cell(11,$altoFila,'','R',0,'C',False);
 				
 				// CANTIDAD ENTREGADA
-				//$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
-				$pdf->Cell(16,$altoFila,'','R',0,'C',False);
+				$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+				$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
+				//$pdf->Cell(16,$altoFila,'','R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 	
@@ -561,7 +593,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$aux = $sangria.$alimento['componente'].$presentacion;
 	
 				
-				$largoNombre = 30;
+				$largoNombre = 26;
 				$long_nombre=strlen($aux);
 				if($long_nombre > $largoNombre){
 				  $aux = substr($aux,0,$largoNombre);
@@ -574,12 +606,12 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$pdf->Cell(11,$altoFila,'','R',0,'C',False);
 
 				// 	CANTIDAD TOTAL
-				$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-				$pdf->Cell(11,$altoFila,$aux,'R',0,'C',False);
+				$pdf->Cell(11,$altoFila,'','R',0,'C',False);
 				
 				// CANTIDAD ENTREGADA
-				//$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
-				$pdf->Cell(16,$altoFila,'','R',0,'C',False);
+				$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+				$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
+				//$pdf->Cell(16,$altoFila,'','R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 	
@@ -629,12 +661,12 @@ for ($k=0; $k < count($_POST) ; $k++){
 				$pdf->Cell(11,$altoFila,'','R',0,'C',False);
 
 				// 	CANTIDAD TOTAL
-				$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-				$pdf->Cell(11,$altoFila,$aux,'R',0,'C',False);
+				$pdf->Cell(11,$altoFila,'','R',0,'C',False);
 				
 				// CANTIDAD ENTREGADA
-				//$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
-				$pdf->Cell(16,$altoFila,'','R',0,'C',False);
+				$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
+				$pdf->Cell(16,$altoFila,$aux,'R',0,'C',False);
+				//$pdf->Cell(16,$altoFila,'','R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 				$pdf->Cell(9,$altoFila,'','R',0,'C',False);
 	
@@ -700,23 +732,6 @@ for ($k=0; $k < count($_POST) ; $k++){
 		$pdf->Ln($altoFila);
 	}
 	include 'despacho_firma_planilla_vertical.php';
-
-
-
-
-
-
-
-
-
-	// $current_y = $pdf->GetY();
-	// //$pdf->Cell(0,5,$current_y,0,5,'C',False);
-	// if($current_y > 160){
-	// 	$filas = 0;
-	// 	$pdf->AddPage();
-	// 	include 'despacho_por_sede_footer_vertical.php';
-	// 	include 'despacho_por_sede_header_vertical.php';
-	// }
 }
 mysqli_close ( $Link );
 $pdf->Output();

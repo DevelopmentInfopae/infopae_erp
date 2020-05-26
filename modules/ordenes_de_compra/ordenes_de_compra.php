@@ -466,61 +466,6 @@
 
 
 
-<hr>
-				<div class="row">
-
-				  <div class="col-xs-6 flexMid">
-					<label for="seleccionarVarios">Seleccionar Todos</label>
-					<input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios">
-				  </div>
-
-					<div class="col-xs-6">
-
-							<div class="pull-right dropdown">
-
-								<!-- <button data-toggle="dropdown" class="dropdown-toggle btn-white" title="Generar Planilla">
-									<i class="fa fa-file-pdf-o"></i>
-								</button>
-								<ul class="dropdown-menu m-t-xs">
-									<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>
-									<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>
-									<li><a href="#" onclick="despachos_kardex2()">Kardex 2</a></li>
-									<li><a href="#" onclick="despachos_mixta()">Mixta</a></li>
-									<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>
-									<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>
-								</ul> -->
-
-							   <div class="dropdown pull-right" id="">
-								<button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button>
-								<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">
-								  <!-- <li><a href="#" onclick="despachos_por_sede()">Individual</a></li>
-								  <li><a href="#" onclick="despachos_kardex()">Kardex</a></li>
-								  <li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>
-								  <li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>
-								  <li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li> -->
-								  <?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-									<!-- <li>
-									  <a href="#" onclick="editar_despacho()">Editar Despacho</a>
-									</li>
-									<li>
-									  <a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a>
-									</li> -->
-								  <?php } ?>
-									<li> <a href="#" onclick="eliminar_orden()">Eliminar Orden</a> </li>
-								</ul>
-							  </div>
-
-
-							</div>
-					  </div>
-
-				</div>
-
-
-
-
-
-
 
 
 						<div class="table-responsive">
@@ -703,32 +648,23 @@
 
 	<script src="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/js/ordenes_de_compra.js?v=20200423"></script>
 	<script>
-		// $(document).ready(function(){
+		$(document).ready(function(){
 			
-		// 	var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
+			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
 			
-		// 	// Menu para COVID
-		// 	botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
 			
-		// 	botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
+			botonAcciones += '<li> <a href="#" onclick="eliminar_orden()">Eliminar Orden</a> </li>';
 			
-		// 	<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-		// 		botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';
-		// 		botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a></li>';
-		// 		botonAcciones += '<li><a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a></li>';
-		// 	botonAcciones += '<?php } ?>';
-		// 	botonAcciones += '</ul></div>';
+			
+			
+			
+		
 
-		// 	$('.containerBtn').html(botonAcciones);
+			botonAcciones += '</ul></div>';
 
-		// });
+			$('.containerBtn').html(botonAcciones);
+
+		});
 	</script>
 
 
