@@ -23,6 +23,9 @@ $(document).ready(function(){
 	// 	}
 	// });
 
+
+
+
 	cargarRegistros();
 	
 });
@@ -78,6 +81,13 @@ function cargarRegistros(){
 	bSort: false,
 	bPaginate: false,
 
+
+	buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } } ],
+	//dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+	dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+
+
+
 	oLanguage: {
 	sLengthMenu: 'Mostrando _MENU_ registros',
 	sZeroRecords: 'No se encontraron registros',
@@ -102,5 +112,5 @@ function cargarRegistros(){
 		
 	});
 
-	setTimeout(cargarRegistros,5000);
+	//setTimeout(cargarRegistros,5000);
 }

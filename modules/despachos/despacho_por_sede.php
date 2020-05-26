@@ -627,7 +627,7 @@ sort($grupo);
 	  $aux = 0+$alimento['cant_grupo1'];
 	  $aux = number_format($aux, 2, '.', '');
 	}
-	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
+	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 	$pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
 
@@ -638,7 +638,7 @@ sort($grupo);
 	  $aux = 0+$alimento['cant_grupo2'];
 	  $aux = number_format($aux, 2, '.', '');
 	}
-	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
+	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 	$pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
 	if($alimento['presentacion'] == 'u'){
@@ -649,12 +649,24 @@ sort($grupo);
 	  $aux = number_format($aux, 2, '.', '');
 	}
 
-	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
+	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 	$pdf->Cell(13.1,4,utf8_decode($aux),1,0,'C',False);
 
-
 	//UNIDAD DE MEDIDA
-	$pdf->Cell(13.141,4,$alimento['presentacion'],1,0,'C',False);
+	$aux = $alimento['presentacion'];
+	$pdf->Cell(13.141,4,$aux,1,0,'C',False);
+
+
+
+
+
+
+
+
+
+
+
+	//var_dump($alimento);
 
 
 	//$aux = number_format($aux, 2, '.', '');
@@ -668,18 +680,52 @@ sort($grupo);
 	}
 
 	if ($alimento['presentacion'] == 'u') {
-	  $aux = number_format($alimento['cant_total'], 2, '.', '');
-	  // $aux = round($alimento['cant_total']);
+		$aux = number_format($alimento['cant_total'], 2, '.', '');
+		// $aux = round($alimento['cant_total']);
 	} else {
-	  $aux = number_format($alimento['cant_total'], 2, '.', '');
+		$aux = number_format($alimento['cant_total'], 2, '.', '');
 	}
+	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5']; }
 	$pdf->Cell(13.141,4,$aux,1,0,'C',False);
+
+
+
+
+	// array (size=28)
+	// 'codigo' => string '0308004' (length=7)
+	// 'cant_total' => float 268.0444214
+	// 'cant_grupo1' => null
+	// 'cant_grupo2' => string '268.04442140' (length=12)
+	// 'cant_grupo3' => null
+	// 'grupo_alim' => string 'Contramuestra' (length=13)
+	// 'componente' => string 'HUEVO DE GALLINA CONTRAMUESTRA x 56 g' (length=37)
+	// 'presentacion' => string 'u' (length=1)
+	// 'cantidadpresentacion' => string '0.01785714' (length=10)
+	// 'orden_grupo_alim' => string '12' (length=2)
+	// 'cantu2' => string '0.00000000' (length=10)
+	// 'cantu3' => string '0.00000000' (length=10)
+	// 'cantu4' => string '0.00000000' (length=10)
+	// 'cantu5' => string '0.00000000' (length=10)
+	// 'cantotalpresentacion' => string '0.00000000' (length=10)
+	// 'cantidadund2' => string '1.00000000' (length=10)
+	// 'cantidadund3' => string '0.00000000' (length=10)
+	// 'cantidadund4' => string '0.00000000' (length=10)
+	// 'cantidadund5' => string '0.00000000' (length=10)
+	// 'nombreunidad2' => string 'u' (length=1)
+	// 'nombreunidad3' => string '' (length=0)
+	// 'nombreunidad4' => string '' (length=0)
+	// 'nombreunidad5' => string '' (length=0)
+	// 'D1' => int 0
+	// 'D2' => int 0
+	// 'D3' => int 0
+	// 'D4' => int 0
+	// 'D5' => int 0
 	//total requerido
 
 
 	if($alimento['cantotalpresentacion'] > 0){
-	  $aux = 0+$alimento['cantotalpresentacion'];
-	  $aux = number_format($aux, 2, '.', '');
+		$aux = 0+$alimento['cantotalpresentacion'];
+		$aux = number_format($aux, 2, '.', '');
 	}
 
 	if($alimento['cantu2'] <= 0 && $alimento['cantu3'] <= 0 && $alimento['cantu4'] <= 0 && $alimento['cantu5'] <= 0){}
@@ -723,11 +769,22 @@ if ($alimento['presentacion'] == 'u') {
 
 
 	// CANTIDAD ENTREGADA
-	if( $alimento['cantu2'] > 0 || $alimento['cantu3'] > 0 || $alimento['cantu4'] > 0 || $alimento['cantu5'] > 0 ){
-		$pdf->Cell(10.7,4,'',1,0,'C',False);
-	}else{
-		$pdf->Cell(10.7,4,$aux,1,0,'C',False);
-	}
+	if( $alimento['cantu2'] > 0 || $alimento['cantu3'] > 0 || $alimento['cantu4'] > 0 || $alimento['cantu5'] > 0 ){ $aux = ""; }
+	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5']; }
+	$pdf->Cell(10.7,4,$aux,1,0,'C',False);
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	//total entregado
 	$pdf->Cell(10.6,4,'',1,0,'C',False);
