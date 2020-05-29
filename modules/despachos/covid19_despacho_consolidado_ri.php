@@ -339,8 +339,9 @@ class PDF extends PDF_PageGroup{
 		$this->Cell(35,4,utf8_decode("Nombre legible de quien entrega:"),0,0,'L',False);
 		$this->Cell(65,4,utf8_decode(""),'B',0,'C',False);
 		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
-		$this->Cell(35,4,utf8_decode("Nombre legible de quien entrega:"),0,0,'L',False);
-		$this->Cell(96,4,utf8_decode(""),'B',0,'C',False);
+		// $this->Cell(35,4,utf8_decode("Nombre Legible Rector o Representante CAE:"),0,0,'L',False);
+		$this->Cell(48,4,utf8_decode("Nombre Legible Rector o Representante CAE:"),0,0,'L',False);
+		$this->Cell(83,4,utf8_decode(""),'B',0,'C',False);
 		
 		$this->Ln(7);
 		$this->Cell(18,4,utf8_decode("Cargo / función:"),0,0,'L',False);
