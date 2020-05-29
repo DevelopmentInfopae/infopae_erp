@@ -196,7 +196,7 @@ $pdf->Cell(17,17,'','TBL',0,'C',False);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+5);
-$pdf->MultiCell(17,2,utf8_decode("FECHA DE ENTREGA DE LA RACIÓN PARA PREPARAR EN CASA\n(DD/MM/AAAA)"),0,'C',false);
+$pdf->MultiCell(17,2,utf8_decode("FECHA DE ENTREGA DE LA RACIÓN INDUSTRIALIZADA\n(DD/MM/AAAA)"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(17,17,'','TBL',0,'C',False);
 
@@ -230,14 +230,31 @@ $pdf->Cell(94,3,utf8_decode('CONTROL DE ENTREGA'),'B',0,'C',False);
 $anchoCeldaAlimento = 19;
 $tamannoFuente = 4;
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->SetXY($current_x, $current_y+7);
+
+$pdf->SetXY($current_x, $current_y+3);
+$pdf->Cell($anchoCeldaAlimento,3,utf8_decode('CICLO SEMANA 1'),'B',0,'C',False);
+$pdf->SetXY($current_x, $current_y+9);
 $pdf->MultiCell($anchoCeldaAlimento,2,utf8_decode("CANTIDAD DE RACIONES ENTREGADAS"),0,'C',false);
-$pdf->SetXY($current_x+19, $current_y+7);
+
+
+$pdf->SetXY($current_x+19, $current_y+3);
+$pdf->Cell($anchoCeldaAlimento,3,utf8_decode('CICLO SEMANA 2'),'B',0,'C',False);
+$pdf->SetXY($current_x+19, $current_y+9);
 $pdf->MultiCell($anchoCeldaAlimento,2,utf8_decode("CANTIDAD DE RACIONES ENTREGADAS"),0,'C',false);
-$pdf->SetXY($current_x+19+19, $current_y+7);
+
+
+$pdf->SetXY($current_x+19+19, $current_y+3);
+$pdf->Cell($anchoCeldaAlimento,3,utf8_decode('CICLO SEMANA 3'),'B',0,'C',False);
+$pdf->SetXY($current_x+19+19, $current_y+9);
 $pdf->MultiCell($anchoCeldaAlimento,2,utf8_decode("CANTIDAD DE RACIONES ENTREGADAS"),0,'C',false);
-$pdf->SetXY($current_x+19+19+19, $current_y+7);
+
+
+$pdf->SetXY($current_x+19+19+19, $current_y+3);
+$pdf->Cell($anchoCeldaAlimento,3,utf8_decode('CICLO SEMANA 4'),'B',0,'C',False);
+$pdf->SetXY($current_x+19+19+19, $current_y+9);
 $pdf->MultiCell($anchoCeldaAlimento,2,utf8_decode("CANTIDAD DE RACIONES ENTREGADAS"),0,'C',false);
+
+
 $pdf->SetXY($current_x+19+19+19+19, $current_y+8);
 $pdf->MultiCell(18,2,utf8_decode("TOTAL RACIONES ENTREGADAS"),0,'C',false);
 
@@ -267,21 +284,21 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+8);
-$pdf->MultiCell(46,2,utf8_decode("NOMBRE COMPLETO DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA (PADRE, MADRE, ACUDIENTE)"),0,'C',false);
+$pdf->MultiCell(46,2,utf8_decode("NOMBRE COMPLETO DE QUIEN RECIBE LA RACIÓN INDUSTRIALIZADA (PADRE, MADRE, ACUDIENTE)"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(46,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+7);
-$pdf->MultiCell(28,2,utf8_decode("Nº IDENTIFICACIÓN DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
+$pdf->MultiCell(28,2,utf8_decode("Nº IDENTIFICACIÓN DE QUIEN RECIBE LA RACIÓN INDUSTRIALIZADA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(28,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+6);
-$pdf->MultiCell(22,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
+$pdf->MultiCell(22,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN INDUSTRIALIZADA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(22,17,'','TBL',0,'C',False);
 
