@@ -719,6 +719,7 @@
 			botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
 
 			// Menu para COVID
+			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()">Entrega Raciones COVID-19 RI</a></li>';
 			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
 
 			botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
