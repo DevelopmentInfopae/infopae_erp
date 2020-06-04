@@ -7,7 +7,7 @@
 // var_dump($semanas);
 // var_dump($tipoComplemento);
 
-$consulta = " SELECT CONCAT(f.ape1, \" \", f.ape2, \" \",f.nom1, \" \", f.nom2) AS nombre, f.num_doc, f.cod_grado, f.nom_acudiente, f.doc_acudiente, f.tel_acudiente
+$consulta = " SELECT CONCAT(f.ape1, \" \", f.ape2, \" \",f.nom1, \" \", f.nom2) AS nombre, f.num_doc, f.cod_grado, f.nom_grupo, f.nom_acudiente, f.doc_acudiente, f.tel_acudiente
 
 
 FROM focalizacion$semanas[0] f WHERE f.cod_sede = $sede_unica AND f.Tipo_complemento = \"$tipoComplemento\" ORDER BY f.ape1  ASC ";
@@ -61,10 +61,10 @@ if($resultado->num_rows >= 1){
 			$media = $row['cod_grado'];
 		}
 
-		$pdf->Cell(3.25,$altoFila,utf8_decode($prescolar),'BL',0,'C',False);
-		$pdf->Cell(3.25,$altoFila,utf8_decode($primaria),'BL',0,'C',False);
-		$pdf->Cell(3.25,$altoFila,utf8_decode($basica),'BL',0,'C',False);
-		$pdf->Cell(3.25,$altoFila,utf8_decode($media),'BL',0,'C',False);
+		$pdf->Cell(6.50,$altoFila,utf8_decode($row['cod_grado']),'BL',0,'C',False);
+		$pdf->Cell(6.50,$altoFila,utf8_decode($row['nom_grupo']),'BL',0,'C',False);
+		// $pdf->Cell(3.25,$altoFila,utf8_decode($basica),'BL',0,'C',False);
+		// $pdf->Cell(3.25,$altoFila,utf8_decode($media),'BL',0,'C',False);
 
 
         //var_dump($alimentosTotales);

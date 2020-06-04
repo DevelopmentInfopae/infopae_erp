@@ -751,10 +751,10 @@ foreach ($sede_unicas as $key => $sede_unica){
 		$pdf->Cell(42,$altoFila,'','BL',0,'L',False);
 		$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
 		$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
-		$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
-		$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
-		$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
-		$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+		$pdf->Cell(6.50,$altoFila,'','BL',0,'C',False);
+		$pdf->Cell(6.50,$altoFila,'','BL',0,'C',False);
+		// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+		// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
 
 
 

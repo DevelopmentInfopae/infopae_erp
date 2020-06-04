@@ -6,6 +6,7 @@ $titulo = "Registro De Novedades - Repitentes Y/O Suplentes Del Programa De Alim
 
 
 
+
 $tamannoFuente = 6;
 $pdf->SetFont('Arial','',$tamannoFuente);
 $nomSede = $nomSedes[$sede_unica];
@@ -194,7 +195,7 @@ $pdf->Cell(17,17,'','TBL',0,'C',False);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+5);
-$pdf->MultiCell(17,2,utf8_decode("FECHA DE ENTREGA DE LA RACIÓN PARA PREPARAR EN CASA\n(DD/MM/AAAA)"),0,'C',false);
+$pdf->MultiCell(17,2,utf8_decode("FECHA DE ENTREGA DE LA RACIÓN INDUSTRIALIZADA\n(DD/MM/AAAA)"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(17,17,'','TBL',0,'C',False);
 
@@ -208,13 +209,14 @@ $pdf->SetXY($current_x, $current_y+3);
 // $pdf->Rotate_text($current_x+3+2.5, $current_y+3+11.5+4, utf8_decode("PRIMARIA"), 90);
 // $pdf->Rotate_text($current_x+3+3+2.7, $current_y+3+10.5+4, utf8_decode("BASICA"), 90);
 // $pdf->Rotate_text($current_x+3+3+3+2.8, $current_y+3+10+4, utf8_decode("MEDIA"), 90);
-$pdf->Rotate_text($current_x+2.125, $current_y+3+12.4, utf8_decode("PREESCOLAR"), 90);
-$pdf->Rotate_text($current_x+3+2.5, $current_y+3+11, utf8_decode("PRIMARIA"), 90);
-$pdf->Rotate_text($current_x+3+3+2.7, $current_y+3+10, utf8_decode("BASICA"), 90);
-$pdf->Rotate_text($current_x+3+3+3+2.8, $current_y+3+9.5, utf8_decode("MEDIA"), 90);
-$pdf->Cell(3.25,14,'','R',0,'C',False);
-$pdf->Cell(3.25,14,'','R',0,'C',False);
-$pdf->Cell(3.25,14,'','R',0,'C',False);
+$pdf->Rotate_text($current_x+3.8, $current_y+3+10, utf8_decode("GRADO"), 90);
+// $pdf->Rotate_text($current_x+3+2.5, $current_y+3+11, utf8_decode("PRIMARIA"), 90);
+$pdf->Rotate_text($current_x+10.3, $current_y+3+10, utf8_decode("GRUPO"), 90);
+// $pdf->Rotate_text($current_x+3+3+3+2.8, $current_y+3+9.5, utf8_decode("MEDIA"), 90);
+
+//$pdf->Cell(3.25,14,'','R',0,'C',False);
+$pdf->Cell(6.50,14,'','R',0,'C',False);
+// $pdf->Cell(3.25,14,'','R',0,'C',False);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(13,17,'','TBL',0,'C',False);
 
@@ -282,21 +284,21 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+8);
-$pdf->MultiCell(46,2,utf8_decode("NOMBRE COMPLETO DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA (PADRE, MADRE, ACUDIENTE)"),0,'C',false);
+$pdf->MultiCell(46,2,utf8_decode("NOMBRE COMPLETO DE QUIEN RECIBE LA RACIÓN INDUSTRIALIZADA (PADRE, MADRE, ACUDIENTE)"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(46,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+7);
-$pdf->MultiCell(28,2,utf8_decode("Nº IDENTIFICACIÓN DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
+$pdf->MultiCell(28,2,utf8_decode("Nº IDENTIFICACIÓN DE QUIEN RECIBE LA RACIÓN INDUSTRIALIZADA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(28,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+6);
-$pdf->MultiCell(22,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
+$pdf->MultiCell(22,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN INDUSTRIALIZADA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(22,17,'','TBL',0,'C',False);
 
