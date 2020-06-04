@@ -210,13 +210,14 @@ $pdf->SetXY($current_x, $current_y+3);
 // $pdf->Rotate_text($current_x+3+2.5, $current_y+3+11.5+4, utf8_decode("PRIMARIA"), 90);
 // $pdf->Rotate_text($current_x+3+3+2.7, $current_y+3+10.5+4, utf8_decode("BASICA"), 90);
 // $pdf->Rotate_text($current_x+3+3+3+2.8, $current_y+3+10+4, utf8_decode("MEDIA"), 90);
-$pdf->Rotate_text($current_x+2.125, $current_y+3+12.4, utf8_decode("PREESCOLAR"), 90);
-$pdf->Rotate_text($current_x+3+2.5, $current_y+3+11, utf8_decode("PRIMARIA"), 90);
-$pdf->Rotate_text($current_x+3+3+2.7, $current_y+3+10, utf8_decode("BASICA"), 90);
-$pdf->Rotate_text($current_x+3+3+3+2.8, $current_y+3+9.5, utf8_decode("MEDIA"), 90);
-$pdf->Cell(3.25,14,'','R',0,'C',False);
-$pdf->Cell(3.25,14,'','R',0,'C',False);
-$pdf->Cell(3.25,14,'','R',0,'C',False);
+$pdf->Rotate_text($current_x+3.8, $current_y+3+10, utf8_decode("GRADO"), 90);
+// $pdf->Rotate_text($current_x+3+2.5, $current_y+3+11, utf8_decode("PRIMARIA"), 90);
+$pdf->Rotate_text($current_x+10.3, $current_y+3+10, utf8_decode("GRUPO"), 90);
+// $pdf->Rotate_text($current_x+3+3+3+2.8, $current_y+3+9.5, utf8_decode("MEDIA"), 90);
+
+//$pdf->Cell(3.25,14,'','R',0,'C',False);
+$pdf->Cell(6.50,14,'','R',0,'C',False);
+// $pdf->Cell(3.25,14,'','R',0,'C',False);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(13,17,'','TBL',0,'C',False);
 
