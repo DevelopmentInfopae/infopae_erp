@@ -7,10 +7,7 @@
 // var_dump($semanas);
 // var_dump($tipoComplemento);
 
-$consulta = " SELECT CONCAT(f.ape1, \" \", f.ape2, \" \",f.nom1, \" \", f.nom2) AS nombre, f.num_doc, f.cod_grado, f.nom_grupo, f.nom_acudiente, f.doc_acudiente, f.tel_acudiente
-
-
-FROM focalizacion$semanas[0] f WHERE f.cod_sede = $sede_unica AND f.Tipo_complemento = \"$tipoComplemento\" ORDER BY f.ape1  ASC ";
+$consulta = " SELECT CONCAT(f.ape1, \" \", f.ape2, \" \",f.nom1, \" \", f.nom2) AS nombre, f.num_doc, f.cod_grado, f.nom_grupo, f.nom_acudiente, f.doc_acudiente, f.tel_acudiente FROM focalizacion$semanas[0] f WHERE f.cod_sede = $sede_unica AND f.Tipo_complemento = \"$tipoComplemento\" ORDER BY f.cod_grado ASC, f.nom_grupo ASC, f.ape1 ASC ";
 
 
 
@@ -26,7 +23,15 @@ if($resultado->num_rows >= 1){
 	$totalEstudiantes = $resultado->num_rows;
 	$estudianteIndice=1;
 	//for ($estudianteIndice=1; $estudianteIndice < 98; $estudianteIndice++) { $row = $resultado->fetch_assoc();
+	$auxGradoActual = "";
 	while($row = $resultado->fetch_assoc()){
+
+		if($auxGradoActual == ""){
+			$auxGradoActual = $row['cod_grado'];
+		}else if($auxGradoActual != $row['cod_grado']){
+			$auxGradoActual = $row['cod_grado'];
+			$filaActual = 1;
+		}
 
 		if($filaActual == 1){
 			$pdf->AddPage();
