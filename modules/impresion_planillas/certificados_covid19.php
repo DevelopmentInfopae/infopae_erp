@@ -92,9 +92,6 @@
 						?>
 					</select>
 				</div><!-- /.col -->
-
-			</div><!-- /.row -->
-			<div class="row">
 			  <div class="col-sm-4 form-group">
 				<label for="fechaInicial">Mes</label>
 				<?php
@@ -120,6 +117,9 @@
 				<input type="hidden" name="mesConsulta" id="mesConsulta" value="<?php if (isset($_GET['pb_mes'])) { echo $_GET['pb_mes']; } ?>">
 			  </div><!-- /col -->
 
+			</div><!-- /.row -->
+			<div class="row">
+
 			  <div class="col-sm-4 form-group">
 				<label for="semana_inicial">Semana Inicial</label>
 				<select class="form-control" name="semana_inicial" id="semana_inicial" required>
@@ -137,6 +137,20 @@
 				<input type="hidden" name="diaInicialSemanaFinal" id="diaInicialSemanaFinal">
 				<input type="hidden" name="diaFinalSemanaFinal" id="diaFinalSemanaFinal">
 			  </div>
+
+
+
+
+			  <div class="col-sm-4   form-group">
+				<label for="semana_final">Imprimir nombre del mes</label>
+				<div>
+					<input type="checkbox" name="imprimirMes" id="imprimirMes">
+				</div>
+			  </div>
+
+
+
+
 			</div><!-- /.row -->
 
 			<div class="row">

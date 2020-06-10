@@ -63,11 +63,43 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(32,5,utf8_decode('FECHA EJECUCIÓN:'),'R',0,'L',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(15,5,'Desde:','R',0,'L',false);
-$pdf->Cell(40,5,utf8_decode($fechas[0]["DIA"]." de ".mesNombre($fechas[0]["MES"])." ". $fechas[0]["ANO"]),'R',0,'L',false);
+
+
+
+
+
+$aux = $fechas[0]["DIA"]." de ".mesNombre($fechas[0]["MES"])." ". $fechas[0]["ANO"];
+$aux = "";
+
+
+$pdf->Cell(40,5,utf8_decode($aux),'R',0,'L',false);
 $pdf->Cell(15,5,'Hasta:','R',0,'L',false);
-$pdf->Cell(32,5,utf8_decode($fechas[1]["DIA"]." de ".mesNombre($fechas[1]["MES"])." ". $fechas[1]["ANO"]),'R',0,'L',false);
+
+$aux = $fechas[1]["DIA"]." de ".mesNombre($fechas[1]["MES"])." ". $fechas[1]["ANO"];
+$aux = "";
+
+
+$pdf->Cell(32,5,utf8_decode($aux),'R',0,'L',false);
+
+
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(25,5,utf8_decode('MES:'),'R',0,'L',false);
+$pdf->SetFont('Arial','',$tamannoFuente);
+$aux = mb_strtoupper($mesLetras);
+$pdf->Cell(38,5,$aux,0,0,'L',false);
+
+
+
 $pdf->SetX($x);
 $pdf->Cell(0,5,'','B',5,'C',false);
+
+
+
+
+
+
+
+
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(32,5,utf8_decode('NOMBRE RECTOR:'),'R',0,'L',false);
