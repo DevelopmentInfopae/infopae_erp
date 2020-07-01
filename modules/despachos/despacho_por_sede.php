@@ -13,6 +13,7 @@
   $sangria = " * ";
   $largoNombre = 30;
   $tamannoFuente = 6;
+  $totalBeneficiarios = 0;
 
   if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho'])) {
 	// Se va a recuperar el mes y el año para las tablaMesAnno
@@ -679,13 +680,23 @@ sort($grupo);
 	  // $aux = '';
 	}
 
+ 
+	//var_dump($alimento);
+
 	if ($alimento['presentacion'] == 'u') {
 		$aux = number_format($alimento['cant_total'], 2, '.', '');
 		// $aux = round($alimento['cant_total']);
 	} else {
 		$aux = number_format($alimento['cant_total'], 2, '.', '');
 	}
-	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5']; }
+
+	//TOTAL REQ
+
+	if($alimento['grupo_alim'] == "Contramuestra"){ 
+		//$aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5']; 
+		$aux = $aux / $totalBeneficiarios;
+		$aux = number_format($aux, 2, '.', '');
+	}
 	$pdf->Cell(13.141,4,$aux,1,0,'C',False);
 
 
@@ -735,18 +746,32 @@ sort($grupo);
 
 // var_dump($modalidad);
 
-if ($alimento['presentacion'] == 'u') {
-  if (strpos($alimento['componente'], "HUEVO") !== FALSE) {
-	$aux = ceil(0+$alimento['cant_total']);
-	// echo $alimento['componente']."</br>";
-  } else {
-	$aux = round(0+$alimento['cant_total']);
-  }
-} else {
-  $aux = number_format($alimento['cant_total'], 2, '.', '');
-  // $aux = number_format($aux, 0, '.', '');
+
+
+
+$aux = number_format($alimento['cant_total'], 2, '.', '');
+if($alimento['grupo_alim'] == "Contramuestra"){ 
+	//$aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5'];
+	$aux = $aux / $totalBeneficiarios;
+	//$aux = number_format($aux, 2, '.', '');
 }
 
+
+
+
+
+
+
+
+if ($alimento['presentacion'] == 'u') {
+  if (strpos($alimento['componente'], "HUEVO") !== FALSE) {
+	$aux = ceil(0+$aux);
+	// echo $alimento['componente']."</br>";
+  } else {
+	$aux = round(0+$aux);
+  }
+}
+$aux = number_format($aux, 2, '.', '');
 
 // // CANTIDAD ENTREGADA
 //     $pdf->Cell(10,4,$aux,1,0,'C',False);
@@ -769,8 +794,10 @@ if ($alimento['presentacion'] == 'u') {
 
 
 	// CANTIDAD ENTREGADA
+	// CANTIDAD ENTREGADA TOTAL
 	if( $alimento['cantu2'] > 0 || $alimento['cantu3'] > 0 || $alimento['cantu4'] > 0 || $alimento['cantu5'] > 0 ){ $aux = ""; }
-	if($alimento['grupo_alim'] == "Contramuestra"){ $aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5']; }
+	
+
 	$pdf->Cell(10.7,4,$aux,1,0,'C',False);
 
 
