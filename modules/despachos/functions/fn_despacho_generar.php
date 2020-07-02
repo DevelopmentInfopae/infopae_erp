@@ -898,6 +898,14 @@ foreach ($variaciones as $id => $variacion) {
 			$fecha = date("Y-m-d H:i:s");
 
 
+
+			//var_dump($complementosCantidades);
+
+
+
+
+
+
 			for ($i=0; $i < count($sedes); $i++){
 				$bodegaDestino = $sedes[$i];
 				$consecutivo = $consecutivos[$i];
@@ -952,7 +960,49 @@ foreach ($variaciones as $id => $variacion) {
 					$t1 = $auxAlimento["grupo1"] * $sede["grupo1"];
 					$t2 = $auxAlimento["grupo2"] * $sede["grupo2"];
 					$t3 = $auxAlimento["grupo3"] * $sede["grupo3"];
+					// Inicio ajuste contramuestra
+					if($auxAlimento["grupo_alim"] == "Contramuestra"){
+
+						if($sede["grupo1"] > $sede["grupo2"] && $sede["grupo1"] > $sede["grupo3"]){
+							if($auxAlimento["grupo1"] > 0){
+								$t1 = $auxAlimento["grupo1"];
+							} 
+							if($auxAlimento["grupo2"] > 0){
+								$t1 = $auxAlimento["grupo2"];
+							} 
+							if($auxAlimento["grupo3"] > 0){
+								$t1 = $auxAlimento["grupo3"];
+							} 
+						}
+
+						if($sede["grupo2"] > $sede["grupo1"] && $sede["grupo2"] > $sede["grupo3"]){
+							if($auxAlimento["grupo1"] > 0){
+								$t2 = $auxAlimento["grupo1"];
+							} 
+							if($auxAlimento["grupo2"] > 0){
+								$t2 = $auxAlimento["grupo2"];
+							} 
+							if($auxAlimento["grupo3"] > 0){
+								$t2 = $auxAlimento["grupo3"];
+							} 
+						}
+
+						if($sede["grupo3"] > $sede["grupo1"] && $sede["grupo3"] > $sede["grupo2"]){
+							if($auxAlimento["grupo1"] > 0){
+								$t3 = $auxAlimento["grupo1"];
+							} 
+							if($auxAlimento["grupo2"] > 0){
+								$t3 = $auxAlimento["grupo2"];
+							} 
+							if($auxAlimento["grupo3"] > 0){
+								$t3 = $auxAlimento["grupo3"];
+							} 
+						}
+
+					}
+					// Termina ajuste contramuestra
 					$cantidad = $t1 + $t2 + $t3;
+
 
 
 
@@ -1091,97 +1141,188 @@ foreach ($variaciones as $id => $variacion) {
 					if($j > 0 &&( ($auxAlimento['grupo1']>0 && $sede["grupo1"]>0) || ($auxAlimento['grupo2']>0 && $sede["grupo2"]>0) || ($auxAlimento['grupo3']>0  && $sede["grupo3"]>0) ) ){
 						//  $consulta = $consulta." , ";
 					}
-					if($auxAlimento['grupo1']>0 && $sede["grupo1"]>0){
-						if($banderaPrimero == 0){
-							$banderaPrimero++;
-						}else{
-							$consulta = $consulta." , ";
+
+
+
+
+
+					if($auxAlimento["grupo_alim"] == "Contramuestra"){
+
+						if($sede["grupo1"] > $sede["grupo2"] && $sede["grupo1"] > $sede["grupo3"]){
+							$idGrupoEtario = 1;
+							if($auxAlimento["grupo1"] > 0){
+								$t1 = $auxAlimento["grupo1"];
+								$idGrupoAlimento = 1;
+							} 
+							if($auxAlimento["grupo2"] > 0){
+								$t1 = $auxAlimento["grupo2"];
+								$idGrupoAlimento = 2;
+							} 
+							if($auxAlimento["grupo3"] > 0){
+								$t1 = $auxAlimento["grupo3"];
+								$idGrupoAlimento = 3;
+							} 
 						}
-						$gruposRegistrar++;
-						$idGrupoEtario = 1;
-						$consulta = $consulta." ( ";
-						$codigo = $auxAlimento['codigo'];
-						$componente = $auxAlimento['Componente'];
 						
-						$cantidad = $auxAlimento["grupo1"] * $sede["grupo1"];
+						else if($sede["grupo2"] > $sede["grupo1"] && $sede["grupo2"] > $sede["grupo3"]){
+							$idGrupoEtario = 2;
+							if($auxAlimento["grupo1"] > 0){
+								$t2 = $auxAlimento["grupo1"];
+								$idGrupoAlimento = 1;
+							} 
+							if($auxAlimento["grupo2"] > 0){
+								$t2 = $auxAlimento["grupo2"];
+								$idGrupoAlimento = 2;
+							} 
+							if($auxAlimento["grupo3"] > 0){
+								$t2 = $auxAlimento["grupo3"];
+								$idGrupoAlimento = 3;
+							} 
+						}
+						
+						else if($sede["grupo3"] > $sede["grupo1"] && $sede["grupo3"] > $sede["grupo2"]){
+							$idGrupoEtario = 3;
+							if($auxAlimento["grupo1"] > 0){
+								$t3 = $auxAlimento["grupo1"];
+								$idGrupoAlimento = 1;
+							} 
+							if($auxAlimento["grupo2"] > 0){
+								$t3 = $auxAlimento["grupo2"];
+								$idGrupoAlimento = 2;
+							} 
+							if($auxAlimento["grupo3"] > 0){
+								$t3 = $auxAlimento["grupo3"];
+								$idGrupoAlimento = 3;
+							} 
+						}
 
-
-
-						$unidad = $auxAlimento['unidadMedida'];
-						$consecutivo = $consecutivos[$i];
-						$d1 = $auxAlimento["grupo1_d1"] * $sede["grupo1"];
-						$d2 = $auxAlimento["grupo1_d2"] * $sede["grupo1"];
-						$d3 = $auxAlimento["grupo1_d3"] * $sede["grupo1"];
-						$d4 = $auxAlimento["grupo1_d4"] * $sede["grupo1"];
-						$d5 = $auxAlimento["grupo1_d5"] * $sede["grupo1"];
-
-
-		
-
-
-
-						$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
-						$consulta = $consulta." ) ";
-					}
-					if($auxAlimento['grupo2']>0 && $sede["grupo2"]>0){
 						if($banderaPrimero == 0){
 							$banderaPrimero++;
 						}else{
 							$consulta = $consulta." , ";
 						}
 						$gruposRegistrar++;
-						$idGrupoEtario = 2;
 						$consulta = $consulta." ( ";
 						$codigo = $auxAlimento['codigo'];
 						$componente = $auxAlimento['Componente'];
-						//$cantidad = $auxAlimento['grupo2']*$auxAlimento['cantidad'];
-						$cantidad = $auxAlimento["grupo2"] * $sede["grupo2"];
-
-
-
+						$cantidad = $auxAlimento["grupo$idGrupoAlimento"];
 						$unidad = $auxAlimento['unidadMedida'];
 						$consecutivo = $consecutivos[$i];
-						$d1 = $auxAlimento["grupo2_d1"] * $sede["grupo2"];
-						$d2 = $auxAlimento["grupo2_d2"] * $sede["grupo2"];
-						$d3 = $auxAlimento["grupo2_d3"] * $sede["grupo2"];
-						$d4 = $auxAlimento["grupo2_d4"] * $sede["grupo2"];
-						$d5 = $auxAlimento["grupo2_d5"] * $sede["grupo2"];
-
-
-
+						$d1 = $auxAlimento["grupo".$idGrupoAlimento."_d1"];
+						$d2 = $auxAlimento["grupo".$idGrupoAlimento."_d2"];
+						$d3 = $auxAlimento["grupo".$idGrupoAlimento."_d3"];
+						$d4 = $auxAlimento["grupo".$idGrupoAlimento."_d4"];
+						$d5 = $auxAlimento["grupo".$idGrupoAlimento."_d5"];
 						$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
 						$consulta = $consulta." ) ";
-					}
-					if($auxAlimento['grupo3']>0  && $sede["grupo3"]>0){
-						//$consulta = $consulta."<br><br>j = $j y i = $i<br><br>";
-						if($banderaPrimero == 0){
-							$banderaPrimero++;
-						}else{
-							$consulta = $consulta." , ";
-						}
-						$gruposRegistrar++;
-						$idGrupoEtario = 3;
-						$consulta = $consulta." ( ";
-						$codigo = $auxAlimento['codigo'];
-						$componente = $auxAlimento['Componente'];
-						//$cantidad = $auxAlimento['grupo3']*$auxAlimento['cantidad'];
-						$cantidad = $auxAlimento["grupo3"] * $sede["grupo3"];
-
+					}else{
+						if($auxAlimento['grupo1']>0 && $sede["grupo1"]>0){
+							if($banderaPrimero == 0){
+								$banderaPrimero++;
+							}else{
+								$consulta = $consulta." , ";
+							}
+							$gruposRegistrar++;
+							$idGrupoEtario = 1;
+							$consulta = $consulta." ( ";
+							$codigo = $auxAlimento['codigo'];
+							$componente = $auxAlimento['Componente'];
+							
+							$cantidad = $auxAlimento["grupo1"] * $sede["grupo1"];
 	
+	
+	
+							$unidad = $auxAlimento['unidadMedida'];
+							$consecutivo = $consecutivos[$i];
+							$d1 = $auxAlimento["grupo1_d1"] * $sede["grupo1"];
+							$d2 = $auxAlimento["grupo1_d2"] * $sede["grupo1"];
+							$d3 = $auxAlimento["grupo1_d3"] * $sede["grupo1"];
+							$d4 = $auxAlimento["grupo1_d4"] * $sede["grupo1"];
+							$d5 = $auxAlimento["grupo1_d5"] * $sede["grupo1"];
+	
+	
+			
+	
+	
+	
+							$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
+							$consulta = $consulta." ) ";
+						}
+	
+						if($auxAlimento['grupo2']>0 && $sede["grupo2"]>0){
+							if($banderaPrimero == 0){
+								$banderaPrimero++;
+							}else{
+								$consulta = $consulta." , ";
+							}
+							$gruposRegistrar++;
+							$idGrupoEtario = 2;
+							$consulta = $consulta." ( ";
+							$codigo = $auxAlimento['codigo'];
+							$componente = $auxAlimento['Componente'];
+							//$cantidad = $auxAlimento['grupo2']*$auxAlimento['cantidad'];
+							$cantidad = $auxAlimento["grupo2"] * $sede["grupo2"];
+	
+	
+	
+							$unidad = $auxAlimento['unidadMedida'];
+							$consecutivo = $consecutivos[$i];
+							$d1 = $auxAlimento["grupo2_d1"] * $sede["grupo2"];
+							$d2 = $auxAlimento["grupo2_d2"] * $sede["grupo2"];
+							$d3 = $auxAlimento["grupo2_d3"] * $sede["grupo2"];
+							$d4 = $auxAlimento["grupo2_d4"] * $sede["grupo2"];
+							$d5 = $auxAlimento["grupo2_d5"] * $sede["grupo2"];
+	
+	
+	
+							$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
+							$consulta = $consulta." ) ";
+						}
+						if($auxAlimento['grupo3']>0  && $sede["grupo3"]>0){
+							//$consulta = $consulta."<br><br>j = $j y i = $i<br><br>";
+							if($banderaPrimero == 0){
+								$banderaPrimero++;
+							}else{
+								$consulta = $consulta." , ";
+							}
+							$gruposRegistrar++;
+							$idGrupoEtario = 3;
+							$consulta = $consulta." ( ";
+							$codigo = $auxAlimento['codigo'];
+							$componente = $auxAlimento['Componente'];
+							//$cantidad = $auxAlimento['grupo3']*$auxAlimento['cantidad'];
+							$cantidad = $auxAlimento["grupo3"] * $sede["grupo3"];
+	
+		
+	
+							$unidad = $auxAlimento['unidadMedida'];
+							$consecutivo = $consecutivos[$i];
+							$d1 = $auxAlimento["grupo3_d1"] * $sede["grupo3"];
+							$d2 = $auxAlimento["grupo3_d2"] * $sede["grupo3"];
+							$d3 = $auxAlimento["grupo3_d3"] * $sede["grupo3"];
+							$d4 = $auxAlimento["grupo3_d4"] * $sede["grupo3"];
+							$d5 = $auxAlimento["grupo3_d5"] * $sede["grupo3"];
+	
+	
+	
+							$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
+							$consulta = $consulta." ) ";
+						}
 
-						$unidad = $auxAlimento['unidadMedida'];
-						$consecutivo = $consecutivos[$i];
-						$d1 = $auxAlimento["grupo3_d1"] * $sede["grupo3"];
-						$d2 = $auxAlimento["grupo3_d2"] * $sede["grupo3"];
-						$d3 = $auxAlimento["grupo3_d3"] * $sede["grupo3"];
-						$d4 = $auxAlimento["grupo3_d4"] * $sede["grupo3"];
-						$d5 = $auxAlimento["grupo3_d5"] * $sede["grupo3"];
-
-
-
-						$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
-						$consulta = $consulta." ) ";
 					}
+
+
+
+
+
+
+
+
+
+
+
+
+
 				}// Termina el for de los alimentos
 			}
 			//echo "<br>CONSULTA DE DESPACHO DETALLADO<br>".$consulta."<br>";
