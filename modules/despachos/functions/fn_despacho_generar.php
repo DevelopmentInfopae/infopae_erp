@@ -962,43 +962,10 @@ foreach ($variaciones as $id => $variacion) {
 					$t3 = $auxAlimento["grupo3"] * $sede["grupo3"];
 					// Inicio ajuste contramuestra
 					if($auxAlimento["grupo_alim"] == "Contramuestra"){
-
-						if($sede["grupo1"] > $sede["grupo2"] && $sede["grupo1"] > $sede["grupo3"]){
-							if($auxAlimento["grupo1"] > 0){
-								$t1 = $auxAlimento["grupo1"];
-							} 
-							if($auxAlimento["grupo2"] > 0){
-								$t1 = $auxAlimento["grupo2"];
-							} 
-							if($auxAlimento["grupo3"] > 0){
-								$t1 = $auxAlimento["grupo3"];
-							} 
-						}
-
-						if($sede["grupo2"] > $sede["grupo1"] && $sede["grupo2"] > $sede["grupo3"]){
-							if($auxAlimento["grupo1"] > 0){
-								$t2 = $auxAlimento["grupo1"];
-							} 
-							if($auxAlimento["grupo2"] > 0){
-								$t2 = $auxAlimento["grupo2"];
-							} 
-							if($auxAlimento["grupo3"] > 0){
-								$t2 = $auxAlimento["grupo3"];
-							} 
-						}
-
-						if($sede["grupo3"] > $sede["grupo1"] && $sede["grupo3"] > $sede["grupo2"]){
-							if($auxAlimento["grupo1"] > 0){
-								$t3 = $auxAlimento["grupo1"];
-							} 
-							if($auxAlimento["grupo2"] > 0){
-								$t3 = $auxAlimento["grupo2"];
-							} 
-							if($auxAlimento["grupo3"] > 0){
-								$t3 = $auxAlimento["grupo3"];
-							} 
-						}
-
+						$t1 = 0;
+						$t2 = 0;
+						$t3 = 0;
+						$t1 = $auxAlimento["grupo1"] + $auxAlimento["grupo2"] + $auxAlimento["grupo3"];
 					}
 					// Termina ajuste contramuestra
 					$cantidad = $t1 + $t2 + $t3;
@@ -1150,50 +1117,14 @@ foreach ($variaciones as $id => $variacion) {
 
 						if($sede["grupo1"] > $sede["grupo2"] && $sede["grupo1"] > $sede["grupo3"]){
 							$idGrupoEtario = 1;
-							if($auxAlimento["grupo1"] > 0){
-								$t1 = $auxAlimento["grupo1"];
-								$idGrupoAlimento = 1;
-							} 
-							if($auxAlimento["grupo2"] > 0){
-								$t1 = $auxAlimento["grupo2"];
-								$idGrupoAlimento = 2;
-							} 
-							if($auxAlimento["grupo3"] > 0){
-								$t1 = $auxAlimento["grupo3"];
-								$idGrupoAlimento = 3;
-							} 
 						}
 						
 						else if($sede["grupo2"] > $sede["grupo1"] && $sede["grupo2"] > $sede["grupo3"]){
 							$idGrupoEtario = 2;
-							if($auxAlimento["grupo1"] > 0){
-								$t2 = $auxAlimento["grupo1"];
-								$idGrupoAlimento = 1;
-							} 
-							if($auxAlimento["grupo2"] > 0){
-								$t2 = $auxAlimento["grupo2"];
-								$idGrupoAlimento = 2;
-							} 
-							if($auxAlimento["grupo3"] > 0){
-								$t2 = $auxAlimento["grupo3"];
-								$idGrupoAlimento = 3;
-							} 
 						}
 						
 						else if($sede["grupo3"] > $sede["grupo1"] && $sede["grupo3"] > $sede["grupo2"]){
 							$idGrupoEtario = 3;
-							if($auxAlimento["grupo1"] > 0){
-								$t3 = $auxAlimento["grupo1"];
-								$idGrupoAlimento = 1;
-							} 
-							if($auxAlimento["grupo2"] > 0){
-								$t3 = $auxAlimento["grupo2"];
-								$idGrupoAlimento = 2;
-							} 
-							if($auxAlimento["grupo3"] > 0){
-								$t3 = $auxAlimento["grupo3"];
-								$idGrupoAlimento = 3;
-							} 
 						}
 
 						if($banderaPrimero == 0){
@@ -1205,14 +1136,14 @@ foreach ($variaciones as $id => $variacion) {
 						$consulta = $consulta." ( ";
 						$codigo = $auxAlimento['codigo'];
 						$componente = $auxAlimento['Componente'];
-						$cantidad = $auxAlimento["grupo$idGrupoAlimento"];
+						$cantidad = $auxAlimento["grupo1"] + $auxAlimento["grupo2"] + $auxAlimento["grupo3"];
 						$unidad = $auxAlimento['unidadMedida'];
 						$consecutivo = $consecutivos[$i];
-						$d1 = $auxAlimento["grupo".$idGrupoAlimento."_d1"];
-						$d2 = $auxAlimento["grupo".$idGrupoAlimento."_d2"];
-						$d3 = $auxAlimento["grupo".$idGrupoAlimento."_d3"];
-						$d4 = $auxAlimento["grupo".$idGrupoAlimento."_d4"];
-						$d5 = $auxAlimento["grupo".$idGrupoAlimento."_d5"];
+						$d1 = $auxAlimento["grupo1_d1"] + $auxAlimento["grupo2_d1"] + $auxAlimento["grupo3_d1"];
+						$d2 = $auxAlimento["grupo1_d2"] + $auxAlimento["grupo2_d2"] + $auxAlimento["grupo3_d2"];
+						$d3 = $auxAlimento["grupo1_d3"] + $auxAlimento["grupo2_d3"] + $auxAlimento["grupo3_d3"];
+						$d4 = $auxAlimento["grupo1_d4"] + $auxAlimento["grupo2_d4"] + $auxAlimento["grupo3_d4"];
+						$d5 = $auxAlimento["grupo1_d5"] + $auxAlimento["grupo2_d5"] + $auxAlimento["grupo3_d5"];
 						$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
 						$consulta = $consulta." ) ";
 					}else{
