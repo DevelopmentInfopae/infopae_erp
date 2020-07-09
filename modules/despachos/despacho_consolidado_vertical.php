@@ -526,7 +526,11 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario){
 		} else { 
 			$aux = $alimento['grupo1']+$alimento['grupo2']+$alimento['grupo3']; 
 		}
-		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5']; }
+		
+		// if($alimento['grupo_alim'] == "Contramuestra"){ 
+		// 	$aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5']; 
+		// }
+
 		$pdf->Cell(11, $altoFila, number_format($aux, 2, '.', ''), 'LB', 0, 'C', FALSE);
 		
 		
@@ -569,7 +573,9 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario){
 		CANTIDAD ENTREGADA
 			- TOTAL 
 		*/
-		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5']; }
+		// if($alimento['grupo_alim'] == "Contramuestra"){ 
+		// 	$aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5'];
+		// }
 		$pdf->Cell(16,$altoFila,$aux,'LB',0,'C',FALSE);
 
 		// TOTAL ENTREGADO
