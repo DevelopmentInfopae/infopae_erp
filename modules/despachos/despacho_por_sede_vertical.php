@@ -13,6 +13,7 @@ $sangria = " * ";
 $largoNombre = 28;
 $tamannoFuente = 5;
 $altoFila = 2.5;
+$paginasObservaciones = 1;
 
 if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho'])) {
 	// Se va a recuperar el mes y el año para las tablaMesAnno
@@ -52,6 +53,12 @@ if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
 	if(isset($_POST['rutaNm'])){
 		$corteDeVariables++;
 	}
+
+	if(isset($_POST['paginasObservaciones'])){
+		$paginasObservaciones = $_POST['paginasObservaciones'];
+		$corteDeVariables++;
+	}
+
 	$_POST = array_slice($_POST, $corteDeVariables);
 	$_POST = array_values($_POST);
 }

@@ -14,6 +14,7 @@ $largoNombre = 26;
 $tamannoFuente = 5;
 $altoFila = 2.5;
 $anchoCelda = 0;
+$paginasObservaciones = 1;
 
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
@@ -44,6 +45,10 @@ if(isset($_POST['seleccionarVarios'])){ $corteDeVariables++; }
 if(isset($_POST['informeRuta'])){ $corteDeVariables++; }
 if(isset($_POST['ruta'])){ $corteDeVariables++; }
 if(isset($_POST['rutaNm'])){ $corteDeVariables++; }
+if(isset($_POST['paginasObservaciones'])){
+	$paginasObservaciones = $_POST['paginasObservaciones'];
+	$corteDeVariables++;
+}
 $_POST = array_slice($_POST, $corteDeVariables);
 $_POST = array_values($_POST);
 

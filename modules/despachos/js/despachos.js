@@ -540,12 +540,20 @@ function despachoPorSede(despacho){
 		$( ".soloJs" ).remove();
 		var mesI = $('#mesi').val();
 		var annoI = $('#annoi').val();
+		var paginasObservacionesI = $('#paginasObservaciones').val();
 		$('#despachoAnnoI').val(annoI);
 		$('#despachoMesI').val(mesI);
+		$('#paginasObservacionesI').val(paginasObservacionesI);
 		$('#despacho').val(despacho);
 		$('#formDespachoPorSede').submit();
 	}
 }
+
+
+
+
+
+
 
 function despachos_consolidado(){
 	var cant = 0;

@@ -8,12 +8,15 @@
   ini_set('memory_limit','6000M');
   date_default_timezone_set('America/Bogota');
 
+
+
   $ciclo = '';
   $mesAnno = '';
   $sangria = " * ";
   $largoNombre = 30;
   $tamannoFuente = 6;
   $totalBeneficiarios = 0;
+  $paginasObservaciones = 1;
 
   if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho'])) {
 	// Se va a recuperar el mes y el año para las tablaMesAnno
@@ -22,12 +25,22 @@
 	  $mes = '0'.$mes;
 	}
 
+
+	if(isset($_POST['paginasObservaciones'])){
+		$paginasObservaciones = $_POST['paginasObservaciones'];
+	}
+
+
 	$mes = trim($mes);
 	$anno = $_POST['despachoAnnoI'];
 	$anno = substr($anno, -2);
 	$anno = trim($anno);
 	$mesAnno = $mes.$anno;
-	$_POST = array_slice($_POST, 2);
+
+	
+
+
+	$_POST = array_slice($_POST, 3);
 	$_POST = array_values($_POST);
   } else {
 	// Se va a recuperar el mes y el año para las tablaMesAnno
@@ -54,10 +67,29 @@
 	if(isset($_POST['rutaNm'])){
 	  $corteDeVariables++;
 	}
+	
+	if(isset($_POST['paginasObservaciones'])){
+		$paginasObservaciones = $_POST['paginasObservaciones'];
+		$corteDeVariables++;
+	}
+
+
+
 
 	$_POST = array_slice($_POST, $corteDeVariables);
 	$_POST = array_values($_POST);
 }
+
+
+
+
+
+//var_dump($paginasObservacionesI);
+
+
+
+
+
 
   class PDF extends FPDF{
 	function Header(){}
