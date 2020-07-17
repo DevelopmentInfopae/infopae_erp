@@ -301,10 +301,10 @@ class PDF extends PDF_PageGroup{
 		// $this->Cell(0,2,utf8_decode(""),'B',0,'C',False);
 		$this->Ln(2);
 		$this->SetFont('Arial','B',$tamannoFuente);
-		$this->Cell(38,4,utf8_decode("Observaciones:"),'BLT',0,'L',False);
-		$this->Cell(0,4,utf8_decode(""),'BLTR',0,'C',False);
+		$this->Cell(38,9,utf8_decode("Observaciones:"),'BLT',0,'L',False);
+		$this->Cell(0,9,utf8_decode(""),'BLTR',0,'C',False);
 		
-		$this->Ln(7);
+		$this->Ln(11);
 		$this->Cell(33,4,utf8_decode("Firma de quien entrega la RPC:"),0,0,'L',False);
 		$this->Cell(67,4,utf8_decode(""),'B',0,'C',False);
 		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
@@ -738,8 +738,8 @@ foreach ($sede_unicas as $key => $sede_unica){
 					$pdf->Cell($anchoCeldaAlimento,$altoFila,'','BL',0,'C',False);
 				}
 				$pdf->Cell(46,$altoFila,utf8_decode(""),'BL',0,'C',False);
-				$pdf->Cell(28,$altoFila,utf8_decode(""),'BL',0,'C',False);
-				$pdf->Cell(22,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(30,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(24,$altoFila,utf8_decode(""),'BL',0,'C',False);
 				$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
 				$pdf->Ln($altoFila);
 			}

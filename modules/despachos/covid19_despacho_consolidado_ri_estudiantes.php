@@ -24,12 +24,21 @@ if($resultado->num_rows >= 1){
 	$estudianteIndice=1;
 	//for ($estudianteIndice=1; $estudianteIndice < 98; $estudianteIndice++) { $row = $resultado->fetch_assoc();
 	$auxGradoActual = "";
+	$auxGrupoActual = "";
 	while($row = $resultado->fetch_assoc()){
 
 		if($auxGradoActual == ""){
 			$auxGradoActual = $row['cod_grado'];
 		}else if($auxGradoActual != $row['cod_grado']){
 			$auxGradoActual = $row['cod_grado'];
+			$filaActual = 1;
+		}
+
+		// Grupo actual
+		if($auxGrupoActual == ""){
+			$auxGrupoActual = $row['nom_grupo'];
+		}else if($auxGrupoActual != $row['nom_grupo']){
+			$auxGrupoActual = $row['nom_grupo'];
 			$filaActual = 1;
 		}
 
