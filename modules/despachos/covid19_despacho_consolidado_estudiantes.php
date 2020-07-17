@@ -70,9 +70,9 @@ if($resultado->num_rows >= 1){
 		
 		
 		$pdf->Cell(46,$altoFila,utf8_decode(""),'BL',0,'C',False);
-		$pdf->Cell(28,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(30,$altoFila,utf8_decode(""),'BL',0,'C',False);
 		// Teléfono del acudiente
-		$pdf->Cell(22,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(24,$altoFila,utf8_decode(""),'BL',0,'C',False);
 		$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
 		$pdf->Ln($altoFila);
 		

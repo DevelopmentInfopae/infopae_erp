@@ -4,6 +4,7 @@ $titulo = "Registro De Novedades - Repitentes Y/O Suplentes Del Programa De Alim
 
 
 
+
 $tamannoFuente = 6;
 $pdf->SetFont('Arial','',$tamannoFuente);
 //header
@@ -60,7 +61,7 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(6,4,'ETC:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 //$pdf->Cell(14,4,$_SESSION['p_Departamento'],0,0,'L',False);
-$aux = strtoupper($_SESSION['p_Nombre ETC']);
+$aux = mb_strtoupper($_SESSION['p_Nombre ETC']);
 $pdf->Cell(39,4,utf8_decode($aux),0,0,'L',False);
 
 // $pdf->SetFont('Arial','B',$tamannoFuente);
@@ -227,7 +228,7 @@ $pdf->Cell(13,24,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->Cell(93.5,3,utf8_decode('CONFORMACIÓN RACIÓN PARA PREPARAR EN CASA (RPC)'),'B',0,'C',False);
+$pdf->Cell(89.5,3,utf8_decode('CONFORMACIÓN RACIÓN PARA PREPARAR EN CASA (RPC)'),'B',0,'C',False);
 
 include 'covid19_despacho_consolidado_productos.php';
 
@@ -236,7 +237,7 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(94,18,utf8_decode('Especifique Cantidad TOTAL entregada o colocar un guion si el alimento no se entregó en el paquete.'),0,0,'C',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(94,24,'','TBL',0,'C',False);
+$pdf->Cell(90,24,'','TBL',0,'C',False);
 
 
 /* Despues de los alimentos */
@@ -251,16 +252,16 @@ $pdf->Cell(46,24,'','TBL',0,'C',False);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+6+3.5);
-$pdf->MultiCell(28,2,utf8_decode("Nº IDENTIFICACIÓN DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
+$pdf->MultiCell(30,2,utf8_decode("Nº IDENTIFICACIÓN DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(28,24,'','TBL',0,'C',False);
+$pdf->Cell(30,24,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+6+3.5);
-$pdf->MultiCell(22,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
+$pdf->MultiCell(24,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(22,24,'','TBL',0,'C',False);
+$pdf->Cell(24,24,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();

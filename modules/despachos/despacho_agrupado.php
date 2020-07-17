@@ -10,7 +10,7 @@ require_once '../../db/conexion.php';
 
 
 
-
+$paginasObservaciones = 1;
 $largoNombre = 40;
 $sangria = " * ";
 
@@ -69,6 +69,10 @@ if(isset($_POST['ruta'])){
 	$corteDeVariables++;
 }
 if(isset($_POST['rutaNm'])){
+	$corteDeVariables++;
+}
+if(isset($_POST['paginasObservaciones'])){
+	$paginasObservaciones = $_POST['paginasObservaciones'];
 	$corteDeVariables++;
 }
 $_POST = array_slice($_POST, $corteDeVariables);

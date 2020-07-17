@@ -19,6 +19,7 @@ $tamannoFuente = 6;
 
 $largoNombreProducto = 14;
 $altoFila = 9;
+$paginasObservaciones = 1;
 
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
@@ -72,6 +73,10 @@ if(isset($_POST['ruta'])){
 	$corteDeVariables++;
 }
 if(isset($_POST['rutaNm'])){
+	$corteDeVariables++;
+}
+if(isset($_POST['paginasObservaciones'])){
+	$paginasObservaciones = $_POST['paginasObservaciones'];
 	$corteDeVariables++;
 }
 $_POST = array_slice($_POST, $corteDeVariables);
@@ -742,37 +747,41 @@ foreach ($sede_unicas as $key => $sede_unica){
 
 
 	/* INICIA PAGINA ADICIONAL */
-	$pdf->StartPageGroup();
-	$pdf->AddPage();
-	$tamannoFuente = 6;
-	include 'covid19_despacho_consolidado_ri_header_adicional.php';
-	for ($jj=0; $jj < 16; $jj++) { 
-		$pdf->Cell(4,$altoFila,'','BL',0,'C',False);
-		$pdf->Cell(42,$altoFila,'','BL',0,'L',False);
-		$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
-		$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
-		$pdf->Cell(6.50,$altoFila,'','BL',0,'C',False);
-		$pdf->Cell(6.50,$altoFila,'','BL',0,'C',False);
-		// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
-		// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
-
-
-
-		$ciclosSemanasKeys = array_keys($ciclosSemanas);
-        $auxTotal = 0;
-		foreach ($ciclosSemanasKeys as $ciclosSemanasKey) {
-            $aux = $ciclosSemanas[$ciclosSemanasKey];
-            $pdf->Cell($anchoCeldaAlimento,$altoFila,utf8_decode(""),'BL',0,'C',False);
-            $auxTotal += $aux;
+	if($paginasObservaciones > 0){
+		for ($aaa=0; $aaa < $paginasObservaciones; $aaa++) {
+			$pdf->StartPageGroup();
+			$pdf->AddPage();
+			$tamannoFuente = 6;
+			include 'covid19_despacho_consolidado_ri_header_adicional.php';
+			for ($jj=0; $jj < 16; $jj++) { 
+				$pdf->Cell(4,$altoFila,'','BL',0,'C',False);
+				$pdf->Cell(42,$altoFila,'','BL',0,'L',False);
+				$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
+				$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
+				$pdf->Cell(6.50,$altoFila,'','BL',0,'C',False);
+				$pdf->Cell(6.50,$altoFila,'','BL',0,'C',False);
+				// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+				// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+		
+		
+		
+				$ciclosSemanasKeys = array_keys($ciclosSemanas);
+				$auxTotal = 0;
+				foreach ($ciclosSemanasKeys as $ciclosSemanasKey) {
+					$aux = $ciclosSemanas[$ciclosSemanasKey];
+					$pdf->Cell($anchoCeldaAlimento,$altoFila,utf8_decode(""),'BL',0,'C',False);
+					$auxTotal += $aux;
+				}
+				$pdf->Cell(18,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		
+		
+				$pdf->Cell(46,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(28,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(22,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
+				$pdf->Ln($altoFila);
+			}
 		}
-        $pdf->Cell(18,$altoFila,utf8_decode(""),'BL',0,'C',False);
-
-
-		$pdf->Cell(46,$altoFila,utf8_decode(""),'BL',0,'C',False);
-		$pdf->Cell(28,$altoFila,utf8_decode(""),'BL',0,'C',False);
-		$pdf->Cell(22,$altoFila,utf8_decode(""),'BL',0,'C',False);
-		$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
-		$pdf->Ln($altoFila);
 	}
 	/* TERMINA PAGINA ADICIONAL */
 
