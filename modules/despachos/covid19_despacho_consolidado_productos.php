@@ -16,7 +16,7 @@ $pdf->SetLineWidth(.05);
 
 // El espacio para los productos es de 94mm
 $numeroTotalDeAlimentos = count($alimentosTotales);
-$anchoCeldaAlimento = 90 / $numeroTotalDeAlimentos;
+$anchoCeldaAlimento = 80 / $numeroTotalDeAlimentos;
 $pdf->SetXY($current_x, $current_y+3);
 $posicionYGrupo = $pdf->GetY();
 $posicionXGrupo = $pdf->GetX();
