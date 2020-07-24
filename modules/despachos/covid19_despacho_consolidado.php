@@ -731,13 +731,14 @@ foreach ($sede_unicas as $key => $sede_unica){
 				$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
 				$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
 				$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
-				$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
-				$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
-				$pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+				// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+				// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+				// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
 				foreach ($alimentosTotales as $alimento) {
 					$pdf->Cell($anchoCeldaAlimento,$altoFila,'','BL',0,'C',False);
 				}
 				$pdf->Cell(46,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(30,$altoFila,utf8_decode(""),'BL',0,'C',False);
 				$pdf->Cell(30,$altoFila,utf8_decode(""),'BL',0,'C',False);
 				$pdf->Cell(24,$altoFila,utf8_decode(""),'BL',0,'C',False);
 				$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
