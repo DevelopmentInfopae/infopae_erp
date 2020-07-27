@@ -16,7 +16,7 @@ $pdf->SetLineWidth(.05);
 
 // El espacio para los productos es de 94mm
 $numeroTotalDeAlimentos = count($alimentosTotales);
-$anchoCeldaAlimento = 80 / $numeroTotalDeAlimentos;
+$anchoCeldaAlimento = 70 / $numeroTotalDeAlimentos;
 $pdf->SetXY($current_x, $current_y+3);
 $posicionYGrupo = $pdf->GetY();
 $posicionXGrupo = $pdf->GetX();
@@ -44,7 +44,7 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario){
 		$ancholinea = 1;
 		$ancho = 8.5;
 		//$margen = ($ancho / 2) + 0.5;
-		$margen = ($ancho / 2)-0.9;
+		$margen = ($ancho / 2)-2;
 		$long_nombre=strlen($aux);
 		if($long_nombre > $largoNombreProducto){
 			$aux = substr($aux,0,$largoNombreProducto);

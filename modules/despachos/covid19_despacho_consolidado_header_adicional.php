@@ -7,6 +7,9 @@ $titulo = "Registro De Novedades - Repitentes Y/O Suplentes Del Programa De Alim
 
 
 
+
+
+
 $tamannoFuente = 6;
 $pdf->SetFont('Arial','',$tamannoFuente);
 //header
@@ -235,16 +238,16 @@ $pdf->Cell(3.25,24,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->Cell(79.5,3,utf8_decode('CONFORMACIÓN RACIÓN PARA PREPARAR EN CASA (RPC)'),'B',0,'C',False);
+$pdf->Cell(69.5,3,utf8_decode('CONFORMACIÓN RACIÓN PARA PREPARAR EN CASA (RPC)'),'B',0,'C',False);
 
 include 'covid19_despacho_consolidado_productos.php';
 
 $pdf->SetXY($current_x, $current_y+13.5);
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(84,18,utf8_decode('Especifique Cantidad TOTAL entregada o colocar un guion si el alimento no se entregó en el paquete.'),0,0,'C',False);
+$pdf->Cell(70,18,utf8_decode('Especifique Cantidad TOTAL entregada o colocar un guion si el alimento no se entregó en el paquete.'),0,0,'C',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(80,24,'','TBL',0,'C',False);
+$pdf->Cell(70,24,'','TBL',0,'C',False);
 
 
 /* Despues de los alimentos */
@@ -267,9 +270,9 @@ $pdf->Cell(30,24,'','TBL',0,'C',False);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+6+3.5);
-$pdf->MultiCell(30,2,utf8_decode("PARENTESCO"),0,'C',false);
+$pdf->MultiCell(20,2,utf8_decode("PARENTESCO"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(30,24,'','TBL',0,'C',False);
+$pdf->Cell(20,24,'','TBL',0,'C',False);
 
 
 
