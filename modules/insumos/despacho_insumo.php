@@ -176,6 +176,7 @@ $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abr
                 <option value="CAJMRI">CAJMRI</option>
                 <option value="CAJTRI">CAJTRI</option>
                 <option value="CAJMPS">CAJMPS</option>
+                <option value="RPC">RPC</option>
               </select>
             </div>
 
