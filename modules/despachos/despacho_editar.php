@@ -87,6 +87,15 @@ $mesAnno = '';
             $corteDeVariables++;
           }
 
+          $imprimirMes = 0;
+          if(isset($_POST['imprimirMes'])){
+            if($_POST['imprimirMes'] == 'on'){
+              $imprimirMes = 1;	
+            }
+            $corteDeVariables++;
+          }
+
+
           $_POST = array_slice($_POST, $corteDeVariables);
           $_POST = array_values($_POST);
         }

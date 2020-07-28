@@ -117,7 +117,7 @@ $pdf->Cell(0,4,$nomSede['cod_sede'],0,0,'L',False);
 
 $pdf->Ln(4);
 
-//$pdf->Cell(4,4,'',0,0,'C',False);
+//$pdf->Cell(4,4,'',0,0,'C',False);ç
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(13.5,4,'OPERADOR:',0,0,'L',False);
@@ -133,6 +133,8 @@ $pdf->Cell(25,4,$aux,0,0,'L',False);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(17.6,4,utf8_decode('MES ATENCIÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
+
+if($imprimirMes == 0){ $mes = ""; }
 $pdf->Cell(9,4,utf8_decode(strtoupper ($mes)." "),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);

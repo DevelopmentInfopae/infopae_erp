@@ -82,8 +82,25 @@ $Link->set_charset("utf8");
       $paginasObservaciones = $_POST['paginasObservaciones'];
       $corteDeVariables++;
     }
+
+
+    $corteDeVariables = 19;
+
+
+
+    $imprimirMes = 0;
+    if(isset($_POST['imprimirMes'])){
+      if($_POST['imprimirMes'] == 'on'){
+        $imprimirMes = 1;	
+      }
+      $corteDeVariables++;
+    }
+
+
+
+
     // Quitando las variable que no sean numeros de despacho
-    $_POST = array_slice($_POST, 19);
+    $_POST = array_slice($_POST, $corteDeVariables);
     $_POST = array_values($_POST);
     // var_dump($_POST);
   }
