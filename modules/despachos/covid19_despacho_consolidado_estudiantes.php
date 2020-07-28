@@ -89,7 +89,7 @@ if($resultado->num_rows >= 1){
 		// Parentesco
 		$pdf->Cell(20,$altoFila,utf8_decode(""),'BL',0,'C',False);
 		// Teléfono del acudiente
-		$pdf->Cell(24,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(30,$altoFila,utf8_decode(""),'BL',0,'C',False);
 		$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
 		$pdf->Ln($altoFila);
 		

@@ -741,7 +741,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 				$pdf->Cell(30,$altoFila,utf8_decode(""),'BL',0,'C',False);
 				// Parentesco
 				$pdf->Cell(20,$altoFila,utf8_decode(""),'BL',0,'C',False);
-				$pdf->Cell(24,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(30,$altoFila,utf8_decode(""),'BL',0,'C',False);
 				$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
 				$pdf->Ln($altoFila);
 			}
