@@ -277,9 +277,9 @@ $pdf->Cell(20,24,'','TBL',0,'C',False);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+6+3.5);
-$pdf->MultiCell(24,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
+$pdf->MultiCell(30,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(24,24,'','TBL',0,'C',False);
+$pdf->Cell(30,24,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
