@@ -302,11 +302,22 @@
 
 						
 						<div class="row">
+
 							<div class="col-sm-2 form-group">
 								<label for="paginasObservaciones">Páginas de observaciones</label>
 								<input type="number" name="paginasObservaciones" id="paginasObservaciones" value="1" class="form-control">
 							</div>
+
+							<div class="col-sm-4   form-group">
+								<label for="semana_final">Imprimir nombre del mes</label>
+								<div>
+									<input type="checkbox" name="imprimirMes" id="imprimirMes" checked>
+								</div>
+							</div>
+
 						</div>
+
+
 						
 						
 						<div class="row">

@@ -1,4 +1,5 @@
 <?php
+//var_dump($_POST);
 error_reporting(E_ALL);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
@@ -79,6 +80,17 @@ if(isset($_POST['paginasObservaciones'])){
 	$paginasObservaciones = $_POST['paginasObservaciones'];
 	$corteDeVariables++;
 }
+
+
+$imprimirMes = 0;
+if(isset($_POST['imprimirMes'])){
+	if($_POST['imprimirMes'] == 'on'){
+		$imprimirMes = 1;	
+	}
+	$corteDeVariables++;
+}
+
+
 $_POST = array_slice($_POST, $corteDeVariables);
 $_POST = array_values($_POST);
 

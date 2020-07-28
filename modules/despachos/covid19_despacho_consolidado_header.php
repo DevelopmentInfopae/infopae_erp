@@ -146,6 +146,8 @@ $pdf->Cell(25,4,$aux,0,0,'L',False);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(17.6,4,utf8_decode('MES ATENCIÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
+
+if($imprimirMes == 0){ $mes = ""; }
 $pdf->Cell(9,4,utf8_decode(strtoupper ($mes)." "),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
