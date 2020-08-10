@@ -7,10 +7,10 @@ $Infraestructura;
 
 if (isset($_POST['cod_sede']) && $_POST['cod_sede'] != "") {
   $sedever = $_POST['cod_sede'];
-  $consultarInfraestructura = "SELECT * FROM Infraestructura WHERE cod_sede = ".$sedever;
+  $consultarInfraestructura = "SELECT * FROM infraestructura WHERE cod_sede = ".$sedever;
 } else {
   $idinfraestructura = $_POST['idinfraestructura'];
-  $consultarInfraestructura = "SELECT * FROM Infraestructura WHERE id = ".$idinfraestructura;
+  $consultarInfraestructura = "SELECT * FROM infraestructura WHERE id = ".$idinfraestructura;
 }
 
 $resultadoInfraestructura = $Link->query($consultarInfraestructura);
@@ -100,7 +100,7 @@ if ($resultadoDotaciones->num_rows > 0) {
             <li><a onclick="editarInfraestructura(<?php echo $idinfraestructura; ?>)"><span class="fa fa-pencil"></span> Editar </a></li>
             <li><a data-toggle="modal" data-target="#modalEliminarInfraestructura"  data-idinfraestructura="<?php echo $idinfraestructura; ?>"><span class="fa fa-trash"></span> Eliminar </a></li>
           <?php endif ?>
-          <li><a href="#" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
+          <li><a href="exportar_infraestructuras.php?id=<?= $idinfraestructura ?>" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
         </ul>
       </div>
     </div><!-- /.title-action -->
@@ -601,7 +601,7 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                   <label for="bano_implemento_aseo[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
               <?php endif ?>
-              <?php if ($parametro['id'] != 4 && $parametro['id'] != 6): //Sólo parámetros que tienen dotacion ?>
+              <?php if ($parametro['id'] != 4 && $parametro['id'] != 6 && isset($dotaciones[$parametro['id']]) && $dotaciones[$parametro['id']]): //Sólo parámetros que tienen dotacion ?>
                 <?php foreach ($dotaciones[$parametro['id']] as $dotacion => $descripcion) { ?>
                   <input type="hidden" name="id_dotacion[]" value="<?php echo $dotacion; ?>">
                   <hr class="col-sm-11">

@@ -131,7 +131,7 @@
 }
 .radio label::before {
   content: "";
-  display: inline-block;
+  display: none;
   position: absolute;
   width: 17px;
   height: 17px;
