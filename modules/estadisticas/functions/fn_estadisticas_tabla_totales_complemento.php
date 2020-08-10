@@ -95,8 +95,12 @@
   $tFootComp = '<tr>
     <th>TOTAL</th>';
 
-    foreach ($sumTotalesComplementos as $complemento => $total) {
-      $tFootComp .='<th>'.$total.'</th>';
+    foreach ($tipoComplementos as $key => $complemento) {
+      if (isset($sumTotalesComplementos[$complemento])) {
+        $tFootComp .='<th>'.$sumTotalesComplementos[$complemento].'</th>';
+      } else {
+        $tFootComp.="<th></th>";
+      }
     }
 
   $tFootComp .='</tr>';
