@@ -223,6 +223,9 @@
     $jm = '';
     $jt = '';
 
+
+    $totalBeneficiarios = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3;
+
     // 2 es la jornada de la mañana
     // 3 es la jornada de la tarde
     if($jornada == 2){

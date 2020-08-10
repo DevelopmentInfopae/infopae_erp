@@ -22,7 +22,8 @@
     $consulta_parametros_nomina = "SELECT * FROM parametros_nomina";
     $result_parametros_nomina = $Link->query($consulta_parametros_nomina);
     $parametros_nomina = false;
-    if ($result_parametros_nomina->num_rows > 0) {
+
+    if (isset($result_parametros_nomina->num_row) && $result_parametros_nomina->num_rows > 0) {
         $parametros_nomina = $result_parametros_nomina->fetch_assoc();
     }
 ?>

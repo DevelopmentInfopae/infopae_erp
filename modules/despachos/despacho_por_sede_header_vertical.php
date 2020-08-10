@@ -1,7 +1,8 @@
 <?php
+$tamannoFuente = 5;
 $pdf->SetFont('Arial','',$tamannoFuente);
 $logoInfopae = $_SESSION['p_Logo ETC'];
-$pdf->Image($logoInfopae, 15.6 ,8.6, 64.62, 9.9,'jpg', '');
+$pdf->Image($logoInfopae, 30.5 ,8.6, 64.62, 9.9,'jpg', '');
 // Marco
 $pdf->SetFont('Arial');
 $pdf->SetTextColor(0,0,0);

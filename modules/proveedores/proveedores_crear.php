@@ -136,7 +136,7 @@
 						                <select class="form-control select2" name="municipio" id="municipio" required>
 						                	<?php
 						                      	$parametro_municipio = (! empty($codigo_municipio)) ? "AND CodigoDANE = '$codigo_municipio'" : "";
-						                      	$consulta_municipios = "SELECT CodigoDANE AS codigo, Ciudad AS nombre, Departamento AS departamento FROM ubicacion WHERE CodigoDANE LIKE '$codigo_departamento%' $parametro_municipio ORDER BY Ciudad ASC;";
+						                      	$consulta_municipios = "SELECT CodigoDANE AS codigo, Ciudad AS nombre, Departamento AS departamento FROM ubicacion  ORDER BY Ciudad ASC;";
 						                      	$respuesta_consulta_municipios = $Link->query($consulta_municipios) or die('Error al consultar municipios: '. $Link->error);
 						                      	if (! empty($respuesta_consulta_municipios->num_rows)) {
 						                        	while($municipio = $respuesta_consulta_municipios->fetch_object()) {
@@ -153,7 +153,7 @@
 						                <label for="tipoalimento">Tipo alimento</label>
 						                <select class="form-control select2" name="tipoalimento[]" id="tipoalimento" multiple="multiple" required>
 						                	<?php
-						                		$consulta_tipo_alimento = "SELECT * FROM tipo_despacho WHERE Id != 99";
+						                		$consulta_tipo_alimento = "SELECT * FROM tipo_despacho";
 					                			$respuesta_tipo_alimento = $Link->query($consulta_tipo_alimento) or die('Error al consultar tipo documentos: '. $Link->error);
 
 					                			if (! empty($respuesta_tipo_alimento->num_rows)) {
@@ -172,12 +172,20 @@
 						                	<option value="0">NO</option>
 						                </select>
 					              	</div>
+
+					              	<div class="form-group col-sm-6 col-md-3">
+						                <label for="estado">Estado</label>
+						                <select class="form-control" name="estado" id="estado" required>
+						                	<option value="1">Activo</option>
+						                	<option value="0">Inactivo</option>
+						                </select>
+					              	</div>
 								</div>
         					</div>
           				</div>
 
 			          	<div class="row">
-	          				<div class="col-sm-3 col-lg-2 text-center">
+	          				<div class="col-sm-12">
 	      						<a href="#" class="btn btn-primary" id="guardarProveedorContinuar"><i class="fa fa-check "></i> Guardar </a>
 	          				</div>
 			          	</div>

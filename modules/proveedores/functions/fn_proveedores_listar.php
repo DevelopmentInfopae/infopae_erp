@@ -10,13 +10,24 @@
                 pro.Nitcc AS nitProveedor,
                 pro.Nombrecomercial AS nombreComercialProveedor,
                 pro.RazonSocial AS razonsocialProveedor,
-                pro.Email AS emailProveedor
+                pro.Email AS emailProveedor,
+                ubi.Ciudad AS municipio,
+                pro.compraslocales AS comprasLocales,
+                IF (pro.estado = 0, 'Inactivo', 'Activo') AS estado
               FROM
-                proveedores pro;";
+                proveedores pro
+              INNER JOIN
+                ubicacion ubi ON ubi.CodigoDANE = pro.cod_municipio";
 
   $resultado = $Link->query($consulta);
   if($resultado->num_rows > 0) {
     while($registros = $resultado->fetch_assoc()) {
+      if ($registros["comprasLocales"] == 1) {
+        $registros["comprasLocales"] = '<i class="fa fa-check text-success"></i>';
+      } else {
+        $registros["comprasLocales"] = '<i class="fa fa-ban text-danger"></i>';
+      }
+
       $registros['input'] = '<div class="btn-group">
                                 <div class="dropdown">
                                   <button class="btn btn-primary btn-sm" id="dLabel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

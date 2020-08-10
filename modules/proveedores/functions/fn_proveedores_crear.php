@@ -18,9 +18,19 @@
   $telefonomovil = (isset($_POST['telefonomovil']) && $_POST['telefonomovil'] != '') ? mysqli_real_escape_string($Link, $_POST['telefonomovil']) : '';
   $direccion = (isset($_POST['direccion']) && $_POST['direccion'] != '') ? mysqli_real_escape_string($Link, $_POST['direccion']) : '';
   $municipio = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST['municipio']) : '';
-  $tipoalimento = (isset($_POST['tipoalimento']) && $_POST['tipoalimento'] != '') ? implode($_POST['tipoalimento'], ",") : '';
   $compraslocales = (isset($_POST['compraslocales']) && $_POST['compraslocales'] != '') ? mysqli_real_escape_string($Link, $_POST['compraslocales']) : '';
   $nombreCompleto = $primerNombre . ' ' . (($segundoNombre != '') ? $segundoNombre.' ' : '') . $primerApellido . ' ' . (($segundoApellido != '') ? $segundoApellido : '');
+  $estado = (isset($_POST['estado']) && $_POST['estado'] != '') ? mysqli_real_escape_string($Link, $_POST['estado']) : '';
+
+  $tipoalimento = (isset($_POST['tipoalimento']) && $_POST['tipoalimento'] != '') ? implode($_POST['tipoalimento'], ",") : '';
+  foreach ($_POST['tipoalimento'] as $tipo_alimento) {
+    if ($tipo_alimento == 99) {
+      $tipoalimento = 99;
+      break;
+    }
+  }
+
+  $tipoalimento = (isset($_POST['tipoalimento']) && $_POST['tipoalimento'] != '') ? implode($_POST['tipoalimento'], ",") : '';
 
   // Validar que el código del proveedores no exista en proveedores.
   $consulta0 = "SELECT * FROM proveedores WHERE Nitcc = '$numeroDocumento';";
@@ -44,7 +54,7 @@
     exit(json_encode($respuestaAJAX));
   }
 
-  $consulta = "INSERT INTO proveedores (TipoDocumento, Nitcc, DigitoVerificacion, TipoJuridico, TipoRegimen, Nombrecomercial, RazonSocial, Direccion, Telefono1, Telefono2, Email, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, TipoAlimento, cod_municipio, compraslocales, FechaCreacion)
+  $consulta = "INSERT INTO proveedores (TipoDocumento, Nitcc, DigitoVerificacion, TipoJuridico, TipoRegimen, Nombrecomercial, RazonSocial, Direccion, Telefono1, Telefono2, Email, PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, TipoAlimento, cod_municipio, compraslocales, FechaCreacion, estado)
               VALUES (
                 '$tipoDocumento',
                 '$numeroDocumento',
@@ -64,7 +74,8 @@
                 '$tipoalimento',
                 '$municipio',
                 '$compraslocales',
-                '". date('Y-m-d H-i-s') ."')";
+                '". date('Y-m-d H-i-s') ."',
+                '$estado')";
   $resultado = $Link->query($consulta) or die ('Error al insertar proveedores: '. mysqli_error($Link));
   if ($resultado) {
     $clave = sha1(strtoupper(substr($primerNombre, 0, 1)) . $numeroDocumento);

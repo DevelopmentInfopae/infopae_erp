@@ -10,11 +10,11 @@ require_once '../../db/conexion.php';
 include '../../php/funciones.php';
 
 $sangria = " - ";
-$largoNombre = 28;
+$largoNombre = 26;
 $tamannoFuente = 5;
 $altoFila = 2.5;
-
-
+$anchoCelda = 0;
+$paginasObservaciones = 1;
 
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
@@ -45,6 +45,19 @@ if(isset($_POST['seleccionarVarios'])){ $corteDeVariables++; }
 if(isset($_POST['informeRuta'])){ $corteDeVariables++; }
 if(isset($_POST['ruta'])){ $corteDeVariables++; }
 if(isset($_POST['rutaNm'])){ $corteDeVariables++; }
+if(isset($_POST['paginasObservaciones'])){
+	$paginasObservaciones = $_POST['paginasObservaciones'];
+	$corteDeVariables++;
+}
+
+$imprimirMes = 0;
+if(isset($_POST['imprimirMes'])){
+	if($_POST['imprimirMes'] == 'on'){
+		$imprimirMes = 1;	
+	}
+	$corteDeVariables++;
+}
+
 $_POST = array_slice($_POST, $corteDeVariables);
 $_POST = array_values($_POST);
 
@@ -207,32 +220,29 @@ $total3 = 0;
 $totalTotal = 0;
 
 $sede_unicas = array_unique($sedes);
-foreach ($sede_unicas as $key => $sede_unica)
-{
-$auxSede = $sede_unica;
+foreach ($sede_unicas as $key => $sede_unica){
+	$auxSede = $sede_unica;
+	$consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede, (Cobertura_G1 + Cobertura_G2 + Cobertura_G3) sumaCoberturas FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."' ORDER BY sumaCoberturas DESC LIMIT 1";
+	//echo "<br><br>$consulta<br><br>";
+	// Consulta que busca las coberturas de las diferentes sedes.
+	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	if($resultado->num_rows >= 1){
+		while($row = $resultado->fetch_assoc()){
+			$sedeCobertura['cod_sede'] = $row['cod_sede'];
+			$sedeCobertura['grupo1'] = $row["Cobertura_G1"];
+			$sedeCobertura['grupo2'] = $row["Cobertura_G2"];
+			$sedeCobertura['grupo3'] = $row["Cobertura_G3"];
+			$sedeCobertura['total'] = $row["Cobertura_G1"] + $row["Cobertura_G2"] + $row["Cobertura_G3"];
+			$sedesCobertura[] = $sedeCobertura;
 
-$consulta = "SELECT DISTINCT Cobertura_G1, Cobertura_G2, Cobertura_G3, cod_sede, (Cobertura_G1 + Cobertura_G2 + Cobertura_G3) sumaCoberturas FROM despachos_enc$mesAnno WHERE semana = '$semana' AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."' ORDER BY sumaCoberturas DESC LIMIT 1";
+			$total1 += $row["Cobertura_G1"];
+			$total2 += $row["Cobertura_G2"];
+			$total3 += $row["Cobertura_G3"];
+			$totalTotal = $totalTotal +  $sedeCobertura['total'];
+		}
+	}
+}
 
-// Consulta que busca las coberturas de las diferentes sedes.
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-if($resultado->num_rows >= 1)
-{
-while($row = $resultado->fetch_assoc())
-{
-$sedeCobertura['cod_sede'] = $row['cod_sede'];
-$sedeCobertura['grupo1'] = $row["Cobertura_G1"];
-$sedeCobertura['grupo2'] = $row["Cobertura_G2"];
-$sedeCobertura['grupo3'] = $row["Cobertura_G3"];
-$sedeCobertura['total'] = $row["Cobertura_G1"] + $row["Cobertura_G2"] + $row["Cobertura_G3"];
-$sedesCobertura[] = $sedeCobertura;
-
-$total1 += $row["Cobertura_G1"];
-$total2 += $row["Cobertura_G2"];
-$total3 += $row["Cobertura_G3"];
-$totalTotal = $totalTotal +  $sedeCobertura['total'];
-}
-}
-}
 
 $totalesSedeCobertura  = [
 "grupo1" => $total1,
@@ -240,6 +250,7 @@ $totalesSedeCobertura  = [
 "grupo3" => $total3,
 "total"  => $totalTotal
 ];
+//var_dump($totalesSedeCobertura);
 
 // Termina el tema de las coberturas por sede
 $totalGrupo1 = 0;
@@ -251,98 +262,115 @@ $totalcons = "";
 // Vamos a buscar los alimentos de los depachos
 $alimentos = array();
 $tg = [];
-for ($i=0; $i < count($despachos) ; $i++)
-{
-$despacho = $despachos[$i];
-$numero = $despacho['num_doc'];
-$consulta = "SELECT DISTINCT dd.id, dd.*, pmd.CantU1,  pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion
-		FROM despachos_det$mesAnno dd
-		LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero
-		WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero  ";
+for ($i=0; $i < count($despachos) ; $i++) {
+	$despacho = $despachos[$i];
+	$numero = $despacho['num_doc'];
+	
+	
+	//$consulta = " SELECT DISTINCT dd.id, dd.*, pmd.CantU1, pmd.CantU2, pmd.CantU3, pmd.CantU4, pmd.CantU5, pmd.CanTotalPresentacion, p.cantidadund2, p.cantidadund3, p.cantidadund4, p.cantidadund5 FROM despachos_det$mesAnno dd LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero LEFT JOIN productos$anno p ON dd.cod_Alimento = p.Codigo WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero ";
 
-$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-if($resultado->num_rows >= 1)
-{
-while($row = $resultado->fetch_assoc())
-{
-$alimento = array();
 
-if(isset($tg[$row['cod_Alimento']][$numero]))
-{
-	$tg[$row['cod_Alimento']][$numero] += $row['Cantidad'];
-}
-else
-{
-	$tg[$row['cod_Alimento']][$numero] = $row['Cantidad'];
-}
+	$consulta = " SELECT DISTINCT dd.id, dd.*, pmd.CantU1, CEILING(pmd.CantU2) as CantU2, CEILING(pmd.CantU3) as CantU3, CEILING(pmd.CantU4) as CantU4, CEILING(pmd.CantU5) as CantU5, pmd.CanTotalPresentacion, p.cantidadund2, p.cantidadund3, p.cantidadund4, p.cantidadund5, p.nombreunidad2, p.nombreunidad3, p.nombreunidad4, p.nombreunidad5 FROM despachos_det$mesAnno dd LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto LEFT JOIN productos$anno p ON dd.cod_Alimento = p.Codigo WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero ";
+	
+	//echo "<br><br>$consulta<br><br>";
+	
+	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	if($resultado->num_rows >= 1){
+		while($row = $resultado->fetch_assoc()){
+			$alimento = array();
+			if(isset($tg[$row['cod_Alimento']][$numero])){
+				$tg[$row['cod_Alimento']][$numero] += $row['Cantidad'];
+			}
+			else {
+				$tg[$row['cod_Alimento']][$numero] = $row['Cantidad'];
+			}
+			$alimento['codigo'] = $row['cod_Alimento'];
+			$auxGrupo = $row['Id_GrupoEtario'];
+			$alimento['grupo'.$auxGrupo] = $row['Cantidad'];
+			$alimento['cantotalpresentacion'] = $row['CanTotalPresentacion'];
+			$alimento['cantu2'] = $row['CantU2'];
+			$alimento['cantu3'] = $row['CantU3'];
+			$alimento['cantu4'] = $row['CantU4'];
+			$alimento['cantu5'] = $row['CantU5'];
+			// Guardamos el numero de documento para discriminar la unidades de cada despacho
+			$alimento['Num_Doc'] = $row['Num_Doc'];
+			$alimento['componente'] = '';
+			$alimento['presentacion'] = '';
+			$alimento['grupo_alim'] = '';
+			$alimento['nombreunidad2'] = '';
+			$alimento['nombreunidad3'] = '';
+			$alimento['nombreunidad4'] = '';
+			$alimento['nombreunidad5'] = '';
 
-$alimento['codigo'] = $row['cod_Alimento'];
-$auxGrupo = $row['Id_GrupoEtario'];
-$alimento['grupo'.$auxGrupo] = $row['Cantidad'];
-$alimento['cantotalpresentacion'] = $row['CanTotalPresentacion'];
-$alimento['cantu2'] = $row['CantU2'];
-$alimento['cantu3'] = $row['CantU3'];
-$alimento['cantu4'] = $row['CantU4'];
-$alimento['cantu5'] = $row['CantU5'];
-// Guardamos el numero de documento para discriminar la unidades de cada despacho
-$alimento['Num_Doc'] = $row['Num_Doc'];
-$alimento['componente'] = '';
-$alimento['presentacion'] = '';
-$alimento['grupo_alim'] = '';
-$alimento['nombreunidad2'] = '';
-$alimento['nombreunidad3'] = '';
-$alimento['nombreunidad4'] = '';
-$alimento['nombreunidad5'] = '';
-$alimentos[] = $alimento;
+			$alimento['cantidadund2'] = $row['cantidadund2'];;
+			$alimento['cantidadund3'] = $row['cantidadund3'];;
+			$alimento['cantidadund4'] = $row['cantidadund4'];;
+			$alimento['cantidadund5'] = $row['cantidadund5'];;
+
+
+			$alimentos[] = $alimento;
+		}
+	}
 }
-}
-}
+//var_dump($alimentos);
 
 // Vamos unificar los alimentos para que no se repitan
 $alimento = $alimentos[0];
-
-
 if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
 if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
 if(!isset($alimento['grupo3'])){ $alimento['grupo3'] = 0;}else{ $totalGrupo3 = $totalesSedeCobertura['grupo3']; }
 $alimentosTotales = array();
 $alimentosTotales[] = $alimento;
-for ($i=1; $i < count($alimentos) ; $i++)
-{
-$alimento = $alimentos[$i];
-if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
-if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
-if(!isset($alimento['grupo3'])){ $alimento['grupo3'] = 0;}else{ $totalGrupo3 = $totalesSedeCobertura['grupo3']; }
-$encontrado = 0;
 
-for ($j=0; $j < count($alimentosTotales) ; $j++)
-{
-$alimentoTotal = $alimentosTotales[$j];
-if($alimento['codigo'] == $alimentoTotal['codigo'])
-{
-$encontrado++;
+//var_dump($alimentosTotales);
+for ($i=1; $i < count($alimentos) ; $i++){
+	$alimento = $alimentos[$i];
 
-if($alimentoTotal['Num_Doc'] != $alimento['Num_Doc'])
-{
-	$alimentoTotal['cantotalpresentacion'] = $alimentoTotal['cantotalpresentacion'] + $alimento['cantotalpresentacion'];
-	$alimentoTotal['cantu2'] = $alimentoTotal['cantu2'] + $alimento['cantu2'];
-	$alimentoTotal['cantu3'] = $alimentoTotal['cantu3'] + $alimento['cantu3'];
-	$alimentoTotal['cantu4'] = $alimentoTotal['cantu4'] + $alimento['cantu4'];
-	$alimentoTotal['cantu5'] = $alimentoTotal['cantu5'] + $alimento['cantu5'];
-	$alimentoTotal['Num_Doc'] = $alimento['Num_Doc'];
+	// var_dump($i);
+	//var_dump($alimento);
+
+
+	if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
+	if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
+	if(!isset($alimento['grupo3'])){ $alimento['grupo3'] = 0;}else{ $totalGrupo3 = $totalesSedeCobertura['grupo3']; }
+	$encontrado = 0;
+	for ($j=0; $j < count($alimentosTotales) ; $j++){
+		$alimentoTotal = $alimentosTotales[$j];
+
+	// 	var_dump($alimentoTotal);
+
+		if($alimento['codigo'] == $alimentoTotal['codigo']){
+			$encontrado++;
+			if($alimentoTotal['Num_Doc'] != $alimento['Num_Doc']){
+				//$alimentoTotal['cantotalpresentacion'] = $alimentoTotal['cantotalpresentacion'] + $alimento['cantotalpresentacion'];
+				$alimentoTotal['cantu2'] = $alimentoTotal['cantu2'] + $alimento['cantu2'];
+				$alimentoTotal['cantu3'] = $alimentoTotal['cantu3'] + $alimento['cantu3'];
+				$alimentoTotal['cantu4'] = $alimentoTotal['cantu4'] + $alimento['cantu4'];
+				$alimentoTotal['cantu5'] = $alimentoTotal['cantu5'] + $alimento['cantu5'];
+				$alimentoTotal['Num_Doc'] = $alimento['Num_Doc'];
+				
+				$alimentoTotal['grupo1'] = $alimentoTotal['grupo1'] + $alimento['grupo1'];
+				$alimentoTotal['grupo2'] = $alimentoTotal['grupo2'] + $alimento['grupo2'];
+				$alimentoTotal['grupo3'] = $alimentoTotal['grupo3'] + $alimento['grupo3'];
+			}
+			$alimentosTotales[$j] = $alimentoTotal;
+			break;
+		}
+
+		
+		
+		
+		
+	}
+	//var_dump($alimentoTotal);
+	if($encontrado == 0) { $alimentosTotales[] = $alimento; }
 }
+//var_dump($alimentosTotales);
 
-$alimentoTotal['grupo1'] = $alimentoTotal['grupo1'] + $alimento['grupo1'];
-$alimentoTotal['grupo2'] = $alimentoTotal['grupo2'] + $alimento['grupo2'];
-$alimentoTotal['grupo3'] = $alimentoTotal['grupo3'] + $alimento['grupo3'];
 
-$alimentosTotales[$j] = $alimentoTotal;
-break;
-}
-}
 
-if($encontrado == 0) { $alimentosTotales[] = $alimento; }
-}
+
+
 
 // Vamos a traer los datos que faltan para mostrar en la tabla
 for ($i=0; $i < count($alimentosTotales) ; $i++){
@@ -460,22 +488,27 @@ $grupos_alimentarios[$alimento['grupo_alim']][] = $alimento;
 
 $posicion_X_celda_grupo_alimenticio = $pdf->GetX();
 
-foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario)
-{
 
-if (isset($posicion_Y_celda_alimento)) { $pdf->SetY($posicion_Y_celda_alimento); }
 
-$altura_celda_grupo_alimenticio = 0;
-$altura_celda_grupo_alimenticio = count($grupo_alimentario) * 4;
-if (($altura_celda_grupo_alimenticio + (isset($posicion_Y_celda_alimento) ? $posicion_Y_celda_alimento : 0)) > 210.9)
-{
-$pdf->AddPage();
-include 'despacho_consolidado_header_vertical.php';
-}
 
+$tamannoFuente = 5.4;
+$pdf->SetFont('Arial','',$tamannoFuente);
+
+foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario){
+	if (isset($posicion_Y_celda_alimento)) { $pdf->SetY($posicion_Y_celda_alimento); }
+	$altura_celda_grupo_alimenticio = 0;
+	$altura_celda_grupo_alimenticio = count($grupo_alimentario) * 4;
+	if (($altura_celda_grupo_alimenticio + (isset($posicion_Y_celda_alimento) ? $posicion_Y_celda_alimento : 0)) > 210.9){
+		$pdf->AddPage();
+		include 'despacho_consolidado_header_vertical.php';
+	}
 	$posicion_Y_celda_grupo_alimenticio = $pdf->GetY();
 
 	foreach ($grupo_alimentario as $alimento){
+
+		//var_dump($alimento);
+
+
 		$filas++;
 		$aux = $alimento['componente'];
 		$long_nombre=strlen($aux);
@@ -485,14 +518,17 @@ include 'despacho_consolidado_header_vertical.php';
 
 		$aux = number_format($alimento['grupo1'], 2, '.', '');
 		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
+		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 		$pdf->Cell(11.6, $altoFila, utf8_decode($aux), 'LB', 0, 'C', FALSE);
 		
 		$aux = number_format($alimento['grupo2'], 2, '.', '');
 		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
+		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 		$pdf->Cell(11.8, $altoFila, utf8_decode($aux), 'LB', 0, 'C', FALSE);
 
 		$aux = number_format($alimento['grupo3'], 2, '.', '');
 		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = ""; }
+		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 		$pdf->Cell(11.6, $altoFila, utf8_decode($aux), 'LB', 0, 'C', FALSE);
 
 
@@ -504,7 +540,29 @@ include 'despacho_consolidado_header_vertical.php';
 		} else { 
 			$aux = $alimento['grupo1']+$alimento['grupo2']+$alimento['grupo3']; 
 		}
+		
+		// if($alimento['grupo_alim'] == "Contramuestra"){ 
+		// 	$aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5']; 
+		// }
+
 		$pdf->Cell(11, $altoFila, number_format($aux, 2, '.', ''), 'LB', 0, 'C', FALSE);
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+
+		//var_dump($alimento);
+		
+		
 		if($alimento['presentacion'] == 'u'){
 			if (strpos($alimento['componente'], "HUEVO") !== FALSE){ 
 				$aux = ceil(0+$aux);
@@ -523,6 +581,15 @@ include 'despacho_consolidado_header_vertical.php';
 				$aux = number_format($aux, 2, '.', '');
 			}
 		}
+
+
+		/* 
+		CANTIDAD ENTREGADA
+			- TOTAL 
+		*/
+		// if($alimento['grupo_alim'] == "Contramuestra"){ 
+		// 	$aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5'];
+		// }
 		$pdf->Cell(16,$altoFila,$aux,'LB',0,'C',FALSE);
 
 		// TOTAL ENTREGADO

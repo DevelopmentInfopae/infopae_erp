@@ -13,11 +13,20 @@
   $telefonomovil = (isset($_POST['telefonomovil']) && $_POST['telefonomovil'] != '') ? mysqli_real_escape_string($Link, $_POST['telefonomovil']) : '';
   $direccion = (isset($_POST['direccion']) && $_POST['direccion'] != '') ? mysqli_real_escape_string($Link, $_POST['direccion']) : '';
   $municipio = (isset($_POST['municipio']) && $_POST['municipio'] != '') ? mysqli_real_escape_string($Link, $_POST['municipio']) : '';
-  $tipoalimento = (isset($_POST['tipoalimento']) && $_POST['tipoalimento'] != '') ? implode($_POST['tipoalimento'], ",") : '';
   $compraslocales = (isset($_POST['compraslocales']) && $_POST['compraslocales'] != '') ? mysqli_real_escape_string($Link, $_POST['compraslocales']) : '';
   $nombreCompleto = $primerNombre . ' ' . (($segundoNombre != '') ? $segundoNombre.' ' : '') . $primerApellido . ' ' . (($segundoApellido != '') ? $segundoApellido : '');
   $numeroDocumentohidden = (isset($_POST['numeroDocumentohidden']) && $_POST['numeroDocumentohidden'] != '') ? mysqli_real_escape_string($Link, $_POST['numeroDocumentohidden']) : '';
   $idProveedor = (isset($_POST['idProveedor']) && $_POST['idProveedor'] != '') ? mysqli_real_escape_string($Link, $_POST['idProveedor']) : '';
+  $estado = (isset($_POST['estado']) && $_POST['estado'] != '') ? mysqli_real_escape_string($Link, $_POST['estado']) : '';
+
+
+  $tipoalimento = (isset($_POST['tipoalimento']) && $_POST['tipoalimento'] != '') ? implode($_POST['tipoalimento'], ",") : '';
+  foreach ($_POST['tipoalimento'] as $tipo_alimento) {
+    if ($tipo_alimento == 99) {
+      $tipoalimento = 99;
+      break;
+    }
+  }
 
   $consulta = "UPDATE proveedores SET
                 Nombrecomercial = '$nombreComercial',
@@ -31,7 +40,8 @@
                 SegundoApellido = '$segundoApellido',
                 TipoAlimento = '$tipoalimento',
                 cod_municipio = '$municipio',
-                compraslocales = '$compraslocales'
+                compraslocales = '$compraslocales',
+                estado = '$estado'
               WHERE Id = '$idProveedor';";
   $resultado = $Link->query($consulta) or die ('Error al actualizar proveedor: '. mysqli_error($Link));
   if ($resultado) {
