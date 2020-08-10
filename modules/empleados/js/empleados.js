@@ -695,11 +695,9 @@ function calcular_fecha_final(input){
 	var fecha = new Date(fecha_anio, fecha_mes, fecha_dia);
 	var dias = parseInt(input.val()-1); // Número de días a agregar
 	fecha.setDate(fecha.getDate() + dias);
-	console.log(fecha);
 	dia = fecha.getDate() < 10 ? "0"+fecha.getDate() : fecha.getDate();
 	mes = parseInt(fecha.getMonth())+1;
 	mes = mes < 10 ? "0"+mes : mes;
-	console.log('Mes '+mes);
 	$('#FechaFinalContrato').val(fecha.getFullYear()+"-"+mes+"-"+dia);
 	console.log(fecha.getFullYear()+"-"+mes+"-"+dia);
 }
