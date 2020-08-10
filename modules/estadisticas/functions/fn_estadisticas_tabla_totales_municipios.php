@@ -108,10 +108,10 @@ foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
 		                  $totalesMunicipios3[$codigo][1] = $Ciudad;
 		                }
 
-		 				if (isset($sumTotalesSemanas['semana_'.$i]) && isset($dataMunicipios['semana_'.$i])) {
-		                  $sumTotalesSemanas['semana_'.$i] += $dataMunicipios['semana_'.$i];
-		                } else if (!isset($sumTotalesSemanas['semana_'.$i]) && isset($dataMunicipios['semana_'.$i])) {
-		                  $sumTotalesSemanas['semana_'.$i] = $dataMunicipios['semana_'.$i];
+		 				if (isset($sumTotalesSemanas['semana_'.$i])) {
+		                  $sumTotalesSemanas['semana_'.$i] += isset($dataMunicipios['semana_'.$i]) ? $dataMunicipios['semana_'.$i] : 0;
+		                } else if (!isset($sumTotalesSemanas['semana_'.$i])) {
+		                  $sumTotalesSemanas['semana_'.$i] = isset($dataMunicipios['semana_'.$i]) ? $dataMunicipios['semana_'.$i] : 0;
 		                }
 		 			}
 		 		}
@@ -164,7 +164,7 @@ foreach ($totalesMunicipios as $codigo => $semanaArr) {
 $tFootSemana ='<tr>
 	<th>TOTAL</th>';
 
-for ($l=1; $l <= count($totalesMunicipios); $l++) {
+for ($l=1; $l <= count($sumTotalesSemanas); $l++) {
 	if (strlen($l) == 1) { $l = "0".$l; }
 
 	$suma_total_semana = (isset($sumTotalesSemanas["semana_".$l])) ? $sumTotalesSemanas["semana_".$l] : 0;

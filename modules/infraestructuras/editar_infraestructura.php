@@ -10,7 +10,7 @@ $idinfraestructura = $_POST['idinfraestructura'];
 
 $Infraestructura;
 
-$consultarInfraestructura = "SELECT * FROM Infraestructura WHERE id = ".$idinfraestructura;
+$consultarInfraestructura = "SELECT * FROM infraestructura WHERE id = ".$idinfraestructura;
 $resultadoInfraestructura = $Link->query($consultarInfraestructura);
 if ($resultadoInfraestructura->num_rows > 0) {
   if ($DatosInfraestructura = $resultadoInfraestructura->fetch_assoc()) {

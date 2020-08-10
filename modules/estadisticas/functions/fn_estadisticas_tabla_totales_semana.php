@@ -134,9 +134,13 @@ $tFootSemana ='<tr>
 	  if (strlen($l) == 1) {
 	    $l = "0".$l;
 	  }
-	  $tFootSemana .='<th class="column_'.$l.' verGraficas" data-semana="'.$l.'">
-	    '.$sumTotalesSemanas["semana_".$l].'
-	  </th>';
+    if (isset($sumTotalesSemanas["semana_".$l])) {
+  	  $tFootSemana .='<th class="column_'.$l.' verGraficas" data-semana="'.$l.'">
+  	    '.$sumTotalesSemanas["semana_".$l].'
+  	  </th>';
+    } else {
+      $tFootSemana .= '<th></th>';
+    }
 	
 	  } 
 $tFootSemana .='</tr>';

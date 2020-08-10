@@ -5,3 +5,9 @@ functions/*.txt
 db/conexion.php
 
 .DS_Store
+
+upload/logotipos/logo_alianza.jpeg
+
+upload/logotipos/logo_operador.jpeg
+
+upload/logotipos/logo_operador.png
