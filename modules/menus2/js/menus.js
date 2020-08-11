@@ -6,10 +6,7 @@ var borrarFTD = 0;
 var productos;
 var tipoDespachos;
 
-console.log(numMedida+", "+numProducto);
-
 $(document).ready(function(){
-
   jQuery.extend(jQuery.validator.messages, {//Configuración jquery valid
     required: "Este campo es obligatorio.",
     remote: "Por favor, rellena este campo.",
