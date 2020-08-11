@@ -74,9 +74,16 @@
   }
 
   ksort($totalesComplementos);
+$tipoComplementos = [];
+foreach ($totalesComplementos as $mes => $valoresMes) {
+  foreach ($valoresMes as $complemento => $totales) {
+    $tipoComplementos[$complemento] = 1;
+  }
+}
+
   $tHeadComp = '<tr>
                   <th>Mes</th>';
-    foreach ($tipoComplementos as $key => $complemento) {
+    foreach ($tipoComplementos as $complemento => $setted) {
         $tHeadComp .= '<th>'.$complemento.'</th>';
     }
   $tHeadComp .= '</tr>';
@@ -95,7 +102,7 @@
   $tFootComp = '<tr>
     <th>TOTAL</th>';
 
-    foreach ($tipoComplementos as $key => $complemento) {
+    foreach ($tipoComplementos as $complemento => $setted) {
       if (isset($sumTotalesComplementos[$complemento])) {
         $tFootComp .='<th>'.$sumTotalesComplementos[$complemento].'</th>';
       } else {

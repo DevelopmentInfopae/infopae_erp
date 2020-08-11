@@ -71,19 +71,17 @@
                     <label for="nombre">Razón social</label>
                     <input type="text" class="form-control" name="nombre" id="nombre" value="<?php if(isset($datos['Operador']) && $datos['Operador'] != '') { echo $datos['Operador']; }?>" required>
                   </div>
-
                   <div class="form-group col-sm-6">
-                    <label for="numeroContrato">Número de Contrato</label>
-                    <input type="text" class="form-control" name="numeroContrato" id="numeroContrato" value="<?php if(isset($datos['NumContrato']) && $datos['NumContrato'] != '') { echo $datos['NumContrato']; }?>" required>
+                    <label for="NIT">NIT Operador</label>
+                    <input type="text" name="NIT" id="NIT" class="form-control" value="<?php if (isset($datos['NIT']) && $datos['NIT'] != '') { echo $datos['NIT']; } ?>">
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="form-group col-sm-6">
-                    <label for="anio">Año de contrato</label>
-                    <input type="text" class="form-control" value="<?php if(isset($datos['ano']) && $datos['ano'] != '') { echo $datos['ano']; } else { echo date('Y'); } ?>" readOnly disabled>
+                    <label for="numeroContrato">Número de Contrato</label>
+                    <input type="text" class="form-control" name="numeroContrato" id="numeroContrato" value="<?php if(isset($datos['NumContrato']) && $datos['NumContrato'] != '') { echo $datos['NumContrato']; }?>" required>
                   </div>
-
                   <div class="form-group col-sm-6">
                     <label for="departamento">Departamento</label>
                     <select class="form-control" name="departamento" id="departamento" required>
@@ -102,7 +100,6 @@
                     </select>
                   </div>
                 </div>
-
                 <div class="row">
                   <div class="form-group col-sm-6">
                     <label for="municipio">Municipio</label>
@@ -121,60 +118,62 @@
                       ?>
                     </select>
                   </div>
-
                   <div class="form-group col-sm-6">
                     <label for="nombreEtc">ETC</label>
                     <input type="text" class="form-control" name="nombreEtc" id="nombreEtc" value="<?php if(isset($datos['NombreETC']) && $datos['NombreETC'] != '') { echo $datos['NombreETC']; }?>" placeholder="Ente territorial certificado" required>
                     <input type="hidden" name="id" id="id" value="<?php if(isset($datos['id']) && $datos['id']) { echo $datos['id']; } ?>">
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-group col-sm-4">
-                <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumios."></i></label>
-                <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
-              </div>
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <label for="mesContrato">Mes de contrato</label>
-                  <input type="number" id="mesContrato" class="form-control" name="mesContrato" value="<?php if (isset($datos['MesContrato']) && $datos['MesContrato'] != '') { echo $datos['MesContrato']; } ?>" <?php if (isset($datos['MesContrato']) && $datos['MesContrato'] != '') { echo 'readOnly'; } ?> required>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                    <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumios."></i></label>
+                    <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="mesContrato">Mes de contrato</label>
+                      <input type="number" id="mesContrato" class="form-control" name="mesContrato" value="<?php if (isset($datos['MesContrato']) && $datos['MesContrato'] != '') { echo $datos['MesContrato']; } ?>" <?php if (isset($datos['MesContrato']) && $datos['MesContrato'] != '') { echo 'readOnly'; } ?> required>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group col-sm-4">
-                <label for="nombre_representante_legal">Representate legal</label>
-                <input type="text" name="nombre_representante_legal" id="nombre_representante_legal" class="form-control" value="<?php if (isset($datos['nombre_representante_legal']) && $datos['nombre_representante_legal'] != '') { echo $datos['nombre_representante_legal']; } ?>">
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-group col-sm-4">
-                <label for="documento_representante_legal">Documento representante legal</label>
-                <input type="text" name="documento_representante_legal" id="documento_representante_legal" class="form-control" value="<?php if (isset($datos['documento_representante_legal']) && $datos['documento_representante_legal'] != '') { echo $datos['documento_representante_legal']; } ?>">
-              </div>
-              <div class="form-group col-sm-4">
-                <label for="NIT">NIT Operador</label>
-                <input type="text" name="NIT" id="NIT" class="form-control" value="<?php if (isset($datos['NIT']) && $datos['NIT'] != '') { echo $datos['NIT']; } ?>">
-              </div>
-              <div class="form-group col-sm-4">
-                <label for="ValorContrato">ValorContrato</label>
-                <input type="number" name="ValorContrato" id="ValorContrato" class="form-control" value="<?php if (isset($datos['ValorContrato']) && $datos['ValorContrato'] != '') { echo $datos['ValorContrato']; } ?>">
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-group col-sm-4">
-                <label>Permitir repitentes</label><br>
-                <label>
-                  <input type="radio" name="PermitirRepitentes" value="1" <?= $datos['PermitirRepitentes'] == 1 ? 'checked="checked"' : '' ?>>
-                  Si
-                </label>
-                <label>
-                  <input type="radio" name="PermitirRepitentes" value="0" <?= $datos['PermitirRepitentes'] == 0 ? 'checked="checked"' : '' ?>>
-                  No
-                </label>
-              </div>
-              <div class="form-group col-sm-4">
-                <label for="email">E-mail</label>
-                <input type="text" name="email" id="email" class="form-control" value="<?php if (isset($datos['email']) && $datos['email'] != '') { echo $datos['email']; } ?>">
+                <!--  -->
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                    <label for="nombre_representante_legal">Representate legal</label>
+                    <input type="text" name="nombre_representante_legal" id="nombre_representante_legal" class="form-control" value="<?php if (isset($datos['nombre_representante_legal']) && $datos['nombre_representante_legal'] != '') { echo $datos['nombre_representante_legal']; } ?>">
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="documento_representante_legal">Documento representante legal</label>
+                    <input type="text" name="documento_representante_legal" id="documento_representante_legal" class="form-control" value="<?php if (isset($datos['documento_representante_legal']) && $datos['documento_representante_legal'] != '') { echo $datos['documento_representante_legal']; } ?>">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                    <label for="anio">Año de contrato</label>
+                    <input type="text" class="form-control" value="<?php if(isset($datos['ano']) && $datos['ano'] != '') { echo $datos['ano']; } else { echo date('Y'); } ?>" readOnly disabled>
+                  </div>                  
+                  <div class="form-group col-sm-6">
+                    <label for="ValorContrato">ValorContrato</label>
+                    <input type="number" name="ValorContrato" id="ValorContrato" class="form-control" value="<?php if (isset($datos['ValorContrato']) && $datos['ValorContrato'] != '') { echo $datos['ValorContrato']; } ?>">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-6">
+                    <label>Permitir repitentes</label><br>
+                    <label>
+                      <input type="radio" name="PermitirRepitentes" value="1" <?= $datos['PermitirRepitentes'] == 1 ? 'checked="checked"' : '' ?>>
+                      Si
+                    </label>
+                    <label>
+                      <input type="radio" name="PermitirRepitentes" value="0" <?= $datos['PermitirRepitentes'] == 0 ? 'checked="checked"' : '' ?>>
+                      No
+                    </label>
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="email">E-mail</label>
+                    <input type="text" name="email" id="email" class="form-control" value="<?php if (isset($datos['email']) && $datos['email'] != '') { echo $datos['email']; } ?>">
+                  </div>
+                </div>
               </div>
             </div>
           </form>
