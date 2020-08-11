@@ -540,12 +540,20 @@ function despachoPorSede(despacho){
 		$( ".soloJs" ).remove();
 		var mesI = $('#mesi').val();
 		var annoI = $('#annoi').val();
+		var paginasObservacionesI = $('#paginasObservaciones').val();
 		$('#despachoAnnoI').val(annoI);
 		$('#despachoMesI').val(mesI);
+		$('#paginasObservacionesI').val(paginasObservacionesI);
 		$('#despacho').val(despacho);
 		$('#formDespachoPorSede').submit();
 	}
 }
+
+
+
+
+
+
 
 function despachos_consolidado(){
 	var cant = 0;
@@ -686,6 +694,73 @@ function covid19_despachos_consolidado(){
 		$('#rutaNm').val(rutaSeleccionada);
 
 		$('#formDespachos').attr('action', 'covid19_despacho_consolidado.php');
+		$('#formDespachos').attr('method', 'post');
+		$('#formDespachos').submit();
+		$('#formDespachos').attr('method', 'get');
+	}
+
+
+
+
+
+
+
+
+
+
+}
+function covid19_despachos_consolidado_ri(){
+
+
+
+
+
+	var cant = 0;
+	var complementoActual = '';
+	var semana = 0;
+	var bandera = 0;
+	var despacho = 0;
+
+	// Ciclo para contar los despachos seleccionados.
+	$('tbody input:checked').each(function(){
+		if(bandera == 0){
+			cant++;
+			despacho = $(this).val();
+			var complemento =  $(this).attr("complemento");
+			console.log(complemento);			
+			// var semana =  $(this).attr("semana");
+			// var tipo =  $(this).attr("tipo");
+			// var sede =  $(this).attr("sede");
+			// var estado =  $(this).attr("estado");
+			// console.log(semana);
+			// console.log(tipo);
+			// console.log(sede);
+			// console.log(estado);
+			if(bandera == 0){
+				if(complementoActual == ''){
+					complementoActual = complemento;
+				}
+				else{
+					if(complementoActual != complemento){
+						bandera++;
+						Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
+					}
+				}
+			}
+		}
+	});
+
+	if(cant == 0){
+		Command: toastr.warning('Debe seleccionar al menos un despacho para continuar', 'Advertencia');
+		bandera++;
+	}
+
+	if(bandera == 0){
+		$( ".soloJs" ).remove();
+		var rutaSeleccionada = $('#ruta option:selected').text();
+		$('#rutaNm').val(rutaSeleccionada);
+
+		$('#formDespachos').attr('action', 'covid19_despacho_consolidado_ri.php');
 		$('#formDespachos').attr('method', 'post');
 		$('#formDespachos').submit();
 		$('#formDespachos').attr('method', 'get');

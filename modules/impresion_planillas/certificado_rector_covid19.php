@@ -9,11 +9,62 @@ set_time_limit (0);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
 
+
+//var_dump($_POST);
+
 // Declaración de variables
 $diaInicialSemanaInicial = $_POST["diaInicialSemanaInicial"];
 $diaFinalSemanaInicial = $_POST["diaFinalSemanaInicial"];
 $diaInicialSemanaFinal = $_POST["diaInicialSemanaFinal"];
 $diaFinalSemanaFinal = $_POST["diaFinalSemanaFinal"];
+
+
+//Imprimir mes
+$imprimirMes = 0;
+$mesLetras = "";
+if(isset($_POST["imprimirMes"]) &&  $_POST["imprimirMes"] == "on"){
+	$imprimirMes = 1;
+	switch ($_POST['mes']) {
+		case 1:
+			$mesLetras = "Enero";
+			break;
+		case 2:
+			$mesLetras = "Febrero";
+			break;
+		case 3:
+			$mesLetras = "Marzo";
+			break;
+		case 4:
+			$mesLetras = "Abril";
+			break;
+		case 5:
+			$mesLetras = "Mayo";
+			break;
+		case 6:
+			$mesLetras = "Junio";
+			break;
+		case 7:
+			$mesLetras = "Julio";
+			break;
+		case 8:
+			$mesLetras = "Agosto";
+			break;
+		case 9:
+			$mesLetras = "Septiembre";
+			break;
+		case 10:
+			$mesLetras = "Octubre";
+			break;
+		case 11:
+			$mesLetras = "Noviembre";
+			break;
+		case 12:
+			$mesLetras = "Diciembre";
+			break;
+	}
+
+}
+
 
 $tamannoFuente = 8;
 class PDF extends FPDF

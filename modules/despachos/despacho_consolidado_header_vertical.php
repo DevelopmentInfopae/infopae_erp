@@ -1,10 +1,14 @@
 <?php
+$tamannoFuente = 5;
+$pdf->SetFont('Arial','',$tamannoFuente);
+
+
 $municipio = '';
 $institucion = '';
 
 $pdf->SetFont('Arial','',$tamannoFuente);
 $logoInfopae = $_SESSION['p_Logo ETC'];
-$pdf->Image($logoInfopae, 15.6 ,8.6, 64.62, 9.9,'jpg', '');
+$pdf->Image($logoInfopae, 30.5 ,8.6, 64.62, 9.9,'jpg', '');
 // Marco
 $pdf->SetFont('Arial');
 $pdf->SetTextColor(0,0,0);
@@ -22,7 +26,7 @@ $pdf->SetXY($current_x+92.5, $current_y+0.5);
 
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->MultiCell(0,2.3,utf8_decode("PROGRAMA DE ALIMENTACIÓN ESCOLAR\nREMISIÓN ENTREGA DE VÍVERES EN INSTITUCIÓN EDUCATIVA\nAlmuerzo preparado en sitio población vulnerable\nTodos"),0,'C',false);
+$pdf->MultiCell(0,2.3,utf8_decode("PROGRAMA DE ALIMENTACIÓN ESCOLAR\nORDEN DE PEDIDO DE VÍVERES POR MUNICIPIO\nAlmuerzo preparado en sitio población vulnerable\nTodos"),0,'C',false);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
 
@@ -58,17 +62,60 @@ $pdf->Cell(17,5,utf8_decode('DEPARTAMENTO:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(101,5,utf8_decode(strtoupper($_SESSION['p_Nombre ETC'])),'R',0,'L',False);
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(12,5,utf8_decode('MUNICIPIO:'),0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
 
-$aux = '';
-for ($ii=0; $ii < count($municipios) ; $ii++) {
-  if($ii > 0){
-    $aux = $aux.", ";
-  }
-  $aux = $aux.$municipios[$ii];
+
+
+
+
+
+if($ruta == '' || $ruta == 'Todos'){
+	$pdf->Cell(12,5,utf8_decode('MUNICIPIO:'),0,0,'L',False);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$aux = '';
+	for ($ii=0; $ii < count($municipios) ; $ii++) {
+		if($ii > 0){
+			$aux = $aux.", ";
+		}
+		$aux = $aux.$municipios[$ii];
+	}
+	$pdf->Cell(0,5,utf8_decode($aux),0,0,'L',False);
+}else{
+	//$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Cell(6,5,utf8_decode('RUTA:'),0,0,'L',False);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(0,5,utf8_decode($ruta),0,0,'L',False);
+
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(16,4.76,utf8_decode('PROVEEDOR:'),"R",0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(0,4.76,utf8_decode($nombre_proveedor),0,0,'L',False);
 }
-$pdf->Cell(0,5,utf8_decode($aux),0,0,'L',False);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Linea 6
@@ -148,9 +195,9 @@ $cget = "select * from grupo_etario";
 $resGrupoEtario =$Link->query($cget) or die ('Unable to execute query. '."<br>$cget<br>". mysqli_error($Link));
 
 if ($resGrupoEtario->num_rows > 0){
-  while ($ge = $resGrupoEtario->fetch_assoc()){
-    $get[] = $ge['DESCRIPCION'];
-  }
+	while ($ge = $resGrupoEtario->fetch_assoc()){
+		$get[] = $ge['DESCRIPCION'];
+	}
 }
 
 

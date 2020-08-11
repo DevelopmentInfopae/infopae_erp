@@ -13,13 +13,28 @@
 		display: block;
 		color: #ffffff;
 		border-radius: 3px;
+		margin: auto;
 	}
 	.Entrada{
 		background-color: #00A859;
 		width: 60%;
 		display: block;
 		color: #ffffff;
+		margin: auto;
 		border-radius: 3px;
+	}
+	.textoCentrado{
+		text-align: center;
+		width: 136px;
+	}
+	.fecha-hora{
+		width: 200px;
+	}
+	.documento{
+		width: 136px;
+	}
+	.cargo-tabla{
+		width: 136px;
 	}
 </style>
 
@@ -52,68 +67,41 @@
 			<div class="ibox float-e-margins">
 				<div class="ibox-content contentBackground">
 					<div class="row">
-					<div class="col-sm-12 col-md-12">
+						<div class="col-sm-12 col-md-12">
+							<div class="table-responsive">
+
+								<table class="table table-striped table-bordered table-hover selectableRows box-table-movimientos" id="box-table-movimientos" >
+									<thead>
+										<tr>
+											<th>Fecha / Hora</th>
+											<th>Evento</th>
+											<th>Nombre</th>
+											<th>Documento</th>
+											<th>Cargo</th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Fecha / Hora</th>
+											<th>Evento</th>
+											<th>Nombre</th>
+											<th>Documento</th>
+											<th>Cargo</th>
+										</tr>
+									</tfoot>
+								</table>
 					
 					
-					<div class="table-responsive">
-					<table class="table table-striped table-bordered table-hover selectableRows" id="box-table-movimientos" >
-					<thead>
-					<tr>
-					<th>Fecha / Hora</th>
-					<th>Evento</th>
-					<th>Nombre</th>
-					<th>Documento</th>
+
+
+
 				
-					<th>Cargo</th>
-					
-					</tr>
-					</thead>
-					<tbody>
-
-
-
-					<?php
-					$consulta = " SELECT  DATE_FORMAT(cp.fecha, \"%d/%m/%Y %H:%i:%s\") AS fecha, IF(cp.tipo = 1, \"Entrada\", \"Salida\") as evento, e.Nombre, e.Nitcc, e.cargo FROM control_personal cp LEFT JOIN empleados e ON cp.num_doc = e.Nitcc ORDER BY cp.ID desc ";
-					//echo "<br><br>$consulta2<br><br>";
-					
-					
-					$resultado = $Link->query($consulta);
-					if($resultado->num_rows > 0){
-						while($row = $resultado->fetch_assoc()){
-							?>
-							<tr> 
-								<td><?= $row['fecha'] ?></td> 
-								<td style="text-align:center;"><span class="<?= $row['evento'] ?>"><?= $row['evento'] ?></span></td>
-								<td><?= $row['Nombre'] ?></td> 
-								<td><?= $row['Nitcc'] ?></td> 
-								<td><?= $row['cargo'] ?></td> 
-						
-
-							<?php
-
-						}
-						//var_dump($row);
-					}
-					?>
 
 
 
 
 
 	
-					</tbody>
-					<tfoot>
-					<tr>
-					<th>Fecha / Hora</th>
-					<th>Evento</th>
-					<th>Nombre</th>
-					<th>Documento</th>
-			
-					<th>Cargo</th>
-		
-					</tr>
-					</tfoot>
-					</table>
 					</div>		
 					</div>
 					</div>
@@ -155,31 +143,44 @@
 	<script>
 		$(document).ready(function(){
 
-			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
-			botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
-
+			// var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
+			// botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
+			// botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
+			// botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
+			// botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
+			// botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
+			// botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
+			// botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
+			
 			// Menu para COVID
-			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
-
-			botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
-
+			// botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
+			
+			// botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
+			
 			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-				botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';
-				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a></li>';
-				botonAcciones += '<li><a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a></li>';
-			botonAcciones += '<?php } ?>';
-			botonAcciones += '</ul></div>';
-
+				// botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';
+				// botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a></li>';
+				// botonAcciones += '<li><a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a></li>';
+				<?php } ?>
+				//botonAcciones += '</ul></div>';
+				
+			var botonAcciones = '';
 			$('.containerBtn').html(botonAcciones);
 
 		});
 	</script>
+
+
+<script>
+// function startRefresh() {
+// $.get('', function(data) {
+// $(document.body).html(data);    
+// });
+// }
+// $(function() {
+// setTimeout(startRefresh,10000);
+// });
+</script>
 
 
 	<!-- Page-Level Scripts -->

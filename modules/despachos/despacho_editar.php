@@ -4,6 +4,7 @@ set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';
+$paginasObservaciones = 1;
 // $Link = new mysqli($Hostname, $Username, $Password, $Database);
 // if ($Link->connect_errno) {
 //     echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
@@ -49,7 +50,7 @@ $mesAnno = '';
           $anno = substr($anno, -2);
           $anno = trim($anno);
           $mesAnno = $mes.$anno;
-          $_POST = array_slice($_POST, 2);
+          $_POST = array_slice($_POST, 3);
           $_POST = array_values($_POST);
         }else{
           // Se va a recuperar el mes y el año para las tablaMesAnno
@@ -80,6 +81,20 @@ $mesAnno = '';
           if(isset($_POST['rutaNm'])){
             $corteDeVariables++;
           }
+
+          if(isset($_POST['paginasObservaciones'])){
+            $paginasObservaciones = $_POST['paginasObservaciones'];
+            $corteDeVariables++;
+          }
+
+          $imprimirMes = 0;
+          if(isset($_POST['imprimirMes'])){
+            if($_POST['imprimirMes'] == 'on'){
+              $imprimirMes = 1;	
+            }
+            $corteDeVariables++;
+          }
+
 
           $_POST = array_slice($_POST, $corteDeVariables);
           $_POST = array_values($_POST);

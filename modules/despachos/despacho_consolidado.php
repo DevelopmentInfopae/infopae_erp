@@ -13,6 +13,7 @@ include '../../php/funciones.php';
 $largoNombre = 30;
 $sangria = " - ";
 $tamannoFuente = 6;
+$paginasObservaciones = 1;
 
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
@@ -51,6 +52,20 @@ if(isset($_POST['ruta'])){
 if(isset($_POST['rutaNm'])){
 	$corteDeVariables++;
 }
+if(isset($_POST['paginasObservaciones'])){
+	$paginasObservaciones = $_POST['paginasObservaciones'];
+	$corteDeVariables++;
+  }
+
+
+$imprimirMes = 0;
+if(isset($_POST['imprimirMes'])){
+	if($_POST['imprimirMes'] == 'on'){
+		$imprimirMes = 1;	
+	}
+	$corteDeVariables++;
+}
+
 $_POST = array_slice($_POST, $corteDeVariables);
 $_POST = array_values($_POST);
 
@@ -284,7 +299,6 @@ for ($i=0; $i < count($despachos) ; $i++)
 	
 	
 	$consulta = " SELECT DISTINCT dd.id, dd.*, pmd.CantU1, CEILING(pmd.CantU2) as CantU2, CEILING(pmd.CantU3) as CantU3, CEILING(pmd.CantU4) as CantU4, CEILING(pmd.CantU5) as CantU5, pmd.CanTotalPresentacion, p.cantidadund2, p.cantidadund3, p.cantidadund4, p.cantidadund5, p.nombreunidad2, p.nombreunidad3, p.nombreunidad4, p.nombreunidad5 FROM despachos_det$mesAnno dd LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto LEFT JOIN productos$anno p ON dd.cod_Alimento = p.Codigo WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero ";
-
 	//echo "<br><br>$consulta<br><br>";
 
 
@@ -336,6 +350,13 @@ for ($i=0; $i < count($despachos) ; $i++)
 			$alimento['nombreunidad3'] = '';
 			$alimento['nombreunidad4'] = '';
 			$alimento['nombreunidad5'] = '';
+			
+			$alimento['cantidadund2'] = $row['cantidadund2'];;
+			$alimento['cantidadund3'] = $row['cantidadund3'];;
+			$alimento['cantidadund4'] = $row['cantidadund4'];;
+			$alimento['cantidadund5'] = $row['cantidadund5'];;
+	
+
 			$alimentos[] = $alimento;
 		}
 	}
@@ -556,8 +577,7 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario)
 
 
 
-	foreach ($grupo_alimentario as $alimento)
-	{
+	foreach ($grupo_alimentario as $alimento){
 
 		//var_dump($alimento);
 
@@ -583,6 +603,7 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario)
 			$aux = $alimento['grupo1']; 
 			$aux = number_format($aux, 2, '.', '');
 		}
+		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 		$pdf->Cell(13.1, 4, utf8_decode($aux), 1, 0, 'C', FALSE);
 		
 		
@@ -592,6 +613,7 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario)
 			$aux = $alimento['grupo2']; 
 			$aux = number_format($aux, 2, '.', '');
 		}
+		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 		$pdf->Cell(13.1, 4, utf8_decode($aux), 1, 0, 'C', FALSE);
 		
 		
@@ -601,6 +623,7 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario)
 			$aux = $alimento['grupo3']; 
 			$aux = number_format($aux, 2, '.', '');
 		}
+		if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 		$pdf->Cell(13.1, 4, utf8_decode($aux), 1, 0, 'C', FALSE);
 		
 	
@@ -620,7 +643,27 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario)
 		else
 		{ $aux = $alimento['grupo1']+$alimento['grupo2']+$alimento['grupo3']; }
 
+		
+		
+		// if($alimento['grupo_alim'] == "Contramuestra"){ 
+		// 	$aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5'];
+		// }
+		
 		$pdf->Cell(13.141, 4, number_format($aux, 2, '.', ''), 1, 0, 'C', FALSE);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		if($alimento['presentacion'] == 'u')
 		{
@@ -645,6 +688,10 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario)
 			else
 			{ $aux = number_format($aux, 2, '.', ''); }
 		}
+
+		// if($alimento['grupo_alim'] == "Contramuestra"){
+		// 	$aux = $alimento['cantidadund2'] + $alimento['cantidadund3'] + $alimento['cantidadund4'] + $alimento['cantidadund5'];
+		// }
 
 		$pdf->Cell(10.6,4,$aux,1,0,'C',FALSE);
 

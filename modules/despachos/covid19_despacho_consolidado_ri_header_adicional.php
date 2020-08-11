@@ -1,6 +1,5 @@
 <?php
-$titulo = "Programa de Alimentación Escolar - PAE \n Atención en el marco del Estado de Emergencia, Económica, Social y Ecológica, derivado de la pandemia del COVID-19 \n Modalidad - ".$descripcionTipo;
-
+$titulo = "Registro De Novedades - Repitentes Y/O Suplentes Del Programa De Alimentación Escolar - PAE\nAtención en el marco del Estado de Emergencia, Económica, Social y Ecológica, derivado de la pandemia del COVID-19\nModalidad - ".$descripcionTipo;
 
 
 
@@ -10,20 +9,7 @@ $titulo = "Programa de Alimentación Escolar - PAE \n Atención en el marco del 
 
 $tamannoFuente = 6;
 $pdf->SetFont('Arial','',$tamannoFuente);
-//header
-
-//var_dump($nomSedes);
 $nomSede = $nomSedes[$sede_unica];
-// var_dump($nomSede);
-// $nomInstitucion= $nomSede['nom_inst'];
-// $codInstitucion = $nomSede['cod_inst'];
-// $nomSede = $nomSede['nom_sede'];
-// $codSede = $nomSede['cod_sede'];
-// var_dump($nomSede);
-
-
-
-
 
 $pdf->SetFont('Arial','B',$tamannoFuente+1);
 $logoInfopae = $_SESSION['p_Logo ETC'];
@@ -191,106 +177,142 @@ $pdf->SetFont('Arial','B',$tamannoFuente-2);
 //TODO sumar 6
 
 
-$pdf->Rotate_text($current_x+2.9, $current_y+16, utf8_decode('Nº ORDEN'), 90);
-$pdf->Cell(4,24,'','TBL',0,'C',False);
+$pdf->Rotate_text($current_x+2.9, $current_y+13, utf8_decode('Nº ORDEN'), 90);
+$pdf->Cell(4,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->SetXY($current_x, $current_y+7+3.5);
+$pdf->SetXY($current_x, $current_y+7);
 $pdf->MultiCell(42,2,utf8_decode("APELLIDOS Y NOMBRES DEL\nTITULAR"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(42,24,"",'TBL',0,'C',False);
+$pdf->Cell(42,17,"",'TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->SetXY($current_x, $current_y+7+3.5);
+$pdf->SetXY($current_x, $current_y+7);
 $pdf->MultiCell(17,2,utf8_decode("Nº IDENTIFICACION DEL TITULAR"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(17,24,'','TBL',0,'C',False);
+$pdf->Cell(17,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->SetXY($current_x, $current_y+5+3.5);
-$pdf->MultiCell(17,2,utf8_decode("FECHA DE ENTREGA DE LA RACIÓN PARA PREPARAR EN CASA\n(DD/MM/AAAA)"),0,'C',false);
+$pdf->SetXY($current_x, $current_y+5);
+$pdf->MultiCell(17,2,utf8_decode("FECHA DE ENTREGA DE LA RACIÓN INDUSTRIALIZADA\n(DD/MM/AAAA)"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(17,24,'','TBL',0,'C',False);
+$pdf->Cell(17,17,'','TBL',0,'C',False);
 
 
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-//$pdf->Cell(3.25,3,'NIVEL','B',0,'C',False);
-//$pdf->SetXY($current_x, $current_y+3);
-$pdf->SetXY($current_x, $current_y);
-$pdf->Rotate_text($current_x+2.125, $current_y+3+12, utf8_decode("GRADO"), 90);
+$pdf->Cell(13,3,'NIVEL','B',0,'C',False);
+$pdf->SetXY($current_x, $current_y+3);
+// $pdf->Rotate_text($current_x+2.125, $current_y+3+12.5+4, utf8_decode("PREESCOLAR"), 90);
 // $pdf->Rotate_text($current_x+3+2.5, $current_y+3+11.5+4, utf8_decode("PRIMARIA"), 90);
 // $pdf->Rotate_text($current_x+3+3+2.7, $current_y+3+10.5+4, utf8_decode("BASICA"), 90);
 // $pdf->Rotate_text($current_x+3+3+3+2.8, $current_y+3+10+4, utf8_decode("MEDIA"), 90);
-$pdf->Cell(3.25,21,'','R',0,'C',False);
-// $pdf->Cell(3.25,21,'','R',0,'C',False);
-// $pdf->Cell(3.25,21,'','R',0,'C',False);
+$pdf->Rotate_text($current_x+3.8, $current_y+3+10, utf8_decode("GRADO"), 90);
+// $pdf->Rotate_text($current_x+3+2.5, $current_y+3+11, utf8_decode("PRIMARIA"), 90);
+$pdf->Rotate_text($current_x+10.3, $current_y+3+10, utf8_decode("GRUPO"), 90);
+// $pdf->Rotate_text($current_x+3+3+3+2.8, $current_y+3+9.5, utf8_decode("MEDIA"), 90);
+
+//$pdf->Cell(3.25,14,'','R',0,'C',False);
+$pdf->Cell(6.50,14,'','R',0,'C',False);
+// $pdf->Cell(3.25,14,'','R',0,'C',False);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(3.25,24,'','TBL',0,'C',False);
-
-
-
-
+$pdf->Cell(13,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->Cell(69.5,3,utf8_decode('CONFORMACIÓN RACIÓN PARA PREPARAR EN CASA (RPC)'),'B',0,'C',False);
+$pdf->Cell(94,3,utf8_decode('CONTROL DE ENTREGA'),'B',0,'C',False);
 
-include 'covid19_despacho_consolidado_productos.php';
+
+
+// El espacio para los productos es de 94mm
+$anchoCeldaAlimento = 19;
+$tamannoFuente = 4;
+$pdf->SetFont('Arial','B',$tamannoFuente);
+
+$pdf->SetXY($current_x, $current_y+3);
+$pdf->Cell($anchoCeldaAlimento,3,utf8_decode('CICLO SEMANA 1'),'B',0,'C',False);
+$pdf->SetXY($current_x, $current_y+9);
+$pdf->MultiCell($anchoCeldaAlimento,2,utf8_decode("CANTIDAD DE RACIONES ENTREGADAS"),0,'C',false);
+
+
+$pdf->SetXY($current_x+19, $current_y+3);
+$pdf->Cell($anchoCeldaAlimento,3,utf8_decode('CICLO SEMANA 2'),'B',0,'C',False);
+$pdf->SetXY($current_x+19, $current_y+9);
+$pdf->MultiCell($anchoCeldaAlimento,2,utf8_decode("CANTIDAD DE RACIONES ENTREGADAS"),0,'C',false);
+
+
+$pdf->SetXY($current_x+19+19, $current_y+3);
+$pdf->Cell($anchoCeldaAlimento,3,utf8_decode('CICLO SEMANA 3'),'B',0,'C',False);
+$pdf->SetXY($current_x+19+19, $current_y+9);
+$pdf->MultiCell($anchoCeldaAlimento,2,utf8_decode("CANTIDAD DE RACIONES ENTREGADAS"),0,'C',false);
+
+
+$pdf->SetXY($current_x+19+19+19, $current_y+3);
+$pdf->Cell($anchoCeldaAlimento,3,utf8_decode('CICLO SEMANA 4'),'B',0,'C',False);
+$pdf->SetXY($current_x+19+19+19, $current_y+9);
+$pdf->MultiCell($anchoCeldaAlimento,2,utf8_decode("CANTIDAD DE RACIONES ENTREGADAS"),0,'C',false);
+
+
+$pdf->SetXY($current_x+19+19+19+19, $current_y+8);
+$pdf->MultiCell(18,2,utf8_decode("TOTAL RACIONES ENTREGADAS"),0,'C',false);
+
+
+
+$pdf->SetXY($current_x, $current_y+3);
+$pdf->Cell($anchoCeldaAlimento,14,'','R',0,'C',False);
+$pdf->Cell($anchoCeldaAlimento,14,'','R',0,'C',False);
+$pdf->Cell($anchoCeldaAlimento,14,'','R',0,'C',False);
+$pdf->Cell($anchoCeldaAlimento,14,'','R',0,'C',False);
+$pdf->Cell(18,14,'','R',0,'C',False);
+
+
+//include 'covid19_despacho_consolidado_ri_productos.php';
 
 $pdf->SetXY($current_x, $current_y+13.5);
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(70,18,utf8_decode('Especifique Cantidad TOTAL entregada o colocar un guion si el alimento no se entregó en el paquete.'),0,0,'C',False);
+//$pdf->Cell(94,18,utf8_decode('Especifique Cantidad TOTAL entregada o colocar un guion si el alimento no se entregó en el paquete.'),0,0,'C',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(70,24,'','TBL',0,'C',False);
+$pdf->Cell(94,17,'','TBL',0,'C',False);
 
 
 /* Despues de los alimentos */
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->SetXY($current_x, $current_y+7+3.5);
-$pdf->MultiCell(46,2,utf8_decode("NOMBRE COMPLETO DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA (PADRE, MADRE, ACUDIENTE)"),0,'C',false);
+$pdf->SetXY($current_x, $current_y+8);
+$pdf->MultiCell(46,2,utf8_decode("NOMBRE COMPLETO DE QUIEN RECIBE LA RACIÓN INDUSTRIALIZADA (PADRE, MADRE, ACUDIENTE)"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(46,24,'','TBL',0,'C',False);
+$pdf->Cell(46,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->SetXY($current_x, $current_y+6+3.5);
-$pdf->MultiCell(30,2,utf8_decode("Nº IDENTIFICACIÓN DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
+$pdf->SetXY($current_x, $current_y+7);
+$pdf->MultiCell(28,2,utf8_decode("Nº IDENTIFICACIÓN DE QUIEN RECIBE LA RACIÓN INDUSTRIALIZADA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(30,24,'','TBL',0,'C',False);
-
+$pdf->Cell(28,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->SetXY($current_x, $current_y+6+3.5);
-$pdf->MultiCell(20,2,utf8_decode("PARENTESCO"),0,'C',false);
+$pdf->SetXY($current_x, $current_y+6);
+$pdf->MultiCell(22,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN INDUSTRIALIZADA"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(20,24,'','TBL',0,'C',False);
-
-
+$pdf->Cell(22,17,'','TBL',0,'C',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->SetXY($current_x, $current_y+6+3.5);
-$pdf->MultiCell(30,2,utf8_decode("NÚMERO TELEFÓNICO - FIJO / CELULAR DE QUIEN RECIBE LA RACIÓN PARA PREPARAR EN CASA"),0,'C',false);
-$pdf->SetXY($current_x, $current_y);
-$pdf->Cell(30,24,'','TBL',0,'C',False);
-
-$current_y = $pdf->GetY();
-$current_x = $pdf->GetX();
-$pdf->SetXY($current_x, $current_y+8+3.5);
+$pdf->SetXY($current_x, $current_y+8);
 $pdf->MultiCell(0,2,utf8_decode("FIRMA O HUELLA DE QUIEN RECIBE LA RACIÓN "),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
-$pdf->Cell(0,24,'','TBLR',0,'C',False);
+$pdf->Cell(0,17,'','TBLR',0,'C',False);
 
-$pdf->Ln(24);
+$pdf->Ln(17);
+//$pdf->Ln(24);
 
 
 $tamannoFuente = 5;

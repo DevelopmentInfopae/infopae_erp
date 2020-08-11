@@ -292,7 +292,13 @@ if ($resultadoModalidad->num_rows > 0) {
 	}
 }
 
-$consultarInfraestructuras = "SELECT * FROM Infraestructura";
+if ($_GET['id']) {
+	$id_exportar = $_GET['id'];
+	$consultarInfraestructuras = "SELECT * FROM infraestructura WHERE id = ".$id_exportar;
+} else {
+	$consultarInfraestructuras = "SELECT * FROM infraestructura";
+}
+
 $resultadoInfraestructuras = $Link->query($consultarInfraestructuras);
 if ($resultadoInfraestructuras->num_rows>0) {
 	while ($Infraestructura = $resultadoInfraestructuras->fetch_assoc()) {

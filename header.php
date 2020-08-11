@@ -18,6 +18,14 @@
     if ($result_parametros->num_rows > 0) {
         $parametros = $result_parametros->fetch_assoc();
     }
+
+    $consulta_parametros_nomina = "SELECT * FROM parametros_nomina";
+    $result_parametros_nomina = $Link->query($consulta_parametros_nomina);
+    $parametros_nomina = false;
+
+    if (isset($result_parametros_nomina->num_row) && $result_parametros_nomina->num_rows > 0) {
+        $parametros_nomina = $result_parametros_nomina->fetch_assoc();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -74,6 +82,9 @@
                     '11' : 'Noviembre',
                     '12' : 'Diciembre'
                   };
+
+        var parametros = JSON.parse('<?= json_encode($parametros) ?>');          
+        var parametros_nomina = JSON.parse('<?= json_encode($parametros_nomina) ?>');          
     </script>
 </head>
 <body>

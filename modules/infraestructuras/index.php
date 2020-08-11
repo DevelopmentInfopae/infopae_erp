@@ -148,7 +148,7 @@ $periodoActual = $_SESSION['periodoActual'];
                                 </li>
                               <?php endif ?>
                                <li>
-                                <a><span class="fa fa-file-excel-o"></span> Exportar</a>
+                                <a href="exportar_infraestructuras.php?id=<?= $row1['id'] ?>"><span class="fa fa-file-excel-o"></span> Exportar</a>
                                </li>
                             </ul>
                           </div>

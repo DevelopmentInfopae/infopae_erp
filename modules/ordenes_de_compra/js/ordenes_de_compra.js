@@ -49,27 +49,80 @@ $(document).ready(function(){
 		$("#parametrosBusqueda").submit();
 	});
 
+
+
+
+
+	
+	
+	
 	dataset1 = $('#box-table-movimientos').DataTable({
-		order: [ 1, 'desc' ],
-		dom: 'lr<"containerBtn"><"inputFiltro"f>tip',
-		pageLength: 25,
-		lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
-		responsive: true,
-		oLanguage: {
-			sLengthMenu: 'Mostrando _MENU_ registros por página',
-			sZeroRecords: 'No se encontraron registros',
-			sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-			sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-			sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-			sSearch:         'Buscar: ',
-			oPaginate:{
-				sFirst:    'Primero',
-				sLast:     'Último',
-				sNext:     'Siguiente',
-				sPrevious: 'Anterior'
-			}
-		}
+		bSort: false,
+		bPaginate: false,
+		buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } } ],
+		dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+	}).on("draw", function(){
+
 	});
+
+
+
+
+
+
+
+
+	// 	order: [ 1, 'desc' ],
+
+
+
+
+		
+	// 	//dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+	// 	//dom: 'lr<"containerBtn"><"inputFiltro"f>tip',
+		
+		
+		
+	// 	pageLength: 25,
+	// 	lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
+	// 	responsive: true,
+	// 	buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } } ],
+	// 	dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
+	// 	oLanguage: {
+	// 		sLengthMenu: 'Mostrando _MENU_ registros por página',
+	// 		sZeroRecords: 'No se encontraron registros',
+	// 		sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+	// 		sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+	// 		sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+	// 		sSearch:         'Buscar: ',
+	// 		oPaginate:{
+	// 			sFirst:    'Primero',
+	// 			sLast:     'Último',
+	// 			sNext:     'Siguiente',
+	// 			sPrevious: 'Anterior'
+	// 		}
+	// 	}
+	// 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Configuración del pligin toast
 	toastr.options = {
@@ -535,7 +588,7 @@ function despachoPorSede(despacho){
 	console.log('Click en una fila.');
 	// despacho = despacho;
 	estado = $("#estado_"+despacho).val();
-	console.log("Estado del despacho: "+estado);
+	console.log("Estado dla orden de compra: "+estado);
 	if(estado != 0){
 		$( ".soloJs" ).remove();
 		var mesI = $('#mesi').val();
@@ -548,6 +601,75 @@ function despachoPorSede(despacho){
 }
 
 
+
+
+
+function eliminar_orden(){
+	console.log('Se va a eliminar un despacho');
+	//Contando los elementos checked
+	var cant = 0;
+	var despacho = 0;
+	var tipo = '';
+	var estado = '';
+	var bandera = 0;
+	$("tbody input:checked").each(function(){
+		if(bandera == 0){
+			cant++;
+			despacho = $(this).val();
+			// if(2 != $("#estado_"+despacho).val()){
+			// 	bandera++;
+			// 	alert('Solo se pueden eliminar despachos en estado Pendiente.');
+			// 	return false;
+			// }
+			if(cant > 1){
+				alert('Debe seleccionar solo una orden de compra para eliminar');
+				bandera++;
+				return false;
+			}
+		}
+	}); // Termina de revisar cada uno de los elementos que se encuentren checkeados.
+
+	if(cant == 0){
+		alert('Debe seleccionar al menos una orden de compra para eliminar');
+		bandera++;
+	}
+
+	if(bandera == 0){
+		var r = confirm("Confirma que desea eliminar este registro.");
+		if (r == true) {
+			// Se va agregar el año y el mes para hacer la eliminación en la tabla correspondiente
+			var annoi = $('#annoi').val();
+			var mesi = $('#mesi').val();
+
+
+			// Se va a envíar la variable despacho para iniciar el procesos de eliminación.
+			var datos = {"despacho":despacho,"annoi":annoi,"mesi":mesi};
+			$.ajax({
+				type: "POST",
+				url: "functions/fn_eliminar.php",
+				data: datos,
+				beforeSend: function(){
+					$('#loader').fadeIn();
+				},
+				success: function(data){
+					$('#debug').html(data);
+					console.log('Resultado de la eliminación');
+					console.log(data);
+					if(data == 1){
+						alert('Se ha eliminado con éxito la orden de compra.');
+						location.reload();
+					}
+					//$('#municipio').html(data);
+				}
+			})
+			.done(function(){ })
+			.fail(function(){ })
+			.always(function(){
+				$('#loader').fadeOut();
+			});
+		}
+	}// Termina el if si la bandera esta en cero
+}// Termina la función para eliminar despachos.
 
 
 

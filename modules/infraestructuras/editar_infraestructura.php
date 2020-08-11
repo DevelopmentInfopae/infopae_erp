@@ -10,7 +10,7 @@ $idinfraestructura = $_POST['idinfraestructura'];
 
 $Infraestructura;
 
-$consultarInfraestructura = "SELECT * FROM Infraestructura WHERE id = ".$idinfraestructura;
+$consultarInfraestructura = "SELECT * FROM infraestructura WHERE id = ".$idinfraestructura;
 $resultadoInfraestructura = $Link->query($consultarInfraestructura);
 if ($resultadoInfraestructura->num_rows > 0) {
   if ($DatosInfraestructura = $resultadoInfraestructura->fetch_assoc()) {
@@ -611,7 +611,7 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                   <label for="bano_implemento_aseo[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
               <?php endif ?>
-              <?php if ($parametro['id'] != 4 && $parametro['id'] != 6): //Sólo parámetros que tienen dotacion ?>
+              <?php if ($parametro['id'] != 4 && $parametro['id'] != 6 && isset($dotaciones[$parametro['id']]) && $dotaciones[$parametro['id']]): //Sólo parámetros que tienen dotacion ?>
                 <?php foreach ($dotaciones[$parametro['id']] as $dotacion => $descripcion) { ?>
                   <input type="hidden" name="id_dotacion[]" value="<?php echo $dotacion; ?>">
                   <input type="hidden" name="id_valor_dotacion[<?php echo $parametro['id'] ?>][<?php echo $dotacion ?>]" value="<?php echo $infoDotaciones[$parametro['id']][$dotacion]['id']; ?>">

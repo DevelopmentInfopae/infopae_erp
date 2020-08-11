@@ -38,6 +38,12 @@ function guardarParametros(){
     formData.append('nombre_representante_legal', $('#nombre_representante_legal').val());
     formData.append('documento_representante_legal', $('#documento_representante_legal').val());
 
+    formData.append('LogoOperador', $('#LogoOperador')[0].files[0]);
+    formData.append('NIT', $('#NIT').val());
+    formData.append('ValorContrato', $('#ValorContrato').val());
+    formData.append('PermitirRepitentes', $('input[name="PermitirRepitentes"]:checked').val());
+    formData.append('email', $('#email').val());
+
     $.ajax({
       type: "POST",
       url: ruta,

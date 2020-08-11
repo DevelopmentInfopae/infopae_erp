@@ -13,6 +13,7 @@ $largoNombre = 30;
 $sangria = " - ";
 $tamannoFuente = 6;
 $digitosDecimales = 2;
+$paginasObservaciones = 1;
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
 
@@ -58,6 +59,21 @@ if(isset($_POST['ruta'])){
 if(isset($_POST['rutaNm'])){
   $corteDeVariables++;
 }
+if(isset($_POST['paginasObservaciones'])){
+  $paginasObservaciones = $_POST['paginasObservaciones'];
+  $corteDeVariables++;
+}
+
+$imprimirMes = 0;
+if(isset($_POST['imprimirMes'])){
+	if($_POST['imprimirMes'] == 'on'){
+		$imprimirMes = 1;	
+	}
+	$corteDeVariables++;
+}
+
+
+
 
 $_POST = array_slice($_POST, $corteDeVariables);
 $_POST = array_values($_POST);

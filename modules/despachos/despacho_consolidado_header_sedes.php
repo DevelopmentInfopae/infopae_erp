@@ -230,7 +230,7 @@ $current_x = $pdf->GetX();
 
 
 
-
+if($imprimirMes == 0){ $auxDias = ""; }
 $pdf->Cell(45,14.1,$auxDias,1,0,'C',False);
 
 

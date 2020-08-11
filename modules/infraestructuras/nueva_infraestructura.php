@@ -338,7 +338,7 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                   <label for="bano_implemento_aseo[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
               <?php endif ?>
-              <?php if ($parametro['id'] != 4 && $parametro['id'] != 6): //Sólo parámetros que tienen dotacion ?>
+              <?php if ($parametro['id'] != 4 && $parametro['id'] != 6 && isset($dotaciones[$parametro['id']]) && $dotaciones[$parametro['id']]): //Sólo parámetros que tienen dotacion ?>
                 <?php foreach ($dotaciones[$parametro['id']] as $dotacion => $descripcion) { ?>
                   <input type="hidden" name="id_dotacion[]" value="<?php echo $dotacion; ?>">
                   <hr class="col-sm-11">

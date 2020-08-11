@@ -1,5 +1,6 @@
 $(document).ready(function(){
 	set_select();
+  	$(document).on('click', '#tablaNomina tbody td:nth-child(-n+13)', function(){ verNomina($(this)); });
   	$(document).on('ifChecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('check'); });
   	$(document).on('ifUnchecked', '#selectVarios', function(){ $('#box-table-a tbody input[type=checkbox]').iCheck('uncheck'); });
 	$(document).on('change', '#tipo', function(){ cambia_tipo($(this)); });
@@ -253,4 +254,25 @@ function cambia_valor_base(input){
 
 function set_select(){
 	$('select.form-control').select2({width : "100%"});
+}
+
+function verNomina(control){
+  nitempleado = control.parent().data('nitempleado');
+  numnomina = control.parent().data('numnomina');
+  tipo = control.parent().data('tipo');
+  if (tipo == 2) {
+	  $('#formVerNomina #nitEmpleado').val(nitempleado);
+	  $('#formVerNomina #num_liq').val(numnomina);
+	  $('#formVerNomina').submit();
+  } else {
+  	Command: toastr.warning(
+					'No hay ninguna previsualización para este tipo de empleado',
+					'Sin previsualización',
+					{ onHidden: function()
+						{
+							$('#loader').fadeOut();
+						}
+					}
+				);
+  }
 }

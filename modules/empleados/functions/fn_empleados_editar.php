@@ -41,6 +41,21 @@
   $FechaInicalContrato = (isset($_POST['FechaInicalContrato']) && $_POST['FechaInicalContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['FechaInicalContrato']) : '';
   $FechaFinalContrato = (isset($_POST['FechaFinalContrato']) && $_POST['FechaFinalContrato'] != '') ? mysqli_real_escape_string($Link, $_POST['FechaFinalContrato']) : '';
 
+$TipoServicio = (isset($_POST['TipoServicio']) && $_POST['TipoServicio'] != '') ? mysqli_real_escape_string($Link, $_POST['TipoServicio']) : null;
+$SalarioIntegral = (isset($_POST['SalarioIntegral']) && $_POST['SalarioIntegral'] != '') ? mysqli_real_escape_string($Link, $_POST['SalarioIntegral']) : null;  
+$DuracionDias = (isset($_POST['DuracionDias']) && $_POST['DuracionDias'] != '') ? mysqli_real_escape_string($Link, $_POST['DuracionDias']) : null;
+$auxilio_transporte = (isset($_POST['auxilio_transporte']) && $_POST['auxilio_transporte'] != '') ? mysqli_real_escape_string($Link, $_POST['auxilio_transporte']) : null; 
+$auxilio_extra = (isset($_POST['auxilio_extra']) && $_POST['auxilio_extra'] != '') ? mysqli_real_escape_string($Link, $_POST['auxilio_extra']) : 0; 
+$afp_entidad = (isset($_POST['afp_entidad']) && $_POST['afp_entidad'] != '') ? mysqli_real_escape_string($Link, $_POST['afp_entidad']) : 0; 
+$eps_entidad = (isset($_POST['eps_entidad']) && $_POST['eps_entidad'] != '') ? mysqli_real_escape_string($Link, $_POST['eps_entidad']) : 0; 
+$arl_riesgo = (isset($_POST['arl_riesgo']) && $_POST['arl_riesgo'] != '') ? mysqli_real_escape_string($Link, $_POST['arl_riesgo']) : 0; 
+$caja = (isset($_POST['caja']) && $_POST['caja'] != '') ? mysqli_real_escape_string($Link, $_POST['caja']) : 0;
+$icbf = (isset($_POST['icbf']) && $_POST['icbf'] != '') ? mysqli_real_escape_string($Link, $_POST['icbf']) : 0; 
+$sena = (isset($_POST['sena']) && $_POST['sena'] != '') ? mysqli_real_escape_string($Link, $_POST['sena']) : 0; 
+$Forma_pago = (isset($_POST['Forma_pago']) && $_POST['Forma_pago'] != '') ? mysqli_real_escape_string($Link, $_POST['Forma_pago']) : null; 
+$Banco = (isset($_POST['Banco']) && $_POST['Banco'] != '') ? mysqli_real_escape_string($Link, $_POST['Banco']) : 0; 
+$Tipo_Cuenta = (isset($_POST['Tipo_cuenta']) && $_POST['Tipo_cuenta'] != '') ? mysqli_real_escape_string($Link, $_POST['Tipo_cuenta']) : 0; 
+$Numero_Cuenta = (isset($_POST['Numero_Cuenta']) && $_POST['Numero_Cuenta'] != '') ? mysqli_real_escape_string($Link, $_POST['Numero_Cuenta']) : null;
 
   $manipulador_tipo_complemento = (isset($_POST['manipulador_tipo_complemento']) && $_POST['manipulador_tipo_complemento'] != '') ? ($_POST['manipulador_tipo_complemento']) : '';
   $manipulador_municipio = (isset($_POST['manipulador_municipio']) && $_POST['manipulador_municipio'] != '') ? ($_POST['manipulador_municipio']) : '';
@@ -80,6 +95,25 @@
                 ValorBaseMes = '$ValorBaseMes',
                 FechaInicalContrato = '$FechaInicalContrato',
                 FechaFinalContrato = '$FechaFinalContrato',
+                TipoContrato = '$TipoContrato',
+                ValorBaseMes = '$ValorBaseMes',
+                FechaInicalContrato = '$FechaInicalContrato',
+                FechaFinalContrato = '$FechaFinalContrato',
+                TipoServicio = '$TipoServicio',
+                SalarioIntegral = '$SalarioIntegral',
+                DuracionDias = '$DuracionDias',
+                auxilio_transporte = '$auxilio_transporte',
+                auxilio_extra = '$auxilio_extra',
+                afp_entidad = '$afp_entidad',
+                eps_entidad = '$eps_entidad',
+                arl_riesgo = '$arl_riesgo',
+                caja = '$caja',
+                icbf = '$icbf',
+                sena = '$sena',
+                Forma_pago = '$Forma_pago',
+                Banco = '$Banco',
+                Tipo_cuenta = '$Tipo_Cuenta',
+                Numero_Cuenta = '$Numero_Cuenta',
                 estado = '$estado'
               WHERE ID = '$idEmpleado';";
   $resultado = $Link->query($consulta) or die ('Error al actualizar empleados: '. mysqli_error($Link));

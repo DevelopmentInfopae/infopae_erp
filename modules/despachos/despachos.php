@@ -300,11 +300,31 @@
 							</div>
 						</div>
 
+						
 						<div class="row">
-						  <div class="col-sm-3 form-group">
-							<input type="hidden" id="consultar" name="consultar" value="<?php if (isset($_GET['consultar']) && $_GET['consultar'] != '') {echo $_GET['consultar']; } ?>" >
-							<button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1" ><strong><i class="fa fa-search"></i> Buscar</strong></button>
-						  </div>
+
+							<div class="col-sm-2 form-group">
+								<label for="paginasObservaciones">Páginas de observaciones</label>
+								<input type="number" name="paginasObservaciones" id="paginasObservaciones" value="1" class="form-control">
+							</div>
+
+							<div class="col-sm-4   form-group">
+								<label for="semana_final">Imprimir nombre del mes</label>
+								<div>
+									<input type="checkbox" name="imprimirMes" id="imprimirMes" checked>
+								</div>
+							</div>
+
+						</div>
+
+
+						
+						
+						<div class="row">
+							<div class="col-sm-3 form-group">
+								<input type="hidden" id="consultar" name="consultar" value="<?php if (isset($_GET['consultar']) && $_GET['consultar'] != '') {echo $_GET['consultar']; } ?>" >
+								<button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1" ><strong><i class="fa fa-search"></i> Buscar</strong></button>
+							</div>
 						</div>
 
 				  <?php
@@ -719,6 +739,7 @@
 			botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
 
 			// Menu para COVID
+			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()">Entrega Raciones COVID-19 RI</a></li>';
 			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
 
 			botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
@@ -744,6 +765,7 @@
 <form action="despacho_por_sede.php" method="post" name="formDespachoPorSede" id="formDespachoPorSede" target="_blank">
   <input type="hidden" name="despachoAnnoI" id="despachoAnnoI" value="">
   <input type="hidden" name="despachoMesI" id="despachoMesI" value="">
+  <input type="hidden" name="paginasObservacionesI" id="paginasObservacionesI" value="">
   <input type="hidden" name="despacho" id="despacho" value="">
 </form>
 

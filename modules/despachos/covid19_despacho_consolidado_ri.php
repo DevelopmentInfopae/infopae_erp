@@ -1,25 +1,33 @@
 <?php
+//var_dump($_POST);
 error_reporting(E_ALL);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
 
 include '../../config.php';
 require_once '../../autentication.php';
-require('../../fpdf181/fpdf.php');
+
+//require('../../fpdf181/fpdf.php');
+require 'pagegroup.php';
+
 require_once '../../db/conexion.php';
 include '../../php/funciones.php';
 
-
+$tipoComplemento = "";
 $largoNombre = 30;
 $sangria = " - ";
 $tamannoFuente = 6;
+
+$largoNombreProducto = 14;
+$altoFila = 9;
 $paginasObservaciones = 1;
 
 $tablaAnno = $_SESSION['periodoActual'];
 $tablaAnnoCompleto = $_SESSION['periodoActualCompleto'];
 
 $hoy = date("d/m/Y");
-$fechaDespacho = $hoy;
+//$fechaDespacho = $hoy;
+$fechaDespacho = "";
 
 // Se va a recuperar el mes y el año para las tablaMesAnno
 $mesAnno = '';
@@ -31,6 +39,22 @@ $anno = $_POST['annoi'];
 $anno = substr($anno, -2);
 $anno = trim($anno);
 $mesAnno = $mes.$anno;
+
+
+// Semanas del mes para mostrar en la tabla
+$ciclosSemanas = array();
+$consulta = "SELECT DISTINCT SEMANA FROM planilla_semanas WHERE MES = \"$mes\"";
+$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+if($resultado->num_rows >= 1){
+	while($row = $resultado->fetch_assoc()){
+		$aux = $row['SEMANA'];
+		$ciclosSemanas[$aux] = 0;
+	}
+}
+//var_dump($ciclosSemanas);
+
+
+
 
 $cget = "SELECT * FROM grupo_etario";
 $resGrupoEtario = $Link->query($cget);
@@ -56,6 +80,7 @@ if(isset($_POST['paginasObservaciones'])){
 	$paginasObservaciones = $_POST['paginasObservaciones'];
 	$corteDeVariables++;
 }
+
 
 $imprimirMes = 0;
 if(isset($_POST['imprimirMes'])){
@@ -94,10 +119,10 @@ $diasMostrar = array();
 $semanasMostrar = array();
 $nomSedes = array();
 $nomSede = array();
+$fechaElaboracion = array();
 
 foreach ($despachosRecibidos as &$valor){
-	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst
-	FROM despachos_enc$mesAnno de INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor";
+	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst, s.cod_inst, s.cod_mun_sede , s.sector, s.direccion FROM despachos_enc$mesAnno de INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor";
 
 	//echo "<br><br>$consulta<br><br>";
 
@@ -108,6 +133,7 @@ foreach ($despachosRecibidos as &$valor){
 		$despacho['num_doc'] = $row['Num_Doc'];
 		$despacho['cod_sede'] = $row['cod_Sede'];
 		$despacho['tipo_complem'] = $row['Tipo_Complem'];
+		$tipoComplemento = $row['Tipo_Complem'];
 		$modalidad = $despacho['tipo_complem'];
 		$despacho['semana'] = $row['Semana'];
 		$despacho['cobertura'] = $row['Cobertura'];
@@ -117,9 +143,29 @@ foreach ($despachosRecibidos as &$valor){
 		$nomSede = array();
 		$nomSede['nom_sede'] = $row['nom_sede'];
 		$nomSede['nom_inst'] = $row['nom_inst'];
-		$nomSedes[$row['cod_Sede']] = $nomSede;
+		$nomSede['cod_sede'] = $row['cod_Sede'];
+		$nomSede['cod_inst'] = $row['cod_inst'];
+		$nomSede['cod_mun_sede'] = $row['cod_mun_sede'];
+		$nomSede['municipio'] = $row['Ciudad'];
+		
+		
+		if($row['sector'] == 1){
+			$nomSede['zona'] = 'Rural';
+		} elseif($row['sector'] == 2)  {
+			$nomSede['zona'] = 'Urbano';
+		}else{
+			$nomSede['zona'] = '';
+		}
 
 		
+		$nomSede['direccion'] = $row['direccion'];
+
+
+
+
+		$nomSedes[$row['cod_Sede']] = $nomSede;
+
+		$fechaElaboracion = $row['FechaHora_Elab'];
 
 
 
@@ -148,6 +194,19 @@ foreach ($despachosRecibidos as &$valor){
 		$menusMostrar[] = trim($auxMenus, ", ");
 
 		$arrayDiasDespacho = explode(',', $diasDespacho);
+
+		//var_dump($arrayDiasDespacho);
+
+		$aux = $row['Semana'];
+		$ciclosSemanas[$aux] = count($arrayDiasDespacho);
+
+
+
+
+
+
+
+
 
 		if (!in_array($row['Semana'], $semanasMostrar, true)) {
 			$semanasMostrar[] =  $row['Semana'];
@@ -228,7 +287,6 @@ $ciclos = array_unique ($ciclos);
 sort($ciclos);
 
 $auxDias = "X ".$cantDias." DIAS ".$auxDias." ".$mes;
-$auxDias = 'MES DE '.$mes;
 $auxDias = strtoupper($auxDias);
 
 $auxSemana = '';
@@ -274,9 +332,66 @@ $semana = $auxSemana;
 
 
 // Declaración de caracteristicas del PDF
-class PDF extends FPDF{
+//class PDF extends FPDF{
+class PDF extends PDF_PageGroup{
 	function Header(){}
-	function Footer(){}
+	function Footer(){
+		//$this->Cell(0, 6, 'Page '.$this->GroupPageNo().'/'.$this->PageGroupAlias(), 0, 0, 'C');
+		$tamannoFuente = 6;
+		//$this->SetY(-40);
+		// $this->Cell(0,2,utf8_decode(""),'B',0,'C',False);
+		$this->Ln(2);
+		$this->SetFont('Arial','B',$tamannoFuente);
+		$this->Cell(38,4,utf8_decode("Observaciones:"),'BLT',0,'L',False);
+		$this->Cell(0,4,utf8_decode(""),'BLTR',0,'C',False);
+		
+		$this->Ln(7);
+		$this->Cell(35,4,utf8_decode("Firma de quien entrega la ración:"),0,0,'L',False);
+		$this->Cell(65,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(38,4,utf8_decode("Firma Rector o Representante CAE:"),0,0,'L',False);
+		$this->Cell(93,4,utf8_decode(""),'B',0,'C',False);
+		
+		$this->Ln(7);
+		$this->Cell(35,4,utf8_decode("Nombre legible de quien entrega:"),0,0,'L',False);
+		$this->Cell(65,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
+		// $this->Cell(35,4,utf8_decode("Nombre Legible Rector o Representante CAE:"),0,0,'L',False);
+		$this->Cell(48,4,utf8_decode("Nombre Legible Rector o Representante CAE:"),0,0,'L',False);
+		$this->Cell(83,4,utf8_decode(""),'B',0,'C',False);
+		
+		$this->Ln(7);
+		$this->Cell(18,4,utf8_decode("Cargo / función:"),0,0,'L',False);
+		$this->Cell(25,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(3,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(21,4,utf8_decode("Número telefónico:"),0,0,'L',False);
+		$this->Cell(33,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
+		
+		
+		
+		
+		$this->Cell(18,4,utf8_decode("Cargo / función:"),0,0,'L',False);
+		$this->Cell(41,4,utf8_decode(""),'B',0,'C',False);
+		
+		$this->Cell(13,4,utf8_decode(""),0,0,'C',False);
+		
+		$this->Cell(23,4,utf8_decode("Número telefónico"),0,0,'L',False);
+		$this->Cell(36,4,utf8_decode(""),'B',0,'C',False);
+	
+		
+		$this->Ln(3.9);
+		$this->Cell(150,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(0,10,utf8_decode("Impreso por: InfoPAE - www.infopae.com.co"),0,0,'L',False);
+
+
+
+
+
+
+
+
+	}
 
 	var $angle=0;
 
@@ -310,9 +425,14 @@ class PDF extends FPDF{
 }
 //CREACION DEL PDF
 // Creación del objeto de la clase heredada
-$pdf= new PDF('L','mm',array(279.4, 216));
-$pdf->SetMargins(8, 6.31, 8);
-$pdf->SetAutoPageBreak(TRUE, 5);
+$pdf= new PDF('L','mm',array(330, 216));
+$pdf->StartPageGroup();
+
+
+
+
+$pdf->SetMargins(5, 5, 5);
+$pdf->SetAutoPageBreak(TRUE, 30);
 $pdf->AliasNbPages();
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(255,255,255);
@@ -326,17 +446,25 @@ $sede_unicas = array_unique($sedes);
 
 $indiceSedeActual = 0;
 foreach ($sede_unicas as $key => $sede_unica){
+	$pdf->StartPageGroup();
 	if($indiceSedeActual >  0){
+		
 		$pdf->AddPage();
+		$tamannoFuente = 6;
+		$pdf->StartPageGroup();
 	}
 	//var_dump($sede_unica);
-
-
-
-
-
 	$filaActual = 1;
-	//$pdf->AddPage();
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -606,269 +734,76 @@ foreach ($sede_unicas as $key => $sede_unica){
 	
 	
 	
-	$pdf->AddPage();
-	include 'despacho_consolidado_footer_sedes.php';
-	include 'despacho_consolidado_header_sedes.php';
-
+	$tamannoFuente = 6;
+	
 
 	
 
 	
-	$filas = 0;
-	$grupoAlimActual = '';
 	
-	$pdf->SetFont('Arial','',$tamannoFuente);
 	
-	$grupos_alimentarios = [];
-	for ($i=0; $i < count($alimentosTotales) ; $i++)
-	{
-		$alimento = $alimentosTotales[$i];
-		$grupos_alimentarios[$alimento['grupo_alim']][] = $alimento;
-	}
 	
-	$posicion_X_celda_grupo_alimenticio = $pdf->GetX();
 	
-	foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario)
-	{
 	
-		if (isset($posicion_Y_celda_alimento)) { $pdf->SetY($posicion_Y_celda_alimento); }
+	/* Terminados los alimentos seguimos con el listado de los niños */
+	$filaActual = 1; 
+	include 'covid19_despacho_consolidado_ri_estudiantes.php';
+	// $pdf->Ln(10);
 	
-		$altura_celda_grupo_alimenticio = 0;
-		$altura_celda_grupo_alimenticio = count($grupo_alimentario) * 4;
-		// if (($altura_celda_grupo_alimenticio + (isset($posicion_Y_celda_alimento) ? $posicion_Y_celda_alimento : 0)) > 210.9)
+	
+	
+	
+	$tamannoFuente = 6;
+	
+	
 
-		if(count($grupo_alimentario) + $filaActual > 33){
+
+	/* INICIA PAGINA ADICIONAL */
+	if($paginasObservaciones > 0){
+		for ($aaa=0; $aaa < $paginasObservaciones; $aaa++) {
+			$pdf->StartPageGroup();
 			$pdf->AddPage();
-			include 'despacho_consolidado_footer_sedes.php';
-			include 'despacho_consolidado_header_sedes.php';
-			$filaActual = 1;
-		}
-	
-		$posicion_Y_celda_grupo_alimenticio = $pdf->GetY();
-	
-	
-	
-		foreach ($grupo_alimentario as $alimento){
-			if($filaActual > 33){
-				$pdf->SetFont('Arial','',$tamannoFuente);
-				$pdf->AddPage();
-				include 'despacho_consolidado_footer_sedes.php';
-				include 'despacho_consolidado_header_sedes.php';
-				$filaActual = 1;
-			}
-
-
-
-
-
-	
-			//var_dump($alimento);
-	
-	
-			$pdf->Cell(23.788, 4, "", 0);
-	
-	
-
-
-
-	
-			$aux = $alimento['componente'];
-			$long_nombre=strlen($aux);
-			//var_dump($largoNombre);
-			$largoNombre =37;
-			if($long_nombre > $largoNombre){
-				$aux = substr($aux,0,$largoNombre);
-			}
-			// Impresión de Alimento (Nombre del alimento)
-			//$pdf->Cell(49,4,$filaActual.' '.utf8_decode($aux),1,0,'L',FALSE);
-			$pdf->Cell(49,4,utf8_decode($aux),1,0,'L',FALSE);
-			$filaActual++;
-			
-
-
-
-
-
-
-
-
-
-
-
-
-	
-			if($alimento['grupo_alim'] == "Contramuestra"){ 
-				$aux = ""; 
-			}else{ 
-				$aux = $alimento['grupo1']; 
-				$aux = number_format($aux, 2, '.', '');
-			}
-			$pdf->Cell(13.1, 4, utf8_decode($aux), 1, 0, 'C', FALSE);
-			
-			
-			if($alimento['grupo_alim'] == "Contramuestra"){ 
-				$aux = ""; 
-			}else{ 
-				$aux = $alimento['grupo2']; 
-				$aux = number_format($aux, 2, '.', '');
-			}
-			$pdf->Cell(13.1, 4, utf8_decode($aux), 1, 0, 'C', FALSE);
-			
-			
-			if($alimento['grupo_alim'] == "Contramuestra"){ 
-				$aux = ""; 
-			}else{ 
-				$aux = $alimento['grupo3']; 
-				$aux = number_format($aux, 2, '.', '');
-			}
-			$pdf->Cell(13.1, 4, utf8_decode($aux), 1, 0, 'C', FALSE);
-			
+			$tamannoFuente = 6;
+			include 'covid19_despacho_consolidado_ri_header_adicional.php';
+			for ($jj=0; $jj < 16; $jj++) { 
+				$pdf->Cell(4,$altoFila,'','BL',0,'C',False);
+				$pdf->Cell(42,$altoFila,'','BL',0,'L',False);
+				$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
+				$pdf->Cell(17,$altoFila,'','BL',0,'C',False);
+				$pdf->Cell(6.50,$altoFila,'','BL',0,'C',False);
+				$pdf->Cell(6.50,$altoFila,'','BL',0,'C',False);
+				// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
+				// $pdf->Cell(3.25,$altoFila,'','BL',0,'C',False);
 		
-	
-	
-	
-			
-			$pdf->Cell(13.141, 4, $alimento['presentacion'], 1, 0, 'C', FALSE);
-	
-			if (strpos($alimento['componente'], "HUEVO999") !== FALSE)
-			{
-				$total = 0;
-				foreach ($tg[$alimento['codigo']] as $key => $value) { $total += ceil($value); }
-	
-				$aux = $total;
-			}
-			else
-			{ $aux = $alimento['grupo1']+$alimento['grupo2']+$alimento['grupo3']; }
-	
-			$pdf->Cell(13.141, 4, number_format($aux, 2, '.', ''), 1, 0, 'C', FALSE);
-	
-			if($alimento['presentacion'] == 'u')
-			{
-				if (strpos($alimento['componente'], "HUEVO999") !== FALSE)
-				{ $aux = ceil(0+$aux); }
-				else
-				{ $aux = round(0+$aux); }
-			}
-			else
-			{ $aux = number_format($aux, 2, '.', ''); }
-	
-	
-	
-	
-			if($alimento['cantotalpresentacion'] > 0 )
-			{
-				$aux = $alimento['cantotalpresentacion'];
-				$aux2 = $aux;
-	
-				if($alimento['presentacion'] == 'u')
-				{ $aux = round(0+$aux);           }
-				else
-				{ $aux = number_format($aux, 2, '.', ''); }
-			}
-	
-			$pdf->Cell(10.6,4,$aux,1,0,'C',FALSE);
-	
-			//total entregado
-			$pdf->Cell(10.6,4,'',1,0,'C',FALSE);
-			$pdf->Cell(10.6,4,'',1,0,'C',FALSE);
-	
-			// ESPECIFICACIÓN DE CALIDAD
-			$pdf->Cell(13.7,4,'',1,0,'C',FALSE);
-			$pdf->Cell(13.7,4,'',1,0,'C',FALSE);
-	
-			// FALTANTES
-			$pdf->Cell(9.2,4,'',1,0,'C',FALSE);
-			$pdf->Cell(8.9,4,'',1,0,'C',FALSE);
-			$pdf->Cell(13.9,4,'',1,0,'C',FALSE);
-	
-			//DEVOLUCIÓN
-			$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-			$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-			$pdf->Cell(15.2,4,'',1,0,'C',FALSE);
-	
-			$pdf->Ln();
-	
-			$posicion_Y_celda_alimento = $pdf->GetY();
-		}
-	
-	
-		$pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
-		$pdf->MultiCell(23.788, 4, utf8_decode($nombre_grupo), 0, "C");
-		$pdf->SetXY($posicion_X_celda_grupo_alimenticio, $posicion_Y_celda_grupo_alimenticio);
-		$pdf->MultiCell(23.788, $altura_celda_grupo_alimenticio, "", 1);
-
-		//var_dump($filaActual);
 		
-
+		
+				$ciclosSemanasKeys = array_keys($ciclosSemanas);
+				$auxTotal = 0;
+				foreach ($ciclosSemanasKeys as $ciclosSemanasKey) {
+					$aux = $ciclosSemanas[$ciclosSemanasKey];
+					$pdf->Cell($anchoCeldaAlimento,$altoFila,utf8_decode(""),'BL',0,'C',False);
+					$auxTotal += $aux;
+				}
+				$pdf->Cell(18,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		
+		
+				$pdf->Cell(46,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(28,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(22,$altoFila,utf8_decode(""),'BL',0,'C',False);
+				$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
+				$pdf->Ln($altoFila);
+			}
+		}
 	}
-	
-	$pdf->Ln(4);
-	
-	// for ($i = 2; $i <= 5; $i++){
-	// 	$unidad = $i;
-	
-	// 	if($alimento['cantu'.$unidad] > 0)
-	// 	{
-	// 		$pdf->SetX($current_x+$anchoCelda);
-	// 		$presentacion = " ".$alimento['nombreunidad'.$unidad];
-	
-	// 		$pdf->SetTextColor(0,0,0);
-	// 		$pdf->SetFillColor(255,255,255);
-	
-	// 		$aux = $sangria.$alimento['componente'].$presentacion;
-	
-	// 		$long_nombre=strlen($aux);
-	// 		if($long_nombre > $largoNombre)
-	// 		{
-	// 			$aux = substr($aux,0,$largoNombre);
-	// 		}
-	
-	// 		$pdf->Cell(68.3,4,utf8_decode($aux),1,0,'L',FALSE);
-	// 		$pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(13.1,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(13.141,4,'',1,0,'C',FALSE);
-	// 		$aux = number_format($alimento['cantu'.$unidad] , 0, '.', '');
-	
-	// 		// CANTIDAD ENTREGADA
-	// 		$pdf->Cell(9.3,4,$aux,1,0,'C',FALSE);
-	// 		$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-	// 		// ESPECIFICACIÓN DE CALIDAD
-	// 		$pdf->Cell(11,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(11,4,'',1,0,'C',FALSE);
-	// 		// FALTANTES
-	// 		$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-	// 		//DEVOLUCIÓN
-	// 		$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-	// 		$pdf->Cell(9.3,4,'',1,0,'C',FALSE);
-	// 		$pdf->Ln(4);
-	// 	}
-	// }
-	
+	/* TERMINA PAGINA ADICIONAL */
 
-	// $filaActual++;
+
+
+
+
 	
-	//$current_y = $pdf->GetY();
-	// var_dump($filaActual);
-	// if($filaActual >= 30){
-	// 	$pdf->AddPage();
-	// 	$filaActual = 1;
-	// }
-	if($filaActual > 19){
-		$pdf->AddPage();
-		include 'despacho_consolidado_footer_sedes.php';
-		include 'despacho_consolidado_header_sedes.php';
-	}
-	include 'despacho_firma_planilla.php';
 	
 	/* TERMINA EL PROCESMIENTO DE LOS DESPACHOS PARA IMPRIMIRLOS EN LAS PLANILLAS */
-
-
 }
 
 //var_dump($sede_unicas);

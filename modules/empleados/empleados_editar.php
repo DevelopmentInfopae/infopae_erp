@@ -138,8 +138,11 @@ $periodoActual = $_SESSION["periodoActual"];
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
+									<fieldset disabled>
+										
 								    <label for="numeroDocumento">Número documento</label>
 								    <input type="text" name="numeroDocumento" id="numeroDocumento" class="form-control form-data" value="<?= $cedulaEmpleado ?>">
+									</fieldset>
 								</div>
 
 								<div class="form-group col-sm-6 col-md-4">
@@ -396,20 +399,167 @@ $periodoActual = $_SESSION["periodoActual"];
 								<option value="4" <?= $registros0['TipoContrato'] == '4' ? 'selected' : '' ?>>Servicios</option>
 							</select>
 						</div>
-						<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
-							<label>Valor Base Mes</label>
-							<input type="text" name="ValorBaseMes" id="ValorBaseMes" value="<?= $registros0['ValorBaseMes'] ?>" class="form-control form-data only_number">
-						</div>
 						<div class="form-group col-sm-6 col-md-3">
 							<label>Fecha inicio contrato</label>
 							<input type="date" name="FechaInicalContrato" id="FechaInicalContrato" value="<?= $registros0['FechaInicalContrato'] ?>" class="form-control form-data">
 						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Duración días</label>
+							<input type="text" name="DuracionDias" id="DuracionDias" class="form-control form-data only_number" value="<?= $registros0['DuracionDias'] ?>" required>
+						</div>
 						<div class="form-group col-sm-6 col-md-3">
 							<label>Fecha fin contrato</label>
-							<input type="date" name="FechaFinalContrato" id="FechaFinalContrato" value="<?= $registros0['FechaFinalContrato'] ?>" class="form-control form-data">
+							<fieldset disabled>
+								<input type="date" name="FechaFinalContrato" id="FechaFinalContrato" value="<?= $registros0['FechaFinalContrato'] ?>" class="form-control form-data">
+							</fieldset>
 						</div>
 					</div>
 
+					<!--  -->
+					<div class="row">	
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Salario Integral</label>
+							<select name="SalarioIntegral" id="SalarioIntegral" class="form-control form-data" required>	
+								<option value="">Seleccione...</option>
+								<option value="0" <?= $registros0['SalarioIntegral'] == 0 ? 'selected' : '' ?> >No</option>
+								<option value="1" <?= $registros0['SalarioIntegral'] == 1 ? 'selected' : '' ?> >Si</option>
+							</select>
+						</div>
+						<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
+							<label>Valor Base Mes</label>
+							<input type="text" name="ValorBaseMes" id="ValorBaseMes" value="<?= $registros0['ValorBaseMes'] ?>" class="form-control form-data only_number">
+						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Tipo servicio</label>
+							<select name="TipoServicio" id="TipoServicio" class="form-control form-data" required>	
+								<option value="">Seleccione...</option>
+								<option value="0" <?= $registros0['TipoServicio'] == 0 ? 'selected' : '' ?> >No aplica</option>
+								<option value="1" <?= $registros0['TipoServicio'] == 1 ? 'selected' : '' ?> >Servicios</option>
+								<option value="2" <?= $registros0['TipoServicio'] == 2 ? 'selected' : '' ?> >Honorarios</option>
+							</select>
+						</div>	
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Aux. transporte</label>
+							<select name="auxilio_transporte" id="auxilio_transporte" class="form-control form-data" required>	
+								<option value="">Seleccione...</option>
+								<option value="1" <?= $registros0['auxilio_transporte'] == 1 ? 'selected' : '' ?> >Si</option>
+								<option value="0" <?= $registros0['auxilio_transporte'] == 0 ? 'selected' : '' ?> >No</option>
+							</select>
+						</div>	
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-6 col-md-3">
+							<label>Aux. extra</label>
+							<input type="text" class="form-control form-data only_number" name="auxilio_extra" id="auxilio_extra" value="<?= $registros0['auxilio_extra'] ?>">
+						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>AFP Entidad</label>
+							<select name="afp_entidad" id="afp_entidad" class="form-control form-data" required>
+								<?php 
+								$consulta_afp = "SELECT * FROM nomina_entidad WHERE tipo = 2";
+								$resultado_afp = $Link->query($consulta_afp);
+								if ($resultado_afp->num_rows > 0) {
+									while ($afp = $resultado_afp->fetch_assoc()) { ?>
+										<option value="<?= $afp['ID'] ?>" <?= $registros0['afp_entidad'] == $afp['ID'] ? 'selected' : '' ?> <?= $afp['Entidad'] == 'NINGUNA' ? 'data-default="1"' : '' ?>><?= $afp['Entidad'] ?></option>
+									<?php }
+								}
+								 ?>
+							</select>
+						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>EPS Entidad</label>
+							<select name="eps_entidad" id="eps_entidad" class="form-control form-data" required>
+								<?php 
+								$consulta_eps = "SELECT * FROM nomina_entidad WHERE tipo = 1";
+								$resultado_eps = $Link->query($consulta_eps);
+								if ($resultado_eps->num_rows > 0) {
+									while ($eps = $resultado_eps->fetch_assoc()) { ?>
+										<option value="<?= $eps['ID'] ?>" <?= $registros0['eps_entidad'] == $eps['ID'] ? 'selected' : '' ?> <?= $eps['Entidad'] == 'NINGUNA' ? 'data-default="1"' : '' ?>><?= $eps['Entidad'] ?></option>
+									<?php }
+								}
+								 ?>
+							</select>
+						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>ARL Riesgo</label>
+							<select name="arl_riesgo" id="arl_riesgo" class="form-control form-data" required>
+								<?php 
+								$consulta_arl = "SELECT * FROM nomina_riesgos";
+								$resultado_arl = $Link->query($consulta_arl);
+								if ($resultado_arl->num_rows > 0) {
+									while ($arl = $resultado_arl->fetch_assoc()) { ?>
+										<option value="<?= $arl['ID'] ?>" <?= $registros0['arl_riesgo'] == $arl['ID'] ? 'selected' : '' ?> <?= $arl['Porcentaje'] == 0 ? 'data-default="1"' : '' ?>><?= $arl['Tipo']." (".$arl['Porcentaje'].")" ?></option>
+									<?php }
+								}
+								 ?>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Aporta CCF</label>
+							<select name="caja" id="caja" class="form-control form-data" required>	
+								<option value="">Seleccione...</option>
+								<option value="1" <?= $registros0['caja'] == 1 ? 'selected' : '' ?> >Si</option>
+								<option value="0" <?= $registros0['caja'] == 0 ? 'selected' : '' ?> >No</option>
+							</select>
+						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Aporta SENA</label>
+							<select name="sena" id="sena" class="form-control form-data" required>	
+								<option value="">Seleccione...</option>
+								<option value="1" <?= $registros0['sena'] == 1 ? 'selected' : '' ?> >Si</option>
+								<option value="0" <?= $registros0['sena'] == 0 ? 'selected' : '' ?> >No</option>
+							</select>
+						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Aporta ICBF</label>
+							<select name="icbf" id="icbf" class="form-control form-data" required>	
+								<option value="">Seleccione...</option>
+								<option value="1" <?= $registros0['icbf'] == 1 ? 'selected' : '' ?> >Si</option>
+								<option value="0" <?= $registros0['icbf'] == 0 ? 'selected' : '' ?> >No</option>
+							</select>
+						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Forma de pago</label>
+							<select name="Forma_pago" id="Forma_pago" class="form-control form-data" required>	
+								<option value="">Seleccione...</option>
+								<option value="1" <?= $registros0['Forma_pago'] == 1 ? 'selected' : '' ?> >Efectivo</option>
+								<option value="2" <?= $registros0['Forma_pago'] == 2 ? 'selected' : '' ?> >Cheque</option>
+								<option value="3" <?= $registros0['Forma_pago'] == 3 ? 'selected' : '' ?> >Transferencia</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Banco</label>
+							<select name="Banco" id="Banco" class="form-control form-data" required>
+								<?php 
+								$consulta_banco = "SELECT * FROM bancos";
+								$resultado_banco = $Link->query($consulta_banco);
+								if ($resultado_banco->num_rows > 0) {
+									while ($banco = $resultado_banco->fetch_assoc()) { ?>
+										<option value="<?= $banco['ID'] ?>" <?= $registros0['Banco'] == $banco['ID'] ? 'selected' : '' ?> ><?= $banco['Descripcion'] ?></option>
+									<?php }
+								}
+								 ?>
+							</select>
+						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Tipo de cuenta</label>
+							<select name="Tipo_cuenta" id="Tipo_cuenta" class="form-control form-data" required>	
+								<option value="">No Aplica</option>
+								<option value="1" <?= $registros0['Tipo_cuenta'] == 1 ? 'selected' : '' ?> >Ahorros</option>
+								<option value="2" <?= $registros0['Tipo_cuenta'] == 2 ? 'selected' : '' ?> >Corriente</option>
+							</select>
+						</div>
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Número de cuenta</label>
+							<input type="text" name="Numero_Cuenta" id="Numero_Cuenta" class="form-control form-data" value="<?= $registros0['Numero_Cuenta'] ?>" required>
+						</div>
+					</div>
+
+					<!--  -->
 					<div class="row div_manipulador" style="display: none;">
 						<div class="col-sm-12 col-md-12">
 							<table class="table">
@@ -578,6 +728,10 @@ $periodoActual = $_SESSION["periodoActual"];
 	});
 	$(document).ready(function(){
 		$('#tipo').trigger('change');
+		$('#TipoContrato').trigger('change');
+		$('#Salario').trigger('change');
+		$('#TipoContrato').trigger('select2:select');
+		$('#Forma_pago').trigger('change');
 	});
 </script>
 <?php mysqli_close($Link); ?>

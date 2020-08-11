@@ -7,6 +7,7 @@ $periodoActual = $_SESSION['periodoActual'];
 $datosTabla = [];
 
 $consulta = "SELECT 
+                  pagos_nomina.numero as numero_nomina,
                   pagos_nomina.Fecha,
                   CONCAT(pagos_nomina.documento, '-', pagos_nomina.numero) AS numero,
                   pagos_nomina.mes,
