@@ -132,12 +132,10 @@ $periodoActual = $_SESSION['periodoActual'];
                                 <option value="0" <?= isset($_POST['Concepto_Sanitario']) && $_POST['Concepto_Sanitario'] == '0' ? 'selected="selected"' : '' ?>>Desfavorable</option>
                               </select>
                             </div>
-                            <div class="form-group col-sm-3">
+                            <!-- <div class="form-group col-sm-3">
                               <label>Fecha de expedición</label>
                               <input type="date" class="form-control" name="fecha_expedicion" id="fecha_expedicion" <?= isset($_POST['fecha_expedicion']) ? 'value="'.$_POST['fecha_expedicion'].'"' : '' ?>>
-                            </div>
-                          </div>
-                          <div class="row">
+                            </div> -->
                             <div class="form-group col-sm-3">
                               <label>Rural / Urbana</label>
                               <div class="radio">
@@ -146,6 +144,8 @@ $periodoActual = $_SESSION['periodoActual'];
                                 <label><input type="radio" name="sector" id="sector" value="0" <?= isset($_POST['sector']) && $_POST['sector'] == '0' ? 'checked="checked"' : '' ?> > No especifíca</label>
                               </div>
                               <label for="sector" class="error"></label>
+                            </div>
+                          </div>
                           <div class="row">
                             <div class="col-md-12">
                               <button class="btn btn-primary"> <span class="fa fa-search"></span> Buscar</button>
