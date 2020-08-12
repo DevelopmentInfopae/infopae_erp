@@ -104,11 +104,9 @@
 
 			}
 
-
 		 	// Ejecutamos la consulta para sedes cobertura
 	  		$resultadoCrearSedeCobertura = $Link->query(trim($consultaCrearSedeCobertura, ", ")) or die("Error al subir las sedes cobertura: ". $Link->error);
-	  		if($resultadoCrearSedeCobertura)
-	  		{
+	  		if($resultadoCrearSedeCobertura) {
 				$consultaCrearTablaPriorizacion = "CREATE TABLE IF NOT EXISTS `priorizacion". $semana ."` (
 												`id` INTEGER(11) NOT NULL AUTO_INCREMENT,
 												`cod_sede` BIGINT(20) NOT NULL,
@@ -119,29 +117,33 @@
 												`CAJTRI` INTEGER(11) UNSIGNED NOT NULL DEFAULT '0',
 												`CAJMPS` INTEGER(11) UNSIGNED NOT NULL DEFAULT '0',
 												`CAJTPS` INTEGER(11) UNSIGNED NOT NULL DEFAULT '0',
+												`RPC` INTEGER(11) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario1_APS` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario1_CAJMRI` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario1_CAJTRI` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario1_CAJMPS` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario1_CAJTPS` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
+												`Etario1_RPC` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario2_APS` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario2_CAJMRI` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario2_CAJTRI` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario2_CAJMPS` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario2_CAJTPS` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
+												`Etario2_RPC` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario3_APS` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario3_CAJMRI` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario3_CAJTRI` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario3_CAJMPS` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												`Etario3_CAJTPS` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
+												`Etario3_RPC` INTEGER(10) UNSIGNED NOT NULL DEFAULT '0',
 												PRIMARY KEY (`cod_sede`),
 												UNIQUE KEY `id` (`id`)
 												)ENGINE=InnoDB
 												AUTO_INCREMENT=1 CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';";
 				$resultadoCrearTablePriorizacion = $Link->query($consultaCrearTablaPriorizacion) or die ('Unable to execute query. '. mysqli_error($Link));
-				if($resultadoCrearTablePriorizacion)
-				{
+				if($resultadoCrearTablePriorizacion) {
 					// Ejecicón de la consulta para crear priorización
+					// echo ($consultaCrearPriorizacion); exit();
 					$resultadoCrearPriorizacion = $Link->query(trim($consultaCrearPriorizacion, ", "));
 					if($resultadoCrearPriorizacion){
 						$respuestaAJAX = [
