@@ -185,6 +185,27 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                 <div class="col-sm-12">
                   <em id="errorEst" style="display: none; font-size: 120%;"> <b>Nota : </b>Ya ha sido registrado un estudiante con el número de documento especificado en <b><span id="semanasErr"></span></b>.</em>
                 </div>
+                <div class="col-sm-12">
+                  <h3>Datos familiares</h3>
+                </div>
+
+                <div class="form-group col-sm-3">
+                  <label>Nombre acudiente</label>
+                  <input type="text" name="nom_acudiente" id="nom_acudiente" class="form-control" required>
+                  <label for="nom_acudiente" class="error"></label>
+                </div>
+
+                <div class="form-group col-sm-3">
+                  <label>Documento acudiente</label>
+                  <input type="text" name="doc_acudiente" id="doc_acudiente" class="form-control" required>
+                  <label for="doc_acudiente" class="error"></label>
+                </div>
+
+                <div class="form-group col-sm-3">
+                  <label>Teléfono acudiente</label>
+                  <input type="number" name="tel_acudiente" id="tel_acudiente" class="form-control" min="0" required>
+                  <label for="tel_acudiente" class="error"></label>
+                </div>
               </section>
               <h3>Información especial</h3>
               <section>

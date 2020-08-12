@@ -148,7 +148,7 @@ $periodoActual = $_SESSION['periodoActual'];
                               <label for="sector" class="error"></label>
                           <div class="row">
                             <div class="col-md-12">
-                              <button class="btn btn-primary">Filtrar</button>
+                              <button class="btn btn-primary"> <span class="fa fa-search"></span> Buscar</button>
                             </div>
                           </div>
                         </form>
