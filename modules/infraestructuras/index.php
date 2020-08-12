@@ -33,15 +33,7 @@ $periodoActual = $_SESSION['periodoActual'];
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins border-bottom">
-            <div class="ibox-title">
-                <h5>Filtrar</h5>
-                <div class="ibox-tools">
-                    <a class="collapse-link">
-                        <i class="fa fa-chevron-down"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="ibox-content" style="display: none;">
+            <div class="ibox-content">
                 <div class="row">
                     <div class="col-lg-12">
                         <form method="POST">
@@ -117,11 +109,11 @@ $periodoActual = $_SESSION['periodoActual'];
                             </div>
                             <div class="form-group col-sm-3">
                               <label>¿Cuenta con comedor escolar?</label><br>
-                              <div class="radio">
-                              <label><input type="radio" name="Comedor_Escolar" id="Comedor_Escolar" value="1" <?= isset($_POST['Comedor_Escolar']) && $_POST['Comedor_Escolar'] == '1' ? 'checked="checked"' : '' ?>> Si</label>
-                              <label><input type="radio" name="Comedor_Escolar" id="Comedor_Escolar" value="0" <?= isset($_POST['Comedor_Escolar']) && $_POST['Comedor_Escolar'] == '0' ? 'checked="checked"' : '' ?>> No</label>
-                              </div>
-                              <label for="Comedor_Escolar" class="error"></label>
+                              <select name="Comedor_Escolar" id="Comedor_Escolar" class="form-control">
+                                <option value="">Seleccione...</option>
+                                <option value="1" <?= isset($_POST['Comedor_Escolar']) && $_POST['Comedor_Escolar'] == '1' ? 'selected="selected"' : '' ?>>Si</option>
+                                <option value="0" <?= isset($_POST['Comedor_Escolar']) && $_POST['Comedor_Escolar'] == '0' ? 'selected="selected"' : '' ?>>No</option>
+                              </select>
                             </div>
                             <div class="form-group col-sm-3">
                               <label>Concepto sanitario</label>
@@ -138,12 +130,11 @@ $periodoActual = $_SESSION['periodoActual'];
                             </div> -->
                             <div class="form-group col-sm-3">
                               <label>Rural / Urbana</label>
-                              <div class="radio">
-                                <label><input type="radio" name="sector" id="sector" value="1" <?= isset($_POST['sector']) && $_POST['sector'] == '1' ? 'checked="checked"' : '' ?> > Rural</label>
-                                <label><input type="radio" name="sector" id="sector" value="2" <?= isset($_POST['sector']) && $_POST['sector'] == '2' ? 'checked="checked"' : '' ?> > Urbano</label>
-                                <label><input type="radio" name="sector" id="sector" value="0" <?= isset($_POST['sector']) && $_POST['sector'] == '0' ? 'checked="checked"' : '' ?> > No especifíca</label>
-                              </div>
-                              <label for="sector" class="error"></label>
+                              <select name="sector" id="sector" class="form-control">
+                                <option value="">Seleccione...</option>
+                                <option value="1" <?= isset($_POST['sector']) && $_POST['sector'] == '1' ? 'selected="selected"' : '' ?>>Rural</option>
+                                <option value="2" <?= isset($_POST['sector']) && $_POST['sector'] == '2' ? 'selected="selected"' : '' ?>>Urbano</option>
+                              </select>
                             </div>
                           </div>
                           <div class="row">
