@@ -24,7 +24,8 @@ if (isset($_FILES["archivoManipuladoras"]["name"]) && $_FILES["archivoManipulado
 			$manipuladoraCAJMRI = $datos[7];
 			$manipuladoraCAJTRI = $datos[8];
 			$manipuladoraCAJTPS = $datos[9];
-			$cantidadManipuladora = $manipuladoraAPS + $manipuladoraCAJMPS + $manipuladoraCAJMRI + $manipuladoraCAJTRI + $manipuladoraCAJTPS;
+			$manipuladoraRPC = $datos[10];
+			$cantidadManipuladora = $manipuladoraAPS + $manipuladoraCAJMPS + $manipuladoraCAJMRI + $manipuladoraCAJTRI + $manipuladoraCAJTPS + $manipuladoraRPC;
 
 			$consulta = "UPDATE sedes$periodoActual
 						SET
@@ -33,7 +34,8 @@ if (isset($_FILES["archivoManipuladoras"]["name"]) && $_FILES["archivoManipulado
 							Manipuladora_CAJMPS = '$manipuladoraCAJMPS',
 							Manipuladora_CAJMRI = '$manipuladoraCAJMRI',
 							Manipuladora_CAJTRI = '$manipuladoraCAJTRI',
-							Manipuladora_CAJTPS = '$manipuladoraCAJTPS'
+							Manipuladora_CAJTPS = '$manipuladoraCAJTPS',
+							Manipuladora_RPC = '$manipuladoraRPC'
 						WHERE cod_inst = '$codigoInstitucion' AND cod_sede = '$codigoSede'";
 			$manipuladoras_actualizadas = $Link->query($consulta);
 			if ($manipuladoras_actualizadas === FALSE) {
