@@ -261,6 +261,12 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                   <input type="number" name="tel_acudiente" id="tel_acudiente" class="form-control"  value="<?php echo $datosTitular['tel_acudiente'] ?>" min="0" required>
                   <label for="tel_acudiente" class="error"></label>
                 </div>
+
+                <div class="form-group col-sm-3">
+                  <label>Parentesco acudiente</label>
+                  <input type="text" name="parantesco_acudiente" id="parantesco_acudiente" class="form-control"  value="<?php echo $datosTitular['parantesco_acudiente'] ?>" required>
+                  <label for="parantesco_acudiente" class="error"></label>
+                </div>
               </section>
               <h3>Información especial</h3>
               <section>
@@ -628,9 +634,8 @@ form.children("div").steps({
     }
     });*/
 
-    $('.select2').select2({
-      width: "resolve"
-    });
+   
+    $('.form-group').find('select.form-control').select2({width: "100%"});
 </script>
 
 <?php mysqli_close($Link); ?>
