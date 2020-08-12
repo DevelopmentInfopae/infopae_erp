@@ -159,6 +159,25 @@ if (isset($_POST['id_comp_semana'])) {
 	$id_comp_semana = "";
 }
 
+
+if (isset($_POST['nom_acudiente'])) {
+	$nom_acudiente = $_POST['nom_acudiente'];
+} else {
+	$nom_acudiente = "";
+}
+
+if (isset($_POST['doc_acudiente'])) {
+	$doc_acudiente = $_POST['doc_acudiente'];
+} else {
+	$doc_acudiente = "";
+}
+
+if (isset($_POST['tel_acudiente'])) {
+	$tel_acudiente = $_POST['tel_acudiente'];
+} else {
+	$tel_acudiente = "";
+}
+
 $consultaZonaSede = "SELECT sector FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = ".$cod_sede;
 $resultadoZonaSede = $Link->query($consultaZonaSede);
 if ($resultadoZonaSede->num_rows > 0) {
@@ -181,9 +200,9 @@ $diff = $date1->diff($date2);
 $edad = $diff->y;
 
 	if (isset($id_comp_semana[$id])) {
-		$insertar = "UPDATE ".$tabla." SET tipo_doc = '".$tipo_doc."', nom1 = '".$nom1."', nom2 = '".$nom2."', ape1 = '".$ape1."', ape2 = '".$ape2."', genero = '".$genero."', dir_res = '".$dir_res."', cod_mun_res = '".$cod_mun_res."', telefono = '".$telefono."', cod_mun_nac = '".$cod_mun_nac."', fecha_nac = '".$fecha_nac."', cod_estrato = '".$cod_estrato."', sisben = '".$sisben."', cod_discap = '".$cod_discap."', etnia = '".$etnia."', cod_pob_victima = '".$cod_pob_victima."', cod_inst = '".$cod_inst."', cod_sede = '".$cod_sede."', cod_grado = '".$cod_grado."', nom_grupo = '".$nom_grupo."', cod_jorn_est = '".$cod_jorn_est."', repitente = '".$repitente."', edad = '".$edad."', zona_res_est = '".$zona_res_est."', tipo_complemento = '".$tipo_complemento[$id]."' WHERE id = ".$id_comp_semana[$id];
+		$insertar = "UPDATE ".$tabla." SET tipo_doc = '".$tipo_doc."', nom1 = '".$nom1."', nom2 = '".$nom2."', ape1 = '".$ape1."', ape2 = '".$ape2."', genero = '".$genero."', dir_res = '".$dir_res."', cod_mun_res = '".$cod_mun_res."', telefono = '".$telefono."', cod_mun_nac = '".$cod_mun_nac."', fecha_nac = '".$fecha_nac."', cod_estrato = '".$cod_estrato."', sisben = '".$sisben."', cod_discap = '".$cod_discap."', etnia = '".$etnia."', cod_pob_victima = '".$cod_pob_victima."', cod_inst = '".$cod_inst."', cod_sede = '".$cod_sede."', cod_grado = '".$cod_grado."', nom_grupo = '".$nom_grupo."', cod_jorn_est = '".$cod_jorn_est."', repitente = '".$repitente."', edad = '".$edad."', zona_res_est = '".$zona_res_est."', tipo_complemento = '".$tipo_complemento[$id]."', nom_acudiente = '".$nom_acudiente."', doc_acudiente = '".$doc_acudiente."', tel_acudiente = '".$tel_acudiente."' WHERE id = ".$id_comp_semana[$id];
 	} else {
-		$insertar = "INSERT INTO ".$tabla." (id, tipo_doc, num_doc, nom1, nom2, ape1, ape2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, sede_con_faltantes, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, tipo_complemento) VALUES ('', '".$tipo_doc."', '".$num_doc."', '".$nom1."', '".$nom2."', '".$ape1."', '".$ape2."', '".$genero."', '".$dir_res."', '".$cod_mun_res."', '".$telefono."', '".$cod_mun_nac."', '".$fecha_nac."', '".$cod_estrato."', '".$sisben."', '".$cod_discap."', '".$etnia."', '0', '".$cod_pob_victima."', '', '', '".$cod_inst."', '".$cod_sede."', '', '".$cod_grado."', '".$nom_grupo."', '".$cod_jorn_est."', '', '".$repitente."', '".$edad."', '".$zona_res_est."', '0', '".$tipo_complemento[$id]."')";
+		$insertar = "INSERT INTO ".$tabla." (id, tipo_doc, num_doc, nom1, nom2, ape1, ape2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, sede_con_faltantes, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, tipo_complemento, nom_acudiente, doc_acudiente, tel_acudiente) VALUES ('', '".$tipo_doc."', '".$num_doc."', '".$nom1."', '".$nom2."', '".$ape1."', '".$ape2."', '".$genero."', '".$dir_res."', '".$cod_mun_res."', '".$telefono."', '".$cod_mun_nac."', '".$fecha_nac."', '".$cod_estrato."', '".$sisben."', '".$cod_discap."', '".$etnia."', '0', '".$cod_pob_victima."', '', '', '".$cod_inst."', '".$cod_sede."', '', '".$cod_grado."', '".$nom_grupo."', '".$cod_jorn_est."', '', '".$repitente."', '".$edad."', '".$zona_res_est."', '0', '".$tipo_complemento[$id]."', '".$nom_acudiente."', '".$doc_acudiente."', '".$tel_acudiente."')";
 	}
 
 	if ($Link->query($insertar)===true) {
