@@ -46,7 +46,7 @@ $periodoActual = $_SESSION['periodoActual'];
                     <div class="col-lg-12">
                         <form method="POST">
                           <div class="row">
-                            <div class="col-md-3">
+                            <div class="form-group col-md-3">
                               <label>Municipio</label>
                               <select name="municipio" id="municipio_buscar" class="form-control">
                                 <option value="">Seleccione uno</option>
@@ -77,13 +77,13 @@ $periodoActual = $_SESSION['periodoActual'];
                                 ?>
                               </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="form-group col-md-3">
                               <label>Institución</label>
                               <select name="institucion" id="institucion_buscar" class="form-control" <?= isset($_POST['institucion']) ? "data-institucion='".$_POST['institucion']."'" : "" ?> >
                                 <option value="">Seleccione Municipio</option>
                               </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="form-group col-md-3">
                               <label>Sede</label>
                               <select name="sede" id="sede_buscar" class="form-control" <?= isset($_POST['sede']) ? "data-sede='".$_POST['sede']."'" : "" ?> >
                                 <option value="">Seleccione Institución</option>
@@ -400,12 +400,16 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/infraestructuras/js/infraestructuras.js"></script>
 
 <script type="text/javascript">
   $(document).ready(function(){
+
+    $('.form-group').find('select.form-control').select2({width: "100%"});
+
     $('#municipio_buscar').trigger('change');
 
     <?php if (isset($_POST['id_Complem_JMJT'])): ?>

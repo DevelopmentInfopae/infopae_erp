@@ -787,6 +787,7 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/infraestructuras/js/infraestructuras.js"></script>
 
@@ -812,6 +813,7 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
     }
     });*/
     $('#tipoProducto').change();
+    $('.form-group').find('select.form-control').select2({width: "100%"});
 </script>
 
 <?php mysqli_close($Link); ?>
