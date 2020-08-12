@@ -67,7 +67,7 @@
 		                    $result1 = $Link->query($consulta1) or die ('Unable to execute query. '. mysqli_error($Link));
 		                    if($result1){
 		                      while($row1 = $result1->fetch_assoc()){
-		                  ?>
+		                  	?>
 		                        <option value="<?php echo $row1['CodigoDANE']; ?>" <?php if(isset($row['cod_mun']) && $row['cod_mun'] == $row1['CodigoDANE'] || $municipio_defecto["CodMunicipio"] == $row1['CodigoDANE']){ echo ' selected '; } ?>>
 		                          <?php echo $row1['Ciudad']; ?>
 		                        </option>
