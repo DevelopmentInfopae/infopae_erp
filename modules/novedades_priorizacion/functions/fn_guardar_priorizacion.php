@@ -50,17 +50,9 @@ if (isset($_FILES["foto"])) {
 	    } else if ($size > 220000) {
         $reporte .= "<p style='color: red'>Error, el tamaño máximo permitido es 200 KB </p>";
 				$bandera++;
-	    } else if ($width > 500 || $height > 500) {
-        //$reporte .= "<p style='color: red'>Error $nombre, la anchura y la altura máxima permitida es de 500px</p>";
-	    } else if ($width < 60 || $height < 60) {
-        //$reporte .= "<p style='color: red'>Error $nombre, la anchura y la altura mínima permitida es de 60px</p>";
 	    }
 
-	    if($bandera == 0){
-	    	//resize_crop_image(826,550,$ruta_provisional, $src);
-				// $Link = new mysqli($Hostname, $Username, $Password, $Database);
-				// if ($Link->connect_errno) { echo "Fallo al contenctar a MySQL: (" . $Link->connect_errno . ") " . $Link->connect_error; }
-				// $Link->set_charset("utf8");
+	    if($bandera == 0) {
 			$consulta = "INSERT INTO novedades_priorizacion (
 							num_novedad,
 							id_usuario,
@@ -68,16 +60,28 @@ if (isset($_FILES["foto"])) {
 							cod_sede,
 							APS,
 							CAJMRI,
+							CAJTRI,
 							CAJMPS,
+							CAJTPS,
+							RPC,
 							Etario1_APS,
 							Etario1_CAJMRI,
+							Etario1_CAJTRI,
 							Etario1_CAJMPS,
+							Etario1_CAJTPS,
+							Etario1_RPC,
 							Etario2_APS,
 							Etario2_CAJMRI,
+							Etario2_CAJTRI,
 							Etario2_CAJMPS,
+							Etario2_CAJTPS,
+							Etario2_RPC,
 							Etario3_APS,
 							Etario3_CAJMRI,
+							Etario3_CAJTRI,
 							Etario3_CAJMPS,
+							Etario3_CAJTPS,
+							Etario3_RPC,
 							Semana,
 							observaciones,
 							arch_adjunto,
@@ -93,25 +97,49 @@ if (isset($_FILES["foto"])) {
 			$consulta .= " $aux, ";
 			$aux = $_POST['CAJMRITotal'];
 			$consulta .= " $aux, ";
+			$aux = $_POST['CAJTRITotal'];
+			$consulta .= " $aux, ";
 			$aux = $_POST['CAJMPSTotal'];
+			$consulta .= " $aux, ";
+			$aux = $_POST['CAJTPSTotal'];
+			$consulta .= " $aux, ";
+			$aux = $_POST['RPCTotal'];
 			$consulta .= " $aux, ";
 			$aux = $_POST['APS1'];
 			$consulta .= " $aux, ";
 			$aux = $_POST['CAJMRI1'];
 			$consulta .= " $aux, ";
+			$aux = $_POST['CAJTRI1'];
+			$consulta .= " $aux, ";
 			$aux = $_POST['CAJMPS1'];
+			$consulta .= " $aux, ";
+			$aux = $_POST['CAJTPS1'];
+			$consulta .= " $aux, ";
+			$aux = $_POST['RPC1'];
 			$consulta .= " $aux, ";
 			$aux = $_POST['APS2'];
 			$consulta .= " $aux, ";
 			$aux = $_POST['CAJMRI2'];
 			$consulta .= " $aux, ";
+			$aux = $_POST['CAJTRI2'];
+			$consulta .= " $aux, ";
 			$aux = $_POST['CAJMPS2'];
+			$consulta .= " $aux, ";
+			$aux = $_POST['CAJTPS2'];
+			$consulta .= " $aux, ";
+			$aux = $_POST['RPC2'];
 			$consulta .= " $aux, ";
 			$aux = $_POST['APS3'];
 			$consulta .= " $aux, ";
 			$aux = $_POST['CAJMRI3'];
 			$consulta .= " $aux, ";
+			$aux = $_POST['CAJTRI3'];
+			$consulta .= " $aux, ";
 			$aux = $_POST['CAJMPS3'];
+			$consulta .= " $aux, ";
+			$aux = $_POST['CAJTPS3'];
+			$consulta .= " $aux, ";
+			$aux = $_POST['RPC3'];
 			$consulta .= " $aux, ";
 			$aux = $semanas[0];
 			$consulta .= " '$aux', ";
@@ -119,11 +147,9 @@ if (isset($_FILES["foto"])) {
 			$consulta .= " '$aux', ";
 			$consulta .= " '$carpeta', ";
 			$consulta .= " 1 ) ";
-			// echo "<br><br>$consulta<br><br>";
+
 			$Link->query($consulta) or die ('Error insertando la novedad de priorización.'. mysqli_error($Link));
 			$nuevoId = $Link->insert_id;
-			// echo "<br><br>Nuevo ID: $nuevoId <br><br>";
-
 
 			//Actualizando sedes coberturas
 			$sede = $_POST['sede'];
@@ -139,27 +165,52 @@ if (isset($_FILES["foto"])) {
 			$consulta .= " APS = $aux , ";
 			$aux = $_POST['CAJMRITotal'];
 			$consulta .= " CAJMRI = $aux , ";
+			$aux = $_POST['CAJTRITotal'];
+			$consulta .= " CAJTRI = $aux , ";
 			$aux = $_POST['CAJMPSTotal'];
 			$consulta .= " CAJMPS = $aux , ";
+			$aux = $_POST['CAJTPSTotal'];
+			$consulta .= " CAJTPS = $aux , ";
+			$aux = $_POST['RPCTotal'];
+			$consulta .= " RPC = $aux , ";
 			$aux = $_POST['APS1'];
 			$consulta .= " Etario1_APS = $aux , ";
 			$aux = $_POST['CAJMRI1'];
 			$consulta .= " Etario1_CAJMRI = $aux , ";
+			$aux = $_POST['CAJTRI1'];
+			$consulta .= " Etario1_CAJTRI = $aux , ";
 			$aux = $_POST['CAJMPS1'];
 			$consulta .= " Etario1_CAJMPS = $aux , ";
+			$aux = $_POST['CAJTPS1'];
+			$consulta .= " Etario1_CAJTPS = $aux , ";
+			$aux = $_POST['RPC1'];
+			$consulta .= " Etario1_RPC = $aux , ";
 			$aux = $_POST['APS2'];
 			$consulta .= " Etario2_APS = $aux , ";
 			$aux = $_POST['CAJMRI2'];
 			$consulta .= " Etario2_CAJMRI = $aux , ";
+			$aux = $_POST['CAJTRI2'];
+			$consulta .= " Etario2_CAJTRI = $aux , ";
 			$aux = $_POST['CAJMPS2'];
 			$consulta .= " Etario2_CAJMPS = $aux , ";
+			$aux = $_POST['CAJTPS2'];
+			$consulta .= " Etario2_CAJTPS = $aux , ";
+			$aux = $_POST['RPC2'];
+			$consulta .= " Etario2_RPC = $aux , ";
 			$aux = $_POST['APS3'];
 			$consulta .= " Etario3_APS = $aux , ";
 			$aux = $_POST['CAJMRI3'];
 			$consulta .= " Etario3_CAJMRI = $aux , ";
+			$aux = $_POST['CAJTRI3'];
+			$consulta .= " Etario3_CAJTRI = $aux , ";
 			$aux = $_POST['CAJMPS3'];
-			$consulta .= " Etario3_CAJMPS = $aux ";
+			$consulta .= " Etario3_CAJMPS = $aux, ";
+			$aux = $_POST['CAJTPS3'];
+			$consulta .= " Etario3_CAJTPS = $aux, ";
+			$aux = $_POST['RPC3'];
+			$consulta .= " Etario3_RPC = $aux ";
 			$consulta .= " where cod_sede = $sede and mes = '$mes' and semana = '$semanaSC' ";
+
 			$Link->query($consulta) or die ('Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede '. mysqli_error($Link));
 
 
@@ -191,16 +242,28 @@ if (isset($_FILES["foto"])) {
 						cod_sede,
 						APS,
 						CAJMRI,
+						CAJTRI,
 						CAJMPS,
+						CAJTPS,
+						RPC,
 						Etario1_APS,
 						Etario1_CAJMRI,
+						Etario1_CAJTRI,
 						Etario1_CAJMPS,
+						Etario1_CAJTPS,
+						Etario1_RPC,
 						Etario2_APS,
 						Etario2_CAJMRI,
+						Etario2_CAJTRI,
 						Etario2_CAJMPS,
+						Etario2_CAJTPS,
+						Etario2_RPC,
 						Etario3_APS,
 						Etario3_CAJMRI,
+						Etario3_CAJTRI,
 						Etario3_CAJMPS,
+						Etario3_CAJTPS,
+						Etario3_RPC,
 						Semana,
 						observaciones,
 						arch_adjunto,
@@ -218,25 +281,49 @@ if (isset($_FILES["foto"])) {
 					$consulta .= " $aux, ";
 					$aux = $_POST['CAJMRITotal'];
 					$consulta .= " $aux, ";
+					$aux = $_POST['CAJTRITotal'];
+					$consulta .= " $aux, ";
 					$aux = $_POST['CAJMPSTotal'];
+					$consulta .= " $aux, ";
+					$aux = $_POST['CAJTPSTotal'];
+					$consulta .= " $aux, ";
+					$aux = $_POST['RPCTotal'];
 					$consulta .= " $aux, ";
 					$aux = $_POST['APS1'];
 					$consulta .= " $aux, ";
 					$aux = $_POST['CAJMRI1'];
 					$consulta .= " $aux, ";
+					$aux = $_POST['CAJTRI1'];
+					$consulta .= " $aux, ";
 					$aux = $_POST['CAJMPS1'];
+					$consulta .= " $aux, ";
+					$aux = $_POST['CAJTPS1'];
+					$consulta .= " $aux, ";
+					$aux = $_POST['RPC1'];
 					$consulta .= " $aux, ";
 					$aux = $_POST['APS2'];
 					$consulta .= " $aux, ";
 					$aux = $_POST['CAJMRI2'];
 					$consulta .= " $aux, ";
+					$aux = $_POST['CAJTRI2'];
+					$consulta .= " $aux, ";
 					$aux = $_POST['CAJMPS2'];
+					$consulta .= " $aux, ";
+					$aux = $_POST['CAJTPS2'];
+					$consulta .= " $aux, ";
+					$aux = $_POST['RPC2'];
 					$consulta .= " $aux, ";
 					$aux = $_POST['APS3'];
 					$consulta .= " $aux, ";
 					$aux = $_POST['CAJMRI3'];
 					$consulta .= " $aux, ";
+					$aux = $_POST['CAJTRI3'];
+					$consulta .= " $aux, ";
 					$aux = $_POST['CAJMPS3'];
+					$consulta .= " $aux, ";
+					$aux = $_POST['CAJTPS3'];
+					$consulta .= " $aux, ";
+					$aux = $_POST['RPC3'];
 					$consulta .= " $aux, ";
 					$aux = $semana;
 					$consulta .= " '$aux', ";
@@ -258,26 +345,50 @@ if (isset($_FILES["foto"])) {
 					$consulta .= " APS = $aux , ";
 					$aux = $_POST['CAJMRITotal'];
 					$consulta .= " CAJMRI = $aux , ";
+					$aux = $_POST['CAJTRITotal'];
+					$consulta .= " CAJTRI = $aux , ";
 					$aux = $_POST['CAJMPSTotal'];
 					$consulta .= " CAJMPS = $aux , ";
+					$aux = $_POST['CAJTPSTotal'];
+					$consulta .= " CAJTPS = $aux , ";
+					$aux = $_POST['RPCTotal'];
+					$consulta .= " RPC = $aux , ";
 					$aux = $_POST['APS1'];
 					$consulta .= " Etario1_APS = $aux , ";
 					$aux = $_POST['CAJMRI1'];
 					$consulta .= " Etario1_CAJMRI = $aux , ";
+					$aux = $_POST['CAJTRI1'];
+					$consulta .= " Etario1_CAJTRI = $aux , ";
 					$aux = $_POST['CAJMPS1'];
 					$consulta .= " Etario1_CAJMPS = $aux , ";
+					$aux = $_POST['CAJTPS1'];
+					$consulta .= " Etario1_CAJTPS = $aux , ";
+					$aux = $_POST['RPC1'];
+					$consulta .= " Etario1_RPC = $aux , ";
 					$aux = $_POST['APS2'];
 					$consulta .= " Etario2_APS = $aux , ";
 					$aux = $_POST['CAJMRI2'];
 					$consulta .= " Etario2_CAJMRI = $aux , ";
+					$aux = $_POST['CAJTRI2'];
+					$consulta .= " Etario2_CAJTRI = $aux , ";
 					$aux = $_POST['CAJMPS2'];
 					$consulta .= " Etario2_CAJMPS = $aux , ";
+					$aux = $_POST['CAJTPS2'];
+					$consulta .= " Etario2_CAJTPS = $aux , ";
+					$aux = $_POST['RPC2'];
+					$consulta .= " Etario2_RPC = $aux , ";
 					$aux = $_POST['APS3'];
 					$consulta .= " Etario3_APS = $aux , ";
 					$aux = $_POST['CAJMRI3'];
 					$consulta .= " Etario3_CAJMRI = $aux , ";
+					$aux = $_POST['CAJTRI3'];
+					$consulta .= " Etario3_CAJTRI = $aux , ";
 					$aux = $_POST['CAJMPS3'];
-					$consulta .= " Etario3_CAJMPS = $aux ";
+					$consulta .= " Etario3_CAJMPS = $aux, ";
+					$aux = $_POST['CAJTPS3'];
+					$consulta .= " Etario3_CAJTPS = $aux, ";
+					$aux = $_POST['RPC3'];
+					$consulta .= " Etario3_RPC = $aux ";
 					$consulta .= " where cod_sede = $sede and mes = '$mes' and semana = '$semanaSC' ";
 					$Link->query($consulta) or die ('Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede '. mysqli_error($Link));
 				}

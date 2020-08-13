@@ -40,6 +40,10 @@ if($resultado->num_rows >= 1){
 		$cajtps1 = $row['Etario1_CAJTPS'];
 		$cajtps2 = $row['Etario2_CAJTPS'];
 		$cajtps3 = $row['Etario3_CAJTPS'];
+		$rpc = $row['RPC'];
+		$rpc1 = $row['Etario1_RPC'];
+		$rpc2 = $row['Etario2_RPC'];
+		$rpc3 = $row['Etario3_RPC'];
 	}
 }
 
@@ -66,7 +70,11 @@ $respuesta_ajax = [
 	"cajtps" => $cajtps,
 	"cajtps1" => $cajtps1,
 	"cajtps2" => $cajtps2,
-	"cajtps3" => $cajtps3
+	"cajtps3" => $cajtps3,
+	"rpc" => $rpc,
+	"rpc1" => $rpc1,
+	"rpc2" => $rpc2,
+	"rpc3" => $rpc3
 ];
 
 echo json_encode($respuesta_ajax);
