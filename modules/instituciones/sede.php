@@ -219,6 +219,7 @@
   								<th>APS</th>
   								<th>CAJMRI</th>
   								<th>CAJTRI</th>
+  								<th>RPC</th>
   								<th>Total</th>
   							</tr>
   						</thead>
@@ -230,6 +231,7 @@
   								<td><?= $datos_sede['Manipuladora_APS'] ?></td>
   								<td><?= $datos_sede['Manipuladora_CAJMRI'] ?></td>
   								<td><?= $datos_sede['Manipuladora_CAJTRI'] ?></td>
+  								<td><?= $datos_sede['Manipuladora_RPC'] ?></td>
   								<td><?= $datos_sede['cantidad_Manipuladora'] ?></td>
   							</tr>
   						</tbody>
@@ -256,6 +258,7 @@
 					$totalesPriorizacion['CAJTRI'] = 0;
 					$totalesPriorizacion['CAJMPS'] = 0;
 					$totalesPriorizacion['CAJTPS'] = 0;
+					$totalesPriorizacion['RPC'] = 0;
 
 					for ($i=1; $i <= 3 ; $i++) {
 						$totalesPriorizacion['Etario'.$i.'_APS'] = 0;
@@ -263,6 +266,7 @@
 						$totalesPriorizacion['Etario'.$i.'_CAJTRI'] = 0;
 						$totalesPriorizacion['Etario'.$i.'_CAJMPS'] = 0;
 						$totalesPriorizacion['Etario'.$i.'_CAJTPS'] = 0;
+						$totalesPriorizacion['Etario'.$i.'_RPC'] = 0;
 					}
 
 					foreach ($semanas as $semana) {
@@ -302,6 +306,12 @@
 									$priorizacion["CAJTPS"][$semana] = $row["CAJTPS"];
 								}
 
+								if (isset($priorizacion["RPC"][$semana]) && floatval($priorizacion["RPC"][$semana]) > 0) {
+									$priorizacion["RPC"][$semana] = $priorizacion["RPC"][$semana] + $row["RPC"];
+								} else {
+									$priorizacion["RPC"][$semana] = $row["RPC"];
+								}
+
 								for ($i=1; $i <= 3 ; $i++) {
 									if(isset($priorizacion['Etario'.$i.'_APS'][$semana]) && floatval($priorizacion['Etario'.$i.'_APS'][$semana]) > 0) {
 										$priorizacion['Etario'.$i.'_APS'][$semana] = $priorizacion['Etario'.$i.'_APS'][$semana] + $row['Etario'.$i.'_APS'];
@@ -332,6 +342,12 @@
 									} else {
 										$priorizacion["Etario".$i."_CAJTPS"][$semana] = $row["Etario".$i."_CAJTPS"];
 									}
+
+									if (isset($priorizacion["Etario".$i."_RPC"][$semana]) && floatval($priorizacion["Etario".$i."_RPC"][$semana]) > 0) {
+										$priorizacion["Etario".$i."_RPC"][$semana] = $priorizacion["Etario".$i."_RPC"][$semana] + $row["Etario".$i."_RPC"];
+									} else {
+										$priorizacion["Etario".$i."_RPC"][$semana] = $row["Etario".$i."_RPC"];
+									}
 								}
 
 								$totalesPriorizacion['APS'] = $totalesPriorizacion['APS'] + $row['APS'];
@@ -339,6 +355,7 @@
 								$totalesPriorizacion['CAJTRI'] = $totalesPriorizacion['CAJTRI'] + $row['CAJTRI'];
 								$totalesPriorizacion['CAJMPS'] = $totalesPriorizacion['CAJMPS'] + $row['CAJMPS'];
 								$totalesPriorizacion['CAJTPS'] = $totalesPriorizacion['CAJTPS'] + $row['CAJTPS'];
+								$totalesPriorizacion['RPC'] = $totalesPriorizacion['RPC'] + $row['RPC'];
 
 								for ($i=1; $i <= 3 ; $i++) {
 									$totalesPriorizacion['Etario'.$i.'_APS'] = $totalesPriorizacion['Etario'.$i.'_APS'] + $row['Etario'.$i.'_APS'];
@@ -346,6 +363,7 @@
 									$totalesPriorizacion['Etario'.$i.'_CAJTRI'] = $totalesPriorizacion['Etario'.$i.'_CAJTRI'] + $row['Etario'.$i.'_CAJTRI'];
 									$totalesPriorizacion['Etario'.$i.'_CAJMPS'] = $totalesPriorizacion['Etario'.$i.'_CAJMPS'] + $row['Etario'.$i.'_CAJMPS'];
 									$totalesPriorizacion['Etario'.$i.'_CAJTPS'] = $totalesPriorizacion['Etario'.$i.'_CAJTPS'] + $row['Etario'.$i.'_CAJTPS'];
+									$totalesPriorizacion['Etario'.$i.'_RPC'] = $totalesPriorizacion['Etario'.$i.'_RPC'] + $row['Etario'.$i.'_RPC'];
 								}
 							}
 						}
@@ -471,6 +489,28 @@
 									<?php } ?>
 									<th class="text-center"><?= $totalesPriorizacion['CAJTPS']; ?></th>
 								</tr>
+
+								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
+									<tr>
+										<td>Etario <?= $i; ?> RPC</td>
+										<?php foreach ($semanas as $semana){ ?>
+											<td class="text-center">
+												<?= isset($priorizacion['Etario'.$i.'_RPC'][$semana]) ? $priorizacion['Etario'.$i.'_RPC'][$semana] : ""; ?>
+											</td>
+										<?php } ?>
+										<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_RPC']; ?></td>
+									</tr>
+								<?php } ?>
+
+								<tr>
+									<th>Total RPC</th>
+									<?php foreach ($semanas as $semana){ ?>
+										<th class="text-center">
+											<?= isset($priorizacion['RPC'][$semana]) ? $priorizacion['RPC'][$semana] : ""; ?>
+										</th>
+									<?php } ?>
+									<th class="text-center"><?= $totalesPriorizacion['RPC']; ?></th>
+								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
@@ -507,6 +547,7 @@
                 <th>CAJTRI</th>
                 <th>CAJMPS</th>
                 <th>CAJTPS</th>
+                <th>RPC</th>
                 <th>Semana</th>
                 <th>Observaciones</th>
               </tr>
@@ -524,6 +565,7 @@
 				<th>CAJTRI</th>
 				<th>CAJMPS</th>
 				<th>CAJTPS</th>
+				<th>RPC</th>
 				<th>Semana</th>
 				<th>Observaciones</th>
               </tr>
@@ -541,7 +583,7 @@
     <div class="col-sm-12">
       <div class="ibox">
         <div class="ibox-content">
-					<h2>Focalización</h2>
+		  <h2>Focalización</h2>
           <div class="clients-list">
             <ul class="nav nav-tabs">
 							<?php
@@ -579,21 +621,21 @@
 													</thead>
 													<tbody>
 													<?php
-														$consulta = "SELECT 
-																			f.num_doc, 
-																			t.Abreviatura AS tipo_doc, 
-																			CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre, 
+														$consulta = "SELECT
+																			f.num_doc,
+																			t.Abreviatura AS tipo_doc,
+																			CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre,
 																			f.zona_res_est,
-																			f.genero, 
-																			g.nombre as grado, 
-																			f.nom_grupo, 
-																			jor.nombre as jornada, 
-																			f.edad, 
-																			f.Tipo_complemento 
-																	FROM focalizacion$semana f 
-																		LEFT JOIN tipodocumento t ON t.id = f.tipo_doc 
-																		LEFT JOIN grados g ON g.id = f.cod_grado 
-																		LEFT JOIN jornada jor ON jor.id = f.cod_jorn_est 
+																			f.genero,
+																			g.nombre as grado,
+																			f.nom_grupo,
+																			jor.nombre as jornada,
+																			f.edad,
+																			f.Tipo_complemento
+																	FROM focalizacion$semana f
+																		LEFT JOIN tipodocumento t ON t.id = f.tipo_doc
+																		LEFT JOIN grados g ON g.id = f.cod_grado
+																		LEFT JOIN jornada jor ON jor.id = f.cod_jorn_est
 																	WHERE cod_sede = '$codSede' order by f.nom1 asc ";
 
 														$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -793,6 +835,7 @@
 	        { data: 'CAJTRI'},
 	        { data: 'CAJMPS'},
 	        { data: 'CAJTPS'},
+	        { data: 'RPC'},
 	        { data: 'Semana'},
 	        { data: 'observaciones'}
 	      ],
