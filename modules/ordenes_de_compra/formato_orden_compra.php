@@ -97,7 +97,8 @@ foreach ($despachosRecibidos as &$valor){
 		$despacho['ciudad'] = $row['Ciudad'];
 		$descripcionTipo = $row['descripcion'];
 		$jornada = $row['jornada'];
-		$nombre_proveedor =$row["Nombrecomercial"];
+		$nombre_proveedor = $row["Nombrecomercial"];
+		$nit_proveedor = $row["proveedor"];
 		$rutaMunicipio =$row["rutaMunicipio"];
 		$tipoDespacho = $row['tipo_despacho'];
 

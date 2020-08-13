@@ -48,20 +48,32 @@ $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(15,4.76,utf8_decode('OPERADOR:'),'LB',0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(88,4.76,utf8_decode( $_SESSION['p_Operador'] ),'B',0,'L',False);
+$pdf->Cell(60,4.76,utf8_decode( $_SESSION['p_Operador'] ),'B',0,'L',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->Cell(0,4.76,'','BRT',0,'L',False);
 $pdf->SetXY($current_x, $current_y);
 $pdf->SetFont('Arial','B',$tamannoFuente);
+
 $pdf->Cell(15,4.76,utf8_decode('PROVEEDOR:'),'L',0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(28,4.76,utf8_decode(mb_strtoupper ($nombre_proveedor)),0,0,'L',False);
+$pdf->Cell(50,4.76,utf8_decode(mb_strtoupper ($nombre_proveedor)),0,0,'L',False);
+
+
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(6,4.76,utf8_decode('NIT:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(20,4.76,utf8_decode('800.090.090-9'),'R',0,'L',False);
+$pdf->Cell(20,4.76,utf8_decode(number_format($nit_proveedor, 0, ',', '.') ),'R',0,'L',False);
+
+
+
+
+
+
+
+
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
