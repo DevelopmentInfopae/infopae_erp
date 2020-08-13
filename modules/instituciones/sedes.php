@@ -51,7 +51,7 @@
         ?>
           <div class="row">
             <div class="col-sm-12">
-              <form action="" id="formSedes" name="formSedes" method="post">
+              <form action="sedes.php<?= isset($_GET['region']) ? "?region=1" : "" ?>" id="formSedes" name="formSedes" method="post">
                 <div class="row">
                   <div class="col-sm-2 form-group">
                     <label for="municipio">Municipio</label>
@@ -125,6 +125,10 @@
                       <tr>
                         <th>Código sede</th>
                         <th>Nombre sede</th>
+                        <th>Zona sede</th>
+                        <?php if (isset($_GET['region'])): ?>
+                          <th>Región</th>
+                        <?php endif ?>
                         <th>Código institución</th>
                         <th>Nombre institución</th>
                         <th>Coordinador</th>
@@ -140,6 +144,10 @@
                       <tr>
                         <th>Código sede</th>
                         <th>Nombre sede</th>
+                        <th>Zona sede</th>
+                        <?php if (isset($_GET['region'])): ?>
+                          <th>Región</th>
+                        <?php endif ?>
                         <th>Código institución</th>
                         <th>Nombre institución</th>
                         <th>Coordinador</th>
@@ -254,6 +262,7 @@
       </div>
       <div class="modal-body">
         <form action="" name="formulario_exportar_priorizacion" id="formulario_exportar_priorizacion">
+          <input type="hidden" id="region_exportar" value="<?= isset($_GET['region']) ? true : false ?>">
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
@@ -396,12 +405,25 @@
         url: 'functions/fn_sedes_buscar_dataTables.php',
         data:{
           municipio: '<?= ((isset($_POST["municipio"]) && $_POST["municipio"] != "") ? $_POST["municipio"] : $municipio_defecto["CodMunicipio"]); ?>',
-          institucion: '<?= (isset($_POST["institucion"]) ? $_POST["institucion"] : ""); ?>'
+          institucion: '<?= (isset($_POST["institucion"]) ? $_POST["institucion"] : ""); ?>',
+          region : '<?= isset($_GET['region']) ? true : false ?>'
         }
       },
       columns:[
         { data: 'codigoSede'},
         { data: 'nombreSede'},
+        { data: 'sectorSede', "mRender" : function(data){
+          if (data == 1) {
+            return "Rural";
+          } else if (data == 2) {
+            return "Urbano";
+          } else  {
+            return "No registra";
+          }
+        }},
+        <?php if (isset($_GET['region'])) { ?>
+          {data:'region'},
+        <?php } ?>
         { data: 'codigoInstitucion'},
         { data: 'nombreInstitucion'},
         { data: 'nombreCoordinador'},
@@ -438,7 +460,7 @@
                                     '</div>'}
         <?php } ?>
       ],
-      buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } } ],
+      buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8] } } ],
       dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
       oLanguage: {
         sLengthMenu: 'Mostrando _MENU_ registros',
@@ -517,6 +539,7 @@
                       '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">'+
                         '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><i class="fa fa-file-pdf-o"></i> Exportar </a></li>'+
                         '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="calcular_manipuladoras();"><i class="fa fa-refresh"></i> Actualizar número de manipuladoras requeridas </a></li>'+
+                        '<li><a href="'+ $('#inputBaseUrl').val() +'/modules/instituciones/sedes.php<?= isset($_GET['region']) ? "" : "?region=1" ?>"><i class="fa fa-eye"></i> Ver zona </a></li>'+
                         '<li class="divider"></li>'+
                         '<li>'+
                           '<a class="fileinput fileinput-new" data-provides="fileinput">'+

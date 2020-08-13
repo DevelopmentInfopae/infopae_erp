@@ -148,6 +148,13 @@
 											<td> <input type="text" class="form-control" name="CAJTPSactual2" id="CAJTPSactual2" value="" readonly style="text-align:center;"> </td>
 											<td> <input type="text" class="form-control" name="CAJTPSactual3" id="CAJTPSactual3" value="" readonly style="text-align:center;"> </td>
 										</tr>
+										<tr class="RPCactual">
+											<td> <input type="text" class="form-control" name="RPCnm" id="RPCnm" value="RPC" readonly> </td>
+											<td> <input type="text" class="form-control" name="RPCactualTotal" id="RPCactualTotal" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="RPCactual1" id="RPCactual1" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="RPCactual2" id="RPCactual2" value="" readonly style="text-align:center;"> </td>
+											<td> <input type="text" class="form-control" name="RPCactual3" id="RPCactual3" value="" readonly style="text-align:center;"> </td>
+										</tr>
 									</tbody>
 								</table>
 							</div><!-- /.table-responsive -->
@@ -202,6 +209,13 @@
 											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJTPS1" id="CAJTPS1" value="0"  style="text-align:center;"> </td>
 											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJTPS2" id="CAJTPS2" value="0"  style="text-align:center;"> </td>
 											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="CAJTPS3" id="CAJTPS3" value="0"  style="text-align:center;"> </td>
+										</tr>
+										<tr class="RPC">
+											<td> <input type="text" class="form-control" name="RPCnm" id="RPCnm" value="RPC" readonly> </td>
+											<td> <input type="text" class="form-control" name="RPCTotal" id="RPCTotal" value="0" readonly style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="RPC1" id="RPC1" value="0"  style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="RPC2" id="RPC2" value="0"  style="text-align:center;"> </td>
+											<td> <input type="number" min="1" pattern="^[0-9]+" class="form-control" name="RPC3" id="RPC3" value="0"  style="text-align:center;"> </td>
 										</tr>
 										<tr class="total">
 											<td> <input type="text" class="form-control" name="totalNm" id="totalNm" value="TOTAL" readonly> </td>

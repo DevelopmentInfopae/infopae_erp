@@ -314,8 +314,9 @@ function exportar_priorizacion(){
   if ($('#formulario_exportar_priorizacion').valid()) {
     var mes = $('#mes_exportar').val();
     var semana = $('#semana_exportar').val();
+    var region = $('#region_exportar').val();
 
-    window.open('functions/fn_sedes_exportar_priorizacion.php?mes='+mes+'&semana='+semana, '_blank');
+    window.open('functions/fn_sedes_exportar_priorizacion.php?mes='+mes+'&semana='+semana+'&region='+region, '_blank');
   }
 }
 

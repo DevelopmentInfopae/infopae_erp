@@ -770,12 +770,15 @@ if(count($entregasSedes)>0)
 		$pdf->Cell(15,4,utf8_decode('DEL AÑO'),0,0,'L',false);
 		$pdf->Cell(15,4,utf8_decode(''),'B',0,'L',false);
 
-
 		$pdf->Ln(8);
 		$x = $pdf->GetX();
 		$y = $pdf->GetY();
 		$pdf->SetXY($x, $y);
 		$pdf->Cell(0,12,utf8_decode(''),1,0,'C',false);
+		$pdf->SetXY($x, $y);
+		$pdf->Cell(0,4,utf8_decode('FIRMA DEL RECTOR'),0,4,'L',false);
+		$pdf->Cell(0,4,utf8_decode(''),'B',4,'L',false);
+		$pdf->Cell(30,4,utf8_decode('NOMBRES Y APELLIDOS DEL RECTOR:'),0,4,'L',false);
 
 		$pdf->Ln(14);
 		$x = $pdf->GetX();

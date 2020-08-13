@@ -64,27 +64,25 @@ function CargarTablas(){
 				$('#tHeadComp').html(data['thead']);
 				$('#tBodyComp').html(data['tbody']);
 				$('#tFootComp').html(data['tfoot']);
-
-				json = [];
-				json[0] = ['Mes'];
+				json_tcom = [];
+				json_tcom[0] = ['Mes'];
 
 				info = data['info'];
 				cnt=0;
 				$.each(info, function(mes, ArrayT){
 					cnt++;
-					json[cnt] = [];
-					json[cnt].push(mesesNom[mes]);
+					json_tcom[cnt] = [];
+					json_tcom[cnt].push(mesesNom[mes]);
 					$.each(ArrayT, function(complemento, total){
-						if (!json[0].includes(complemento)) {
-							json[0].push(complemento);
+						if (!json_tcom[0].includes(complemento)) {
+							json_tcom[0].push(complemento);
 						}
-						json[cnt].push(parseInt(total));
+						json_tcom[cnt].push(parseInt(total));
 					});
 				});
-
 				google.charts.load('current', {packages: ['corechart', 'bar']});
 				google.charts.setOnLoadCallback(function(){
-					armarGrafica(json, 'Totales por tipo complemento alimentario', 'Ordenado por mes', 'graficaTotalesComplemento', 'right', 1);
+					armarGrafica(json_tcom, 'Totales por tipo complemento alimentario', 'Ordenado por mes', 'graficaTotalesComplemento', 'right', 1);
 				});
 				}
 			});
@@ -172,6 +170,7 @@ function CargarTablas(){
 				$('#tablaValoresEjecutados').html(data['tabla']);
 
 				info = data['info'];
+				delete json;
 				json = [];
 				json[0] = [];
 				json[0].push('Mes');
@@ -242,6 +241,7 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 			data = JSON.parse(data);
 			$('#complementoSemanas').html(data['tabla']);
 			colores = ['#0B4337','#137A65', '#19AB8D', '#23E1BA'];
+			delete json;
 			json = [];
 			json[0] = ['Complemento', 'Valor', {role : "style"}, { role: 'annotation' }];
 			numm = 0;
@@ -266,6 +266,7 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 
 			info = data['info'];
 
+			delete json;
 			json = [];
 			json[0] = ['Complemento'];
 
@@ -331,6 +332,8 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 			$('#complementoDias').html(data['tabla']);
 
 			info = data['info'];
+
+			delete json;
 			json = [];
 			json[0] = ['Dia'];
 			cnt=0;
@@ -352,7 +355,7 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 				armarGrafica(json, 'Totales por dias tipo complemento alimentario', 'Semana seleccionada', 'graficaComplementoDias', 'right', 1);
 			});
 			setTimeout(function() {
-				arreglarDivs();
+				// arreglarDivs();
 				$('#loader').fadeOut();
 			}, 2000);
 		}
@@ -361,6 +364,8 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 
 
 function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
+	console.log(idDiv);
+	console.log(json);
     var data = google.visualization.arrayToDataTable(json);
 
     if (multiColumn == 1) {

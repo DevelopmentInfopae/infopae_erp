@@ -15,13 +15,16 @@
 					s.*,
 					u.nombre as coordinador,
 					jor.nombre AS nombreJornada,
-					var.descripcion AS nombreVariacion
+					var.descripcion AS nombreVariacion,
+					ubicacion.Ciudad as municipio
 				FROM sedes$periodoActual s
 					LEFT JOIN usuarios u on s.id_coordinador = u.id
 					LEFT JOIN jornada jor ON jor.id = s.jornada
 					LEFT JOIN variacion_menu var ON var.id = s.cod_variacion_menu
+					LEFT JOIN ubicacion ON ubicacion.CodigoDANE = s.cod_mun_sede
 				WHERE s.cod_sede = $codSede ";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	$datos_sede = [];
 	if($resultado->num_rows >= 1){
 		$row = $resultado->fetch_assoc();
 		$id = $row['id'];
@@ -36,6 +39,7 @@
 		$tipoVariacion = $row['nombreVariacion'];
 		$tipoValidacion = $row['tipo_validacion'];
 		$manipuladoras = $row['cantidad_Manipuladora'];
+		$datos_sede = $row;
 	}
 
 	$consulta = "SELECT DISTINCT semana FROM planilla_semanas";
@@ -128,6 +132,12 @@
   				<div class="col-sm-4">
   					<dl class="dl-horizontal">
 	                    <dt>
+	    					<?php if($datos_sede['municipio'] != ''){ ?>
+								<strong>Municipio: </strong><br>
+	    					<?php } ?>
+	    					<?php if($sector != ''){ ?>
+								<strong>Sector: </strong><br>
+	    					<?php } ?>
 						  	<?php if($coordinador != ''){ ?>
 	    						<strong>Coordinador: </strong><br>
 	    					<?php } ?>
@@ -146,14 +156,17 @@
 	    					<?php if($tipoValidacion != ''){ ?>
 								<strong>Tipo validación: </strong><br>
 	    					<?php } ?>
-	    					<?php if($sector != ''){ ?>
-								<strong>Sector: </strong><br>
-	    					<?php } ?>
 	    					<?php if($tipoVariacion != ''){ ?>
 								<strong>Variación menú: </strong><br>
 	    					<?php } ?>
 						</dt>
 						<dd>
+	    					<?php if($datos_sede['municipio'] != ''){ ?>
+		    					<?php echo $datos_sede['municipio']; ?><br>
+	    					<?php } ?>
+	    					<?php if($sector != ''){ ?>
+		    					<?php echo ($sector == "1") ? "Rural" : "Urbano"; ?><br>
+	    					<?php } ?>
 						  	<?php if($coordinador != ''){ ?>
 	    						<?php echo $coordinador; ?><br>
 	    					<?php } ?>
@@ -171,9 +184,6 @@
 	    					<?php } ?>
 	    					<?php if($tipoValidacion != ''){ ?>
 		    					<?php echo $tipoValidacion; ?><br>
-	    					<?php } ?>
-	    					<?php if($sector != ''){ ?>
-		    					<?php echo ($sector == "1") ? "Rural" : "Urbano"; ?><br>
 	    					<?php } ?>
 	    					<?php if($tipoVariacion != ''){ ?>
 		    					<?php echo $tipoVariacion; ?><br>
@@ -198,6 +208,36 @@
 					<label class="text-muted" style="font-size: 26px;">= <?php echo $cantidad_manipuladoras; ?></label>
   				</div>
   			</div>
+  			<div class="row">
+  				<div class="col-md-12 table-responsive">
+  					<table class="table table-striped">
+  						<thead>
+  							<tr>
+  								<th>Complemento</th>
+  								<th>CAJMPS</th>
+  								<th>CAJTPS</th>
+  								<th>APS</th>
+  								<th>CAJMRI</th>
+  								<th>CAJTRI</th>
+  								<th>RPC</th>
+  								<th>Total</th>
+  							</tr>
+  						</thead>
+  						<tbody>
+  							<tr>
+  								<td>Cantidad manipuladoras</td>
+  								<td><?= $datos_sede['Manipuladora_CAJMPS'] ?></td>
+  								<td><?= $datos_sede['Manipuladora_CAJTPS'] ?></td>
+  								<td><?= $datos_sede['Manipuladora_APS'] ?></td>
+  								<td><?= $datos_sede['Manipuladora_CAJMRI'] ?></td>
+  								<td><?= $datos_sede['Manipuladora_CAJTRI'] ?></td>
+  								<td><?= $datos_sede['Manipuladora_RPC'] ?></td>
+  								<td><?= $datos_sede['cantidad_Manipuladora'] ?></td>
+  							</tr>
+  						</tbody>
+  					</table>
+  				</div>
+  			</div>
       	</div>
       </div>
     </div>
@@ -218,6 +258,7 @@
 					$totalesPriorizacion['CAJTRI'] = 0;
 					$totalesPriorizacion['CAJMPS'] = 0;
 					$totalesPriorizacion['CAJTPS'] = 0;
+					$totalesPriorizacion['RPC'] = 0;
 
 					for ($i=1; $i <= 3 ; $i++) {
 						$totalesPriorizacion['Etario'.$i.'_APS'] = 0;
@@ -225,6 +266,7 @@
 						$totalesPriorizacion['Etario'.$i.'_CAJTRI'] = 0;
 						$totalesPriorizacion['Etario'.$i.'_CAJMPS'] = 0;
 						$totalesPriorizacion['Etario'.$i.'_CAJTPS'] = 0;
+						$totalesPriorizacion['Etario'.$i.'_RPC'] = 0;
 					}
 
 					foreach ($semanas as $semana) {
@@ -264,6 +306,12 @@
 									$priorizacion["CAJTPS"][$semana] = $row["CAJTPS"];
 								}
 
+								if (isset($priorizacion["RPC"][$semana]) && floatval($priorizacion["RPC"][$semana]) > 0) {
+									$priorizacion["RPC"][$semana] = $priorizacion["RPC"][$semana] + $row["RPC"];
+								} else {
+									$priorizacion["RPC"][$semana] = $row["RPC"];
+								}
+
 								for ($i=1; $i <= 3 ; $i++) {
 									if(isset($priorizacion['Etario'.$i.'_APS'][$semana]) && floatval($priorizacion['Etario'.$i.'_APS'][$semana]) > 0) {
 										$priorizacion['Etario'.$i.'_APS'][$semana] = $priorizacion['Etario'.$i.'_APS'][$semana] + $row['Etario'.$i.'_APS'];
@@ -294,6 +342,12 @@
 									} else {
 										$priorizacion["Etario".$i."_CAJTPS"][$semana] = $row["Etario".$i."_CAJTPS"];
 									}
+
+									if (isset($priorizacion["Etario".$i."_RPC"][$semana]) && floatval($priorizacion["Etario".$i."_RPC"][$semana]) > 0) {
+										$priorizacion["Etario".$i."_RPC"][$semana] = $priorizacion["Etario".$i."_RPC"][$semana] + $row["Etario".$i."_RPC"];
+									} else {
+										$priorizacion["Etario".$i."_RPC"][$semana] = $row["Etario".$i."_RPC"];
+									}
 								}
 
 								$totalesPriorizacion['APS'] = $totalesPriorizacion['APS'] + $row['APS'];
@@ -301,6 +355,7 @@
 								$totalesPriorizacion['CAJTRI'] = $totalesPriorizacion['CAJTRI'] + $row['CAJTRI'];
 								$totalesPriorizacion['CAJMPS'] = $totalesPriorizacion['CAJMPS'] + $row['CAJMPS'];
 								$totalesPriorizacion['CAJTPS'] = $totalesPriorizacion['CAJTPS'] + $row['CAJTPS'];
+								$totalesPriorizacion['RPC'] = $totalesPriorizacion['RPC'] + $row['RPC'];
 
 								for ($i=1; $i <= 3 ; $i++) {
 									$totalesPriorizacion['Etario'.$i.'_APS'] = $totalesPriorizacion['Etario'.$i.'_APS'] + $row['Etario'.$i.'_APS'];
@@ -308,6 +363,7 @@
 									$totalesPriorizacion['Etario'.$i.'_CAJTRI'] = $totalesPriorizacion['Etario'.$i.'_CAJTRI'] + $row['Etario'.$i.'_CAJTRI'];
 									$totalesPriorizacion['Etario'.$i.'_CAJMPS'] = $totalesPriorizacion['Etario'.$i.'_CAJMPS'] + $row['Etario'.$i.'_CAJMPS'];
 									$totalesPriorizacion['Etario'.$i.'_CAJTPS'] = $totalesPriorizacion['Etario'.$i.'_CAJTPS'] + $row['Etario'.$i.'_CAJTPS'];
+									$totalesPriorizacion['Etario'.$i.'_RPC'] = $totalesPriorizacion['Etario'.$i.'_RPC'] + $row['Etario'.$i.'_RPC'];
 								}
 							}
 						}
@@ -433,6 +489,28 @@
 									<?php } ?>
 									<th class="text-center"><?= $totalesPriorizacion['CAJTPS']; ?></th>
 								</tr>
+
+								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
+									<tr>
+										<td>Etario <?= $i; ?> RPC</td>
+										<?php foreach ($semanas as $semana){ ?>
+											<td class="text-center">
+												<?= isset($priorizacion['Etario'.$i.'_RPC'][$semana]) ? $priorizacion['Etario'.$i.'_RPC'][$semana] : ""; ?>
+											</td>
+										<?php } ?>
+										<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_RPC']; ?></td>
+									</tr>
+								<?php } ?>
+
+								<tr>
+									<th>Total RPC</th>
+									<?php foreach ($semanas as $semana){ ?>
+										<th class="text-center">
+											<?= isset($priorizacion['RPC'][$semana]) ? $priorizacion['RPC'][$semana] : ""; ?>
+										</th>
+									<?php } ?>
+									<th class="text-center"><?= $totalesPriorizacion['RPC']; ?></th>
+								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
@@ -469,6 +547,7 @@
                 <th>CAJTRI</th>
                 <th>CAJMPS</th>
                 <th>CAJTPS</th>
+                <th>RPC</th>
                 <th>Semana</th>
                 <th>Observaciones</th>
               </tr>
@@ -486,6 +565,7 @@
 				<th>CAJTRI</th>
 				<th>CAJMPS</th>
 				<th>CAJTPS</th>
+				<th>RPC</th>
 				<th>Semana</th>
 				<th>Observaciones</th>
               </tr>
@@ -503,7 +583,7 @@
     <div class="col-sm-12">
       <div class="ibox">
         <div class="ibox-content">
-					<h2>Focalización</h2>
+		  <h2>Focalización</h2>
           <div class="clients-list">
             <ul class="nav nav-tabs">
 							<?php
@@ -529,18 +609,34 @@
 												<tr>
 													<th>Num doc</th>
 													<th>Tipo doc</th>
-															<th>Nombre</th>
-															<th>Genero</th>
-															<th>Grado</th>
-															<th>Grupo</th>
-															<th>Jornada</th>
-															<th>Edad</th>
-															<th>Tipo COMP</th>
+													<th>Nombre</th>
+													<th>Zona</th>
+													<th>Genero</th>
+													<th>Grado</th>
+													<th>Grupo</th>
+													<th>Jornada</th>
+													<th>Edad</th>
+													<th>Tipo COMP</th>
 														</tr>
 													</thead>
 													<tbody>
 													<?php
-														$consulta = " SELECT f.num_doc, t.Abreviatura AS tipo_doc, CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre, f.genero, g.nombre as grado, f.nom_grupo, jor.nombre as jornada, f.edad, f.Tipo_complemento FROM focalizacion$semana f LEFT JOIN tipodocumento t ON t.id = f.tipo_doc LEFT JOIN grados g ON g.id = f.cod_grado LEFT JOIN jornada jor ON jor.id = f.cod_jorn_est where cod_sede = '$codSede' order by f.nom1 asc ";
+														$consulta = "SELECT
+																			f.num_doc,
+																			t.Abreviatura AS tipo_doc,
+																			CONCAT(f.nom1, ' ', f.nom2, ' ', f.ape1, ' ', f.ape2) AS nombre,
+																			f.zona_res_est,
+																			f.genero,
+																			g.nombre as grado,
+																			f.nom_grupo,
+																			jor.nombre as jornada,
+																			f.edad,
+																			f.Tipo_complemento
+																	FROM focalizacion$semana f
+																		LEFT JOIN tipodocumento t ON t.id = f.tipo_doc
+																		LEFT JOIN grados g ON g.id = f.cod_grado
+																		LEFT JOIN jornada jor ON jor.id = f.cod_jorn_est
+																	WHERE cod_sede = '$codSede' order by f.nom1 asc ";
 
 														$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 														if($resultado->num_rows >= 1){
@@ -549,6 +645,7 @@
 																<td><?php echo $row['num_doc']; ?></td>
 																<td><?php echo $row['tipo_doc']; ?></td>
 																<td><?php echo $row['nombre']; ?></td>
+																<td><?php echo $row['zona_res_est'] == 1 ? 'Rural' : 'Urbana'; ?></td>
 																<td style="text-align_center;"><?php echo $row['genero']; ?></td>
 																<td><?php echo $row['grado']; ?></td>
 																<td style="text-align:center;"><?php echo $row['nom_grupo']; ?></td>
@@ -566,6 +663,7 @@
 															<th>Num doc</th>
 															<th>Tipo doc</th>
 															<th>Nombre</th>
+															<th>Zona</th>
 															<th>Genero</th>
 															<th>Grado</th>
 															<th>Grupo</th>
@@ -737,6 +835,7 @@
 	        { data: 'CAJTRI'},
 	        { data: 'CAJMPS'},
 	        { data: 'CAJTPS'},
+	        { data: 'RPC'},
 	        { data: 'Semana'},
 	        { data: 'observaciones'}
 	      ],

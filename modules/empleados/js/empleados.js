@@ -178,13 +178,13 @@ function guardarEmpleado(continuar)
 							{
 								if(continuar)
 								{
-                  $("#formCrearEmpleado")[0].reset();
-                  $('#loader').fadeOut();
-                }
-                else
-                {
-                  window.open('index.php', '_self');
-                }
+				                  $("#formCrearEmpleado")[0].reset();
+				                  $('#loader').fadeOut();
+				                }
+				                else
+				                {
+				                  window.open('index.php', '_self');
+				                }
 							}
 						}
 					);
@@ -653,8 +653,14 @@ function campos_nomina(){
 		$('#auxilio_transporte').prop('disabled', true);
 		$('#afp_entidad').select2({'disabled': true});
 		$('#eps_entidad').select2({'disabled': true});
+		arlr = 0;
+		$('#arl_riesgo option').each(function(index, option){
+			if ($(option).data('default')) {
+				arlr = $(option).val();
+			}
+		});
 		$('#arl_riesgo').select2({'disabled': true});
-		$('#arl_riesgo').select2('val', '');
+		$('#arl_riesgo').select2('val', arlr);
 		$('#caja').select2({'disabled':true});
 		$('#caja').select2('val', 0);
 		$('#icbf').select2({'disabled':true});
@@ -690,7 +696,8 @@ function calcular_fecha_final(input){
 	var dias = parseInt(input.val()-1); // Número de días a agregar
 	fecha.setDate(fecha.getDate() + dias);
 	dia = fecha.getDate() < 10 ? "0"+fecha.getDate() : fecha.getDate();
-	mes = fecha.getMonth() < 10 ? "0"+fecha.getMonth() : fecha.getMonth();
+	mes = parseInt(fecha.getMonth())+1;
+	mes = mes < 10 ? "0"+mes : mes;
 	$('#FechaFinalContrato').val(fecha.getFullYear()+"-"+mes+"-"+dia);
 	console.log(fecha.getFullYear()+"-"+mes+"-"+dia);
 }

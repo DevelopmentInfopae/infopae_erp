@@ -20,9 +20,12 @@ use PhpOffice\PhpSpreadsheet\Style\Supervisor;
 $periodo_actual = $_SESSION["periodoActual"];
 $mes = ($_GET["mes"] != "") ? $Link->real_escape_string($_GET["mes"]) : "";
 $semana = ($_GET["semana"] != "") ? $Link->real_escape_string($_GET["semana"]) : "";
+$region = isset($_GET["region"]) ? $_GET["region"] : false;
 
 $consulta_priorizacion = "SELECT
 sed.cod_mun_sede,
+sed.sector AS sector,
+ubi.region AS region,
 ubi.Ciudad AS ciudad,
 sed.cod_inst AS codigo_institucion,
 sed.nom_inst AS nombre_institucion,
@@ -65,51 +68,55 @@ if ($respuesta_priorizacion->num_rows > 0){
 
 
 	$archivo->setCellValue("A1", "Ciudad")->getStyle('A1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("B1", "Código institución")->getStyle('B1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("C1", "Nombre institución")->getStyle('C1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("D1", "Código sede")->getStyle('D1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("E1", "Nombre sede")->getStyle('E1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("F1", "Cantidad estudiantes")->getStyle('F1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("G1", "APS")->getStyle('G1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("H1", "Grupo etario 1 APS")->getStyle('H1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("I1", "Grupo etario 2 APS")->getStyle('I1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("J1", "Grupo etario 3 APS")->getStyle('J1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("K1", "CAJMRI")->getStyle('K1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("L1", "Grupo etario 1 CAJMRI")->getStyle('L1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("M1", "Grupo etario 2 CAJMRI")->getStyle('M1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("N1", "Grupo etario 3 CAJMRI")->getStyle('N1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("O1", "CAJTRI")->getStyle('O1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("P1", "Grupo etario 1 CAJTRI")->getStyle('P1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("Q1", "Grupo etario 2 CAJTRI")->getStyle('Q1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("R1", "Grupo etario 3 CAJTRI")->getStyle('R1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("S1", "CAJMPS")->getStyle('S1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("T1", "Grupo etario 1 CAJMPS")->getStyle('T1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("U1", "Grupo etario 2 CAJMPS")->getStyle('U1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("V1", "Grupo etario 3 CAJMPS")->getStyle('V1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("B1", "Región")->getStyle('B1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("C1", "Zona")->getStyle('C1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("D1", "Código institución")->getStyle('D1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("E1", "Nombre institución")->getStyle('E1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("F1", "Código sede")->getStyle('F1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("G1", "Nombre sede")->getStyle('G1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("H1", "Cantidad estudiantes")->getStyle('H1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("I1", "APS")->getStyle('I1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("J1", "Grupo etario 1 APS")->getStyle('J1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("K1", "Grupo etario 2 APS")->getStyle('K1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("L1", "Grupo etario 3 APS")->getStyle('L1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("M1", "CAJMRI")->getStyle('M1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("N1", "Grupo etario 1 CAJMRI")->getStyle('N1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("O1", "Grupo etario 2 CAJMRI")->getStyle('O1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("P1", "Grupo etario 3 CAJMRI")->getStyle('P1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("Q1", "CAJTRI")->getStyle('Q1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("R1", "Grupo etario 1 CAJTRI")->getStyle('R1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("S1", "Grupo etario 2 CAJTRI")->getStyle('S1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("T1", "Grupo etario 3 CAJTRI")->getStyle('T1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("U1", "CAJMPS")->getStyle('U1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("V1", "Grupo etario 1 CAJMPS")->getStyle('V1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("W1", "Grupo etario 2 CAJMPS")->getStyle('W1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("X1", "Grupo etario 3 CAJMPS")->getStyle('X1')->applyFromArray($estilos_titulos);
 
 	while($registros_priorizacion = $respuesta_priorizacion->fetch_assoc()){
 		$archivo->setCellValue("A". $fila, $registros_priorizacion["ciudad"]);
-		$archivo->setCellValueExplicit("B". $fila, $registros_priorizacion["codigo_institucion"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-		$archivo->setCellValue("C". $fila, $registros_priorizacion["nombre_institucion"]);
-		$archivo->setCellValueExplicit("D". $fila, $registros_priorizacion["codigo_sede"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-		$archivo->setCellValue("E". $fila, $registros_priorizacion["nombre_sede"]);
-		$archivo->setCellValue("F". $fila, $registros_priorizacion["cantidad_estudiante"]);
-		$archivo->setCellValue("G". $fila, $registros_priorizacion["aps"]);
-		$archivo->setCellValue("H". $fila, $registros_priorizacion["grupo_etario_1_aps"]);
-		$archivo->setCellValue("I". $fila, $registros_priorizacion["grupo_etario_2_aps"]);
-		$archivo->setCellValue("J". $fila, $registros_priorizacion["grupo_etario_3_aps"]);
-		$archivo->setCellValue("K". $fila, $registros_priorizacion["cajmri"]);
-		$archivo->setCellValue("L". $fila, $registros_priorizacion["grupo_etario_1_cajmri"]);
-		$archivo->setCellValue("M". $fila, $registros_priorizacion["grupo_etario_2_cajmri"]);
-		$archivo->setCellValue("N". $fila, $registros_priorizacion["grupo_etario_3_cajmri"]);
-		$archivo->setCellValue("O". $fila, $registros_priorizacion["cajtri"]);
-		$archivo->setCellValue("P". $fila, $registros_priorizacion["grupo_etario_1_cajtri"]);
-		$archivo->setCellValue("Q". $fila, $registros_priorizacion["grupo_etario_2_cajtri"]);
-		$archivo->setCellValue("R". $fila, $registros_priorizacion["grupo_etario_3_cajtri"]);
-		$archivo->setCellValue("S". $fila, $registros_priorizacion["cajmps"]);
-		$archivo->setCellValue("T". $fila, $registros_priorizacion["grupo_etario_1_cajmps"]);
-		$archivo->setCellValue("U". $fila, $registros_priorizacion["grupo_etario_2_cajmps"]);
-		$archivo->setCellValue("v". $fila, $registros_priorizacion["grupo_etario_3_cajmps"]);
+		$archivo->setCellValue("B". $fila, $registros_priorizacion["region"]);
+		$archivo->setCellValue("C". $fila, $registros_priorizacion["sector"] == 1 ? "Rural" : "Urbano");
+		$archivo->setCellValueExplicit("D". $fila, $registros_priorizacion["codigo_institucion"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		$archivo->setCellValue("E". $fila, $registros_priorizacion["nombre_institucion"]);
+		$archivo->setCellValueExplicit("F". $fila, $registros_priorizacion["codigo_sede"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		$archivo->setCellValue("G". $fila, $registros_priorizacion["nombre_sede"]);
+		$archivo->setCellValue("H". $fila, $registros_priorizacion["cantidad_estudiante"]);
+		$archivo->setCellValue("I". $fila, $registros_priorizacion["aps"]);
+		$archivo->setCellValue("J". $fila, $registros_priorizacion["grupo_etario_1_aps"]);
+		$archivo->setCellValue("K". $fila, $registros_priorizacion["grupo_etario_2_aps"]);
+		$archivo->setCellValue("L". $fila, $registros_priorizacion["grupo_etario_3_aps"]);
+		$archivo->setCellValue("M". $fila, $registros_priorizacion["cajmri"]);
+		$archivo->setCellValue("N". $fila, $registros_priorizacion["grupo_etario_1_cajmri"]);
+		$archivo->setCellValue("O". $fila, $registros_priorizacion["grupo_etario_2_cajmri"]);
+		$archivo->setCellValue("P". $fila, $registros_priorizacion["grupo_etario_3_cajmri"]);
+		$archivo->setCellValue("Q". $fila, $registros_priorizacion["cajtri"]);
+		$archivo->setCellValue("R". $fila, $registros_priorizacion["grupo_etario_1_cajtri"]);
+		$archivo->setCellValue("S". $fila, $registros_priorizacion["grupo_etario_2_cajtri"]);
+		$archivo->setCellValue("T". $fila, $registros_priorizacion["grupo_etario_3_cajtri"]);
+		$archivo->setCellValue("U". $fila, $registros_priorizacion["cajmps"]);
+		$archivo->setCellValue("V". $fila, $registros_priorizacion["grupo_etario_1_cajmps"]);
+		$archivo->setCellValue("W". $fila, $registros_priorizacion["grupo_etario_2_cajmps"]);
+		$archivo->setCellValue("X". $fila, $registros_priorizacion["grupo_etario_3_cajmps"]);
 		$priorizaciones[] = $registros_priorizacion;
 
 		$fila++;

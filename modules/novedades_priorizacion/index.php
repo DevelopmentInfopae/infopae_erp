@@ -42,6 +42,7 @@
                 <th>CAJMRI</th>
                 <th>CAJTPS</th>
                 <th>CAJTRI</th>
+                <th>RPC</th>
                 <th>Semana</th>
                 <th>Observaciones</th>
               </tr>
@@ -59,6 +60,7 @@
                 <th>CAJMRI</th>
                 <th>CAJTPS</th>
                 <th>CAJTRI</th>
+                <th>RPC</th>
 								<th>Semana</th>
 								<th>Observaciones</th>
               </tr>
@@ -127,6 +129,7 @@
         { data: 'CAJMRI'},
         { data: 'CAJTPS'},
         { data: 'CAJTRI'},
+        { data: 'RPC'},
         { data: 'Semana'},
         { data: 'observaciones'}
       ],

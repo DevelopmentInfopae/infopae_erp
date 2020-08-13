@@ -417,6 +417,14 @@ $periodoActual = $_SESSION["periodoActual"];
 
 					<!--  -->
 					<div class="row">	
+						<div class="form-group col-sm-6 col-md-3">	
+							<label>Salario Integral</label>
+							<select name="SalarioIntegral" id="SalarioIntegral" class="form-control form-data" required>	
+								<option value="">Seleccione...</option>
+								<option value="0" <?= $registros0['SalarioIntegral'] == 0 ? 'selected' : '' ?> >No</option>
+								<option value="1" <?= $registros0['SalarioIntegral'] == 1 ? 'selected' : '' ?> >Si</option>
+							</select>
+						</div>
 						<div class="form-group col-sm-6 col-md-3 div_base_mes" style="display: none;">
 							<label>Valor Base Mes</label>
 							<input type="text" name="ValorBaseMes" id="ValorBaseMes" value="<?= $registros0['ValorBaseMes'] ?>" class="form-control form-data only_number">
@@ -430,14 +438,6 @@ $periodoActual = $_SESSION["periodoActual"];
 								<option value="2" <?= $registros0['TipoServicio'] == 2 ? 'selected' : '' ?> >Honorarios</option>
 							</select>
 						</div>	
-						<div class="form-group col-sm-6 col-md-3">	
-							<label>Salario Integral</label>
-							<select name="SalarioIntegral" id="SalarioIntegral" class="form-control form-data" required>	
-								<option value="">Seleccione...</option>
-								<option value="0" <?= $registros0['SalarioIntegral'] == 0 ? 'selected' : '' ?> >No</option>
-								<option value="1" <?= $registros0['SalarioIntegral'] == 1 ? 'selected' : '' ?> >Si</option>
-							</select>
-						</div>
 						<div class="form-group col-sm-6 col-md-3">	
 							<label>Aux. transporte</label>
 							<select name="auxilio_transporte" id="auxilio_transporte" class="form-control form-data" required>	
@@ -454,14 +454,13 @@ $periodoActual = $_SESSION["periodoActual"];
 						</div>
 						<div class="form-group col-sm-6 col-md-3">	
 							<label>AFP Entidad</label>
-							<select name="afp_entidad" id="afp_entidad" class="form-control form-data" required>	
-								<option value="">Seleccione...</option>
+							<select name="afp_entidad" id="afp_entidad" class="form-control form-data" required>
 								<?php 
 								$consulta_afp = "SELECT * FROM nomina_entidad WHERE tipo = 2";
 								$resultado_afp = $Link->query($consulta_afp);
 								if ($resultado_afp->num_rows > 0) {
 									while ($afp = $resultado_afp->fetch_assoc()) { ?>
-										<option value="<?= $afp['ID'] ?>" <?= $registros0['afp_entidad'] == $afp['ID'] ? 'selected' : '' ?> ><?= $afp['Entidad'] ?></option>
+										<option value="<?= $afp['ID'] ?>" <?= $registros0['afp_entidad'] == $afp['ID'] ? 'selected' : '' ?> <?= $afp['Entidad'] == 'NINGUNA' ? 'data-default="1"' : '' ?>><?= $afp['Entidad'] ?></option>
 									<?php }
 								}
 								 ?>
@@ -469,14 +468,13 @@ $periodoActual = $_SESSION["periodoActual"];
 						</div>
 						<div class="form-group col-sm-6 col-md-3">	
 							<label>EPS Entidad</label>
-							<select name="eps_entidad" id="eps_entidad" class="form-control form-data" required>	
-								<option value="">Seleccione...</option>
+							<select name="eps_entidad" id="eps_entidad" class="form-control form-data" required>
 								<?php 
 								$consulta_eps = "SELECT * FROM nomina_entidad WHERE tipo = 1";
 								$resultado_eps = $Link->query($consulta_eps);
 								if ($resultado_eps->num_rows > 0) {
 									while ($eps = $resultado_eps->fetch_assoc()) { ?>
-										<option value="<?= $eps['ID'] ?>" <?= $registros0['eps_entidad'] == $eps['ID'] ? 'selected' : '' ?> ><?= $eps['Entidad'] ?></option>
+										<option value="<?= $eps['ID'] ?>" <?= $registros0['eps_entidad'] == $eps['ID'] ? 'selected' : '' ?> <?= $eps['Entidad'] == 'NINGUNA' ? 'data-default="1"' : '' ?>><?= $eps['Entidad'] ?></option>
 									<?php }
 								}
 								 ?>
@@ -484,14 +482,13 @@ $periodoActual = $_SESSION["periodoActual"];
 						</div>
 						<div class="form-group col-sm-6 col-md-3">	
 							<label>ARL Riesgo</label>
-							<select name="arl_riesgo" id="arl_riesgo" class="form-control form-data" required>	
-								<option value="">Seleccione...</option>
+							<select name="arl_riesgo" id="arl_riesgo" class="form-control form-data" required>
 								<?php 
 								$consulta_arl = "SELECT * FROM nomina_riesgos";
 								$resultado_arl = $Link->query($consulta_arl);
 								if ($resultado_arl->num_rows > 0) {
 									while ($arl = $resultado_arl->fetch_assoc()) { ?>
-										<option value="<?= $arl['ID'] ?>" <?= $registros0['arl_riesgo'] == $arl['ID'] ? 'selected' : '' ?> ><?= $arl['Tipo']." (".$arl['Porcentaje'].")" ?></option>
+										<option value="<?= $arl['ID'] ?>" <?= $registros0['arl_riesgo'] == $arl['ID'] ? 'selected' : '' ?> <?= $arl['Porcentaje'] == 0 ? 'data-default="1"' : '' ?>><?= $arl['Tipo']." (".$arl['Porcentaje'].")" ?></option>
 									<?php }
 								}
 								 ?>
@@ -536,8 +533,7 @@ $periodoActual = $_SESSION["periodoActual"];
 					<div class="row">
 						<div class="form-group col-sm-6 col-md-3">	
 							<label>Banco</label>
-							<select name="Banco" id="Banco" class="form-control form-data" required>	
-								<option value="">Seleccione...</option>
+							<select name="Banco" id="Banco" class="form-control form-data" required>
 								<?php 
 								$consulta_banco = "SELECT * FROM bancos";
 								$resultado_banco = $Link->query($consulta_banco);
@@ -552,7 +548,7 @@ $periodoActual = $_SESSION["periodoActual"];
 						<div class="form-group col-sm-6 col-md-3">	
 							<label>Tipo de cuenta</label>
 							<select name="Tipo_cuenta" id="Tipo_cuenta" class="form-control form-data" required>	
-								<option value="">Seleccione...</option>
+								<option value="">No Aplica</option>
 								<option value="1" <?= $registros0['Tipo_cuenta'] == 1 ? 'selected' : '' ?> >Ahorros</option>
 								<option value="2" <?= $registros0['Tipo_cuenta'] == 2 ? 'selected' : '' ?> >Corriente</option>
 							</select>

@@ -203,3 +203,33 @@ function validFormEdit(idForm, PanelOcultar, PanelMostrar){
     }
 }
 
+
+$('#municipio_buscar').on('change', function(){
+  $.ajax({
+    type: "POST",
+    url: "functions/fn_infraestructuras_obtener_instituciones.php",
+    data: {"cod_municipio" : $(this).val()},
+    beforeSend: function(){},
+    success: function(data){
+      $('#institucion_buscar').html(data);
+      if ($('#institucion_buscar').data('institucion')) {
+        $('#institucion_buscar').val($('#institucion_buscar').data('institucion')).trigger('change');
+      }
+    }
+  });
+});
+
+$('#institucion_buscar').on('change', function(){
+  $.ajax({
+    type: "POST",
+    url: "functions/fn_infraestructuras_obtener_sedes.php",
+    data: {"cod_inst" : $(this).val()},
+    beforeSend: function(){},
+    success: function(data){
+      $('#sede_buscar').html(data);
+      if ($('#sede_buscar').data('sede')) {
+        $('#sede_buscar').val($('#sede_buscar').data('sede'));
+      }
+    }
+  });
+});

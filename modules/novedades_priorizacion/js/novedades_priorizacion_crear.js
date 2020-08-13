@@ -331,6 +331,10 @@ function buscar_priorizacion(semanas){
 				var cajtps1 = obj.cajtps1;
 				var cajtps2 = obj.cajtps2;
 				var cajtps3 = obj.cajtps3;
+				var rpc = obj.rpc;
+				var rpc1 = obj.rpc1;
+				var rpc2 = obj.rpc2;
+				var rpc3 = obj.rpc3;
 				var cantEstudiantes = obj.cantEstudiantes;
 				var numEstFocalizados = obj.numEstFocalizados;
 
@@ -390,6 +394,18 @@ function buscar_priorizacion(semanas){
 					$('.CAJTPSactual').show('fast');
 				}
 
+				if(rpc == 0){
+					$('.RPCactual').hide('fast');
+				}else{
+					$('#RPCactualTotal').val(rpc);
+					$('#RPCactual1').val(rpc1); $('#CAJTPS1').val(rpc1);
+					$('#RPCactual2').val(rpc2); $('#CAJTPS2').val(rpc2)
+					$('#RPCactual3').val(rpc3); $('#CAJTPS3').val(rpc3)
+
+					$('.RPCactual').show('fast');
+				}
+
+
 				totalizar();
 				$('.priorizacionAction').fadeIn();
 			}
@@ -423,16 +439,19 @@ function totalizar(){
 	aux = parseInt($('#CAJTPS1').val()) + parseInt($('#CAJTPS2').val()) + parseInt($('#CAJTPS3').val());
 	$('#CAJTPSTotal').val(aux);
 
-	aux = parseInt($('#APSTotal').val()) + parseInt($('#CAJMRITotal').val()) + parseInt($('#CAJTRITotal').val()) + parseInt($('#CAJMPSTotal').val()) + parseInt($('#CAJTPSTotal').val());
+	aux = parseInt($('#RPC1').val()) + parseInt($('#RPC2').val()) + parseInt($('#RPC3').val());
+	$('#RPCTotal').val(aux);
+
+	aux = parseInt($('#APSTotal').val()) + parseInt($('#CAJMRITotal').val()) + parseInt($('#CAJTRITotal').val()) + parseInt($('#CAJMPSTotal').val()) + parseInt($('#CAJTPSTotal').val()) + parseInt($('#RPCTotal').val());
 	$('#totalTotal').val(aux);
 
-	aux = parseInt($('#APS1').val()) + parseInt($('#CAJMRI1').val()) + parseInt($('#CAJTRI1').val()) + parseInt($('#CAJMPS1').val()) + parseInt($('#CAJTPS1').val());
+	aux = parseInt($('#APS1').val()) + parseInt($('#CAJMRI1').val()) + parseInt($('#CAJTRI1').val()) + parseInt($('#CAJMPS1').val()) + parseInt($('#CAJTPS1').val()) + parseInt($('#RPC1').val());
 	$('#total1').val(aux);
 
-	aux = parseInt($('#APS2').val()) + parseInt($('#CAJMRI2').val()) + parseInt($('#CAJTRI2').val()) + parseInt($('#CAJMPS2').val()) + parseInt($('#CAJTPS2').val());
+	aux = parseInt($('#APS2').val()) + parseInt($('#CAJMRI2').val()) + parseInt($('#CAJTRI2').val()) + parseInt($('#CAJMPS2').val()) + parseInt($('#CAJTPS2').val()) + parseInt($('#RPC2').val());
 	$('#total2').val(aux);
 
-	aux = parseInt($('#APS3').val()) + parseInt($('#CAJMRI3').val()) + parseInt($('#CAJTRI3').val()) + parseInt($('#CAJMPS3').val()) + parseInt($('#CAJTPS3').val());
+	aux = parseInt($('#APS3').val()) + parseInt($('#CAJMRI3').val()) + parseInt($('#CAJTRI3').val()) + parseInt($('#CAJMPS3').val()) + parseInt($('#CAJTPS3').val()) + parseInt($('#RPC3').val());
 	$('#total3').val(aux);
 }
 

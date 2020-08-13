@@ -289,7 +289,7 @@ if ($Link->query($sqlInfraestructura) === true) {
 		if (isset($_POST['id_dotacion'])) {
 			$id_dotacion = $_POST['id_dotacion'];
 		} else {
-			$id_dotacion = "";
+			$id_dotacion = NULL;
 		}
 
 		if (isset($_POST['id_valor_dotacion'])) {
@@ -325,21 +325,23 @@ if ($Link->query($sqlInfraestructura) === true) {
 		}
 
 		for ($l=0; $l < sizeof($id_parametro) ; $l++) { 
-			for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
-				if (!isset($tiene[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$tiene[$id_parametro[$l]][$id_dotacion[$m]] = "";
-				}
-				if (!isset($en_uso[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$en_uso[$id_parametro[$l]][$id_dotacion[$m]] = "";
-				}
-				if (!isset($funciona[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$funciona[$id_parametro[$l]][$id_dotacion[$m]] = "";
-				}
-				if (!isset($tipo[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$tipo[$id_parametro[$l]][$id_dotacion[$m]] = "";
-				}
-				if (!isset($capacidad[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$capacidad[$id_parametro[$l]][$id_dotacion[$m]] = "";
+			if ($id_dotacion) {
+				for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
+					if (!isset($tiene[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$tiene[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					}
+					if (!isset($en_uso[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$en_uso[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					}
+					if (!isset($funciona[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$funciona[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					}
+					if (!isset($tipo[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$tipo[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					}
+					if (!isset($capacidad[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$capacidad[$id_parametro[$l]][$id_dotacion[$m]] = "";
+					}
 				}
 			}
 		}
@@ -347,25 +349,27 @@ if ($Link->query($sqlInfraestructura) === true) {
 		$sqlDotacionParamVal = "";
 		$cntUpdate2 = 0;
 
-		for ($l=0; $l < sizeof($id_parametro) ; $l++) { 
-			for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
-				if (isset($id_valor_dotacion[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$sqlDotacionParamVal="UPDATE dotacion_param_val SET tiene = '".$tiene[$id_parametro[$l]][$id_dotacion[$m]]."', enuso = '".$en_uso[$id_parametro[$l]][$id_dotacion[$m]]."', tipo = '".$tipo[$id_parametro[$l]][$id_dotacion[$m]]."', funciona = '".$funciona[$id_parametro[$l]][$id_dotacion[$m]]."', capacidad = '".$capacidad[$id_parametro[$l]][$id_dotacion[$m]]."' WHERE id = ".$id_valor_dotacion[$id_parametro[$l]][$id_dotacion[$m]]." ;";
-					if ($Link->query($sqlDotacionParamVal)===true) {
-						$cntUpdate2++;
+		if ($id_dotacion) {
+			for ($l=0; $l < sizeof($id_parametro) ; $l++) { 
+				for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
+					if (isset($id_valor_dotacion[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$sqlDotacionParamVal="UPDATE dotacion_param_val SET tiene = '".$tiene[$id_parametro[$l]][$id_dotacion[$m]]."', enuso = '".$en_uso[$id_parametro[$l]][$id_dotacion[$m]]."', tipo = '".$tipo[$id_parametro[$l]][$id_dotacion[$m]]."', funciona = '".$funciona[$id_parametro[$l]][$id_dotacion[$m]]."', capacidad = '".$capacidad[$id_parametro[$l]][$id_dotacion[$m]]."' WHERE id = ".$id_valor_dotacion[$id_parametro[$l]][$id_dotacion[$m]]." ;";
+						if ($Link->query($sqlDotacionParamVal)===true) {
+							$cntUpdate2++;
+						}
 					}
 				}
 			}
 		}
 
-		if ($cntUpdate2 == sizeof($id_dotacion)) {
+		// if ($cntUpdate2 == sizeof($id_dotacion)) {
 			$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '41', 'Actualizó el diagnóstico de infraestructura de la sede <strong>".$cod_sede."</strong>')";
 			$Link->query($sqlBitacora);
 
 			echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Editado con éxito", "IdInfraestructura" : "'.$idinfraestructura.'"}]}';
-		} else {
-			echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error al editar valores de dotacion "}]}';
-		}
+		// } else {
+			// echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error al editar valores de dotacion "}]}';
+		// }
 	} else {
 		echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error al editar valores de parámetros'.$cntUpdate.'-'.sizeof($id_parametro).'"}]}';
 	}

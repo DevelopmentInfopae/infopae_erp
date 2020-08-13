@@ -19,6 +19,7 @@
                         np.CAJTRI,
                         np.CAJMPS,
                         np.CAJTPS,
+                        np.RPC,
                         np.Semana,
                         np.observaciones
                       FROM
