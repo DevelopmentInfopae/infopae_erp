@@ -16,6 +16,7 @@
                         np.APS,
                         np.CAJMRI,
                         np.CAJMPS,
+                        np.RPC
                         np.Semana,
                         np.observaciones
                       FROM
