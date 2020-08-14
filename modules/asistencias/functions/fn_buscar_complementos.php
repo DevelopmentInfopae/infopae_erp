@@ -17,7 +17,7 @@ if(isset($_POST['sede']) && $_POST['sede'] != ''){
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " SELECT tipo_complemento AS complemento FROM focalizacion07 WHERE cod_sede = 16830700164701
+$consulta = " SELECT tipo_complemento AS complemento FROM focalizacion07 WHERE cod_sede = $sede
 GROUP BY complemento ORDER BY complemento asc ";
 
 //echo $consulta;

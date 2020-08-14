@@ -243,13 +243,13 @@
 
 
 
-<li> <a href="<?php echo $baseUrl; ?>/modules/control_acceso/listado.php"><i class="far fa-clock"></i> <span class="nav-label">Control de Acceso</span></a> </li>
-
-
-
-
-
 <?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 ){ ?>
+	<li> <a href="<?php echo $baseUrl; ?>/modules/control_acceso/listado.php"><i class="far fa-clock"></i> <span class="nav-label">Control de Acceso</span></a> </li>
+
+
+
+
+
 	<li>
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Procesos</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
