@@ -10,11 +10,12 @@
 	$tipo_complemento = (isset($_POST['tipo_complemento']) && $_POST['tipo_complemento'] != '') ? mysqli_real_escape_string($Link, $_POST["tipo_complemento"]) : "";
 
 	$consulta_priorizacion = "SELECT
-													    $tipo_complemento * (SELECT COUNT(DIA) FROM planilla_semanas WHERE MES='$mes' AND SEMANA='$semana') AS total_priorizacion
-														FROM
-													    priorizacion$semana
-														WHERE
-													    cod_sede = '$sede';";
+							    $tipo_complemento * (SELECT COUNT(DIA) FROM planilla_semanas WHERE MES='$mes' AND SEMANA='$semana') AS total_priorizacion
+								FROM
+							    priorizacion$semana
+								WHERE
+							    cod_sede = '$sede';";
+
 	$respuesta_priorizacion = $Link->query($consulta_priorizacion) or die('Error al consultar priorizacion: '. $Link->error);
 	if ($respuesta_priorizacion->num_rows > 0)
 	{
