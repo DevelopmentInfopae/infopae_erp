@@ -113,6 +113,16 @@
 											</tr>
 										<?php	} ?>
 
+										<?php if($datosPriorizacion['CAJTPS'] > 0 ){ ?>
+											<tr class="CAJTPSactual">
+												<td> <input type="text" class="form-control" name="CAJTPSnm" id="CAJTPSnm" value="CAJTPS" readonly> </td>
+												<td> <input type="text" class="form-control" name="CAJTPSactualTotal" id="CAJTPSactualTotal" value="<?php echo $datosPriorizacion['CAJTPS']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTPSactual1" id="CAJTPSactual1" value="<?php echo $datosPriorizacion['Etario1_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTPSactual2" id="CAJTPSactual2" value="<?php echo $datosPriorizacion['Etario2_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTPSactual3" id="CAJTPSactual3" value="<?php echo $datosPriorizacion['Etario3_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
+											</tr>
+										<?php	} ?>
+
 										<?php if($datosPriorizacion['CAJMRI'] > 0 ){ ?>
 											<tr class="CAJMRIactual">
 												<td> <input type="text" class="form-control" name="CAJMRInm" id="CAJMRInm" value="CAJMRI" readonly> </td>
@@ -123,6 +133,25 @@
 											</tr>
 										<?php	} ?>
 
+										<?php if($datosPriorizacion['CAJTRI'] > 0 ){ ?>
+											<tr class="CAJTRIactual">
+												<td> <input type="text" class="form-control" name="CAJTRInm" id="CAJTRInm" value="CAJTRI" readonly> </td>
+												<td> <input type="text" class="form-control" name="CAJTRIactualTotal" id="CAJTRIactualTotal" value="<?php echo $datosPriorizacion['CAJTRI']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTRIactual1" id="CAJTRIactual1" value="<?php echo $datosPriorizacion['Etario1_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTRIactual2" id="CAJTRIactual2" value="<?php echo $datosPriorizacion['Etario2_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTRIactual3" id="CAJTRIactual3" value="<?php echo $datosPriorizacion['Etario3_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
+											</tr>
+										<?php	} ?>
+
+										<?php if($datosPriorizacion['RPC'] > 0 ){ ?>
+											<tr class="RPCactual">
+												<td> <input type="text" class="form-control" name="RPCnm" id="RPCnm" value="RPC" readonly> </td>
+												<td> <input type="text" class="form-control" name="RPCactualTotal" id="RPCactualTotal" value="<?php echo $datosPriorizacion['RPC']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="RPCactual1" id="RPCactual1" value="<?php echo $datosPriorizacion['Etario1_RPC']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="RPCactual2" id="RPCactual2" value="<?php echo $datosPriorizacion['Etario2_RPC']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="RPCactual3" id="RPCactual3" value="<?php echo $datosPriorizacion['Etario3_RPC']; ?>" readonly style="text-align:center;"> </td>
+											</tr>
+										<?php	} ?>
 									</tbody>
 								</table>
 							</div><!-- /.table-responsive -->
@@ -164,6 +193,16 @@
 											</tr>
 										<?php } ?>
 
+										<?php if($datosNovedad['CAJTPS'] > 0 ){ ?>
+											<tr class="CAJTPS">
+												<td> <input type="text" class="form-control" name="CAJTPSnm" id="CAJTPSnm" value="CAJTPS" readonly> </td>
+												<td> <input type="text" class="form-control" name="CAJTPSTotal" id="CAJTPSTotal" value="<?php echo $datosNovedad['CAJTPS']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTPS1" id="CAJTPS1" value="<?php echo $datosNovedad['Etario1_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTPS2" id="CAJTPS2" value="<?php echo $datosNovedad['Etario2_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTPS3" id="CAJTPS3" value="<?php echo $datosNovedad['Etario3_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
+											</tr>
+										<?php } ?>
+
 										<?php if($datosNovedad['CAJMRI'] > 0 ){ ?>
 											<tr class="CAJMRI">
 												<td> <input type="text" class="form-control" name="CAJMRInm" id="CAJMRInm" value="CAJMRI" readonly> </td>
@@ -174,12 +213,35 @@
 											</tr>
 										<?php } ?>
 
+										<?php if($datosNovedad['CAJTRI'] > 0 ){ ?>
+											<tr class="CAJTRI">
+												<td> <input type="text" class="form-control" name="CAJTRInm" id="CAJTRInm" value="CAJTRI" readonly> </td>
+												<td> <input type="text" class="form-control" name="CAJTRITotal" id="CAJTRITotal" value="<?php echo $datosNovedad['CAJTRI']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTRI1" id="CAJTRI1" value="<?php echo $datosNovedad['Etario1_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTRI2" id="CAJTRI2" value="<?php echo $datosNovedad['Etario2_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="CAJTRI3" id="CAJTRI3" value="<?php echo $datosNovedad['Etario3_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
+											</tr>
+										<?php } ?>
+
+										<?php if($datosNovedad['RPC'] > 0 ){ ?>
+											<tr class="RPC">
+												<td> <input type="text" class="form-control" name="RPCnm" id="RPCnm" value="RPC" readonly> </td>
+												<td> <input type="text" class="form-control" name="RPCTotal" id="RPCTotal" value="<?php echo $datosNovedad['RPC']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="RPC1" id="RPC1" value="<?php echo $datosNovedad['Etario1_RPC']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="RPC2" id="RPC2" value="<?php echo $datosNovedad['Etario2_RPC']; ?>" readonly style="text-align:center;"> </td>
+												<td> <input type="text" class="form-control" name="RPC3" id="RPC3" value="<?php echo $datosNovedad['Etario3_RPC']; ?>" readonly style="text-align:center;"> </td>
+											</tr>
+										<?php } ?>
+
 										<tr class="total">
-											<td> <input type="text" class="form-control" name="totalNm" id="totalNm" value="TOTAL" readonly> </td>
-											<td> <input type="text" class="form-control" name="totalTotal" id="totalTotal" value="<?php echo $datosNovedad['APS'] + $datosNovedad['CAJMPS'] + $datosNovedad['CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total1" id="total1" value="<?php echo $datosNovedad['Etario1_APS'] + $datosNovedad['Etario1_CAJMPS'] + $datosNovedad['Etario1_CAJMRI']; ?>" readonly  style="text-align:center;"> </td>
-											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total2" id="total2" value="<?php echo $datosNovedad['Etario2_APS'] + $datosNovedad['Etario2_CAJMPS'] + $datosNovedad['Etario2_CAJMRI']; ?>" readonly  style="text-align:center;"> </td>
-											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total3" id="total3" value="<?php echo $datosNovedad['Etario3_APS'] + $datosNovedad['Etario3_CAJMPS'] + $datosNovedad['Etario3_CAJMRI']; ?>" readonly  style="text-align:center;"> </td>
+											<td>
+												<input type="text" class="form-control" name="totalNm" id="totalNm" value="TOTAL" readonly>
+											</td>
+											<td>
+												<input type="text" class="form-control" name="totalTotal" id="totalTotal" value="<?= $datosNovedad['APS'] + $datosNovedad['CAJMPS'] + $datosNovedad['CAJTPS'] + $datosNovedad['CAJMRI'] + $datosNovedad['CAJTRI'] + $datosNovedad['RPC']; ?>" readonly style="text-align:center;"> </td>
+											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total1" id="total1" value="<?= $datosNovedad['Etario1_APS'] + $datosNovedad['Etario1_CAJMPS'] + $datosNovedad['Etario1_CAJTPS'] + $datosNovedad['Etario1_CAJMRI'] + $datosNovedad['Etario1_CAJTRI'] + $datosNovedad['Etario1_RPC']; ?>" readonly  style="text-align:center;"> </td>
+											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total2" id="total2" value="<?= $datosNovedad['Etario2_APS'] + $datosNovedad['Etario2_CAJMPS'] + $datosNovedad['Etario2_CAJTPS'] + $datosNovedad['Etario2_CAJMPS'] + $datosNovedad['Etario2_CAJTPS'] + $datosNovedad['Etario2_RPC']; ?>" readonly  style="text-align:center;"> </td>
+											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total3" id="total3" value="<?= $datosNovedad['Etario3_APS'] + $datosNovedad['Etario3_CAJMPS'] + $datosNovedad['Etario3_CAJTPS'] + $datosNovedad['Etario3_CAJMRI'] + $datosNovedad['Etario3_CAJTRI'] + $datosNovedad['Etario3_RPC']; ?>" readonly  style="text-align:center;"> </td>
 										</tr>
 
 									</tbody>
