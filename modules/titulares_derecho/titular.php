@@ -160,7 +160,7 @@ $row = $resultado->fetch_assoc();
 						<br>
 							<?php echo $row['cod_estrato']; ?>
 						</p>
-						<div class="row m-t-lg">
+						<!-- <div class="row m-t-lg">
 							<div class="col-md-4">
 								<span class="bar">5,3,9,6,5,9,7,3,5,2</span>
 								<h5><strong>169</strong> Entregas</h5>
@@ -173,7 +173,7 @@ $row = $resultado->fetch_assoc();
 								<span class="bar">5,3,2,-1,-3,-2,2,3,5,2</span>
 								<h5><strong>240</strong> Ausencias</h5>
 							</div>
-						</div>
+						</div> -->
 						<div class="user-button">
 							<!-- <div class="row">
 								<div class="col-md-6">
@@ -258,7 +258,7 @@ $row = $resultado->fetch_assoc();
 						}
 
 						//Consulta planilla semanas
-						$consulta = " select * from planilla_semanas ";
+						$consulta = " select * from planilla_semanas WHERE MES <= '".date('m')."' AND DIA <= '".date('d')."'";
 						$diasCobertura = array();
 						$entregas = array();
 						$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -573,7 +573,29 @@ $row = $resultado->fetch_assoc();
 
                 <div class="ibox-content inspinia-timeline">
 									<?php
-									$consultaNovedad = " SELECT np.fecha_hora, np.id, u.Ciudad as municipio, s.nom_inst, s.nom_sede, td.Abreviatura,np.num_doc_titular , np.tipo_complem, np.semana, np.d1, np.d2, np.d3, np.d4, np.d5, np.observaciones FROM novedades_focalizacion np LEFT JOIN sedes$periodoActual s ON np.cod_sede = s.cod_sede LEFT JOIN tipodocumento td ON np.tipo_doc_titular = td.id LEFT JOIN ubicacion u ON u.CodigoDANE = s.cod_mun_sede where np.num_doc_titular = $numDoc order by np.id desc ";
+									$fecha_hoy = date('Y-m-d 11:59:59');
+									$consultaNovedad = "SELECT 
+																np.fecha_hora, 
+																np.id, 
+																u.Ciudad as municipio, 
+																s.nom_inst, 
+																s.nom_sede, 
+																td.Abreviatura,
+																np.num_doc_titular, 
+																np.tipo_complem, 
+																np.semana, 
+																np.d1, 
+																np.d2, 
+																np.d3, 
+																np.d4, 
+																np.d5, 
+																np.observaciones 
+														FROM novedades_focalizacion np 
+															LEFT JOIN sedes$periodoActual s ON np.cod_sede = s.cod_sede 
+															LEFT JOIN tipodocumento td ON np.tipo_doc_titular = td.id 
+															LEFT JOIN ubicacion u ON u.CodigoDANE = s.cod_mun_sede 
+														WHERE np.num_doc_titular = $numDoc AND np.fecha_hora <= '{$fecha_hoy}' ORDER BY np.id DESC";
+														// echo $consultaNovedad;
 									$resultadoNovedades = $Link->query($consultaNovedad);
 									if($resultadoNovedades->num_rows > 0){
 										while($row = $resultadoNovedades->fetch_assoc()){
