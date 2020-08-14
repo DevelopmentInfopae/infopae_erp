@@ -258,7 +258,8 @@ $row = $resultado->fetch_assoc();
 						}
 
 						//Consulta planilla semanas
-						$consulta = " select * from planilla_semanas WHERE MES <= '".date('m')."' AND DIA <= '".date('d')."'";
+						$consulta = " select * from planilla_semanas WHERE MES <= ".date('m')." AND DIA <= ".date('d')."";
+						// $consulta = " select * from planilla_semanas";
 						$diasCobertura = array();
 						$entregas = array();
 						$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
