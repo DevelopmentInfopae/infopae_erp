@@ -101,11 +101,31 @@
 
               <div class="col-sm-3 form-group">
                 <label for="departamento">Institución</label>
-                <select id="institucion" name="institucion" onchange="buscar_sedes();" class="form-control">
+                  <select id="institucion" name="institucion" onchange="buscar_sedes();" class="form-control" <?php if($_SESSION['perfil'] == 6){ ?>required <?php } ?>>
                   <?php
                     if (isset($_POST["municipio"]) && $_POST["municipio"] != "" || $municipio_defecto["CodMunicipio"]) {
                       $municipio = (isset($_POST["municipio"])) ? $_POST["municipio"] : $municipio_defecto["CodMunicipio"];
-                      $vsql = "select distinct cod_inst, nom_inst from sedes".$periodoactual." where cod_mun_sede = '$municipio' order by nom_inst asc";
+                      $vsql = "select distinct s.cod_inst, s.nom_inst from sedes".$periodoactual." s LEFT JOIN instituciones i ON s.cod_inst = i.codigo_inst where cod_mun_sede = '$municipio' ";
+
+                      if($_SESSION['perfil'] == 6){
+       
+
+                      $vsql .= " and cc_rector = $rectorDocumento ";
+
+
+
+                      } 
+
+
+                      $vsql .= " order by nom_inst asc ";
+                      //echo "<br><br>$vsql<br><br>";
+
+
+
+
+
+
+
                       $result = $Link->query($vsql);
                   ?>
                   <option value="">TODOS</option>
@@ -363,18 +383,26 @@
     jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
   });
 
-  function enviarForm(){
-    var municipio = '';
-    var institucion = '';
-    var sede = '';
-    municipio = $('#municipio').val();
-    institucion = $('#institucion').val();
-    sede = $('#sede').val();
-    var bandera = 0;
-    if(bandera == 0){
-      $('#parametros').submit();
-    }
-  }
+  // function enviarForm(){
+  //   var municipio = '';
+  //   var institucion = '';
+  //   var sede = '';
+  //   municipio = $('#municipio').val();
+  //   institucion = $('#institucion').val();
+  //   sede = $('#sede').val();
+    
+    
+  //   var bandera = 0;
+  //   alert(institucion);
+  //   if(institucion == ""){
+  //     alert("El campo institución es obligatorio");
+  //     bandera++;
+  //   }
+
+  //   if(bandera == 0){
+  //     $('#parametros').submit();
+  //   }
+  // }
 
   function actualizaranno(){
     aux = $('#annoinicial').val();
