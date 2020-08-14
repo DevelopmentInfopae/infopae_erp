@@ -573,7 +573,7 @@ $row = $resultado->fetch_assoc();
 
                 <div class="ibox-content inspinia-timeline">
 									<?php
-									$fecha_hoy = date('Y-m-d 11:59:59');
+									$fecha_hoy = date('Y-m-d H:i:s');
 									$consultaNovedad = "SELECT 
 																np.fecha_hora, 
 																np.id, 
