@@ -398,9 +398,9 @@ function buscar_priorizacion(semanas){
 					$('.RPCactual').hide('fast');
 				}else{
 					$('#RPCactualTotal').val(rpc);
-					$('#RPCactual1').val(rpc1); $('#CAJTPS1').val(rpc1);
-					$('#RPCactual2').val(rpc2); $('#CAJTPS2').val(rpc2)
-					$('#RPCactual3').val(rpc3); $('#CAJTPS3').val(rpc3)
+					$('#RPCactual1').val(rpc1); $('#RPC1').val(rpc1);
+					$('#RPCactual2').val(rpc2); $('#RPC2').val(rpc2)
+					$('#RPCactual3').val(rpc3); $('#RPC3').val(rpc3)
 
 					$('.RPCactual').show('fast');
 				}
