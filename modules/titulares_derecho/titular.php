@@ -258,7 +258,8 @@ $row = $resultado->fetch_assoc();
 						}
 
 						//Consulta planilla semanas
-						$consulta = " select * from planilla_semanas WHERE MES <= '".date('m')."' AND DIA <= '".date('d')."'";
+						$consulta = " select * from planilla_semanas WHERE MES <= ".date('m')." AND DIA <= ".date('d')."";
+						// $consulta = " select * from planilla_semanas";
 						$diasCobertura = array();
 						$entregas = array();
 						$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -573,7 +574,7 @@ $row = $resultado->fetch_assoc();
 
                 <div class="ibox-content inspinia-timeline">
 									<?php
-									$fecha_hoy = date('Y-m-d 11:59:59');
+									$fecha_hoy = date('Y-m-d H:i:s');
 									$consultaNovedad = "SELECT 
 																np.fecha_hora, 
 																np.id, 
