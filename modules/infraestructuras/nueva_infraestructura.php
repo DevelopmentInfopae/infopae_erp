@@ -469,10 +469,8 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
     });*/
     $('#tipoProducto').change();
 
-    $('.select2').select2({
-      width: "resolve"
-    });
-</script>
+    $('.form-group').find('select.form-control').select2({width: "100%"});
+  </script>
 
 <?php mysqli_close($Link); ?>
 

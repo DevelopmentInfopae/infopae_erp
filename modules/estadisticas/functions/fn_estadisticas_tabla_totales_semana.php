@@ -139,7 +139,7 @@ $tFootSemana ='<tr>
   	    '.$sumTotalesSemanas["semana_".$l].'
   	  </th>';
     } else {
-      $tFootSemana .= '<th></th>';
+      $tFootSemana .= '<th>0</th>';
     }
 	
 	  } 

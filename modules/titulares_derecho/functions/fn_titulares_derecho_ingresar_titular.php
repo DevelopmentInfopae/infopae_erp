@@ -153,6 +153,32 @@ if (isset($_POST['tipo_complemento'])) {
 	$tipo_complemento = "";
 }
 
+
+
+if (isset($_POST['nom_acudiente'])) {
+	$nom_acudiente = $_POST['nom_acudiente'];
+} else {
+	$nom_acudiente = "";
+}
+
+if (isset($_POST['doc_acudiente'])) {
+	$doc_acudiente = $_POST['doc_acudiente'];
+} else {
+	$doc_acudiente = "";
+}
+
+if (isset($_POST['tel_acudiente'])) {
+	$tel_acudiente = $_POST['tel_acudiente'];
+} else {
+	$tel_acudiente = "";
+}
+
+if (isset($_POST['parantesco_acudiente'])) {
+	$parantesco_acudiente = $_POST['parantesco_acudiente'];
+} else {
+	$parantesco_acudiente = "";
+}
+
 $consultaZonaSede = "SELECT sector FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = ".$cod_sede;
 $resultadoZonaSede = $Link->query($consultaZonaSede);
 if ($resultadoZonaSede->num_rows > 0) {
@@ -174,7 +200,7 @@ $date2 = new DateTime(date('d-m-Y'));
 $diff = $date1->diff($date2);                   
 $edad = $diff->y;
 
-	$insertar = "INSERT INTO ".$tabla." (id, tipo_doc, num_doc, nom1, nom2, ape1, ape2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, sede_con_faltantes, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, tipo_complemento) VALUES ('', '".$tipo_doc."', '".$num_doc."', '".$nom1."', '".$nom2."', '".$ape1."', '".$ape2."', '".$genero."', '".$dir_res."', '".$cod_mun_res."', '".$telefono."', '".$cod_mun_nac."', '".$fecha_nac."', '".$cod_estrato."', '".$sisben."', '".$cod_discap."', '".$etnia."', '0', '".$cod_pob_victima."', '', '', '".$cod_inst."', '".$cod_sede."', '', '".$cod_grado."', '".$nom_grupo."', '".$cod_jorn_est."', '', '".$repitente."', '".$edad."', '".$zona_res_est."', '0', '".$tipo_complemento[$id]."')";
+	$insertar = "INSERT INTO ".$tabla." (id, tipo_doc, num_doc, nom1, nom2, ape1, ape2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, sede_con_faltantes, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, tipo_complemento, nom_acudiente, doc_acudiente, tel_acudiente, parantesco_acudiente) VALUES ('', '".$tipo_doc."', '".$num_doc."', '".$nom1."', '".$nom2."', '".$ape1."', '".$ape2."', '".$genero."', '".$dir_res."', '".$cod_mun_res."', '".$telefono."', '".$cod_mun_nac."', '".$fecha_nac."', '".$cod_estrato."', '".$sisben."', '".$cod_discap."', '".$etnia."', '0', '".$cod_pob_victima."', '', '', '".$cod_inst."', '".$cod_sede."', '', '".$cod_grado."', '".$nom_grupo."', '".$cod_jorn_est."', '', '".$repitente."', '".$edad."', '".$zona_res_est."', '0', '".$tipo_complemento[$id]."', '".$nom_acudiente."', '".$doc_acudiente."', '".$tel_acudiente."', '".$parantesco_acudiente."')";
 
 	if ($Link->query($insertar)===true) {
 		$valida++;

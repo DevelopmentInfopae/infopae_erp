@@ -53,14 +53,47 @@
             		<select class="form-control" name="municipio" id="municipio" required>
             			<option value="">Seleccione uno</option>
             			<?php
-            			$consulta = "SELECT DISTINCT codigoDANE, ciudad FROM ubicacion WHERE ETC = 0 ";
+                  
+                  
+                  
+                  
+                  
+                  
+                  $consulta = "SELECT DISTINCT codigoDANE, ciudad FROM ubicacion WHERE ETC = 0 ";
+
+
+
+
+                  if($_SESSION['perfil'] == 6){
+                    $rectorDocumento = $_SESSION['num_doc'];
+                    $consulta = "SELECT ubicacion.ciudad as ciudad, ubicacion.codigoDANE from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.codigoDANE where cc_rector = $rectorDocumento";
+                   }
+
+
+
+
+
+
 
             			$DepartamentoOperador = $_SESSION['p_CodDepartamento'];
             			if($DepartamentoOperador != ''){
             				$consulta = $consulta." and CodigoDANE like '$DepartamentoOperador%' ";
             			}
             			$consulta = $consulta." order by ciudad asc ";
-            			//echo $consulta;
+                  //echo $consulta;
+                  
+
+
+
+
+
+
+
+
+
+
+
+
             			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
             			if($resultado->num_rows >= 1){
             				while($row = $resultado->fetch_assoc()) { ?>

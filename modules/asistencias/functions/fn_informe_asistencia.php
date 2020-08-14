@@ -65,10 +65,16 @@ $consulta .= " order by f.cod_grado, f.nom_grupo, f.ape1 ";
 //echo $consulta;
 
 $resultado = $Link->query($consulta);
-if($resultado->num_rows > 0){
-  while($row = $resultado->fetch_assoc()) {
-	$data[] = $row;
-  }
+
+//var_dump($resultado);
+
+
+if($resultado){
+	if($resultado->num_rows > 0){
+	  while($row = $resultado->fetch_assoc()) {
+		$data[] = $row;
+	  }
+	}
 }
 
 $output = [

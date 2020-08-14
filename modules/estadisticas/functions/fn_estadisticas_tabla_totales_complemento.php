@@ -106,7 +106,7 @@ foreach ($totalesComplementos as $mes => $valoresMes) {
       if (isset($sumTotalesComplementos[$complemento])) {
         $tFootComp .='<th>'.$sumTotalesComplementos[$complemento].'</th>';
       } else {
-        $tFootComp.="<th></th>";
+        $tFootComp.="<th>0</th>";
       }
     }
 
