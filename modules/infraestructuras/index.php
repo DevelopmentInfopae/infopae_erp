@@ -72,7 +72,7 @@ $periodoActual = $_SESSION['periodoActual'];
                             <div class="form-group col-md-3">
                               <label>Institución</label>
                               <select name="institucion" id="institucion_buscar" class="form-control" <?= isset($_POST['institucion']) ? "data-institucion='".$_POST['institucion']."'" : "" ?> >
-                                <option value="">Seleccione Municipio</option>
+                                <option value="">Seleccione</option>
                               </select>
                             </div>
                             <div class="form-group col-md-3">
