@@ -78,7 +78,7 @@ $periodoActual = $_SESSION['periodoActual'];
                             <div class="form-group col-md-3">
                               <label>Sede</label>
                               <select name="sede" id="sede_buscar" class="form-control" <?= isset($_POST['sede']) ? "data-sede='".$_POST['sede']."'" : "" ?> >
-                                <option value="">Seleccione Institución</option>
+                                <option value="">Seleccione</option>
                               </select>
                             </div>
                             <?php 
