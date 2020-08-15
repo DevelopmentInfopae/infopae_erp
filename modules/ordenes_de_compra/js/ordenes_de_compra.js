@@ -601,6 +601,20 @@ function despachoPorSede(despacho){
 }
 
 
+function ordenesConsolidado(){
+	var ordenes = [];
+	$( "#box-table-movimientos tbody input:checked" ).each(function() {
+		ordenes.push($( this ).val());
+	});
+	ordenes = ordenes.toString();
+	var mesI = $('#mesi').val();
+	var annoI = $('#annoi').val();
+	$('#AnnoIC').val(annoI);
+	$('#MesIC').val(mesI);
+	$('#ordenesCompra').val(ordenes)
+	$('#formOrdenesConsolidado').submit();
+}
+
 
 
 
