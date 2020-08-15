@@ -307,6 +307,17 @@
 						  </div>
 						</div>
 
+
+
+
+
+
+
+
+
+
+
+
 				  <?php
 	$tablaMes = '';
 	if(isset($_GET["pb_btnBuscar"]) && $_GET["pb_btnBuscar"] == 1){
@@ -490,8 +501,8 @@
 								<thead>
 				<tr>
 				  <th class="text-center">
-					  <label for="seleccionarVarios">Todos</label>
-					<input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios">
+					<!-- <label for="seleccionarVarios">Todos</label> -->
+					<!-- <input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios"> -->
 				  </th>
 				  <th>Número</th>
 				  <th>Fecha</th>
@@ -653,9 +664,10 @@
 			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
 			
 			
+			botonAcciones += '<li> <a href="#" onclick="ordenesConsolidado()">Consolidado</a> </li>';
 			botonAcciones += '<li> <a href="#" onclick="eliminar_orden()">Eliminar Orden</a> </li>';
 			
-			
+			// <div><button type="button" onclick="ordenesConsolidado()">Consolidado</button></div>
 			
 			
 		
@@ -677,6 +689,13 @@
   <input type="hidden" name="AnnoI" id="AnnoI" value="">
   <input type="hidden" name="MesI" id="MesI" value="">
   <input type="hidden" name="ordenCompra" id="ordenCompra" value="">
+</form>
+
+
+<form action="formato_orden_compra_consolidado.php" method="post" name="formOrdenesConsolidado" id="formOrdenesConsolidado" target="_blank">
+  <input type="hidden" name="AnnoIC" id="AnnoIC" value="">
+  <input type="hidden" name="MesIC" id="MesIC" value="">
+  <input type="hidden" name="ordenesCompra" id="ordenesCompra" value="">
 </form>
 
 <form action="ordenes_de_compra.php" id="parametrosBusqueda" method="get">
