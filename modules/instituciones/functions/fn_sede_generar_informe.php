@@ -3,15 +3,6 @@
 	require_once '../../../config.php';
 	require_once '../../../fpdf181/fpdf.php';
 
-	// // Send Headers
-	// header('Content-type: application/pdf');
-	// header('Content-Disposition: attachment; filename="myPDF.pdf');
-
-	// // Send Headers: Prevent Caching of File
-	// header('Cache-Control: private');
-	// header('Pragma: private');
-	// header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-
 	$semana = (isset($_REQUEST['semana']) && $_REQUEST['semana']) ? mysqli_real_escape_string($Link, $_REQUEST['semana']) : '';
 	$titulos = ['Codigo sede','Nombre sede','APS','CAJMRI','CAJTRI','CAJMPS', 'CAJTPS', 'RPC'];
 	$anc_col = [24,98,10,13,13,13,13,10];
@@ -36,6 +27,7 @@
 						FROM focalizacion$semana
 						GROUP BY cod_sede
 						ORDER BY cod_sede";
+
 	$resFoc = $Link->query($conFoc);
 	if($resFoc->num_rows > 0) {
 		while($regFoc = $resFoc->fetch_assoc()) {
@@ -78,14 +70,11 @@
 	$pdf->SetFillColor(237,85,101);
 
 	// Validaciones
-	foreach ($arrayDatPri as $i => $datPri)
-	{
-		foreach ($arrayDatFoc as $j => $datFoc)
-		{
-			if($datPri['cod_sede'] == $datFoc['cod_sede'])
-			{
-				// Mostrar sede
+	foreach ($arrayDatPri as $i => $datPri) {
+		foreach ($arrayDatFoc as $j => $datFoc) {
+			if($datPri['cod_sede'] == $datFoc['cod_sede']) {
 				$pdf->SetTextColor(0,0,0);
+
 				$pdf->Cell($anc_col[0],7,$datPri['cod_sede'],1,0,'C');
 				$pdf->Cell($anc_col[1],7,utf8_decode(strtoupper(substr($datPri['nom_sede'], 0, 57))),1,0);
 				if(($datPri['APS'] - $datFoc['APS']) != 0 ){ $pdf->SetTextColor(237,85,101); } else { $pdf->SetTextColor(0,0,0); }
