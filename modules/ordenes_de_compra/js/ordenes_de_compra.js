@@ -58,12 +58,26 @@ $(document).ready(function(){
 	
 	dataset1 = $('#box-table-movimientos').DataTable({
 		bSort: false,
-		bPaginate: false,
+		bPaginate: true,
+		pageLength: 25,
+		lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
 		buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } } ],
 		dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
-	}).on("draw", function(){
-
-	});
+		oLanguage: {
+			sLengthMenu: 'Mostrando _MENU_ registros por página',
+			sZeroRecords: 'No se encontraron registros',
+			sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+			sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+			sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+			sSearch:         'Buscar: ',
+			oPaginate:{
+				sFirst:    'Primero',
+				sLast:     'Último',
+				sNext:     'Siguiente',
+				sPrevious: 'Anterior'
+			}
+		}
+	}).on("draw", function(){ });
 
 
 
@@ -593,6 +607,16 @@ function despachoPorSede(despacho){
 		$( ".soloJs" ).remove();
 		var mesI = $('#mesi').val();
 		var annoI = $('#annoi').val();
+		
+		var imprimirMes = 0;
+		if( $('#imprimirMes').prop('checked') ) {
+			imprimirMes = 1;
+		}else{
+			imprimirMes = 0;
+		}
+		$('#imprimirMesI').val(imprimirMes);
+
+
 		$('#AnnoI').val(annoI);
 		$('#MesI').val(mesI);
 		$('#ordenCompra').val(despacho);
@@ -609,6 +633,15 @@ function ordenesConsolidado(){
 	ordenes = ordenes.toString();
 	var mesI = $('#mesi').val();
 	var annoI = $('#annoi').val();
+
+	var imprimirMes = 0;
+	if( $('#imprimirMes').prop('checked') ) {
+		imprimirMes = 1;
+	}else{
+		imprimirMes = 0;
+	}
+	$('#imprimirMesIC').val(imprimirMes);
+	
 	$('#AnnoIC').val(annoI);
 	$('#MesIC').val(mesI);
 	$('#ordenesCompra').val(ordenes)
