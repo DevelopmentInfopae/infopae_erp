@@ -4,10 +4,12 @@ ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
 include '../../config.php';
 require_once '../../autentication.php';
-require('../../fpdf181/fpdf.php');
+require('../../fpdf182/fpdf.php');
 require_once '../../db/conexion.php';
 include '../../php/funciones.php';
 
+
+//var_dump($_POST);
 
 $largoNombre = 30;
 $sangria = " - ";
@@ -53,6 +55,7 @@ while($row = $resultado->fetch_assoc()){
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
 
+$tipoComplemento = '';
 $mes = '';
 $sede = '';
 $dias = '';
@@ -101,6 +104,8 @@ foreach ($despachosRecibidos as &$valor){
 		$nit_proveedor = $row["proveedor"];
 		$rutaMunicipio =$row["rutaMunicipio"];
 		$tipoDespacho = $row['tipo_despacho'];
+
+		$tipoComplemento = $row['Tipo_Complem'];
 
 
 		$aux = $row['FechaHora_Elab'];
