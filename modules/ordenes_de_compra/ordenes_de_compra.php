@@ -283,22 +283,31 @@
 							<div class="col-sm-4 col-md-2 form-group">
 								<label for="ruta">Ruta</label>
 								<select class="form-control" name="ruta" id="ruta">
-							  <option value="">Todos</option>
-							  <?php
+								<option value="">Todos</option>
+								<?php
 								$consulta = "SELECT * FROM rutas ORDER BY nombre ASC";
 								$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 								if($resultado->num_rows >= 1){
-								  while($row = $resultado->fetch_assoc()) {
-							  ?>
+									while($row = $resultado->fetch_assoc()) {
+								?>
 									<option value="<?= $row["ID"]; ?>" <?php if(isset($_GET["pb_ruta"]) && $_GET["pb_ruta"] == $row["ID"] ){ echo " selected ";} ?> ><?= $row["Nombre"]; ?></option>
-							  <?php
-								  }
+								<?php
+									}
 								}
-							  ?>
+								?>
 								</select>
 								<input type="hidden" name="rutaNm" id="rutaNm" value="">
 							</div>
 						</div>
+
+
+						<div class="row">
+							<div class="col-sm-4   form-group">
+								<label for="semana_final">Imprimir nombre del mes</label>
+								<div> <input type="checkbox" name="imprimirMes" id="imprimirMes" checked> </div>
+							</div>
+						</div>
+
 
 						<div class="row">
 						  <div class="col-sm-3 form-group">
@@ -306,6 +315,17 @@
 							<button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1" ><strong><i class="fa fa-search"></i> Buscar</strong></button>
 						  </div>
 						</div>
+
+
+
+
+
+
+
+
+
+
+
 
 				  <?php
 	$tablaMes = '';
@@ -452,66 +472,30 @@
 		  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 ?>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-						<div class="table-responsive">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-							<table class="table table-striped table-bordered table-hover selectableRows" id="box-table-movimientos" >
-								<thead>
+<div class="table-responsive">
+	<table class="table table-striped table-bordered table-hover selectableRows" id="box-table-movimientos" >
+		<thead>
+			<tr>
+				<th class="text-center">
+				<label for="seleccionarVarios">Todos</label>
+				<input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios">
+				</th>
+				<th>Número</th>
+				<th>Fecha</th>
+				<th>Semana</th>
+				<th>Dias</th>
+				<th>Tipo Ración</th>
+				<th>Tipo Alimento</th>
+				<!-- <th> Municipio </th> -->
+				<th>Documento Proveedor</th>
+				<th>Nombre Proveedor</th>
+				<!-- <th> Bodega Destino </th> -->
+				<!-- <th>Estado</th> -->
+			</tr>
+		</thead>
+		<tbody>
+			<?php if($resultado->num_rows >= 1){ while($row = $resultado->fetch_assoc()) { ?>
 				<tr>
-				  <th class="text-center">
-					  <label for="seleccionarVarios">Todos</label>
-					<input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios">
-				  </th>
-				  <th>Número</th>
-				  <th>Fecha</th>
-				  <th>Semana</th>
-				  <th>Dias</th>
-				  <th>Tipo Ración</th>
-				  <th>Tipo Alimento</th>
-				  <!-- <th> Municipio </th> -->
-				  <th>Documento Proveedor</th>
-				  <th>Nombre Proveedor</th>
-		
-				  <!-- <th> Bodega Destino </th> -->
-				  <!-- <th>Estado</th> -->
-				</tr>
-			  </thead>
-			  <tbody>
-
-
-				<?php if($resultado->num_rows >= 1){ while($row = $resultado->fetch_assoc()) { ?>
-				  <tr>
 					<td class="text-center">
 
 						<input type="checkbox" class="i-checks despachos" value="<?php echo $row['Num_OCO']; ?>" name="<?php echo $row['Num_doc']; ?>"id="<?php echo $row['Num_doc']; ?>"<?php if($row['estado'] == 0){echo " disabled "; } ?> semana="<?php echo $row['Semana']; ?>" complemento="<?php echo $row['Tipo_Complem'];?>" tipo="<?php echo $row['tipodespacho'];?>" sede="<?php echo $row['cod_sede'];?>" estado="<?php echo $row['estado'];?>"/>
@@ -653,9 +637,10 @@
 			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
 			
 			
+			botonAcciones += '<li> <a href="#" onclick="ordenesConsolidado()">Consolidado</a> </li>';
 			botonAcciones += '<li> <a href="#" onclick="eliminar_orden()">Eliminar Orden</a> </li>';
 			
-			
+			// <div><button type="button" onclick="ordenesConsolidado()">Consolidado</button></div>
 			
 			
 		
@@ -676,7 +661,16 @@
 <form action="formato_orden_compra.php" method="post" name="formDespachoPorSede" id="formDespachoPorSede" target="_blank">
   <input type="hidden" name="AnnoI" id="AnnoI" value="">
   <input type="hidden" name="MesI" id="MesI" value="">
+  <input type="hidden" name="imprimirMesI" id="imprimirMesI" value="">
   <input type="hidden" name="ordenCompra" id="ordenCompra" value="">
+</form>
+
+
+<form action="formato_orden_compra_consolidado.php" method="post" name="formOrdenesConsolidado" id="formOrdenesConsolidado" target="_blank">
+  <input type="hidden" name="AnnoIC" id="AnnoIC" value="">
+  <input type="hidden" name="MesIC" id="MesIC" value="">
+  <input type="hidden" name="imprimirMesIC" id="imprimirMesIC" value="">
+  <input type="hidden" name="ordenesCompra" id="ordenesCompra" value="">
 </form>
 
 <form action="ordenes_de_compra.php" id="parametrosBusqueda" method="get">

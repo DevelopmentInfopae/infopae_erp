@@ -8,8 +8,9 @@ require('../../fpdf182/fpdf.php');
 require_once '../../db/conexion.php';
 include '../../php/funciones.php';
 
-
 //var_dump($_POST);
+
+
 
 $largoNombre = 30;
 $sangria = " - ";
@@ -24,11 +25,11 @@ $fechaDespacho = $hoy;
 
 // Se va a recuperar el mes y el año para las tablaMesAnno
 $mesAnno = '';
-$mes = $_POST['MesI'];
+$mes = $_POST['MesIC'];
 if($mes < 10){ $mes = '0'.$mes; }
 
 $mes = trim($mes);
-$anno = $_POST['AnnoI'];
+$anno = $_POST['AnnoIC'];
 $anno = substr($anno, -2);
 $anno = trim($anno);
 $mesAnno = $mes.$anno;
@@ -39,12 +40,18 @@ if ($resGrupoEtario->num_rows > 0) { while ($ge = $resGrupoEtario->fetch_assoc()
 
 $annoActual = $tablaAnnoCompleto;
 
-
-
 /* Busqueda de las ordenes de compra por sedes */
+$ordenesCompra = $_POST['ordenesCompra'];
+//var_dump($ordenesCompra);
+//$ordenCompraGeneral = $_POST['ordenCompra'];
 
-$ordenCompraGeneral = $_POST['ordenCompra'];
-$consulta = "SELECT Num_Doc AS ordenSede FROM orden_compra_enc$mesAnno WHERE Num_OCO = $ordenCompraGeneral";
+$consulta = "SELECT Num_Doc AS ordenSede FROM orden_compra_enc$mesAnno WHERE Num_OCO IN ($ordenesCompra)";
+//echo "<br><br>$consulta<br><br>";
+
+
+
+
+
 $resultado = $Link->query($consulta);
 while($row = $resultado->fetch_assoc()){
 	$despachosRecibidos[] = $row['ordenSede'];
@@ -54,6 +61,7 @@ while($row = $resultado->fetch_assoc()){
 //var_dump($despachosRecibidos);
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
+
 
 $tipoComplemento = '';
 $mes = '';
@@ -568,7 +576,7 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 
 $tamano_carta = TRUE;
 
-include 'formato_orden_compra_header.php';
+include 'formato_orden_compra_consolidado_header.php';
 
 $filas = 0;
 $grupoAlimActual = '';
@@ -721,7 +729,7 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario){
 	
 	if($indiceLinea >= 53){
 		$pdf->AddPage();
-		include 'formato_orden_compra_header.php';
+		include 'formato_orden_compra_consolidado_header.php';
 		$indiceLinea = 0;
 	}
 	
@@ -822,7 +830,7 @@ for ($i = 2; $i <= 5; $i++)
 // {
 // 	$pdf->AddPage();
 	
-// 	include 'formato_orden_compra_header.php';
+// 	include 'formato_orden_compra_consolidado_header.php';
 // }
 
 

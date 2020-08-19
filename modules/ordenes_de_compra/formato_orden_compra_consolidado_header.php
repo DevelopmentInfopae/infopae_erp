@@ -14,6 +14,10 @@ $pdf->SetXY($current_x, $current_y);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(0,2.5,utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'),0,2.5,'C',False);
 
+
+
+$ordenCompraGeneral = $despachosRecibidos[0];
+
 if($ordenCompraGeneral < 10){
 	$ordenCompraGeneral = '0'.$ordenCompraGeneral;
 }
@@ -181,10 +185,15 @@ $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->Cell(31.838,14.1,'','LB',0,'L',False);
 
+
+// $tipoComplemento
+// post imprimirMesIC
+
+
 // N° DÍAS A ATENDER
 $pdf->SetXY($current_x, $current_y+2.35);
 if($tipoComplemento == 'RPC'){
-	if($_POST['imprimirMesI']){
+	if($_POST['imprimirMesIC']){
 		$pdf->MultiCell(31.838,4.7,mb_strtoupper($mes),0,'C',False);
 	}
 }else{
@@ -197,34 +206,6 @@ if($tipoComplemento == 'RPC'){
 	}
 	$pdf->MultiCell(31.838,4.7,$aux,0,'C',False);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// $pdf->SetXY($current_x, $current_y+2.35);
-// $pdf->MultiCell(31.838,4.7,$auxDias,0,'C',False);
-// $pdf->SetXY($current_x, $current_y+9.4);
-
-// if(strpos($semana, ',') !== false){
-// 	$aux = "SEMANAS: $semana";
-// }else{
-// 	$aux = "SEMANA: $semana";
-// }
-// $pdf->MultiCell(31.838,4.7,$aux,0,'C',False);
-
-
-
-
 
 // N° DE MENÚ
 $pdf->SetXY($current_x+31.838, $current_y);
@@ -243,36 +224,6 @@ else{
 	$pdf->SetXY($current_x, $current_y+7,05);
 	$pdf->Cell(30,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// $pdf->SetXY($current_x+31.838, $current_y);
-// $current_y = $pdf->GetY();
-// $current_x = $pdf->GetX();
-// $pdf->Cell(30,14.1,'','LB',0,'L',False);
-// $pdf->SetXY($current_x, $current_y+2.35);
-// if(strpos($auxCiclos, ',') !== false){ $aux = "SEMANAS: $auxCiclos"; }else{ $aux = "SEMANA: $auxCiclos"; }
-// $pdf->Cell(30,4.7,$aux,0,0,'C',False);
-// $pdf->SetFont('Arial','',$tamannoFuente);
-// $pdf->SetXY($current_x, $current_y+7,05);
-// $pdf->Cell(30,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
-
-
-
-
-
 
 
 
