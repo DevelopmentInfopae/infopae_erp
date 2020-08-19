@@ -204,6 +204,7 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
 				<li><a href="#" class="sinDesarrollar">Informe de compras efectuadas al proveedor</a></li>
+				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
 			<?php } ?>
 		</ul>
 	</li>
