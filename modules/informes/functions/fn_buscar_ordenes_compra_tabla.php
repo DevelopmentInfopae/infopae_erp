@@ -53,9 +53,9 @@
   }
 
   if (!empty($por_totales)) {
-    $agrupar = "ocd.cod_Alimento";
+    $agrupar = "s.nom_sede, ocd.cod_Alimento";
   } else {
-    $agrupar = "s.cod_mun_sede, s.cod_inst, s.nom_sede";
+    $agrupar = "s.cod_mun_sede, s.cod_inst, s.nom_sede, ocd.cod_Alimento";
   }
 
   $consulta = "SELECT
@@ -68,19 +68,20 @@
                   p.NombreUnidad2 AS unidad_medida_producto,
                   SUM(ocd.Cantidad) AS cantidad_producto,
                   u.Ciudad AS municipio,
-                  s.nom_sede AS sede FROM
+                  s.nom_sede AS sede
+              FROM
                   orden_compra_enc$mes$periodo_actual oce
                     INNER JOIN
                   orden_compra_det$mes$periodo_actual ocd ON ocd.Num_Doc = oce.Num_Doc
                     INNER JOIN
-                  sedes20 s ON s.cod_sede = oce.cod_Sede
-                    INNER JOIN
                   productos20 p ON p.Codigo = ocd.cod_Alimento
                     INNER JOIN
                   proveedores pv ON pv.Nitcc = oce.proveedor
-                  $join_rutas
+                    INNER JOIN
+                  sedes20 s ON s.cod_sede = oce.cod_Sede
                     INNER JOIN
                   ubicacion u ON u.CodigoDANE = s.cod_mun_sede
+                    $join_rutas
               WHERE
                   oce.Tipo_Complem = '$tipo_complemento'
                   $condicion_semana
