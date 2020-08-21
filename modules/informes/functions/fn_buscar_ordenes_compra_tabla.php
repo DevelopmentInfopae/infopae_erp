@@ -23,10 +23,6 @@
     $join_rutas = "INNER JOIN rutasedes rs ON rs.cod_Sede = oce.cod_Sede";
     $condicion_ruta = "AND rs.IDRUTA = '$ruta'";
   } else {
-    if (!empty($municipio)) {
-      $condicion_municipio = "AND s.cod_mun_sede = '$municipio'";
-    }
-
     if (!empty($institucion)) {
       $condicion_institucion = "AND s.cod_inst = '$institucion'";
     }
@@ -84,8 +80,8 @@
                     $join_rutas
               WHERE
                   oce.Tipo_Complem = '$tipo_complemento'
+                  AND s.cod_mun_sede = '$municipio'
                   $condicion_semana
-                  $condicion_municipio
                   $condicion_institucion
                   $condicion_sede
                   $condicion_tipo_complemento

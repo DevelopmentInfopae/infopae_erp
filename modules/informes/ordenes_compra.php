@@ -51,7 +51,7 @@
 
               <div class="form-group col-sm-3">
                 <label class="control-label" for="municipio">Municipio</label>
-                <select class="form-control" name="municipio" id="municipio">
+                <select class="form-control" name="municipio" id="municipio" required="required">
                   <option value="">Seleccione</option>
                   <?php
                   $condicion_municipio = "";
@@ -554,6 +554,11 @@
   {
     if ($('#mes').val() == '') {
       Command: toastr.error('El campo sede es obligatorio', 'Validación de formulario', { onHidden: function() { $('#mes').focus(); }});
+      return false;
+    }
+
+    if ($('#municipio').val() == '') {
+      Command: toastr.error('El campo municipio es obligatorio', 'Validación de formulario', { onHidden: function() { $('#municipio').focus(); }});
       return false;
     }
 
