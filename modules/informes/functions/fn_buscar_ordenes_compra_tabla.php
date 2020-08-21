@@ -53,9 +53,9 @@
   }
 
   if (!empty($por_totales)) {
-    $agrupar = "ocd.cod_Alimento";
+    $agrupar = "s.nom_sede, ocd.cod_Alimento";
   } else {
-    $agrupar = "s.cod_mun_sede, s.cod_inst, s.nom_sede";
+    $agrupar = "s.cod_mun_sede, s.cod_inst, s.nom_sede, ocd.cod_Alimento";
   }
 
   $consulta = "SELECT
@@ -94,7 +94,7 @@
                   $condicion_producto
                   $condicion_ruta
               GROUP BY
-                  s.cod_mun_sede, s.cod_inst, s.nom_sede, ocd.cod_Alimento;";
+                  $agrupar;";
   // echo $consulta;
   // exit();
 
