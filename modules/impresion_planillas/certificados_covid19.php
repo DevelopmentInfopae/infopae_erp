@@ -153,6 +153,33 @@
 
 			</div><!-- /.row -->
 
+
+
+
+
+
+
+			<div class="row">
+				<div class="col-sm-4 form-group">
+					<label for="fecha_desde">Fecha desde certificado</label>
+					<input class="form-control" type="date" name="fecha_desde" id="fecha_desde">
+				</div>
+				<div class="col-sm-4 form-group">
+					<label for="fecha_hasta">Fecha hasta certificado</label>
+					<input class="form-control" type="date" name="fecha_hasta" id="fecha_hasta">
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12 form-group">
+					<label for="observaciones">Observaciones</label>
+					<textarea class="form-control" name="observaciones" id="observaciones" cols="30" rows="5"></textarea>
+				</div>
+			</div>
+
+
+
+
 			<div class="row">
 			  <div class="col-sm-12">
 				<h3>Tipo de certificado</h3>

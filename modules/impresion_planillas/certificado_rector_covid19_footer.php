@@ -243,7 +243,7 @@ $y = $pdf->GetY();
 $pdf->Cell(0,4,utf8_decode('OBSERVACIONES'),'B',0,'C',true);
 $pdf->SetFont('Arial','',$tamannoFuente-1);
 $pdf->SetXY($x, $y+4);
-$pdf->MultiCell(0,4,"",0,'L',false);
+$pdf->MultiCell(0,4,$observaciones,0,'L',false);
 $pdf->SetXY($x, $y);
 $pdf->Cell(0,12,utf8_decode(''),1,0,'C',false);
 
@@ -252,7 +252,7 @@ $pdf->Ln(16);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(0,4,utf8_decode('La presente certificación se expide como soporte de pago y con base en el registro diario de titulares de derecho, que se diligencia en cada institución'),0,4,'L',false);
 $pdf->Cell(0,4,utf8_decode('educativa atendida. Decreto 1852 de 2015 capitulo 4 artículo 2.3.1.4.4, Resolución 29452 / 2017 capítulo 4 numeral 4.1.2 Aplicación de protocolo de'),0,4,'L',false);
-$pdf->Cell(0,4,utf8_decode('Suplencia reportados en documento adicional a las planillas.'),0,4,'L',false);
+$pdf->Cell(0,4,utf8_decode('Suplencia reportados en documento adicional a las planillas y movilidad entre sedes de acuerdo a lo autorizado por el rector.'),0,4,'L',false);
 
 
 $pdf->Ln(4);
