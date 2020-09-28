@@ -22,8 +22,14 @@ $fecha_desde = $_POST["fecha_desde"];
 $fecha_hasta = $_POST["fecha_hasta"];
 $observaciones = $_POST["observaciones"];
 
-$fecha_desde = date("d/m/Y", strtotime($fecha_desde));
-$fecha_hasta = date("d/m/Y", strtotime($fecha_hasta));
+
+if($fecha_desde != ""){
+	$fecha_desde = date("d/m/Y", strtotime($fecha_desde));
+}
+if($fecha_hasta != ""){
+	$fecha_hasta = date("d/m/Y", strtotime($fecha_hasta));
+}
+
 //echo "<br><br>$fecha_hasta<br><br>";
 
 
