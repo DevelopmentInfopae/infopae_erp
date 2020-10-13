@@ -318,6 +318,13 @@
 						</div>
 
 
+
+						<div class="row">
+							<div class="col-sm-12 form-group">
+								<label for="observaciones">Observaciones</label>
+								<textarea class="form-control" name="observaciones" id="observaciones" cols="30" rows="5"></textarea>
+							</div>
+						</div>
 						
 						
 						<div class="row">
