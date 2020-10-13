@@ -85,7 +85,13 @@
 		$corteDeVariables++;
 	}
 
-
+	$_SESSION['observacionesDespachos'] = "";
+	if(isset($_POST['observaciones'])){
+		if($_POST['observaciones'] != ""){
+			$_SESSION['observacionesDespachos'] = $_POST['observaciones'];
+		}
+		$corteDeVariables++;
+	}
 
 
 	$_POST = array_slice($_POST, $corteDeVariables);
