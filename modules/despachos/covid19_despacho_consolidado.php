@@ -322,10 +322,15 @@ class PDF extends PDF_PageGroup{
 		// $this->Cell(0,2,utf8_decode(""),'B',0,'C',False);
 		$this->Ln(2);
 		$this->SetFont('Arial','B',$tamannoFuente);
-		$this->Cell(38,9,utf8_decode("Observaciones:"),'BLT',0,'L',False);
+		$this->Cell(18,9,utf8_decode("Observaciones:"),'BLT',0,'L',False);
 		
 		$this->SetFont('Arial','',$tamannoFuente);
-		$this->Cell(0,9,utf8_decode($_SESSION['observacionesDespachos']),'BLTR',0,'L',False);
+		$cx = $this->getX();
+		$cy = $this->getY();
+		$this->Cell(0,9,utf8_decode(''),'BLTR',0,'L',False);
+		$this->setXY($cx, $cy);
+		$this->Cell(0,3,utf8_decode($_SESSION['observacionesDespachos']),0,0,'L',False);
+
 		
 		$this->SetFont('Arial','B',$tamannoFuente);
 		$this->Ln(11);

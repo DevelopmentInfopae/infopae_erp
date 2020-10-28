@@ -94,7 +94,7 @@ $pdf->Cell(25,4,utf8_decode($aux),0,0,'L',False);
 // $pdf->Cell(7,4,$nomSede['cod_mun_sede'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(24.3,4,utf8_decode('NOMBRE INSTITUCÓN:'),0,0,'L',False);
+$pdf->Cell(24.3,4,utf8_decode('NOMBRE INSTITUCIÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
 $aux = $nomSede['nom_inst'];
