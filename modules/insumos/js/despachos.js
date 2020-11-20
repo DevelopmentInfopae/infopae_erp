@@ -211,6 +211,10 @@ $('#dia_inicio').on('change', function(){
 
 function informeDespachos(num){
 	if (num == 1) {
+		
+		var aux = $('#observaciones').val()
+		$('#paginasObservaciones').val(aux);
+
 		$('#formDespachos').prop('action', 'functions/fn_insumos_informe_despachos.php').prop('method');
 		var checks = 0;
 		$('input[name="sedes[]"]').each(function(){

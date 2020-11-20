@@ -17,6 +17,14 @@ if (isset($_POST['tablaMesInicio'])) {
 	echo "<script>alert('No se ha definido mes.');</script>";
 }
 
+//var_dump($_POST);
+$paginasObservaciones = "";
+if(isset($_POST['paginasObservaciones']) && $_POST['paginasObservaciones'] != ""){
+	$paginasObservaciones = $_POST['paginasObservaciones'];
+}
+
+
+
 $despachos_seleccionados = $_POST['despachos_seleccionados'];
 $despachos_seleccionados = trim($despachos_seleccionados, ", ");
 $ds = explode(", ", $despachos_seleccionados);
@@ -351,6 +359,16 @@ foreach ($dataInst as $cod_inst => $sedes) {
 
 
 	$pdf->ln();
+
+
+	$pdf->SetFont('Arial','B',8);
+	$pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
+	$pdf->SetFont('Arial','',8);
+	$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
+	$pdf->Ln(2);
+
+
+
 
 	$cy = $pdf->GetY();
 
