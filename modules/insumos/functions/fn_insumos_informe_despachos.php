@@ -17,6 +17,16 @@ if (isset($_POST['tablaMesInicio'])) {
 	echo "<script>alert('No se ha definido mes.');</script>";
 }
 
+//var_dump($_POST);
+$paginasObservaciones = "";
+if(isset($_POST['paginasObservaciones']) && $_POST['paginasObservaciones'] != ""){
+	$paginasObservaciones = $_POST['paginasObservaciones'];
+}
+
+
+
+
+
 $sedes = array_unique($sedes);
 
 $despachos_seleccionados = $_POST['despachos_seleccionados'];
@@ -406,6 +416,24 @@ foreach ($sedes as $key => $sede) {
 
 				$pdf->ln();
 
+
+
+				$pdf->SetFont('Arial','B',8);
+				$pdf->Cell(0,5,'C: Cumple  NC: No Cumple',0,5,'L',False);
+				$pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
+				$pdf->SetFont('Arial','',8);
+				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
+				$pdf->Ln(2);
+
+
+
+
+
+
+
+
+
+
 				$current_y = $pdf->GetY();
 				$current_x = $pdf->GetX();
 
@@ -422,6 +450,22 @@ foreach ($sedes as $key => $sede) {
 				$pdf->Cell(94.3,12,'',1,0,'L',False);
 				$pdf->ln();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 				$pdf->Cell(94.3,16,'',1,0,'L',False);
 				$pdf->Cell(94.3,16,'',1,0,'L',False);
 				$cy = $pdf->GetY();
@@ -432,6 +476,13 @@ foreach ($sedes as $key => $sede) {
 				$pdf->ln();
 
 				$pdf->SetXY($current_x, $current_y);
+
+
+
+
+
+
+
 
 				$pdf->Cell(94.3,4,'MANIPULADOR',0,0,'C',False);
 				$pdf->Cell(94.3,4,'TRANSPORTADOR',0,0,'C',False);

@@ -5,6 +5,9 @@ require_once '../../../fpdf181/fpdf.php';
 
 //283 de ancho total.
 
+
+
+
 $despachos_seleccionados = $_POST['despachos_seleccionados'];
 $despachos_seleccionados = trim($despachos_seleccionados, ", ");
 $ds = explode(", ", $despachos_seleccionados);
@@ -66,6 +69,21 @@ if (isset($_POST['tablaMesFin'])) {
 	echo "<script>alert('No se ha definido mes.');</script>";
 }
 
+
+
+//var_dump($_POST);
+$paginasObservaciones = "";
+if(isset($_POST['paginasObservaciones']) && $_POST['paginasObservaciones'] != ""){
+	$paginasObservaciones = $_POST['paginasObservaciones'];
+}
+
+
+
+
+
+
+
+
 $consultaDpto = "SELECT NombreETC FROM parametros";
 $resultadoDpto = $Link->query($consultaDpto);
 if ($resultadoDpto->num_rows > 0) {
@@ -87,6 +105,14 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 	{
 		function Header()
 		{
+			if(!isset($mesInicio)){
+				$mesInicio = "";
+			}
+			if(!isset($mesFin)){
+				$mesFin = "";
+			}
+
+			
 			$this->mes = "De ".mesNombre($mesInicio)." a ".mesNombre($mesFin);
 			$logoInfopae = '../'.$_SESSION['p_Logo ETC'];
 		    $this->SetFont('Arial','B',$this->fontSize);
@@ -390,6 +416,20 @@ $alturaRenglon = 6;
 
 
 		$pdf->ln();
+
+
+		$pdf->SetFont('Arial','B',8);
+		$pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
+		$pdf->Ln(2);
+
+
+
+
+
+
+
 
 		$cy = $pdf->GetY();
 
