@@ -92,7 +92,7 @@ $pdf->Cell(25,4,utf8_decode($aux),0,0,'L',False);
 // $pdf->Cell(7,4,$nomSede['cod_mun_sede'],0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(24.3,4,utf8_decode('NOMBRE INSTITUCÓN:'),0,0,'L',False);
+$pdf->Cell(24.3,4,utf8_decode('NOMBRE INSTITUCIÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
 $aux = $nomSede['nom_inst'];
@@ -148,12 +148,12 @@ $pdf->Cell(17.6,4,utf8_decode('MES ATENCIÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
 if($imprimirMes == 0){ $mes = ""; }
-$pdf->Cell(9,4,utf8_decode(strtoupper ($mes)." "),0,0,'L',False);
+$pdf->Cell(16,4,utf8_decode(strtoupper ($mes)." "),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(6.4,4,utf8_decode('AÑO:'),0,0,'L',False);
+$pdf->Cell(6,4,utf8_decode('AÑO:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(10,4,utf8_decode('2020'),0,0,'L',False);
+$pdf->Cell(6.5,4,utf8_decode('2020'),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(24,4,utf8_decode('LUGAR DE ENTREGA:'),0,0,'L',False);
@@ -164,7 +164,7 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 $aux = utf8_decode(strtoupper($nomSede['direccion']));
 //$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
 $aux = substr($aux, 0, 75); 
-$pdf->Cell(90,4,$aux,'B',0,'L',False);
+$pdf->Cell(95,4,$aux,'B',0,'L',False);
 $pdf->Cell(4,4,utf8_decode(''),0,0,'L',False);
 
 // $pdf->SetFont('Arial','B',$tamannoFuente);
@@ -177,7 +177,7 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(8,4,utf8_decode('ZONA:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $aux = utf8_decode(strtoupper($nomSede['zona']));
-$pdf->Cell(30,4,$aux,'B',0,'L',False);
+$pdf->Cell(22,4,$aux,'B',0,'L',False);
 
 $pdf->Ln(4);
 $pdf->Ln(2);
