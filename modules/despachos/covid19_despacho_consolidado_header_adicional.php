@@ -155,7 +155,7 @@ $pdf->Cell(16,4,utf8_decode(strtoupper ($mes)." "),0,0,'L',False);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(6,4,utf8_decode('AÑO:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(6.5,4,utf8_decode('2020'),0,0,'L',False);
+$pdf->Cell(6.5,4,utf8_decode($_SESSION['periodoActualCompleto']),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(24,4,utf8_decode('LUGAR DE ENTREGA:'),0,0,'L',False);
