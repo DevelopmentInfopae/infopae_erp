@@ -64,7 +64,7 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 
 $aux = $nomSede['municipio'];
 $aux = substr($aux, 0, 13); 
-$pdf->Cell(25,4,utf8_decode($aux),0,0,'L',False);
+$pdf->Cell(35,4,utf8_decode($aux),0,0,'L',False);
 
 
 
@@ -98,7 +98,7 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 $aux = $nomSede['nom_sede'];
 //$aux = "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789";
 $aux = substr($aux, 0, 66); 
-$pdf->Cell(80,4,utf8_decode($aux),0,0,'L',False);
+$pdf->Cell(70,4,utf8_decode($aux),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);

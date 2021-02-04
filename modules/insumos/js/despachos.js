@@ -250,6 +250,25 @@ function informeDespachos2(num){
 	}
 }
 
+function informeDespachos2Vertical(num){
+	if (num == 1) {
+		$('#formDespachos').prop('action', 'functions/fn_insumos_informe_despachos2_vertical.php').prop('method');
+		var checks = 0;
+		$('input[name="sedes[]"]').each(function(){
+			if ($(this).prop('checked')) {
+				checks++;
+			}
+		});
+
+		if (checks > 0) {
+			$('#formDespachos').submit();
+		} else {
+			Command: toastr.warning("Debe seleccionar al menos un despacho para exportar.", "No hay despacho seleccionados.", {onHidden : function(){
+			      				}})
+		}
+	}
+}
+
 function informeDespachosInstitucion(num){
 
 	if (num == 1) {

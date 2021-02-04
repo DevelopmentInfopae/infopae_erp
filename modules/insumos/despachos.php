@@ -469,6 +469,7 @@
 						'<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">'+
 						  '<li><a onclick="informeDespachos(1);"><span class="fa fa-file-excel-o"></span> Individual </a></li>'+
 						  '<li><a onclick="informeDespachos2(1);"><span class="fa fa-file-excel-o"></span> Individual 2 </a></li>'+
+						  '<li><a onclick="informeDespachos2Vertical(1);"><span class="fa fa-file-excel-o"></span> Individual Vertical </a></li>'+
 						  '<li><a onclick="informeDespachosInstitucion(1);"><span class="fa fa-file-excel-o"></span> Institución </a></li>'+
 						  '<li><a onclick="informeDespachosConsolidado(1);"><span class="fa fa-file-excel-o"></span> Consolidado </a></li>'+
 						  '<li><a onclick="editarDespacho();"><span class="fa fa-pencil"></span> Editar </a></li>'+
