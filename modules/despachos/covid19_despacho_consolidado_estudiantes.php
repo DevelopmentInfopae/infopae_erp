@@ -18,6 +18,11 @@ $consulta = " SELECT CONCAT(f.ape1, \" \", f.ape2, \" \",f.nom1, \" \", f.nom2) 
 
 FROM focalizacion$semanas[0] f WHERE f.cod_sede = $sede_unica AND f.Tipo_complemento = \"$tipoComplemento\" ORDER BY f.cod_grado ASC, f.nom_grupo ASC, f.ape1 ASC, f.ape2 ASC, f.nom1 ASC, f.nom2 ASC ";
 
+
+//echo "<br><br>$consulta</br><br>";
+
+
+
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 $altoFila = 8;
 
