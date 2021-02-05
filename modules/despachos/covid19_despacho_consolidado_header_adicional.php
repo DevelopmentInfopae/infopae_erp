@@ -79,7 +79,7 @@ $pdf->Cell(13,4,'MUNICIPIO:',0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
 $aux = $nomSede['municipio'];
-$aux = substr($aux, 0, 13); 
+$aux = substr($aux, 0, 18); 
 $pdf->Cell(35,4,utf8_decode($aux),0,0,'L',False);
 
 
