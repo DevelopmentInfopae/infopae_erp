@@ -108,7 +108,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 
 		function Header()
 		{
-			$tamannoFuente = 5.5;
+			$tamannoFuente = 8;
 
 			$logoInfopae = '../'.$_SESSION['p_Logo ETC'];
 			$this->SetFont('Arial','B',10);
@@ -146,7 +146,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			// Salto de línea
 			$this->Ln(1);
 			$this->SetFont('Arial','B',8);
-			$this->Cell(35,10,utf8_decode('RANGO DE EDAD'),'TBL',0,'C');
+			$this->Cell(40,10,utf8_decode('RANGO DE EDAD'),'TBL',0,'C');
 
 			$cx = $this->getX();
 			$cy = $this->getY();
@@ -182,11 +182,11 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$cx = $this->getX();
 			$cy = $this->getY();
 			foreach ($this->gruposEtarios as $ID => $DESCRIPCION) {
-				$this->Cell(35,6,utf8_decode($DESCRIPCION),'BL',0,'C');
+				$this->Cell(40,6,utf8_decode($DESCRIPCION),'BL',0,'C');
 				$this->Cell(35,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BL',0,'C');//SEDES COBERTURA POR GRUPO ETARIO
 				$this->Cell(35,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BL',1,'C');//SEDES COBERTURA POR GRUPO ETARIO
 			}
-			$this->setXY($cx+(35*3), $cy);
+			$this->setXY($cx+(35*2+40), $cy);
 
 			if ($this->tipoComplemento == 'APS') {
 				$manipuladoras = $this->dataSede['Manipuladora_APS'];
@@ -207,36 +207,57 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			//Salto de línea
 			$this->Ln();
 			$this->SetFont('Arial','B',$tamannoFuente);
-			$this->Cell(40,10,utf8_decode("INSUMO"),'TBLR',0,'C');
-			$this->Cell(20,10,utf8_decode("UNIDAD MEDIDA"),'TBR',0,'C');
-			$this->Cell(20,10,utf8_decode("TOTAL REQUERIDO"),'TBR',0,'C');
+			$this->Cell(75,5,utf8_decode("INSUMO"),'TBLR',0,'C');
+			$this->Cell(40,5,utf8_decode("UNIDAD MEDIDA"),'TBR',0,'C');
+			$this->Cell(40,5,utf8_decode("TOTAL REQUERIDO"),'TBR',0,'C');
 
 			$cx2 = $this->getX();
 			$cy2 = $this->getY();
 
 			//$this->Cell(30,10,utf8_decode("TOTAL REQUERIDO"),'TBR',0,'C');
-			$this->Cell(31,5,utf8_decode("CANTIDAD ENTREGADA"),'TBLR',0,'C');
-			$this->Cell(27,5,utf8_decode("ESPECIFICACIÓN CALIDAD"),'TBR',0,'C');
-			$this->Cell(30,5,utf8_decode("FALTANTES"),'TBR',0,'C');
-			$this->Cell(0,5,utf8_decode("DEVOLUCIÓN"),'TBR',1,'C');
 			
-		
-			$this->setXY($cx2, $cy2+5);
+			
+			//
+			
+			
+			
+			$this->Cell(0,5,utf8_decode("CANTIDAD ENTREGADA TOTAL"),'TBLR',0,'C');
 
-			$this->Cell(11,5,utf8_decode("TOTAL"),'BR',0,'C');
-			$this->Cell(10,5,utf8_decode("C"),'BR',0,'C');
-			$this->Cell(10,5,utf8_decode("NC"),'BR',0,'C');
 
-			$this->Cell(13,5,utf8_decode("C"),'BR',0,'C');
-			$this->Cell(14,5,utf8_decode("NC"),'BR',0,'C');
+			// $cx = $this->getX();
+			// $cy = $this->getY();
+			// $this->MultiCell(0, 5, utf8_decode('CANTIDAD ENTREGADA TOTAL'), 0, 'C');
+			// $this->setXY($cx, $cy);
+			// $this->Cell(0,10,'','TBLR',0,'C');
+			
+			
+			
+			
+			//$this->Cell(27,5,utf8_decode("ESPECIFICACIÓN CALIDAD"),'TBR',0,'C');
+			//$this->Cell(30,5,utf8_decode("FALTANTES"),'TBR',0,'C');
+			//$this->Cell(0,5,utf8_decode("DEVOLUCIÓN"),'TBR',1,'C');
+			
+			//$this->setXY($cx2, $cy2+5000);
 
-			$this->Cell(10,5,utf8_decode("SI"),'BR',0,'C');
-			$this->Cell(10,5,utf8_decode("NO"),'BR',0,'C');
-			$this->Cell(10,5,utf8_decode("CANT"),'BR',0,'C');
+			// $this->Ln(200);
 
-			$this->Cell(12.67,5,utf8_decode("SI"),'BR',0,'C');
-			$this->Cell(12.67,5,utf8_decode("NO"),'BR',0,'C');
-			$this->Cell(0,5,utf8_decode("CANT"),'BR',0,'C');
+
+			// $this->setXY($cx2, $cy2+5);
+
+			// $this->Cell(11,5,utf8_decode("TOTAL"),'BR',0,'C');
+			// $this->Cell(10,5,utf8_decode("C"),'BR',0,'C');
+			// $this->Cell(10,5,utf8_decode("NC"),'BR',0,'C');
+
+			// $this->Cell(13,5,utf8_decode("C"),'BR',0,'C');
+			// $this->Cell(14,5,utf8_decode("NC"),'BR',0,'C');
+
+			// $this->Cell(10,5,utf8_decode("SI"),'BR',0,'C');
+			// $this->Cell(10,5,utf8_decode("NO"),'BR',0,'C');
+			// $this->Cell(10,5,utf8_decode("CANT"),'BR',0,'C');
+
+			// $this->Cell(12.67,5,utf8_decode("SI"),'BR',0,'C');
+			// $this->Cell(12.67,5,utf8_decode("NO"),'BR',0,'C');
+			// $this->Cell(0,5,utf8_decode("CANT"),'BR',0,'C');
 
 			$this->Ln();
 		}
@@ -251,7 +272,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 
 
 $alturaFilasItems = 4;
-$fuenteFilasItems = 6;
+$fuenteFilasItems = 8;
 
 
 foreach ($sedes as $key => $sede) {
@@ -320,7 +341,7 @@ foreach ($sedes as $key => $sede) {
 				$resultadoDetalles = $Link->query($consultaDetalles);
 				
 				
-				$maximoDeFilas = 34;
+				$maximoDeFilas = 36;
 				$filasMostradas = 0;
 				
 				
@@ -330,102 +351,42 @@ foreach ($sedes as $key => $sede) {
 						$filasMostradas++;
 
 						if ($detalles['CantU3'] != 0 || $detalles['CantU4'] != 0 || $detalles['CantU5'] != 0) { //SI SE DIERON MÁS PRESENTACIONES
-							$pdf->Cell(40,$alturaFilasItems,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
-							$pdf->Cell(20,$alturaFilasItems,utf8_decode($detalles['Umedida']),'BR',0,'C');
-							$pdf->Cell(20,$alturaFilasItems,utf8_decode(round($detalles['Cantidad']/1000, 2)),'BR',0,'C');
-							$pdf->Cell(11,$alturaFilasItems,utf8_decode(number_format($detalles['CanTotalPresentacion'], 3, '.', ',')),'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(13,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(14,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(0,$alturaFilasItems,utf8_decode(''),'BR',1,'C');
+							$pdf->Cell(75,$alturaFilasItems,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
+							$pdf->Cell(40,$alturaFilasItems,utf8_decode($detalles['Umedida']),'BR',0,'C');
+							$pdf->Cell(40,$alturaFilasItems,utf8_decode(round($detalles['Cantidad']/1000, 2)),'BR',0,'C');
+							$pdf->Cell(0,$alturaFilasItems,utf8_decode(number_format($detalles['CanTotalPresentacion'], 3, '.', ',')),'BR',1,'C');
 
 							if ($detalles['CantU2'] != 0 ) {
-								$pdf->Cell(40,$alturaFilasItems,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad2']),'BLR',0,'L');
-								$pdf->Cell(20,$alturaFilasItems,'','BR',0,'C');
-								$pdf->Cell(20,$alturaFilasItems,'','BR',0,'C');
-								$pdf->Cell(11,$alturaFilasItems,utf8_decode(number_format($detalles['CantU2'], 0)),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(13,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(14,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(0,$alturaFilasItems,utf8_decode(''),'BR',1,'C');
+								$pdf->Cell(75,$alturaFilasItems,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad2']),'BLR',0,'L');
+								$pdf->Cell(40,$alturaFilasItems,'','BR',0,'C');
+								$pdf->Cell(40,$alturaFilasItems,'','BR',0,'C');
+								$pdf->Cell(0,$alturaFilasItems,utf8_decode(number_format($detalles['CantU2'], 0)),'BR',1,'C');
 							}
 							if ($detalles['CantU3'] != 0 ) {
-								$pdf->Cell(40,$alturaFilasItems,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad3']),'BLR',0,'L');
-								$pdf->Cell(20,$alturaFilasItems,'','BR',0,'C');
-								$pdf->Cell(20,$alturaFilasItems,'','BR',0,'C');
-								$pdf->Cell(11,$alturaFilasItems,utf8_decode(number_format($detalles['CantU3'], 0)),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(13,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(14,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(0,$alturaFilasItems,utf8_decode(''),'BR',1,'C');
+								$pdf->Cell(75,$alturaFilasItems,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad3']),'BLR',0,'L');
+								$pdf->Cell(40,$alturaFilasItems,'','BR',0,'C');
+								$pdf->Cell(40,$alturaFilasItems,'','BR',0,'C');
+								$pdf->Cell(0,$alturaFilasItems,utf8_decode(number_format($detalles['CantU3'], 0)),'BR',1,'C');
 							}
 
 							if ($detalles['CantU4'] != 0 ) {
-								$pdf->Cell(40,$alturaFilasItems,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad4']),'BLR',0,'L');
-								$pdf->Cell(20,$alturaFilasItems,'','BR',0,'C');
-								$pdf->Cell(20,$alturaFilasItems,'','BR',0,'C');
-								$pdf->Cell(11,$alturaFilasItems,utf8_decode(number_format($detalles['CantU4'], 0)),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(13,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(14,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(0,$alturaFilasItems,utf8_decode(''),'BR',1,'C');
+								$pdf->Cell(75,$alturaFilasItems,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad4']),'BLR',0,'L');
+								$pdf->Cell(40,$alturaFilasItems,'','BR',0,'C');
+								$pdf->Cell(40,$alturaFilasItems,'','BR',0,'C');
+								$pdf->Cell(0,$alturaFilasItems,utf8_decode(number_format($detalles['CantU4'], 0)),'BR',1,'C');
 							}
 
 							if ($detalles['CantU5'] != 0 ) {
-								$pdf->Cell(40,$alturaFilasItems,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad5']),'BLR',0,'L');
-								$pdf->Cell(20,$alturaFilasItems,'','BR',0,'C');
-								$pdf->Cell(20,$alturaFilasItems,'','BR',0,'C');
-								$pdf->Cell(11,$alturaFilasItems,utf8_decode(number_format($detalles['CantU5'], 0)),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(13,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(14,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-								$pdf->Cell(0,$alturaFilasItems,utf8_decode(''),'BR',1,'C');
+								$pdf->Cell(75,$alturaFilasItems,utf8_decode("    ".$detalles['Descripcion']." ".$detalles['NombreUnidad5']),'BLR',0,'L');
+								$pdf->Cell(40,$alturaFilasItems,'','BR',0,'C');
+								$pdf->Cell(40,$alturaFilasItems,'','BR',0,'C');
+								$pdf->Cell(0,$alturaFilasItems,utf8_decode(number_format($detalles['CantU5'], 0)),'BR',1,'C');
 							}
 						} else {
-							$pdf->Cell(40,$alturaFilasItems,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
-							$pdf->Cell(20,$alturaFilasItems,utf8_decode($detalles['Umedida']),'BR',0,'C');
-							$pdf->Cell(20,$alturaFilasItems,utf8_decode(number_format($detalles['CanTotalPresentacion'], 2, '.', ',')),'BR',0,'C');
-							$pdf->Cell(11,$alturaFilasItems,utf8_decode((number_format($detalles['NombreUnidad1'] == 'u' ? ceil($detalles['CanTotalPresentacion']) : strpos($detalles['NombreUnidad2'], 'kg') || strpos($detalles['NombreUnidad2'], 'lt') ? ceil($detalles['CanTotalPresentacion']) : $detalles['CanTotalPresentacion'], 2, '.', ','))) ,'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(13,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(14,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-							$pdf->Cell(0,$alturaFilasItems,utf8_decode(''),'BR',1,'C');
+							$pdf->Cell(75,$alturaFilasItems,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
+							$pdf->Cell(40,$alturaFilasItems,utf8_decode($detalles['Umedida']),'BR',0,'C');
+							$pdf->Cell(40,$alturaFilasItems,utf8_decode(number_format($detalles['CanTotalPresentacion'], 2, '.', ',')),'BR',0,'C');
+							$pdf->Cell(0,$alturaFilasItems,utf8_decode((number_format($detalles['NombreUnidad1'] == 'u' ? ceil($detalles['CanTotalPresentacion']) : strpos($detalles['NombreUnidad2'], 'kg') || strpos($detalles['NombreUnidad2'], 'lt') ? ceil($detalles['CanTotalPresentacion']) : $detalles['CanTotalPresentacion'], 2, '.', ','))) ,'BR',1,'C');
 						}
 					}
 				}
@@ -434,20 +395,10 @@ foreach ($sedes as $key => $sede) {
 				if($filasMostradas < $maximoDeFilas ){
 					$filasRestantes = $maximoDeFilas - $filasMostradas;
 					for($if = 0 ; $if < $filasRestantes ; $if++){
-						$pdf->Cell(40,$alturaFilasItems,utf8_decode(''),'BLR',0,'L');
-						$pdf->Cell(20,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(20,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(11,$alturaFilasItems,utf8_decode('') ,'BR',0,'C');
-						$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(13,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(14,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(10,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(12.67,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(0,$alturaFilasItems,utf8_decode(''),'BR',1,'C');
+						$pdf->Cell(75,$alturaFilasItems,utf8_decode(''),'BLR',0,'L');
+						$pdf->Cell(40,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
+						$pdf->Cell(40,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
+						$pdf->Cell(0,$alturaFilasItems,utf8_decode('') ,'BR',1,'C');
 					}
 				}
 
