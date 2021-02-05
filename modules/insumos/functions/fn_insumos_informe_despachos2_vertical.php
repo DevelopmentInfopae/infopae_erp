@@ -341,7 +341,7 @@ foreach ($sedes as $key => $sede) {
 				$resultadoDetalles = $Link->query($consultaDetalles);
 				
 				
-				$maximoDeFilas = 36;
+				$maximoDeFilas = 32;
 				$filasMostradas = 0;
 				
 				
@@ -392,15 +392,15 @@ foreach ($sedes as $key => $sede) {
 				}
 
 
-				if($filasMostradas < $maximoDeFilas ){
-					$filasRestantes = $maximoDeFilas - $filasMostradas;
-					for($if = 0 ; $if < $filasRestantes ; $if++){
-						$pdf->Cell(75,$alturaFilasItems,utf8_decode(''),'BLR',0,'L');
-						$pdf->Cell(40,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(40,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
-						$pdf->Cell(0,$alturaFilasItems,utf8_decode('') ,'BR',1,'C');
-					}
-				}
+				// if($filasMostradas < $maximoDeFilas ){
+				// 	$filasRestantes = $maximoDeFilas - $filasMostradas;
+				// 	for($if = 0 ; $if < $filasRestantes ; $if++){
+				// 		$pdf->Cell(75,$alturaFilasItems,utf8_decode(''),'BLR',0,'L');
+				// 		$pdf->Cell(40,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
+				// 		$pdf->Cell(40,$alturaFilasItems,utf8_decode(''),'BR',0,'C');
+				// 		$pdf->Cell(0,$alturaFilasItems,utf8_decode('') ,'BR',1,'C');
+				// 	}
+				// }
 
 
 
@@ -416,7 +416,7 @@ foreach ($sedes as $key => $sede) {
 				// $pdf->Cell(0,$alturaFilasItems,utf8_decode($cy),'LRB',1,'L');
 
 				$cy = $pdf->GetY();
-				if($cy > 220){
+				if($cy > 199){
 					$pdf->AddPage();
 					$filasMostradas = 0;
 				}
@@ -427,6 +427,9 @@ foreach ($sedes as $key => $sede) {
 				$pdf->SetFont('Arial','B',8);
 				$pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
 				$pdf->SetFont('Arial','',8);
+				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
+				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
+				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
 				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
 				$pdf->Ln(2);
 
