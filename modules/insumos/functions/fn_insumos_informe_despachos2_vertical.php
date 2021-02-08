@@ -137,9 +137,9 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->SetFont('Arial','B',8);
 			$this->Cell(53,4,utf8_decode('INSTITUCIÓN O CENTRO EDUCATIVO: '),'BL',0,'L');
 			$this->SetFont('Arial','',8);
-			$this->Cell(40,4,utf8_decode($this->nom_inst),'BR',0,'L'); //INSTITUCIÓN - REEMPLAZZAR
+			$this->Cell(0,4,utf8_decode($this->nom_inst),'BR',1,'L'); //INSTITUCIÓN - REEMPLAZZAR
 			$this->SetFont('Arial','B',8);
-			$this->Cell(30,4,utf8_decode('SEDE EDUCATIVA: '),'B',0,'L');
+			$this->Cell(27,4,utf8_decode('SEDE EDUCATIVA: '),'BL',0,'L');
 			$this->SetFont('Arial','',8);
 			$this->Cell(0,4,utf8_decode($this->nom_sede),'BR',1,'L'); //SEDE REEMPLAZAR
 			
