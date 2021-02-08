@@ -114,7 +114,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->SetFont('Arial','B',10);
 			$this->Image($logoInfopae,8,10,85,12.1,'jpg', '');
 			$this->Cell(85,18,'','TBRL',0,'C');
-			$this->Cell(0,9,utf8_decode('PROGRAMA DE ATENCIÓN ESCOLAR'),'TR',1,'C');
+			$this->Cell(0,9,utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'),'TR',1,'C');
 			$this->Cell(85,9,utf8_decode(''),'',0,'C');
 			$this->Cell(0,9,utf8_decode('REMISIÓN ENTREGA DE INSUMOS EN INSTITUCIÓN EDUCATIVA'),'BR',1,'C');
 			$this->SetFont('Arial','B',8);
