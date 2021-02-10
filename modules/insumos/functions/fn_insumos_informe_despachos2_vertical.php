@@ -428,9 +428,9 @@ foreach ($sedes as $key => $sede) {
 				$pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
 				$pdf->SetFont('Arial','',8);
 				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
-				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
-				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
-				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
+				$pdf->Cell(0,5,'','B',5,'L',False);
+				$pdf->Cell(0,5,'','B',5,'L',False);
+				$pdf->Cell(0,5,'','B',5,'L',False);
 				$pdf->Ln(2);
 
 
