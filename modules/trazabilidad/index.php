@@ -1,8 +1,8 @@
 <?php
-$titulo = 'Trazabilidad de alimentos';
-$meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
-require_once '../../header.php';
-$periodoActual = $_SESSION['periodoActual'];
+  $titulo = 'Trazabilidad de alimentos';
+  $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
+  require_once '../../header.php';
+  $periodoActual = $_SESSION['periodoActual'];
 ?>
 
 <style type="text/css">
@@ -98,7 +98,7 @@ $periodoActual = $_SESSION['periodoActual'];
               <div class="form-group col-sm-2">
                 <label>Hasta</label>
                 <?php $mesSiguiente = date('m')+1; ?>
-                <input type="text" name="fecha_fin_elaboracion" id="fecha_fin_elaboracion" data-date-format="yyyy-mm-dd" value="<?php echo date('Y')."-".$mesSiguiente."-01"; ?>" class="form-control datepicker">
+                <input type="text" name="fecha_fin_elaboracion" id="fecha_fin_elaboracion" data-date-format="yyyy-mm-dd" value="" class="form-control datepicker">
               </div>
             </div>
             <div class="form-group col-sm-2">
@@ -113,7 +113,27 @@ $periodoActual = $_SESSION['periodoActual'];
             <div class="form-group col-sm-3">
               <label>Municipio</label>
               <select class="form-control" name="municipio" id="municipio">
-                <option>Cargando...</option>
+                <option value="">Seleccionar</option>
+                <?php
+                  $codigo_departamento = $_SESSION['p_CodDepartamento'];
+                  $codigo_municipio = $_SESSION["p_Municipio"];
+                  $condicion_municipio = (! empty($codigo_municipio)) ? "AND CodigoDANE = '$codigo_municipio'": "";
+
+                  $consultarMunicipios = "SELECT
+                                              CodigoDANE, Ciudad
+                                          FROM
+                                              ubicacion
+                                          WHERE
+                                              CodigoDANE LIKE '$codigo_departamento%'
+                                              $condicion_municipio
+                                          GROUP BY ubicacion.Ciudad;";
+                  $resultadoMunicipios = $Link->query($consultarMunicipios);
+                  if ($resultadoMunicipios->num_rows > 0) {
+                    while ($municipios = $resultadoMunicipios->fetch_assoc()) { ?>
+                      <option value="<?= $municipios['CodigoDANE'] ?>" <?= (isset($_POST['municipio']) && $_POST['municipio'] == $municipios['CodigoDANE']) ? 'selected':'';  ?>><?= $municipios['Ciudad'] ?></option>
+                    <?php }
+                  }
+                ?>
               </select>
             </div>
             <div class="form-group col-sm-3">
@@ -216,18 +236,18 @@ $periodoActual = $_SESSION['periodoActual'];
             </div>
             <input type="hidden" name="buscar" value="1">
           </form>
-          <div class="col-sm-12">
-            <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
-            <?php if (isset($_POST['buscar'])): ?>
-              <button class="btn btn-primary" onclick="location.href='index.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
-            <?php endif ?>
+          <div class="row">
+            <div class="col-sm-12">
+              <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
+              <?php if (isset($_POST['buscar'])): ?>
+                <button class="btn btn-primary" onclick="location.href='index.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
+              <?php endif ?>
+            </div>
           </div>
-        </div><!-- /.ibox-content -->
-      </div><!-- /.ibox float-e-margins -->
-    </div><!-- /.col-lg-12 -->
-  </div><!-- /.row -->
-
-
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="row">
     <div class="col-lg-12">
@@ -243,7 +263,6 @@ $periodoActual = $_SESSION['periodoActual'];
                     <th>Responsable / Proveedor</th>
                     <th>Nombre Producto / Alimento</th>
                     <th>Unidad Medida</th>
-                    <th>Factor</th>
                     <th>Cantidad</th>
                     <th>Nombre Bodega Origen</th>
                     <th>Nombre Bodega Destino</th>
@@ -266,7 +285,6 @@ $periodoActual = $_SESSION['periodoActual'];
                     <th>Responsable / Proveedor</th>
                     <th>Nombre Producto / Alimento</th>
                     <th>Unidad Medida</th>
-                    <th>Factor</th>
                     <th>Cantidad</th>
                     <th>Nombre Bodega Origen</th>
                     <th>Nombre Bodega Destino</th>
@@ -280,161 +298,154 @@ $periodoActual = $_SESSION['periodoActual'];
                 </tfoot>
               </table>
           </div>
-<?php
+          <?php
+            if (!isset($_POST['buscar'])) { //Si no hay filtrado
+              $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
-  if (!isset($_POST['buscar'])) { //Si no hay filtrado
+              $consulta = "SELECT
+                  pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab,  pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca
+                  FROM productosmov$numtabla AS pmov
+                    INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero
+                    INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
+                    INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
+                    INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
+                    INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero
+                  LIMIT 200;";
+            } else if (isset($_POST['buscar'])) { //Si hay filtrado
+              $inners="";
+              $condiciones = "";
+              $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca";
 
-    $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
+              if (isset($_POST['fecha_de']) && $_POST['fecha_de'] != "") {
+                $fecha_de = $_POST['fecha_de'];
 
-    $consulta = "SELECT
-        pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca
-        FROM productosmov$numtabla AS pmov
-          INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero
-          INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
-          INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
-          INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
-        LIMIT 200;";
-  } else if (isset($_POST['buscar'])) { //Si hay filtrado
+                if ($fecha_de == 1) {
+                  $mes = date("m", strtotime($_POST['fecha_inicio_elaboracion']));
+                  $numtabla = $mes.$_SESSION['periodoActual'];
+                  $condiciones.=" AND denc.FechaHora_Elab > '".$_POST['fecha_inicio_elaboracion']." 00:00:00' AND denc.FechaHora_Elab < '".$_POST['fecha_fin_elaboracion']." 00:00:00' ";
 
-    $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual']; //Número MesAño según mes escogido
-    $condiciones = ""; //Donde se almacenan las condiciones según parámetros
-    $inners="";//Donde se almacenan los INNERS necesarios para traer datos externos.
-    $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca";
+                } else if ($fecha_de == 2) { //Si el tipo de búsqueda es por días despachados
+                  $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual'];
+                  $bnd_inner_denc = 1;
 
-    if (isset($_POST['fecha_de']) && $_POST['fecha_de'] != "") { //Si está seteado el tipo de búsqueda por fecha
-      $fecha_de = $_POST['fecha_de'];
-      if ($fecha_de == 1) { //Si el tipo de búsqueda es por elaboración de documento
-        $condiciones.=" AND pmov.FechaMYSQL > '".$_POST['fecha_inicio_elaboracion']." 00:00:00' AND pmov.FechaMYSQL < '".$_POST['fecha_fin_elaboracion']." 00:00:00' ";
-      } else if ($fecha_de == 2) { //Si el tipo de búsqueda es por días despachados
-        $inners.= " INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero ";
-        $bnd_inner_denc = 1;
-        if ($_POST['dia_inicio'] != "" && $_POST['dia_fin'] != "" ) { //Si los días indicados son diferente a vacío, busca por los días despachados tomado del campo Dias en la tabla despachos_enc
-          $condiciones.=" AND (";
-          $cnt2 = 0;
-          for ($i=$_POST['dia_inicio']; $i <= $_POST['dia_fin'] ; $i++) {
-            if ($cnt2 > 0) {
-              $condiciones.=" OR ";
-            }
-            $condiciones.="denc.Dias like '%".$i."%'";
-            $cnt2++;
-          }
-          $condiciones.=") ";
-        }
-      }
-    }
+                  if ($_POST['dia_inicio'] != "" && $_POST['dia_fin'] != "" ) { //Si los días indicados son diferente a vacío, busca por los días despachados tomado del campo Dias en la tabla despachos_enc
+                    $cnt2 = 0;
+                    $condiciones.=" AND (";
 
-
-    if (isset($_POST['tipo_documento']) && $_POST['tipo_documento'] != "") { //Si el tipo de documento se especificó
-      if ($_POST['proveedor'] != "") { //Si el proveedor se especificó, busca según las bodegas relacionadas
-        $condiciones.=" AND pmov.Tipo = '".$_POST['tipo_documento']."' AND pmov.Nitcc = '".$_POST['proveedor']."' ";
-      } else { //Si no especificó, trae todos los registros con el tipo de documento escogido
-        $condiciones.=" AND pmov.Tipo = '".$_POST['tipo_documento']."' ";
-      }
-    }
-
-    if (isset($_POST['municipio']) && $_POST['municipio'] != "") { //Si el usuario especifica municipio, busca las sedes relacionadas que sean del municipio escogido
-      if (!isset($bnd_inner_denc) && $_POST['fecha_de'] != "2") {
-        $bnd_inner_denc = 1;
-        $inners.= " INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero";
-      }
-      $inners.=" INNER JOIN sedes".$_SESSION['periodoActual']." as sede ON sede.cod_sede = denc.cod_Sede ";
-      $condiciones.=" AND sede.cod_mun_sede = '".$_POST['municipio']."' ";
-    }
-
-    if (isset($_POST['tipo_filtro']) && $_POST['tipo_filtro'] != "") {
-    $filtro = $_POST['tipo_filtro'];
-
-      if ($filtro == 1) { //Valor escogido en tipo de filtro
-
-          if (isset($_POST['bodegas']) && $_POST['bodegas'] != "") { //Si el filtro de búsqueda está por bodegas
-
-            if ($_POST['tipo_bodega'] == 1) { //Si eligió buscar por la bodega de Origen
-              $condiciones.=" AND pmovdet.BodegaOrigen = '".$_POST['bodegas']."' ";
-            } else if ($_POST['tipo_bodega'] == 2) { //Si eligió buscar por la bodega de Destino
-              $condiciones.=" AND pmovdet.BodegaDestino = '".$_POST['bodegas']."' ";
-            } else if ($_POST['tipo_bodega'] == "") { //Si eligió buscar por las dos bodegas (Origen y Destino)
-              $condiciones.=" AND (pmovdet.BodegaOrigen = '".$_POST['bodegas']."' OR pmovdet.BodegaDestino = '".$_POST['bodegas']."')";
-            }
-          }
-
-      } else if ($filtro == 2) {
-
-          if (isset($_POST['conductor']) && $_POST['conductor'] != "") { //Si el filtro de búsqueda está por conductor
-            $condiciones.=" AND pmov.ResponsableRecibe = '".$_POST['conductor']."' ";
-          }
-
-      } else if ($filtro == 3) {
-
-          if (isset($_POST['producto']) && $_POST['producto'] != "") { //Si especificó filtro por producto
-              if (isset($_POST['totales'])) { //Si especificó ver por totales, suma las cantidades despachadas
-
-                if ($condiciones == "") { //Si no hay otros criterios especificados, muestra sólo valores Nombre de producto, Factor, Unidad medida y Cantidad
-                  $txtTotales = "--";
-                  $datos =" '".$txtTotales."' as Tipo, '".$txtTotales."' as Numero, '".$txtTotales."' as FechaMYSQL, '".$txtTotales."' as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad,  '".$txtTotales."' as nomBodegaOrigen, '".$txtTotales."' as nomBodegaDestino,  '".$txtTotales."' as TipoTransporte, '".$txtTotales."' as Placa, '".$txtTotales."' as ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca ";
-                } else { //Si hay criterios, muestra los resultados agrupados
-                  $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Factor, 4) as Factor, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca  ";
+                    for ($i=$_POST['dia_inicio']; $i <= $_POST['dia_fin'] ; $i++) {
+                      if ($cnt2 > 0) {
+                        $condiciones.=" OR ";
+                      }
+                      $condiciones.="denc.Dias LIKE '".$i."' OR denc.Dias LIKE '".$i.",%' OR denc.Dias like '%,".$i.",%' OR denc.Dias like '%,".$i."'";
+                      $cnt2++;
+                    }
+                    $condiciones.=") ";
+                  }
                 }
-
-                $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' GROUP BY pmovdet.CodigoProducto ";
-
-              } else { // Si no se especificó ver por totales, muestra cada uno de los despachos del producto
-                $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' ";
               }
-          }
 
-      } else if ($filtro == 4) {
+              if (isset($_POST['tipo_documento']) && $_POST['tipo_documento'] != "") { //Si el tipo de documento se especificó
+                if ($_POST['proveedor'] != "") { //Si el proveedor se especificó, busca según las bodegas relacionadas
+                  $condiciones.=" AND pmov.Tipo = '".$_POST['tipo_documento']."' AND pmov.Nitcc = '".$_POST['proveedor']."' ";
+                } else { //Si no especificó, trae todos los registros con el tipo de documento escogido
+                  $condiciones.=" AND pmov.Tipo = '".$_POST['tipo_documento']."' ";
+                }
+              }
 
-        if (isset($_POST['grupo_etario']) && $_POST['grupo_etario'] != "") {
-          $inners.= " INNER JOIN despachos_det$numtabla as dent ON dent.Num_Doc = pmov.Numero AND dent.cod_Alimento = pmovdet.CodigoProducto";
-          $condiciones.=" AND dent.Id_GrupoEtario = '".$_POST['grupo_etario']."' ";
-        }
+              if (isset($_POST['municipio']) && $_POST['municipio'] != "") {
+                if (!isset($bnd_inner_denc) && $_POST['fecha_de'] != "2") {
+                  $bnd_inner_denc = 1;
+                }
+                $inners.=" INNER JOIN sedes".$_SESSION['periodoActual']." as sede ON sede.cod_sede = denc.cod_Sede ";
+                $condiciones.=" AND sede.cod_mun_sede = '".$_POST['municipio']."' ";
+              }
 
-      } else if ($filtro == 5) {
+              if (isset($_POST['tipo_filtro']) && $_POST['tipo_filtro'] != "") {
+              $filtro = $_POST['tipo_filtro'];
 
-        if (isset($_POST['tipo_complemento']) && $_POST['tipo_complemento'] != "") {
+                if ($filtro == 1) { //Valor escogido en tipo de filtro
 
-          if (!isset($bnd_inner_denc)) { //Si 'fecha de' es por elaboración de documento Traemos datos de tabla despachos enc
-            $inners.= " INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero ";
-          }
-          $condiciones.=" AND denc.Tipo_Complem = '".$_POST['tipo_complemento']."' ";
-        }
+                    if (isset($_POST['bodegas']) && $_POST['bodegas'] != "") { //Si el filtro de búsqueda está por bodegas
 
-      } else if ($filtro == 6) {
+                      if ($_POST['tipo_bodega'] == 1) { //Si eligió buscar por la bodega de Origen
+                        $condiciones.=" AND pmovdet.BodegaOrigen = '".$_POST['bodegas']."' ";
+                      } else if ($_POST['tipo_bodega'] == 2) { //Si eligió buscar por la bodega de Destino
+                        $condiciones.=" AND pmovdet.BodegaDestino = '".$_POST['bodegas']."' ";
+                      } else if ($_POST['tipo_bodega'] == "") { //Si eligió buscar por las dos bodegas (Origen y Destino)
+                        $condiciones.=" AND (pmovdet.BodegaOrigen = '".$_POST['bodegas']."' OR pmovdet.BodegaDestino = '".$_POST['bodegas']."')";
+                      }
+                    }
+                } else if ($filtro == 2) {
 
-        $condicionFvto = "";
+                    if (isset($_POST['conductor']) && $_POST['conductor'] != "") { //Si el filtro de búsqueda está por conductor
+                      $condiciones.=" AND pmov.ResponsableRecibe = '".$_POST['conductor']."' ";
+                    }
+                } else if ($filtro == 3) {
 
-        if ($_POST['fechavto_desde'] != "" || $_POST['fechavto_hasta'] != "") {
+                    if (isset($_POST['producto']) && $_POST['producto'] != "") { //Si especificó filtro por producto
+                        if (isset($_POST['totales'])) { //Si especificó ver por totales, suma las cantidades despachadas
 
-          $condicionFvto.=" AND pmovdet.FechaVencimiento >= '".$_POST['fechavto_desde']."' AND pmovdet.FechaVencimiento <= '".$_POST['fechavto_hasta']."'";
+                          if ($condiciones == "") { //Si no hay otros criterios especificados, muestra sólo valores Nombre de producto, Factor, Unidad medida y Cantidad
+                            $txtTotales = "--";
+                            $datos =" '".$txtTotales."' as Tipo, '".$txtTotales."' as Numero, '".$txtTotales."' as FechaMYSQL, '".$txtTotales."' as FechaHora_Elab, '".$txtTotales."' as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad,  '".$txtTotales."' as nomBodegaOrigen, '".$txtTotales."' as nomBodegaDestino,  '".$txtTotales."' as TipoTransporte, '".$txtTotales."' as Placa, '".$txtTotales."' as ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca ";
+                          } else { //Si hay criterios, muestra los resultados agrupados
+                            $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca  ";
+                          }
 
-        } else {
+                          $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' GROUP BY pmovdet.CodigoProducto ";
 
-          if ($_POST['fechavto_desde'] != "") {
-              $condicionFvto.=" AND pmovdet.FechaVencimiento >= '".$_POST['fechavto_desde']."'";
-          } else if ($_POST['fechavto_hasta'] != "") {
-              $condicionFvto.=" AND pmovdet.FechaVencimiento <= '".$_POST['fechavto_hasta']."'";
-          }
+                        } else { // Si no se especificó ver por totales, muestra cada uno de los despachos del producto
+                          $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' ";
+                        }
+                    }
+                } else if ($filtro == 4) {
 
-        }
-      }
-    }
+                  if (isset($_POST['grupo_etario']) && $_POST['grupo_etario'] != "") {
+                    $inners.= " INNER JOIN despachos_det$numtabla as dent ON dent.Num_Doc = pmov.Numero AND dent.cod_Alimento = pmovdet.CodigoProducto";
+                    $condiciones.=" AND dent.Id_GrupoEtario = '".$_POST['grupo_etario']."' ";
+                  }
+                } else if ($filtro == 5) {
 
-    $consulta = "SELECT
-                      $datos
-                  FROM
-                    productosmov$numtabla AS pmov
-                      INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero $condicionFvto
-                      INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
-                      INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
-                      INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
-                      $inners $condiciones
-                  LIMIT 2000;";
-}
+                  if (isset($_POST['tipo_complemento']) && $_POST['tipo_complemento'] != "") {
 
- // echo $consulta;
+                    if (!isset($bnd_inner_denc)) { //Si 'fecha de' es por elaboración de documento Traemos datos de tabla despachos enc
+                      $inners.= " INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero ";
+                    }
+                    $condiciones.=" AND denc.Tipo_Complem = '".$_POST['tipo_complemento']."' ";
+                  }
+                } else if ($filtro == 6) {
 
-?>
-              <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
+                  $condicionFvto = "";
+
+                  if ($_POST['fechavto_desde'] != "" || $_POST['fechavto_hasta'] != "") {
+
+                    $condicionFvto.=" AND pmovdet.FechaVencimiento >= '".$_POST['fechavto_desde']."' AND pmovdet.FechaVencimiento <= '".$_POST['fechavto_hasta']."'";
+
+                  } else {
+
+                    if ($_POST['fechavto_desde'] != "") {
+                        $condicionFvto.=" AND pmovdet.FechaVencimiento >= '".$_POST['fechavto_desde']."'";
+                    } else if ($_POST['fechavto_hasta'] != "") {
+                        $condicionFvto.=" AND pmovdet.FechaVencimiento <= '".$_POST['fechavto_hasta']."'";
+                    }
+
+                  }
+                }
+              }
+
+              $consulta = "SELECT
+                                $datos
+                            FROM
+                              productosmov$numtabla AS pmov
+                                INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero $condicionFvto
+                                INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
+                                INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
+                                INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
+                                INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero
+                                $inners $condiciones
+                            LIMIT 2000;";
+          }?>
+          <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
     </div><!-- /.col-lg-12 -->
@@ -475,11 +486,10 @@ $periodoActual = $_SESSION['periodoActual'];
     columns:[
         { data: 'Tipo'},
         { data: 'Numero'},
-        { data: 'FechaMYSQL'},
+        { data: 'FechaHora_Elab'},
         { data: 'Proveedor'},
         { data: 'Descripcion'},
         { data: 'Umedida'},
-        { data: 'Factor'},
         { data: 'Cantidad'},
         { data: 'nomBodegaOrigen'},
         { data: 'nomBodegaDestino'},
@@ -490,11 +500,10 @@ $periodoActual = $_SESSION['periodoActual'];
         { data: 'FechaVencimiento'},
         { data: 'Marca'},
       ],
-          /*order: [ 0, 'asc' ],*/
     pageLength: 25,
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-    buttons : [{extend:'excel', title:'Trazabilidad_alimentos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]}}],
+    buttons : [{extend:'excel', title:'Trazabilidad_alimentos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]}}],
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',
@@ -518,9 +527,6 @@ $periodoActual = $_SESSION['periodoActual'];
         $('#loader').fadeIn();
       }
     }).on("draw", function(){ $('#loader').fadeOut();});
-  // var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li></ul></div>';
-
-  // $('.containerBtn').html(btnAcciones);
 
   <?php if (isset($_POST['buscar'])): ?>
     $('#btnBuscar').prop('disabled', true);

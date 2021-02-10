@@ -270,6 +270,7 @@ function cargarRepitentes(){
 
 
 	var sede = $('#sede').val();
+	var complemento = $('#complemento').val();
 	var nivel = $('#nivel').val();
 	var grado = $('#grado').val();
 	var grupo = $('#grupo').val();
@@ -291,6 +292,7 @@ function cargarRepitentes(){
 			dia: dia,
 			semanaActual: semanaActual,
 			sede: sede,
+			complemento: complemento,
 			nivel: nivel,
 			grado: grado,
 			grupo: grupo,
@@ -484,6 +486,7 @@ function guardarRepitentes(){
 	formData.append('dia', dia);
 	formData.append('semana', semana);
 	formData.append('sede', $('#sede').val());
+	formData.append('complemento', $('#complemento').val());
 
 	var cantidadRepitentes = 0;
 	$( ".checkbox-header-repite:checked").each(function(){

@@ -13,7 +13,7 @@
 
   $parametro_sede = (! empty($sede)) ? " AND nf.cod_sede = '$sede'" : "";
   $consulta_novedades = "SELECT nf.id, u.Ciudad as municipio, s.nom_inst, s.nom_sede, td.Abreviatura, nf.num_doc_titular, nf.tipo_complem, nf.semana, nf.d1, nf.d2, nf.d3, nf.d4, nf.d5, nf.observaciones,
-                          (SELECT CONCAT(nom1, ' ', nom2, ' ', ape1, ' ', ape2) FROM entregas_res_$mes$periodo_actual WHERE num_doc = nf.num_doc_titular AND tipo = 'F') AS nombre
+                          (SELECT CONCAT(nom1, ' ', nom2, ' ', ape1, ' ', ape2) FROM entregas_res_$mes$periodo_actual WHERE num_doc = nf.num_doc_titular AND tipo = 'F' AND tipo_complem = '$tipo_complemento') AS nombre
                         FROM novedades_focalizacion nf
                           LEFT JOIN sedes$periodo_actual s ON nf.cod_sede = s.cod_sede
                           LEFT JOIN tipodocumento td ON nf.tipo_doc_titular = td.id

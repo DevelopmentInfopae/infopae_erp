@@ -43,11 +43,12 @@ $consulta_focalizacion = "SELECT
 	sed.nom_sede AS nombre_sede,
 	sed.cod_mun_sede AS codigo_municipio,
 	ubi.Departamento AS nombre_municipio,
+	ubi.region as region,
+	foc.zona_res_est as zona,
 	foc.cod_grado AS grado,
 	foc.nom_grupo AS grupo,
 	jor.nombre AS jornada,
 	foc.edad AS edad,
-	if(foc.zona_res_est = 1, 'Urbano', 'Rural') AS residencia,
 	foc.Tipo_complemento AS complemento
 FROM focalizacion$semana foc
 LEFT JOIN tipodocumento tdc ON tdc.id = foc.tipo_doc
@@ -74,7 +75,36 @@ if ($respuesta_focalizacion->num_rows > 0){
 	];
 
   $columna = "A";
-  $titulos_columnas = ["Abreviatura", "Número documento", "Primer apellido", "Segundo apellido", "Primer nombre", "Segundo nombre", "Género", "Dirección", "Teléfono", "Fecha nacimiento", "Estrato", "Sisben", "Discapacidad", "Etnia", "Poblacion victima", "Código municipio", "Nombre municipio", "Código institucion", "Nombre institución", "Código sede", "Nombre sede", "Grado", "Grupo", "Jornada", "Edad", "Residencia", "Complemento"];
+  $titulos_columnas = [
+  						"Abreviatura", 
+  						"Número documento", 
+  						"Primer apellido", 
+  						"Segundo apellido", 
+  						"Primer nombre", 
+  						"Segundo nombre", 
+  						"Género", 
+  						"Dirección", 
+  						"Teléfono", 
+  						"Fecha nacimiento", 
+  						"Estrato", 
+  						"Sisben", 
+  						"Discapacidad", 
+  						"Etnia", 
+  						"Poblacion victima", 
+  						"Código institucion", 
+  						"Nombre institución", 
+  						"Código sede", 
+  						"Nombre sede", 
+  						"Código municipio", 
+  						"Nombre municipio", 
+  						"Región", 
+  						"Zona", 
+  						"Grado", 
+  						"Grupo", 
+  						"Jornada", 
+  						"Edad", 
+  						"Complemento"
+  					];
   for ($i = 0; $i < count($titulos_columnas); $i++) {
   	$archivo->setCellValue($columna ."1", $titulos_columnas[$i])->getStyle($columna ."1")->applyFromArray($estilos_titulos);
   	$columna++;
@@ -103,17 +133,18 @@ if ($respuesta_focalizacion->num_rows > 0){
 		$archivo->setCellValue("S". $fila, $registros_focalizacion["nombre_sede"]);
 		$archivo->setCellValueExplicit("T". $fila, $registros_focalizacion["codigo_municipio"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 		$archivo->setCellValue("U". $fila, $registros_focalizacion["nombre_municipio"]);
-		$archivo->setCellValue("V". $fila, $registros_focalizacion["grado"]);
-		$archivo->setCellValue("W". $fila, $registros_focalizacion["grupo"]);
-		$archivo->setCellValue("X". $fila, $registros_focalizacion["jornada"]);
-		$archivo->setCellValue("Y". $fila, $registros_focalizacion["edad"]);
-		$archivo->setCellValue("Z". $fila, $registros_focalizacion["residencia"]);
-		$archivo->setCellValue("AA". $fila, $registros_focalizacion["complemento"]);
+		$archivo->setCellValue("V". $fila, $registros_focalizacion["region"]);
+		$archivo->setCellValue("W". $fila, $registros_focalizacion["zona"] == 1 ? 'Rural' : 'Urbana');
+		$archivo->setCellValue("X". $fila, $registros_focalizacion["grado"]);
+		$archivo->setCellValue("Y". $fila, $registros_focalizacion["grupo"]);
+		$archivo->setCellValue("Z". $fila, $registros_focalizacion["jornada"]);
+		$archivo->setCellValue("AA". $fila, $registros_focalizacion["edad"]);
+		$archivo->setCellValue("AB". $fila, $registros_focalizacion["complemento"]);
 
 		$fila++;
 	}
 
-	foreach(range("A", "Z") as $columna2) {
+	foreach(range("A", "AC") as $columna2) {
     $archivo->getColumnDimension($columna2)->setAutoSize(true);
 	}
 

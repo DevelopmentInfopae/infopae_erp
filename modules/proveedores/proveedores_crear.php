@@ -1,6 +1,9 @@
 <?php
 	include '../../header.php';
 	$titulo = 'Nuevo Proveedor';
+
+	$codigo_municipio = $_SESSION['p_Municipio'];
+  	$codigo_departamento = $_SESSION['p_CodDepartamento'];
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -26,144 +29,171 @@
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="ibox float-e-margins">
-        <div class="ibox-content contentBackground">
-          <form id="formCrearProveedor" action="function/fn_empleados_crear.php" method="post">
-          	<div class="row">
-        			<div class="col-sm-12">
-        				<div class="row">
+ 	<div class="row">
+    	<div class="col-lg-12">
+      		<div class="ibox float-e-margins">
+        		<div class="ibox-content contentBackground">
+          			<form id="formCrearProveedor" action="function/fn_empleados_crear.php" method="post">
+          				<div class="row">
+    						<div class="col-sm-12">
+        						<div class="row">
+									<div class="form-group col-sm-6 col-md-3">
+						                <label for="tipoJuridico">Tipo jurídico</label>
+						                <select class="form-control" name="tipoJuridico" id="tipoJuridico" required>
+						                	<option value="">Seleccione</option>
+						                	<option value="1">Persona Jurídica</option>
+						                	<option value="2">Persona Natural</option>
+						                </select>
+					              	</div>
+
+					              	<div class="form-group col-sm-6 col-md-3">
+						                <label for="tipoRegimen">Tipo régimen</label>
+						                <select class="form-control" name="tipoRegimen" id="tipoRegimen" required>
+						                	<option value="">Seleccione</option>
+						                	<option value="1">Común</option>
+						                	<option value="2">Simplificado</option>
+						                </select>
+					              	</div>
 
 									<div class="form-group col-sm-6 col-md-3">
-		                <label for="tipoDocumento">Tipo documento</label>
-		                <select class="form-control" name="tipoDocumento" id="tipoDocumento" required>
-		                	<option value="">Seleccione uno</option>
-		                	<?php
-		                    $consulta = "SELECT id AS idTipoDocumento, nombre AS nombreTipoDocumento FROM tipodocumento;";
-		                    $resultado = $Link->query($consulta) or die ('Error al listar los usuarios: . '. mysqli_error($Link));
-		                    if($resultado){
-		                      while($registros = $resultado->fetch_assoc()){
-		                  ?>
-		                        <option value="<?php echo $registros['idTipoDocumento']; ?>">
-		                          <?php echo $registros['nombreTipoDocumento']; ?>
-		                        </option>
-		                  <?php
-		                      }
-		                    }
-		                  ?>
-		                </select>
-		              </div>
+		                				<label for="tipoDocumento">Tipo documento</label>
+		                				<select class="form-control" name="tipoDocumento" id="tipoDocumento" required>
+		                					<option value="">Seleccione</option>
+					                	</select>
+		              				</div>
 
-	        				<div class="form-group col-sm-6 col-md-3">
-		                <label for="numeroDocumento">Número documento</label>
-		                <select class="form-control" name="numeroDocumento" id="numeroDocumento" required>
-		                	<option value="">Seleccione uno</option>
-		                	<?php
-		                    $consulta1= "SELECT usu.num_doc AS cedulaProveedor FROM usuarios usu WHERE usu.id_perfil = '2' AND usu.Tipo_Usuario = 'Proveedor';";
-		                    $resultado1 = $Link->query($consulta1) or die ('Error al listar los usuarios: . '. mysqli_error($Link));
-		                    if($resultado1){
-		                      while($registros1 = $resultado1->fetch_assoc()){
-		                  ?>
-		                        <option value="<?php echo $registros1['cedulaProveedor']; ?>">
-		                          <?php echo $registros1['cedulaProveedor']; ?>
-		                        </option>
-		                  <?php
-		                      }
-		                    }
-		                  ?>
-		                </select>
-		              </div>
+			        				<div class="form-group col-sm-6 col-md-3">
+				                		<label for="numeroDocumento">Número documento</label>
+				                		<input class="form-control" type="text" name="numeroDocumento" id="numeroDocumento" required>
+				              		</div>
+        						</div>
+
+        						<div class="row">
+									<div class="form-group col-sm-6 col-md-3">
+				                		<label for="digitoVerificacion">Dígito de verificación</label>
+				                		<input class="form-control" type="number" name="digitoVerificacion" id="digitoVerificacion" required>
+				              		</div>
 
 									<div class="form-group col-sm-6 col-md-3">
-		                <label for="nombreComercial">Nombre comercial</label>
-		                <input type="text" class="form-control" name="nombreComercial" id="nombreComercial" required>
-		              </div>
-
-		              <div class="form-group col-sm-6 col-md-3">
-		                <label for="tipoJuridico">Tipo jurídico</label>
-		                <select class="form-control" name="tipoJuridico" id="tipoJuridico" required>
-		                	<option value="">Seleccione uno</option>
-		                	<option value="Régimen común">Régimen común</option>
-		                	<option value="Régimen simplificado">Régimen simplificado</option>
-		                </select>
-		              </div>
-
-        				</div>
-
-        				<div class="row">
-
-        					<div class="form-group col-sm-6 col-md-3">
-		                <label for="primerNombre">Primer nombre</label>
-		                <input type="text" class="form-control" name="primerNombre" id="primerNombre" required>
-		              </div>
+						                <label for="razonSocial">Razón Social</label>
+						                <input type="text" class="form-control" name="razonSocial" id="razonSocial" required>
+						            </div>
 
 									<div class="form-group col-sm-6 col-md-3">
-		                <label for="segundoNombre">Segundo nombre</label>
-		                <input type="text" class="form-control" name="segundoNombre" id="segundoNombre">
-		              </div>
+						                <label for="nombreComercial">Nombre comercial</label>
+						                <input type="text" class="form-control" name="nombreComercial" id="nombreComercial" required>
+						            </div>
+						        </div>
 
-		              <div class="form-group col-sm-6 col-md-3">
-		                <label for="primerApellido">Primer apellido</label>
-		                <input type="text" class="form-control" name="primerApellido" id="primerApellido" required>
-		              </div>
-
-		              <div class="form-group col-sm-6 col-md-3">
-		                <label for="segundoApellido">Segundo apellido</label>
-		                <input type="text" class="form-control" name="segundoApellido" id="segundoApellido">
-		              </div>
-
-        				</div>
 
 								<div class="row">
+        							<div class="form-group col-sm-6 col-md-3">
+						                <label for="primerNombre">Primer nombre</label>
+						                <input type="text" class="form-control" name="primerNombre" id="primerNombre" required>
+						            </div>
 
 									<div class="form-group col-sm-6 col-md-3">
-		                <label for="email">Email</label>
-		                <input type="email" class="form-control" name="email" id="email" readonly required>
-		              </div>
+					                	<label for="segundoNombre">Segundo nombre</label>
+					                	<input type="text" class="form-control" name="segundoNombre" id="segundoNombre">
+					              	</div>
 
-		              <div class="form-group col-sm-6 col-md-3">
-		                <label for="direccion">Dirección</label>
-		                <input type="text" class="form-control" name="direccion" id="direccion" required>
-		              </div>
+					              	<div class="form-group col-sm-6 col-md-3">
+						                <label for="primerApellido">Primer apellido</label>
+						                <input type="text" class="form-control" name="primerApellido" id="primerApellido" required>
+					              	</div>
 
 									<div class="form-group col-sm-6 col-md-3">
-		                <label for="telefono">Teléfono 1</label>
-		                <input type="tel" class="form-control" name="telefono" id="telefono" required>
+										<label for="segundoApellido">Segundo apellido</label>
+										<input type="text" class="form-control" name="segundoApellido" id="segundoApellido">
+									</div>
+        						</div>
+
+								<div class="row">
+									<div class="form-group col-sm-6 col-md-3">
+						                <label for="email">Email</label>
+						                <input type="email" class="form-control" name="email" id="email" required>
+					              	</div>
+
+									<div class="form-group col-sm-6 col-md-3">
+		                				<label for="telefonofijo">Teléfono fijo</label>
+		                				<input type="tel" class="form-control" name="telefonofijo" id="telefonofijo" required>
 									</div>
 
 									<div class="form-group col-sm-6 col-md-3">
-		                <label for="telefono2">Teléfono 2</label>
-		                <input type="tel" class="form-control" name="telefono2" id="telefono2">
+		                				<label for="telefonomovil">Teléfono movil</label>
+		                				<input type="tel" class="form-control" name="telefonomovil" id="telefonomovil">
 									</div>
 
+					              	<div class="form-group col-sm-6 col-md-3">
+						                <label for="direccion">Dirección</label>
+						                <input type="text" class="form-control" name="direccion" id="direccion" required>
+					              	</div>
 								</div>
 
 								<div class="row">
+									<div class="form-group col-sm-6 col-md-3">
+						                <label for="municipio">Municipio</label>
+						                <select class="form-control select2" name="municipio" id="municipio" required>
+						                	<?php
+						                      	$parametro_municipio = (! empty($codigo_municipio)) ? "AND CodigoDANE = '$codigo_municipio'" : "";
+						                      	$consulta_municipios = "SELECT CodigoDANE AS codigo, Ciudad AS nombre, Departamento AS departamento FROM ubicacion  ORDER BY Ciudad ASC;";
+						                      	$respuesta_consulta_municipios = $Link->query($consulta_municipios) or die('Error al consultar municipios: '. $Link->error);
+						                      	if (! empty($respuesta_consulta_municipios->num_rows)) {
+						                        	while($municipio = $respuesta_consulta_municipios->fetch_object()) {
+						                          		$seleccion = ($municipio->codigo == $codigo_municipio) ? 'selected' : '';
+					                          			echo '<option value="'. $municipio->codigo .'" '. $seleccion .'>'. $municipio->nombre .' ('. $municipio->departamento .') </option>';
+						                        	}
+						                      	}
+						                    ?>
+						                </select>
+						                <label id="municipio-error" class="error" for="municipio"></label>
+					              	</div>
 
-										<div class="form-group col-sm-6 col-md-3">
-			                <label for="digitoVerificacion">Dígito verificación</label>
-			                <input type="text" class="form-control" name="digitoVerificacion" id="digitoVerificacion" value="">
-										</div>
+					              	<div class="form-group col-sm-6 col-md-3">
+						                <label for="tipoalimento">Tipo alimento</label>
+						                <select class="form-control select2" name="tipoalimento[]" id="tipoalimento" multiple="multiple" required>
+						                	<?php
+						                		$consulta_tipo_alimento = "SELECT * FROM tipo_despacho";
+					                			$respuesta_tipo_alimento = $Link->query($consulta_tipo_alimento) or die('Error al consultar tipo documentos: '. $Link->error);
 
+					                			if (! empty($respuesta_tipo_alimento->num_rows)) {
+						                        	while($tipoalimento = $respuesta_tipo_alimento->fetch_object()) {
+					                          			echo '<option value="'. $tipoalimento->Id .'">'. $tipoalimento->Descripcion .'</option>';
+						                        	}
+						                      	}
+						                	?>
+						                </select>
+					              	</div>
+
+					              	<div class="form-group col-sm-6 col-md-3">
+						                <label for="compraslocales">Compras locales</label>
+						                <select class="form-control" name="compraslocales" id="compraslocales" required>
+						                	<option value="1">SI</option>
+						                	<option value="0">NO</option>
+						                </select>
+					              	</div>
+
+					              	<div class="form-group col-sm-6 col-md-3">
+						                <label for="estado">Estado</label>
+						                <select class="form-control" name="estado" id="estado" required>
+						                	<option value="1">Activo</option>
+						                	<option value="0">Inactivo</option>
+						                </select>
+					              	</div>
 								</div>
-
-        			</div>
-          	</div>
-          	<div class="row">
-          		<div class="col-sm12">
-          			<div class="row-">
-          				<div class="col-sm-3 col-lg-2 text-center">
-      							<a href="#" class="btn btn-primary" id="guardarProveedorContinuar"><i class="fa fa-check "></i> Guardar y Continuar </a>
+        					</div>
           				</div>
-          			</div>
-          		</div>
-          	</div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+
+			          	<div class="row">
+	          				<div class="col-sm-12">
+	      						<a href="#" class="btn btn-primary" id="guardarProveedorContinuar"><i class="fa fa-check "></i> Guardar </a>
+	          				</div>
+			          	</div>
+          			</form>
+    			</div>
+      		</div>
+   		 </div>
+  	</div>
 </div>
 
 <?php include '../../footer.php'; ?>
@@ -182,6 +212,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>

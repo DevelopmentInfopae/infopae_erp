@@ -13,6 +13,9 @@
 	$nombredepartamento = (isset($_POST["nombredepartamento"]) && $_POST["nombredepartamento"] != '') ? mysqli_real_escape_string($Link, $_POST["nombredepartamento"]) : '';
 	$nombre_representante_legal = (isset($_POST["nombre_representante_legal"]) && $_POST["nombre_representante_legal"] != '') ? mysqli_real_escape_string($Link, $_POST["nombre_representante_legal"]) : '';
 	$documento_representante_legal = (isset($_POST["documento_representante_legal"]) && $_POST["documento_representante_legal"] != '') ? mysqli_real_escape_string($Link, $_POST["documento_representante_legal"]) : '';
+	$NIT = (isset($_POST["NIT"]) && $_POST["NIT"] != '') ? mysqli_real_escape_string($Link, $_POST["NIT"]) : '';
+	$ValorContrato = (isset($_POST["ValorContrato"]) && $_POST["ValorContrato"] != '') ? mysqli_real_escape_string($Link, $_POST["ValorContrato"]) : '';
+	$PermitirRepitentes = (isset($_POST["PermitirRepitentes"]) && $_POST["PermitirRepitentes"] != '') ? mysqli_real_escape_string($Link, $_POST["PermitirRepitentes"]) : '';
 
 	$consulta1 = "UPDATE parametros
 								SET
@@ -25,7 +28,10 @@
 									MesContrato = '$mesContrato',
 									CodMunicipio = '$municipio',
 									nombre_representante_legal = '$nombre_representante_legal',
-									documento_representante_legal = '$documento_representante_legal'
+									documento_representante_legal = '$documento_representante_legal',
+									NIT = '$NIT',
+									ValorContrato = '$ValorContrato',
+									PermitirRepitentes = '$PermitirRepitentes'
 								WHERE id = '$id'";
 	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". $Link->error);
 	if ($resultado1)
@@ -66,6 +72,63 @@
 				);
 
 				$consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('". date("Y-m-d H-i-s") ."', '". $_SESSION['idUsuario'] ."', '24', 'Actualizó los parámetros iniciales del sistema y el logotipo')";
+				$Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
+			}
+			else
+			{
+				$result = array(
+					"estado" => 0,
+					"mensaje" => "La extensión del la imagen no es la permitida. Tipo de archivo permitido: .jpg, .jpeg"
+				);
+			}
+		}
+		else
+		{
+			$result = array(
+				"estado" => 1,
+				"mensaje" => "Los parámetros han sido actualizado exitosamente."
+			);
+
+			$consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('". date("Y-m-d H-i-s") ."', '". $_SESSION['idUsuario'] ."', '24', 'Actualizó los parámetros iniciales del sistema')";
+			$Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
+		}
+		if (isset($_FILES["LogoOperador"]["name"]))
+		{
+			$dimensiones = getimagesize($_FILES["LogoOperador"]["tmp_name"]);
+
+			$ratio = getAspectRatio($dimensiones[0], $dimensiones[1]);
+			if ($ratio < 6)
+			{
+				$result = array(
+					"estado" => 0,
+					"mensaje" => "Por favor ingresar una imagen tipo banner"
+				);
+			}
+			else 
+			if($_FILES["LogoOperador"]["size"] > 5242880)
+			{
+				$result = array(
+					"estado" => 0,
+					"mensaje" => "La imagen supera el tamaño permitido 5 MegaBytes. Por favor ingresar una imagen de igual o menor tamaño"
+				);
+			}
+			else if($_FILES["LogoOperador"]["type"] == "image/jpg" || $_FILES["LogoOperador"]["type"] == "image/jpeg" || $_FILES["LogoOperador"]["type"] == "image/png")
+			{
+				$rutaLogoOperador = "../../upload/logotipos/logo" . $id . ".jpg";
+				$subido = move_uploaded_file($_FILES["LogoOperador"]["tmp_name"], "../" . $rutaLogoOperador);
+
+				if ($subido)
+				{
+					$consulta2 = " UPDATE parametros SET LogoOperador = '$rutaLogoOperador' WHERE id = '$id' ";
+					$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
+				}
+
+				$result = array(
+					"estado" => 1,
+					"mensaje" => "Los parámetros han sido actualizado exitosamente."
+				);
+
+				$consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('". date("Y-m-d H-i-s") ."', '". $_SESSION['idUsuario'] ."', '24', 'Actualizó los parámetros iniciales del sistema y el Logo Operador')";
 				$Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
 			}
 			else

@@ -16,7 +16,31 @@ $opciones = "<option value=\"\">Seleccione uno</option>";
 
 
 $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
-$consulta = " select distinct codigodane, ciudad from ubicacion where etc <> \"1\" ";
+
+
+
+$consulta = " select distinct codigodane, ciudad from ubicacion ";
+
+if($_SESSION['perfil'] == 6){
+  $rectorDocumento = $_SESSION['num_doc'];
+  
+  
+  $consulta .= " left join instituciones on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento";
+  
+  // $consulta = "SELECT ubicacion.ciudad as ciudad, ubicacion.CodigoDANE from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento";
+  
+  $consulta .= " and etc <> \"1\" ";
+
+ }else{
+   $consulta .= " where etc <> \"1\" ";
+
+ }
+
+
+
+
+
+
 if($DepartamentoOperador != ''){
   $consulta = $consulta." AND codigodane LIKE '$DepartamentoOperador%' ";
 }

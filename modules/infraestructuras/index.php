@@ -29,6 +29,127 @@ $periodoActual = $_SESSION['periodoActual'];
 </div><!-- /.row -->
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins border-bottom">
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form method="POST">
+                          <div class="row">
+                            <div class="form-group col-md-3">
+                              <label>Municipio</label>
+                              <select name="municipio" id="municipio_buscar" class="form-control">
+                                <option value="">Seleccione uno</option>
+                                <?php
+                                  $codigoCiudad = $_SESSION['p_CodDepartamento'];
+                                  $consulta1= "SELECT DISTINCT CodigoDANE, Ciudad FROM ubicacion where CodigoDANE LIKE '$codigoCiudad%' order by ciudad asc; ";
+                                  $result1 = $Link->query($consulta1) or die ('Unable to execute query. '. mysqli_error($Link));
+                                  if($result1){
+                                    while($row1 = $result1->fetch_assoc()){
+                                      $selected = '';
+                                      if (!isset($_POST['municipio'])) {
+                                        if (isset($row['cod_mun']) && $row['cod_mun'] == $row1['CodigoDANE'] || $municipio_defecto["CodMunicipio"] == $row1['CodigoDANE']) {
+                                          $selected = 'selected="selected"';
+                                        }
+                                      } else {
+                                        if ($_POST['municipio'] == $row1['CodigoDANE']) {
+                                          $selected = 'selected="selected"';
+                                        }
+                                      }
+
+                                  ?>
+                                      <option value="<?php echo $row1['CodigoDANE']; ?>" <?= $selected ?>>
+                                        <?php echo $row1['Ciudad']; ?>
+                                      </option>
+                                <?php
+                                    }
+                                  }
+                                ?>
+                              </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label>Institución</label>
+                              <select name="institucion" id="institucion_buscar" class="form-control" <?= isset($_POST['institucion']) ? "data-institucion='".$_POST['institucion']."'" : "" ?> >
+                                <option value="">Seleccione</option>
+                              </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <label>Sede</label>
+                              <select name="sede" id="sede_buscar" class="form-control" <?= isset($_POST['sede']) ? "data-sede='".$_POST['sede']."'" : "" ?> >
+                                <option value="">Seleccione</option>
+                              </select>
+                            </div>
+                            <?php 
+                                $opciones = "";
+                                $consultaModalidadSuministro = "SELECT * FROM modalidad_suministro";
+                                $resultadoModalidadSuministro = $Link->query($consultaModalidadSuministro);
+                                if ($resultadoModalidadSuministro->num_rows > 0) {
+                                  while ($modalidadSuministro = $resultadoModalidadSuministro->fetch_assoc()) { 
+                                    $opciones.='<option value="'.$modalidadSuministro["id"].'">'.ucfirst(mb_strtolower($modalidadSuministro["Descripcion"])).'</option>';
+                                   }
+                                }
+                                 ?>
+                            <div class="form-group col-sm-3">
+                              <label>Complemento JM/JT</label>
+                              <select class="form-control" name="id_Complem_JMJT" id="id_Complem_JMJT">
+                                <option value="">Seleccione...</option>
+                                <?php echo $opciones; ?>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="form-group col-sm-3">
+                              <label>Almuerzo</label>
+                              <select class="form-control" name="id_Almuerzo" id="id_Almuerzo">
+                                <option value="">Seleccione...</option>
+                                <?php echo $opciones; ?>
+                              </select>
+                            </div>
+                            <div class="form-group col-sm-3">
+                              <label>¿Cuenta con comedor escolar?</label><br>
+                              <select name="Comedor_Escolar" id="Comedor_Escolar" class="form-control">
+                                <option value="">Seleccione...</option>
+                                <option value="1" <?= isset($_POST['Comedor_Escolar']) && $_POST['Comedor_Escolar'] == '1' ? 'selected="selected"' : '' ?>>Si</option>
+                                <option value="0" <?= isset($_POST['Comedor_Escolar']) && $_POST['Comedor_Escolar'] == '0' ? 'selected="selected"' : '' ?>>No</option>
+                              </select>
+                            </div>
+                            <div class="form-group col-sm-3">
+                              <label>Concepto sanitario</label>
+                              <select class="form-control" name="Concepto_Sanitario" id="Concepto_Sanitario">
+                                <option value="">Seleccione...</option>
+                                <option value="1" <?= isset($_POST['Concepto_Sanitario']) && $_POST['Concepto_Sanitario'] == '1' ? 'selected="selected"' : '' ?>>Favorable</option>
+                                <option value="2" <?= isset($_POST['Concepto_Sanitario']) && $_POST['Concepto_Sanitario'] == '2' ? 'selected="selected"' : '' ?>>Favorable con requerimiento</option>
+                                <option value="0" <?= isset($_POST['Concepto_Sanitario']) && $_POST['Concepto_Sanitario'] == '0' ? 'selected="selected"' : '' ?>>Desfavorable</option>
+                              </select>
+                            </div>
+                            <!-- <div class="form-group col-sm-3">
+                              <label>Fecha de expedición</label>
+                              <input type="date" class="form-control" name="fecha_expedicion" id="fecha_expedicion" <?= isset($_POST['fecha_expedicion']) ? 'value="'.$_POST['fecha_expedicion'].'"' : '' ?>>
+                            </div> -->
+                            <div class="form-group col-sm-3">
+                              <label>Rural / Urbana</label>
+                              <select name="sector" id="sector" class="form-control">
+                                <option value="">Seleccione...</option>
+                                <option value="1" <?= isset($_POST['sector']) && $_POST['sector'] == '1' ? 'selected="selected"' : '' ?>>Rural</option>
+                                <option value="2" <?= isset($_POST['sector']) && $_POST['sector'] == '2' ? 'selected="selected"' : '' ?>>Urbano</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <button class="btn btn-primary"> <span class="fa fa-search"></span> Buscar</button>
+                            </div>
+                          </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
   <div class="row">
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
@@ -92,14 +213,95 @@ $periodoActual = $_SESSION['periodoActual'];
               $conceptos_sanitario = array('1' => 'Favorable', '2' => 'Favorable con requerimiento','0' => 'Desfavorable');
               $estados = array('1' => 'Si', '0' => 'No', '2' => 'No aplica');
 
+              $municipio = isset($_POST['municipio']) ? $_POST['municipio'] : NULL;
+              $cod_inst = isset($_POST['cod_inst']) ? $_POST['cod_inst'] : NULL;
+              $institucion = isset($_POST['institucion']) ? $_POST['institucion'] : NULL;
+              $sede = isset($_POST['sede']) ? $_POST['sede'] : NULL;
+              $id_Complem_JMJT = isset($_POST['id_Complem_JMJT']) ? $_POST['id_Complem_JMJT'] : NULL;
+              $id_Almuerzo = isset($_POST['id_Almuerzo']) ? $_POST['id_Almuerzo'] : NULL;
+              $Comedor_Escolar = isset($_POST['Comedor_Escolar']) ? $_POST['Comedor_Escolar'] : NULL;
+              $Concepto_Sanitario = isset($_POST['Concepto_Sanitario']) ? $_POST['Concepto_Sanitario'] : NULL;
+              $fecha_expedicion = isset($_POST['fecha_expedicion']) ? $_POST['fecha_expedicion'] : NULL; 
+              $sector = isset($_POST['sector']) ? $_POST['sector'] : NULL;
 
-              if (isset($_POST['cod_inst']) && $_POST['cod_inst'] != "") {
-                $inst = $_POST['cod_inst'];
-                $consulta = "SELECT * FROM infraestructura WHERE cod_inst = ".$inst;
-              } else {
-                $consulta = "SELECT * FROM infraestructura ";
+              $condicion = '';
+
+              if ($cod_inst != NULL || $institucion != NULL) {
+                $condicion = "infraestructura.cod_inst = ".($cod_inst != NULL ? $cod_inst : $institucion);
               }
 
+              if ($sede != NULL) {
+                if (!empty($condicion)) {
+                  $condicion.=" AND ";
+                }
+                $condicion.=" infraestructura.cod_sede = ".$sede;
+              }
+
+              if ($id_Complem_JMJT != NULL) {
+                if (!empty($condicion)) {
+                  $condicion.=" AND ";
+                }
+                $condicion.=" infraestructura.id_Complem_JMJT = ".$id_Complem_JMJT;
+              }
+
+              if ($id_Almuerzo != NULL) {
+                if (!empty($condicion)) {
+                  $condicion.=" AND ";
+                }
+                $condicion.=" infraestructura.id_Almuerzo = ".$id_Almuerzo;
+              }
+
+              if ($Comedor_Escolar != NULL) {
+                if (!empty($condicion)) {
+                  $condicion.=" AND ";
+                }
+                $condicion.=" infraestructura.Comedor_Escolar = ".$Comedor_Escolar;
+              }
+
+              if ($Concepto_Sanitario != NULL) {
+                if (!empty($condicion)) {
+                  $condicion.=" AND ";
+                }
+                $condicion.=" infraestructura.Concepto_Sanitario = ".$Concepto_Sanitario;
+              }
+
+              if ($fecha_expedicion != NULL) {
+                if (!empty($condicion)) {
+                  $condicion.=" AND ";
+                }
+                $condicion.=" infraestructura.Fecha_Expe = '".$fecha_expedicion."'";
+              }
+
+              if ($municipio != NULL || $sector != NULL) {
+
+                if ($municipio != NULL) {
+                  if (!empty($condicion)) {
+                    $condicion.=" AND ";
+                  }
+                  $condicion.=" S.cod_mun_sede = ".$municipio;
+                }
+
+                if ($sector != NULL) {
+                  if (!empty($condicion)) {
+                    $condicion.=" AND ";
+                  }
+                  $condicion.=" S.sector = ".$sector;
+                }
+
+                if (!empty($condicion)) {
+                  $condicion = "WHERE ".$condicion;
+                }
+
+                $consulta = "SELECT infraestructura.* FROM infraestructura
+                              INNER JOIN sedes".$_SESSION['periodoActual']." AS S ON S.cod_sede = infraestructura.cod_sede ".$condicion;
+              } else {
+                if (!empty($condicion)) {
+                  $condicion = "WHERE ".$condicion;
+                }
+                $consulta = "SELECT * FROM infraestructura ".$condicion;
+              }
+
+              // echo $consulta;
 
                 $result1 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                 if($result1->num_rows > 0){
@@ -148,7 +350,7 @@ $periodoActual = $_SESSION['periodoActual'];
                                 </li>
                               <?php endif ?>
                                <li>
-                                <a><span class="fa fa-file-excel-o"></span> Exportar</a>
+                                <a href="exportar_infraestructuras.php?id=<?= $row1['id'] ?>"><span class="fa fa-file-excel-o"></span> Exportar</a>
                                </li>
                             </ul>
                           </div>
@@ -189,9 +391,28 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/infraestructuras/js/infraestructuras.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    $('.form-group').find('select.form-control').select2({width: "100%"});
+
+    $('#municipio_buscar').trigger('change');
+
+    <?php if (isset($_POST['id_Complem_JMJT'])): ?>
+      $('#id_Complem_JMJT').val(<?= $_POST['id_Complem_JMJT'] ?>);
+    <?php endif ?>
+
+    <?php if (isset($_POST['id_Almuerzo'])): ?>
+      $('#id_Almuerzo').val(<?= $_POST['id_Almuerzo'] ?>);
+    <?php endif ?>
+
+  });
+</script>
 
 <script type="text/javascript">
   console.log('Aplicando Data Table');

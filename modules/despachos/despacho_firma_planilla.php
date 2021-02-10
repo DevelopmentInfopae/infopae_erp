@@ -3,7 +3,8 @@
   $pdf->SetFont('Arial','B',8);
   $pdf->Cell(0,5,'C: Cumple  NC: No Cumple',0,5,'L',False);
   $pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
-  $pdf->Cell(0,5,'','B',5,'L',False);
+  $pdf->SetFont('Arial','',8);
+  $pdf->Cell(0,5,$_SESSION['observacionesDespachos'],'B',5,'L',False);
   $pdf->Ln(2);
 
   // $current_y = $pdf->GetY();
@@ -24,7 +25,7 @@
   // $pdf->Cell(0,4,utf8_decode('NOMBRE RESPONSABLE INSTITUCIÓN O CENTRO EDUCATIVO:'),0,4,'L',False);
   // $pdf->Cell(0,8,'CARGO:','B',4,'L',False);
   // $pdf->Cell(0,12,'FIRMA:',0,4,'L',False);
-
+  $pdf->SetFont('Arial','B',8);
   $current_y = $pdf->GetY();
   $current_x = $pdf->GetX();
 

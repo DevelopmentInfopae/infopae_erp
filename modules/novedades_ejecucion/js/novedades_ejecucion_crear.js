@@ -307,8 +307,6 @@ function buscar_priorizacion()
 			semana: $('#semana').val(),
 			tipo_complemento: $('#tipoComplemento').val()
 		}
-		// ,success: function (data) { console.log(data); }
-		// ,error: function(data){ console.log(data.responseText); }
 	})
 	.done(function(data) {
 		if (data == 0)
@@ -448,38 +446,38 @@ function restarCantidadDias(checkbox)
 
 function guardarNovedad()
 {
-  if($('#formulario_guardar_novedades_focalizacion').valid())
-  {
+  	if($('#formulario_guardar_novedades_focalizacion').valid())
+  	{
 		var formData = new FormData($("#formulario_guardar_novedades_focalizacion")[0]);
 		$.ajax({
 			type: "POST",
 			url: "functions/fn_guardar_novedad_ejecucion.php",
 			dataType: 'JSON',
-	    data: formData,
-			contentType: false,
-			processData: false,
-			beforeSend: function() { $('#loader').fadeIn(); },
-			success: function(data)
-			{
-				console.log(data);
-				if(data.estado == 1)
+		    data: formData,
+				contentType: false,
+				processData: false,
+				beforeSend: function() { $('#loader').fadeIn(); },
+				success: function(data)
 				{
-					Command: toastr.success( data.mensaje, "Proceso exitoso.", {
-						onHidden : function(){ $('#loader').fadeOut(); location.href="index.php"; }
-					});
-				} else {
-					Command: toastr.error( data.mensaje, "Error de proceso.", {
-						onHidden : function(){ $('#loader').fadeOut(); }
-					});
-				}
-			},
-			error: function(data)
-			{
-	      		Command: toastr.error("Al parecer existe un error. Por favor comuníquese con el administrador del sistema.", "Error de proceso.", {
-	        	onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText); }
-	      	}
-	      );
-	    }
+					console.log(data);
+					if(data.estado == 1)
+					{
+						Command: toastr.success( data.mensaje, "Proceso exitoso.", {
+							onHidden : function(){ $('#loader').fadeOut(); location.href="index.php"; }
+						});
+					} else {
+						Command: toastr.error( data.mensaje, "Error de proceso.", {
+							onHidden : function(){ $('#loader').fadeOut(); }
+						});
+					}
+				},
+				error: function(data)
+				{
+		      		Command: toastr.error("Al parecer existe un error. Por favor comuníquese con el administrador del sistema.", "Error de proceso.", {
+		        	onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText); }
+		      	}
+		      );
+		    }
 		});
-  }
+  	}
 }

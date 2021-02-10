@@ -314,8 +314,9 @@ function exportar_priorizacion(){
   if ($('#formulario_exportar_priorizacion').valid()) {
     var mes = $('#mes_exportar').val();
     var semana = $('#semana_exportar').val();
+    var region = $('#region_exportar').val();
 
-    window.open('functions/fn_sedes_exportar_priorizacion.php?mes='+mes+'&semana='+semana, '_blank');
+    window.open('functions/fn_sedes_exportar_priorizacion.php?mes='+mes+'&semana='+semana+'&region='+region, '_blank');
   }
 }
 
@@ -355,4 +356,27 @@ function subir_archivo_manipuladoras() {
     );
  }
 });
+}
+
+function calcular_manipuladoras(){
+  $('#loader').fadeIn();
+  $.ajax({
+    type: "POST",
+    url: "functions/fn_actualizar_manipuladoras_requeridas.php"
+  }).done(function(data){
+    if (data == 1) {
+      Command: toastr.success(
+        "El número requerido de manipuladoras para todas las sedes se han actualizado",
+        "Actualizado con éxito",
+        { onHidden : function(){ $('#loader').fadeOut(); } }
+        );
+    }
+  }).fail(function(data){
+    console.log(data);
+    Command: toastr.success(
+        "Hubo un error al actualizar, contacte con el administrador",
+        "Error al actualizar",
+        { onHidden : function(){ $('#loader').fadeOut(); } }
+        );
+  });
 }

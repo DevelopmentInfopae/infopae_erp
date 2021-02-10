@@ -41,16 +41,10 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 			$totalesComplementos[$mes]["CAJTRI"] = 0;
 
 			while ($Complementos = $resComplementos->fetch_assoc()) {
-				if ($Complementos['total'] == '') { continue; }
-
-
 				if (isset($totalesComplementos[$mes][$Complementos['tipo_complem']])) {
 					$totalesComplementos[$mes][$Complementos['tipo_complem']] += $Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
 				} else {
 					$totalesComplementos[$mes][$Complementos['tipo_complem']]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
-				}
-				if (!isset($tcom[$Complementos['tipo_complem']])) {
-					$tcom[$Complementos['tipo_complem']] = 1;
 				}
 			}
 		}
@@ -59,6 +53,14 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 
 $tabla = '';
 $filas_encabezado = '';
+
+foreach ($totalesComplementos as $mes => $arrT) {
+	foreach ($arrT as $complemento => $total) {
+		if (!isset($tcom[$complemento])) {
+			$tcom[$complemento] = 1;
+		}
+	}
+}
 
 foreach ($tcom as $comp => $set) {
 	$filas_encabezado .= "<th>". $comp ."</th>";

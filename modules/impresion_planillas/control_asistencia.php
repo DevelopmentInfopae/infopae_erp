@@ -6,6 +6,19 @@
 
   $periodoActual = $_SESSION['periodoActual'];
   $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
+
+
+
+  if($_SESSION['perfil'] == 6){
+    $rectorDocumento = $_SESSION['num_doc'];
+   }
+
+
+
+
+
+
+  
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -39,14 +52,35 @@
                   <select class="form-control" name="municipio" id="municipio" required="required">
                     <option value="">Seleccione uno</option>
                     <?php
-                      $consulta = "SELECT DISTINCT codigoDANE, ciudad FROM ubicacion WHERE ETC = 0";
+
+
+
+                      $consulta = "SELECT DISTINCT CodigoDANE, ciudad FROM ubicacion WHERE ETC = 0";
+
+                      if($_SESSION['perfil'] == 6){
+                        $consulta = "SELECT ubicacion.ciudad as ciudad, ubicacion.CodigoDANE from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento";
+                       }
+
+
+
+
+
+
+
+
                       if($DepartamentoOperador != '') { $consulta = $consulta." and CodigoDANE like '$DepartamentoOperador%' "; }
                       $consulta = $consulta." order by ciudad asc ";
+
+
+                      //echo  "<br><br>$consulta<br><br>";
+
+
+
                       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                       if($resultado->num_rows > 0){
                         while($row = $resultado->fetch_assoc()) {
                     ?>
-                      <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($municipio_defecto["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; } ?> ><?= $row["ciudad"]; ?></option>
+                      <option value="<?= $row["CodigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["CodigoDANE"]) || ($municipio_defecto["CodMunicipio"] == $row["CodigoDANE"])){ echo " selected "; } ?> ><?= $row["ciudad"]; ?></option>
                     <?php
                         }
                       }
@@ -141,9 +175,42 @@
                       if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $municipio_defecto["CodMunicipio"])
                       {
                         $municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"];
-                        $consulta = " SELECT distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
+                        
+                        
+                        
+                        
+                        
+                        
+                        $consulta = " SELECT distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede 
+                        LEFT JOIN instituciones i ON s.cod_inst = i.codigo_inst
+                        where 1=1 ";
                         $consulta = $consulta." and s.cod_mun_sede = '$municipio' ";
+
+
+
+                        if($_SESSION['perfil'] == 6){
+       
+
+                          $consulta .= " and cc_rector = $rectorDocumento ";
+    
+    
+    
+                          } 
+
+
                         $consulta = $consulta." order by s.nom_inst asc ";
+
+
+                        //echo "<br><br>$consulta<br><br>";
+
+
+
+
+
+
+
+
+
                         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                         if($resultado->num_rows > 0)
                         {

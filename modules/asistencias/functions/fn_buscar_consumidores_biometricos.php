@@ -1,6 +1,7 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
+include 'fn_fecha_asistencia.php';
 
 // Declaración de variables.
 $data = [];
@@ -8,9 +9,9 @@ $semanaActual = "";
 $sede = "";
 $grado = "";
 $grupo = "";
-$fecha = date("Y-m-d H:i:s");
-$anno = date("y"); 
-$anno4d = date("Y");
+
+$anno = $annoAsistencia2D;
+$anno4d = $annoasistencia;
 
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 
@@ -18,12 +19,12 @@ $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
 if(isset($_POST["mes"]) && $_POST["mes"] != ""){
 	$mes = mysqli_real_escape_string($Link, $_POST["mes"]);
 }else{
-	$mes = date("m");
+	$mes = $mesAsistencia;
 }
 if(isset($_POST["dia"]) && $_POST["dia"] != ""){
 	$dia = mysqli_real_escape_string($Link, $_POST["dia"]);
 }else{
-	$dia = intval(date("d"));
+	$dia = $diaAsistencia;
 }
 $semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
 

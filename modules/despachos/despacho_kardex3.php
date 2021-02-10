@@ -14,6 +14,7 @@ $sangria = " - ";
 $largoNombre = 28;
 $tamannoFuente = 7;
 $digitosDecimales = 2;
+$paginasObservaciones = 1;
 
 if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho']) ){
   // Se va a recuperar el mes y el año para las tablaMesAnno
@@ -54,6 +55,28 @@ if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
   if(isset($_POST['rutaNm'])){
     $corteDeVariables++;
   }
+  if(isset($_POST['paginasObservaciones'])){
+		$paginasObservaciones = $_POST['paginasObservaciones'];
+		$corteDeVariables++;
+  }
+  
+  $imprimirMes = 0;
+	if(isset($_POST['imprimirMes'])){
+		if($_POST['imprimirMes'] == 'on'){
+			$imprimirMes = 1;	
+		}
+		$corteDeVariables++;
+  }
+
+  $_SESSION['observacionesDespachos'] = "";
+  if(isset($_POST['observaciones'])){
+    if($_POST['observaciones'] != ""){
+      $_SESSION['observacionesDespachos'] = $_POST['observaciones'];
+    }
+    $corteDeVariables++;
+  }
+  
+  
   $_POST = array_slice($_POST, $corteDeVariables);
   $_POST = array_values($_POST);
   //var_dump($_POST);
@@ -457,9 +480,12 @@ if($resultado->num_rows >= 1){
 
     $aux = $alimento['componente'];
     $long_nombre=strlen($aux);
+    //var_dump($largoNombre);
+    $largoNombre =26;
     if($long_nombre > $largoNombre){
       $aux = substr($aux,0,$largoNombre);
     }
+    // Impresión de Alimento (Nombre del alimento)
     $pdf->Cell(44,4,utf8_decode($aux),1,0,'L',False);
 
     // Unidad de presentación

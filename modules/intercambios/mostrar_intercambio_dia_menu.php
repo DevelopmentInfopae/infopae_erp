@@ -1,3 +1,4 @@
+<?php $periodoActual = $_SESSION['periodoActual']; ?>
 <div class="wrapper wrapper-content  animated fadeInRight">
 	<div class="row">
 		<div class="col-sm-12">
@@ -40,7 +41,7 @@
 </div>
 
 <?php 
-	$consulta = " SELECT nmd.*, p.Descripcion FROM novedades_menudet nmd LEFT JOIN productos19 p ON nmd.cod_producto = p.Codigo WHERE nmd.id_novedad = $idNovedad AND nmd.tipo = 0 ORDER by nmd.orden_ciclo "; 
+	$consulta = " SELECT nmd.*, p.Descripcion FROM novedades_menudet nmd LEFT JOIN productos$periodoActual p ON nmd.cod_producto = p.Codigo WHERE nmd.id_novedad = $idNovedad AND nmd.tipo = 0 ORDER by nmd.orden_ciclo "; 
 	//echo $idNovedad;
 	//echo "<br>$consulta<br>";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query - Leyendo novedad det '. mysqli_error($Link));
@@ -81,7 +82,7 @@
 </div>
 
 <?php 
-	$consulta = " SELECT nmd.*, p.Descripcion FROM novedades_menudet nmd LEFT JOIN productos19 p ON nmd.cod_producto = p.Codigo WHERE nmd.id_novedad = $idNovedad AND nmd.tipo = 1 ORDER by nmd.orden_ciclo ";
+	$consulta = " SELECT nmd.*, p.Descripcion FROM novedades_menudet nmd LEFT JOIN productos$periodoActual p ON nmd.cod_producto = p.Codigo WHERE nmd.id_novedad = $idNovedad AND nmd.tipo = 1 ORDER by nmd.orden_ciclo ";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query - Leyendo novedad det '. mysqli_error($Link));
 ?>
 

@@ -2,6 +2,8 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
+$periodoActual = $_SESSION['periodoActual'];
+
 $preparacionOriginal = "";
 
 $mes = '';
@@ -28,7 +30,7 @@ if(isset($_POST['grupoEtario']) && $_POST['grupoEtario'] != ''){
 //var_dump($_POST);
 
 
-$consulta = " SELECT ps.DIA,  p.Id, p.Codigo, p.Descripcion FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ORDER BY DIA asc ";
+$consulta = " SELECT ps.DIA,  p.Id, p.Codigo, p.Descripcion FROM planilla_semanas ps LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ORDER BY DIA asc ";
 
 //echo $consulta;
 
@@ -68,7 +70,7 @@ if ($resultado->num_rows > 0) {
 <?php } ?>
 
 <?php
-$consulta = " SELECT ps.DIA, ps.MENU,  p.Id, p.Codigo, p.Descripcion FROM planilla_semanas ps LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ORDER BY DIA asc ";
+$consulta = " SELECT ps.DIA, ps.MENU,  p.Id, p.Codigo, p.Descripcion FROM planilla_semanas ps LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ORDER BY DIA asc ";
 $resultado = $Link->query($consulta);
 if ($resultado->num_rows > 0) {
 	$cntFTD = 0;  

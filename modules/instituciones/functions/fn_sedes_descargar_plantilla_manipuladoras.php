@@ -29,9 +29,9 @@ $estilo_titulo = [
     ]
 ];
 
-$archivo->setCellValue("A1", "Código institucion")->getStyle('A1')->applyFromArray($estilo_titulo);
+$archivo->setCellValue("A1", "Codigo institucion")->getStyle('A1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("B1", "Nombre institucion")->getStyle('B1')->applyFromArray($estilo_titulo);
-$archivo->setCellValue("C1", "Código Sede")->getStyle('C1')->applyFromArray($estilo_titulo);
+$archivo->setCellValue("C1", "Codigo Sede")->getStyle('C1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("D1", "Nombre Sede")->getStyle('D1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("E1", "Nombre Municipio")->getStyle('E1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("F1", "Manipuladora APS")->getStyle('F1')->applyFromArray($estilo_titulo);
@@ -39,6 +39,7 @@ $archivo->setCellValue("G1", "Manipuladora CAJMPS")->getStyle('G1')->applyFromAr
 $archivo->setCellValue("H1", "Manipuladora CAJMRI")->getStyle('H1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("I1", "Manipuladora CAJTRI")->getStyle('I1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("J1", "Manipuladora CAJTPS")->getStyle('J1')->applyFromArray($estilo_titulo);
+$archivo->setCellValue("K1", "Manipuladora RPC")->getStyle('J1')->applyFromArray($estilo_titulo);
 
 $sedes = consultar_sedes($Link);
 if (! empty($sedes)) {
@@ -55,7 +56,7 @@ if (! empty($sedes)) {
 
 foreach(range("A","V") as $columna) { $archivo->getColumnDimension($columna)->setAutoSize(true); }
 
-header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8');
 header('Content-Disposition: attachment;filename=Manipuladoras.csv');
 
 $escritor = new Csv($excel);

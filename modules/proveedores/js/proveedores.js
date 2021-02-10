@@ -1,6 +1,10 @@
 $(document).ready(function(){
+	$('.select2').select2();
+
+	$(document).on('change', '#tipoJuridico', function() { obtenerTipoRegimen(); obtenerTipoDocumento(); })
 	$(document).on('click', '#crearProveedor', function() { crearProveedor(); });
 	$(document).on('click', '.editarProveedores', function() { editarProveedores($(this).data('idproveedor')); });
+	$(document).on('click', '#tablaProveedores tbody td:nth-child(-n+6)', function(){ editarProveedores($(this).parent().attr('id')); });
 	$(document).on('click', '#guardarProveedor', function() { guardarProveedor(false); });
 	$(document).on('click', '#actualizarProveedor', function() { actualizarProveedor(false); });
 	$(document).on('click', '#eliminarProveedor', function() { eliminarProveedor(); });
@@ -30,6 +34,50 @@ $(document).ready(function(){
     "hideMethod": "fadeOut"
   };
 })
+
+function obtenerTipoRegimen()
+{
+	var tipoJuridico = $('#tipoJuridico').val();
+
+	if (tipoJuridico == 1) {
+		$('#tipoRegimen').val(1);
+		$('#tipoRegimen option:eq(0)').prop('disabled', 'disabled');
+		$('#tipoRegimen option:eq(2)').prop('disabled', 'disabled');
+	} else if (tipoJuridico == 2) {
+		$('#tipoRegimen').val(2);
+		$('#tipoRegimen option:eq(0)').prop('disabled', 'disabled');
+		$('#tipoRegimen option:eq(2)').prop('disabled', '');
+	} else {
+		$('#tipoRegimen').val(0);
+		$('#tipoRegimen option:eq(0)').prop('disabled', 'disabled');
+		$('#tipoRegimen option:eq(2)').prop('disabled', '');
+	}
+}
+
+function obtenerTipoDocumento()
+{
+	var tipoJuridico = $('#tipoJuridico').val();
+
+	$.ajax({
+		url: 'functions/fn_proveedores_obtener_tipo_documento.php',
+		type: 'POST',
+		dataType: 'html',
+		data: {
+			'tipoJuridico': tipoJuridico
+		},
+	})
+	.done(function(data) {
+		$('#tipoDocumento').html(data);
+	})
+	.fail(function(data) {
+		console.log(data.responseText);
+		Command: toastr.error( 'Al parecer existe un problema en la base de datos. Por favor comuníquese con el administrador del sitio Info PAE.', 'Error', {
+			onHidden: function() {
+				$('#loader').fadeOut();
+			}
+		});
+	});
+}
 
 function crearProveedor() { window.open('proveedores_crear.php', '_self'); }
 
@@ -61,60 +109,42 @@ function cargarDatosUsuario(numeroDocumento)
 
 function guardarProveedor(continuar)
 {
-	if ($('#formCrearProveedor').valid())
-	{
+	if ($('#formCrearProveedor').valid()) {
 		$.ajax({
 			type: 'post',
 			url: 'functions/fn_proveedores_crear.php',
 			data: $('#formCrearProveedor').serialize(),
 			dataType: 'json',
 			beforeSend: function() { $('#loader').fadeIn(); },
-			success: function(data)
-			{
-				if (data.estado == 1)
-				{
-					Command: toastr.success(
-						data.mensaje,
-						'Guardado',
-						{ onHidden: function()
-							{
-								if(continuar)
-								{
-                  $("#formCrearProveedor")[0].reset();
-                  $('#loader').fadeOut();
-                }
-                else
-                {
-                  window.open('index.php', '_self');
-                }
-							}
+			success: function(data) {
+				if (data.estado == 1) {
+					Command: toastr.success( data.mensaje, 'Guardado', {
+						onHidden: function() {
+							if(continuar) {
+                  				$("#formCrearProveedor")[0].reset();
+                  				$('#tipoalimento').select2([]);
+                  				$('#loader').fadeOut();
+                			} else {
+                  				window.open('index.php', '_self');
+                			}
 						}
-					);
-				}
-				else
-				{
-					Command: toastr.warning(
-						data.mensaje,
-						'Advertencia',
-						{ onHidden: function()
-							{
-								$('#loader').fadeOut();
-							}
+					});
+				} else {
+					Command: toastr.warning( data.mensaje, 'Advertencia', {
+						onHidden: function() {
+							$('#loader').fadeOut();
 						}
-					);
+					});
 				}
 			},
 			error: function(data)
-			{ console.log(data);
-				Command: toastr.error(
-					'Al parecer existe un problema en la base de datos. Por favor comuníquese con el administrador del sitio Info PAE.',
-					'Error',
-					{ onHidden: function()
-						{
-							$('#loader').fadeOut();
-						}
+			{
+				console.log(data.responseText);
+				Command: toastr.error( 'Al parecer existe un problema en la base de datos. Por favor comuníquese con el administrador del sitio Info PAE.', 'Error', {
+					onHidden: function() {
+						$('#loader').fadeOut();
 					}
-				);
+				});
 			}
 		});
 	}
@@ -130,51 +160,32 @@ function actualizarProveedor(continuar)
 			data: $('#formEditarProveedor').serialize(),
 			dataType: 'json',
 			beforeSend: function() { $('#loader').fadeIn(); },
-			success: function(data)
-			{
-				if (data.estado == 1)
-				{
-					Command: toastr.success(
-						data.mensaje,
-						'Guardado',
-						{ onHidden: function()
-							{
-								if(continuar)
-								{
-                  $('#loader').fadeOut();
-                }
-                else
-                {
-                  window.open('index.php', '_self');
-                }
-							}
+			success: function(data) {
+				if (data.estado == 1) {
+					Command: toastr.success(data.mensaje, 'Guardado', {
+						onHidden: function() {
+							if(continuar) {
+                  				$('#loader').fadeOut();
+                			} else {
+                  				window.open('index.php', '_self');
+                			}
 						}
-					);
-				}
-				else
-				{
-					Command: toastr.warning(
-						data.mensaje,
-						'Advertencia',
-						{ onHidden: function()
-							{
-								$('#loader').fadeOut();
-							}
+					});
+				} else {
+					Command: toastr.warning(data.mensaje, 'Advertencia', {
+						onHidden: function() {
+							$('#loader').fadeOut();
 						}
-					);
+					});
 				}
 			},
 			error: function(data)
-			{ console.log(data);
-				Command: toastr.error(
-					'Al parecer existe un problema en la base de datos. Por favor comuníquese con el administrador del sitio Info PAE.',
-					'Error',
-					{ onHidden: function()
-						{
-							$('#loader').fadeOut();
-						}
+			{ console.log(data.responseText);
+				Command: toastr.error('Al parecer existe un problema en la base de datos. Por favor comuníquese con el administrador del sitio Info PAE.', 'Error', {
+					onHidden: function() {
+						$('#loader').fadeOut();
 					}
-				);
+				});
 			}
 		});
 	}

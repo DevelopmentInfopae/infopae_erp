@@ -30,7 +30,6 @@
 
 			return trim($cadena_consulta, ", ");
 		}
-
 	}
 
 	// Declaración de variables.
@@ -70,27 +69,23 @@
 
 	/*****************************************************************************************************/
  	// Consultar todos los códigos de las instituciones.
-  $arrayCodigosInstituciones = [];
-  $consultaIns = "SELECT codigo_inst FROM instituciones;";
+  	$arrayCodigosInstituciones = [];
+  	$consultaIns = "SELECT codigo_inst FROM instituciones;";
 	$resultadoIns = $Link->query($consultaIns) or die ("Unable to execute query.". mysql_error($Link));
-	if($resultadoIns->num_rows > 0)
-	{
-    while($registrosIns = $resultadoIns->fetch_assoc())
-    {
-  		$arrayCodigosInstituciones[] = $registrosIns["codigo_inst"];
-    }
+	if($resultadoIns->num_rows > 0) {
+	    while($registrosIns = $resultadoIns->fetch_assoc()) {
+	  		$arrayCodigosInstituciones[] = $registrosIns["codigo_inst"];
+	    }
 	}
 
 	// Consulta todos los códigos de las sedes.
 	$arrayCodigosSedes = [];
-  $consultaSed = "SELECT cod_sede FROM sedes".$_SESSION["periodoActual"].";";
+  	$consultaSed = "SELECT cod_sede FROM sedes".$_SESSION["periodoActual"].";";
 	$resultadoSed = $Link->query($consultaSed) or die ("Unable to execute query.". mysql_error($Link));
-	if($resultadoSed->num_rows > 0)
-	{
-    while($registrosSed = $resultadoSed->fetch_assoc())
-    {
-  		$arrayCodigosSedes[] = $registrosSed["cod_sede"];
-    }
+	if($resultadoSed->num_rows > 0) {
+	    while($registrosSed = $resultadoSed->fetch_assoc()) {
+	  		$arrayCodigosSedes[] = $registrosSed["cod_sede"];
+	    }
 	}
 
 	// Se valida si existe el archivo.
@@ -124,18 +119,16 @@
 			$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
 
 			// Iteramos el archivo
-			while(($datos = fgetcsv($archivo, null, $separador)) == TRUE)
-			{
+			while(($datos = fgetcsv($archivo, null, $separador)) == TRUE) {
 				// Valida que el campo Número documento no este vacio ni nulo.
-				if($datos[1] == "" || is_null($datos[1]))
-				{
+				if($datos[1] == "" || is_null($datos[1])) {
 					$respuestaAJAX = [
 						"estado" => 0,
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Número documento</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($result);
 					exit();
-		  	}
+	  			}
 
 				// Valida que el campo Tipo documento no este vacio ni nulo.
 				if($datos[0] == "" || is_null($datos[0])){
@@ -144,7 +137,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Tipo documento</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo genero no este vacio ni nulo.
@@ -154,7 +147,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>genero</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo Código estrato no esté vacio ni nulo.
@@ -164,7 +157,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código estrato</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo discapacidad no esté vacio ni nulo.
@@ -174,7 +167,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código discapacidad</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo etnia no esté vacio ni nulo.
@@ -184,7 +177,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Étnia</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo resguardo no esté vacio ni nulo.
@@ -194,7 +187,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Resguardo</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo población victima no esté vacio ni nulo.
@@ -204,7 +197,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Población victima</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo Código institución no esté vacio ni nulo.
@@ -214,7 +207,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código institución</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo Código sede no esté vacio ni nulo.
@@ -224,7 +217,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código sede</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo Código grado no esté vacio ni nulo.
@@ -234,7 +227,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código grado</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo Código jornada no esté vacio ni nulo.
@@ -244,7 +237,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Código jornada</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo Edad no esté vacio ni nulo.
@@ -254,7 +247,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Edad</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				// Valida que el campo Zona residencia no esté vacio ni nulo.
@@ -264,7 +257,7 @@
 						"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Zona residencia</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
 					];
 					echo json_encode($respuestaAJAX);
-			  	exit();
+			  		exit();
 				}
 
 				$arrayCodIns[] = $datos[21];
@@ -272,10 +265,10 @@
 				$arrayCodEst[$datos[1]][] = $datos[36];
 
 				// String con valores para crear entregas_res
-				$conValCreEnt .= "('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". trim($valDias, ", ") ."), ";
+				$conValCreEnt .= "('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', '".$datos[37]."', '".$datos[38]."', '".$datos[39]."', '".$datos[40]."', ". trim($valDias, ", ") ."), ";
 
 				// String con valores para crear focalización
-				$conValFoc .= "('".$datos[0]."', '".$datos[1]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."', '1', '".$datos[36]."' ), ";
+				$conValFoc .= "('".$datos[0]."', '".$datos[1]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."', '1', '".$datos[36]."', '".$datos[37]."', '".$datos[38]."', '".$datos[39]."', '".$datos[40]."'), ";
 			} // FIN Iteración de los datos del archivo
 
 			// Obtener lo datos unicos de instituciones y sedes.
@@ -344,21 +337,21 @@
 			while(($datos = fgetcsv($archivo, null, $separador))==true)
 			{
 				// String con valores para crear entregas_res
-				$conValCreEnt .= "('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". trim($valDias, ", ") ."), ";
+				$conValCreEnt .= "('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', '".$datos[37]."', '".$datos[38]."', '".$datos[39]."', '".$datos[40]."', ". trim($valDias, ", ") ."), ";
 
 				// String con valores para crear focalización
-				$conValFoc .= "('".$datos[0]."', '".$datos[1]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."', '1', '".$datos[36]."' ), ";
+				$conValFoc .= "('".$datos[0]."', '".$datos[1]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."', '1', '".$datos[36]."', '".$datos[37]."', '".$datos[38]."', '".$datos[39]."', '".$datos[40]."'), ";
 			} // FIN Iteración del archivo.
 		} // FIN No se requiere validaciones.
 		// FIN VALIDACIONES
+
 		/*****************************************************************************************************/
 
 		/*****************************************************************************************************/
 		// Consulta que valida si existe la tabla entregas_res_[MES][AÑO] que se desea subir.
 		$consultaEntregaResSemana = "show tables like 'entregas_res_". $mes . $_SESSION["periodoActual"] ."'";
 		$resultadoEntregaResSemana = $Link->query($consultaEntregaResSemana) or die("Error al consultar si existe la tabla entregas_res_". $mes . $_SESSION["periodoActual"] ." Linea 364: ". $Link->error);
-		if($resultadoEntregaResSemana->num_rows == 0)
-		{
+		if($resultadoEntregaResSemana->num_rows == 0) {
 			// Se crea la tabla entrega_res
 			$conCreTabEntRes = "CREATE TABLE entregas_res_". $mes . $_SESSION["periodoActual"] ." (
 														id INT(11) NOT NULL AUTO_INCREMENT,
@@ -400,6 +393,10 @@
 														TipoValidacion VARCHAR(50) NULL DEFAULT '-',
 														activo TINYINT(1) UNSIGNED NULL DEFAULT '0',
 														tipo VARCHAR(1) NULL DEFAULT 'F',
+														nom_acudiente VARCHAR(200) NULL DEFAULT '',
+														doc_acudiente VARCHAR(20) NULL DEFAULT '',
+														tel_acudiente VARCHAR(50) NULL DEFAULT '',
+														parantesco_acudiente VARCHAR(50) NULL DEFAULT '',
 														tipo_complem1 VARCHAR(45) NULL DEFAULT NULL,
 														tipo_complem2 VARCHAR(45) NULL DEFAULT NULL,
 														tipo_complem3 VARCHAR(45) NULL DEFAULT NULL,
@@ -447,7 +444,7 @@
 			if($resCreTabEntRes) {
 				// Se ingresa los registros
 				// Declaración variables de consulta.
-				$conCreEnt = "INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ." ( tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". trim($camDias, ", ") .") VALUES ". trim($conValCreEnt, ", ");
+				$conCreEnt = "INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ." ( tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, nom_acudiente, doc_acudiente, tel_acudiente, parantesco_acudiente, ". trim($camDias, ", ") .") VALUES ". trim($conValCreEnt, ", ");
 				$resCreEntRes = $Link->query($conCreEnt) or die("Error al insertar entregas_res". $mes . $_SESSION["periodoActual"] ." Linea: 450". $Link->error);
 				if (!$resCreEntRes) {
 					$respuestaAJAX = [
@@ -550,12 +547,12 @@
 						// Condición que valida si se necesita agregar nuevo registro.
 						if (!$existe)
 						{
-							$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die ("Error al actualizar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 499: ". mysqli_error($Link));
+							$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, nom_acudiente, doc_acudiente, tel_acudiente, parantesco_acudiente, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', '".$datos[37]."', '".$datos[38]."', '".$datos[39]."', '".$datos[40]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die ("Error al actualizar en entregas_res". $mes . $_SESSION["periodoActual"] .". Linea 499: ". mysqli_error($Link));
 						}
 					}
 					else
 					{
-						$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die ("Error al actualizar en entregas_res_". $mes . $_SESSION["periodoActual"]. ". Linea 543: " .mysqli_error($Link));
+						$Link->query("INSERT INTO entregas_res_". $mes . $_SESSION["periodoActual"] ."(tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, nom_acudiente, doc_acudiente, tel_acudiente, parantesco_acudiente, ". calcularDias($dia_actual, $contador_dia, 1, true)["campos"] .") VALUES ('".$datos[0]."', '".$datos[1]."', '".$datos[2]."', '".utf8_encode($datos[3])."', '".utf8_encode($datos[4])."', '".utf8_encode($datos[5])."', '".utf8_encode($datos[6])."', '".$datos[7]."', '".utf8_encode($datos[8])."', '".$datos[9]."', '".$datos[10]."', '".$datos[11]."', '".$datos[12]."', '".$datos[13]."', '".$datos[14]."', '".$datos[15]."', '".$datos[16]."', '".$datos[17]."', '".$datos[18]."', '".($datos[19] == "" ? 0 : $datos[19])."', '".($datos[20] =="" ? 0 : $datos[20])."', '".$datos[21]."', '".$datos[22]."', '".$datos[23]."', '".$datos[24]."', '".utf8_encode($datos[25])."', '".utf8_encode($datos[26])."', '".$datos[27]."', '".$datos[28]."', '".$datos[29]."', '".$datos[30]."', '".$datos[31]."', '".$datos[32]."', '".$datos[33]."',  '".($datos[34] == "" ? 0 : $datos[34])."',  '".$datos[35]."', '1', '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."',  '".$datos[36]."', '".$datos[36]."', '".$datos[37]."', '".$datos[38]."', '".$datos[39]."', '".$datos[40]."', ". calcularDias($dia_actual, $contador_dia, 1, true)["valores"] .")") or die ("Error al actualizar en entregas_res_". $mes . $_SESSION["periodoActual"]. ". Linea 543: " .mysqli_error($Link));
 					}
 				}
 			} else {
@@ -603,17 +600,20 @@
 											zona_res_est INTEGER(11) DEFAULT '0',
 											activo TINYINT(1) DEFAULT '0',
 											Tipo_complemento VARCHAR(45) COLLATE utf8_general_ci DEFAULT NULL,
+											nom_acudiente VARCHAR(200) NULL DEFAULT '',
+											doc_acudiente VARCHAR(20) NULL DEFAULT '',
+											tel_acudiente VARCHAR(50) NULL DEFAULT '',
+											parantesco_acudiente VARCHAR(50) NULL DEFAULT '',
 											PRIMARY KEY (id),
 											KEY Acel_est1 (num_doc, cod_jorn_est, cod_grado, cod_pob_victima, cod_sede, cod_discap)
 											)
 										ENGINE=InnoDB
 										AUTO_INCREMENT=1 CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';";
 		$resCreTabFoc = $Link->query($conCreTabFoc) or die (mysqli_error($Link));;
-		if($resCreTabFoc)
-		{
+		if($resCreTabFoc) {
 			// Crear consulta para ingresar datos de focalización[$mes]
 			$conCreFoc = "INSERT INTO focalizacion".$semana."
-		 								(tipo_doc, num_doc, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, Tipo_complemento) VALUES ". trim($conValFoc, ", ");
+		 								(tipo_doc, num_doc, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, activo, Tipo_complemento, nom_acudiente, doc_acudiente, tel_acudiente, parantesco_acudiente) VALUES ". trim($conValFoc, ", ");
 			$resCreFoc = $Link->query($conCreFoc) or die("Error al insertar en focalizacion". $semana . ". Linea 607: " . mysqli_error($Link));
 			if (!$resCreFoc)
 			{
@@ -639,9 +639,7 @@
 			echo json_encode($respuestaAJAX);
 			exit;
 		}
-	} // FIN validación si existe el archivo.
-	else
-	{
+	} else {
 		$respuestaAJAX = [
 			"estado" => 0,
 			"mensaje" => "No existe archivo para cargar los datos. Por favor intentelo nuevamente."

@@ -1,3 +1,4 @@
+
 <?php
   include '../../header.php';
   $titulo = 'Proveedores';
@@ -28,13 +29,16 @@
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
-          <table id="tablaEmpleados" class="table table-striped table-hover selectableRows">
+          <table id="tablaProveedores" class="table table-striped table-hover selectableRows">
             <thead>
               <tr>
                 <th>Nit</th>
                 <th>Nombre comercial</th>
                 <th>Razón Social</th>
                 <th>Correo electrónico</th>
+                <th>Municipio</th>
+                <th>Compras locales</th>
+                <th>Estado</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </thead>
@@ -47,6 +51,9 @@
                 <th>Nombre comercial</th>
                 <th>Razón Social</th>
                 <th>Correo electrónico</th>
+                <th>Municipio</th>
+                <th>Compras locales</th>
+                <th>Estado</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </tfoot>
@@ -93,11 +100,12 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/proveedores/js/proveedores.js"></script>
 <script>
-  $('#tablaEmpleados').DataTable({
+  $('#tablaProveedores').DataTable({
     ajax: {
       method: 'post',
       url: 'functions/fn_proveedores_listar.php'
@@ -107,6 +115,9 @@
       {data: 'nombreComercialProveedor'},
       {data: 'razonsocialProveedor'},
       {data: 'emailProveedor'},
+      {data: 'municipio'},
+      {data: 'comprasLocales', className: 'text-center'},
+      {data: 'estado'},
       {data: 'input', className: 'text-center'},
     ],
     buttons: [ {extend: 'excel', title: 'Proveedores', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3 ] } } ],
@@ -128,6 +139,10 @@
     },
     pageLength: 25,
     responsive: true,
+    rowCallback: function(row, data) {
+      row.id = data.idProveedor;
+      row.className = "editar_proveedor";
+    },
     preDrawCallback: function() {
       $('#loader').fadeIn();
     }

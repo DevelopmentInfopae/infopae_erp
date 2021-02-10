@@ -1,6 +1,6 @@
-<?php 
+<?php
 $titulo = 'Menú';
-require_once '../../header.php'; 
+require_once '../../header.php';
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
@@ -82,7 +82,7 @@ $Link->set_charset("utf8");
       // 1. Producto
       $consultaProducto = "select id from fichatecnica where Codigo = '".$_POST['codigo']."'";
 
-      // echo "<br>Consulta producto<br>".$consultaProducto."<br>";
+      //echo "<br>Consulta producto<br>".$consultaProducto."<br>";
 
       $result = $Link->query($consultaProducto) or die ('Unable to execute query. '. mysqli_error($Link));
       $row = $result->fetch_assoc();
@@ -91,22 +91,21 @@ $Link->set_charset("utf8");
 
 
       // 2. Subproductos
-      $consultaSubProductos =  "SELECT f.id as idFichaTecnica,fd.* FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."' ";
+      $consultaSubProductos =  "SELECT f.id as idFichaTecnica,fd.* FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."' AND fd.Componente NOT LIKE '%CONTRAMUESTRA%' ";
 
 
       //$consultaSubProductos =  "SELECT f.id as idFichaTecnica,fd.* FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.id = fd.IdFT WHERE fd.IdFT = '".$idProducto."' ";
 
 
-      // echo "<br>Consulta sub productos<br>".$consultaSubProductos."<br>";
+      //echo "<br>Consulta sub productos<br>".$consultaSubProductos."<br>";
 
       $result = $Link->query($consultaSubProductos) or die ('Unable to execute query. '. mysqli_error($Link));
       while ($row = $result->fetch_assoc()){
          $subProductos[] = $row;
       }
-      //var_dump($subProductos);
 
       // Cantidad de materias y grupo alimenticio del subproducto
-      $consultaCantidadesGrupo = "SELECT idft, count(idFT) AS materias, max(cantidad), mac.grupo_alim FROM fichatecnicadet fd LEFT JOIN menu_aportes_calynut mac ON fd.codigo = mac.cod_prod WHERE fd.idFT IN (SELECT f.id FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."') GROUP BY idFT  ";
+      $consultaCantidadesGrupo = "SELECT idft, count(idFT) AS materias, max(cantidad), mac.grupo_alim FROM fichatecnicadet fd LEFT JOIN menu_aportes_calynut mac ON fd.codigo = mac.cod_prod WHERE fd.idFT IN (SELECT f.id FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."') AND mac.grupo_alim != \"Contramuestra\" GROUP BY idFT  ";
 
       //echo "<br>".$consultaCantidadesGrupo."<br>";
 
@@ -114,10 +113,9 @@ $Link->set_charset("utf8");
       while ($row = $result->fetch_assoc()){
          $cantidadesGrupo[] = $row;
       }
-      //var_dump($cantidadesGrupo);
 
       // 3. Materias primas
-      $consultaMateriasPrimas = " SELECT fd.*, mac.* FROM fichatecnicadet fd LEFT JOIN menu_aportes_calynut mac ON fd.codigo = mac.cod_prod WHERE fd.idFT IN (SELECT f.id FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."' ) ";
+      $consultaMateriasPrimas = " SELECT fd.*, mac.* FROM fichatecnicadet fd LEFT JOIN menu_aportes_calynut mac ON fd.codigo = mac.cod_prod WHERE fd.idFT IN (SELECT f.id FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."' ) AND mac.grupo_alim != \"Contramuestra\" ";
 
       //echo "<br>".$consultaMateriasPrimas."<br>";
 
@@ -125,7 +123,6 @@ $Link->set_charset("utf8");
       while ($row = $result->fetch_assoc()){
          $materiasPrimas[] = $row;
       }
-      //var_dump($materiasPrimas);
 
 
 
@@ -148,9 +145,6 @@ $Link->set_charset("utf8");
       while ($row = $result->fetch_assoc()){
          $valoresMenu = $row;
       }
-      //var_dump($valoresMenu);
-      //echo "<br><br>";
-
 ?>
 
 
@@ -302,9 +296,6 @@ $Link->set_charset("utf8");
                 }
 
 
-                //var_dump($ingredientes);
-
-
 
 
 
@@ -321,7 +312,6 @@ $Link->set_charset("utf8");
 
                     <td style="text-align: center">
 
-                      <?php //var_dump($ingredientes); ?>
 
 
                       <?php if (is_null($ingredientes[$k]['kcalxg']) ) {
@@ -782,7 +772,7 @@ $Link->set_charset("utf8");
 
 
       <div class="row" style="text-align: center;">
-     
+
             <div class="col-xs-4" style="display:inline-block;">
               <div class="table-responsive">
 

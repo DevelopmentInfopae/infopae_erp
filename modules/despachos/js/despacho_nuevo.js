@@ -266,18 +266,20 @@ function generarDespacho(){
       }
     })
     .done(function(data) {
-      console.log(data);
       $('#debug').html(data);
 
       if (data == 1) {
-        alert('El despacho se ha registrado con éxito.');
+        Command: toastr.error('El despacho se ha registrado con éxito.', '¡Proceso exitoso!');
         $(window).unbind('beforeunload');
+
         window.location.href = 'despachos.php';
       } else {
-        alert(data);
+        Command: toastr.error(data, '¡Error en el proceso!');
       }
     })
-    .fail(function(data){ console.log(data); })
+    .fail(function(data){
+      console.log(data.responseText);
+    })
     .always(function(){
       $('#loader').fadeOut();
     });

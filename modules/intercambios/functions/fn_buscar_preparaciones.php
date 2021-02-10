@@ -1,8 +1,12 @@
 <?php
+require_once '../../../db/conexion.php';
+require_once '../../../config.php';
+
+$periodoActual = $_SESSION['periodoActual'];
 
 //menu
 // SELECT p.* FROM planilla_semanas ps
-// LEFT JOIN productos19 p ON ps.MENU = p.Orden_Ciclo 
+// LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo 
 // WHERE ps.MES = "05" AND ps.SEMANA = "16" AND ps.DIA = "2"
 // AND p.Cod_Tipo_complemento = "APS"
 // AND p.Cod_Grupo_Etario = "1"
@@ -13,8 +17,6 @@
 // SELECT f.id as idFichaTecnica,fd.* FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo 
 // WHERE fd.IdFT = '424'
 
-require_once '../../../db/conexion.php';
-require_once '../../../config.php';
 
 $codigoMenu = '';
 $idFichaTecnicaMenu = '';

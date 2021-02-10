@@ -283,7 +283,7 @@ if ($Link->query($sqlInfraestructura) === true) {
 		if (isset($_POST['id_dotacion'])) {
 			$id_dotacion = $_POST['id_dotacion'];
 		} else {
-			$id_dotacion = "";
+			$id_dotacion = NULL;
 		}
 		if (isset($_POST['tiene'])) {
 			$tiene = $_POST['tiene'];
@@ -312,45 +312,50 @@ if ($Link->query($sqlInfraestructura) === true) {
 		}
 
 		for ($l=0; $l < sizeof($id_parametro) ; $l++) { 
-			for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
-				if (!isset($tiene[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$tiene[$id_parametro[$l]][$id_dotacion[$m]] = 0;
-				}
-				if (!isset($en_uso[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$en_uso[$id_parametro[$l]][$id_dotacion[$m]] = 0;
-				}
-				if (!isset($funciona[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$funciona[$id_parametro[$l]][$id_dotacion[$m]] = 0;
-				}
-				if (!isset($tipo[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$tipo[$id_parametro[$l]][$id_dotacion[$m]] = 0;
-				}
-				if (!isset($capacidad[$id_parametro[$l]][$id_dotacion[$m]])) {
-					$capacidad[$id_parametro[$l]][$id_dotacion[$m]] = 0;
-				}
-			}
-		}
-
-		$sqlDotacionParamVal = "INSERT INTO dotacion_param_val (cod_infraestructura, cod_dotacion, tiene, enuso, tipo, funciona, capacidad) VALUES ";
-		for ($l=0; $l < sizeof($id_parametro) ; $l++) { 
-			for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
-				if ($tiene[$id_parametro[$l]][$id_dotacion[$m]] != "" || $en_uso[$id_parametro[$l]][$id_dotacion[$m]] != "" || $tipo[$id_parametro[$l]][$id_dotacion[$m]] != "" || $capacidad[$id_parametro[$l]][$id_dotacion[$m]] || $funciona[$id_parametro[$l]][$id_dotacion[$m]] != "") {
-
-					$sqlDotacionParamVal.="('".$idInfraestructura."', '".$id_dotacion[$m]."', '".$tiene[$id_parametro[$l]][$id_dotacion[$m]]."', '".$en_uso[$id_parametro[$l]][$id_dotacion[$m]]."', '".$tipo[$id_parametro[$l]][$id_dotacion[$m]]."', '".$funciona[$id_parametro[$l]][$id_dotacion[$m]]."', '".$capacidad[$id_parametro[$l]][$id_dotacion[$m]]."'), ";
-
+			if ($id_dotacion) {
+				for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
+					if (!isset($tiene[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$tiene[$id_parametro[$l]][$id_dotacion[$m]] = 0;
+					}
+					if (!isset($en_uso[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$en_uso[$id_parametro[$l]][$id_dotacion[$m]] = 0;
+					}
+					if (!isset($funciona[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$funciona[$id_parametro[$l]][$id_dotacion[$m]] = 0;
+					}
+					if (!isset($tipo[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$tipo[$id_parametro[$l]][$id_dotacion[$m]] = 0;
+					}
+					if (!isset($capacidad[$id_parametro[$l]][$id_dotacion[$m]])) {
+						$capacidad[$id_parametro[$l]][$id_dotacion[$m]] = 0;
+					}
 				}
 			}
 		}
 
-		$sqlDotacionParamVal = trim($sqlDotacionParamVal, ", ");
+		if ($id_dotacion) {
+			$sqlDotacionParamVal = "INSERT INTO dotacion_param_val (cod_infraestructura, cod_dotacion, tiene, enuso, tipo, funciona, capacidad) VALUES ";
+			for ($l=0; $l < sizeof($id_parametro) ; $l++) { 
+					for ($m=0; $m < sizeof($id_dotacion) ; $m++) { 
+						if ($tiene[$id_parametro[$l]][$id_dotacion[$m]] != "" || $en_uso[$id_parametro[$l]][$id_dotacion[$m]] != "" || $tipo[$id_parametro[$l]][$id_dotacion[$m]] != "" || $capacidad[$id_parametro[$l]][$id_dotacion[$m]] || $funciona[$id_parametro[$l]][$id_dotacion[$m]] != "") {
 
-		if ($Link->query($sqlDotacionParamVal)===true) {
+							$sqlDotacionParamVal.="('".$idInfraestructura."', '".$id_dotacion[$m]."', '".$tiene[$id_parametro[$l]][$id_dotacion[$m]]."', '".$en_uso[$id_parametro[$l]][$id_dotacion[$m]]."', '".$tipo[$id_parametro[$l]][$id_dotacion[$m]]."', '".$funciona[$id_parametro[$l]][$id_dotacion[$m]]."', '".$capacidad[$id_parametro[$l]][$id_dotacion[$m]]."'), ";
+
+						}
+					}
+			}
+
+			$sqlDotacionParamVal = trim($sqlDotacionParamVal, ", ");
+			$Link->query($sqlDotacionParamVal);
+		}
+
+		// if ($Link->query($sqlDotacionParamVal)===true) {
 			$sqlBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '40', 'Creó diagnóstico de infraestructura de la sede <strong>".$nom_sede."</strong>')";
 			$Link->query($sqlBitacora);
 			echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Creado con éxito", "IdInfraestructura" : "'.$idInfraestructura.'"}]}';
-		} else {
-			echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error al crear valores de dotacion '.$sqlDotacionParamVal.'"}]}';
-		}
+		// } else {
+		// 	echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error al crear valores de dotacion '.$sqlDotacionParamVal.'"}]}';
+		// }
 	} else {
 		echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error al crear valores de parámetros '.$sqlValoresParametro.'"}]}';
 	}

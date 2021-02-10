@@ -1,23 +1,24 @@
 <?php
 	include '../../header.php';
+	require_once 'functions/fn_fecha_asistencia.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
 	$periodoActual = $_SESSION["periodoActual"];
 	$titulo = "Asistencias";
 	$institucionNombre = "";
-
-	date_default_timezone_set('America/Bogota');
-	$fecha = date("Y-m-d H:i:s");
-	$cacheBusting = date("YmdHis");
-
-
+	$dia = $diaAsistencia;
+	$mes = $mesAsistencia;
+	$anno = $annoasistencia;
+	
 
 
 
-	$dia = intval(date("d"));
-	$mes = date("m");
-	$anno = date("Y");
+
+	
+	var_dump($dia);
+	var_dump($mes);
+	var_dump($anno);
 
 
 
@@ -25,6 +26,7 @@
 	//Busqueda de la semana actual
 	$semanaActual = "";
 	$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
+	//echo "<br>$consulta<br>";
 	//var_dump($consulta);				
 	$resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
@@ -32,7 +34,7 @@
 		$semanaActual = $row["semana"];
 	}
 	// var_dump($_SESSION);
-	// var_dump($semanaActual);				
+	var_dump($semanaActual);
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">

@@ -13,12 +13,6 @@ $(document).ready(function(){
 		$( "#dia" ).val(localStorage.getItem("wappsi_dia"));
 	}
 
-
-
-
-
-
-
 	$( "#mes" ).change(function() {
 		localStorage.setItem("wappsi_mes", $("#mes").val());
 		cargarSemanas();
@@ -45,6 +39,7 @@ $(document).ready(function(){
 	$( "#sede" ).change(function() {
 		localStorage.setItem("wappsi_sede", $("#sede").val());
 		cargarNiveles();
+		cargarComplementos();
 	});
 
 	$( "#nivel" ).change(function() {
@@ -213,6 +208,7 @@ function cargarSedes(){
 				localStorage.setItem("wappsi_institucion", $("#institucion").val());
 				if($('#sede').val() != ""){
 					cargarNiveles()
+					cargarComplementos();
 				}
 				$('#loader').fadeOut();
 
@@ -233,8 +229,12 @@ function cargarNiveles(){
 	
 	if($('#semana').val() != "" && $('#semana').val() != null){
 		formData.append('semanaActual', $('#semana').val());
+		console.log("Se usó semana.");
+		console.log($('#semana').val());
 	}else{
 		formData.append('semanaActual', $('#semanaActual').val());
+		console.log("Se usó semana actual.");
+		console.log($('#semanaActual').val());
 	}
 
 	formData.append('sede', $('#sede').val());
@@ -359,6 +359,7 @@ function totalEstudiantesSede(){
 	}
 	
 	formData.append('sede', $('#sede').val());
+	formData.append('complemento', $('#complemento').val());
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_total_estudiantes.php",
@@ -380,6 +381,49 @@ function totalEstudiantesSede(){
 		error: function(data){
 			console.log(data);
 			Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
+		}
+	});
+}
+
+function cargarComplementos(){
+	var formData = new FormData();
+	
+	if($('#semana').val() != "" && $('#semana').val() != null){
+		formData.append('semanaActual', $('#semana').val());
+		console.log("Se usó semana.");
+		console.log($('#semana').val());
+	}else{
+		formData.append('semanaActual', $('#semanaActual').val());
+		console.log("Se usó semana actual.");
+		console.log($('#semanaActual').val());
+	}
+
+	formData.append('sede', $('#sede').val());
+
+	$.ajax({
+		type: "post",
+		url: "functions/fn_buscar_complementos.php",
+		dataType: "json",
+		contentType: false,
+		processData: false,
+		data: formData,
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){
+			if(data.estado == 1){
+				$('#complemento').html(data.opciones);
+				$('#loader').fadeOut();
+
+			}
+			else{
+				Command:toastr.error(data.mensaje,"Error",{onHidden:function(){$('#loader').fadeOut();}});
+			}
+		},
+		error: function(data){
+			console.log("Error");
+			console.log("Puede que no este la tabla de focalización para la semana actual o elegida en el filtro.");
+			console.log(data);
+			$("#sede").val("");
+			//Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){$('#loader').fadeOut();}});
 		}
 	});
 }
@@ -429,6 +473,7 @@ function actualizarMarcadores(flagConsumo){
 
 
 	formData.append('sede', $('#sede').val());
+	formData.append('complemento', $('#complemento').val());
 	$.ajax({
 		type: "post",
 		url: "functions/fn_cargar_asistencia_marcadores.php",
@@ -473,7 +518,7 @@ function actualizarMarcadores(flagConsumo){
 				console.log(total);
 				console.log("Reg Faltan");
 				console.log(reg_faltan);				
-				console.log("Reg Ausentes");
+				console.log("Reg Ausentes"); 
 				console.log(reg_ausentes);				
 				console.log("Reg Repitentes");
 				console.log(reg_repitentes);
