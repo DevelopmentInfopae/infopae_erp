@@ -69,7 +69,13 @@ if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
 		$corteDeVariables++;
 	}
 
-
+	$_SESSION['observacionesDespachos'] = "";
+	if(isset($_POST['observaciones'])){
+		if($_POST['observaciones'] != ""){
+			$_SESSION['observacionesDespachos'] = $_POST['observaciones'];
+		}
+		$corteDeVariables++;
+	}
 
 
 

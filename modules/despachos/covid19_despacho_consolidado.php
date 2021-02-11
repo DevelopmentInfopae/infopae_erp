@@ -3,6 +3,8 @@ error_reporting(E_ALL);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
 
+//var_dump($_POST);
+
 include '../../config.php';
 require_once '../../autentication.php';
 
@@ -72,6 +74,14 @@ if(isset($_POST['imprimirMes'])){
 	$corteDeVariables++;
 }
 
+
+$_SESSION['observacionesDespachos'] = "";
+if(isset($_POST['observaciones'])){
+	if($_POST['observaciones'] != ""){
+		$_SESSION['observacionesDespachos'] = $_POST['observaciones'];
+	}
+	$corteDeVariables++;
+}
 
 
 $_POST = array_slice($_POST, $corteDeVariables);
@@ -312,9 +322,17 @@ class PDF extends PDF_PageGroup{
 		// $this->Cell(0,2,utf8_decode(""),'B',0,'C',False);
 		$this->Ln(2);
 		$this->SetFont('Arial','B',$tamannoFuente);
-		$this->Cell(38,9,utf8_decode("Observaciones:"),'BLT',0,'L',False);
-		$this->Cell(0,9,utf8_decode(""),'BLTR',0,'C',False);
+		$this->Cell(18,9,utf8_decode("Observaciones:"),'BLT',0,'L',False);
 		
+		$this->SetFont('Arial','',$tamannoFuente);
+		$cx = $this->getX();
+		$cy = $this->getY();
+		$this->Cell(0,9,utf8_decode(''),'BLTR',0,'L',False);
+		$this->setXY($cx, $cy);
+		$this->Cell(0,3,utf8_decode($_SESSION['observacionesDespachos']),0,0,'L',False);
+
+		
+		$this->SetFont('Arial','B',$tamannoFuente);
 		$this->Ln(11);
 		$this->Cell(33,4,utf8_decode("Firma de quien entrega la RPC:"),0,0,'L',False);
 		$this->Cell(67,4,utf8_decode(""),'B',0,'C',False);

@@ -18,6 +18,22 @@ $diaFinalSemanaInicial = $_POST["diaFinalSemanaInicial"];
 $diaInicialSemanaFinal = $_POST["diaInicialSemanaFinal"];
 $diaFinalSemanaFinal = $_POST["diaFinalSemanaFinal"];
 
+$fecha_desde = $_POST["fecha_desde"];
+$fecha_hasta = $_POST["fecha_hasta"];
+$observaciones = $_POST["observaciones"];
+
+
+if($fecha_desde != ""){
+	$fecha_desde = date("d/m/Y", strtotime($fecha_desde));
+}
+if($fecha_hasta != ""){
+	$fecha_hasta = date("d/m/Y", strtotime($fecha_hasta));
+}
+
+//echo "<br><br>$fecha_hasta<br><br>";
+
+
+
 
 //Imprimir mes
 $imprimirMes = 0;

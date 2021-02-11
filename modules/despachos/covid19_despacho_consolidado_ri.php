@@ -90,6 +90,14 @@ if(isset($_POST['imprimirMes'])){
 	$corteDeVariables++;
 }
 
+$_SESSION['observacionesDespachos'] = "";
+if(isset($_POST['observaciones'])){
+  if($_POST['observaciones'] != ""){
+    $_SESSION['observacionesDespachos'] = $_POST['observaciones'];
+  }
+  $corteDeVariables++;
+}
+
 
 $_POST = array_slice($_POST, $corteDeVariables);
 $_POST = array_values($_POST);
@@ -748,6 +756,14 @@ foreach ($sede_unicas as $key => $sede_unica){
 	/* Terminados los alimentos seguimos con el listado de los niños */
 	$filaActual = 1; 
 	include 'covid19_despacho_consolidado_ri_estudiantes.php';
+
+	//$pdf->Ln(100);
+	$filaActual = 1; 
+	$pdf->StartPageGroup();
+	//$pdf->AddPage();
+	//include 'covid19_despacho_consolidado_ri_header_adicional.php';
+	include 'covid19_despacho_consolidado_ri_estudiantes_suplentes.php';
+
 	// $pdf->Ln(10);
 	
 	

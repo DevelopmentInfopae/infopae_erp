@@ -7,16 +7,21 @@
 // var_dump($semanas);
 // var_dump($tipoComplemento);
 
-$consulta = " SELECT CONCAT(f.ape1, \" \", f.ape2, \" \",f.nom1, \" \", f.nom2) AS nombre, f.num_doc, f.cod_grado FROM focalizacion$semanas[0] f WHERE f.cod_sede = $sede_unica AND f.Tipo_complemento = \"$tipoComplemento\" ORDER BY 
-
-f.cod_grado ASC, f.nom_grupo ASC, f.ape1 ASC, f.ape2 ASC, f.nom1 ASC, f.nom2 ASC
-
-
-
-
+$consulta = " SELECT CONCAT(f.ape1, \" \", f.ape2, \" \",f.nom1, \" \", f.nom2) AS nombre, f.num_doc, f.cod_grado 
+, nom_acudiente
+, doc_acudiente
+, parentesco_acudiente
+, tel_acudiente
 
 
- ";
+
+
+FROM focalizacion$semanas[0] f WHERE f.cod_sede = $sede_unica AND f.Tipo_complemento = \"$tipoComplemento\" ORDER BY f.cod_grado ASC, f.nom_grupo ASC, f.ape1 ASC, f.ape2 ASC, f.nom1 ASC, f.nom2 ASC ";
+
+
+//echo "<br><br>$consulta</br><br>";
+
+
 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 $altoFila = 8;
@@ -84,12 +89,12 @@ if($resultado->num_rows >= 1){
 		}
 		
 		
-		$pdf->Cell(46,$altoFila,utf8_decode(""),'BL',0,'C',False);
-		$pdf->Cell(30,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(46,$altoFila,utf8_decode(utf8_decode($row['nom_acudiente'])),'BL',0,'L',False);
+		$pdf->Cell(30,$altoFila,utf8_decode(utf8_decode($row['doc_acudiente'])),'BL',0,'C',False);
 		// Parentesco
-		$pdf->Cell(20,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(20,$altoFila,utf8_decode(utf8_decode($row['parentesco_acudiente'])),'BL',0,'C',False);
 		// Teléfono del acudiente
-		$pdf->Cell(30,$altoFila,utf8_decode(""),'BL',0,'C',False);
+		$pdf->Cell(30,$altoFila,utf8_decode(utf8_decode($row['tel_acudiente'])),'BL',0,'C',False);
 		$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
 		$pdf->Ln($altoFila);
 		
