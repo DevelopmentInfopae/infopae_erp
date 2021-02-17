@@ -114,7 +114,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->SetFont('Arial','B',10);
 			$this->Image($logoInfopae,8,10,85,12.1,'jpg', '');
 			$this->Cell(85,18,'','TBRL',0,'C');
-			$this->Cell(0,9,utf8_decode('PROGRAMA DE ATENCIÓN ESCOLAR'),'TR',1,'C');
+			$this->Cell(0,9,utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'),'TR',1,'C');
 			$this->Cell(85,9,utf8_decode(''),'',0,'C');
 			$this->Cell(0,9,utf8_decode('REMISIÓN ENTREGA DE INSUMOS EN INSTITUCIÓN EDUCATIVA'),'BR',1,'C');
 			$this->SetFont('Arial','B',8);
@@ -428,9 +428,9 @@ foreach ($sedes as $key => $sede) {
 				$pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
 				$pdf->SetFont('Arial','',8);
 				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
-				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
-				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
-				$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
+				$pdf->Cell(0,5,'','B',5,'L',False);
+				$pdf->Cell(0,5,'','B',5,'L',False);
+				$pdf->Cell(0,5,'','B',5,'L',False);
 				$pdf->Ln(2);
 
 
