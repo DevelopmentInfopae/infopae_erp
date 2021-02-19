@@ -81,8 +81,8 @@ function guardarParametros(){
             {
               onHidden : function(){
                 $('#loader').fadeOut();
-                // ruta = $('#inputBaseUrl').val();
-                // window.open(ruta, "_self");
+                ruta = $('#inputBaseUrl').val();
+                window.open(ruta, "_self");
               }
             }
           );
