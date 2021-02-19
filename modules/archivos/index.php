@@ -58,8 +58,17 @@ $Link->set_charset("utf8");
 						<a href="#" class="file-control <?php if(isset($_GET['tipo']) && $_GET['tipo'] == 2){ echo " active "; } ?>" value="2" >Imagenes</a>
 						<a href="#" class="file-control <?php if(isset($_GET['tipo']) && $_GET['tipo'] == 3){ echo " active "; } ?>" value="3">PDF</a>
 						<div class="hr-line-dashed"></div>
-						<a class="btn btn-primary btn-block" href="#subirArchivos">Adjuntar Archivos</a>
-						<div class="hr-line-dashed"></div>
+						
+						
+						<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 ){ ?>
+							<a class="btn btn-primary btn-block" href="#subirArchivos">Adjuntar Archivos</a>
+							<div class="hr-line-dashed"></div>
+						<?php } ?>
+
+
+
+
+						
 						<h5>Categoría</h5>
 						<ul class="folder-list" style="padding: 0">
 							<li><a href="#" class="category-control <?php if((isset($_GET['categoriaFnd']) && $_GET['categoriaFnd'] == 0) || !isset($_GET['categoriaFnd'])){ echo " active "; } ?>" value="0"><i class="fa fa-folder"></i> Todos</a></li>
@@ -76,9 +85,10 @@ $Link->set_charset("utf8");
 							?>
 
 
+							<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 ){ ?>
+								<li><a href="#editar-categorias"><i class="fa fa-pencil-square-o"></i> Editar Categorías</a></li>
+							<?php } ?>
 
-
-							<li><a href="#editar-categorias"><i class="fa fa-pencil-square-o"></i> Editar Categorías</a></li>
 
 
 
@@ -224,155 +234,155 @@ $Link->set_charset("utf8");
 
 
 
-
-<div class="wrapper wrapper-content">
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title">
-					<h5>Adjuntar Archivo</h5>
-					<div class="ibox-tools">
-						<a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
-					</div>
-				</div>
-				<div class="ibox-content">
-					<form class="" action="" method="post" name="formArchivos" id="formArchivos" enctype="multipart/form-data">
-						<!-- <h2>Subir Archivo</h2> -->
-						<!-- <input type="file" name="foto[]" id="foto" accept="image/jpeg" multiple > -->
-						<div class="row" name="subirArchivos">
-
-							<div class="col-sm-3 form-group">
-								<label for="nombre">Nombre del documento</label>
-								<input type="text" name="nombre" value="" id="nombre" class="form-control">
-							</div>
-
-
-							<div class="col-sm-3 form-group">
-								<label for="municipio">Municipio</label>
-								<select class="form-control" name="municipio" id="municipio">
-									<option value="">Todos</option>
-								</select>
-							</div>
-
-							<div class="col-sm-3 form-group">
-								<label for="institucion">Institución</label>
-								<select class="form-control" name="institucion" id="institucion">
-									<option value="">Todas</option>
-								</select>
-							</div>
-
-							<div class="col-sm-3 form-group">
-								<label for="sede">Sede</label>
-								<select class="form-control" name="sede" id="sede">
-									<option value="">Todas</option>
-								</select>
-							</div>
-
-
-
-
-
-
-
-							<div class="col-sm-3 form-group">
-								<label for="categoria">Categoría</label>
-								<select class="form-control" name="categoria" id="categoria">
-									<option value="">Seleccione una</option>
-									<?php
-										$consulta2 = "select * from mod_archivos_categorias";
-										$resultado2 = $Link->query($consulta2) or die ("No se puede realizar la consulta para mostrar el listado de las categorias. <br><br> $consulta2 <br><br> ". mysqli_error($Link));
-										if($resultado2->num_rows >= 1){
-											while($row2 = $resultado2->fetch_assoc()) { ?>
-												<option value="<?= $row2['id'] ?>"><?= $row2['categoria'] ?></option>
-											<?php
-											}
-										}
-									?>
-								</select>
-							</div>
-
-
-
-
-							<div class="col-sm-9 form-group">
-								<label for="departamento">Archivo</label>
-								<div class="fileinput fileinput-new input-group" data-provides="fileinput"> <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div> <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Elegir archivo</span><span class="fileinput-exists">Change</span><input type="file" name="foto[]" id="foto" accept="image/jpeg,image/gif,image/png,application/pdf"></span> <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a> </div>
-							</div><!-- /.col -->
+<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 ){ ?>
+	<div class="wrapper wrapper-content">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>Adjuntar Archivo</h5>
+						<div class="ibox-tools">
+							<a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
 						</div>
-						<div class="row">
-							<div class="col-sm-3 form-group">
-								<button type="button" name="btnSubirArchivo" id="btnSubirArchivo" class="btn btn-primary">Adjuntar archivo</button>
-							</div><!-- /.col -->
-						</div><!-- /.row -->
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="debugCarga">
+					</div>
+					<div class="ibox-content">
+						<form class="" action="" method="post" name="formArchivos" id="formArchivos" enctype="multipart/form-data">
+							<!-- <h2>Subir Archivo</h2> -->
+							<!-- <input type="file" name="foto[]" id="foto" accept="image/jpeg" multiple > -->
+							<div class="row" name="subirArchivos">
 
+								<div class="col-sm-3 form-group">
+									<label for="nombre">Nombre del documento</label>
+									<input type="text" name="nombre" value="" id="nombre" class="form-control">
+								</div>
+
+
+								<div class="col-sm-3 form-group">
+									<label for="municipio">Municipio</label>
+									<select class="form-control" name="municipio" id="municipio">
+										<option value="">Todos</option>
+									</select>
+								</div>
+
+								<div class="col-sm-3 form-group">
+									<label for="institucion">Institución</label>
+									<select class="form-control" name="institucion" id="institucion">
+										<option value="">Todas</option>
+									</select>
+								</div>
+
+								<div class="col-sm-3 form-group">
+									<label for="sede">Sede</label>
+									<select class="form-control" name="sede" id="sede">
+										<option value="">Todas</option>
+									</select>
+								</div>
+
+
+
+
+
+
+
+								<div class="col-sm-3 form-group">
+									<label for="categoria">Categoría</label>
+									<select class="form-control" name="categoria" id="categoria">
+										<option value="">Seleccione una</option>
+										<?php
+											$consulta2 = "select * from mod_archivos_categorias";
+											$resultado2 = $Link->query($consulta2) or die ("No se puede realizar la consulta para mostrar el listado de las categorias. <br><br> $consulta2 <br><br> ". mysqli_error($Link));
+											if($resultado2->num_rows >= 1){
+												while($row2 = $resultado2->fetch_assoc()) { ?>
+													<option value="<?= $row2['id'] ?>"><?= $row2['categoria'] ?></option>
+												<?php
+												}
+											}
+										?>
+									</select>
+								</div>
+
+
+
+
+								<div class="col-sm-9 form-group">
+									<label for="departamento">Archivo</label>
+									<div class="fileinput fileinput-new input-group" data-provides="fileinput"> <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div> <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Elegir archivo</span><span class="fileinput-exists">Change</span><input type="file" name="foto[]" id="foto" accept="image/jpeg,image/gif,image/png,application/pdf"></span> <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a> </div>
+								</div><!-- /.col -->
+							</div>
+							<div class="row">
+								<div class="col-sm-3 form-group">
+									<button type="button" name="btnSubirArchivo" id="btnSubirArchivo" class="btn btn-primary">Adjuntar archivo</button>
+								</div><!-- /.col -->
+							</div><!-- /.row -->
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="debugCarga">
+
+									</div>
 								</div>
 							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-
-
-
-
-
-<div class="wrapper wrapper-content" id="editar-categorias">
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins border-bottom">
-				<div class="ibox-title">
-					<h5>Categorías</h5>
-					<div class="ibox-tools">
-						<a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
+						</form>
 					</div>
 				</div>
-				<div class="ibox-content">
+			</div>
+		</div>
+	</div>
 
 
 
-				<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">Categorías</th>
-      <th scope="col">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-	<tr>
-		<td>
-			<input type="text" name="nuevaCategoria" value="" id="nuevaCategoria" placeholder="Digite el nombre para la nueva categoría" class="form-control">
-		</td>
-		<td>
-			<button type="button" class="btn btn-primary nueva-categoria"><i class="fa fa-fw fa-check"></i></button>
-		</td>
-	</tr>
-	
-	<?php
-		$consulta2 = "select * from mod_archivos_categorias where id > 1";
-		$resultado2 = $Link->query($consulta2) or die ("No se puede realizar la consulta para mostrar el listado de las categorias. <br><br> $consulta2 <br><br> ". mysqli_error($Link));
-		if($resultado2->num_rows >= 1){
-			while($row2 = $resultado2->fetch_assoc()) { ?>
-				<tr>
-					<td>
-						<input type="text" name="categoria-editar-<?= $row2['id'] ?>" value="<?= $row2['categoria'] ?>" id="categoria-editar-<?= $row2['id'] ?>" placeholder="Nueva Categoría" class="form-control">
-					</td>
-					<td>
-						<button type="button" class="btn btn-primary categoria-editar" value="<?= $row2['id'] ?>"><i class="fa fa-fw fa-check"></i></button>
-						<button type="button" class="btn btn-danger categoria-eliminar" value="<?= $row2['id'] ?>"><i class="fa fa-fw fa-trash"></i></button>
-					</td>
-				</tr>
-			<?php
+
+
+
+
+	<div class="wrapper wrapper-content" id="editar-categorias">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="ibox float-e-margins border-bottom">
+					<div class="ibox-title">
+						<h5>Categorías</h5>
+						<div class="ibox-tools">
+							<a class="collapse-link"> <i class="fa fa-chevron-up"></i> </a>
+						</div>
+					</div>
+					<div class="ibox-content">
+
+
+
+					<table class="table table-striped">
+	<thead>
+		<tr>
+		<th scope="col">Categorías</th>
+		<th scope="col">Acciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<input type="text" name="nuevaCategoria" value="" id="nuevaCategoria" placeholder="Digite el nombre para la nueva categoría" class="form-control">
+			</td>
+			<td>
+				<button type="button" class="btn btn-primary nueva-categoria"><i class="fa fa-fw fa-check"></i></button>
+			</td>
+		</tr>
+		
+		<?php
+			$consulta2 = "select * from mod_archivos_categorias where id > 1";
+			$resultado2 = $Link->query($consulta2) or die ("No se puede realizar la consulta para mostrar el listado de las categorias. <br><br> $consulta2 <br><br> ". mysqli_error($Link));
+			if($resultado2->num_rows >= 1){
+				while($row2 = $resultado2->fetch_assoc()) { ?>
+					<tr>
+						<td>
+							<input type="text" name="categoria-editar-<?= $row2['id'] ?>" value="<?= $row2['categoria'] ?>" id="categoria-editar-<?= $row2['id'] ?>" placeholder="Nueva Categoría" class="form-control">
+						</td>
+						<td>
+							<button type="button" class="btn btn-primary categoria-editar" value="<?= $row2['id'] ?>"><i class="fa fa-fw fa-check"></i></button>
+							<button type="button" class="btn btn-danger categoria-eliminar" value="<?= $row2['id'] ?>"><i class="fa fa-fw fa-trash"></i></button>
+						</td>
+					</tr>
+				<?php
+				}
 			}
-		}
-	?>
+		?>
 
 
 
@@ -381,16 +391,16 @@ $Link->set_charset("utf8");
 
 
 
-	
-	
+		
+		
 
 
 
 
 
 
-  </tbody>
-</table>
+	</tbody>
+	</table>
 
 
 
@@ -398,13 +408,15 @@ $Link->set_charset("utf8");
 
 
 
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<div style="height:40px;"></div>
+	<div style="height:40px;"></div>
+
+<?php } ?>
 
 
 
