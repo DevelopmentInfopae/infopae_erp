@@ -60,7 +60,42 @@
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/instituciones.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Instituciones</span></a> </li>
 
 
+
+
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/sedes.php"><i class="fa fa-bank"></i> <span class="nav-label">Sedes educativas</span></a> </li>
+	<?php } ?>
+	
+
+
+<?php
+	/*
+	0	SuperAdministrador
+	1	Administrador
+	2	Operario
+	3	Auxiliar
+	4	Manipuladora
+	5	Auditor
+	6	Rector
+	7	Coordinador
+	8	Aux Asistencia
+	*/
+	?>
+
+
+	<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5 ){ ?>
+
+	<li> <a href="<?php echo $baseUrl; ?>/modules/archivos"><i class="fa fa-folder-open"></i> <span class="nav-label">Archivos Globales</span></a> </li>
+
+	<?php } ?>
+
+
+
+
+	<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5 || $_SESSION['perfil'] == 9 ){ ?>
+
+
+
+
 	<li>
 		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
@@ -101,6 +136,10 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/despachos.php"><span class="nav-label">Insumos</span></a> </li>
 			</ul>
 		</li>
+
+
+
+
 
 
 
