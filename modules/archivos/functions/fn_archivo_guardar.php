@@ -47,9 +47,9 @@ if (isset($_FILES["foto"])){
 			$reporte .= "<p style='color: red'>Error $nombre, el archivo no es una imagen o un PDF.</p>";
 			$bandera++;
 		}
-		else if($size > 300000000)
+		if($size > 320000000)
 		{
-			$reporte .= "<p style='color: red'>Error, el tamaño máximo permitido es 300 MB </p>";
+			$reporte .= "<p style='color: red'>Error, el tamaño máximo permitido es 310 MB </p>";
 			$bandera++;
 		}
 		else if($width > 500 || $height > 500)
