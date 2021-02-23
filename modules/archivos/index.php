@@ -195,7 +195,9 @@ $Link->set_charset("utf8");
 													$aux1 = date("h:i:s A d/m/Y", strtotime($aux));
 												?>
 												<small>Agregado: <?php echo $aux1 ?></small>
-												<br><a href="" value="<?php echo $row['id']; ?>" class="btnBorrar"><small style="color: #ff7a7a;">Borrar</small></a>
+												<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 ){ ?>
+													<br><a href="" value="<?php echo $row['id']; ?>" class="btnBorrar"><small style="color: #ff7a7a;">Borrar</small></a>
+												<?php } ?>
 											</div>
 										</a>
 										</div>
@@ -456,8 +458,18 @@ $Link->set_charset("utf8");
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/mode/xml/xml.js"></script>
 
 	<script src="<?php echo $baseUrl; ?>/modules/archivos/js/index_mod_archivos.js"></script>
+	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 	<!-- Page-Level Scripts -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('select').select2({width: "100%"});
+		});
+	</script>
+
+
+
+
 
 <?php mysqli_close($Link); ?>
 

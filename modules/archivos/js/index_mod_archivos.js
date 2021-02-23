@@ -58,32 +58,51 @@ $( document ).ready(function() {
 
 	$('#municipio').change(function(){
 		var municipio = $(this).val();
-		buscar_instituciones(municipio);
+
+
+
+
+		
+		
+		
+		
+		
+		$('#institucion').html("<option value=\"\">Todas</option>");
+		$('#institucion').select2('val', '');
 		$('#sede').html("<option value=\"\">Todas</option>");
+		$('#sede').select2('val', '');
+		buscar_instituciones(municipio);
 	});
 
 	$('#institucion').change(function(){
 		var institucion = $(this).val();
-		buscar_sedes(institucion);
 		$('#sede').html("<option value=\"\">Todas</option>");
+		$('#sede').select2('val', '');
+		buscar_sedes(institucion);
 	});
 
 	$('#municipioLateral').change(function(){
 		var municipio = $(this).val();
-		$('#municipioFnd').val(municipio);
-		$('#mostrarArchivos').submit();
+		if(municipio != $('#municipioFnd').val()){
+			$('#municipioFnd').val(municipio);
+			$('#mostrarArchivos').submit();
+		}
 	});
 
 	$('#institucionLateral').change(function(){
 		var institucion = $(this).val();
-		$('#institucionFnd').val(institucion);
-		$('#mostrarArchivos').submit();
+		if(institucion != $('#institucionFnd').val()){
+			$('#institucionFnd').val(institucion);
+			$('#mostrarArchivos').submit();
+		}
 	});
 
 	$('#sedeLateral').change(function(){
 		var sede = $(this).val();
-		$('#sedeFnd').val(sede);
-		$('#mostrarArchivos').submit();
+		if(sede != $('#sedeFnd').val()){
+			$('#sedeFnd').val(sede);
+			$('#mostrarArchivos').submit();
+		}
 	});
 
 	
@@ -100,7 +119,7 @@ function buscar_municipios(){
 		url: "functions/fn_archivos_buscar_municipios.php",
 		data: datos,
 		beforeSend: function(){
-			//$('#loader').fadeIn();
+			$('#loader').fadeIn();
 		},
 		success: function(data){
 			//$('#debug').html(data);
@@ -110,7 +129,7 @@ function buscar_municipios(){
 	.done(function(){ })
 	.fail(function(){ })
 	.always(function(){
-		//$('#loader').fadeOut();
+		$('#loader').fadeOut();
 	});
 }
 
@@ -128,7 +147,8 @@ function buscar_municipios_lateral(){
 		success: function(data){
 			//$('#debug').html(data);
 			$('#municipioLateral').html(data);
-			$('#municipioLateral').val($('#municipioFnd').val());
+			//$('#municipioLateral').val($('#municipioFnd').val());
+			$('#municipioLateral').select2('val', $('#municipioFnd').val());
 			buscar_instituciones_lateral($('#municipioFnd').val());
 		}
 	})
@@ -148,19 +168,20 @@ function buscar_instituciones_lateral(municipio){
 		url: "functions/fn_archivos_buscar_instituciones.php",
 		data: datos,
 		beforeSend: function(){
-			//$('#loader').fadeIn();
+			$('#loader').fadeIn();
 		},
 		success: function(data){
 			//$('#debug').html(data);
 			$('#institucionLateral').html(data);
-			$('#institucionLateral').val($('#institucionFnd').val());
+			//$('#institucionLateral').val($('#institucionFnd').val());
+			$('#institucionLateral').select2('val', $('#institucionFnd').val());
 			buscar_sedes_lateral($('#institucionFnd').val());
 		}
 	})
 	.done(function(){ })
 	.fail(function(){ })
 	.always(function(){
-		//$('#loader').fadeOut();
+		$('#loader').fadeOut();
 	});
 }
 
@@ -173,18 +194,20 @@ function buscar_sedes_lateral(institucion){
 		url: "functions/fn_archivos_buscar_sedes.php",
 		data: datos,
 		beforeSend: function(){
-			//$('#loader').fadeIn();
+			$('#loader').fadeIn();
 		},
 		success: function(data){
 			//$('#debug').html(data);
 			$('#sedeLateral').html(data);
-			$('#sedeLateral').val($('#sedeFnd').val());
+			//$('#sedeLateral').val($('#sedeFnd').val());
+			$('#sedeLateral').select2('val', $('#sedeFnd').val());
+			
 		}
 	})
 	.done(function(){ })
 	.fail(function(){ })
 	.always(function(){
-		//$('#loader').fadeOut();
+		$('#loader').fadeOut();
 	});
 }
 
@@ -201,7 +224,7 @@ function buscar_instituciones(municipio){
 		url: "functions/fn_archivos_buscar_instituciones.php",
 		data: datos,
 		beforeSend: function(){
-			//$('#loader').fadeIn();
+			$('#loader').fadeIn();
 		},
 		success: function(data){
 			//$('#debug').html(data);
@@ -211,7 +234,7 @@ function buscar_instituciones(municipio){
 	.done(function(){ })
 	.fail(function(){ })
 	.always(function(){
-		//$('#loader').fadeOut();
+		$('#loader').fadeOut();
 	});
 }
 
@@ -224,7 +247,7 @@ function buscar_sedes(institucion){
 		url: "functions/fn_archivos_buscar_sedes.php",
 		data: datos,
 		beforeSend: function(){
-			//$('#loader').fadeIn();
+			$('#loader').fadeIn();
 		},
 		success: function(data){
 			//$('#debug').html(data);
@@ -234,7 +257,7 @@ function buscar_sedes(institucion){
 	.done(function(){ })
 	.fail(function(){ })
 	.always(function(){
-		//$('#loader').fadeOut();
+		$('#loader').fadeOut();
 	});
 }
 
@@ -252,7 +275,9 @@ function borrarArchivo(id){
 			type:'post',
 			dataType:'html',
 			data:datos,
-			beforeSend: function(){},
+			beforeSend: function(){
+				$('#loader').fadeIn();
+			},
 			success: function(datos){
 				console.log('Terminado Ajax');
 				//auxContenido = $('.fotografias').html();
@@ -273,6 +298,7 @@ function borrarArchivo(id){
 		.done(function(){ })
 		.fail(function(){ })
 		.always(function(){
+			$('#loader').fadeOut();
 			// $('.cargador').fadeOut();
 			// $('#foto').val(function() { return this.defaultValue; });
 		});
@@ -312,6 +338,7 @@ $(function(){
 				contentType: false,
 				processData: false,
 				beforeSend: function(){
+					$('#loader').fadeIn();
 					$("input[name='foto']").val('');
 				},
 				success: function(datos){
@@ -340,6 +367,7 @@ $(function(){
 			.done(function(){ })
 			.fail(function(){ })
 			.always(function(){
+				$('#loader').fadeOut();
 				// $('.cargador').fadeOut();
 				// $('#foto').val(function() { return this.defaultValue; });
 			});
@@ -368,7 +396,9 @@ function borrarFoto(nombre){
 		type:'post',
 		dataType:'html',
 		data:datos,
-		beforeSend: function(){},
+		beforeSend: function(){
+			$('#loader').fadeIn();
+		},
 		success:function(response){
 			console.log(response);
 			$('#foto_'+nombre).remove();
@@ -376,7 +406,9 @@ function borrarFoto(nombre){
 	})
 	.done(function(){})
 	.fail(function(){})
-	.always(function(){});
+	.always(function(){
+		$('#loader').fadeOut();
+	});
 	// Termina el ajax
 }
 
@@ -398,7 +430,9 @@ function borrarFotoGuardada(nombre, url){
 			type:'post',
 			dataType:'html',
 			data:datos,
-			beforeSend: function(){},
+			beforeSend: function(){
+				$('#loader').fadeIn();
+			},
 			success:function(response){
 				//$('#debug').html(response);
 				console.log(response);
@@ -411,7 +445,9 @@ function borrarFotoGuardada(nombre, url){
 		})
 		.done(function(){})
 		.fail(function(){})
-		.always(function(){});
+		.always(function(){
+			$('#loader').fadeOut();
+		});
 		// Termina el ajax
 	}
 }
@@ -450,7 +486,9 @@ function nuevaCategoria(categoria){
 		type:'post',
 		dataType:'html',
 		data:datos,
-		beforeSend: function(){},
+		beforeSend: function(){
+			$('#loader').fadeIn();
+		},
 		success: function(datos){
 			console.log('Terminado Ajax');
 			//auxContenido = $('.fotografias').html();
@@ -472,6 +510,7 @@ function nuevaCategoria(categoria){
 	.done(function(){ })
 	.fail(function(){ })
 	.always(function(){
+		$('#loader').fadeOut();
 		// $('.cargador').fadeOut();
 		// $('#foto').val(function() { return this.defaultValue; });
 	});
@@ -488,7 +527,9 @@ function editarCategoria(id,text){
 		type:'post',
 		dataType:'html',
 		data:datos,
-		beforeSend: function(){},
+		beforeSend: function(){
+			$('#loader').fadeIn();
+		},
 		success: function(datos){
 			console.log('Terminado Ajax');
 			//auxContenido = $('.fotografias').html();
@@ -510,6 +551,7 @@ function editarCategoria(id,text){
 	.done(function(){ })
 	.fail(function(){ })
 	.always(function(){
+		$('#loader').fadeOut();
 		// $('.cargador').fadeOut();
 		// $('#foto').val(function() { return this.defaultValue; });
 	});
@@ -527,7 +569,9 @@ function eliminarCategoria(id){
 			type:'post',
 			dataType:'html',
 			data:datos,
-			beforeSend: function(){},
+			beforeSend: function(){
+				$('#loader').fadeIn();
+			},
 			success: function(datos){
 				console.log('Terminado Ajax');
 				//auxContenido = $('.fotografias').html();
@@ -549,6 +593,7 @@ function eliminarCategoria(id){
 		.done(function(){ })
 		.fail(function(){ })
 		.always(function(){
+			$('#loader').fadeOut();
 			// $('.cargador').fadeOut();
 			// $('#foto').val(function() { return this.defaultValue; });
 		});
