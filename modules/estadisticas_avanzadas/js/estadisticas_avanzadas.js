@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	
+	 
 	CargarTablas();
 
 	$('.exportarEstadisticas').on('click', function(){
@@ -20,6 +20,8 @@ var jvectorDept = {"76" : "CO-VAC", "13" : "CO-BOY", "20" : "CO-COR", "41" : "CO
 
 var mesesNom = {'01' : "Enero", "02" : "Febrero", "03" : "Marzo", "04" : "Abril", "05" : "Mayo", "06" : "Junio", "07" : "Julio", "08" : "Agosto", "09" : "Septiembre", "10" : "Octubre", "11" : "Noviembre", "12" : "Diciembre"};
 
+var generoNom = {'F' : "Femenino", 'M' : "Masculino"};
+
 function arreglarDivs(){
 	var heights = $(".col-sm-4").map(function() {
         return $(this).height();
@@ -35,6 +37,7 @@ function CargarTablas(){
 	type:"POST",
 	url:"functions/fn_estadisticas_tabla_totales_semana.php",
 	success:function(data){
+		// console.log(data);
 		data = JSON.parse(data);
 		$('#tHeadSemana').html(data['thead']);
 		$('#tBodySemana').html(data['tbody']);
@@ -56,7 +59,7 @@ function CargarTablas(){
 
 		info = data['info'];
 
-		console.log(info);
+		// console.log(info);
 
 		json = [];
 
@@ -68,175 +71,37 @@ function CargarTablas(){
 			json[cnt] = [semana, parseInt(total)];
 		});
 
-		console.log(json);
+		// console.log(json);
 
 		google.charts.load('current', {packages: ['corechart', 'bar']});
 		google.charts.setOnLoadCallback(function(){
 			armarGrafica(json, 'Totales por semana', 'Ordenado por mes', 'graficaTotalesSemanas', 'right', 1);
 		});
-
-		var diasSemanaD = data['diasSemanas'];
-
-
-			$.ajax({
-			type:"POST",
-			url:"functions/fn_estadisticas_tabla_totales_complemento.php",
-			data : {"diasSemanas" : diasSemanaD, "tipoComplementos" : data['tipoComplementos']},
-			success:function(data){
-				data = JSON.parse(data);
-				$('#tHeadComp').html(data['thead']);
-				$('#tBodyComp').html(data['tbody']);
-				$('#tFootComp').html(data['tfoot']);
-
-				json = [];
-				json[0] = ['Mes'];
-
-				info = data['info'];
-				cnt=0;
-				$.each(info, function(mes, ArrayT){
-					cnt++;
-					json[cnt] = [];
-					json[cnt].push(mesesNom[mes]);
-					$.each(ArrayT, function(complemento, total){
-						if (!json[0].includes(complemento)) {
-							json[0].push(complemento);
-						}
-						json[cnt].push(parseInt(total));
-					});
-				});
-
-				google.charts.load('current', {packages: ['corechart', 'bar']});
-				google.charts.setOnLoadCallback(function(){
-					armarGrafica(json, 'Totales por tipo complemento alimentario', 'Ordenado por mes', 'graficaTotalesComplemento', 'right', 1);
-				});
-
-				$.ajax({
-					type:"POST",
-					url:"functions/fn_estadisticas_tabla_totales_genero.php",
-					data : {"diasSemanas" : diasSemanaD},
-					success:function(data){
-						data = JSON.parse(data);
-						$('#tHeadGenero').html(data['thead']);
-						$('#tBodyGenero').html(data['tbody']);
-						$('#tFootGenero').html(data['tfoot']);
-					}
-				});
-
-				}
-			});
-		}
-	});
-
-}
-
-function verSemana(semana, diasSemanas, tipoComplementos){
-	$('#loader').fadeIn();
-
-	$.ajax({
-		type : "POST",
-		url : "functions/fn_estadisticas_semana_complementos.php",
-		data : {"semana" : semana, "diasSemanas" : diasSemanas, "tipoComplementos" : tipoComplementos},
-		success: function(data){
-			data = JSON.parse(data);
-			$('#complementoSemanas').html(data['tabla']);
-			colores = ['#0B4337','#137A65', '#19AB8D', '#23E1BA'];
-			json = [];
-			json[0] = ['Complemento', 'Valor', {role : "style"}, { role: 'annotation' }];
-			numm = 0;
-			$.each(data['info'], function(complemento, total){
-				json.push([complemento, parseInt(total), colores[numm], parseInt(total)]);
-				numm++;
-			})
-			google.charts.load('current', {packages: ['corechart', 'bar']});
-			google.charts.setOnLoadCallback(function(){
-				armarGrafica(json, 'Totales Tipo complemento por semana', 'Semana seleccionada', 'graficaComplementoSemanas', 'none', 0);
-			});
-		} 
-	});
+		// var diasSemanaD = data['diasSemanas'];
+	}
+});		
 
 	$.ajax({
 		type:"POST",
-		url: "functions/fn_estadisticas_semana_grupo_etario.php",
-		data: {"semana" : semana, "diasSemanas" : diasSemanas},
-		success: function(data){
+		url:"functions/fn_estadisticas_tabla_totales_complemento.php",
+		// data : {"diasSemanas" : data['diasSemanas'], "tipoComplementos" : data['tipoComplementos']},
+		success:function(data){
 			data = JSON.parse(data);
-			$('#complementoEtarios').html(data['tabla']);
-
-			info = data['info'];
+			$('#tHeadComp').html(data['thead']);
+			$('#tBodyComp').html(data['tbody']);
+			$('#tFootComp').html(data['tfoot']);
 
 			json = [];
-			json[0] = ['Complemento'];
-
-			complementoCreado = [];
-			etarioCreado = [];
-
-			totalesEtario = [];
-
-			numGE = 1;
-			numGE4 = 0;
-			$.each(info, function(etario, ArrayT){
-				$.each(ArrayT, function(complemento, total){
-					if (!complementoCreado.includes(complemento)) {
-						json[numGE] = [];
-						json[numGE].push(complemento);
-						complementoCreado.push(complemento);
-					} 
-					if (!etarioCreado.includes(etario)) {
-						etarioCreado.push(etario);
-						json[0].push(etario);
-					}
-					numGE++;
-					strN = Object.keys(totalesEtario);
-					if (strN.indexOf(String(numGE4)) != -1) {
-						totalesEtario[numGE4] += parseInt(total);
-					} else {
-						totalesEtario[numGE4] = parseInt(total);
-					}
-				});
-				numGE4++;
-			});
-
-			$.each(info, function(etario, ArrayT){
-				numGE2 = 1;
-				$.each(ArrayT, function(complemento, total){
-					json[numGE2].push(parseInt(total));		
-					numGE2++;
-				});
-			});
-
-			
-			numGE3 = json.length;
-			json[numGE3] = [];
-			json[numGE3].push('Total');
-
-			$.each(totalesEtario, function(etario, total){
-				json[numGE3].push(total);
-			})
-
-			google.charts.load('current', {packages: ['corechart', 'bar']});
-			google.charts.setOnLoadCallback(function(){
-				armarGrafica(json, 'Totales semana por tipo complemento alimentario y grupo etario', 'Ordenado por complemento', 'graficaComplementoEtarios', 'right', 1);
-			});
-		}
-	});
-
-	$.ajax({
-		type : "POST",
-		url: "functions/fn_estadisticas_semana_dias.php",
-		data: {"semana" : semana, "diasSemanas" : diasSemanas},
-		success: function(data){
-			data = JSON.parse(data);
-			$('#complementoDias').html(data['tabla']);
+			json[0] = ['Mes'];
 
 			info = data['info'];
-			json = [];
-			json[0] = ['Dia'];
+			// console.log(info);
 			cnt=0;
-
-			$.each(info, function(dia, ArrayT){
+			$.each(info, function(mes, ArrayT){
+				// console.log(ArrayT);
 				cnt++;
 				json[cnt] = [];
-				json[cnt].push(dia);
+				json[cnt].push(mesesNom[mes]);
 				$.each(ArrayT, function(complemento, total){
 					if (!json[0].includes(complemento)) {
 						json[0].push(complemento);
@@ -244,19 +109,465 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 					json[cnt].push(parseInt(total));
 				});
 			});
+			// console.log(json); 
+			google.charts.load('current', {packages: ['corechart', 'bar']});
+			google.charts.setOnLoadCallback(function(){
+					armarGrafica(json, 'Totales por tipo complemento alimentario', 'Ordenado por mes', 'graficaTotalesComplemento', 'right', 1);
+			});
+		}
+	});		
+
+
+	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_totales_genero.php",
+		// data : {"diasSemanas" : diasSemanaD},
+		success:function(data){
+					// console.log(data);
+			data = JSON.parse(data);
+			$('#tHeadGenero').html(data['thead']);
+			$('#tBodyGenero').html(data['tbody']);
+			$('#tFootGenero').html(data['tfoot']);
+
+			// forma de convertir una fila de una matriz en un array
+			info =data['info'];
+
+			// declaramos un nuevo array que vamos a enviar a la grafica
+			json2 = [];
+
+			// conformamos el array que vamos a enviar 
+			json2[0] = ["Genero", "Valor"];
+			json2[1] = ["Femenino", info['F']];
+			json2[2] = ["Masculino", info['M']];
+
+			// enviarmos los datos a la funcion para dibujar la grafica
+			google.charts.load('current', {'packages':['corechart']});
+			google.charts.setOnLoadCallback(function(){
+	      	pieChart(json2);
+	      	});
+		}
+	});		
+
+    $.ajax({
+      	type:"POST",
+      	url:"functions/fn_estadisticas_tabla_totales_edad.php",
+      	// data:{"diasSemanas" : diasSemanaD},
+      		success:function(data){
+
+      			// console.log(data);
+  				data = JSON.parse(data);
+				$('#tHeadEdad').html(data['thead']);
+				$('#tBodyEdad').html(data['tbody']);
+				$('#tFooTEdad').html(data['tfoot']);
+
+				info = data['info'];
+
+				// console.log(info);
+
+				json = [];
+
+				json[0] = ["Edad", "Total"];
+				cnt = 0;
+
+				$.each(info, function(edad, total){
+				cnt++;
+				json[cnt] = [edad, parseInt(total)];
+				});
+
+				// console.log(json);
+
+				google.charts.load('current', {packages: ['corechart', 'bar']});
+				google.charts.setOnLoadCallback(function(){
+				armarGrafica(json, 'Totales por Edad', 'Ordenado por edad', 'graficaTotalesEdad', 'right', 1);
+				});
+			}
+		});		
+
+	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_totales_estrato.php",
+		// data:{"diasSemanas" : diasSemanaD},
+			success: function(data){
+
+				data = JSON.parse(data);
+				$('#tHeadEstrato').html(data['thead']);
+				$('#tBodyEstrato').html(data['tbody']);
+				$('#tFootEstrato').html(data['tfoot']);	
+
+				info =data['info'];
+				// declaramos un nuevo array que vamos a enviar a la grafica
+				json2 = [];
+
+				// conformamos el array que vamos a enviar 
+				json2[0] = ["Estrato", "Valor"];
+				json2[1] = ["Estrato 0", info['0']];
+				json2[2] = ["Estrato 1", info['1']];
+				json2[3] = ["Estrato 2", info['2']];
+				json2[4] = ["Estrato 3", info['3']];
+				json2[5] = ["Estrato 4", info['4']];
+				json2[6] = ["Estrato 5", info['5']];
+				json2[7] = ["Estrato 6", info['6']];
+				json2[8] = ["No aplica", info['99']];
+
+				// console.log(json2);
+
+				// enviarmos los datos a la funcion para dibujar la grafica
+				google.charts.load('current', {'packages':['corechart']});
+				google.charts.setOnLoadCallback(function(){
+				pieChart2(json2);
+				});
+			}
+		});		
+
+  	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_totales_residencia.php",
+		// data:{"diasSemanas" : diasSemanaD},
+				success: function(data){
+
+					data = JSON.parse(data);
+					$('#tHeadResidencia').html(data['thead']);
+					$('#tBodyResidencia').html(data['tbody']);
+					$('#tFootResidencia').html(data['tfoot']);
+
+					info =data['info'];
+					// declaramos un nuevo array que vamos a enviar a la grafica
+					json2 = [];
+
+					// conformamos el array que vamos a enviar 
+					json2[0] = ["Zona residencia", "Valor"];
+					json2[1] = ["Urbano", info['1']];
+					json2[2] = ["Rural", info['2']];
+
+					google.charts.load('current', {'packages':['corechart']});
+					google.charts.setOnLoadCallback(function(){
+					pieChart3(json2);
+					});
+				}
+			});		
+
+	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_totales_escolaridad.php",
+		// data:{"diasSemanas" : diasSemanaD},
+			success: function(data){
+				// console.log(data);
+
+				data = JSON.parse(data);
+				$('#tHeadEscolaridad').html(data['thead']);
+				$('#tBodyEscolaridad').html(data['tbody']);
+				$('#tFootEscolaridad').html(data['tfoot']);
+
+				info = data['info'];
+				// console.log(data);
+
+				json = [];
+
+				json[0] = ["Grado", "Total"];
+				cnt = 0;
+				gradoData = '';
+
+				$.each(info, function(grado, total){
+				cnt++;
+				if (grado == -2) {gradoData = 'Prejardin';}
+				if (grado == -1) {gradoData = 'Jardin 1 o A o Kinder';}
+				if (grado == 0) {gradoData = 'Jardin 2 o B o Transcicsion o Grado 0';}
+				if (grado == 1) {gradoData = 'Primero';}
+				if (grado == 2) {gradoData = 'Segundo';}
+				if (grado == 3) {gradoData = 'Tercero';}
+				if (grado == 4) {gradoData = 'Cuarto';}
+				if (grado == 5) {gradoData = 'Quinto';}
+				if (grado == 6) {gradoData = 'Sexto';}
+				if (grado == 7) {gradoData = 'Septimo';}
+				if (grado == 8) {gradoData = 'Octavo';}
+				if (grado == 9) {gradoData = 'Noveno';}
+				if (grado == 10) {gradoData = 'Decimo';}
+				if (grado == 11) {gradoData = 'Once';}
+				if (grado == 12) {gradoData = 'Doce - Normal Superior';}
+				if (grado == 13) {gradoData = 'Trece - Normal Superior';}
+				if (grado == 21) {gradoData = 'Ciclo 1 Adultos';}
+				if (grado == 22) {gradoData = 'Ciclo 2 Adultos';}
+				if (grado == 23) {gradoData = 'Ciclo 3 Adultos';}
+				if (grado == 24) {gradoData = 'Ciclo 4 Adultos';}
+				if (grado == 25) {gradoData = 'Ciclo 5 Adultos';}
+				if (grado == 26) {gradoData = 'Ciclo 6 Adultos';}
+				if (grado == 99) {gradoData = 'Aceleracion del Aprendizaje';}
+
+				json[cnt] = [gradoData, parseInt(total)];
+				});
+
+
+				google.charts.load('current', {packages: ['corechart', 'bar']});
+				google.charts.setOnLoadCallback(function(){
+				armarGrafica2(json, 'Totales por grado de escolaridad', 'Ordenado por grado', 'graficaTotalesEscolaridad', 'right', 1);
+				});
+			}
+		});		
+
+	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_totales_jornada.php",
+		// data:{"diasSemanas" : diasSemanaD},
+			success: function(data){
+
+				data = JSON.parse(data);
+				$('#tHeadJornada').html(data['thead']);
+				$('#tBodyJornada').html(data['tbody']);
+				$('#tFootJornada').html(data['tfoot']);
+
+				info = data['info'];
+
+				json = [];
+				json[0] = ["Jornada", "Total"];
+				cnt = 0;
+				jornadaData = "";
+
+				$.each(info, function(jornada, total){
+					cnt++;
+					if (jornada == 0) {jornadaData = "Ninguna";}
+					if (jornada == 1) {jornadaData = "Completa";}
+					if (jornada == 2) {jornadaData = "Mañana";}
+					if (jornada == 3) {jornadaData = "Tarde";}
+					if (jornada == 4) {jornadaData = "Nocturna";}
+					if (jornada == 5) {jornadaData = "Fin de semana";}
+					if (jornada == 6) {jornadaData = "Jornada Unica";}		
+
+					json[cnt] = [jornadaData, parseInt(total)];
+				});
+
+				// console.log(json);
+				google.charts.load('current', {'packages':['corechart']});
+				google.charts.setOnLoadCallback(function(){
+				pieChart4(json);
+				});
+			}
+		});		
+
+
+	$.ajax({
+		type:"POST", 
+		url:"functions/fn_estadisticas_tabla_totales_municipio.php",
+		dataType: 'JSON',
+		// data:{"diasSemanas" : diasSemanaD},
+			success: function(data){
+
+				// data = JSON.parse(data);
+				$('#tHeadMunicipio').html(data['thead']);
+				$('#tBodyMunicipio').html(data['tbody']);
+				$('#tFootMunicipio').html(data['tfoot']);
+
+				info = data['info'];
+				// console.log(info);
+
+				markersJ = [];
+				cityAreaData = [];
+				// console.log(data);
+
+				$.each(info, function(ciudad, total){
+				    markersJ.push({latLng : [ coordenadas[ciudad]['Latitud'], coordenadas[ciudad]['Longitud'] ], name : "Muncipio : \n"+total[1]+" = "+total[0]});
+				    cityAreaData.push(total[0]);
+				});
+
+				$(function(){
+					  map = new jvm.Map({
+					    container: $('#map'),
+					    map: 'co_merc',
+					    backgroundColor: '#7E9F5F',
+					    regionsSelectableOne: false,
+					    markersSelectable: false,
+					    markersSelectableOne: true,
+					    markers: markersJ,
+					    zoomButtons : true,
+					    zoomOnScroll: true,
+					    markerStyle: {
+					      initial: {
+					        fill: '#137A65'
+					      }
+					    },
+					    regionStyle: {
+						  inicial: {
+						    relleno: '#935116',
+						    "relleno-opacidad": 1,
+						    trazo: 'ninguno',
+						    "ancho de trazo": 0,
+						    "opacidad del trazo": 1
+						  },
+						  desplazarse: {
+						    "opacidad de relleno": 0.8,
+						    cursor: 'puntero'
+						  },
+						  seleccionado: {
+						    relleno: 'amarillo'
+						  },
+						  selectedHover: {
+						  }
+						},
+						series: {
+					      markers: [{
+					        attribute: 'r',
+					        scale: [3, 12],
+					        values: cityAreaData
+					      }]
+					    }
+					  });
+
+					  $('#map').vectorMap('get','mapObject').setFocus({region: jvectorDept[data['codDepartamento']], animate: true});
+					});
+			}
+		});		
+
+	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_totales_discapacidad.php",
+		// data:{"diasSemanas" : diasSemanaD},
+			success: function(data){
+				// console.log(data);
+				data = JSON.parse(data);
+				$('#tHeadDiscapacidad').html(data['thead']);
+				$('#tBodyDiscapacidad').html(data['tbody']);
+				$('#tFootDiscapacidad').html(data['tfoot']);
+
+				info = data['info'];
+
+				json = [];
+
+				json[0] = ["Discapacidad", "Total"];
+				cnt = 0;
+
+				$.each(info, function(Discapacidad, total){
+				cnt++;
+				json[cnt] = [Discapacidad, parseInt(total)];
+				});
+
+				google.charts.load('current', {packages: ['corechart', 'bar']});
+				google.charts.setOnLoadCallback(function(){
+				armarGrafica2(json, 'Totales por población discapacidad', 'Ordenado por discapacidad', 'graficaTotalesDiscapacidad', 'right', 1);
+				});
+			}
+		});		
+
+	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_totales_poblacion_victima.php",
+		// data:{"diasSemanas" : diasSemanaD},
+			success: function(data){
+				// console.log(data);
+				data = JSON.parse(data);
+				$('#tHeadVictima').html(data['thead']);
+				$('#tBodyVictima').html(data['tbody']);
+				$('#tFootVictima').html(data['tfoot']);
+
+				info = data['info'];
+				// console.log(info);
+				json = [];
+				json[0] = ["Población victima", "Total"];
+				cnt = 0;
+
+				$.each(info, function(victima, total){
+				cnt++;
+				json[cnt] = [victima, parseInt(total)];
+				});
+
+				google.charts.load('current', {packages: ['corechart', 'bar']});
+				google.charts.setOnLoadCallback(function(){
+				armarGrafica2(json, 'Totales por población victima', 'Ordenado por poblacion victima', 'graficaTotalesVictima', 'right', 1);
+				});
+			}
+		});		
+
+	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_totales_etnia.php",
+		// data:{"diasSemanas" : diasSemanaD},
+		success: function(data){
+
+			data = JSON.parse(data);
+			$('#tHeadEtnia').html(data['thead']);
+			$('#tBodyEtnia').html(data['tbody']);
+			$('#tFootEtnia').html(data['tfoot']);
+
+			info = data['info'];
+			json = [];
+			json[0] = ["Etnia", "Total"];
+			cnt = 0;
+
+			$.each(info, function(etnia, total){
+				cnt++;
+				json[cnt] = [etnia, parseInt(total)];
+			});
 
 			google.charts.load('current', {packages: ['corechart', 'bar']});
 			google.charts.setOnLoadCallback(function(){
-				armarGrafica(json, 'Totales por dias tipo complemento alimentario', 'Semana seleccionada', 'graficaComplementoDias', 'right', 1);
+			armarGrafica2(json, 'Totales por etnia', 'Ordenado por etnia', 'graficaTotalesEtnia', 'right', 1);
 			});
-			setTimeout(function() {
-				arreglarDivs();
-				$('#loader').fadeOut();
-			}, 2000);
+		}
+	});		
+
+	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_valores_ejecutados.php",
+		// data : {"diasSemanas" : diasSemanaD},
+		success:function(data){
+			data = JSON.parse(data);
+			$('#tablaValoresEjecutados').html(data['tabla']);
+
+			info = data['info'];
+			json = [];
+			json[0] = [];
+			json[0].push('Mes');
+			cnt = 0;
+			$.each(info, function(mes, arrComplem){
+				cnt++;
+				json[cnt] = [];
+				json[cnt].push(mesesNom[mes]);
+				$.each(arrComplem, function(complemento, total){
+					if (!json[0].includes(complemento)) {
+						json[0].push(complemento);
+					}
+					json[cnt].push(parseInt(total));
+				});
+			});
+			cnt++;
+			json[cnt] = [];
+			json[cnt].push("Total");
+			$.each(data['totales'], function(complemento, total){
+				json[cnt].push(total);
+			});
+																		
+			google.charts.load('current', {packages: ['corechart', 'bar']});
+			google.charts.setOnLoadCallback(function(){
+			armarGrafica(json, 'Valor de recursos ejecutados', 'Ordenado por mes', 'graficaValoresEjecutados', 'right', 1);
+			});
+		}
+	});		
+
+
+	$.ajax({
+		type:"POST",
+		url:"functions/fn_estadisticas_tabla_valores_ejecutados_porcentajes.php",
+		// data : {"diasSemanas" : diasSemanaD},
+		success:function(data){
+			data = JSON.parse(data);
+			$('#tablaValoresEjecutadosPorcentajes').html(data['tabla']);
+
+			info = data['info'];
+
+			json = [];
+
+			json[0] = ["Concepto", "Valor"];
+			json[1] = ["Ejecutado", info['Ejecutado']];
+			json[2] = ["Ejecutar", info['Ejecutar']];
+			google.charts.load('current', {packages: ['corechart']});
+			google.charts.setOnLoadCallback(function(){
+			pieChart5(json);
+			});
+			// console.log(json);
 		}
 	});
-}
 
+}
+	
+												
 
 function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
 
@@ -310,9 +621,9 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
     chart.draw(data, options);
     }
 
+
 function armarGrafica2(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
 
-    // console.log(json);
     var data = google.visualization.arrayToDataTable(json);
 
     if (multiColumn == 1) {
@@ -335,9 +646,9 @@ function armarGrafica2(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
     }
     var options = {
     	title: titulo,
-        width: "100%",
-        height: 1300,
-        bar: {groupWidth: "95%"},
+        width: 1000,
+        height: 500,
+        bar: {groupWidth: "60%"},
         chart: {
           title: titulo,
           subtitle: subtitulo,
@@ -378,7 +689,7 @@ function armarGrafica2(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
         var data = google.visualization.arrayToDataTable(json);
 
         var options = {
-          title: 'Recursos ejecutados VS Recursos por ejecutar',
+          title: 'Totales por Género',
           slices: {
             0: { color: '#0B4337' },
             1: { color: '#19AB8D' }
@@ -387,7 +698,86 @@ function armarGrafica2(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
           height: 300,
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('graficaValoresEjecutadosPorcentajes'));
+        var chart = new google.visualization.PieChart(document.getElementById('graficaTotalesGenero'));
 
         chart.draw(data, options);
       }
+
+ function pieChart2(json) {
+
+        var data = google.visualization.arrayToDataTable(json);
+
+        var options = {
+          title: 'Totales por Estrato',
+          slices: {
+            0: { color: '#0B4337' },
+            1: { color: '#19AB8D' }
+          },
+          width: "100%",
+          height: 450,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('graficaTotalesEstrato'));
+
+        chart.draw(data, options);
+      }      
+
+function pieChart3(json) {
+
+        var data = google.visualization.arrayToDataTable(json);
+
+        var options = {
+          title: 'Totales por zona de residencia',
+          slices: {
+            0: { color: '#0B4337' },
+            1: { color: '#19AB8D' }
+          },
+          width: "100%",
+          height: 450,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('graficaTotalesResidencia'));
+
+        chart.draw(data, options);
+      }  
+
+
+function pieChart4(json) {
+        var data = google.visualization.arrayToDataTable(json);
+        var options = {
+          title: 'Totales por jornada',
+          slices: {
+            0: { color: '#0B4337' },
+            1: { color: '#19AB8D' }, 
+            2: { color: '#137A65' },
+            3: { color: '#23E1BA' }							 
+          },
+          width: "100%",
+          height: 450,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('graficaTotalesJornada'));
+
+        chart.draw(data, options);
+      }                            
+
+
+function pieChart5(json) {
+        var data = google.visualization.arrayToDataTable(json);
+        var options = {
+          title: 'Valor recursos ejecutados',
+          slices: {
+            0: { color: '#0B4337' },
+            1: { color: '#19AB8D' }, 
+            2: { color: '#137A65' },
+            3: { color: '#23E1BA' }							 
+          },
+          width: "100%",
+          height: 300,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('graficaValoresEjecutadosPorcentajes'));
+
+        chart.draw(data, options);
+      }         
+

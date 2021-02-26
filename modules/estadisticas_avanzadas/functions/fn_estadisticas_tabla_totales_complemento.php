@@ -5,9 +5,41 @@ require_once '../../../db/conexion.php';
 $periodoActual = $_SESSION['periodoActual'];
 $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 
+$diasSemanas = [];
+  $consDiasSemanas = "SELECT GROUP_CONCAT(DIA) AS Dias, MES, SEMANA FROM planilla_semanas WHERE CONCAT(ANO, '-', MES, '-', DIA) <= '".date('Y-m-d')."' GROUP BY SEMANA";
+  // echo $consDiasSemanas;
+  $resDiasSemanas = $Link->query($consDiasSemanas);
+  if ($resDiasSemanas->num_rows > 0) {
+    while ($dataDiasSemanas = $resDiasSemanas->fetch_assoc()) {
 
-  $diasSemanas = $_POST['diasSemanas'];
-  $tipoComplementos = $_POST['tipoComplementos'];
+      $consultaTablas = "SELECT 
+                           table_name AS tabla
+                          FROM 
+                           information_schema.tables
+                          WHERE 
+                           table_schema = DATABASE() AND table_name = 'entregas_res_".$dataDiasSemanas['MES']."$periodoActual'";
+      $resTablas = $Link->query($consultaTablas);
+      if ($resTablas->num_rows > 0) {
+        $semanaPos = str_replace("b", "", $dataDiasSemanas['SEMANA']);
+        $arrDias = explode(",", $dataDiasSemanas['Dias']);
+        sort($arrDias);
+        // echo ($arrDias);
+        $diasSemanas[$dataDiasSemanas['MES']][$semanaPos] = $arrDias; //obtenemos un array ordenado del siguiente modo array[mes][semana] = array[dias]
+      }
+    }
+  }
+
+  $tipoComplementos = [];
+  $consComplemento="SELECT * FROM tipo_complemento";
+  $resComplemento = $Link->query($consComplemento);
+  if ($resComplemento->num_rows > 0) {
+    while ($Complemento = $resComplemento->fetch_assoc()) {
+      $tipoComplementos[] = $Complemento['CODIGO'];
+    }
+  }
+
+  // $diasSemanas = $_POST['diasSemanas'];
+  // $tipoComplementos = $_POST['tipoComplementos'];
 
   foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
     $datos = "";
@@ -110,4 +142,3 @@ $data['info'] = $totalesComplementos;
 
 echo json_encode($data);
  
-  // var_dump($totalesSemanas);

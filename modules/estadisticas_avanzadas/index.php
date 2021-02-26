@@ -33,8 +33,8 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground row">
           <div class="col-sm-12" style="text-align: center;">
-            <h2>Totales por semana</h2>
-            <em>Puede ver estadísticas por semana, haciendo clic en cada una de ellas de la siguiente tabla.</em>
+            <h2><strong>Totales por semana</strong></h2>
+<!--             <em>Puede ver estadísticas por semana, haciendo clic en cada una de ellas de la siguiente tabla.</em> -->
             <br>
           </div>
           <table class="table selectableRows table-bordered col-sm-12">
@@ -48,12 +48,18 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               
             </tfoot>
           </table>
-          <div class="col-sm-12">
+          <div class="col-sm-12"> 
             <div id="graficaTotalesSemanas"></div>
           </div>
-          <hr class="col-sm-12">
+         </div> 
+       </div>
+     </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
           <div class="col-sm-12" style="text-align: center;">
-            <h2>Totales por tipo complemento alimentario</h2>
+            <h2><strong>Totales por tipo complemento alimentario</strong></h2>
             <br>
           </div>
           <div class="col-sm-6 nopadding">
@@ -72,10 +78,16 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
           <div class="col-sm-6">
             <div id="graficaTotalesComplemento"></div>
           </div>
-          <hr class="col-sm-12">
+        </div>
+      </div>
+    </div>  
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
 
           <div class="col-sm-12" style="text-align: center;">
-            <h2>Totales por género</h2>
+            <h2><strong>Totales por género</strong></h2>
             <br>
           </div>
           <div class="col-sm-6 nopadding">
@@ -94,10 +106,336 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
           <div class="col-sm-6">
             <div id="graficaTotalesGenero"></div>
           </div>
-          <hr class="col-sm-12">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+
+          <div class="col-sm-12" style="text-align: center;">
+            <h2><strong>Totales por edad</strong></h2>
+            <br>
+          </div>
+          <div class="col-sm-12 nopadding">
+            <table class="table table-bordered">
+              <thead id="tHeadEdad">
+                
+              </thead>
+              <tbody id="tBodyEdad">
+                
+              </tbody>
+              <tfoot id="tFooTEdad">
+                
+              </tfoot>
+            </table>
+          </div>
+          <div class="col-sm-12"> 
+            <div id="graficaTotalesEdad"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+
+          <div class="col-sm-12" style="text-align: center;">
+            <h2><strong>Totales por estrato</strong></h2>
+            <br>
+          </div>
+          <div class="col-sm-12 nopadding">
+            <table class="table table-bordered">
+              
+              <thead id="tHeadEstrato">
+                
+              </thead>
+              <tbody id="tBodyEstrato">
+                
+              </tbody>
+              <tfoot id="tFootEstrato">
+                
+              </tfoot>
+            </table>
+            </div>
+            <div class="col-sm-12"> 
+            <div id="graficaTotalesEstrato"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+          
+     <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">      
+
+          <div class="col-sm-12" style="text-align: center;">
+            <h2><strong>Totales por zona de residencia</strong></h2>
+            <br>
+          </div>
+          <div class="col-sm-12 nopadding">
+            <table class="table table-bordered">
+              
+              <thead id="tHeadResidencia">
+                
+              </thead>
+              <tbody id="tBodyResidencia">
+                
+              </tbody>
+              <tfoot id="tFootResidencia">
+                
+              </tfoot>
+            </table>
+            </div>
+            <div class="col-sm-12"> 
+            <div id="graficaTotalesResidencia"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+
+              <div class="col-sm-12" style="text-align: center;">
+              <h2><strong>Totales por grado de escolaridad</strong></h2>
+              <br>
+              </div>
+              <div class="col-sm-12 nopadding">
+                <table class="table table-bordered">
+              
+                  <thead id="tHeadEscolaridad">
+                  
+                  </thead>
+                  <tbody id="tBodyEscolaridad">
+                
+                  </tbody>
+                  <tfoot id="tFootEscolaridad">
+                
+                  </tfoot>
+                </table>
+              </div>
+            <div class="col-sm-12 nopadding"> 
+            <div id="graficaTotalesEscolaridad"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+
+              <div class="col-sm-12" style="text-align: center;">
+              <h2><strong>Totales por jornada</strong></h2>
+              <br>
+              </div>
+              <div class="col-sm-12 nopadding">
+                <table class="table table-bordered">
+              
+                  <thead id="tHeadJornada">
+                  
+                  </thead>
+                  <tbody id="tBodyJornada">
+                
+                  </tbody>
+                  <tfoot id="tFootJornada">
+                
+                  </tfoot>
+                </table>
+              </div>
+            <div class="col-sm-12 nopadding"> 
+            <div id="graficaTotalesJornada"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+
+              <div class="col-sm-12" style="text-align: center;">
+              <h2><strong>Totales por municipio</strong></h2>
+              <br>
+              </div>
+              <div class="col-sm-12 nopadding">
+                <table class="table table-bordered" id="tablaMunicipios">
+              
+                  <thead id="tHeadMunicipio">
+                  
+                  </thead>
+                  <tbody id="tBodyMunicipio">
+                
+                  </tbody>
+                  <tfoot id="tFootMunicipio">
+                
+                  </tfoot>
+                </table>
+                </div>
+             <div class="col-sm-12">
+              <div class="well">
+                <div id="map" style="height: 500px;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+
+              <div class="col-sm-12" style="text-align: center;">
+              <h2><strong>Totales por población discapacidad</strong></h2>
+              <br>
+              </div>
+              <div class="col-sm-12 nopadding">
+                <table class="table table-bordered">
+              
+                  <thead id="tHeadDiscapacidad">
+                  
+                  </thead>
+                  <tbody id="tBodyDiscapacidad">
+                
+                  </tbody>
+                  <tfoot id="tFootDiscapacidad">
+                
+                  </tfoot>
+                </table>
+              </div>
+            <div class="col-sm-12 nopadding"> 
+            <div id="graficaTotalesDiscapacidad"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+
+              <div class="col-sm-12" style="text-align: center;">
+              <h2><strong>Totales por población victima</strong></h2>
+              <br>
+              </div>
+              <div class="col-sm-12 nopadding">
+                <table class="table table-bordered">
+              
+                  <thead id="tHeadVictima">
+                  
+                  </thead>
+                  <tbody id="tBodyVictima">
+                
+                  </tbody>
+                  <tfoot id="tFootVictima">
+                
+                  </tfoot>
+                </table>
+              </div>
+            <div class="col-sm-12 nopadding"> 
+            <div id="graficaTotalesVictima"></div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+
+              <div class="col-sm-12" style="text-align: center;">
+              <h2><strong>Totales por Etnia</strong></h2>
+              <br>
+              </div>
+              <div class="col-sm-12 nopadding">
+                <table class="table table-bordered">
+              
+                  <thead id="tHeadEtnia">
+                  
+                  </thead>
+                  <tbody id="tBodyEtnia">
+                
+                  </tbody>
+                  <tfoot id="tFootEtnia">
+                
+                  </tfoot>
+                </table>
+              </div>
+            <div class="col-sm-12 nopadding"> 
+            <div id="graficaTotalesEtnia"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content contentBackground row">
+          <div class="col-sm-12" style="text-align: center;">
+              <h2><strong>Valor de recursos ejecutados</strong></h2>
+              <br>
+          </div>
+          <div class="col-sm-4">
+                  <?php
+                    $consValores = "SELECT 'ValorContrato' AS Concepto, ValorContrato FROM parametros
+                                  UNION
+                                  SELECT CODIGO AS Concepto, ValorRacion AS ValorContrato FROM tipo_complemento ORDER BY Concepto;";
+                    $resValores = $Link->query($consValores);
+
+                    $valorRaciones = [];
+                    if ($resValores->num_rows > 0) {
+                      while($Valores = $resValores->fetch_assoc()) {
+                        if ($Valores['Concepto'] == "ValorContrato") {
+                          $valorContrato = $Valores['ValorContrato'];
+                        } else {
+                          $valorRaciones[$Valores['Concepto']] = $Valores['ValorContrato'];
+                        }
+                      }
+                    }
+                  ?>
+                  <table class="table table-striped table-condensed">
+                  <tr>
+                    <th>Valor del contrato</th>
+                      <td class="text-right">$ <?= number_format($valorContrato, 2, ",", "."); ?></td>
+                    </tr>
+                    <?php foreach ($valorRaciones as $complemento => $valor): ?>
+                      <tr>
+                        <th>Valor Ofertado por <?= $complemento ?></th>
+                        <td class="text-right">$ <?= number_format($valor, 2, ",", "."); ?></td>
+                      </tr>
+                    <?php endforeach ?>
+                  </table>
+            </div>
+            <div class="col-sm-4">
+              <table class="table table-bordered table-striped table-hover selectableRows" id="tablaValoresEjecutadosPorcentajes">
+
+              </table>
+            </div>
+
+            <div class="col-sm-4">
+                <div id="graficaValoresEjecutadosPorcentajes"></div>
+            </div>
+          <!-- </div>  -->   
+
+            <div class="col-sm-12">
+              <table class="table table-bordered table-hover selectableRows" id="tablaValoresEjecutados">
+
+              </table>
+            </div>
+
+            <div class="col-sm-12 nopadding">
+                <div id="graficaValoresEjecutados"></div>
+            </div>
+
+
         </div><!-- /.ibox-content -->
       </div><!-- /.ibox float-e-margins -->
-    </div><!-- /.col-lg-12 -->
+    </div>/<!-- .col-lg-12 -->
   </div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
 <?php include '../../footer.php'; ?>
