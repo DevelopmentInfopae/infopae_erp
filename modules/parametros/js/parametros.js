@@ -17,6 +17,7 @@ $(document).ready(function(){
   }
 
   $(document).on('change', '#departamento', function () { cargar_municipios($(this).val()); });
+  $(document).on('click', '#boton_guardar', function () { guardarParametros(); });
 });
 
 function guardarParametros(){
@@ -24,10 +25,10 @@ function guardarParametros(){
     if($("#id").val() != ''){ ruta = "functions/fn_parametros_actualizar.php" } else { ruta = "functions/fn_parametros_crear.php"; }
 
     var formData = new FormData();
+
     formData.append('id', $("#id").val());
     formData.append('anio', $("#anio").val());
     formData.append('nombre', $('#nombre').val());
-    formData.append('foto', $('#foto')[0].files[0]);
     formData.append('nombreEtc', $("#nombreEtc").val());
     formData.append('municipio', $('#municipio').val());
     formData.append('mesContrato', $('#mesContrato').val());
@@ -37,12 +38,31 @@ function guardarParametros(){
     formData.append('nombredepartamento', $("#departamento option:selected").text());
     formData.append('nombre_representante_legal', $('#nombre_representante_legal').val());
     formData.append('documento_representante_legal', $('#documento_representante_legal').val());
-
+    formData.append('color_primario', $('#color_primario').val());
+    formData.append('color_secundario', $('#color_secundario').val());
+    formData.append('color_texto', $('#color_texto').val());
+    formData.append('LogoETC', $('#LogoETC')[0].files[0]);
     formData.append('LogoOperador', $('#LogoOperador')[0].files[0]);
+    formData.append('logo_header', $('#logo_header')[0].files[0]);
+    formData.append('logo_footer', $('#logo_footer')[0].files[0]);
     formData.append('NIT', $('#NIT').val());
     formData.append('ValorContrato', $('#ValorContrato').val());
     formData.append('PermitirRepitentes', $('input[name="PermitirRepitentes"]:checked').val());
+    formData.append('mostrar_boton_enviar_archivos', $('input[name="mostrar_boton_enviar_archivos"]:checked').val());
+    formData.append('menu_menu_dia', $('#menu_menu_dia').prop('checked'));
+    formData.append('menu_ejecucion_semanal', $('#menu_ejecucion_semanal').prop('checked'));
+    formData.append('menu_operador', $('#menu_operador').prop('checked'));
+    formData.append('menu_noticias', $('#menu_noticias').prop('checked'));
+    formData.append('menu_encuesta', $('#menu_encuesta').prop('checked'));
+    formData.append('menu_ver_cronograma', $('#menu_ver_cronograma').prop('checked'));
+    formData.append('menu_fqrs', $('#menu_fqrs').prop('checked'));
+    formData.append('integrantes_union_temporal', $('#integrantes_union_temporal').val());
+    formData.append('direccion', $('#direccion').val());
+    formData.append('telefono', $('#telefono').val());
     formData.append('email', $('#email').val());
+    formData.append('pagina_web', $('#pagina_web').val());
+    formData.append('facebook', $('#facebook').val());
+    formData.append('twitter', $('#twitter').val());
 
     $.ajax({
       type: "POST",
@@ -53,6 +73,7 @@ function guardarParametros(){
       dataType: 'json',
       beforeSend: function(){ $('#loader').fadeIn(); },
       success: function(data){
+        console.log(data)
         if(data.estado == 1){
           Command: toastr.success(
             data.mensaje,
