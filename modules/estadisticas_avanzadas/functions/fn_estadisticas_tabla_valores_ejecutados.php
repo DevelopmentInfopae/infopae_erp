@@ -31,13 +31,15 @@ $diasSemanas = [];
   }
 
 $valorComplementos = [];
-$totalesComplementos = [];
+$totalesComplementos = []; 
+$tipoComplementos = [];
 
 $consTipoComplemento = "SELECT * FROM tipo_complemento";
 $resTipoComplemento = $Link->query($consTipoComplemento);
 if ($resTipoComplemento->num_rows > 0) {
 	while ($TipoComplemento = $resTipoComplemento->fetch_assoc()) {
 		$valorComplementos[$TipoComplemento['CODIGO']] = $TipoComplemento['ValorRacion'];
+		$tipoComplementos[] = $TipoComplemento['CODIGO'];
 	}
 }
 
@@ -52,28 +54,28 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
       }
     }
 
+    foreach ($tipoComplementos as $key => $complemento) {
+    // 	$consultaResComplemento = "SELECT ";
+    //   	$diaD = 1;
+    //   	foreach ($semanas as $semana => $dias) {
+    //     	foreach ($dias as $D => $dia) {
+    //      	 	$consultaResComplemento.="SUM(D$diaD) + ";
+    //       		$diaD++;
+    //     }
+    // }
+    
+
+    $arrayCom;	
 	if ($datos != "") {
 		$datos = trim($datos, "+ ");
-		$consComplementos ="SELECT tipo_complem , $datos  AS total FROM entregas_res_$mes$periodoActual GROUP BY tipo_complem;";
+		$consComplementos ="SELECT tipo_complem , $datos  AS total FROM entregas_res_$mes$periodoActual WHERE tipo_complem = '$complemento' GROUP BY tipo_complem ";
 		// echo $consComplementos."\n";
 		$resComplementos = $Link->query($consComplementos);
 		$tcom = [];
 		if ($resComplementos->num_rows > 0) {
 			while ($Complementos = $resComplementos->fetch_assoc()) {
-				// if ($Complementos['tipo_complem'] == "APS") {
-				// 	if (isset($totalesComplementos[$mes]["APS"])) {
-				// 		$totalesComplementos[$mes]["APS"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
-				// 	} else {
-				// 		$totalesComplementos[$mes]["APS"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
-				// 	}
-				// } else {
-				// 	if (isset($totalesComplementos[$mes]["AM/PM"])) {
-				// 		$totalesComplementos[$mes]["AM/PM"]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
-				// 	} else {
-				// 		$totalesComplementos[$mes]["AM/PM"]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]));
-				// 	}
-				// }
 
+		
 				if ($Complementos['total'] == '') {
 					continue;
 				}
@@ -83,31 +85,31 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 				} else {
 					$totalesComplementos[$mes][$Complementos['tipo_complem']]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
 				}
-				if (!isset($tcom[$Complementos['tipo_complem']])) {
-					$tcom[$Complementos['tipo_complem']] = 1;
-				}
+			    $arrayCom[$Complementos['tipo_complem']] = ($Complementos['tipo_complem']);
 			}
+
 		}
 	}
-
-	// if (!isset($totalesComplementos[$mes]["APS"])) {
-	// 	$totalesComplementos[$mes]["APS"] = 0;
-	// }
-
-	// if (!isset($totalesComplementos[$mes]["AM/PM"])) {
-	// 	$totalesComplementos[$mes]["AM/PM"] = 0;
-	// }
 }
 
-// var_dump($totalesComplementos);
+}
+
+// foreach ($arrayMes as $key => $link) {
+// 	if($link === '') 
+//     { 
+//         unset($arrayMes[$key]); 
+//     } 
+// }
+
 
 $tabla="";
 
 $tabla.="<thead>
 			<tr>
 				<th>Mes</th>";
-foreach ($tcom as $comp => $set) {
+foreach ($arrayCom as $comp => $set) {
 	$tabla.="<th>".$comp."</th>";
+	// var_dump($tcom);
 }
 $tabla.="		<th>Total</th>
 			</tr>

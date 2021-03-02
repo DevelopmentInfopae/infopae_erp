@@ -114,15 +114,16 @@ $tHeadEtnia = '<tr>
 	}
 
 	foreach ($etnias as $etnia => $valorEtnia) {
-
-		$tBodyEtnia .= "<tr> <td>".$etnia."</td>";
+    $etniaString = ucfirst(strtoupper($etnia));
+    utf8_decode($etniaString);
+		$tBodyEtnia .= "<tr> <td>".$etniaString."</td>";
 
 		$valorFila = 0;
 		foreach ($valorEtnia as $valores => $valor) {
 				
 				$valorFila += $valor;
 			 	$tBodyEtnia .= "<td>".$valor."</td>";
-			 	$totalEtnia[$etnia]=$valorFila;			
+			 	$totalEtnia[$etniaString]=$valorFila;			
 		}
 		$tBodyEtnia .= "<th>" .$valorFila. "</th>"; 
 		$tBodyEtnia .= "</tr>";

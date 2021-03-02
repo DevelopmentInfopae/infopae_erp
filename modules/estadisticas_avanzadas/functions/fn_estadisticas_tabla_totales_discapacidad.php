@@ -113,7 +113,7 @@ $tHeadDiscapacidad = '<tr>
 	}
 
 	foreach ($discapacidades as $discapacidad => $valorDiscapacidad) {
-    $discapacidadString = ucfirst(strtolower($discapacidad));
+    $discapacidadString = ucfirst(strtoupper($discapacidad));
     utf8_decode($discapacidadString);
 		$tBodyDiscapacidad .= "<tr> <td>".$discapacidadString."</td>";
 

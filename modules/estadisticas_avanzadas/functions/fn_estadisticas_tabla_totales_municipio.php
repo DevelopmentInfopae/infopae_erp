@@ -6,7 +6,16 @@ $periodoActual = $_SESSION['periodoActual'];
 
 $mesesNom = array('1' => "Enero", "2" => "Febrero", "3" => "Marzo", "4" => "Abril", "5" => "Mayo", "6" => "Junio", "7" => "Julio", "8" => "Agosto", "9" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 
-// $diasSemanas = $_POST['diasSemanas'];
+$codigoMunicipio = '';
+$consCodigoMunicipio = "SELECT codMunicipio FROM parametros";
+$resCodigoMunicipio = $Link->query($consCodigoMunicipio);
+if ($resCodigoMunicipio->num_rows > 0) {
+  while ($dataCodigoMunicipio = $resCodigoMunicipio->fetch_assoc()) {
+    $codigoMunicipio = $dataCodigoMunicipio['codMunicipio'];
+  }
+}
+
+// var_dump($codigoMunicipio);
 
 $diasSemanas = [];
   $consDiasSemanas = "SELECT GROUP_CONCAT(DIA) AS Dias, MES, SEMANA FROM planilla_semanas WHERE CONCAT(ANO, '-', MES, '-', DIA) <= '".date('Y-m-d')."' GROUP BY SEMANA";
@@ -32,14 +41,15 @@ $diasSemanas = [];
     }
   }
 
+// condicional para enviar datos cuando el codMunicipio esta vacio y se pueda crear el mapa de lo contrario listara las sedes educativas
+if ($codigoMunicipio == '0') {
+  $mesesRecorridos = ""; 
+  $respuesta = [];
+  $respuesta2 = [];
+  $codDepartamento = $_SESSION['p_CodDepartamento'];
 
-$mesesRecorridos = ""; 
-$respuesta = [];
-$respuesta2 = [];
-$codDepartamento = $_SESSION['p_CodDepartamento'];
-
-foreach ($diasSemanas as $mes => $semanas) {
-	$datos = "";
+  foreach ($diasSemanas as $mes => $semanas) {
+    $datos = "";
     $diaD = 1;
     $sem=0;
     //tabla donde se busca, según mes(obtenido de consulta anterior) y año
@@ -47,8 +57,8 @@ foreach ($diasSemanas as $mes => $semanas) {
 
     // ciclo para recorrer las semanas
     foreach ($semanas as $semana => $dias) {
-    	// ciclo para recorrer los dias de la semana
-      	foreach ($dias as $D => $dia) { 
+      // ciclo para recorrer los dias de la semana
+        foreach ($dias as $D => $dia) { 
         $datos.="SUM(D$diaD) + ";
         $diaD++;
       }
@@ -61,11 +71,11 @@ foreach ($diasSemanas as $mes => $semanas) {
 
     $periodo = 1;
 
-	if ($resConsultaRes = $Link->query($consultaRes)) {
+    if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
           while ($resEstrato = $resConsultaRes->fetch_assoc()) {
-          	$respuesta[$periodo] = $resEstrato;
-	        $periodo++;  	
+            $respuesta[$periodo] = $resEstrato;
+          $periodo++;   
 
           }
           
@@ -73,109 +83,272 @@ foreach ($diasSemanas as $mes => $semanas) {
  
       }
     $respuesta2[$mes] = $respuesta;
-	$mesesRecorridos .= $mes;
+    $mesesRecorridos .= $mes;
+    }
+
+    $arrayMes = explode("0", $mesesRecorridos);
+
+    // funcion para quitar espacios vacios de un array
+    foreach ($arrayMes as $key => $link) {
+      if($link === '') 
+        { 
+        unset($arrayMes[$key]); 
+        } 
+    }
+
+    // encabezado
+    $tHeadMunicipio = '<tr>
+        <th>Municipio</th>';
+         
+        foreach ($arrayMes as $mes) {
+
+            $tHeadMunicipio .= '<th>'.$mesesNom[$mes].'</th>';
+        
+        }
+      $tHeadMunicipio .= '<th>Total</th>
+      </tr>';
+
+
+      // cuerpo
+      $tBodyMunicipio = "";
+      
+      $posicion = 0;
+      $municipios = []; 
+      $totalMunicipio = [];
+      $codigos = [];
+      $totalCodigo = [];
+      $totalesMunicipio = [];
+
+      foreach ($respuesta2 as $mes => $valoresMes) {
+
+        foreach ($valoresMes as $valorMes => $valor) {
+          // convertimos la respuesta a un array asociativo con la clave primaria edad mes
+          $municipios[$valor['Ciudad']][$mes] = $valor['TOTAL'];  
+          $codigos[$valor['codigoDane']][$mes] = $valor['TOTAL'];
+        }
+      }
+      // var_dump($codigos);
+
+      foreach ($municipios as $municipio => $valorMunicipio) {
+
+        $tBodyMunicipio .= "<tr> <td>".$municipio."</td>";
+
+        $valorFila = 0;
+        foreach ($valorMunicipio as $valores => $valor) {
+            
+            $valorFila += $valor;
+            $tBodyMunicipio .= "<td>".$valor."</td>";
+            $totalMunicipio[$municipio]=$valorFila; 
+        }
+
+        $tBodyMunicipio .= "<th>" .$valorFila. "</th>"; 
+        $tBodyMunicipio .= "</tr>";
+      }
+
+      $munTemp = '';
+
+      foreach ($municipios as $municipio => $valorMunicipio) {
+        $munTemp = $municipio;
+        $varTemp = $valorMunicipio;
+        foreach ($codigos as $codigo => $valorCodigo) {
+          $valorFila = 0;
+            foreach ($valorMunicipio as $valores => $valor) {      
+            $valorFila += $valor;
+              if (isset($totalesMunicipio[$codigo][0]) <> $varTemp) {
+                $totalesMunicipio[$codigo][0] = $valorFila;
+                $varTemp = '';
+              }    
+            }
+            
+            if (isset($totalesMunicipio[$codigo][1]) <> $munTemp) {
+               $totalesMunicipio[$codigo][1] = $municipio;
+               $munTemp = '';
+            }   
+        }  
+      }
+
+    // var_dump($totalesMunicipio);
+
+      // pie
+      $tFootMunicipio = '<tr>
+                <th>TOTAL</th>';
+        $tTotal = 0;
+        $totalMes = ["01" => 0, "02" => 0, "03" => 0, "04" => 0, "05" => 0, "06" => 0, "07" => 0, "08" => 0, "09" => 0, "10" => 0, "11" => 0, "12" => 0];
+
+        foreach ($municipios as $municipio => $valorMunicipio) {
+
+        foreach ($valorMunicipio as $mes => $valorMes) {
+          
+          $totalMes[$mes] += $valorMes;
+        }
+
+      }
+
+
+      foreach ($totalMes as $total) {
+
+        if ($total <> 0) {
+           $tFootMunicipio .='<th>'.$total.'</th>';
+           $tTotal += $total;
+        }
+        
+      }
+
+       
+    $tFootMunicipio .='<th>'.$tTotal.'</th>
+    </tr>';
+
+    $data['thead'] = $tHeadMunicipio;
+    $data['tbody'] = $tBodyMunicipio;
+    $data['tfoot'] = $tFootMunicipio;
+    $data['info'] = $totalesMunicipio;
+    $data['codDepartamento'] = $codDepartamento;
+    $data['codMunicipio'] = $codigoMunicipio;
+
+    echo json_encode($data);
 }
 
+else{
+
+$mesesRecorridos = ""; 
+$respuesta = [];
+$respuesta2 = [];
+
+foreach ($diasSemanas as $mes => $semanas) {
+  $datos = "";
+    $diaD = 1;
+    $sem=0;
+    //tabla donde se busca, según mes(obtenido de consulta anterior) y año
+    $tabla="entregas_res_$mes$periodoActual"; 
+
+    // ciclo para recorrer las semanas
+    foreach ($semanas as $semana => $dias) {
+      // ciclo para recorrer los dias de la semana
+        foreach ($dias as $D => $dia) { 
+        $datos.="SUM(D$diaD) + ";
+        $diaD++;
+      }
+      $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
+    }
+
+    $datos = trim($datos, "+ ");
+    $consultaRes = "SELECT nom_sede, $datos ";
+    $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_sede";
+
+    $periodo = 1;
+
+  if ($resConsultaRes = $Link->query($consultaRes)) {
+        if ($resConsultaRes->num_rows > 0) {
+          while ($resEstrato = $resConsultaRes->fetch_assoc()) {
+            $respuesta[$periodo] = $resEstrato;
+          $periodo++;   
+
+          }
+        }
+ 
+      }
+    $respuesta2[$mes] = $respuesta;
+  $mesesRecorridos .= $mes;
+}
 
 $arrayMes = explode("0", $mesesRecorridos);
 
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
-	if($link === '') 
+  if($link === '') 
     { 
         unset($arrayMes[$key]); 
     } 
 }
 
 // encabezado
-$tHeadMunicipio = '<tr>
-    <th>Municipio</th>';
+$tHeadSedes = '<tr>
+    <th>Sedes educativas</th>';
      
     foreach ($arrayMes as $mes) {
 
-        $tHeadMunicipio .= '<th>'.$mesesNom[$mes].'</th>';
+        $tHeadSedes .= '<th>'.$mesesNom[$mes].'</th>';
     
     }
-  $tHeadMunicipio .= '<th>Total</th>
+  $tHeadSedes .= '<th>Total</th>
   </tr>';
 
+ // cuerpo
+  $tBodySedes = "";
+  
+  $posicion = 0;
+  $sedes = []; 
+  $totalSedes = [];
 
-  // cuerpo
-  $tBodyMunicipio = "";
-	
-	$posicion = 0;
-	$municipios = [];	
-	$totalMunicipio = [];
-  $codigos = [];
-  $totalCodigo = [];
-  $totalesMunicipio = [];
+  foreach ($respuesta2 as $mes => $valoresMes) {
 
-	foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($valoresMes as $valorMes => $valor) {
+      // convertimos la respuesta a un array asociativo con la clave primaria edad mes
+      $sedes[$valor['nom_sede']][$mes] = $valor['TOTAL']; 
 
-		foreach ($valoresMes as $valorMes => $valor) {
-			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
-			$municipios[$valor['Ciudad']][$mes] = $valor['TOTAL'];	
-      $codigos[$valor['codigoDane']][$mes] = $valor['TOTAL'];
-		}
-	}
-  // var_dump($codigo);
-
-	foreach ($municipios as $municipio => $valorMunicipio) {
-
-		$tBodyMunicipio .= "<tr> <td>".$municipio."</td>";
-
-		$valorFila = 0;
-		foreach ($valorMunicipio as $valores => $valor) {
-				
-				$valorFila += $valor;
-			 	$tBodyMunicipio .= "<td>".$valor."</td>";
-			 	$totalMunicipio[$municipio]=$valorFila;			
-		}
-
-    foreach ($codigos as $codigo => $valorCodigo) {
-        if (!isset($totalesMunicipio[$codigo])) {
-          $totalesMunicipio[$codigo][0] = $valorFila;
-          $totalesMunicipio[$codigo][1] = $municipio;
-        }
     }
+  }
 
-		$tBodyMunicipio .= "<th>" .$valorFila. "</th>"; 
-		$tBodyMunicipio .= "</tr>";
-	}
+  foreach ($sedes as $sede => $valorSede) {
+    $sedeCod = utf8_decode($sede);
+    $tBodySedes .= "<tr> <td>".$sedeCod."</td>";
 
-	// pie
-	$tFootMunicipio = '<tr>
-  					<th>TOTAL</th>';
-  	$tTotal = 0;
-  	$totalMes = ["01" => 0, "02" => 0, "03" => 0, "04" => 0, "05" => 0, "06" => 0, "07" => 0, "08" => 0, "09" => 0, "10" => 0, "11" => 0, "12" => 0];
+    $valorFila = 0;
+    foreach ($valorSede as $valores => $valor) {
+        
+        $valorFila += $valor;
+        $tBodySedes .= "<td>".$valor."</td>";
+        $totalSedes[$sedeCod]=$valorFila;     
+    }
+    $tBodySedes .= "<th>" .$valorFila. "</th>"; 
+    $tBodySedes .= "</tr>";
+  }
 
-  	foreach ($municipios as $municipio => $valorMunicipio) {
 
-  	foreach ($valorMunicipio as $mes => $valorMes) {
-  		
-  		$totalMes[$mes] += $valorMes;
-  	}
+// pie
+  $tFootSedes = '<tr>
+            <th>TOTAL</th>';
+    $tTotal = 0;
+    $totalMes = ["01" => 0, "02" => 0, "03" => 0, "04" => 0, "05" => 0, "06" => 0, "07" => 0, "08" => 0, "09" => 0, "10" => 0, "11" => 0, "12" => 0];
+
+    foreach ($sedes as $sede => $valorSede) {
+
+    foreach ($valorSede as $mes => $valorMes) {
+      
+      $totalMes[$mes] += $valorMes;
+    }
 
   }
 
 
   foreach ($totalMes as $total) {
 
-  	if ($total <> 0) {
-  		 $tFootMunicipio .='<th>'.$total.'</th>';
-  		 $tTotal += $total;
-  	}
-  	
+    if ($total <> 0) {
+       $tFootSedes .='<th>'.$total.'</th>';
+       $tTotal += $total;
+    }
+    
   }
 
    
-$tFootMunicipio .='<th>'.$tTotal.'</th>
+$tFootSedes .='<th>'.$tTotal.'</th>
 </tr>';
 
-$data['thead'] = $tHeadMunicipio;
-$data['tbody'] = $tBodyMunicipio;
-$data['tfoot'] = $tFootMunicipio;
-$data['info'] = $totalesMunicipio;
-$data['codDepartamento'] = $codDepartamento;
+$data['thead'] = $tHeadSedes;
+$data['tbody'] = $tBodySedes;
+$data['tfoot'] = $tFootSedes;
+$data['info'] = $totalSedes;
 
-echo json_encode($data);
+echo json_encode($data);  
+  
+
+}
+
+
+
+
+
+
+
+
+

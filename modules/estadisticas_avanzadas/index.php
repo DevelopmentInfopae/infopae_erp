@@ -63,6 +63,8 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <br>
           </div>
           <div class="col-sm-6 nopadding">
+            <br>
+            <br>
             <table class="table table-bordered">
               <thead id="tHeadComp">
                 
@@ -90,7 +92,22 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <h2><strong>Totales por género</strong></h2>
             <br>
           </div>
+          <div class="col-sm-12 nopadding">
+            <table class="table table-bordered">
+              <thead id="tHeadGeneros">
+                
+              </thead>
+              <tbody id="tBodyGeneros">
+                
+              </tbody>
+              <tfoot id="tFooTGeneros">
+                
+              </tfoot>
+            </table>
+          </div>
           <div class="col-sm-6 nopadding">
+            <br>
+            <br>
             <table class="table table-bordered">
               <thead id="tHeadGenero">
                 
@@ -254,37 +271,63 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
         </div>
       </div>
 
-     <div class="col-lg-12">
-      <div class="ibox float-e-margins">
-        <div class="ibox-content contentBackground row">
-
-              <div class="col-sm-12" style="text-align: center;">
-              <h2><strong>Totales por municipio</strong></h2>
-              <br>
-              </div>
-              <div class="col-sm-12 nopadding">
-                <table class="table table-bordered" id="tablaMunicipios">
-              
-                  <thead id="tHeadMunicipio">
-                  
-                  </thead>
-                  <tbody id="tBodyMunicipio">
-                
-                  </tbody>
-                  <tfoot id="tFootMunicipio">
-                
-                  </tfoot>
-                </table>
-                </div>
-             <div class="col-sm-12">
-              <div class="well">
-                <div id="map" style="height: 500px;">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <?php
+      $consCodMun = "SELECT codMunicipio FROM parametros";            
+      $resCodMun = $Link->query($consCodMun);
+      $codMun = [];
+        if ($resCodMun->num_rows > 0) {
+          while($Valores = $resCodMun->fetch_assoc()) {
+            $codMun = $Valores;
+          }
+          $codMun2 = $codMun['codMunicipio'];
+          // exit(var_dump($codMun2));
+          if ($codMun2 == "0") {
+                echo "<div class='col-lg-12'>";
+                  echo "<div class='ibox float-e-margins'>";
+                    echo "<div class='ibox-content contentBackground row'>";
+                      echo "<div class='col-sm-12' style='text-align: center;''>";
+                      echo "<h2><strong>Totales por municipio</strong></h2>";
+                      echo "<br>";
+                      echo "</div>";
+                      echo "<div class='col-sm-12 nopadding'>";
+                        echo "<table class='table table-bordered' id='tablaMunicipios'>";
+                          echo "<thead id='tHeadMunicipio'></thead>";
+                          echo "<tbody id='tBodyMunicipio'></tbody>";
+                          echo "<tfoot id='tFootMunicipio'></tfoot>";
+                        echo "</table>";
+                      echo "</div>";
+                      echo "<div class='col-sm-12'>"; 
+                        echo "<div class='well'>"; 
+                          echo "<div id='map' style='height: 500px;''></div>";
+                        echo "</div>";
+                      echo "</div>";
+                    echo "</div>";
+                  echo "</div>";
+                echo "</div>";            
+            } else {
+                echo "<div class='col-lg-12'>";
+                  echo "<div class='ibox float-e-margins'>";
+                    echo "<div class='ibox-content contentBackground row'>";
+                      echo "<div class='col-sm-12' style='text-align: center;''>";
+                      echo "<h2><strong>Totales por Sede educativa</strong></h2>";
+                      echo "<br>";
+                      echo "</div>";
+                      echo "<div class='col-sm-12 nopadding'>";
+                        echo "<table class='table table-bordered' id='tablaSedes'>";
+                          echo "<thead id='tHeadSedes'></thead>";
+                          echo "<tbody id='tBodySedes'></tbody>";
+                          echo "<tfoot id='tFootSedes'></tfoot>";
+                        echo "</table>";
+                      echo "</div>";
+                      echo "<div class='col-sm-12 '>";  
+                        echo "<div id='graficaTotalesSedes'></div>";
+                      echo "</div>";
+                    echo "</div>";
+                  echo "</div>";
+                echo "</div>";
+            }
+        }
+    ?> 
 
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
