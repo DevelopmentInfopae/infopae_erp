@@ -16,13 +16,26 @@ $institucion = $_POST['institucion'];
 $sede = $_POST['sede'];
 
 // $carpetaFisica = $rootUrl.'/upload/sedes/'.$sede.'/';
-$carpetaFisica = '../../../upload/modulo_archivos/';
-$carpeta = 'upload/modulo_archivos/';
+$carpetaFisica = $infopaeData;
+//$carpeta = 'upload/modulo_archivos/';
 
 //Verificando la existencia del directorio
 if (!file_exists($carpetaFisica)) {
-    mkdir($carpetaFisica, 0777);
+    mkdir($carpetaFisica, 0755);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if (isset($_FILES["foto"])){
 	$reporte = null;
@@ -63,7 +76,7 @@ if (isset($_FILES["foto"])){
 		else { }
 		if($bandera == 0){
 			$src = $carpetaFisica.$nombre;
-			$srcw = $carpeta.$nombre;
+			$srcw = $nombre;
 
 
 

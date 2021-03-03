@@ -18,11 +18,11 @@ if($resultado->num_rows >= 1){
 
 $consulta = " SELECT * FROM ubicacion WHERE 1 = 1 ";
 
-if($CodDepartamento != ""){
+if($CodDepartamento != 0){
 	$consulta .= " AND CodigoDANE LIKE '$CodDepartamento%' ";
 }
 
-if($CodMunicipio != ""){
+if($CodMunicipio != 0){
 	$consulta .= " AND  CodigoDANE = $CodMunicipio ";
 }
 

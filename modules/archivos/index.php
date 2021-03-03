@@ -157,24 +157,25 @@ $Link->set_charset("utf8");
 							}
 
 
-
-
-
-
-
-
-
-
-
-
 							$consulta .= " order by fecha_carga desc ";
 
 							$resultado = $Link->query($consulta) or die ("No se puede realizar la consulta para mostrar archivos. <br><br> $consulta <br><br> ". mysqli_error($Link));
+
+
+						
+
+							// var_dump($infopaeData);
+							// foto_loader.php?file=gumball.pdf
+
+
+
+
+
 							if($resultado->num_rows >= 1){
 								while($row = $resultado->fetch_assoc()) { ?>
 									<div class="file-box">
 										<div class="file">
-										<a href="<?php echo $baseUrl.'/'.$row['ruta']; ?>" target="_blank">
+										<a href="file_loader.php?file=<?= $row['ruta']; ?>" target="_blank">
 											<span class="corner"></span>
 											<?php if($row['extension'] == 'pdf'){ ?>
 												<div class="icon">
@@ -182,7 +183,7 @@ $Link->set_charset("utf8");
 												</div>
 											<?php }else{ ?>
 												<div class="image">
-													<img alt="image" class="img-responsive" src="<?php echo $baseUrl.'/'.$row['ruta']; ?>">
+													<img alt="image" class="img-responsive" src="file_loader.php?file=<?= $row['ruta']; ?>">
 												</div>
 											<?php } ?>
 

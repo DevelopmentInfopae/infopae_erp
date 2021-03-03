@@ -21,7 +21,7 @@ if(isset($_POST['id']) && $_POST['id'] != ''){
 		$row = $resultado->fetch_assoc();
 
 		//$rutaFisica = $rootUrl.'/'.$row['ruta'];
-		$rutaFisica = '../../../'.$row['ruta'];
+		$rutaFisica = $infopaeData.$row['ruta'];
 
 		if(file_exists($rutaFisica)){
 			if(unlink($rutaFisica)){
