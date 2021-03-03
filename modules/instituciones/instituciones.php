@@ -51,16 +51,16 @@
                       <tbody>
                           <?php
                           $periodoActual = $_SESSION['periodoActual'];
-                          $consulta = " SELECT 
-                                              i.id, 
-                                              i.nom_inst, 
-                                              i.codigo_inst, 
-                                              u.Ciudad AS ciudad, 
-                                              u.Region AS region, 
+                          $consulta = " SELECT
+                                              i.id,
+                                              i.nom_inst,
+                                              i.codigo_inst,
+                                              u.Ciudad AS ciudad,
+                                              u.Region AS region,
                                               s.sector AS sector,
-                                              i.estado AS estadoInstitucion 
-                                        FROM instituciones i 
-                                            LEFT JOIN ubicacion u ON i.cod_mun = u.CodigoDANE 
+                                              i.estado AS estadoInstitucion
+                                        FROM instituciones i
+                                            LEFT JOIN ubicacion u ON i.cod_mun = u.CodigoDANE
                                             LEFT JOIN sedes$periodoActual s ON s.cod_inst = i.codigo_inst
                                         GROUP BY i.id
                                         ORDER BY i.nom_inst ASC ";
