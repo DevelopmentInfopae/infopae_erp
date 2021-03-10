@@ -47,7 +47,6 @@
     if (isset($_POST["municipio"]) && !empty($_POST["municipio"])) { $c_cronogramas.=" WHERE s.cod_mun_sede = '".$_POST["municipio"]."'"; }
     if (isset($_POST["sede"]) && !empty($_POST["sede"])) { $c_cronogramas.=" AND c.cod_sede = '".$_POST["sede"]."'"; }
 
-
     $r_cronogramas = $Link->query($c_cronogramas) or die("Error al consultar el listado de cronograma: ". $Link->error);
     if ($r_cronogramas->num_rows > 0) {
         while($registro_cronograma = $r_cronogramas->fetch_object()) {
@@ -226,7 +225,7 @@
         $(document).on('click', '#crear_cronograma', function() { abrir_modal_crear_cronograma(); });
         $(document).on('click', '.editar_cronograma', function() { abrir_modal_editar_cronograma($(this).data('cronograma_id')); });
 
-        $(document).on('click', '#save_payment_button', function() { save_payment(); });
+        // $(document).on('click', '#save_payment_button', function() { save_payment(); });
         $(document).on('change', '#fecha_desde', function() { $('#fecha_hasta').prop('min', $('#fecha_desde').val()) });
         $(document).on('change', '#fecha_hasta', function() { $('#fecha_desde').prop('max', $('#fecha_hasta').val()) });
         $(document).on('change', '#municipio_modal', function() { cargar_instituciones('_modal'); });
@@ -237,7 +236,7 @@
         $(document).on('change', '#institucion_modal', function() { cargar_sedes('_modal_editar'); });
         $(document).on('change', '#fecha_desde_modal_editar', function() { $('#fecha_hasta_modal_editar').prop('min', $('#fecha_desde_modal_editar').val()) });
         $(document).on('change', '#fecha_hasta_modal_editar', function() { $('#fecha_desde_modal_editar').prop('max', $('#fecha_hasta_modal_editar').val()) });
-        $(document).on('click', '#editar_cronograma', function() { guardar_cronograma(); });
+        $(document).on('click', '#editar_cronograma', function() { editar_cronograma(); });
 
         $('#tabla_cronograma').DataTable({
             pageLength: 25,
@@ -356,20 +355,20 @@
             success: function(data) {
                 if(data.estado == '1') {
                     if (data.log != '') {
-                        Command: toastr.error(data.log, "Error al procesar", { onHidden : function(){ $('#loader').fadeOut(); }});
+                        Command: toastr.error('Los siguientes registros no fueron almacenados: <br>'+data.log, "¡Error!", { onHidden : function(){ $('#loader').fadeOut(); }});
                     }
 
-                    Command: toastr.success(data.mensaje, "Procesado", { onHidden : function(){ $('#loader').fadeOut(); location.reload(); }});
+                    Command: toastr.success(data.mensaje, "¡Correcto!", { onHidden : function(){ $('#loader').fadeOut(); location.reload(); }});
                 } else {
-                    Command: toastr.error(data.mensaje, "Error al procesar", { onHidden : function(){ $('#loader').fadeOut(); }});
+                    Command: toastr.error(data.mensaje, "¡Error!", { onHidden : function(){ $('#loader').fadeOut(); }});
 
                     if (data.log != '') {
-                        Command: toastr.error('Los siguientes registros no fueron almacenados: <br>'+data.log, "Error al procesar", { onHidden : function(){ $('#loader').fadeOut(); }});
+                        Command: toastr.error('Los siguientes registros no fueron almacenados: <br>'+data.log, "Error al procesar", { onHidden : function(){ $('#loader').fadeOut(); location.reload(); }});
                     }
                 }
             },
             error: function(data){
-                Command: toastr.error("Existe un error con el archivo. Por favor verifique los datos suministrados. Posiblemente los códigos de instituciones se encuentran duplicados.", "Error al procesar", { onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText) }});
+                Command: toastr.error("Existe un error con el archivo. Por favor verifique los datos suministrados. Posiblemente los códigos de sedes se encuentran duplicados.", "¡Error!", { onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText) }});
             }
         });
     }
@@ -411,7 +410,7 @@
         return true;
     }
 
-    function guardar_cronograma()
+    function editar_cronograma()
     {
         $.ajax({
             url: 'functions/fn_cronograma_editar.php',
