@@ -7,15 +7,26 @@
     $departamento_operador = $_SESSION['p_CodDepartamento'];
 
     $c_municipio = "SELECT DISTINCT codigoDANE, ciudad FROM ubicacion WHERE ETC <> '1' ";
-    if($departamento_operador != ''){
-      $c_municipio .= " AND CodigoDANE LIKE '$departamento_operador%' ";
-    }
+    if($departamento_operador != '') { $c_municipio .= " AND CodigoDANE LIKE '$departamento_operador%' "; }
+    if ($municipio_defecto) { $c_municipio .= " AND CodigoDANE LIKE '$municipio_defecto%' "; }
     $c_municipio .= " ORDER BY ciudad ASC";
     $r_municipio = $Link->query($c_municipio) or die("Error al consultar los munnicipios. ". $Link->error);
     if($r_municipio->num_rows > 0){
       	while($row = $r_municipio->fetch_object()) {
       		$municipios[] = $row;
       	}
+    }
+
+    if (isset($municipio_defecto)) {
+        $codigo_municipio = $municipio_defecto;
+        $c_institucion = "SELECT DISTINCT cod_inst AS codigo, nom_inst AS nombre FROM sedes".$periodo_actual." WHERE cod_mun_sede = '".$codigo_municipio."' ORDER BY nom_inst;";
+        $r_institucion = $Link->query($c_institucion) or die("Error al consultar instituciones ". $Link->error);
+
+        if ($r_institucion->num_rows > 0) {
+            while($instituto = $r_institucion->fetch_object()) {
+                $instituciones[] = $instituto;
+            }
+        }
     }
 ?>
 <style type="text/css">
@@ -53,6 +64,14 @@
         						<label for="institucion_modal">Institución *</label>
     							<select class="form-control select2" name="institucion" id="institucion_modal" required="required" style="width: 100%;">
       								<option value="">Todas</option>
+      								<?php if (isset($instituciones)) { ?>
+                                        <?php foreach ($instituciones as $key => $institucion) { ?>
+                                            <option value="<?= $institucion->codigo; ?>"
+                                                <?= (isset($_POST["institucion"]) && $_POST["institucion"] == $institucion->codigo) ? "selected" : ""; ?>>
+                                                <?= $institucion->nombre; ?>
+                                            </option>
+                                        <?php } ?>
+                                    <?php } ?>
     							</select>
       						</div>
   						</div>
@@ -120,5 +139,8 @@
 		$('.select2').select2();
 
 		$('#modal_crear_cronograma').modal('show');
+
+
+        $('#municipio').trigger('change');
 	});
 </script>
