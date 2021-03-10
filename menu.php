@@ -308,6 +308,7 @@
 			<li><a href="<?php echo $baseUrl; ?>/modules/insumos">Insumos</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/grupos_etarios">Grupos etarios</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/cronograma">Cronograma</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/noticias">Noticias</a></li>
 			<li><a href="#" class="sinDesarrollar">Perfiles de usuario</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/usuarios"><span class="nav-label">Usuarios</span></a> </li>
 			<li><a href="<?= $baseUrl; ?>/modules/proveedores">Proveedores</a></li>

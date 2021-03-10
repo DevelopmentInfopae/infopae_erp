@@ -3,37 +3,54 @@
 	require_once '../../../config.php';
 	require "../../../vendor/autoload.php";
 
-	use PhpOffice\PhpSpreadsheet\Spreadsheet;
-
-	if (isset($_FILES["archivo"]["name"])){
-		$log_errores = "";
-		$c_crear = "INSERT INTO cronograma (mes, semana, cod_sede, fecha_desde, fecha_hasta, horario) VALUES ";
-
+	if (isset($_FILES["archivo"]["name"])  && $_FILES["archivo"]["name"] != ""){
 		$tipo_archivo = str_replace("application/", "", $_FILES["archivo"]["type"]);
 
-		if($tipo_archivo == "vnd.ms-excel") {
-			//Abrimos nuestro archivo
+		if($tipo_archivo == "vnd.ms-excel" || $tipoArchivo == "text/csv") {
+			$log_errores = "";
+			$cronogramas_guardados = 0;
+
 			$archivo = fopen($_FILES["archivo"]["tmp_name"], "r");
+			$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
 
-			//Recorremos para validar instituciones existentes.
-			$separador = (count(fgetcsv($archivo, ",")) > 1 ? ",": ";");
+			while(($datos = fgetcsv($archivo, null, $separador)) == TRUE) {
+				$cronograma_existente = validar_cronograma_existente($Link, $datos[4], $datos[6]);
 
-			$registros = FALSE;
-			while(($datos = fgetcsv($archivo, null, $separador))==true) {
-				if (validar_cronograma_existente($Link, $datos[2], $datos[4])) {
-					$c_crear .= "('".$datos[4]."', '".$datos[5]."', '".$datos[2]."', '".$datos[6]."', '".$datos[7]."', '".$datos[8]."'), ";
-					$registros = TRUE;
+				if ($cronograma_existente == TRUE) {
+				 	$cronograma_guardado = insertar_cronograma($Link, $datos);
+
+				 	if ($cronograma_guardado == TRUE) {
+				 		$cronogramas_guardados++;
+				 	}
 				} else {
-					$log_errores .= "Sede: ".$datos[2]." para el mes: ".$datos[4].". <br>";
+					$log_errores .= "Sede: ".$datos[4]." para el mes: ".$datos[6].". <br>";
 				}
 			}
 
-			echo insertar_cronograma($Link, trim($c_crear, ", "), $log_errores, $registros);
+			if ($cronogramas_guardados > 0) {
+				echo json_encode([
+					'estado'=>1,
+					'mensaje'=>'El cronograma ha sido creado exitosamente',
+					'log'=>$log_errores
+				]);
+			} else {
+				echo json_encode([
+					'estado'=>0,
+					'mensaje'=>'No fue posible crear el cronograma',
+					'log'=>$log_errores
+				]);
+			}
 		} else {
-			echo "xlsx";
+			echo json_encode([
+				'estado'=>0,
+				'mensaje'=>'La extension del archivo no está permitido. La extención permitida es: <strong>.csv</strong>'
+			]);
 		}
 	} else {
-		echo "No existe archivo";
+		echo json_encode([
+			'estado'=>0,
+			'mensaje'=>'No existe archivo para la importación'
+		]);
 	}
 
 
@@ -43,34 +60,20 @@
 	    $r_cronograma_existente = $Link->query($c_cronograma_existente) or die("Error al consultar el cronograma existente: ". $Link->error);
 
 	    if ($r_cronograma_existente->num_rows == 0) {
-	        return 1;
+	        return TRUE;
 	    } else {
-	    	return 0;
+	    	return FALSE;
 	    }
 	}
 
-	function insertar_cronograma($Link, $consulta, $log_errores, $registros)
+	function insertar_cronograma($Link, $datos)
 	{
-		if (!$registros) {
-			return json_encode([
-		        "estado"=>0,
-		        "mensaje"=>"No fue posible crear el cronograma.",
-		        "log" => $log_errores
-		    ]);
-		} else {
-			$r_crear = $Link->query($consulta) or die("Error al insertar el cronograma: ". $Link->error);
-			if ($r_crear) {
-			    return json_encode([
-			        "estado"=>1,
-			        "mensaje"=>"El cronograma ha sido creado exitosamente.",
-			        "log" => $log_errores
-			    ]);
-			} else {
-			    return json_encode([
-			        "estado"=>0,
-			        "mensaje"=>"No fue posible crear el cronograma."
-			    ]);
-			}
-		}
+		$c_crear = "INSERT INTO cronograma (mes, semana, cod_sede, fecha_desde, fecha_hasta, horario) VALUES ('".$datos[6]."', '".$datos[7]."', '".$datos[4]."', '".$datos[8]."', '".$datos[9]."', '".$datos[10]."');";
+		$r_crear = $Link->query($c_crear) or die("Error al insertar el cronograma: ". $Link->error);
 
+		if ($r_crear) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
 	}

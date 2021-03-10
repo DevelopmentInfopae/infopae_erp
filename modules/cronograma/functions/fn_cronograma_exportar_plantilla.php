@@ -4,7 +4,7 @@ require_once '../../../config.php';
 require '../../../vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Borders;
@@ -27,7 +27,7 @@ $c_sede = "SELECT
 		    cod_sede AS codigo,
 		    nom_sede AS nombre
 		FROM
-		    sedes21 s
+		    sedes$periodo_actual s
 		        INNER JOIN
 		    ubicacion u ON u.CodigoDANE = s.cod_mun_sede;";
 $r_sede = $Link->query($c_sede) or die("Error al consultar las sedes: ". $Link->error);
@@ -44,11 +44,11 @@ if ($r_sede->num_rows > 0){
       	'name'  => 'Calibri'
   	]];
 
-	$archivo->setCellValue("A1", "Código Municipio")->getStyle('A1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("B1", "Nombre Municipio")->getStyle('B1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("C1", "Código Institución")->getStyle('C1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("D1", "Nombre institución")->getStyle('D1')->applyFromArray($estilos_titulos);
-	$archivo->setCellValue("E1", "Código sede")->getStyle('E1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("A1", "Codigo Municipio")->getStyle('A1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("B1", 'Nombre Municipio')->getStyle('B1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("C1", "Codigo Institucion")->getStyle('C1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("D1", "Nombre institucion")->getStyle('D1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("E1", "Codigo sede")->getStyle('E1')->applyFromArray($estilos_titulos);
 	$archivo->setCellValue("F1", "Nombre sede")->getStyle('F1')->applyFromArray($estilos_titulos);
 	$archivo->setCellValue("G1", "Mes")->getStyle('G1')->applyFromArray($estilos_titulos);
 	$archivo->setCellValue("H1", "Semana")->getStyle('H1')->applyFromArray($estilos_titulos);
@@ -58,11 +58,11 @@ if ($r_sede->num_rows > 0){
 
 	$fila = 2;
 	while($sede = $r_sede->fetch_object()){
-		$archivo->setCellValueExplicit("A". $fila, $sede->codigo_municipio, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		$archivo->setCellValue("A". $fila, $sede->codigo_municipio);
 		$archivo->setCellValue("B". $fila, $sede->nombre_municipio);
-		$archivo->setCellValueExplicit("C". $fila, $sede->codigo_institucion, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		$archivo->setCellValue("C". $fila, $sede->codigo_institucion);
 		$archivo->setCellValue("D". $fila, $sede->nombre_institucion);
-		$archivo->setCellValueExplicit("E". $fila, $sede->codigo, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+		$archivo->setCellValue("E". $fila, $sede->codigo);
 		$archivo->setCellValue("F". $fila, $sede->nombre);
 
 		$fila++;
@@ -72,10 +72,10 @@ if ($r_sede->num_rows > 0){
     $archivo->getColumnDimension($columna)->setAutoSize(true);
 	}
 
-	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename=Plantilla_cronograma.xlsx');
+	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;');
+	header('Content-Disposition: attachment;filename=Plantilla_cronograma.csv');
 
-	$escritor = new Xlsx($excel);
+	$escritor = new Csv($excel);
 	$escritor->save('php://output');
 } else {
 	echo "no hay registros para los filtros seleccionados";
