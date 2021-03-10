@@ -13,6 +13,9 @@
     if($departamento_operador != ''){
       $c_municipio .= " AND CodigoDANE LIKE '$departamento_operador%' ";
     }
+    if ($municipio_defecto) {
+      $c_municipio .= " AND CodigoDANE LIKE '$municipio_defecto%' ";
+    }
     $c_municipio .= " ORDER BY ciudad ASC";
     $r_municipio = $Link->query($c_municipio) or die("Error al consultar los munnicipios. ". $Link->error);
     if($r_municipio->num_rows > 0){
@@ -21,8 +24,9 @@
       	}
     }
 
-    if (isset($_POST["municipio"]) && !empty($_POST["municipio"])) {
-        $c_institucion = "SELECT DISTINCT cod_inst AS codigo, nom_inst AS nombre FROM sedes".$periodo_actual." WHERE cod_mun_sede = '".$_POST["municipio"]."' ORDER BY nom_inst;";
+    if (isset($_POST["municipio"]) && !empty($_POST["municipio"]) || isset($municipio_defecto)) {
+        $codigo_municipio = (!empty($_POST["municipio"])) ? $_POST["municipio"] : $municipio_defecto;
+        $c_institucion = "SELECT DISTINCT cod_inst AS codigo, nom_inst AS nombre FROM sedes".$periodo_actual." WHERE cod_mun_sede = '".$codigo_municipio."' ORDER BY nom_inst;";
         $r_institucion = $Link->query($c_institucion) or die("Error al consultar instituciones ". $Link->error);
 
         if ($r_institucion->num_rows > 0) {
@@ -43,8 +47,9 @@
         }
     }
 
-    $c_cronogramas = "SELECT c.id, c.mes, c.semana, c.cod_sede AS codigo_sede, s.nom_sede AS nombre_sede, c.fecha_desde, c.fecha_hasta, c.horario FROM cronograma c INNER JOIN sedes".$periodo_actual." s ON s.cod_sede = c.cod_sede";
+    $c_cronogramas = "SELECT c.id, c.mes, c.semana, s.nom_inst AS nombre_institucion, c.cod_sede AS codigo_sede, s.nom_sede AS nombre_sede, c.fecha_desde, c.fecha_hasta, c.horario FROM cronograma c INNER JOIN sedes".$periodo_actual." s ON s.cod_sede = c.cod_sede";
     if (isset($_POST["municipio"]) && !empty($_POST["municipio"])) { $c_cronogramas.=" WHERE s.cod_mun_sede = '".$_POST["municipio"]."'"; }
+    if (isset($_POST["institucion"]) && !empty($_POST["institucion"])) { $c_cronogramas.=" AND s.cod_inst = '".$_POST["institucion"]."'"; }
     if (isset($_POST["sede"]) && !empty($_POST["sede"])) { $c_cronogramas.=" AND c.cod_sede = '".$_POST["sede"]."'"; }
 
     $r_cronogramas = $Link->query($c_cronogramas) or die("Error al consultar el listado de cronograma: ". $Link->error);
@@ -153,6 +158,7 @@
                             <tr>
                                 <th>Mes</th>
                                 <th>Semana</th>
+                                <th>Nombre Institución</th>
                                 <th>Código Sede</th>
                                 <th>Nombre Sede</th>
                                 <th>Fecha desde</th>
@@ -167,6 +173,7 @@
                                     <tr>
                                         <td><?= $cronograma->mes; ?></td>
                                         <td><?= $cronograma->semana; ?></td>
+                                        <td><?= $cronograma->nombre_institucion; ?></td>
                                         <td><?= $cronograma->codigo_sede; ?></td>
                                         <td><?= $cronograma->nombre_sede; ?></td>
                                         <td><?= $cronograma->fecha_desde; ?></td>
@@ -314,6 +321,7 @@
         })
         .done(function(data) {
             $('#institucion'+tipo).html(data);
+            $('#institucion'+tipo).select2('val', '');
         })
         .fail(function(data) {
             console.log(data.responseText);
@@ -334,6 +342,7 @@
         })
         .done(function(data) {
             $('#sede'+tipo).html(data);
+            $('#sede'+tipo).select2('val', '');
         })
         .fail(function(data) {
             console.log(data.responseText);
