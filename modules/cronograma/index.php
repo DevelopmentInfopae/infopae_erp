@@ -235,12 +235,12 @@
         // $(document).on('click', '#save_payment_button', function() { save_payment(); });
         $(document).on('change', '#fecha_desde', function() { $('#fecha_hasta').prop('min', $('#fecha_desde').val()) });
         $(document).on('change', '#fecha_hasta', function() { $('#fecha_desde').prop('max', $('#fecha_hasta').val()) });
-        $(document).on('change', '#municipio_modal', function() { cargar_instituciones('_modal'); });
-        $(document).on('change', '#institucion_modal', function() { cargar_sedes('_modal'); });
+        // $(document).on('change', '#municipio_modal', function() { cargar_instituciones_modal(); });
+        // $(document).on('change', '#institucion_modal', function() { cargar_sedes_modal(); });
         $(document).on('click', '#guardar_cronograma', function() { guardar_cronograma(); });
 
-        $(document).on('change', '#municipio_modal', function() { cargar_instituciones('_modal_editar'); });
-        $(document).on('change', '#institucion_modal', function() { cargar_sedes('_modal_editar'); });
+        // $(document).on('change', '#municipio_modal', function() { cargar_instituciones('_modal_editar'); });
+        // $(document).on('change', '#institucion_modal', function() { cargar_sedes('_modal_editar'); });
         $(document).on('change', '#fecha_desde_modal_editar', function() { $('#fecha_hasta_modal_editar').prop('min', $('#fecha_desde_modal_editar').val()) });
         $(document).on('change', '#fecha_hasta_modal_editar', function() { $('#fecha_desde_modal_editar').prop('max', $('#fecha_hasta_modal_editar').val()) });
         $(document).on('click', '#editar_cronograma', function() { editar_cronograma(); });
@@ -414,6 +414,14 @@
         if ($('#mes').val() == '') {
             Command: toastr.error('El campo Mes es obligatorio.', 'Mensaje de validación', {onHidden: function() { $('#mes').focus(); }});
             return false;
+        } else if ($('#mes').val() == 0) {
+            Command: toastr.error('El campo Mes debe ser mayor a 0.', 'Mensaje de validación', {onHidden: function() { $('#mes').focus(); }});
+            return false;
+        }
+
+        if ($('#semana').val() <= 0) {
+            Command: toastr.error('El campo Semana debe ser mayor a 0.', 'Mensaje de validación', {onHidden: function() { $('#semana').focus(); }});
+            return false;
         }
 
         return true;
@@ -421,21 +429,33 @@
 
     function editar_cronograma()
     {
-        $.ajax({
-            url: 'functions/fn_cronograma_editar.php',
-            type: 'POST',
-            dataType: 'JSON',
-            data: $("#formulario_editar_cronograma").serialize(),
-        })
-        .done(function(data) {
-            if (data.response == 1) {
-                Command: toastr.success(data.message, '¡Correcto!', {onHidden: function() { $('#modal_editar_cronograma').modal('hide'); location.reload(); }});
-            } else {
-                Command: toastr.error(data.message, '¡Error!');
-            }
-        })
-        .fail(function(data) {
-            Command: toastr.error('Al parecer existe un error. Por favor comuníquese con el adminitrador del sistema.', '¡Error!', {onHidden: function() { console.log(data.responseText); }});
-        });
+        if (validar_formulario_editar()) {
+            $.ajax({
+                url: 'functions/fn_cronograma_editar.php',
+                type: 'POST',
+                dataType: 'JSON',
+                data: $("#formulario_editar_cronograma").serialize(),
+            })
+            .done(function(data) {
+                if (data.response == 1) {
+                    Command: toastr.success(data.message, '¡Correcto!', {onHidden: function() { $('#modal_editar_cronograma').modal('hide'); location.reload(); }});
+                } else {
+                    Command: toastr.error(data.message, '¡Error!');
+                }
+            })
+            .fail(function(data) {
+                Command: toastr.error('Al parecer existe un error. Por favor comuníquese con el adminitrador del sistema.', '¡Error!', {onHidden: function() { console.log(data.responseText); }});
+            });
+        }
+    }
+
+    function validar_formulario_editar()
+    {
+        if ($('#semana').val() <= 0) {
+            Command: toastr.error('El campo Semana debe ser mayor a 0.', 'Mensaje de validación', {onHidden: function() { $('#semana').focus(); }});
+            return false;
+        }
+
+        return true;
     }
 </script>

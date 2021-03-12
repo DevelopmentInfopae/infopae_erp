@@ -127,7 +127,7 @@
 		        		<div class="col-sm-4">
 		        			<div class="form-group">
 		        				<label for="value">Mes *</label>
-		        				<input class="form-control" type="number" name="mes" id="mes" required="required" value="<?= $cronograma->mes; ?>" disabled="disabled">
+		        				<input class="form-control" type="number" name="mes" id="mes" min="1" max="12" required="required" value="<?= $cronograma->mes; ?>" disabled="disabled">
 		        			</div>
 		        		</div>
 		        	</div>
@@ -136,13 +136,13 @@
 		        		<div class="col-sm-4">
 		        			<div class="form-group">
 		        				<label for="value">Semana</label>
-		        				<input class="form-control" type="number" name="semana" id="semana"  value="<?= $cronograma->semana; ?>">
+		        				<input class="form-control" type="number" name="semana" id="semana" min="1" value="<?= $cronograma->semana; ?>">
 		        			</div>
 		        		</div>
               			<div class="col-sm-4">
               				<div class="form-group">
         						<label for="horario">Horario</label>
-    							<input class="form-control" type="text" name="horario" id="horario"  value="<?= $cronograma->horario; ?>">
+    							<input class="form-control" type="text" name="horario" id="horario" value="<?= $cronograma->horario; ?>">
       						</div>
               			</div>
 		        	</div>
@@ -163,6 +163,51 @@
 	$(document).ready(function() {
 		$('.select2').select2();
 
+    $(document).on('change', '#municipio_modal_editar', function() { cargar_instituciones_modal(); });
+    $(document).on('change', '#institucion_modal_editar', function() { cargar_sedes_modal(); });
+
 		$('#modal_editar_cronograma').modal('show');
 	});
+
+  function cargar_instituciones_modal()
+    {
+        var municipio = $('#municipio_modal_editar').val();
+        $('#institucion_modal_editar').select2('val', '');
+
+        $.ajax({
+            url: 'functions/fn_obtener_institutos.php',
+            type: 'POST',
+            dataType: 'HTML',
+            data: {
+                'municipio': municipio
+            },
+        })
+        .done(function(data) {
+            $('#institucion_modal_editar').html(data);
+        })
+        .fail(function(data) {
+            console.log(data.responseText);
+        });
+    }
+
+    function cargar_sedes_modal()
+    {
+        var institucion = $('#institucion_modal_editar').val();
+        $('#sede_modal_editar').select2('val', '');
+
+        $.ajax({
+            url: 'functions/fn_obtener_sedes.php',
+            type: 'POST',
+            dataType: 'HTML',
+            data: {
+                'institucion': institucion
+            },
+        })
+        .done(function(data) {
+            $('#sede_modal_editar').html(data);
+        })
+        .fail(function(data) {
+            console.log(data.responseText);
+        });
+    }
 </script>

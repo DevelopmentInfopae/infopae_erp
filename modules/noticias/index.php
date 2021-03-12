@@ -130,7 +130,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <th>Idetificador</th>
+                <th>Fecha</th>
                 <th>Título</th>
                 <th>Descripción</th>
                 <th class="text-center">Acciones</th>

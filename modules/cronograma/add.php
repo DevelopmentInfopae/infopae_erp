@@ -102,7 +102,7 @@
 		        		<div class="col-sm-4">
 		        			<div class="form-group">
 		        				<label for="value">Mes *</label>
-		        				<input class="form-control" type="number" name="mes" id="mes" required="required">
+		        				<input class="form-control" type="number" name="mes" id="mes" min="1" max="12" required="required">
 		        			</div>
 		        		</div>
 		        	</div>
@@ -111,7 +111,7 @@
 		        		<div class="col-sm-4">
 		        			<div class="form-group">
 		        				<label for="value">Semana</label>
-		        				<input class="form-control" type="number" name="semana" id="semana">
+		        				<input class="form-control" type="number" name="semana" id="semana" min="1">
 		        			</div>
 		        		</div>
               			<div class="col-sm-4">
@@ -136,6 +136,9 @@
 
 <script>
 	$(document).ready(function() {
+		$(document).on('change', '#municipio_modal', function() { cargar_instituciones_modal(); });
+        $(document).on('change', '#institucion_modal', function() { cargar_sedes_modal(); });
+
 		$('.select2').select2();
 
 		$('#modal_crear_cronograma').modal('show');
@@ -143,4 +146,47 @@
 
         $('#municipio').trigger('change');
 	});
+
+
+    function cargar_instituciones_modal()
+    {
+        var municipio = $('#municipio_modal').val();
+        $('#institucion_modal').select2('val', '');
+
+        $.ajax({
+            url: 'functions/fn_obtener_institutos.php',
+            type: 'POST',
+            dataType: 'HTML',
+            data: {
+                'municipio': municipio
+            },
+        })
+        .done(function(data) {
+            $('#institucion_modal').html(data);
+        })
+        .fail(function(data) {
+            console.log(data.responseText);
+        });
+    }
+
+    function cargar_sedes_modal()
+    {
+        var institucion = $('#institucion_modal').val();
+        $('#sede_modal').select2('val', '');
+
+        $.ajax({
+            url: 'functions/fn_obtener_sedes.php',
+            type: 'POST',
+            dataType: 'HTML',
+            data: {
+                'institucion': institucion
+            },
+        })
+        .done(function(data) {
+            $('#sede_modal').html(data);
+        })
+        .fail(function(data) {
+            console.log(data.responseText);
+        });
+    }
 </script>
