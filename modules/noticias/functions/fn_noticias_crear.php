@@ -23,6 +23,9 @@
 
             $logo_etc = subir_imagen($_FILES["imagen"], "image", $id, $Link);
             if ($logo_etc->estado == 0) {
+                $c_eliminar_noticia = "DELETE FROM noticias WHERE id = '$id'";
+                $r_eliminar_noticia = $Link->query($c_eliminar_noticia) or die ("Error al eliminar el registro de noticia: ". $Link->error);
+
                 echo json_encode($logo_etc);
                 exit();
             }
@@ -38,7 +41,6 @@
     {
         $dimensiones = getimagesize($imagen["tmp_name"]);
         $ratio = getAspectRatio($dimensiones[0], $dimensiones[1]);
-
 
         if ($ratio < 3) {
             return (object) [

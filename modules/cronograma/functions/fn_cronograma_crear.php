@@ -7,8 +7,8 @@
     $sede = (isset($post->sede) && $post->sede != '') ? mysqli_real_escape_string($Link, $post->sede) : '';
     $fecha_desde = (isset($post->fecha_desde) && $post->fecha_desde != '') ? mysqli_real_escape_string($Link, $post->fecha_desde) : '';
     $fecha_hasta = (isset($post->fecha_hasta) && $post->fecha_hasta != '') ? mysqli_real_escape_string($Link, $post->fecha_hasta) : '';
-    $mes = (isset($post->mes) && $post->mes != '') ? mysqli_real_escape_string($Link, $post->mes) : '';
-    $semana = (isset($post->semana) && $post->semana != '') ? mysqli_real_escape_string($Link, $post->semana) : '';
+    $mes = (isset($post->mes) && $post->mes != '') ? (int) mysqli_real_escape_string($Link, $post->mes) : '';
+    $semana = (isset($post->semana) && $post->semana != '') ? (int) mysqli_real_escape_string($Link, $post->semana) : '';
     $horario = (isset($post->horario) && $post->horario != '') ? mysqli_real_escape_string($Link, $post->horario) : '';
 
     $c_cronograma_existente = "SELECT * FROM cronograma WHERE cod_sede = '".$sede."' AND mes='".$mes."';";

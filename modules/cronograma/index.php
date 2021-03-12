@@ -310,6 +310,7 @@
 	function cargar_instituciones(tipo = '')
     {
         var municipio = $('#municipio'+tipo).val();
+        $('#institucion'+tipo).select2('val', '');
 
         $.ajax({
             url: 'functions/fn_obtener_institutos.php',
@@ -321,7 +322,6 @@
         })
         .done(function(data) {
             $('#institucion'+tipo).html(data);
-            $('#institucion'+tipo).select2('val', '');
         })
         .fail(function(data) {
             console.log(data.responseText);
@@ -331,6 +331,7 @@
 	function cargar_sedes(tipo = '')
     {
         var institucion = $('#institucion'+tipo).val();
+        $('#sede'+tipo).select2('val', '');
 
         $.ajax({
             url: 'functions/fn_obtener_sedes.php',
@@ -342,7 +343,6 @@
         })
         .done(function(data) {
             $('#sede'+tipo).html(data);
-            $('#sede'+tipo).select2('val', '');
         })
         .fail(function(data) {
             console.log(data.responseText);
