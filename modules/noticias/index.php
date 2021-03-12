@@ -131,6 +131,7 @@
             <tfoot>
               <tr>
                 <th>Idetificador</th>
+                <th>Título</th>
                 <th>Descripción</th>
                 <th class="text-center">Acciones</th>
               </tr>
@@ -310,34 +311,16 @@
         processData: false,
         data: formData,
         dataType: 'json',
-        beforeSend: function(){ $('#loader').fadeIn(); },
-        success: function(data){
-          console.log(data);
-
+        beforeSend: function() { $('#loader').fadeIn(); },
+        success: function(data) {
           if(data.estado == 1){
-            Command: toastr.success(
-              data.mensaje,
-              "Guardado",
-              {
-                onHidden : function(){
-                  $('#loader').fadeOut();
-                  ruta = $('#inputBaseUrl').val();
-                  window.open(ruta, "_self");
-                }
-              }
-            );
+            Command: toastr.success(data.mensaje, "¡Correcto!", { onHidden : function(){ $('#loader').fadeOut(); location.reload(); } });
           } else {
             Command: toastr.error( data.mensaje, "¡Error!", { onHidden : function(){ $('#loader').fadeOut(); } });
           }
         },
         error: function(data){ console.log(data);
-          Command: toastr.error(
-            "Al parecer existe un problema en el servidor. Por favor comuníquese con el adminstrador del sitio InfoPAE.",
-            "Error al procesar",
-            {
-              onHidden : function(){ $('#loader').fadeOut(); }
-            }
-          );
+          Command: toastr.error("Al parecer existe un problema. Por favor comuníquese con el adminstrador del sitio InfoPAE.", "¡Error!", { onHidden : function(){ $('#loader').fadeOut(); } });
         }
       });
     }
@@ -354,7 +337,6 @@
       },
     })
     .done(function(data) {
-      console.log(data);
       if (data.estado == 1) {
         $('#formulario_actualizar_noticia #id').val(data.datos.id);
         $('#formulario_actualizar_noticia #fecha').val(data.datos.fecha);
@@ -400,7 +382,7 @@
           }
         },
         error: function(data){
-          Command: toastr.error("Al parecer existe un problema en el servidor. Por favor comuníquese con el adminstrador del sitio InfoPAE.", "Error al procesar", {onHidden : function(){ $('loader').fadeOut(); }});
+          Command: toastr.error("Al parecer existe un problema. Por favor comuníquese con el adminstrador del sitio InfoPAE.", "¡Error!", {onHidden : function(){ $('loader').fadeOut(); }});
         }
       });
     }
