@@ -68,11 +68,18 @@
 
 	function insertar_cronograma($Link, $datos)
 	{
-		$c_crear = "INSERT INTO cronograma (mes, semana, cod_sede, fecha_desde, fecha_hasta, horario) VALUES ('".$datos[6]."', '".$datos[7]."', '".$datos[4]."', '".$datos[8]."', '".$datos[9]."', '".$datos[10]."');";
-		$r_crear = $Link->query($c_crear) or die("Error al insertar el cronograma: ". $Link->error);
+		$mes = (int) $datos[6];
+		$semana = (int) $datos[7];
 
-		if ($r_crear) {
-			return TRUE;
+		if ($mes >= 1 && $mes <= 12) {
+			$c_crear = "INSERT INTO cronograma (mes, semana, cod_sede, fecha_desde, fecha_hasta, horario) VALUES ('".$mes."', '".$semana."', '".$datos[4]."', '".$datos[8]."', '".$datos[9]."', '".$datos[10]."');";
+			$r_crear = $Link->query($c_crear) or die("Error al insertar el cronograma: ". $Link->error);
+
+			if ($r_crear) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
 		} else {
 			return FALSE;
 		}
