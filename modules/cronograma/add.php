@@ -31,11 +31,11 @@
 ?>
 <style type="text/css">
 	.select2-container--open {
-	    z-index: 9999999
-	}
+      z-index: 9999999
+  }
 </style>
 
-<div class="modal fade in" id="modal_crear_cronograma" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade in" id="modal_crear_cronograma" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
 		<form action="" method="post" id="formulario_crear_cronograma">
 		    <div class="modal-content">
@@ -62,19 +62,19 @@
       					<div class="col-sm-4">
       						<div class="form-group">
         						<label for="institucion_modal">Institución *</label>
-    							<select class="form-control select2" name="institucion" id="institucion_modal" required="required" style="width: 100%;">
-      								<option value="">Todas</option>
-      								<?php if (isset($instituciones)) { ?>
-                                        <?php foreach ($instituciones as $key => $institucion) { ?>
-                                            <option value="<?= $institucion->codigo; ?>"
-                                                <?= (isset($_POST["institucion"]) && $_POST["institucion"] == $institucion->codigo) ? "selected" : ""; ?>>
-                                                <?= $institucion->nombre; ?>
-                                            </option>
-                                        <?php } ?>
-                                    <?php } ?>
-    							</select>
+      							<select class="form-control select2" name="institucion" id="institucion_modal" required="required" style="width: 100%;">
+        								<option value="">Todas</option>
+        								<?php if (isset($instituciones)) { ?>
+                            <?php foreach ($instituciones as $key => $institucion) { ?>
+                                <option value="<?= $institucion->codigo; ?>"
+                                    <?= (isset($_POST["institucion"]) && $_POST["institucion"] == $institucion->codigo) ? "selected" : ""; ?>>
+                                    <?= $institucion->nombre; ?>
+                                </option>
+                            <?php } ?>
+                        <?php } ?>
+      							</select>
       						</div>
-  						</div>
+  						  </div>
 
               			<div class="col-sm-4">
               				<div class="form-group">
@@ -136,15 +136,12 @@
 
 <script>
 	$(document).ready(function() {
-		$(document).on('change', '#municipio_modal', function() { cargar_instituciones_modal(); });
-        $(document).on('change', '#institucion_modal', function() { cargar_sedes_modal(); });
-
 		$('.select2').select2();
 
+		$(document).on('change', '#municipio_modal', function() { cargar_instituciones_modal(); });
+    $(document).on('change', '#institucion_modal', function() { cargar_sedes_modal(); });
+
 		$('#modal_crear_cronograma').modal('show');
-
-
-        $('#municipio').trigger('change');
 	});
 
 

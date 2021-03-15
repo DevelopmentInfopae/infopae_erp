@@ -232,15 +232,10 @@
         $(document).on('click', '#crear_cronograma', function() { abrir_modal_crear_cronograma(); });
         $(document).on('click', '.editar_cronograma', function() { abrir_modal_editar_cronograma($(this).data('cronograma_id')); });
 
-        // $(document).on('click', '#save_payment_button', function() { save_payment(); });
         $(document).on('change', '#fecha_desde', function() { $('#fecha_hasta').prop('min', $('#fecha_desde').val()) });
         $(document).on('change', '#fecha_hasta', function() { $('#fecha_desde').prop('max', $('#fecha_hasta').val()) });
-        // $(document).on('change', '#municipio_modal', function() { cargar_instituciones_modal(); });
-        // $(document).on('change', '#institucion_modal', function() { cargar_sedes_modal(); });
         $(document).on('click', '#guardar_cronograma', function() { guardar_cronograma(); });
 
-        // $(document).on('change', '#municipio_modal', function() { cargar_instituciones('_modal_editar'); });
-        // $(document).on('change', '#institucion_modal', function() { cargar_sedes('_modal_editar'); });
         $(document).on('change', '#fecha_desde_modal_editar', function() { $('#fecha_hasta_modal_editar').prop('min', $('#fecha_desde_modal_editar').val()) });
         $(document).on('change', '#fecha_hasta_modal_editar', function() { $('#fecha_desde_modal_editar').prop('max', $('#fecha_hasta_modal_editar').val()) });
         $(document).on('click', '#editar_cronograma', function() { editar_cronograma(); });
