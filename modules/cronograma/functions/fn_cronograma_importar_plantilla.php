@@ -16,7 +16,7 @@
 			while(($datos = fgetcsv($archivo, null, $separador)) == TRUE) {
 				$cronograma_existente = validar_cronograma_existente($Link, $datos[4], $datos[6]);
 
-				if ($cronograma_existente == TRUE) {
+				if ($cronograma_existente == FALSE) {
 				 	$cronograma_guardado = insertar_cronograma($Link, $datos);
 
 				 	if ($cronograma_guardado == TRUE) {
@@ -60,9 +60,9 @@
 	    $r_cronograma_existente = $Link->query($c_cronograma_existente) or die("Error al consultar el cronograma existente: ". $Link->error);
 
 	    if ($r_cronograma_existente->num_rows == 0) {
-	        return TRUE;
+	        return FALSE;
 	    } else {
-	    	return FALSE;
+	    	return TRUE;
 	    }
 	}
 
