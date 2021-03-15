@@ -409,13 +409,13 @@
         if ($('#mes').val() == '') {
             Command: toastr.error('El campo Mes es obligatorio.', 'Mensaje de validación', {onHidden: function() { $('#mes').focus(); }});
             return false;
-        } else if ($('#mes').val() == 0) {
-            Command: toastr.error('El campo Mes debe ser mayor a 0.', 'Mensaje de validación', {onHidden: function() { $('#mes').focus(); }});
+        } else if ($('#mes').val() <= 0) {
+            Command: toastr.error('El campo Mes debe ser mayor a 0.', 'Mensaje de validación', {onHidden: function() { $('#mes').val(''); $('#mes').focus(); }});
             return false;
         }
 
         if ($('#semana').val() <= 0) {
-            Command: toastr.error('El campo Semana debe ser mayor a 0.', 'Mensaje de validación', {onHidden: function() { $('#semana').focus(); }});
+            Command: toastr.error('El campo Semana debe ser mayor a 0.', 'Mensaje de validación', {onHidden: function() { $('#semana').val(''); $('#semana').focus(); }});
             return false;
         }
 
