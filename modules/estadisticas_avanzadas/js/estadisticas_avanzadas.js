@@ -4,7 +4,7 @@ $(document).ready(function(){
 
 	$('.exportarEstadisticas').on('click', function(){
 		$('#loader').fadeIn();
-		location.href='exportar_estadisticas.php?semana='+$('#semana').val();
+		location.href='exportar_estadisticas.php';
 	});
 
 	$(window).on('blur', function(){
@@ -63,6 +63,8 @@ function CargarTablas()
 		info = data['info'];
 		json = [];
 
+		// console.log(info);
+
 		json[0] = ['Semana', 'Total',{ role: 'style' },{ role: 'annotation' }];
 		cnt = 0;
 		cnt2 = 0;
@@ -94,8 +96,6 @@ function CargarTablas()
 		url:"functions/fn_estadisticas_tabla_totales_complemento.php",
 		// data : {"diasSemanas" : data['diasSemanas'], "tipoComplementos" : data['tipoComplementos']},
 		success:function(data){
-
-			// console.log(data);
 			data = JSON.parse(data);
 			$('#tHeadComp').html(data['thead']);
 			$('#tBodyComp').html(data['tbody']);
@@ -205,7 +205,6 @@ function CargarTablas()
       	url:"functions/fn_estadisticas_tabla_totales_edad.php",
       	// data:{"diasSemanas" : diasSemanaD},
       	success:function(data){
-
       			// console.log(data);
   			data = JSON.parse(data);
 			$('#tHeadEdad').html(data['thead']);
@@ -250,32 +249,35 @@ function CargarTablas()
 		url:"functions/fn_estadisticas_tabla_totales_estrato.php",
 		// data:{"diasSemanas" : diasSemanaD},
 		success: function(data){
-
+			// console.log(data);
 			data = JSON.parse(data);
 			$('#tHeadEstrato').html(data['thead']);
 			$('#tBodyEstrato').html(data['tbody']);
 			$('#tFootEstrato').html(data['tfoot']);	
 
 			info =data['info'];
+			// console.log(info);
 				// declaramos un nuevo array que vamos a enviar a la grafica
-			json5 = [];
+			json5 = []; 
 
 				// conformamos el array que vamos a enviar 
-			json5[0] = ["Estrato", "Valor"];
-			json5[1] = ["Estrato 0", info['0']];
-			json5[2] = ["Estrato 1", info['1']];
-			json5[3] = ["Estrato 2", info['2']];
-			json5[4] = ["Estrato 3", info['3']];
-			json5[5] = ["Estrato 4", info['4']];
-			json5[6] = ["Estrato 5", info['5']];
-			json5[7] = ["Estrato 6", info['6']];
-			json5[8] = ["No aplica", info['99']];
-
+			json5[0] = ["Estrato", "Valor", { role: 'style' },{ role: 'annotation' }];
+			json5[1] = ["Estrato 0", info['0'], '#0B4337', info['0']];
+			json5[2] = ["Estrato 1", info['1'], '#19AB8D', info['1']];
+			json5[3] = ["Estrato 2", info['2'], '#0B4337', info['2']];
+			json5[4] = ["Estrato 3", info['3'], '#19AB8D', info['3']];
+			json5[5] = ["Estrato 4", info['4'], '#0B4337', info['4']];
+			json5[6] = ["Estrato 5", info['5'], '#19AB8D', info['5']];
+			json5[7] = ["Estrato 6", info['6'], '#0B4337', info['6']];
+			if(info['99']) {json5[8] = ["No aplica", info['99'], '#19AB8D', info['99']];}
+			else{json5[8] = ["No aplica", info['9'], '#19AB8D', info['9']];}
+			
 				// enviarmos los datos a la funcion para dibujar la grafica
-			google.charts.load('current', {'packages':['corechart']});
+			google.charts.load('current', {packages: ['corechart', 'bar']});
 			google.charts.setOnLoadCallback(function(){
-			pieChart2(json5);
+			graficaTotalesEstratos(json5, 'Totales por estrato', 'Ordenado por mes','right', 1);
 			});
+
 		}
 	});
 
@@ -311,14 +313,14 @@ function CargarTablas()
 		url:"functions/fn_estadisticas_tabla_totales_escolaridad.php",
 		// data:{"diasSemanas" : diasSemanaD},
 		success: function(data){
-
+			// console.log(data);
 			data = JSON.parse(data);
 			$('#tHeadEscolaridad').html(data['thead']);
 			$('#tBodyEscolaridad').html(data['tbody']);
 			$('#tFootEscolaridad').html(data['tfoot']);
 
 			info = data['info'];
-				// console.log(data);
+				// console.log(data['info']);
 
 			json7 = [];
 
@@ -370,7 +372,7 @@ function CargarTablas()
 		url:"functions/fn_estadisticas_tabla_totales_jornada.php",
 		// data:{"diasSemanas" : diasSemanaD},
 		success: function(data){
-
+			// console.log(data);
 			data = JSON.parse(data);
 			$('#tHeadJornada').html(data['thead']);
 			$('#tBodyJornada').html(data['tbody']);
@@ -408,10 +410,12 @@ function CargarTablas()
 		type:"POST", 
 		url:"functions/fn_estadisticas_tabla_totales_municipio.php",
 		dataType: 'JSON', 
-		// data:{"diasSemanas" : diasSemanaD},
+		// contenttype: "application/json; charset=utf-8",
 		success: function(data){
-
+			// data = JSON.parse(data);
+			// console.log(data);
 			municipio = data['codMunicipio'];
+				
 			if (municipio == '0') {
 					// data = JSON.parse(data);
 				$('#tHeadMunicipio').html(data['thead']);
@@ -477,6 +481,7 @@ function CargarTablas()
 						});
 					}if(municipio !== '0'){
 						// data = JSON.parse(data);
+						// console.log(data);
 						$('#tHeadSedes').html(data['thead']);
 						$('#tBodySedes').html(data['tbody']);
 						$('#tFootSedes').html(data['tfoot']);
@@ -497,8 +502,17 @@ function CargarTablas()
 						graficaTotalesSedes(json14, 'Totales por Sede educativa', 'Ordenado por Sede educativa', 'right', 1);
 						});
 
-					}			
-		}
+					}
+							
+		},
+		timeout: 600000, 
+		error: function(request, status, err) {
+	        if (status == "timeout") {
+	            alert("Su petición demoro mas de lo permitido");
+	        } else {
+	            alert("error: " + request + status + err);
+	        }
+    	}
 	});			
 	
 	$.ajax({
@@ -611,6 +625,7 @@ function CargarTablas()
 			json12[0].push('Mes');
 			cnt = 0;
 			$.each(info, function(mes, arrComplem){
+				cnt2 = 0;
 				cnt++;
 				json12[cnt] = [];
 				json12[cnt].push(mesesNom[mes]);
@@ -619,8 +634,10 @@ function CargarTablas()
 						json12[0].push(complemento);
 					}
 					json12[cnt].push(parseInt(total));
+					cnt2++;
 				});
 			});
+			// console.log(json12);
 			cnt++;
 			json12[cnt] = [];
 			json12[cnt].push("Total");
@@ -720,8 +737,8 @@ function graficaTotalesComplemento(json, titulo, subtitulo, legendPos, multiColu
     }
     var options = {
     	title: titulo,
-        width: 800,
-        height: 400,
+        width: "100%",
+        height: 500,
         bar: {groupWidth: "60%"},
         chart: {
           title: titulo,
@@ -820,25 +837,6 @@ function graficaTotalesEdad(json, titulo, subtitulo, legendPos, multiColumn) {
         chart.draw(data, options);
       }
 
- function pieChart2(json) {
-
-        var data = google.visualization.arrayToDataTable(json);
-
-        var options = {
-          title: 'Totales por Estrato',
-          slices: {
-            0: { color: '#0B4337' },
-            1: { color: '#19AB8D' }
-          },
-          width: "100%",
-          height: 450,
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('graficaTotalesEstrato'));
-
-        chart.draw(data, options);
-      }      
-
 function pieChart3(json) {
 
         var data = google.visualization.arrayToDataTable(json);
@@ -914,7 +912,7 @@ function graficaTotalesEscolaridad(json, titulo, subtitulo, legendPos, multiColu
     }
     var options = {
     	title: titulo,
-        width: 1500,
+        width: "100%",
         height: 600,
         bar: {groupWidth: "60%"},
         chart: {
@@ -967,7 +965,7 @@ function graficaTotalesDiscapacidad(json, titulo, subtitulo, legendPos, multiCol
     }
     var options = {
     	title: titulo,
-        width: 1500,
+        width: "100%",
         height: 500,
         bar: {groupWidth: "60%"},
         chart: {
@@ -1020,7 +1018,7 @@ function graficaTotalesVictima(json, titulo, subtitulo, legendPos, multiColumn) 
     }
     var options = {
     	title: titulo,
-        width: 1500,
+        width: "100%",
         height: 400,
         bar: {groupWidth: "60%"},
         chart: {
@@ -1073,8 +1071,8 @@ function graficaTotalesEtnia(json, titulo, subtitulo, legendPos, multiColumn) {
     }
     var options = {
     	title: titulo,
-        width: 1500,
-        height: 500,
+        width: "100%",
+        height: 600,
         bar: {groupWidth: "60%"},
         chart: {
           title: titulo,
@@ -1123,6 +1121,18 @@ function graficaValoresEjecutados(json, titulo, subtitulo, legendPos, multiColum
 
 		viewJSON.push(0);
 
+		
+		for (var i = 1; i < json[0].length; i++) {
+				viewJSON.push(i, {
+					calc: "stringify",
+			        sourceColumn: i,
+			        type: "string",
+			        role: "annotation"
+				});
+			}
+
+		data.setColumns(viewJSON);
+
     }
     var options = {
     	title: titulo,
@@ -1167,7 +1177,7 @@ function graficaTotalesSedes(json, titulo, subtitulo, legendPos, multiColumn) {
     }
     var options = {
     	title: titulo,
-        width: 1700,
+        width: "100%",
         height: 1400,
         bar: {groupWidth: "50%"},
         chart: {
@@ -1203,4 +1213,46 @@ function graficaTotalesSedes(json, titulo, subtitulo, legendPos, multiColumn) {
 
     var chart = new google.visualization.BarChart(document.getElementById('graficaTotalesSedes'));
     chart.draw(data, options);
-    }                        
+    }
+
+// funcion para graficar los datos de totales por estrato 
+function graficaTotalesEstratos(json, titulo, subtitulo, legendPos, multiColumn) {
+
+    var data = google.visualization.arrayToDataTable(json);
+
+    if (multiColumn == 1) {
+		var data = new google.visualization.DataView(data);
+
+		viewJSON = [];
+
+		viewJSON.push(0);
+
+    }
+    var options = {
+    	title: titulo,
+        width: "100%",
+        height: "40%",
+        bar: {groupWidth: "95%"},
+        chart: {
+          title: titulo,
+          subtitle: subtitulo,
+        },
+        legend: {
+        	position : legendPos,
+        },
+        annotations : {
+        	textStyle: {
+		      fontSize: 12,
+		      bold: true,
+		      italic: true,
+		      color: '#ffffff',
+		      auraColor: '#000000',
+		      opacity: 0.8
+		    }
+        },
+        colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA']
+    };
+
+    var chart = new google.visualization.ColumnChart(document.getElementById('graficaTotalesEstrato'));
+    chart.draw(data, options);
+    }

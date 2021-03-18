@@ -4,14 +4,14 @@ require_once '../../../db/conexion.php';
 $periodoActual = $_SESSION['periodoActual'];
 
 $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
-
+$periodo = 1;
   $diasSemanas = [];
   $consDiasSemanas = "SELECT GROUP_CONCAT(DIA) AS Dias, MES, SEMANA FROM planilla_semanas WHERE CONCAT(ANO, '-', MES, '-', DIA) <= '".date('Y-m-d')."' GROUP BY SEMANA";
   // echo $consDiasSemanas;
   $resDiasSemanas = $Link->query($consDiasSemanas);
   if ($resDiasSemanas->num_rows > 0) {
     while ($dataDiasSemanas = $resDiasSemanas->fetch_assoc()) {
-
+      $semanasP[$periodo] = $dataDiasSemanas['SEMANA'];
       $consultaTablas = "SELECT 
                            table_name AS tabla
                           FROM 
@@ -26,9 +26,11 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
         // echo ($arrDias);
         $diasSemanas[$dataDiasSemanas['MES']][$semanaPos] = $arrDias; //obtenemos un array ordenado del siguiente modo array[mes][semana] = array[dias]
       }
+      $periodo++;
     }
   }
 
+  // exit(var_dump($semanas));
   $tipoComplementos = [];
   $consComplemento="SELECT * FROM tipo_complemento";
   $resComplemento = $Link->query($consComplemento);
@@ -77,10 +79,10 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               }
 
                 $totalesSemanas[$mes]['semana_'.$i] = $resSemana; //ordenamos una array para totales por semana del siguiente modo array[mes][semana] = total semana
-                if (isset($sumTotalesSemanas['semana_'.$i])) {
-                  $sumTotalesSemanas['semana_'.$i] += $resSemana;
+                if (isset($sumTotalesSemanas['semana '.$i])) {
+                  $sumTotalesSemanas['semana '.$i] += $resSemana;
                 } else {
-                  $sumTotalesSemanas['semana_'.$i] = $resSemana;
+                  $sumTotalesSemanas['semana '.$i] = $resSemana;
                 }
             }
           }
@@ -89,6 +91,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
     }
   }
 
+  // var_dump(sizeof($sumTotalesSemanas));
 
 $tHeadSemana = '<tr>
      				<th>Mes</th>';
@@ -110,16 +113,19 @@ $tHeadSemana .= '<th>Total</th>
 </tr>';
   // var_dump($totalesSemanas);
 
+// INICIO BODY TABLA TOTALES SEMANAS
 $tBodySemana="";
 foreach ($totalesSemanas as $idMes => $mes) { 
 $totalmes = 0;
 
 $tBodySemana .= "<tr>
 					<td>".$mesesNom[$idMes]."</td>";
-for ($l=1; $l < $numTds ; $l++) { //según el número de columnas creadas, recorremos las semanas obtenidas
-  if (strlen($l) == 1) {
-    $l = "0".$l;
+
+foreach ($semanasP as $semanaP) { //según el número de columnas creadas, recorremos las semanas obtenidas
+  if (strlen($semanaP) == 1) {
+    $l = "0".$semanaP;
   }
+  $l = $semanaP;
   if (isset($mes["semana_".$l])) { //Si en el mes en turno, está la semana del recorrido "for" imprimimos el valor en la columna nueva.
 	  $tBodySemana .= '<td class="column_'.$l.' verGraficas" data-semana="'.$l.'">
 	    '.$mes["semana_".$l].'
@@ -133,21 +139,29 @@ for ($l=1; $l < $numTds ; $l++) { //según el número de columnas creadas, recor
 $tBodySemana .="<th>".$totalmes."</th>
 </tr>";
 }
+// FIN CUERPO TABLA TOTALES SEMANA
+
 
 $tFootSemana ='<tr>
 	<th>TOTAL</th>';
 $tTotal = 0;
 
-	for ($l=1; $l <= sizeof($sumTotalesSemanas); $l++) {
-	  if (strlen($l) == 1) {
-	    $l = "0".$l;
-	  }
-	  $tFootSemana .='<th class="column_'.$l.' verGraficas" data-semana="'.$l.'">
-	    '.$sumTotalesSemanas["semana_".$l].'
-	  </th>';
-    $tTotal += $sumTotalesSemanas["semana_".$l];
-	
-	  } 
+// exit(var_dump($semanasP));
+	foreach ($semanasP as $semanaP) {
+    if (strlen($semanaP) == 1) {
+      $l = "0".$semanaP;
+    }
+    $l = $semanaP;
+    $tFootSemana .='<th class="column_'.$l.' verGraficas" data-semana="'.$l.'">
+      '.$sumTotalesSemanas["semana ".$l].'
+    </th>';
+    $tTotal += $sumTotalesSemanas["semana ".$l];
+    
+  }
+
+
+
+
 $tFootSemana .='<th>'.$tTotal.'</th>
 </tr>';
 

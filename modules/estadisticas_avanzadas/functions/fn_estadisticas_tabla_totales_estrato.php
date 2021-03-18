@@ -106,18 +106,27 @@ $tHeadEstrato = '<tr>
 	$totalEstrato = [];
 
 	foreach ($respuesta2 as $mes => $valoresMes) {
-
 		foreach ($valoresMes as $valorMes => $valor) {
 			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
 			$estratos[$valor['cod_estrato']][$mes] = $valor['TOTAL'];	
-
 		}
-
 	}
+
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($estratos as $estrato => $valorEstrato) {
+      if (isset($estratos[$estrato][$mes])) {
+        continue;
+      }else{
+        $estratos[$estrato][$mes] = '0';
+      }
+        asort($estratos[$estrato]);
+    }
+  } 
 
 	$estratoDato = "";
 	foreach ($estratos as $estrato => $valorEstrato) {
-		if ($estrato == 99) {
+		if ($estrato == 99 || $estrato == 9 ) {
 			$estratoDato = "No aplica";
 		}else{
 			$estratoDato = "Estrato ".$estrato;
