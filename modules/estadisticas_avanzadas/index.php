@@ -22,7 +22,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
   </div><!-- /.col -->
   <div class="col-lg-4">
     <div class="title-action">
-      <button class="btn btn-primary exportarEstadisticas" style="display: none;"><span class="fa fa-file-excel-o"></span>  Exportar</button>
+      <button class="btn btn-primary exportarEstadisticas"><span class="fa fa-file-excel-o"></span>  Exportar</button>
     </div>
   </div><!-- /.col -->
 </div><!-- /.row -->
@@ -37,7 +37,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
 <!--             <em>Puede ver estadísticas por semana, haciendo clic en cada una de ellas de la siguiente tabla.</em> -->
             <br>
           </div>
-          <table class="table selectableRows table-bordered col-sm-12">
+          <table class="table selectableRows table-hover table-bordered col-sm-12">
             <thead id="tHeadSemana">
               
             </thead>
@@ -62,10 +62,10 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <h2><strong>Totales por tipo complemento alimentario</strong></h2>
             <br>
           </div>
-          <div class="col-sm-6 nopadding">
+          <div class="col-sm-5 nopadding">
             <br>
             <br>
-            <table class="table table-bordered">
+            <table class="table table-bordered selectableRows table-hover">
               <thead id="tHeadComp">
                 
               </thead>
@@ -77,7 +77,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               </tfoot>
             </table>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-7">
             <div id="graficaTotalesComplemento"></div>
           </div>
         </div>
@@ -93,7 +93,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <br>
           </div>
           <div class="col-sm-12 nopadding">
-            <table class="table table-bordered">
+            <table class="table table-bordered selectableRows table-hover">
               <thead id="tHeadGeneros">
                 
               </thead>
@@ -108,7 +108,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
           <div class="col-sm-6 nopadding">
             <br>
             <br>
-            <table class="table table-bordered">
+            <table class="table table-bordered selectableRows table-hover">
               <thead id="tHeadGenero">
                 
               </thead>
@@ -136,7 +136,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <br>
           </div>
           <div class="col-sm-12 nopadding">
-            <table class="table table-bordered">
+            <table class="table table-bordered selectableRows table-hover">
               <thead id="tHeadEdad">
                 
               </thead>
@@ -164,7 +164,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <br>
           </div>
           <div class="col-sm-12 nopadding">
-            <table class="table table-bordered">
+            <table class="table table-bordered selectableRows table-hover">
               
               <thead id="tHeadEstrato">
                 
@@ -193,7 +193,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
             <br>
           </div>
           <div class="col-sm-12 nopadding">
-            <table class="table table-bordered">
+            <table class="table table-bordered selectableRows table-hover">
               
               <thead id="tHeadResidencia">
                 
@@ -222,7 +222,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <br>
               </div>
               <div class="col-sm-12 nopadding">
-                <table class="table table-bordered">
+                <table class="table table-bordered selectableRows table-hover">
               
                   <thead id="tHeadEscolaridad">
                   
@@ -251,7 +251,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <br>
               </div>
               <div class="col-sm-12 nopadding">
-                <table class="table table-bordered">
+                <table class="table table-bordered selectableRows table-hover">
               
                   <thead id="tHeadJornada">
                   
@@ -290,7 +290,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
                       echo "<br>";
                       echo "</div>";
                       echo "<div class='col-sm-12 nopadding'>";
-                        echo "<table class='table table-bordered' id='tablaMunicipios'>";
+                        echo "<table class='table table-bordered selectableRows table-hover' id='tablaMunicipios'>";
                           echo "<thead id='tHeadMunicipio'></thead>";
                           echo "<tbody id='tBodyMunicipio'></tbody>";
                           echo "<tfoot id='tFootMunicipio'></tfoot>";
@@ -313,7 +313,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
                       echo "<br>";
                       echo "</div>";
                       echo "<div class='col-sm-12 nopadding'>";
-                        echo "<table class='table table-bordered' id='tablaSedes'>";
+                        echo "<table class='table table-bordered selectableRows table-hover' id='tablaSedes'>";
                           echo "<thead id='tHeadSedes'></thead>";
                           echo "<tbody id='tBodySedes'></tbody>";
                           echo "<tfoot id='tFootSedes'></tfoot>";
@@ -338,7 +338,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <br>
               </div>
               <div class="col-sm-12 nopadding">
-                <table class="table table-bordered">
+                <table class="table table-bordered selectableRows table-hover">
               
                   <thead id="tHeadDiscapacidad">
                   
@@ -367,7 +367,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <br>
               </div>
               <div class="col-sm-12 nopadding">
-                <table class="table table-bordered">
+                <table class="table table-bordered selectableRows table-hover">
               
                   <thead id="tHeadVictima">
                   
@@ -396,7 +396,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <br>
               </div>
               <div class="col-sm-12 nopadding">
-                <table class="table table-bordered">
+                <table class="table table-bordered selectableRows table-hover">
               
                   <thead id="tHeadEtnia">
                   
@@ -427,7 +427,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
                   <?php
                     $consValores = "SELECT 'ValorContrato' AS Concepto, ValorContrato FROM parametros
                                   UNION
-                                  SELECT CODIGO AS Concepto, ValorRacion AS ValorContrato FROM tipo_complemento ORDER BY Concepto;";
+                                  SELECT CODIGO AS Concepto, ValorRacion AS ValorContrato FROM tipo_complemento WHERE valorRacion > 0 ORDER BY Concepto;";
                     $resValores = $Link->query($consValores);
 
                     $valorRaciones = [];

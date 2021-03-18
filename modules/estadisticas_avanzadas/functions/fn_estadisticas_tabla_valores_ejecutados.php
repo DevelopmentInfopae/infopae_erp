@@ -33,13 +33,15 @@ $diasSemanas = [];
 $valorComplementos = [];
 $totalesComplementos = []; 
 $tipoComplementos = [];
+$complementos = [];
 
-$consTipoComplemento = "SELECT * FROM tipo_complemento";
+$consTipoComplemento = "SELECT * FROM tipo_complemento WHERE valorRacion > 0";
 $resTipoComplemento = $Link->query($consTipoComplemento);
 if ($resTipoComplemento->num_rows > 0) {
 	while ($TipoComplemento = $resTipoComplemento->fetch_assoc()) {
 		$valorComplementos[$TipoComplemento['CODIGO']] = $TipoComplemento['ValorRacion'];
 		$tipoComplementos[] = $TipoComplemento['CODIGO'];
+		$complementos[$TipoComplemento['ID']] = $TipoComplemento['CODIGO'];
 	}
 }
 
@@ -54,53 +56,36 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
       }
     }
 
-    foreach ($tipoComplementos as $key => $complemento) {
-    // 	$consultaResComplemento = "SELECT ";
-    //   	$diaD = 1;
-    //   	foreach ($semanas as $semana => $dias) {
-    //     	foreach ($dias as $D => $dia) {
-    //      	 	$consultaResComplemento.="SUM(D$diaD) + ";
-    //       		$diaD++;
-    //     }
-    // }
-    
+  
 
     $arrayCom;	
 	if ($datos != "") {
 		$datos = trim($datos, "+ ");
-		$consComplementos ="SELECT tipo_complem , $datos  AS total FROM entregas_res_$mes$periodoActual WHERE tipo_complem = '$complemento' GROUP BY tipo_complem ";
+		$consComplementos ="SELECT t.CODIGO , $datos  AS total FROM entregas_res_$mes$periodoActual AS e right JOIN tipo_complemento AS t ON t.CODIGO = e.tipo_complem WHERE t.valorRacion > 0 GROUP BY t.CODIGO ";
 		// echo $consComplementos."\n";
 		$resComplementos = $Link->query($consComplementos);
 		$tcom = [];
 		if ($resComplementos->num_rows > 0) {
 			while ($Complementos = $resComplementos->fetch_assoc()) {
 
-		
-				if ($Complementos['total'] == '') {
-					continue;
+				if ($Complementos['total'] == '' || $Complementos['total'] == null) {
+					$Complementos['total'] = 0;
+					// continue;
 				}
 
-				if (isset($totalesComplementos[$mes][$Complementos['tipo_complem']])) {
-					$totalesComplementos[$mes][$Complementos['tipo_complem']]+=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+				if (isset($totalesComplementos[$mes][$Complementos['CODIGO']])) {
+					$totalesComplementos[$mes][$Complementos['CODIGO']]+=$Complementos['total']*(isset($valorComplementos[$Complementos['CODIGO']]) ? $valorComplementos[$Complementos['CODIGO']] : 0);
 				} else {
-					$totalesComplementos[$mes][$Complementos['tipo_complem']]=$Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+					$totalesComplementos[$mes][$Complementos['CODIGO']]=$Complementos['total']*(isset($valorComplementos[$Complementos['CODIGO']]) ? $valorComplementos[$Complementos['CODIGO']] : 0);
 				}
-			    $arrayCom[$Complementos['tipo_complem']] = ($Complementos['tipo_complem']);
+			    $arrayCom[$Complementos['CODIGO']] = ($Complementos['CODIGO']);
 			}
 
 		}
 	}
-}
+
 
 }
-
-// foreach ($arrayMes as $key => $link) {
-// 	if($link === '') 
-//     { 
-//         unset($arrayMes[$key]); 
-//     } 
-// }
-
 
 $tabla="";
 
@@ -125,6 +110,8 @@ foreach ($totalesComplementos as $mes => $arrT) {
 	$tabla.="<tr>
 				<th>".$mesesNom[$mes]."</th>";
 		foreach ($arrT as $complemento => $total) {
+
+			// exit(var_dump($complemento));
 			$tabla.="<td> $ ".number_format($total, 0, "", ".")."</td>";	
 			$totalM += $total;
 			if (isset($totalesComplement[$complemento])) {
@@ -146,7 +133,7 @@ $tabla.="<tfoot>
 				<th>Total</th>";
 $tTotal = 0;
 foreach ($totalesComplement as $complemento => $total) {
-	$tabla.="<th> $ ".number_format($total, 0, "", ".")."</th>";
+	$tabla.="<th> $ ".number_format($total, 0, ",", ".")."</th>";
 	$tTotal += $total;
 }
 $tabla.="		<th> $ ".number_format($tTotal, 0, "", ".")."</th>
@@ -156,6 +143,8 @@ $tabla.="		<th> $ ".number_format($tTotal, 0, "", ".")."</th>
 $data['tabla'] = $tabla;
 $data['info'] = $totalesComplementos;
 $data['totales'] = $totalesComplement;
+
+// exit(var_dump($tabla));
 
 echo json_encode($data);
 

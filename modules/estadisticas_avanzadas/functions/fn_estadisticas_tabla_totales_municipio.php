@@ -213,6 +213,7 @@ else{
 $mesesRecorridos = ""; 
 $respuesta = [];
 $respuesta2 = [];
+$respuestaSedes = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
   $datos = "";
@@ -232,10 +233,12 @@ foreach ($diasSemanas as $mes => $semanas) {
     }
 
     $datos = trim($datos, "+ ");
-    $consultaRes = "SELECT nom_sede, $datos ";
+    $consultaRes = "SELECT cod_sede, $datos ";
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_sede";
 
-    $periodo = 1;
+    $periodo = 1; 
+
+    // var_dump($consultaRes);   
 
   if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
@@ -249,6 +252,17 @@ foreach ($diasSemanas as $mes => $semanas) {
       }
     $respuesta2[$mes] = $respuesta;
   $mesesRecorridos .= $mes;
+
+  // consulta en la que vamos a almacenar las sedes que se van a mostrar en la tabla 
+  // $periodo2 = 0;
+  $consultaSedes = "SELECT cod_sede, nom_sede FROM sedes$periodoActual";
+  if ($resConsultaSedes = $Link->query($consultaSedes)) {
+     if ($resConsultaSedes->num_rows > 0) {
+       while ($resSedes = $resConsultaSedes->fetch_assoc()) {
+         $respuestaSedes[$resSedes['cod_sede']] = $resSedes['nom_sede'];
+       }
+     }
+  }
 }
 
 $arrayMes = explode("0", $mesesRecorridos);
@@ -281,30 +295,33 @@ $tHeadSedes = '<tr>
   $totalSedes = [];
 
   foreach ($respuesta2 as $mes => $valoresMes) {
-
     foreach ($valoresMes as $valorMes => $valor) {
       // convertimos la respuesta a un array asociativo con la clave primaria edad mes
-      $sedes[$valor['nom_sede']][$mes] = $valor['TOTAL']; 
+      $sedes[$valor['cod_sede']][$mes] = $valor['TOTAL']; 
 
     }
   }
 
-  foreach ($sedes as $sede => $valorSede) {
-    $sedeCod = utf8_decode($sede);
-    $tBodySedes .= "<tr> <td>".$sedeCod."</td>";
+foreach ($sedes as $sede => $valorSede) {
+  foreach ($respuestaSedes as $codigoSede => $nombre) {
+     if ($sede == $codigoSede) {
+       $nombreSede = $nombre;
+     }
+  }
+    $tBodySedes .= "<tr> <td>".$nombreSede."</td>";
 
     $valorFila = 0;
     foreach ($valorSede as $valores => $valor) {
         
         $valorFila += $valor;
         $tBodySedes .= "<td>".$valor."</td>";
-        $totalSedes[$sedeCod]=$valorFila;     
+        $totalSedes[$nombreSede]=$valorFila;
     }
     $tBodySedes .= "<th>" .$valorFila. "</th>"; 
-    $tBodySedes .= "</tr>";
-  }
+    $tBodySedes .= "</tr>";    
+}
 
-
+// var_dump($tBodySedes);
 // pie
   $tFootSedes = '<tr>
             <th>TOTAL</th>';
@@ -321,6 +338,7 @@ $tHeadSedes = '<tr>
   }
 
 
+
   foreach ($totalMes as $total) {
 
     if ($total <> 0) {
@@ -334,10 +352,12 @@ $tHeadSedes = '<tr>
 $tFootSedes .='<th>'.$tTotal.'</th>
 </tr>';
 
+
 $data['thead'] = $tHeadSedes;
 $data['tbody'] = $tBodySedes;
 $data['tfoot'] = $tFootSedes;
 $data['info'] = $totalSedes;
+$data['codMunicipio'] = $codigoMunicipio;
 
 echo json_encode($data);  
   

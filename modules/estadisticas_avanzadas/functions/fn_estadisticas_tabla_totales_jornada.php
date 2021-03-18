@@ -104,13 +104,26 @@ $tHeadJornada = '<tr>
 	$totalJornada = [];
 
 	foreach ($respuesta2 as $mes => $valoresMes) {
-
 		foreach ($valoresMes as $valorMes => $valor) {
 			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
 			$jornadas[$valor['cod_jorn_est']][$mes] = $valor['TOTAL'];	
-
 		}
 	}
+
+
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($jornadas as $jornada => $valorJornada) {
+      if (isset($jornadas[$jornada][$mes])) {
+        continue;
+      }else{
+        $jornadas[$jornada][$mes] = '0';
+      }
+        asort($jornadas[$jornada]);
+    }
+  } 
+
+  // exit(var_dump($jornadas)); 
 
 	$jornadaData = "";
 
@@ -136,6 +149,9 @@ $tHeadJornada = '<tr>
 		elseif ($jornada == 6) {
 			$jornadaData = "Jornada Unica";
 		}
+    else{
+      $jornadaData = "No aplica";
+    }
 
 		$tBodyJornada .= "<tr> <td>".$jornadaData."</td>";
 

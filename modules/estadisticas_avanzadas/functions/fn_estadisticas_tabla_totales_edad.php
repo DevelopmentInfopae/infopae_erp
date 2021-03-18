@@ -113,14 +113,25 @@ $tBodyEdad = "";
 	$totalEdad = [];
 
 	foreach ($respuesta2 as $mes => $valoresMes) {
-
 		foreach ($valoresMes as $valorMes => $valor) {
 			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
 			$edades[$valor['edad']][$mes] = $valor['TOTAL'];	
-
 		}
-
 	}
+
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($edades as $edad => $valorEdad) {
+      if (isset($edades[$edad][$mes])) {
+        continue;
+      }else{
+        $edades[$edad][$mes] = '0';
+      }
+      asort($edades[$edad]);
+      // asort(intval($edades));
+      ksort($edades); 
+    }
+  }
+  // exit(var_dump($edades)); 
 
 	foreach ($edades as $edad => $valorEdad) {
 		$tBodyEdad .= "<tr> <td>".$edad."</td>";
@@ -136,7 +147,8 @@ $tBodyEdad = "";
 		$tBodyEdad .= "</tr>";
 	}
 
-
+ksort($totalEdad);
+// exit(var_dump($totalEdad));
 // pie
 $tFootEdad = '<tr>
   <th>TOTAL</th>';

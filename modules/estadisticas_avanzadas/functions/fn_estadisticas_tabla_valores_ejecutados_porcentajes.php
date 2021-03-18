@@ -53,12 +53,16 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 
 	if ($datos != "") {
 		$datos = trim($datos, "+ ");
-		$consComplementos ="SELECT tipo_complem , $datos  AS total FROM entregas_res_$mes$periodoActual GROUP BY tipo_complem;";
+		$consComplementos ="SELECT t.CODIGO , $datos  AS total FROM entregas_res_$mes$periodoActual AS e right JOIN tipo_complemento AS t ON t.CODIGO = e.tipo_complem  GROUP BY t.CODIGO ";
 		// echo $consComplementos."\n";
 		$resComplementos = $Link->query($consComplementos);
 		if ($resComplementos->num_rows > 0) {
 			while ($Complementos = $resComplementos->fetch_assoc()) {
-				$ejecutado += $Complementos['total']*(isset($valorComplementos[$Complementos['tipo_complem']]) ? $valorComplementos[$Complementos['tipo_complem']] : 0);
+        if ($Complementos['total'] == '' || $Complementos['total'] == null) {
+          $Complementos['total'] = 0;
+          // continue;
+        }
+				$ejecutado += $Complementos['total']*(isset($valorComplementos[$Complementos['CODIGO']]) ? $valorComplementos[$Complementos['CODIGO']] : 0); 
 			}
 		}
 	}
@@ -72,7 +76,10 @@ if ($resValores->num_rows > 0) {
 	}
 }
 
+
 $porejecutar = $valorContrato - $ejecutado;
+
+// exit(var_dump($consComplementos));
 
 $porcenEjecutado = 100 * $ejecutado / $valorContrato;
 $porcenPorEjecutar = 100 * $porejecutar / $valorContrato;

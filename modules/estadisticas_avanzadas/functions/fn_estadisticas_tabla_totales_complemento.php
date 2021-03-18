@@ -30,7 +30,7 @@ $diasSemanas = [];
   }
 
   $tipoComplementos = [];
-  $consComplemento="SELECT * FROM tipo_complemento";
+  $consComplemento="SELECT * FROM tipo_complemento WHERE valorRacion > 0;";
   $resComplemento = $Link->query($consComplemento);
   if ($resComplemento->num_rows > 0) {
     while ($Complemento = $resComplemento->fetch_assoc()) {
@@ -98,6 +98,7 @@ $diasSemanas = [];
         }
       }
     }
+  // exit(var_dump($consultaResComplemento));  
 
   }
 $tHeadComp = '<tr>

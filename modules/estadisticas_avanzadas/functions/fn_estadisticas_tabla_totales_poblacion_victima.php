@@ -105,13 +105,23 @@ $tHeadVictima = '<tr>
 	$totalVictima = [];
 
 	foreach ($respuesta2 as $mes => $valoresMes) {
-
 		foreach ($valoresMes as $valorMes => $valor) {
 			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
 			$victimas[$valor['nombre']][$mes] = $valor['TOTAL'];	
-
 		}
 	}
+
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($victimas as $victima => $valorVictima) {
+      if (isset($victimas[$victima][$mes])) {
+        continue;
+      }else{
+        $victimas[$victima][$mes] = '0';
+      }
+        asort($victimas[$victima]);
+    }
+  } 
 
 	foreach ($victimas as $victima => $valorVictima) {
     $victimaString = ucfirst(strtoupper($victima));

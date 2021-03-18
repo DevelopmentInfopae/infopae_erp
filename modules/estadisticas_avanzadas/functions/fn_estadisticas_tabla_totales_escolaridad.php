@@ -117,14 +117,27 @@ $tHeadEscolaridad = '<tr>
 	$escolaridades = [];	
 	$totalEscolaridad = [];
 
-	foreach ($respuesta2 as $mes => $valoresMes) {
+  // $meses = ['01','02','03','04','05','06','07','08','09','10','11','12'];
 
+	foreach ($respuesta2 as $mes => $valoresMes) {
 		foreach ($valoresMes as $valorMes => $valor) {
 			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
 			$escolaridades[$valor['cod_grado']][$mes] = $valor['TOTAL'];	
-
 		}
+
 	}
+
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($escolaridades as $escolaridad => $valorEscolaridad) {
+      if (isset($escolaridades[$escolaridad][$mes])) {
+        continue;
+      }else{
+        $escolaridades[$escolaridad][$mes] = '0';
+      }
+        asort($escolaridades[$escolaridad]);
+    }
+  } 
 
 	foreach ($escolaridades as $escolaridad => $valorEscolar) {
     foreach ($nomGrados as $grado => $valorGrado) {
@@ -132,11 +145,13 @@ $tHeadEscolaridad = '<tr>
         $nombreGrado = $valorGrado['nombre'];
       }
     }
+
 		$tBodyEscolaridad .= "<tr> <td>".$nombreGrado."</td>";
 
 		$valorFila = 0;
 		foreach ($valorEscolar as $valores => $valor) {
-				
+
+
 				$valorFila += $valor;
 			 	$tBodyEscolaridad .= "<td>".$valor."</td>";
 			 	$totalEscolaridad[$escolaridad]=$valorFila;			
@@ -144,8 +159,7 @@ $tHeadEscolaridad = '<tr>
 		$tBodyEscolaridad .= "<th>" .$valorFila. "</th>"; 
 		$tBodyEscolaridad .= "</tr>";
 	}
-
-
+  ksort($totalEscolaridad, SORT_NUMERIC );
 // pie
 	$tFootEscolaridad = '<tr>
   					<th>TOTAL</th>';

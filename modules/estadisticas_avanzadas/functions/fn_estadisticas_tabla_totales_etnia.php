@@ -105,13 +105,23 @@ $tHeadEtnia = '<tr>
 	$totalEtnia = [];
 
 	foreach ($respuesta2 as $mes => $valoresMes) {
-
 		foreach ($valoresMes as $valorMes => $valor) {
 			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
 			$etnias[$valor['descripcion']][$mes] = $valor['TOTAL'];	
-
 		}
 	}
+
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($etnias as $etnia => $valorEtnia) {
+      if (isset($etnias[$etnia][$mes])) {
+        continue;
+      }else{
+        $etnias[$etnia][$mes] = '0';
+      }
+        asort($etnias[$etnia]);
+    }
+  } 
 
 	foreach ($etnias as $etnia => $valorEtnia) {
     $etniaString = ucfirst(strtoupper($etnia));

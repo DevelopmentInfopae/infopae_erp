@@ -104,13 +104,23 @@ $tHeadDiscapacidad = '<tr>
 	$totalDiscapacidad = [];
 
 	foreach ($respuesta2 as $mes => $valoresMes) {
-
 		foreach ($valoresMes as $valorMes => $valor) {
 			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
 			$discapacidades[$valor['nombre']][$mes] = $valor['TOTAL'];	
-
 		}
 	}
+
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($discapacidades as $discapacidad => $valorDiscapacidad) {
+      if (isset($discapacidades[$discapacidad][$mes])) {
+        continue;
+      }else{
+        $discapacidades[$discapacidad][$mes] = '0';
+      }
+        asort($discapacidades[$discapacidad]);
+    }
+  } 
 
 	foreach ($discapacidades as $discapacidad => $valorDiscapacidad) {
     $discapacidadString = ucfirst(strtoupper($discapacidad));
