@@ -32,7 +32,7 @@ $diasSemanas = [];
   }
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 $nomGrados = [];
 $nombreGrado = '';
@@ -72,6 +72,7 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_grado";
 
     $periodo = 1;
+    $respuesta = [];
 
 	if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
@@ -135,17 +136,26 @@ $tHeadEscolaridad = '<tr>
       }else{
         $escolaridades[$escolaridad][$mes] = '0';
       }
-        asort($escolaridades[$escolaridad]);
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+    ksort($escolaridades[$valor['cod_grado']]);
     }
   } 
 
-	foreach ($escolaridades as $escolaridad => $valorEscolar) {
-    foreach ($nomGrados as $grado => $valorGrado) {
-      if ($valorGrado['grado'] == $escolaridad) {
-        $nombreGrado = $valorGrado['nombre'];
-      }
-    }
 
+ 
+	foreach ($escolaridades as $escolaridad => $valorEscolar) {
+    $nombreTemporal = '';
+    foreach ($nomGrados as $grado => $valorGrado) {
+      if ($escolaridad  ==  $valorGrado['grado']) {
+        $nombreGrado = $valorGrado['nombre'];
+        $nombreTemporal = $nombreGrado;
+      }       
+    }
+    if ($nombreTemporal == '') {
+      $nombreGrado = $escolaridad;
+    }
+   
 		$tBodyEscolaridad .= "<tr> <td>".$nombreGrado."</td>";
 
 		$valorFila = 0;
@@ -154,12 +164,12 @@ $tHeadEscolaridad = '<tr>
 
 				$valorFila += $valor;
 			 	$tBodyEscolaridad .= "<td>".$valor."</td>";
-			 	$totalEscolaridad[$escolaridad]=$valorFila;			
+			 	$totalEscolaridad[$nombreGrado]=$valorFila;			
 		}
 		$tBodyEscolaridad .= "<th>" .$valorFila. "</th>"; 
 		$tBodyEscolaridad .= "</tr>";
 	}
-  ksort($totalEscolaridad, SORT_NUMERIC );
+  // ksort($totalEscolaridad, SORT_STRING );
 // pie
 	$tFootEscolaridad = '<tr>
   					<th>TOTAL</th>';

@@ -34,7 +34,7 @@ $diasSemanas = [];
 
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
@@ -59,6 +59,7 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY zona_res_est";
 
     $periodo = 1;
+    $respuesta = [];
 	// echo $consultaRes;
 
 	if ($resConsultaRes = $Link->query($consultaRes)) {
@@ -107,20 +108,34 @@ $tHeadResidencia = '<tr>
 	$totalZona = [];
 
 	foreach ($respuesta2 as $mes => $valoresMes) {
-
 		foreach ($valoresMes as $valorMes => $valor) {
 			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
 			$zonas[$valor['zona_res_est']][$mes] = $valor['TOTAL'];	
-
 		}
 	}
+
+    // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($zonas as $zona => $valorZona) {
+      if (isset($zonas[$zona][$mes])) {
+        continue;
+      }else{
+        $zonas[$zona][$mes] = '0';
+      }
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+      ksort($zonas[$valor['zona_res_est']]);
+    }
+  } 
 
 	$zonaResi = "";
 	foreach ($zonas as $zona => $valorZona) {
 		if ($zona == 1) {
 			$zonaResi = "Urbana"; 
-		}else{
-			$zonaResi = "Rural";
+		}else if ($zona == 2) {
+      $zonaResi = "Rural";
+    }else{
+			$zonaResi = $zona;
 		}
 
 		$tBodyResidencia .= "<tr> <td>".$zonaResi."</td>";
@@ -130,7 +145,7 @@ $tHeadResidencia = '<tr>
 				
 				$valorFila += $valor;
 			 	$tBodyResidencia .= "<td>".$valor."</td>";
-			 	$totalZona[$zona]=$valorFila;			
+			 	$totalZona[$zonaResi]=$valorFila;			
 		}
 		$tBodyResidencia .= "<th>" .$valorFila. "</th>"; 
 		$tBodyResidencia .= "</tr>";

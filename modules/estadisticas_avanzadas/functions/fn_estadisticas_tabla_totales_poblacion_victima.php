@@ -33,7 +33,7 @@ $diasSemanas = [];
   }
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
@@ -54,24 +54,29 @@ foreach ($diasSemanas as $mes => $semanas) {
     }
 
     $datos = trim($datos, "+ ");
-    $consultaRes = "SELECT pobvictima.nombre, $datos ";
-    $consultaRes.=" AS TOTAL FROM $tabla JOIN pobvictima ON $tabla.cod_pob_victima = pobvictima.id GROUP BY cod_pob_victima";
 
-    $periodo = 1;
-
-	if ($resConsultaRes = $Link->query($consultaRes)) {
-        if ($resConsultaRes->num_rows > 0) {
-          while ($resEstrato = $resConsultaRes->fetch_assoc()) {
-          	$respuesta[$periodo] = $resEstrato;
-	        $periodo++;  	
-
-          }
-          
+    $consultaVictima = "SELECT id, nombre FROM pobvictima";
+    if ($resConsultaVictima = $Link->query($consultaVictima)) {
+        while ($resVictima = $resConsultaVictima->fetch_assoc()) {
+            $respuestaVictimas[$resVictima['id']] = $resVictima['nombre'];
         }
- 
+    }
+
+    $consultaRes = "SELECT cod_pob_victima, $datos ";
+    $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_pob_victima";
+    $periodo = 1;
+    $respuesta = [];
+
+	  if ($resConsultaRes = $Link->query($consultaRes)) {
+      if ($resConsultaRes->num_rows > 0) {
+        while ($resEstrato = $resConsultaRes->fetch_assoc()) {
+          $respuesta[$periodo] = $resEstrato;
+	        $periodo++;  	
+        }      
       }
+    }
     $respuesta2[$mes] = $respuesta;
-	$mesesRecorridos .= $mes;
+	  $mesesRecorridos .= $mes;
 }
 
 $arrayMes = explode("0", $mesesRecorridos);
@@ -104,22 +109,40 @@ $tHeadVictima = '<tr>
 	$victimas = [];	
 	$totalVictima = [];
 
-	foreach ($respuesta2 as $mes => $valoresMes) {
-		foreach ($valoresMes as $valorMes => $valor) {
-			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
-			$victimas[$valor['nombre']][$mes] = $valor['TOTAL'];	
-		}
-	}
+  // funcion para capturar los valores que existen en entregasres y no en la tabla discapacidades
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($valoresMes as $valorMes => $valor) {
+      $idTemporal = '';
+      foreach ($respuestaVictimas as $id => $nombre) {      
+        if ($valor['cod_pob_victima'] == $id) {
+          $victimas[$nombre][$mes] = $valor['TOTAL']; 
+          $idTemporal = $id; 
+        }
+      }
+      if ($idTemporal == '') {
+        $victimas[$valor['cod_pob_victima']][$mes] = $valor['TOTAL'];
+      }
+    }
+  }
+
+
+	// foreach ($respuesta2 as $mes => $valoresMes) {
+	// 	foreach ($valoresMes as $valorMes => $valor) {
+	// 		// convertimos la respuesta a un array asociativo con la clave primaria edad mes
+	// 		$victimas[$valor['nombre']][$mes] = $valor['TOTAL'];	
+	// 	}
+	// }
 
   // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
   foreach ($respuesta2 as $mes => $valoresMes) {
     foreach ($victimas as $victima => $valorVictima) {
       if (isset($victimas[$victima][$mes])) {
         continue;
+        ksort($victimas[$victima]);
       }else{
         $victimas[$victima][$mes] = '0';
+        ksort($victimas[$victima]);
       }
-        asort($victimas[$victima]);
     }
   } 
 

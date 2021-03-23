@@ -153,16 +153,23 @@ function CargarTablas()
 
 			// forma de convertir una fila de una matriz en un array
 			info =data['info'];
-
+			// console.log(info);
 			// declaramos un nuevo array que vamos a enviar a la grafica
 			json3 = [];
 
 			// conformamos el array que vamos a enviar 
 			json3[0] = ["Genero", "Valor"];
-			json3[1] = ["Femenino", parseInt(info['F'])];
-			json3[2] = ["Masculino", parseInt(info['M'])];
 
-			// console.log(json2);
+			cnt = 0;
+			generoData = "";
+
+			$.each(info, function(genero, total){
+				cnt++;
+				if (genero == 'M') {generoData = 'Masculino';}
+				if (genero == 'F') {generoData = 'Femenino';}
+				if (genero !== 'M' && genero !== 'F') {generoData = genero}
+				json3[cnt] = [generoData, parseInt(total)];
+			});
 
 			// enviarmos los datos a la funcion para dibujar la grafica
 			google.charts.load('current', {'packages':['corechart']});
@@ -259,18 +266,15 @@ function CargarTablas()
 			// console.log(info);
 				// declaramos un nuevo array que vamos a enviar a la grafica
 			json5 = []; 
+			json5[0] = ["Estrato", "Total",{ role: 'style' },{ role: 'annotation' }];
+			cnt = 0;
+			cnt2 = 0;
 
-				// conformamos el array que vamos a enviar 
-			json5[0] = ["Estrato", "Valor", { role: 'style' },{ role: 'annotation' }];
-			json5[1] = ["Estrato 0", info['0'], '#0B4337', info['0']];
-			json5[2] = ["Estrato 1", info['1'], '#19AB8D', info['1']];
-			json5[3] = ["Estrato 2", info['2'], '#0B4337', info['2']];
-			json5[4] = ["Estrato 3", info['3'], '#19AB8D', info['3']];
-			json5[5] = ["Estrato 4", info['4'], '#0B4337', info['4']];
-			json5[6] = ["Estrato 5", info['5'], '#19AB8D', info['5']];
-			json5[7] = ["Estrato 6", info['6'], '#0B4337', info['6']];
-			if(info['99']) {json5[8] = ["No aplica", info['99'], '#19AB8D', info['99']];}
-			else{json5[8] = ["No aplica", info['9'], '#19AB8D', info['9']];}
+			$.each(info, function(Estrato, total){
+				cnt++;
+				json5[cnt] = [Estrato, parseInt(total),colors[cnt2], parseInt(total)];
+				cnt2++;
+			});
 			
 				// enviarmos los datos a la funcion para dibujar la grafica
 			google.charts.load('current', {packages: ['corechart', 'bar']});
@@ -296,10 +300,18 @@ function CargarTablas()
 					// declaramos un nuevo array que vamos a enviar a la grafica
 			json6 = [];
 
-					// conformamos el array que vamos a enviar 
+			// conformamos el array que vamos a enviar 
 			json6[0] = ["Zona residencia", "Valor"];
-			json6[1] = ["Urbano", info['1']];
-			json6[2] = ["Rural", info['2']];
+
+			cnt = 0;
+			residenciaData = "";
+
+			$.each(info, function(zona, total){
+				cnt++;
+				json6[cnt] = [zona, parseInt(total)];
+			});
+
+			// console.log(json6);
 
 			google.charts.load('current', {'packages':['corechart']});
 			google.charts.setOnLoadCallback(function(){
@@ -331,31 +343,8 @@ function CargarTablas()
 
 			$.each(info, function(grado, total){
 				cnt++;
-				if (grado == -2) {gradoData = 'Prejardin';}
-				if (grado == -1) {gradoData = 'Jardin 1 o A o Kinder';}
-				if (grado == 0) {gradoData = 'Jardin 2 o B o Transcicsion o Grado 0';}
-				if (grado == 1) {gradoData = 'Primero';}
-				if (grado == 2) {gradoData = 'Segundo';}
-				if (grado == 3) {gradoData = 'Tercero';}
-				if (grado == 4) {gradoData = 'Cuarto';}
-				if (grado == 5) {gradoData = 'Quinto';}
-				if (grado == 6) {gradoData = 'Sexto';}
-				if (grado == 7) {gradoData = 'Septimo';}
-				if (grado == 8) {gradoData = 'Octavo';}
-				if (grado == 9) {gradoData = 'Noveno';}
-				if (grado == 10) {gradoData = 'Decimo';}
-				if (grado == 11) {gradoData = 'Once';}
-				if (grado == 12) {gradoData = 'Doce - Normal Superior';}
-				if (grado == 13) {gradoData = 'Trece - Normal Superior';}
-				if (grado == 21) {gradoData = 'Ciclo 1 Adultos';}
-				if (grado == 22) {gradoData = 'Ciclo 2 Adultos';}
-				if (grado == 23) {gradoData = 'Ciclo 3 Adultos';}
-				if (grado == 24) {gradoData = 'Ciclo 4 Adultos';}
-				if (grado == 25) {gradoData = 'Ciclo 5 Adultos';}
-				if (grado == 26) {gradoData = 'Ciclo 6 Adultos';}
-				if (grado == 99) {gradoData = 'Aceleracion del Aprendizaje';}
 
-				json7[cnt] = [gradoData, parseInt(total),colors[cnt2], parseInt(total)];
+				json7[cnt] = [grado, parseInt(total),colors[cnt2], parseInt(total)];
 				cnt2++;
 			});
 
@@ -387,18 +376,9 @@ function CargarTablas()
 
 			$.each(info, function(jornada, total){
 				cnt++;
-				if (jornada == 0) {jornadaData = "Ninguna";}
-				if (jornada == 1) {jornadaData = "Completa";}
-				if (jornada == 2) {jornadaData = "Mañana";}
-				if (jornada == 3) {jornadaData = "Tarde";}
-				if (jornada == 4) {jornadaData = "Nocturna";}
-				if (jornada == 5) {jornadaData = "Fin de semana";}
-				if (jornada == 6) {jornadaData = "Jornada Unica";}		
-
-				json8[cnt] = [jornadaData, parseInt(total)];
+				json8[cnt] = [jornada, parseInt(total)];
 			});
 
-				// console.log(json);
 			google.charts.load('current', {'packages':['corechart']});
 			google.charts.setOnLoadCallback(function(){
 			pieChart4(json8);
@@ -417,6 +397,7 @@ function CargarTablas()
 			municipio = data['codMunicipio'];
 				
 			if (municipio == '0') {
+				// console.log(data);
 					// data = JSON.parse(data);
 				$('#tHeadMunicipio').html(data['thead']);
 				$('#tBodyMunicipio').html(data['tbody']);
@@ -707,11 +688,11 @@ function graficaTotalesSemanas(json, titulo, subtitulo, legendPos, multiColumn) 
         annotations : {
         	textStyle: {
 		      fontSize: 12,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
         },
         colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA']
@@ -749,12 +730,12 @@ function graficaTotalesComplemento(json, titulo, subtitulo, legendPos, multiColu
         },
         annotations : {
         	textStyle: {
-		      fontSize: 8,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      fontSize: 12,
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
         },
         vAxis : {
@@ -802,11 +783,11 @@ function graficaTotalesEdad(json, titulo, subtitulo, legendPos, multiColumn) {
         annotations : {
         	textStyle: {
 		      fontSize: 12,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
         },
         colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA']
@@ -826,7 +807,17 @@ function graficaTotalesEdad(json, titulo, subtitulo, legendPos, multiColumn) {
           title: 'Totales por Género',
           slices: {
             0: { color: '#0B4337' },
-            1: { color: '#19AB8D' }
+            1: { color: '#19AB8D' }, 
+            2: { color: '#137A65' },
+            3: { color: '#23E1BA' },
+            4: { color: '#0B4337' },
+            5: { color: '#19AB8D' }, 
+            6: { color: '#137A65' },
+            7: { color: '#23E1BA' },	
+            8: { color: '#0B4337' },
+            9: { color: '#19AB8D' }, 
+            10: { color: '#137A65' },
+            11: { color: '#23E1BA' }
           },
           width: "100%",
           height: 300,
@@ -845,7 +836,17 @@ function pieChart3(json) {
           title: 'Totales por zona de residencia',
           slices: {
             0: { color: '#0B4337' },
-            1: { color: '#19AB8D' }
+            1: { color: '#19AB8D' }, 
+            2: { color: '#137A65' },
+            3: { color: '#23E1BA' },
+            4: { color: '#0B4337' },
+            5: { color: '#19AB8D' }, 
+            6: { color: '#137A65' },
+            7: { color: '#23E1BA' },	
+            8: { color: '#0B4337' },
+            9: { color: '#19AB8D' }, 
+            10: { color: '#137A65' },
+            11: { color: '#23E1BA' }
           },
           width: "100%",
           height: 450,
@@ -865,7 +866,15 @@ function pieChart4(json) {
             0: { color: '#0B4337' },
             1: { color: '#19AB8D' }, 
             2: { color: '#137A65' },
-            3: { color: '#23E1BA' }							 
+            3: { color: '#23E1BA' },
+            4: { color: '#0B4337' },
+            5: { color: '#19AB8D' }, 
+            6: { color: '#137A65' },
+            7: { color: '#23E1BA' },	
+            8: { color: '#0B4337' },
+            9: { color: '#19AB8D' }, 
+            10: { color: '#137A65' },
+            11: { color: '#23E1BA' }							 
           },
           width: "100%",
           height: 450,
@@ -925,12 +934,12 @@ function graficaTotalesEscolaridad(json, titulo, subtitulo, legendPos, multiColu
         },
         annotations : {
         	textStyle: {
-		      fontSize: 8,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      fontSize: 12,
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
         },
         vAxis : {
@@ -978,12 +987,12 @@ function graficaTotalesDiscapacidad(json, titulo, subtitulo, legendPos, multiCol
         },
         annotations : {
         	textStyle: {
-		      fontSize: 8,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      fontSize: 12,
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
         },
         vAxis : {
@@ -1031,12 +1040,12 @@ function graficaTotalesVictima(json, titulo, subtitulo, legendPos, multiColumn) 
         },
         annotations : {
         	textStyle: {
-		      fontSize: 8,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      fontSize: 12,
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
         },
         vAxis : {
@@ -1084,12 +1093,12 @@ function graficaTotalesEtnia(json, titulo, subtitulo, legendPos, multiColumn) {
         },
         annotations : {
         	textStyle: {
-		      fontSize: 8,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      fontSize: 12,
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
 		    
         },
@@ -1148,12 +1157,12 @@ function graficaValoresEjecutados(json, titulo, subtitulo, legendPos, multiColum
         },
         annotations : {
         	textStyle: {
-		      fontSize: 12,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      fontSize: 9,
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
         },
         colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA']
@@ -1178,7 +1187,7 @@ function graficaTotalesSedes(json, titulo, subtitulo, legendPos, multiColumn) {
     var options = {
     	title: titulo,
         width: "100%",
-        height: 1400,
+        height: 1500,
         bar: {groupWidth: "50%"},
         chart: {
           title: titulo,
@@ -1190,12 +1199,12 @@ function graficaTotalesSedes(json, titulo, subtitulo, legendPos, multiColumn) {
         },
         annotations : {
         	textStyle: {
-		      fontSize: 8,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      fontSize: 11,
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
         },
         vAxis : {
@@ -1243,11 +1252,11 @@ function graficaTotalesEstratos(json, titulo, subtitulo, legendPos, multiColumn)
         annotations : {
         	textStyle: {
 		      fontSize: 12,
-		      bold: true,
-		      italic: true,
-		      color: '#ffffff',
-		      auraColor: '#000000',
-		      opacity: 0.8
+		      bold: false,
+		      italic: false,
+		      color: '#000000',
+		      // auraColor: '#000000',
+		      opacity: 1
 		    }
         },
         colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA']

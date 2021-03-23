@@ -33,7 +33,7 @@ $diasSemanas = [];
   }
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
@@ -54,10 +54,19 @@ foreach ($diasSemanas as $mes => $semanas) {
     }
 
     $datos = trim($datos, "+ ");
-    $consultaRes = "SELECT etnia.descripcion, $datos ";
-    $consultaRes.=" AS TOTAL FROM $tabla JOIN etnia ON $tabla.etnia = etnia.id GROUP BY etnia";
+
+    $consultaEtnia = "SELECT id, descripcion FROM etnia";
+    if ($resConsultaEtnia = $Link->query($consultaEtnia)) {
+      while ($resEtnia = $resConsultaEtnia->fetch_assoc()) {
+        $respuestaEtnias[$resEtnia['id']] = $resEtnia['descripcion'];
+      }
+    }
+
+    $consultaRes = "SELECT etnia, $datos ";
+    $consultaRes.=" AS TOTAL FROM $tabla GROUP BY etnia";
 
     $periodo = 1;
+    $respuesta = [];
 
 	if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
@@ -104,22 +113,40 @@ $tHeadEtnia = '<tr>
 	$etnias = [];	
 	$totalEtnia = [];
 
-	foreach ($respuesta2 as $mes => $valoresMes) {
-		foreach ($valoresMes as $valorMes => $valor) {
-			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
-			$etnias[$valor['descripcion']][$mes] = $valor['TOTAL'];	
-		}
-	}
+    // funcion para capturar los valores que existen en entregasres y no en la tabla discapacidades
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($valoresMes as $valorMes => $valor) {
+      $idTemporal = '';
+      foreach ($respuestaEtnias as $id => $nombre) {      
+        if ($valor['etnia'] == $id) {
+          $etnias[$nombre][$mes] = $valor['TOTAL']; 
+          $idTemporal = $id; 
+        }
+      }
+      if ($idTemporal == '') {
+        $etnias[$valor['etnia']][$mes] = $valor['TOTAL'];
+      }
+    }
+  }
+
+
+	// foreach ($respuesta2 as $mes => $valoresMes) {
+	// 	foreach ($valoresMes as $valorMes => $valor) {
+	// 		// convertimos la respuesta a un array asociativo con la clave primaria edad mes
+	// 		$etnias[$valor['descripcion']][$mes] = $valor['TOTAL'];	
+	// 	}
+	// }
 
   // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
   foreach ($respuesta2 as $mes => $valoresMes) {
     foreach ($etnias as $etnia => $valorEtnia) {
       if (isset($etnias[$etnia][$mes])) {
         continue;
+        ksort($etnias[$etnia]);
       }else{
         $etnias[$etnia][$mes] = '0';
+        ksort($etnias[$etnia]);
       }
-        asort($etnias[$etnia]);
     }
   } 
 

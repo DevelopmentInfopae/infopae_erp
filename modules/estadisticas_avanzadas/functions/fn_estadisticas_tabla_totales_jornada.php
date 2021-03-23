@@ -32,8 +32,16 @@ $diasSemanas = [];
   }
 
 $mesesRecorridos = ""; 
-$respuesta = [];
 $respuesta2 = [];
+
+$consNomJornadas = "SELECT id, nombre FROM jornada";
+$resNomJornadas = $Link->query($consNomJornadas);
+if ($resNomJornadas->num_rows > 0) {
+  while ($dataNomJornadas = $resNomJornadas->fetch_assoc()) {
+    // exit(var_dump($dataNomJornadas));
+    $nomJornadas[$dataNomJornadas['id']] = $dataNomJornadas['nombre'];
+  }
+}
 
 foreach ($diasSemanas as $mes => $semanas) {
 	$datos = "";
@@ -57,6 +65,7 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_jorn_est";
 
     $periodo = 1;
+    $respuesta = [];
 
 	if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
@@ -119,7 +128,9 @@ $tHeadJornada = '<tr>
       }else{
         $jornadas[$jornada][$mes] = '0';
       }
-        asort($jornadas[$jornada]);
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+    ksort($jornadas[$valor['cod_jorn_est']]);
     }
   } 
 
@@ -128,39 +139,28 @@ $tHeadJornada = '<tr>
 	$jornadaData = "";
 
 	foreach ($jornadas as $jornada => $valorJornada) {
-		if ($jornada == 0) {
-			$jornadaData = "Ninguna";
-		}
-		elseif ($jornada == 1) {
-			$jornadaData = "Completa";
-		}
-		elseif ($jornada == 2) {
-			$jornadaData = "Mañana";
-		}
-		elseif ($jornada == 3) {
-			$jornadaData = "Tarde";
-		}
-		elseif ($jornada == 4) {
-			$jornadaData = "Nocturna";
-		}
-		elseif ($jornada == 5) {
-			$jornadaData = "Fin de semana";
-		}
-		elseif ($jornada == 6) {
-			$jornadaData = "Jornada Unica";
-		}
-    else{
-      $jornadaData = "No aplica";
-    }
 
-		$tBodyJornada .= "<tr> <td>".$jornadaData."</td>";
+  $Letra = "B";
+  $nombreJornada = '';
+  $nombreTemporal = '';
+  foreach ($nomJornadas as $idJornada => $valor) {
+    if ($idJornada == $jornada) {
+      $nombreJornada = $valor;
+      $nombreTemporal = $nombreJornada;
+    }
+  }
+  if ($nombreTemporal == '') {
+     $nombreJornada = $jornada;
+  }
+
+		$tBodyJornada .= "<tr> <td>".$nombreJornada."</td>";
 
 		$valorFila = 0;
 		foreach ($valorJornada as $valores => $valor) {
 				
 				$valorFila += $valor;
 			 	$tBodyJornada .= "<td>".$valor."</td>";
-			 	$totalJornada[$jornada]=$valorFila;			
+			 	$totalJornada[$nombreJornada]=$valorFila;			
 		}
 		$tBodyJornada .= "<th>" .$valorFila. "</th>"; 
 		$tBodyJornada .= "</tr>";

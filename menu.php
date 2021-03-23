@@ -237,6 +237,7 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php"><span class="nav-label">Trazabilidad Insumos</span></a> </li>
 			<?php } ?>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas_avanzadas/index.php">Estadisticas Avanzadas</a></li>
 			<?php if( $_SESSION['perfil'] != 9 ){ ?>
 				<li> <a href="#" class="sinDesarrollar">Bitácora de usuarios</a></li>
 				<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
@@ -330,6 +331,7 @@
 			<li><a href="<?= $baseUrl; ?>/modules/grados">Grados</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/jornadas">Jornada</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/poblacion_victima">Población victima</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/bancos/index.php">Bancos</a></li>
 		</ul>
 	</li>
 <?php } ?>

@@ -34,7 +34,7 @@ $diasSemanas = [];
 
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
@@ -59,6 +59,7 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_estrato";
 
     $periodo = 1;
+    $respuesta = [];
 	
 	if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
@@ -120,7 +121,9 @@ $tHeadEstrato = '<tr>
       }else{
         $estratos[$estrato][$mes] = '0';
       }
-        asort($estratos[$estrato]);
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+    ksort($estratos[$valor['cod_estrato']]);
     }
   } 
 
@@ -139,7 +142,7 @@ $tHeadEstrato = '<tr>
 				
 				$valorFila += $valor;
 			 	$tBodyEstrato .= "<td>".$valor."</td>";
-			 	$totalEstrato[$estrato]=$valorFila;			
+			 	$totalEstrato[$estratoDato]=$valorFila;			
 		}
 		$tBodyEstrato .= "<th>" .$valorFila. "</th>"; 
 		$tBodyEstrato .= "</tr>";
