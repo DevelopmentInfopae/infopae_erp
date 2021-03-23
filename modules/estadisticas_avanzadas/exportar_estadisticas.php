@@ -574,7 +574,7 @@ $sheet->addChart($chart);
 // FIN SECCION TOTALES POR COMPLEMENTO 
 
 
-// INICIO SECCION TOTALES POR GENERO
+// INICIO SECCION TOTALES POR GENERO 
 $numFila = $numFila+5;
 $sheet->setCellValue('B'.$numFila, 'Totales por género');
 $sheet->mergeCells('B'.$numFila.':P'.$numFila);
@@ -584,7 +584,6 @@ $numFila++;
 
 // ciclo para armar la consulta y guardar los datos con que vamos a armar la tabla
 $mesesRecorridos = ""; 
-$respuesta = [];
 $respuesta2 = [];
 
 // ciclo para recorrer los meses
@@ -609,6 +608,7 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes = "SELECT genero, $datos ";
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY genero";
     $periodo = 1;
+    $respuesta = [];
   
   if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
@@ -661,6 +661,20 @@ foreach ($respuesta2 as $mes => $valoresMes) {
   }
 }
 
+   // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($generos as $genero => $valorGenero) {
+      if (isset($generos[$genero][$mes])) {
+        continue;
+      }else{
+        $generos[$genero][$mes] = '0';
+      }  
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+      ksort($generos[$valor['genero']]);
+    }
+  }
+
 $nombreGenero = '';
 $filaInicialTabla = $numFila;
 foreach ($generos as $genero => $valorGenero) {
@@ -669,6 +683,8 @@ foreach ($generos as $genero => $valorGenero) {
     $nombreGenero = 'Femenino';
   }else if ($genero == 'M') {
     $nombreGenero = 'Masculino';
+  }else{
+    $nombreGenero = $genero;
   }
   $sheet->setCellValue($Letra.$numFila, $nombreGenero);
   
@@ -791,7 +807,6 @@ $tituloTotalesEdad = 'B'.$numFila.':P'.$numFila;
 $numFila++;
 
 $mesesRecorridos = ""; 
-$respuesta = [];
 $respuesta2 = [];
 
 // ciclo para recorrer los meses
@@ -816,6 +831,7 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes = "SELECT edad, $datos ";
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY edad ORDER BY convert(edad, UNSIGNED)";
     $periodo = 1;
+    $respuesta = [];
   
   if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
@@ -871,18 +887,19 @@ foreach ($respuesta2 as $mes => $valoresMes) {
   }
 }
 
-foreach ($respuesta2 as $mes => $valoresMes) {
-  foreach ($edades as $edad => $valorEdad) {
-    if (isset($edades[$edad][$mes])) {
-      continue;
-    }else{
-      $edades[$edad][$mes] = '0';
+  // funcion para colocar en 0 las campos vacios
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($edades as $edad => $valorEdad) {
+      if (isset($edades[$edad][$mes])) {
+        continue;
+      }else{
+        $edades[$edad][$mes] = '0';
+      }  
     }
-    asort($edades[$edad]);
-    // asort(intval($edades));
-    ksort($edades); 
+    foreach ($valoresMes as $valorMes => $valor) {
+      ksort($edades[$valor['edad']]);
+    }
   }
-}
 
 $filaInicialTabla = $numFila;
 foreach ($edades as $edad => $valorEdad) {
@@ -1017,7 +1034,6 @@ $tituloTotalesEstrato = 'B'.$numFila.':P'.$numFila;
 $numFila++;
 
 $mesesRecorridos = ""; 
-$respuesta = [];
 $respuesta2 = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
@@ -1039,6 +1055,7 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes = "SELECT cod_estrato AS estrato, $datos ";
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_estrato";
     $periodo = 1;
+    $respuesta = [];
   
   if ($resConsultaRes = $Link->query($consultaRes)) {
     if ($resConsultaRes->num_rows > 0) {
@@ -1091,30 +1108,26 @@ foreach ($respuesta2 as $mes => $valoresMes) {
   }
 }
 
-// funcion para llenar campos cuando haya  un dato en un mes y en otro no 
-foreach ($respuesta2 as $mes => $valoresMes) {
-  foreach ($estratos as $estrato => $valorEstrato) {
-    if (isset($estratos[$estrato][$mes])) {
-      continue;
-    }else{
-      $estratos[$estrato][$mes] = '0';
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($estratos as $estrato => $valorEstrato) {
+      if (isset($estratos[$estrato][$mes])) {
+        continue;
+      }else{
+        $estratos[$estrato][$mes] = '0';
+      }
     }
-      asort($estratos[$estrato]);
-  }
-}
+    foreach ($valoresMes as $valorMes => $valor) {
+    ksort($estratos[$valor['estrato']]);
+    }
+  } 
 
 $filaInicialTabla = $numFila;
 foreach ($estratos as $estrato => $valorEstrato) {
   $Letra = "B";
   $estratoString = '';
-  if ($estrato == 0) { $estratoString = 'Estrato 0';}
-  if ($estrato == 1) { $estratoString = 'Estrato 1';}
-  if ($estrato == 2) { $estratoString = 'Estrato 2';}
-  if ($estrato == 3) { $estratoString = 'Estrato 3';}
-  if ($estrato == 4) { $estratoString = 'Estrato 4';}
-  if ($estrato == 5) { $estratoString = 'Estrato 5';}
-  if ($estrato == 6) { $estratoString = 'Estrato 6';}
   if ($estrato == 9 || $estrato == 99) { $estratoString = 'No aplica';}
+  else{$estratoString = 'Estrato '.$estrato;}
 
   $sheet->setCellValue($Letra.$numFila, $estratoString);
   $totalEstrato = 0;
@@ -1243,7 +1256,7 @@ $tituloTotalesResidencia = 'B'.$numFila.':P'.$numFila;
 $numFila++;
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
@@ -1266,6 +1279,8 @@ foreach ($diasSemanas as $mes => $semanas) {
   $consultaRes = "SELECT zona_res_est, $datos ";
   $consultaRes.=" AS TOTAL FROM $tabla GROUP BY zona_res_est";
   $periodo = 1;
+  $respuesta = [];
+
   // echo $consultaRes;
   if ($resConsultaRes = $Link->query($consultaRes)) {
     if ($resConsultaRes->num_rows > 0) {
@@ -1318,6 +1333,21 @@ foreach ($respuesta2 as $mes => $valoresMes) {
   }
 }
 
+    // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($residencias as $residencia => $valorResidencia) {
+      if (isset($residencias[$residencia][$mes])) {
+        continue;
+      }else{
+        $residencias[$residencia][$mes] = '0';
+      }
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+      ksort($residencias[$valor['zona_res_est']]);
+    }
+  } 
+
+
 $filaInicialTabla = $numFila;
 foreach ($residencias as $residencia => $valorResidencia) {
   $Letra = "B";
@@ -1329,7 +1359,7 @@ foreach ($residencias as $residencia => $valorResidencia) {
     $zona = 'Urbano';
   }
   else{
-    $zona = 'Indefinido';
+    $zona = $residencia;
   }
   $sheet->setCellValue($Letra.$numFila, $zona);
   
@@ -1458,13 +1488,13 @@ $tituloTotalesEscolaridad = 'B'.$numFila.':P'.$numFila;
 $numFila++;
 
 $mesesRecorridos = ""; 
-$respuesta = [];
 $respuesta2 = [];
 $nomGrados = [];
 $nombreGrado = '';
 
 // consulta para traer el nombre de los grados
 $periodo = 0;
+
 $consNomGrados = "SELECT id, nombre FROM grados";
 $resNomGrados = $Link->query($consNomGrados);
 if ($resNomGrados->num_rows >0) {
@@ -1493,6 +1523,7 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes = "SELECT cod_grado, $datos ";
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_grado";
     $periodo = 1;
+    $respuesta = [];
 
   if ($resConsultaRes = $Link->query($consultaRes)) {
     if ($resConsultaRes->num_rows > 0) {
@@ -1544,26 +1575,36 @@ foreach ($respuesta2 as $mes => $valoresMes) {
   }
 }
 
-foreach ($respuesta2 as $mes => $valoresMes) {
-  foreach ($escolaridades as $escolaridad => $valorEscolaridad) {
-    if (isset($escolaridades[$escolaridad][$mes])) {
-      continue;
-    }else{
-      $escolaridades[$escolaridad][$mes] = '0';
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($escolaridades as $escolaridad => $valorEscolaridad) {
+      if (isset($escolaridades[$escolaridad][$mes])) {
+        continue;
+      }else{
+        $escolaridades[$escolaridad][$mes] = '0';
+      }
     }
-      asort($escolaridades[$escolaridad]);
-  }
-} 
+    foreach ($valoresMes as $valorMes => $valor) {
+    ksort($escolaridades[$valor['cod_grado']]);
+    }
+  } 
+
 
 $filaInicialTabla = $numFila;
 foreach ($escolaridades as $escolaridad => $valorEscolaridad) {
   $Letra = "B";
+  $nombreTemporal = '';
   $nombreGrado = '';
   foreach ($nomGrados as $grado => $valor) {
-    if ($valor['id'] == $escolaridad) {
+    if ($escolaridad == $valor['id']) {
       $nombreGrado = $valor['nombre'];
+      $nombreTemporal = $nombreGrado;
     }
   }
+  if ($nombreTemporal =='') {
+     $nombreGrado = $escolaridad;
+  }
+
   $sheet->setCellValue($Letra.$numFila, $nombreGrado);
   
   $totalEscolaridad = 0;
@@ -1670,7 +1711,7 @@ $numFila = $numFila+2;
 $chart->setTopLeftPosition('B'.($numFila+2));
 
 // no mandar la letra con $ en esta seccion
-$numFila = $numFila+20;
+$numFila = $numFila+30;
 $chart->setBottomRightPosition('L'.($numFila+2));
 
 $sheet->addChart($chart);
@@ -1687,7 +1728,7 @@ $tituloTotalesJornada = 'B'.$numFila.':P'.$numFila;
 $numFila++;
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 $nomJornadas = [];
 
@@ -1719,6 +1760,7 @@ foreach ($diasSemanas as $mes => $semanas) {
   $consultaRes = "SELECT cod_jorn_est, $datos ";
   $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_jorn_est";
   $periodo = 1;
+  $respuesta = [];
 
   if ($resConsultaRes = $Link->query($consultaRes)) {
     if ($resConsultaRes->num_rows > 0) {
@@ -1770,26 +1812,34 @@ foreach ($respuesta2 as $mes => $valoresMes) {
   }
 }
 
-// funcion para llenar campos cuando haya  un dato en un mes y en otro no 
-foreach ($respuesta2 as $mes => $valoresMes) {
-  foreach ($jornadas as $jornada => $valorJornada) {
-    if (isset($jornadas[$jornada][$mes])) {
-      continue;
-    }else{
-      $jornadas[$jornada][$mes] = '0';
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($jornadas as $jornada => $valorJornada) {
+      if (isset($jornadas[$jornada][$mes])) {
+        continue;
+      }else{
+        $jornadas[$jornada][$mes] = '0';
+      }
     }
-      asort($jornadas[$jornada]);
-  }
-} 
+    foreach ($valoresMes as $valorMes => $valor) {
+    ksort($jornadas[$valor['cod_jorn_est']]);
+    }
+  } 
+
 
 $filaInicialTabla = $numFila;
 foreach ($jornadas as $jornada => $valorJornada) {
   $Letra = "B";
   $nombreJornada = '';
+  $nombreTemporal = '';
   foreach ($nomJornadas as $idJornada => $valor) {
     if ($idJornada == $jornada) {
       $nombreJornada = $valor;
+      $nombreTemporal = $nombreJornada;
     }
+  }
+  if ($nombreTemporal == '') {
+     $nombreJornada = $jornada;
   }
   $sheet->setCellValue($Letra.$numFila, $nombreJornada);
   
@@ -2343,7 +2393,6 @@ $numFila++;
 
 
 $mesesRecorridos = ""; 
-$respuesta = [];
 $respuesta2 = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
@@ -2362,9 +2411,18 @@ foreach ($diasSemanas as $mes => $semanas) {
       $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
     }
     $datos = trim($datos, "+ ");
-    $consultaRes = "SELECT discapacidades.nombre, $datos ";
-    $consultaRes.=" AS TOTAL FROM $tabla JOIN discapacidades ON $tabla.cod_discap = discapacidades.id GROUP BY cod_discap";
+
+    $consultaDiscapacidad = "SELECT id, nombre FROM discapacidades";
+    if ($resConsultaDiscapacidad = $Link->query($consultaDiscapacidad)) {
+        while ($resDiscapcidad = $resConsultaDiscapacidad->fetch_assoc()) {
+            $respuestaDiscapacidades[$resDiscapcidad['id']] = $resDiscapcidad['nombre'];
+        }
+    }
+
+    $consultaRes = "SELECT cod_discap,$datos";
+    $consultaRes.="as TOTAL FROM $tabla GROUP BY cod_discap";
     $periodo = 1;
+    $respuesta = [];
 
     if ($resConsultaRes = $Link->query($consultaRes)) {
       if ($resConsultaRes->num_rows > 0) {
@@ -2409,25 +2467,38 @@ foreach ($arrayMes as $key => $link) {
     $numFila++;
     // terminamos de llenar el encabezado
 
-    // empezamos a llenar el body de la tabla 
+    // funcion para capturar los valores que existen en entregasres y no en la tabla discapacidades
     foreach ($respuesta2 as $mes => $valoresMes) {
-        foreach ($valoresMes as $valorMes => $valor) {
-          // convertimos la respuesta a un array asociativo con la clave primaria edad mes
-          $discapacidades[$valor['nombre']][$mes] = $valor['TOTAL'];  
+      foreach ($valoresMes as $valorMes => $valor) {
+        $idTemporal = '';
+        foreach ($respuestaDiscapacidades as $id => $nombre) {      
+          if ($valor['cod_discap'] == $id) {
+            $discapacidades[$nombre][$mes] = $valor['TOTAL']; 
+            $idTemporal = $id; 
+          }
+        }
+        if ($idTemporal == '') {
+          $discapacidades[$valor['cod_discap']][$mes] = $valor['TOTAL'];
+        }
       }
     }
 
-    // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
-    foreach ($respuesta2 as $mes => $valoresMes) {
-      foreach ($discapacidades as $discapacidad => $valorDiscapacidad) {
-        if (isset($discapacidades[$discapacidad][$mes])) {
-          continue;
-        }else{
-          $discapacidades[$discapacidad][$mes] = '0';
-        }
-          asort($discapacidades[$discapacidad]);
+
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($discapacidades as $discapacidad => $valorDiscapacidad) {
+      if (isset($discapacidades[$discapacidad][$mes])) {
+        ksort($discapacidades[$discapacidad]);
+        continue;
+      }else{
+        $discapacidades[$discapacidad][$mes] = '0';
+        ksort($discapacidades[$discapacidad]);
       }
     }
+    // foreach ($valoresMes as $valorMes => $valor) {
+    //   ksort($discapacidades[$valor['cod_discap']], SORT_STRING);
+    // }
+  }
 
     $filaInicialTabla = $numFila;
     foreach ($discapacidades as $discapacidad => $valorDiscapacidad) {
@@ -2553,7 +2624,7 @@ $tituloTotalesPoblacion = 'B'.$numFila.':P'.$numFila;
 $numFila++;
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
@@ -2573,9 +2644,18 @@ foreach ($diasSemanas as $mes => $semanas) {
     }
 
     $datos = trim($datos, "+ ");
-    $consultaRes = "SELECT pobvictima.nombre, $datos ";
-    $consultaRes.=" AS TOTAL FROM $tabla JOIN pobvictima ON $tabla.cod_pob_victima = pobvictima.id GROUP BY cod_pob_victima";
+
+    $consultaVictima = "SELECT id, nombre FROM pobvictima";
+    if ($resConsultaVictima = $Link->query($consultaVictima)) {
+        while ($resVictima = $resConsultaVictima->fetch_assoc()) {
+            $respuestaVictimas[$resVictima['id']] = $resVictima['nombre'];
+        }
+    }
+
+    $consultaRes = "SELECT cod_pob_victima, $datos ";
+    $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_pob_victima";
     $periodo = 1;
+    $respuesta = [];
 
   if ($resConsultaRes = $Link->query($consultaRes)) {
     if ($resConsultaRes->num_rows > 0) {
@@ -2620,25 +2700,35 @@ foreach ($arrayMes as $key => $link) {
     $numFila++;
     // terminamos de llenar el encabezado
 
-    // empezamos a llenar el body de la tabla 
-    foreach ($respuesta2 as $mes => $valoresMes) {
-        foreach ($valoresMes as $valorMes => $valor) {
-          // convertimos la respuesta a un array asociativo con la clave primaria edad mes
-          $victimas[$valor['nombre']][$mes] = $valor['TOTAL'];  
+  // funcion para capturar los valores que existen en entregasres y no en la tabla discapacidades
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($valoresMes as $valorMes => $valor) {
+      $idTemporal = '';
+      foreach ($respuestaVictimas as $id => $nombre) {      
+        if ($valor['cod_pob_victima'] == $id) {
+          $victimas[$nombre][$mes] = $valor['TOTAL']; 
+          $idTemporal = $id; 
+        }
+      }
+      if ($idTemporal == '') {
+        $victimas[$valor['cod_pob_victima']][$mes] = $valor['TOTAL'];
       }
     }
+  }
 
-    // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
-    foreach ($respuesta2 as $mes => $valoresMes) {
-      foreach ($victimas as $victima => $valorVictima) {
-        if (isset($victimas[$victima][$mes])) {
-          continue;
-        }else{
-          $victimas[$victima][$mes] = '0';
-        }
-          asort($victimas[$victima]);
+  // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($victimas as $victima => $valorVictima) {
+      if (isset($victimas[$victima][$mes])) {
+        continue;
+        ksort($victimas[$victima]);
+      }else{
+        $victimas[$victima][$mes] = '0';
+        ksort($victimas[$victima]);
       }
-    } 
+    }
+  } 
+
 
     $filaInicialTabla = $numFila;
     foreach ($victimas as $victima => $valorVictima) {
@@ -2764,8 +2854,14 @@ $tituloTotalesEtnia = 'B'.$numFila.':P'.$numFila;
 $numFila++;
 
 $mesesRecorridos = ""; 
-$respuesta = [];
 $respuesta2 = [];
+
+    $consultaEtnia = "SELECT id, descripcion FROM etnia";
+    if ($resConsultaEtnia = $Link->query($consultaEtnia)) {
+      while ($resEtnia = $resConsultaEtnia->fetch_assoc()) {
+        $respuestaEtnias[$resEtnia['id']] = $resEtnia['descripcion'];
+      }
+    }
 
 foreach ($diasSemanas as $mes => $semanas) {
   $datos = "";
@@ -2783,9 +2879,11 @@ foreach ($diasSemanas as $mes => $semanas) {
       $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
     }
     $datos = trim($datos, "+ ");
-    $consultaRes = "SELECT etnia.descripcion, $datos ";
-    $consultaRes.=" AS TOTAL FROM $tabla JOIN etnia ON $tabla.etnia = etnia.id GROUP BY etnia";
+
+    $consultaRes = "SELECT etnia, $datos ";
+    $consultaRes.=" AS TOTAL FROM $tabla GROUP BY etnia";
     $periodo = 1;
+    $respuesta = [];
 
     if ($resConsultaRes = $Link->query($consultaRes)) {
       if ($resConsultaRes->num_rows > 0) {
@@ -2830,25 +2928,35 @@ $tituloTablaTotalesEtnia = 'B'.$numFila.':'.$LFStyle.$numFila;
 $numFila++;
 // terminamos de llenar el encabezado
 
-// empezamos a llenar el body de la tabla 
-foreach ($respuesta2 as $mes => $valoresMes) {
-  foreach ($valoresMes as $valorMes => $valor) {
-  // convertimos la respuesta a un array asociativo con la clave primaria edad mes
-  $etnias[$valor['descripcion']][$mes] = $valor['TOTAL'];  
-  }
-}
-
-// funcion para llenar campos cuando haya  un dato en un mes y en otro no 
-foreach ($respuesta2 as $mes => $valoresMes) {
-  foreach ($etnias as $etnia => $valorEtnia) {
-    if (isset($etnias[$etnia][$mes])) {
-      continue;
-    }else{
-      $etnias[$etnia][$mes] = '0';
+    // funcion para capturar los valores que existen en entregasres y no en la tabla discapacidades
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($valoresMes as $valorMes => $valor) {
+      $idTemporal = '';
+      foreach ($respuestaEtnias as $id => $nombre) {      
+        if ($valor['etnia'] == $id) {
+          $etnias[$nombre][$mes] = $valor['TOTAL']; 
+          $idTemporal = $id; 
+        }
+      }
+      if ($idTemporal == '') {
+        $etnias[$valor['etnia']][$mes] = $valor['TOTAL'];
+      }
     }
-      asort($etnias[$etnia]);
   }
-} 
+  
+ // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($etnias as $etnia => $valorEtnia) {
+      if (isset($etnias[$etnia][$mes])) {
+        continue;
+        ksort($etnias[$etnia]);
+      }else{
+        $etnias[$etnia][$mes] = '0';
+        ksort($etnias[$etnia]);
+      }
+    }
+  } 
+
 
 $filaInicialTabla = $numFila;
 foreach ($etnias as $etnia => $valorEtnia) {

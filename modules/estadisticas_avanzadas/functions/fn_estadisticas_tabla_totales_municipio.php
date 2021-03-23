@@ -71,6 +71,7 @@ if ($codigoMunicipio == '0') {
 
     $periodo = 1;
 
+    // exit(var_dump($consultaRes));
     if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
           while ($resEstrato = $resConsultaRes->fetch_assoc()) {
@@ -120,14 +121,25 @@ if ($codigoMunicipio == '0') {
       $totalesMunicipio = [];
 
       foreach ($respuesta2 as $mes => $valoresMes) {
-
         foreach ($valoresMes as $valorMes => $valor) {
           // convertimos la respuesta a un array asociativo con la clave primaria edad mes
           $municipios[$valor['Ciudad']][$mes] = $valor['TOTAL'];  
           $codigos[$valor['codigoDane']][$mes] = $valor['TOTAL'];
         }
       }
-      // var_dump($codigos);
+
+        // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+      foreach ($respuesta2 as $mes => $valoresMes) {
+        foreach ($municipios as $municipio => $valorMunicipio) {
+          if (isset($municipios[$municipio][$mes])) {
+            continue;
+          }else{
+            $municipios[$municipio][$mes] = '0';
+          }
+            asort($municipios[$municipio]);
+        }
+      } 
+      // var_dump($municipios);
 
       foreach ($municipios as $municipio => $valorMunicipio) {
 

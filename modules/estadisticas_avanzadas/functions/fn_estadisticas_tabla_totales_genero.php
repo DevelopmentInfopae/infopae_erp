@@ -81,6 +81,8 @@ $diasSemanas = [];
 
   }
 
+// exit(var_dump($consultaGeneros));  
+
 $tHeadGenero = "<tr>
                     <th>Género</th>
                     <th>Total</th>
@@ -96,8 +98,8 @@ foreach ($totalGeneros as $genero=> $total) {
     $gText = "Femenino";
   } else if ($genero == "M") {
     $gText = "Masculino";
-  } else if ($genero == "-") {
-    $gText = "En blanco";
+  } else {
+    $gText = $genero;
   }
 
   $tBodyGenero.="<tr>

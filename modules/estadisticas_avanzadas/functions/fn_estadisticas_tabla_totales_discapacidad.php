@@ -33,8 +33,9 @@ $diasSemanas = [];
   }
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
+$respuestaEntregas = [];
 
 foreach ($diasSemanas as $mes => $semanas) {
 	$datos = "";
@@ -54,25 +55,32 @@ foreach ($diasSemanas as $mes => $semanas) {
     }
 
     $datos = trim($datos, "+ ");
-    $consultaRes = "SELECT discapacidades.nombre, $datos ";
-    $consultaRes.=" AS TOTAL FROM $tabla JOIN discapacidades ON $tabla.cod_discap = discapacidades.id GROUP BY cod_discap";
 
+    $consultaDiscapacidad = "SELECT id, nombre FROM discapacidades";
+    if ($resConsultaDiscapacidad = $Link->query($consultaDiscapacidad)) {
+        while ($resDiscapcidad = $resConsultaDiscapacidad->fetch_assoc()) {
+            $respuestaDiscapacidades[$resDiscapcidad['id']] = $resDiscapcidad['nombre'];
+        }
+    }
+
+    $consultaRes = "SELECT cod_discap,$datos";
+    $consultaRes.="as TOTAL FROM $tabla GROUP BY cod_discap";
     $periodo = 1;
+    $respuesta = [];
 
 	if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
           while ($resEstrato = $resConsultaRes->fetch_assoc()) {
           	$respuesta[$periodo] = $resEstrato;
-	        $periodo++;  	
-
-          }
-          
+	          $periodo++;  	
+          }        
         }
- 
       }
     $respuesta2[$mes] = $respuesta;
-	$mesesRecorridos .= $mes;
+	  $mesesRecorridos .= $mes;
 }
+
+// exit(var_dump($respuesta2));
 
 $arrayMes = explode("0", $mesesRecorridos);
 
@@ -102,27 +110,51 @@ $tHeadDiscapacidad = '<tr>
 	$posicion = 0;
 	$discapacidades = [];	
 	$totalDiscapacidad = [];
+  
+// funcion para capturar los valores que existen en entregasres y no en la tabla discapacidades
+foreach ($respuesta2 as $mes => $valoresMes) {
+  foreach ($valoresMes as $valorMes => $valor) {
+    $idTemporal = '';
+    foreach ($respuestaDiscapacidades as $id => $nombre) {      
+      if ($valor['cod_discap'] == $id) {
+        $discapacidades[$nombre][$mes] = $valor['TOTAL']; 
+        $idTemporal = $id; 
+      }
+    }
+    if ($idTemporal == '') {
+      $discapacidades[$valor['cod_discap']][$mes] = $valor['TOTAL'];
+    }
+  }
+}
 
-	foreach ($respuesta2 as $mes => $valoresMes) {
-		foreach ($valoresMes as $valorMes => $valor) {
-			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
-			$discapacidades[$valor['nombre']][$mes] = $valor['TOTAL'];	
-		}
-	}
 
+	// foreach ($respuesta2 as $mes => $valoresMes) {
+	// 	foreach ($valoresMes as $valorMes => $valor) {
+	// 		// convertimos la respuesta a un array asociativo con la clave primaria edad mes
+	// 		$discapacidades[$valor['nombre']][$mes] = $valor['TOTAL'];	
+	// 	}
+	// }
+  
+  
   // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
   foreach ($respuesta2 as $mes => $valoresMes) {
     foreach ($discapacidades as $discapacidad => $valorDiscapacidad) {
       if (isset($discapacidades[$discapacidad][$mes])) {
+        ksort($discapacidades[$discapacidad]);
         continue;
       }else{
         $discapacidades[$discapacidad][$mes] = '0';
+        ksort($discapacidades[$discapacidad]);
       }
-        asort($discapacidades[$discapacidad]);
     }
-  } 
+    // foreach ($valoresMes as $valorMes => $valor) {
+    //   ksort($discapacidades[$valor['cod_discap']], SORT_STRING);
+    // }
+  }
+  // exit(var_dump($discapacidades)); 
 
 	foreach ($discapacidades as $discapacidad => $valorDiscapacidad) {
+
     $discapacidadString = ucfirst(strtoupper($discapacidad));
     utf8_decode($discapacidadString);
 		$tBodyDiscapacidad .= "<tr> <td>".$discapacidadString."</td>";

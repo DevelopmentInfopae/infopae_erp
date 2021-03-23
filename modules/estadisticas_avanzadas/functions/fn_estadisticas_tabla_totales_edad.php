@@ -33,7 +33,7 @@ $diasSemanas = [];
 // $diasSemanas = $_POST['diasSemanas'];
 
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 
 
@@ -60,25 +60,21 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY edad ORDER BY convert(edad, UNSIGNED)";
 
     $periodo = 1;
+    $respuesta = [];
 	
 	if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
           while ($ResEdad = $resConsultaRes->fetch_assoc()) {
-
           	$respuesta[$periodo] = $ResEdad;
-	        $periodo++;  	
-
-          }
-          
+	          $periodo++;  	
+          }       
         }
- 
       }
-    
     $respuesta2[$mes] = $respuesta;
-	$mesesRecorridos .= $mes; 
+	  $mesesRecorridos .= $mes; 
 }
 
-// echo $consultaRes;
+// exit(var_dump($respuesta2));
 
 // convertirmos el string en un array 
 $arrayMes = explode("0", $mesesRecorridos);
@@ -112,6 +108,7 @@ $tBodyEdad = "";
 	$edad = [];	
 	$totalEdad = [];
 
+// exit(var_dump($respuesta2));
 	foreach ($respuesta2 as $mes => $valoresMes) {
 		foreach ($valoresMes as $valorMes => $valor) {
 			// convertimos la respuesta a un array asociativo con la clave primaria edad mes
@@ -119,18 +116,23 @@ $tBodyEdad = "";
 		}
 	}
 
+  // exit(var_dump($edades));
+
+  // exit(var_dump($edades));
+  // funcion para colocar en 0 las campos vacios
   foreach ($respuesta2 as $mes => $valoresMes) {
     foreach ($edades as $edad => $valorEdad) {
       if (isset($edades[$edad][$mes])) {
         continue;
       }else{
         $edades[$edad][$mes] = '0';
-      }
-      asort($edades[$edad]);
-      // asort(intval($edades));
-      ksort($edades); 
+      }  
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+      ksort($edades[$valor['edad']]);
     }
   }
+
   // exit(var_dump($edades)); 
 
 	foreach ($edades as $edad => $valorEdad) {
@@ -148,7 +150,7 @@ $tBodyEdad = "";
 	}
 
 ksort($totalEdad);
-// exit(var_dump($totalEdad));
+
 // pie
 $tFootEdad = '<tr>
   <th>TOTAL</th>';

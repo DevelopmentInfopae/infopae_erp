@@ -32,7 +32,7 @@ $diasSemanas = [];
 
 // $diasSemanas = $_POST['diasSemanas'];
 $mesesRecorridos = ""; 
-$respuesta = [];
+
 $respuesta2 = [];
 
 // ciclo para recorrer los meses
@@ -58,24 +58,22 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY genero";
 
     $periodo = 1;
+    $respuesta = [];
   
   if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
           while ($ResEdad = $resConsultaRes->fetch_assoc()) {
-
             $respuesta[$periodo] = $ResEdad;
-          $periodo++;   
-
-          }
-          
+            $periodo++;   
+          }      
         }
- 
       }
     
     $respuesta2[$mes] = $respuesta;
-  $mesesRecorridos .= $mes; 
+    $mesesRecorridos .= $mes; 
 }
 
+// exit(var_dump($respuesta));
 $arrayMes = explode("0", $mesesRecorridos);
 
 // funcion para quitar espacios vacios de un array
@@ -105,14 +103,27 @@ $tBodyGeneros = "";
   $genero = []; 
   $totalGenero = [];
 
-  foreach ($respuesta2 as $mes => $valoresMes) {
 
+  foreach ($respuesta2 as $mes => $valoresMes) {
     foreach ($valoresMes as $valorMes => $valor) {
       // convertimos la respuesta a un array asociativo con la clave primaria edad mes
       $generos[$valor['genero']][$mes] = $valor['TOTAL'];  
-
     }
+  }
 
+  // exit(var_dump($generos));
+   // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($generos as $genero => $valorGenero) {
+      if (isset($generos[$genero][$mes])) {
+        continue;
+      }else{
+        $generos[$genero][$mes] = '0';
+      }  
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+      ksort($generos[$valor['genero']]);
+    }
   }
 
   $stringGenero = '';
@@ -122,6 +133,8 @@ $tBodyGeneros = "";
     }
     else if ($genero == 'M') {
       $stringGenero = 'Masculino';
+    }else{
+      $stringGenero = $genero;
     }
     $tBodyGeneros .= "<tr> <td>".$stringGenero."</td>";
 
@@ -130,7 +143,7 @@ $tBodyGeneros = "";
         
         $valorFila += $valor;
         $tBodyGeneros .= "<td>".$valor."</td>";
-        $totalGenero[$genero]=$valorFila;     
+        $totalGenero[$stringGenero]=$valorFila;     
     }
     $tBodyGeneros .= "<th>" .$valorFila. "</th>"; 
     $tBodyGeneros .= "</tr>";
