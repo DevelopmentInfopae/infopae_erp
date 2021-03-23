@@ -8,6 +8,7 @@
   	$periodo_actual = $_SESSION["periodoActual"];
     $municipio_defecto = $_SESSION["p_Municipio"];
     $departamento_operador = $_SESSION['p_CodDepartamento'];
+    $nombre_mes = [1=>"Enero",2=>"Febrero",3=>"Marzo",4=>"Abril",5=>"Mayo",6=>"Jinio",7=>"Julio",8=>"Agosto",9=>"Septiembre",10=>"Octubre",11=>"Noviembre",12=>"Diciembre"];
 
     $c_municipio = "SELECT DISTINCT codigoDANE, ciudad FROM ubicacion WHERE ETC <> '1' ";
     if($departamento_operador != ''){
@@ -171,7 +172,7 @@
                             <?php if (isset($cronogramas)) { ?>
                                 <?php foreach ($cronogramas as $key => $cronograma): ?>
                                     <tr>
-                                        <td><?= $cronograma->mes; ?></td>
+                                        <td><?= $nombre_mes[$cronograma->mes]; ?></td>
                                         <td><?= $cronograma->semana; ?></td>
                                         <td><?= $cronograma->nombre_institucion; ?></td>
                                         <td><?= $cronograma->codigo_sede; ?></td>
@@ -447,7 +448,7 @@
     function validar_formulario_editar()
     {
         if ($('#semana').val() <= 0) {
-            Command: toastr.error('El campo Semana debe ser mayor a 0.', 'Mensaje de validación', {onHidden: function() { $('#semana').focus(); }});
+            Command: toastr.error('El campo Semana debe ser mayor a 0.', 'Mensaje de validación', {onHidden: function() { $('#semana').val(''); $('#semana').focus(); }});
             return false;
         }
 
