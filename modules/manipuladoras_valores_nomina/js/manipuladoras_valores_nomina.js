@@ -55,7 +55,7 @@ function CargarTablas(){
 					    pageLength: 25,
 					    responsive: true,
 					    dom : 'lr<"containerBtn"><"inputFiltro"f>tip<"clear"><"html5buttons"B>',
-					    buttons : [ {extend: 'excel', title: 'Manipuladoras valores nomina', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1] } }],
+					    buttons : [ {extend: 'excel', title: 'Manipuladoras valores nomina', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3, 4] } }],
 					    oLanguage: {
 					      sLengthMenu: 'Mostrando _MENU_ registros por página',
 					      sZeroRecords: 'No se encontraron registros',

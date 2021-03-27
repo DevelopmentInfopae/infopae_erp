@@ -5,7 +5,7 @@ require_once '../../../db/conexion.php';
 $periodoActual = $_SESSION['periodoActual'];
 
 $valores = [];
-$conValores = "SELECT ID, tipo_complem, tipo, LimiteInferior, LimiteSuperior, valor FROM manipuladoras_valoresnomina";
+$conValores = "SELECT ID, tipo_complem, tipo, LimiteInferior, LimiteSuperior, valor FROM manipuladoras_valoresnomina ORDER BY tipo_complem, tipo";
 $resValores = $Link->query($conValores);
 if ($resValores->num_rows > 0) {
 	while ($dataResValores = $resValores->fetch_assoc()) {
@@ -35,7 +35,7 @@ foreach ($valores as $valor => $valorManipuladora) {
  							<td>'.$tipoPago.'</td>
  							<td>'.$valorManipuladora['LimiteInferior'].'</td>
  							<td>'.$valorManipuladora['LimiteSuperior'].'</td>
- 							<td>'.$valorManipuladora['valor'].'</td>
+ 							<td>'.'$ '.$valorManipuladora['valor'].'</td>
  							<td align="left">
  							 	<div class="btn-group">
  									<div class="dropdown">

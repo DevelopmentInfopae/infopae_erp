@@ -9,12 +9,55 @@ $limiteInferior = (isset($_POST['limiteInferior']) && $_POST['limiteInferior'] !
 $limiteSuperior = (isset($_POST['limiteSuperior']) && $_POST['limiteSuperior'] != '') ? mysqli_real_escape_string($Link, $_POST['limiteSuperior']) : '';
 $valor = (isset($_POST['valor']) && $_POST['valor'] != '') ? mysqli_real_escape_string($Link, $_POST['valor']) : '';
 
+// validamos que el limite inferior no pueda ser mayor al limite superior
 if ($limiteInferior > $limiteSuperior) {
       $respuestaAJAX = [
        'estado' => 0,
        'mensaje' => 'El limite inferor no puede ser mayor al limite superior'
       ];
       exit (json_encode($respuestaAJAX));
+}
+
+// se valida que los limites no puedan quedar con el mismo valor
+if ($limiteInferior == $limiteSuperior) {
+      $respuestaAJAX = [
+       'estado' => 0,
+       'mensaje' => 'El limite inferor no puede ser igual al limite superior'
+      ];
+      exit (json_encode($respuestaAJAX));
+}
+
+// se valida que el limite superior de pago por dia no pueda ser igual o mayor a el limite inferior de conteo por titular
+if ($tipo == 1) {
+    $consultaLimite = "SELECT limiteInferior FROM manipuladoras_valoresnomina WHERE tipo_complem = '".$complemento. "' AND tipo = 2;";
+    $resConsultaLimite = $Link->query($consultaLimite) or die('Error al consultar el limite inferior '. mysqli_error($Link));
+    if ($resConsultaLimite->num_rows > 0) {
+        while ($DataConsultaLimite = $resConsultaLimite->fetch_assoc()) {
+          if ($limiteSuperior >= $DataConsultaLimite['limiteInferior']) {
+            $respuestaAJAX = [
+            'estado' => 0,
+            'mensaje' => 'El limite superior de pago por día no puede ser igual o mayor al limite inferior de pago por titular'
+            ];
+            exit (json_encode($respuestaAJAX));
+          }
+        }
+    }
+}
+
+if ($tipo == 2) {
+    $consultaLimite2 = "SELECT limiteSuperior FROM manipuladoras_valoresnomina WHERE tipo_complem = '".$complemento. "' AND tipo = 1;";
+    $resConsultaLimite2 = $Link->query($consultaLimite2) or die('Error al consultar el limite superior '. mysqli_error($Link));
+    if ($resConsultaLimite2->num_rows > 0) {
+        while ($DataConsultaLimite2 = $resConsultaLimite2->fetch_assoc()) {
+          if ($limiteInferior <= $DataConsultaLimite2['limiteSuperior']) {
+            $respuestaAJAX = [
+            'estado' => 0,
+            'mensaje' => 'El limite inferior de pago por titular no puede ser igual o menor al limite superior de pago por día'
+            ];
+            exit (json_encode($respuestaAJAX));
+          }
+        }
+    }
 }
 
 // vamos a validar que un complemento no pueda tener mas de dos valores ya que solo son dos tipos de pago
