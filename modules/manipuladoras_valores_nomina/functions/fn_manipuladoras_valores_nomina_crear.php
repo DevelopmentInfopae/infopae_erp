@@ -13,7 +13,7 @@ $valor = (isset($_POST['valor']) && $_POST['valor'] != '') ? mysqli_real_escape_
 if ($limiteInferior > $limiteSuperior) {
       $respuestaAJAX = [
        'estado' => 0,
-       'mensaje' => 'El limite inferor no puede ser mayor al limite superior'
+       'mensaje' => 'El límite inferor no puede ser mayor al límite superior'
       ];
       exit (json_encode($respuestaAJAX));
 }
@@ -22,7 +22,7 @@ if ($limiteInferior > $limiteSuperior) {
 if ($limiteInferior == $limiteSuperior) {
       $respuestaAJAX = [
        'estado' => 0,
-       'mensaje' => 'El limite inferor no puede ser igual al limite superior'
+       'mensaje' => 'El límite inferor no puede ser igual al límite superior'
       ];
       exit (json_encode($respuestaAJAX));
 }
@@ -30,13 +30,13 @@ if ($limiteInferior == $limiteSuperior) {
 // se valida que el limite superior de pago por dia no pueda ser igual o mayor a el limite inferior de conteo por titular
 if ($tipo == 1) {
     $consultaLimite = "SELECT limiteInferior FROM manipuladoras_valoresnomina WHERE tipo_complem = '".$complemento. "' AND tipo = 2;";
-    $resConsultaLimite = $Link->query($consultaLimite) or die('Error al consultar el limite inferior '. mysqli_error($Link));
+    $resConsultaLimite = $Link->query($consultaLimite) or die('Error al consultar el límite inferior '. mysqli_error($Link));
     if ($resConsultaLimite->num_rows > 0) {
         while ($DataConsultaLimite = $resConsultaLimite->fetch_assoc()) {
           if ($limiteSuperior >= $DataConsultaLimite['limiteInferior']) {
             $respuestaAJAX = [
             'estado' => 0,
-            'mensaje' => 'El limite superior de pago por día no puede ser igual o mayor al limite inferior de pago por titular'
+            'mensaje' => 'El límite superior de pago por día no puede ser igual o mayor al límite inferior de pago por titular'
             ];
             exit (json_encode($respuestaAJAX));
           }
@@ -46,13 +46,13 @@ if ($tipo == 1) {
 
 if ($tipo == 2) {
     $consultaLimite2 = "SELECT limiteSuperior FROM manipuladoras_valoresnomina WHERE tipo_complem = '".$complemento. "' AND tipo = 1;";
-    $resConsultaLimite2 = $Link->query($consultaLimite2) or die('Error al consultar el limite superior '. mysqli_error($Link));
+    $resConsultaLimite2 = $Link->query($consultaLimite2) or die('Error al consultar el límite superior '. mysqli_error($Link));
     if ($resConsultaLimite2->num_rows > 0) {
         while ($DataConsultaLimite2 = $resConsultaLimite2->fetch_assoc()) {
           if ($limiteInferior <= $DataConsultaLimite2['limiteSuperior']) {
             $respuestaAJAX = [
             'estado' => 0,
-            'mensaje' => 'El limite inferior de pago por titular no puede ser igual o menor al limite superior de pago por día'
+            'mensaje' => 'El límite inferior de pago por titular no puede ser igual o menor al límite superior de pago por día'
             ];
             exit (json_encode($respuestaAJAX));
           }
@@ -76,7 +76,7 @@ $resComplemento = $Link->query($consultaComplemento) or die('Error al consultar 
 		while($dataComplementos = $resComplemento->fetch_assoc()) { 
       // exit(var_dump($dataComplementos));
 			if ($dataComplementos['tipo'] == '1' && $tipo == '1') {
-				$mensaje = 'El codigo de complemento ya tiene registrado el tipo de pago por día';
+				$mensaje = 'El código de complemento ya tiene registrado el tipo de pago por día';
         $respuestaAJAX = [
         'estado' => 0,
         'mensaje' => $mensaje
@@ -84,7 +84,7 @@ $resComplemento = $Link->query($consultaComplemento) or die('Error al consultar 
         exit (json_encode($respuestaAJAX));
 			}
 			elseif ($dataComplementos['tipo'] == '2' && $tipo == '2') {
-				$mensaje = 'El codigo de complemento ya tiene registrado el tipo de pago por titular';
+				$mensaje = 'El código de complemento ya tiene registrado el tipo de pago por titular';
         $respuestaAJAX = [
         'estado' => 0,
         'mensaje' => $mensaje
@@ -97,21 +97,21 @@ $resComplemento = $Link->query($consultaComplemento) or die('Error al consultar 
 // consulta para la creacion de los datos en la tabla manipuladoras_valoresnomina
 $sentenciaCrear = "INSERT INTO manipuladoras_valoresnomina (tipo_complem, tipo, limiteInferior, limiteSuperior, valor) VALUES ('$complemento', '$tipo', '$limiteInferior', '$limiteSuperior', '$valor');";
 
-$respuestaCrear = $Link->query($sentenciaCrear) or die('Error valor manipuladora nomina'. mysqli_error($Link));
+$respuestaCrear = $Link->query($sentenciaCrear) or die('Error valor manipuladora nómina'. mysqli_error($Link));
   if($respuestaCrear) {
-    $consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '54', 'Se creó el valor nomina de manipuladora: <strong>".$complemento.' de tipo '. $tipo."</strong>')";
+    $consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '54', 'Se creó el valor nómina de manipuladora: <strong>".$complemento.' de tipo '. $tipo."</strong>')";
     $Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
 
   	$respuestaAJAX = [
   		'estado' => 1,
-  		'mensaje' => 'El valor manipuladora nomina se creo exitosamente.'
+  		'mensaje' => 'El valor manipuladora nómina se creo exitosamente.'
   	];
   }
   else
   {
   	$respuestaAJAX = [
   		'estado' => 0,
-  		'mensaje' => 'El valor manipuladora nomina NO se creo exitosamente.'
+  		'mensaje' => 'El valor manipuladora nómina NO se creo exitosamente.'
   	];
   }
 
