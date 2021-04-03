@@ -332,6 +332,10 @@
 			<li><a href="<?= $baseUrl; ?>/modules/jornadas">Jornada</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/poblacion_victima">Población victima</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/bancos/index.php">Bancos</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/manipuladoras_valores_nomina/index.php">Manipuladora valores nómina</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/nomina_entidad/index.php">Nómina Entidad</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/nomina_riesgos/index.php">Nómina Riesgos</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/parametros_manipuladoras/index.php">Parámetros manipuladoras</a></li>
 		</ul>
 	</li>
 <?php } ?>
