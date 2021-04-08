@@ -27,7 +27,7 @@ $(document).ready(function () {
 $('#box-table').DataTable({
     buttons: [ {extend: 'excel', title: 'Nómina_Entidad', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1] } } ],
     dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"clear"><"html5buttons"B>',
-    order: [ 0, 'asc' ],
+    order: [[ 0, 'desc' ],[1,'asc']],
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',

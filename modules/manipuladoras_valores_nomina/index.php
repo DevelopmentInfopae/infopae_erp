@@ -3,26 +3,6 @@
   $titulo = 'Manipuladoras valores nómina'; 
 ?>
 
-<!-- Ventana de formulario para crear manipuladoras valores nomina -->
-<div class="modal inmodal fade" id="ventanaFormularioCreacion" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header text-info" style="padding: 15px;">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-        <h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Formulario InfoPAE </h3>
-      </div>
-      <div class="modal-body">
-          <p></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-white btn-sm" data-dismiss="modal">No</button>
-        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="actualizarNominaEntidad">Si</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
     <h2><?php echo $titulo; ?></h2>
@@ -136,8 +116,8 @@
          <input type="hidden" name="idValorManipuladora" id="idValorManipuladora">
      </div>
      <div class="modal-footer">
-       <button type="button" class="btn btn-white btn-sm" data-dismiss="modal">No</button>
-       <button type="button" class="btn btn-primary btn-sm" onclick="eliminarManipuladoraValorNomina()">Si</button>
+       <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> No</button>
+       <button type="button" class="btn btn-primary btn-sm" onclick="eliminarManipuladoraValorNomina()"><i class="fa fa-check"></i> Si</button>
      </div>
    </div>
  </div>
@@ -162,7 +142,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 
 <script type="text/javascript">
-    jQuery.extend(jQuery.validator.messages, {step: "Por favor ingresa un numero entero", required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
+    jQuery.extend(jQuery.validator.messages, {step: "Por favor ingresa un número entero", required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 </script>
 
 <script type="text/javascript">

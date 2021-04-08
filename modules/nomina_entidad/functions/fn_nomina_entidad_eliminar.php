@@ -15,7 +15,7 @@ $sentencia2 = "DELETE FROM nomina_entidad WHERE Id = '$id';";
 $resultado2 = $Link->query($sentencia2) or die('Error al eliminar la nómina entidad '. mysqli_error($Link));
 if($resultado2)
   {
-    $consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '28', 'Eliminó la nómina entidad: $nombre')";
+    $consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '59', 'Eliminó la nómina entidad: $nombre')";
     $Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
 
   	$respuestaAJAX = [

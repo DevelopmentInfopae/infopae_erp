@@ -104,14 +104,14 @@ $respuestaCrear = $Link->query($sentenciaCrear) or die('Error valor manipuladora
 
   	$respuestaAJAX = [
   		'estado' => 1,
-  		'mensaje' => 'El valor manipuladora nómina se creo exitosamente.'
+  		'mensaje' => 'El valor manipuladora nómina se creó exitosamente.'
   	];
   }
   else
   {
   	$respuestaAJAX = [
   		'estado' => 0,
-  		'mensaje' => 'El valor manipuladora nómina NO se creo exitosamente.'
+  		'mensaje' => 'El valor manipuladora nómina NO se creó exitosamente.'
   	];
   }
 

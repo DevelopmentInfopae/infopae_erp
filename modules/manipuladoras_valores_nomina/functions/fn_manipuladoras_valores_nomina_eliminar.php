@@ -12,14 +12,14 @@ $resEliminar = $Link->query($sentenciaEliminar) or die('Error al eliminar el val
 
   	$respuestaAJAX = [
   		'estado' => 1,
-  		'mensaje' => 'El valor manipuladora nómina se elimino exitosamente'
+  		'mensaje' => 'El valor manipuladora nómina se eliminó exitosamente'
   	];
   }
   else
   {
   	$respuestaAJAX = [
   		'estado' => 0,
-  		'mensaje' => 'El valor manipuladora nómina NO se actualizó exitosamente.'
+  		'mensaje' => 'El valor manipuladora nómina NO se eliminó exitosamente.'
   	];
   }
 

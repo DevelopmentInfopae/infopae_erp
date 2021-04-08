@@ -335,7 +335,13 @@
 			<li><a href="<?= $baseUrl; ?>/modules/manipuladoras_valores_nomina/index.php">Manipuladora valores nómina</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/nomina_entidad/index.php">Nómina Entidad</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/nomina_riesgos/index.php">Nómina Riesgos</a></li>
-			<li><a href="<?= $baseUrl; ?>/modules/parametros_manipuladoras/index.php">Parámetros manipuladoras</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/parametros_manipuladoras/index.php">Parámetros Manipuladoras</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/parametros_nomina/index.php">Parámetros Nómina</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/parametros_infraestructura/index.php">Parámetros Infraestructura</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/prioridad_caracterizacion/index.php">Prioridad Caracterización</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/tipo_casosfqrs/index.php">Tipo Caso Fqrs</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/tipo_personafqrs/index.php">Tipo Persona Fqrs</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/variacion_menu/index.php">Variación Menú</a></li>
 		</ul>
 	</li>
 <?php } ?>

@@ -72,7 +72,7 @@
 			            	 ?>
 			            	<tr>
 			              		<td align="left"><?php echo $registros['Tipo'];?></td>
-			              		<td align="left"><?php echo $registros['Porcentaje']; ?></td>
+			              		<td align="left"><?php echo $registros['Porcentaje']. " %"; ?></td>
 			              		<td align="center">
 				                  	<div class="btn-group">
 				                    	<div class="dropdown">
@@ -120,8 +120,8 @@
           <p></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-white btn-sm" data-dismiss="modal">No</button>
-        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="actualizarNominaRiesgos">Si</button>
+        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> No</button>
+        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="actualizarNominaRiesgos"><i class="fa fa-check"></i> Si</button>
       </div>
     </div>
   </div>
@@ -144,8 +144,8 @@
       </div>
       <div class="modal-footer">
         <input type="hidden" id="idAEliminar">
-        <button type="button" class="btn btn-white btn-sm" data-dismiss="modal">No</button>
-        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="eliminarNominaRiesgos">Si</button>
+        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> No</button>
+        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="eliminarNominaRiesgos"><i class="fa fa-check"></i> Si</button>
       </div>
     </div>
   </div>

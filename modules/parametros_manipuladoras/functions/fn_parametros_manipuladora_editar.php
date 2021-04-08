@@ -1,6 +1,6 @@
 <?php
 require_once '../../../db/conexion.php';
-require_once '../../../config.php';
+require_once '../../../config.php'; 
 
 $id = (isset($_POST['id']) && $_POST['id'] != '') ? mysqli_real_escape_string($Link, $_POST['id']) : '';
 $tipoComplemento = (isset($_POST['tipoComplemento']) && $_POST['tipoComplemento'] != '') ? mysqli_real_escape_string($Link, $_POST['tipoComplemento']) : '';
@@ -60,37 +60,59 @@ if($resValidacionMismaManipuladora->num_rows > 0){
 		}
 
 		// validacion para que el limte superio no se sobredimensione
-		$validacionLimiteSuperior = "SELECT ID, limite_superior FROM parametros_manipuladoras WHERE limite_superior = (SELECT MAX(limite_superior) FROM parametros_manipuladoras )";
+		$validacionLimiteSuperior = "SELECT ID, limite_superior FROM parametros_manipuladoras WHERE tipo_complem = '$tipoComplemento' AND limite_superior = (SELECT MAX(limite_superior) FROM parametros_manipuladoras WHERE tipo_complem = '$tipoComplemento'); " ;
 		$idSinEspacio = trim($id);
+    // exit(var_dump($validacionLimiteSuperior));
 		$respuestaValidacionLimiteSuperior = $Link->query($validacionLimiteSuperior) or die('Error al consultar el límite superior '. mysqli_error($Link));
 		if ($respuestaValidacionLimiteSuperior->num_rows > 0) {
 			$DataValidacionLimiteSuperior = $respuestaValidacionLimiteSuperior->fetch_assoc();
-			if ($idSinEspacio == $DataValidacionLimiteSuperior['ID']) {
-				$limiteTemporal = 'Este id es el del el limite superior mas alto de ese complemento';
-			}
-			if ($limiteSuperior > $DataValidacionLimiteSuperior['limite_superior']) {
-				$respuestaAJAX = [
+      if ($limiteInferior > $DataValidacionLimiteSuperior['limite_superior'] && $limiteSuperior > $DataValidacionLimiteSuperior['limite_superior']) {
+        $limiteTemporal = 'ingresando rangos mayores al ultimo';
+        $sentenciaEditar = "UPDATE parametros_manipuladoras SET limite_inferior = '$limiteInferior', limite_superior = '$limiteSuperior' WHERE ID = '".$id."';";
+        $repuestaEditar = $Link->query($sentenciaEditar) or die('Error al actualizar'. mysqli_error($Link));
+        if($repuestaEditar) {
+          $consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '64', 'Se actualizó el parámetro manipuladora: <strong>".$tipoComplemento.' con límite inferior '. $limiteInferior .' y límite superior '. $limiteSuperior ."</strong>')";
+            $Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
+
+          $respuestaAJAX = [
+            'estado' => 1,
+            'mensaje' => 'El parámetro manipuladora se creo exitosamente.'
+          ];
+          exit (json_encode($respuestaAJAX));
+        }
+        else
+        {
+          $respuestaAJAX = [
           'estado' => 0,
-          'mensaje' => 'El límite superior esta sobredimensionado'
+          'mensaje' => 'El parámetro manipuladora NO se creo exitosamente.'
+          ];
+        exit (json_encode($respuestaAJAX));
+        }
+      } elseif ($limiteSuperior > $DataValidacionLimiteSuperior['limite_superior'] && $idSinEspacio !== $DataValidacionLimiteSuperior['ID']) {
+        $respuestaAJAX = [
+        'estado' => 0,
+        'mensaje' => 'El límite superior esta sobredimensionado'
         ];
         exit (json_encode($respuestaAJAX));
-			}
+        }
 		}
+
+    // exit(var_dump($validacionLimiteSuperior));
 
     $sentenciaEditar = "UPDATE parametros_manipuladoras SET limite_inferior = '$limiteInferior', limite_superior = '$limiteSuperior' WHERE ID = '".$id."';";
   	$repuestaEditar = $Link->query($sentenciaEditar) or die('Error al actualizar'. mysqli_error($Link));
 
-  		if($repuestaEditar){
-    		$consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '64', 'Se actualizó el parámetro manipuladora: <strong>".$tipoComplemento.' con límite inferior '. $limiteInferior .' y límite superior '. $limiteSuperior ."</strong>')";
-   			$Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
+  	if($repuestaEditar){
+    	$consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '64', 'Se actualizó el parámetro manipuladora: <strong>".$tipoComplemento.' con límite inferior '. $limiteInferior .' y límite superior '. $limiteSuperior ."</strong>')";
+   		$Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
 
-  			$respuestaAJAX = [
-  			'estado' => 1,
-  			'mensaje' => 'El Parámetro manipuladora se actualizó exitosamente.'
-  			];
-  			exit (json_encode($respuestaAJAX));
-    	}
-  	}
+  		$respuestaAJAX = [
+  		'estado' => 1,
+  		'mensaje' => 'El Parámetro manipuladora se actualizó exitosamente.'
+  		];
+  		exit (json_encode($respuestaAJAX));
+    }
+}
     // seccion donde vamos a validar si en la actualizacion se cambia de numero de manipuladoras
     else{
       // validacion cantidad de manipuladoras
@@ -127,7 +149,7 @@ if($resValidacionMismaManipuladora->num_rows > 0){
       }
 
       // validacion para que el limte superio no se sobredimensione
-      $validacionLimiteSuperior = "SELECT ID, limite_superior FROM parametros_manipuladoras WHERE limite_superior = (SELECT MAX(limite_superior) FROM parametros_manipuladoras )";
+      $validacionLimiteSuperior = "SELECT ID, limite_superior FROM parametros_manipuladoras WHERE  tipo_complem = '$tipoComplemento' AND  limite_superior = (SELECT MAX(limite_superior) FROM parametros_manipuladoras ) AND tipo_complem = '$tipoComplemento'";
       $idSinEspacio = trim($id);
       $respuestaValidacionLimiteSuperior = $Link->query($validacionLimiteSuperior) or die('Error al consultar el límite superior '. mysqli_error($Link));
       if ($respuestaValidacionLimiteSuperior->num_rows > 0) {

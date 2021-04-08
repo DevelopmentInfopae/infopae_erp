@@ -25,14 +25,14 @@ $resultado = $Link->query($sentencia) or die('Error al crear la nómina riesgos:
 
   	$respuestaAJAX = [
   		'estado' => 1,
-  		'mensaje' => 'La Nómina Riesgos fue creada exitosamente.'
+  		'mensaje' => 'La Nómina Riesgos se creó exitosamente.'
   	];
   }
   else
   {
   	$respuestaAJAX = [
   		'estado' => 0,
-  		'mensaje' => 'La Nómina Riesgos NO se creo exitosamente.'
+  		'mensaje' => 'La Nómina Riesgos NO se creó exitosamente.'
   	];
   }
 

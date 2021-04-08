@@ -5,6 +5,17 @@ require_once '../../../config.php';
 $tipo = (isset($_POST['tipo']) && $_POST['tipo'] != '') ? mysqli_real_escape_string($Link, $_POST['tipo']) : '';
 $entidad = (isset($_POST['entidad']) && $_POST['entidad'] != '') ? mysqli_real_escape_string($Link, $_POST['entidad']) : '';
 
+// validacion para que no se pueda crear una misma entidad del mismo tipo 
+$consultaValidacionEntidad = "SELECT Entidad FROM nomina_entidad WHERE Tipo = '$tipo' AND Entidad = '$entidad';";
+$resultadoValiacionEntidad = $Link->query($consultaValidacionEntidad) or die('Error al consultar las entidades');
+if ($resultadoValiacionEntidad->num_rows > 0) {
+    $respuestaAJAX = [
+      'estado' => 0,
+      'mensaje' => 'Ya existe una entidad de ese tipo y ese nombre'
+    ];
+    exit(json_encode($respuestaAJAX));
+}
+
 $sentencia = "INSERT INTO nomina_entidad (Tipo, Entidad) VALUES ('$tipo','$entidad');";
 $resultado = $Link->query($sentencia) or die('Error al crear la entidad: '. mysqli_error($Link));
   if($resultado)
@@ -14,14 +25,14 @@ $resultado = $Link->query($sentencia) or die('Error al crear la entidad: '. mysq
 
   	$respuestaAJAX = [
   		'estado' => 1,
-  		'mensaje' => 'La Nómina Entidad fue creada exitosamente.'
+  		'mensaje' => 'La Nómina Entidad se creó exitosamente.'
   	];
   }
   else
   {
   	$respuestaAJAX = [
   		'estado' => 0,
-  		'mensaje' => 'La Nómina Entidad NO se creo exitosamente.'
+  		'mensaje' => 'La Nómina Entidad NO se creó exitosamente.'
   	];
   }
 
