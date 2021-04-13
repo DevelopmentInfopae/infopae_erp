@@ -21,7 +21,7 @@ var mesesNom = {'01' : "Enero", "02" : "Febrero", "03" : "Marzo", "04" : "Abril"
 
 var generoNom = {'F' : "Femenino", 'M' : "Masculino"};
 
-colors = ['#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D'];
+colors = ['#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D'];
 
 
 function arreglarDivs(){
@@ -78,7 +78,7 @@ function CargarTablas()
 
 		google.charts.load('current', {packages: ['corechart', 'bar']});
 		google.charts.setOnLoadCallback(function(){
-			graficaTotalesSemanas(json, 'Totales por semana', 'Ordenado por mes','right', 1);
+			graficaTotalesSemanas(json, 'Totales por semana', 'Ordenado por mes','none', 1);
 		});
 	},
 	timeout: 600000, 
@@ -581,6 +581,7 @@ function CargarTablas()
 			$.each(info, function(etnia, total){
 				cnt++;
 				json11[cnt] = [etnia, parseInt(total), colors[cnt2], parseInt(total)];
+				cnt2++;
 			});
 
 			google.charts.load('current', {packages: ['corechart', 'bar']});
@@ -686,6 +687,7 @@ function graficaTotalesSemanas(json, titulo, subtitulo, legendPos, multiColumn) 
         	position : legendPos,
         },
         annotations : {
+        	alwaysOutside : true,
         	textStyle: {
 		      fontSize: 12,
 		      bold: false,
@@ -695,6 +697,11 @@ function graficaTotalesSemanas(json, titulo, subtitulo, legendPos, multiColumn) 
 		      opacity: 1
 		    }
         },
+        vAxis: {
+        	gridlines: {
+        		// logScale : false
+        	}
+  		},
         colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA']
     };
 
@@ -1198,6 +1205,7 @@ function graficaTotalesSedes(json, titulo, subtitulo, legendPos, multiColumn) {
         	position : legendPos,
         },
         annotations : {
+        	// alwaysOutside : false,
         	textStyle: {
 		      fontSize: 11,
 		      bold: false,

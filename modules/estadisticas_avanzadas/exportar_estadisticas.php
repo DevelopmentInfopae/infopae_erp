@@ -161,14 +161,14 @@ $periodoActual = $_SESSION['periodoActual'];
 // INICIO SECCION EXPORTAR TOTALES POR SEMANA
 
 $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
-
+$periodo = 1;
 // consulta para el numero de dias que se encuentra por mes en las tablas entregas_res
   $diasSemanas = [];
   $consDiasSemanas = "SELECT GROUP_CONCAT(DIA) AS Dias, MES, SEMANA FROM planilla_semanas WHERE CONCAT(ANO, '-', MES, '-', DIA) <= '".date('Y-m-d')."' GROUP BY SEMANA";
   $resDiasSemanas = $Link->query($consDiasSemanas);
   if ($resDiasSemanas->num_rows > 0) {
     while ($dataDiasSemanas = $resDiasSemanas->fetch_assoc()) {
-
+      $semanasP[$periodo] = $dataDiasSemanas['SEMANA'];
       $consultaTablas = "SELECT 
                            table_name AS tabla
                           FROM 
@@ -177,12 +177,13 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
                            table_schema = DATABASE() AND table_name = 'entregas_res_".$dataDiasSemanas['MES']."$periodoActual'";
       $resTablas = $Link->query($consultaTablas);
       if ($resTablas->num_rows > 0) {
-        $semanaPos = str_replace("b", "", $dataDiasSemanas['SEMANA']);
+        $semanaPos =  $dataDiasSemanas['SEMANA'];
         $arrDias = explode(",", $dataDiasSemanas['Dias']);
         sort($arrDias);
         // print_r($arrDias);
         $diasSemanas[$dataDiasSemanas['MES']][$semanaPos] = $arrDias; //obtenemos un array ordenado del siguiente modo array[mes][semana] = array[dias]
       }
+      $periodo++;
     }
   }
 
@@ -205,10 +206,22 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
     $sem=0;
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
+      $stringSemana = $semana;
+      $find = 'b';
+      $busquedaB = strrchr ($stringSemana, $find);
+      // echo $busquedaB; 
+      if ($busquedaB == 'b' || $busquedaB == 'B') {
+        $diaD = 1;
+      }  
       foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
         // echo $mes." - ".$semana." - ".$D." - ".$dia."</br>";
-        $datos.="SUM(D$diaD) + ";
-        $diaD++;
+        $consultaPlanillaDias = "SELECT D$diaD FROM planilla_dias WHERE D$diaD = $dia AND mes = $mes;";
+        // echo $consultaPlanillaDias."<br>";
+        $respuestaConsultaPlanillaDias = $Link->query($consultaPlanillaDias);
+        if ($respuestaConsultaPlanillaDias->num_rows == 1) {
+          $datos.="SUM(D$diaD) + ";
+          $diaD++;
+        }
       }
       $datos = trim($datos, "+ ");
       $datos.= " AS semana_".$semana.", ";
@@ -221,7 +234,8 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
     
       if ($resRes->num_rows > 0) {
         if ($Res = $resRes->fetch_assoc()) {
-          for ($i=1; $i <=$sem ; $i++) { //según el último número de semana guardado previamente, recorremos las semanas que nos devuelve el mes.
+          foreach($semanasP as $semanaP) { //según el último número de semana guardado previamente, recorremos las semanas que nos devuelve el mes.
+            $i = $semanaP;
             if (strlen($i) == 1) {
               $i = "0".$i;
             }
@@ -254,9 +268,11 @@ $sheet->setCellValue("B".$numFila, "Mes");
 $Letra='C';
 foreach ($sumTotalesSemanas as $semana => $total) {
   $sheet->setCellValue($Letra.$numFila, ucfirst(str_replace("_", " ", $semana)));
-  $LFStyle = $Letra; //Letra donde finalizan los títulos de columnas, se almacena la última recorrida.
   $Letra++;
+  $LFStyle = $Letra; //Letra donde finalizan los títulos de columnas, se almacena la última recorrida.
 }
+$sheet->setCellValue($Letra.$numFila, 'Total');
+
 
 $titulosTablaTotalesSemanas = 'B'.$numFila.':'.$LFStyle.$numFila;
 // $sheet->getStyle('B'.$numFila.':'.$LFStyle.$numFila)->applyFromArray($titulos);
@@ -272,17 +288,37 @@ $filaInicial = $numFila;
 $totales = [];
 foreach ($totalesSemanas as $mes => $semanas) {
   $sheet->setCellValue("B".$numFila, $mesesNom[$mes]);
+  $totalSemana = 0;
+  $totalT = 0;
     foreach ($semanas as $semana => $total) {
-      $totales[$semana] = $total;
+      $totalT = $totalT + $total;
+      $totales[$mes] = $totalT;
       if ($semanaAct == "" || $semanaAct != $semana) {
         $Letra++;
         $semanaAct = $semana;
       }
-      $sheet->setCellValue($Letra.$numFila, $total);      
-    }   
+      
+      $sheet->setCellValue($Letra.$numFila, $total);
+      $totalSemana = $totalSemana + $total;      
+    }
+
+
+
   $numFila++;
   $letraFinLabels = $Letra; //Letra de columna donde terminan los datos para los labels de la gráfica.
 }
+
+$totalTotales = 0;
+$letraFinal = ++$Letra;
+$filaI = $filaInicial;
+foreach ($totales as $key => $total) {
+  $sheet->setCellValue(($letraFinal).$filaI, $total);
+  $filaI ++; 
+  $totalTotales = $totalTotales + $total;
+}
+
+ $sheet->setCellValue(($letraFinal).$filaI, $totalTotales); 
+
 // letras para recorrer la tabla completa y validar que valores estan en nulos para colocarlos en 0
 $letraFinal = $Letra;
 $filaFinal = $numFila;
@@ -316,6 +352,7 @@ $Letra='C';
 foreach ($sumTotalesSemanas as $semana => $total) {
   $sheet->setCellValue($Letra.$numFila, $total);
   $Letra++;
+  $LFStyle = $Letra;
 }
 
 $finGrafica = $numFila;
@@ -768,7 +805,7 @@ $layout->setShowPercent(true);
 
 $plotArea = new PlotArea($layout, [$series]);
 
-$legend = new Legend(Legend::POSITION_RIGHT, null, false);
+$legend = new Legend(Legend::POSITION_LEFT, null, false);
 
 $title = new Title('Totales por género');
 $yAxisLabel = new Title('Entregas ejecutadas');
@@ -2200,7 +2237,7 @@ if ($codigoMunicipio == '0') {
     $consultaRes = "SELECT cod_sede, $datos ";
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_sede";
     $periodo = 1; 
-  
+    $respuesta = [];
     if ($resConsultaRes = $Link->query($consultaRes)) {
       if ($resConsultaRes->num_rows > 0) {
         while ($resEstrato = $resConsultaRes->fetch_assoc()) {
@@ -2262,6 +2299,21 @@ if ($codigoMunicipio == '0') {
 
       }
     }
+
+     // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($sedes as $sede => $valorSede) {
+      if (isset($sedes[$sede][$mes])) {
+        continue;
+      }else{
+        $sedes[$sede][$mes] = '0';
+      }
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+    ksort($sedes[$valor['cod_sede']]);
+    }
+  }  
+
     $filaInicialTabla = $numFila;
     foreach ($sedes as $sede => $valorSede) {
       foreach ($respuestaSedes as $codigoSede => $nombre) {
@@ -3400,7 +3452,7 @@ $chart->setBottomRightPosition('O'.$numFila);
 
 $sheet->addChart($chart);
 
-$sheet->getColumnDimension("B")->setWidth(25); 
+$sheet->getColumnDimension("B")->setWidth(20); 
 
 $Cantidad_de_columnas_a_crear=30; 
 $Contador=3; 

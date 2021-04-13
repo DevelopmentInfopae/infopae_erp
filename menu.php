@@ -27,7 +27,7 @@
 	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/institucion.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Mi institución</span></a> </li>
 
 	<li>
-		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
+		<a href="#"><i class="fas fa-book-open"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li><a href="<?php echo $baseUrl; ?>/modules/consultas/consulta_resumida_entregas.php">Consulta resumida</a></li>
 			<li>
@@ -97,16 +97,16 @@
 
 
 	<li>
-		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
+		<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
-			<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"><i class="fa fa-child"></i> <span class="nav-label">Derecho</span></a> </li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"><i class="fa fa-tags"></i> <span class="nav-label">Suplentes</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
 		</ul>
 	</li>
 
 	<?php if( $_SESSION['perfil'] != 9 ){ ?>
 		<li>
-			<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
+			<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
 				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php"><span class="nav-label">Alimentos</span></a> </li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php"><span class="nav-label">Preparaciones</span></a> </li>
@@ -145,7 +145,7 @@
 
 
 
-		<li> <a href="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/ordenes_de_compra.php"><i class="fa fa-truck"></i> <span class="nav-label">Ordenes de compra</span></a> </li>
+		<li> <a href="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/ordenes_de_compra.php"><i class="fas fa-truck-loading"></i> <span class="nav-label">Ordenes de compra</span></a> </li>
 
 
 
@@ -162,7 +162,7 @@
 
 	<?php } ?>
 	<li>
-		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
+		<a href="#"><i class="fas fa-book-open"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li><a href="<?php echo $baseUrl; ?>/modules/consultas/consulta_resumida_entregas.php">Consulta resumida</a></li>
 			<!-- <li><a href="<?php echo $baseUrl; ?>/modules/consultas/consulta_detallada_entregas.php">Consulta detallada</a></li> -->
@@ -197,7 +197,7 @@
 
 	<?php if( $_SESSION['perfil'] != 9 ){ ?>
 		<li>
-			<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Novedades</span><span class="fa arrow"></span></a>
+			<a href="#"><i class="fas fa-bookmark"></i> <span class="nav-label">Novedades</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
 				<li><a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/index.php">Priorización</a></li>
 				<!-- <li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/index.php">Focalización</a></li> -->
@@ -226,11 +226,11 @@
 		</li>
 	<?php } ?>
 
-		<li><a href="<?= $baseUrl; ?>/modules/nomina"><i class="fa fa-th-large"></i>  Nómina</a></li>
+		<li><a href="<?= $baseUrl; ?>/modules/nomina"><i class="fas fa-hand-holding-usd"></i>  Nómina</a></li>
 		<li><a href="<?= $baseUrl; ?>/modules/fqrs/index.php"><i class="fa fa-question"></i> <span class="nav-label">FQRS</span></a></li>
 
 	<li>
-		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Informes</span><span class="fa arrow"></span></a>
+		<a href="#"><i class="fas fa-layer-group"></i></i> <span class="nav-label">Informes</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<?php if( $_SESSION['perfil'] != 9 ){ ?>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php"><span class="nav-label">Trazabilidad</span></a> </li>
@@ -239,7 +239,7 @@
 			<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas_avanzadas/index.php">Estadisticas Avanzadas</a></li>
 			<?php if( $_SESSION['perfil'] != 9 ){ ?>
-				<li> <a href="#" class="sinDesarrollar">Bitácora de usuarios</a></li>
+				<li> <a href="<?= $baseUrl; ?>/modules/bitacora_usuarios/index.php">Bitácora de usuarios</a></li>
 				<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
@@ -292,7 +292,7 @@
 
 
 	<li>
-		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Procesos</span><span class="fa arrow"></span></a>
+		<a href="#"><i class="fas fa-cog"></i><span class="nav-label">Procesos</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li><a href="#" class="sinDesarrollar">Copia de seguridad</a></li>
 			<li><a href="#" class="sinDesarrollar">Bloqueo de período</a></li>
@@ -301,7 +301,7 @@
 	</li>
 
 	<li>
-		<a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Configuración</span><span class="fa arrow"></span></a>
+		<a href="#"><i class="fas fa-tools"></i> <span class="nav-label">Configuración</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<li> <a href="<?php echo $baseUrl; ?>/modules/parametros"><span class="nav-label">Parámetros generales</span></a> </li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/dias_contrato"><span class="nav-label">Días de contratos</span></a> </li>
@@ -342,6 +342,8 @@
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_casosfqrs/index.php">Tipo Caso Fqrs</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_personafqrs/index.php">Tipo Persona Fqrs</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/variacion_menu/index.php">Variación Menú</a></li>
+			<li><a href="<?= $baseUrl; ?>/modules/perfil_usuarios/index.php">Perfil Usuarios</a></li>
+
 		</ul>
 	</li>
 <?php } ?>

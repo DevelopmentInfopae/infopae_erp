@@ -44,7 +44,7 @@ $diasSemanas = [];
 // condicional para enviar datos cuando el codMunicipio esta vacio y se pueda crear el mapa de lo contrario listara las sedes educativas
 if ($codigoMunicipio == '0') {
   $mesesRecorridos = ""; 
-  $respuesta = [];
+ 
   $respuesta2 = [];
   $codDepartamento = $_SESSION['p_CodDepartamento'];
 
@@ -70,7 +70,7 @@ if ($codigoMunicipio == '0') {
     $consultaRes.=" AS TOTAL FROM $tabla JOIN ubicacion ON $tabla.cod_mun_res = ubicacion.CodigoDane GROUP BY cod_mun_res";
 
     $periodo = 1;
-
+     $respuesta = [];
     // exit(var_dump($consultaRes));
     if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
@@ -227,7 +227,9 @@ $respuesta = [];
 $respuesta2 = [];
 $respuestaSedes = [];
 
+// exit(var_dump($diasSemanas));
 foreach ($diasSemanas as $mes => $semanas) {
+
   $datos = "";
     $diaD = 1;
     $sem=0;
@@ -236,6 +238,7 @@ foreach ($diasSemanas as $mes => $semanas) {
 
     // ciclo para recorrer las semanas
     foreach ($semanas as $semana => $dias) {
+      // echo $semana."</br>";
       // ciclo para recorrer los dias de la semana
         foreach ($dias as $D => $dia) { 
         $datos.="SUM(D$diaD) + ";
@@ -249,13 +252,14 @@ foreach ($diasSemanas as $mes => $semanas) {
     $consultaRes.=" AS TOTAL FROM $tabla GROUP BY cod_sede";
 
     $periodo = 1; 
+    $respuesta = [];
 
-    // var_dump($consultaRes);   
+    // echo $consultaRes."<br>";
 
   if ($resConsultaRes = $Link->query($consultaRes)) {
         if ($resConsultaRes->num_rows > 0) {
-          while ($resEstrato = $resConsultaRes->fetch_assoc()) {
-            $respuesta[$periodo] = $resEstrato;
+          while ($resConsultaSedes = $resConsultaRes->fetch_assoc()) {
+            $respuesta[$periodo] = $resConsultaSedes;
           $periodo++;   
 
           }
@@ -306,6 +310,7 @@ $tHeadSedes = '<tr>
   $sedes = []; 
   $totalSedes = [];
 
+// var_dump($respuesta2);
   foreach ($respuesta2 as $mes => $valoresMes) {
     foreach ($valoresMes as $valorMes => $valor) {
       // convertimos la respuesta a un array asociativo con la clave primaria edad mes
@@ -313,6 +318,21 @@ $tHeadSedes = '<tr>
 
     }
   }
+// var_dump($sedes);
+ // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+  foreach ($respuesta2 as $mes => $valoresMes) {
+    foreach ($sedes as $sede => $valorSede) {
+      if (isset($sedes[$sede][$mes])) {
+        continue;
+      }else{
+        $sedes[$sede][$mes] = '0';
+      }
+    }
+    foreach ($valoresMes as $valorMes => $valor) {
+    ksort($sedes[$valor['cod_sede']]);
+    }
+  }   
+
 
 foreach ($sedes as $sede => $valorSede) {
   foreach ($respuestaSedes as $codigoSede => $nombre) {

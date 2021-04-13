@@ -20,17 +20,17 @@ $periodo = 1;
                            table_schema = DATABASE() AND table_name = 'entregas_res_".$dataDiasSemanas['MES']."$periodoActual'";
       $resTablas = $Link->query($consultaTablas);
       if ($resTablas->num_rows > 0) {
-        $semanaPos = str_replace("b", "", $dataDiasSemanas['SEMANA']);
+        $semanaPos =  $dataDiasSemanas['SEMANA'];
         $arrDias = explode(",", $dataDiasSemanas['Dias']);
         sort($arrDias);
-        // echo ($arrDias);
+        // var_dump ($arrDias);
         $diasSemanas[$dataDiasSemanas['MES']][$semanaPos] = $arrDias; //obtenemos un array ordenado del siguiente modo array[mes][semana] = array[dias]
       }
       $periodo++;
     }
   }
 
-  // exit(var_dump($semanas));
+  // exit(var_dump($diasSemanas));
   $tipoComplementos = [];
   $consComplemento="SELECT * FROM tipo_complemento";
   $resComplemento = $Link->query($consComplemento);
@@ -42,30 +42,46 @@ $periodo = 1;
 
   $totalesSemanas = [];
   $sumTotalesSemanas = [];
-
+// exit(var_dump($diasSemanas));
   foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
     $datos = "";
     $diaD = 1;
     $sem=0;
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
+      $stringSemana = $semana;
+      $find = 'b';
+      $busquedaB = strrchr ($stringSemana, $find);
+      // echo $busquedaB; 
+      if ($busquedaB == 'b' || $busquedaB == 'B') {
+        $diaD = 1;
+      }
       foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
         // echo $mes." - ".$semana." - ".$D." - ".$dia."</br>";
-        $datos.="SUM(D$diaD) + ";
-        $diaD++;
+        $consultaPlanillaDias = "SELECT D$diaD FROM planilla_dias WHERE D$diaD = $dia AND mes = $mes;";
+        // echo $consultaPlanillaDias."<br>";
+        $respuestaConsultaPlanillaDias = $Link->query($consultaPlanillaDias);
+        if ($respuestaConsultaPlanillaDias->num_rows == 1) {
+          $datos.="SUM(D$diaD) + ";
+          $diaD++;
+        }
+
       }
+
       $datos = trim($datos, "+ ");
       $datos.= " AS semana_".$semana.", ";
       $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
     }
     $datos = trim($datos, ", ");
+    // echo $datos;
     $consultaRes = "SELECT $datos FROM $tabla";
     // echo $consultaRes."</br>";
     if ($resRes = $Link->query($consultaRes)) {
     
       if ($resRes->num_rows > 0) {
         if ($Res = $resRes->fetch_assoc()) {
-          for ($i=1; $i <=$sem ; $i++) { //según el último número de semana guardado previamente, recorremos las semanas que nos devuelve el mes.
+            foreach($semanasP as $semanaP){ //según el último número de semana guardado previamente, recorremos las semanas que nos devuelve el mes.
+            $i = $semanaP;
             if (strlen($i) == 1) {
               $i = "0".$i;
             }
@@ -91,12 +107,13 @@ $periodo = 1;
     }
   }
 
-  // var_dump(sizeof($sumTotalesSemanas));
+  
 
 $tHeadSemana = '<tr>
      				<th>Mes</th>';
   $numTds = 1;
   $semanaAct = "";
+  // exit(var_dump($sumTotalesSemanas));
   foreach ($totalesSemanas as $key => $mes) { 
     foreach ($mes as $semana => $totales) { //recorremos todas las semanas obtenidas para crear las columnas
       if ($semana != $semanaAct) { //Si la semana en turno es igual a la última semana guardada, no se crea otra columna
