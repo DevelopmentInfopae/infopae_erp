@@ -84,53 +84,34 @@ if ($Link->query($sqlDispositivo)===true) {
 		} else {
 			$idBiometria = "";
 		}
+		// exit(var_dump($_POST));
+		// validacion que no haya id repetidos en la db
+		foreach ($id_bioest as $key => $value) {
+			$consultaValidacionDB = "SELECT * FROM biometria WHERE id_bioest = '" .$value. "' AND cod_sede = '".$cod_sede."' AND id_dispositivo = ".$iddispositivo.";";
+			$respuestaDB = $Link->query($consultaValidacionDB) or die ('Error al consultar biometrias' . mysqli_error($Link));
+			if ($respuestaDB->num_rows > 0) {
+				$respuesta = '{"respuesta" : [{"exitoso" : "2", "respuesta" : "El id '.$value.' ya se encuentra registrado"}]}';
+				exit($respuesta);
+			}
+			
+		}
 
-
-
-		$cntEditarBiometria = 0;
 		$sqlIngresarBiometria = "INSERT INTO biometria (id, tipo_doc, num_doc, id_dispositivo, id_bioest, cod_sede) VALUES ";
 		foreach ($num_doc as $llave => $documento) {
-			if (isset($idBiometria[$documento])) {
-				$sqlEditarBiometria = "UPDATE biometria SET id_bioest = '".$id_bioest[$documento]."' WHERE id = ".$idBiometria[$documento];
-				if ($Link->query($sqlEditarBiometria)===true) {
-					$cntEditarBiometria++;
-				}
-			} else {
-				if ($id_bioest[$documento] != "") {
+			if ($id_bioest[$documento] != "") {
 					$sqlIngresarBiometria.=" ('', '".$tipo_doc[$documento]."', '".$documento."', '".$iddispositivo."', '".$id_bioest[$documento]."', '".$cod_sede."'), ";
 				}
-			}
 		}
 
-		if (sizeof($num_doc) > sizeof($idBiometria)) {
-			$sqlIngresarBiometria = trim($sqlIngresarBiometria, ", ");
+		$sqlIngresarBiometria = trim($sqlIngresarBiometria, ", ");
 			if ($Link->query($sqlIngresarBiometria)===true) {
-				if (($idBiometria != "" && sizeof($idBiometria) == $cntEditarBiometria) || $idBiometria=="") {
-					echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Editado con éxito."}]}'; //Si se editaron correctamente las biometrías existentes y se ingresaron correctamente las nuevas.
-					$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '44', 'Actualizó la información del dispositivo biométrico con número de serial <strong>".$num_serial."</strong>')";
-					$Link->query($sqlBitacora);
-				} else {
-					echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error actualizar las biometrías 2."}]}';
-				}
-			} else {
-				echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Editado con éxito."}]}';
-			}
-		} else {
-			if (sizeof($idBiometria) == $cntEditarBiometria) {
-				echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Editado con éxito."}]}'; //Si se editaron correctamente las biometrías existentes y no hay nuevas biometrías.
+				echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Editado con éxito."}]}';//Si se editaron correctamente las biometrías existentes y se ingresaron correctamente las nuevas.
 				$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '44', 'Actualizó la información del dispositivo biométrico con número de serial <strong>".$num_serial."</strong>')";
-					$Link->query($sqlBitacora);
+				$Link->query($sqlBitacora);
 			} else {
-				echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error actualizar las biometrías 1."}]}';
+					echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Editado con éxito."}]}';
 			}
-		}
-	} else {
-		echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Editado con éxito."}]}'; //Si no hay biometrias relacionadass
-		$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '44', 'Actualizó la información del dispositivo biométrico con número de serial <strong>".$num_serial."</strong>')";
-					$Link->query($sqlBitacora);
+
 	}
-} else {
-	echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error al editar el dispositivo '.$sqlDispositivo.'"}]}';
 }
 
- ?>

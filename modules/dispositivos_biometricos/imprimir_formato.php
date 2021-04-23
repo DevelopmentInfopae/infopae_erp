@@ -168,6 +168,7 @@ if ($respuesta_focalizacion->num_rows > 0)
 			$ordenada1 = 9;
 		}
 
+		// exit(var_dump($parametros["LogoETC"]));
 		$pdf->Image($parametros["LogoETC"], 10, $ordenada1, 80);
 		$pdf->Image($parametros["LogoOperador"], 85, $ordenada1-4, 30);
 		$pdf->Image("../../img/logo_infopae.png", 118, $ordenada1-2, 30);

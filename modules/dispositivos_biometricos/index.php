@@ -4,9 +4,6 @@ require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 ?>
 
-<style type="text/css">
-
-</style>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
     <h2><?php echo $titulo; ?></h2>
@@ -33,17 +30,7 @@ $periodoActual = $_SESSION['periodoActual'];
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
-
-             <!--  <div class="dropdown pull-right">
-                <button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">
-                  Acciones 
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">
-                  <li><a onclick="$('.btnExportarExcel').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li>
-                </ul>
-              </div> -->
-          
+          <!-- tabla donde vamos a mostrar los dispositivos que estan creados -->
         	<table class="table table-striped table-hover selectableRows" id="tablaDispositivos">
         		<thead>
         			<tr>
@@ -57,7 +44,6 @@ $periodoActual = $_SESSION['periodoActual'];
         		</thead>
         		<tbody>
         		<?php 
-
             if (isset($_POST['cod_inst']) && $_POST['cod_inst'] != "") {
               $inst = $_POST['cod_inst'];
               $consulta = "SELECT 
@@ -83,7 +69,6 @@ $periodoActual = $_SESSION['periodoActual'];
               $consulta = "SELECT sede.nom_sede, usuarios.nombre as nom_usu, dispositivos.* FROM dispositivos INNER JOIN sedes".$_SESSION['periodoActual']." as sede ON sede.cod_sede = dispositivos.cod_sede INNER JOIN usuarios ON usuarios.id = dispositivos.id_usuario";
             }
 
-              
                 $result1 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                 if($result1->num_rows > 0){
 
@@ -105,8 +90,8 @@ $periodoActual = $_SESSION['periodoActual'];
                             </button>
                             <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
                               <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
-                                <li><a onclick="editarDispositivo(<?php echo $row1['id']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
-                                <li><a data-toggle="modal" data-target="#modalEliminarDispositivo"  data-iddispositivo="<?php echo $row1['id']; ?>"><span class="fa fa-trash"></span>  Eliminar</a></li>
+                                <li><a onclick="editarDispositivo(<?php echo $row1['id']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
+                                <li><a data-toggle="modal" data-target="#modalEliminarDispositivo"  data-iddispositivo=<?php echo $row1['id']; ?>><span class="fa fa-trash"></span>  Eliminar</a></li>
                               <?php endif ?>
                                <li><a onclick="exportarDispositivo(<?php echo $row1['id']; ?>);"><span class="fa fa-file-excel-o"></span> Exportar</a></li>
                             </ul>
@@ -125,6 +110,28 @@ $periodoActual = $_SESSION['periodoActual'];
     </div><!-- /.col-lg-12 -->
   </div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
+
+ <!-- modal eliminar biometria -->
+<div class="modal inmodal fade" id="modalEliminarDispositivo" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+ <div class="modal-dialog modal-sm">
+   <div class="modal-content">
+     <div class="modal-header text-info" style="padding: 15px;">
+       <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Cerrar</span></button>
+       <h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Confirmación InfoPAE </h3>
+     </div>
+     <div class="modal-body" style="text-align: center;">
+         <span>¿Está seguro de borrar Dispositivo Biométrico?</span>
+         <input type="hidden" name="iddispositivoEli" id="iddispositivoEli">
+         <!-- <input type="hidden" name="numbiometria" id="numbiometria"> -->
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> No</button>
+       <button type="button" class="btn btn-primary btn-sm" onclick="eliminarDispositivo()"><i class="fa fa-check"></i> Si</button>
+     </div>
+   </div>
+ </div>
+</div>
+
 <form method="Post" id="ver_dispositivo" action="ver_dispositivo.php" style="display: none;">
   <input type="hidden" name="idDispositivoVer" id="idDispositivoVer">
 </form>
@@ -155,9 +162,10 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/js/dispositivos_biometricos.js"></script>
 
 <script type="text/javascript">
-  console.log('Aplicando Data Table');
+  // console.log('Aplicando Data Table');
+  // data table para  los datos de los dispositivos
   dataset1 = $('#tablaDispositivos').DataTable({
-    order: [ 0, 'asc' ],
+    order: [ 2, 'asc' ],
     pageLength: 25,
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
