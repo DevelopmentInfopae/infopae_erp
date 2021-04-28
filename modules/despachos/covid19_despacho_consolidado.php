@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
 
-//var_dump($_POST);
+// var_dump($_POST);
 
 include '../../config.php';
 require_once '../../autentication.php';
@@ -36,6 +36,13 @@ $mes = $_POST['mesiConsulta'];
 if($mes < 10){ $mes = '0'.$mes; }
 
 $mes = trim($mes);
+
+// mes que se va a utilizar para traer el numero de la entrega
+$mesEntrega = $_POST['mesiConsulta'];
+if($mesEntrega < 10){ $mesEntrega = '0'.$mesEntrega; }
+
+$mesEntrega = trim($mesEntrega);
+
 $anno = $_POST['annoi'];
 $anno = substr($anno, -2);
 $anno = trim($anno);
@@ -90,14 +97,14 @@ $_POST = array_values($_POST);
 $annoActual = $tablaAnnoCompleto;
 $despachosRecibidos = $_POST;
 
-//var_dump($despachosRecibidos);
+// var_dump($despachosRecibidos);
 
 
 
 
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
-
+$entrega = '';
 $mes = '';
 $sede = '';
 $dias = '';
@@ -113,6 +120,15 @@ $semanasMostrar = array();
 $nomSedes = array();
 $nomSede = array();
 $fechaElaboracion = array();
+
+// vamos a buscar el numero de la entrega que va a estar junto al mes 
+$consultaEntrega = "SELECT NumeroEntrega FROM planilla_dias WHERE mes = $mesEntrega;";
+$respuestaEntrega = $Link->query($consultaEntrega) or die('Error al consultar el numero de la entrega' . mysqli_error($Link));
+if ($respuestaEntrega->num_rows>0) {
+	$dataEntrega = $respuestaEntrega->fetch_assoc();
+	$entrega = $dataEntrega['NumeroEntrega'];
+}
+// var_dump($entrega);
 
 foreach ($despachosRecibidos as &$valor){
 	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst, s.cod_inst, s.cod_mun_sede , s.sector, s.direccion FROM despachos_enc$mesAnno de INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor";

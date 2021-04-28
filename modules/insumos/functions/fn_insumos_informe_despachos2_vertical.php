@@ -19,7 +19,9 @@ if (isset($_POST['tablaMesInicio'])) {
 	echo "<script>alert('No se ha definido mes.');</script>";
 }
 
-//var_dump($_POST);
+
+
+// var_dump($_POST);
 $paginasObservaciones = "";
 if(isset($_POST['paginasObservaciones']) && $_POST['paginasObservaciones'] != ""){
 	$paginasObservaciones = $_POST['paginasObservaciones'];
@@ -59,8 +61,73 @@ if (count($meses_involucrados) > 1) {
 // $sedes[0] = '16801300001601';
 // $sedes[1] = '16801300001602';
 
+
 $sedeTabla = "sedes".$_SESSION['periodoActual'];
 $insumosmov = "insumosmov".$tablaMes.$_SESSION['periodoActual'];
+
+// mes que se va a utilizar para traer el numero de la entrega
+$mesEntrega = 0;
+if (isset($_POST["tablaMesInicio"])) {
+	$mesEntrega = $_POST['tablaMesInicio'];
+	if($mesEntrega < 10){ $mesEntrega = '0'.$mesEntrega; }
+	$mesEntrega = trim($mesEntrega);
+}
+
+// MODIFICACIONES JERSON 
+// validacion para saber si los despachos que se seleccionaron son todos de tipo RPC
+// en este primer ciclo recorremos todos los despachos para capturar el ID
+$tipoComplementoDespacho = [];
+$idDespachos = [];
+$numeroDespachosRpc = 0;
+$Rpc = '';
+$entrega = '';
+
+foreach ($ds_mes as $key1 => $valor) {
+	foreach ($valor as $key2 => $value) {
+		if ($key2 == 'id_despacho') {
+			$idDespachos[] = $value;
+		}
+	}
+}
+
+// en este segundo ciclo recorremos con el id de los despachos y traemos el complemento asignado a esos despachos
+foreach ($idDespachos as $key => $value) {
+	$consultaComplemento = "SELECT Complemento FROM $insumosmov WHERE id = " .$value.";";
+	$respuestaComplemento = $Link->query($consultaComplemento) or die ('Error al consultar los complementos'. mysqli_error($Link));
+	if ($respuestaComplemento->num_rows > 0) {
+		while ($dataComplemento = $respuestaComplemento->fetch_assoc()) {
+			$tipoComplementoDespacho[] = $dataComplemento['Complemento'];
+		}
+	}
+}
+
+$numeroDespachosGeneral = count($tipoComplementoDespacho);
+foreach ($tipoComplementoDespacho as $key => $value) {
+	if ($value == 'RPC') {
+		$numeroDespachosRpc ++;
+	}
+}
+
+if ($numeroDespachosGeneral == $numeroDespachosRpc) {
+	$Rpc = 'si';
+}else {$Rpc = 'no';}
+
+// vamos a buscar el numero de la entrega que va a estar junto al mes 
+$consultaEntrega = "SELECT NumeroEntrega FROM planilla_dias WHERE mes = $mesEntrega;";
+$respuestaEntrega = $Link->query($consultaEntrega) or die('Error al consultar el numero de la entrega' . mysqli_error($Link));
+if ($respuestaEntrega->num_rows>0) {
+	$dataEntrega = $respuestaEntrega->fetch_assoc();
+	$entrega = $dataEntrega['NumeroEntrega'];
+}
+
+$consultaContrato = "SELECT NumContrato FROM parametros;";
+$respuestaContrato = $Link->query($consultaContrato) or die('Error al consultar el contrato' .mysqli_error($Link));
+if ($respuestaContrato->num_rows > 0) {
+	$dataContrato = $respuestaContrato->fetch_assoc();
+	$contrato = $dataContrato['NumContrato'];
+}
+// END MODIFICACIONES JERSON
+
 $insumosmovdet = "insumosmovdet".$tablaMes.$_SESSION['periodoActual'];
 
 $consultaDpto = "SELECT NombreETC FROM parametros";
@@ -89,7 +156,7 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 		// $nom_inst="";
 		// $nom_sede="";
 
-		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes, $tipoComplemento){
+		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes, $tipoComplemento, $entrega, $Rpc, $contrato){
 			$this->fecha = $fecha;
 			// setlocale(LC_TIME, 'es_CO');
 			// $fecha = DateTime::createFromFormat('!m', $mes);
@@ -104,6 +171,9 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->maxEstudiantes = $maxEstudiantes;
 			$this->gruposEtarios = $gruposEtarios;
 			$this->tipoComplemento = $tipoComplemento;
+			$this->entrega = $entrega;
+			$this->Rpc = $Rpc;
+			$this->contrato = $contrato;
 		}
 
 		function Header()
@@ -117,14 +187,37 @@ if ($resultadoGruposEtarios->num_rows > 0) {
 			$this->Cell(0,9,utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'),'TR',1,'C');
 			$this->Cell(85,9,utf8_decode(''),'',0,'C');
 			$this->Cell(0,9,utf8_decode('REMISIÓN ENTREGA DE INSUMOS EN INSTITUCIÓN EDUCATIVA'),'BR',1,'C');
+			if ($this->Rpc == 'si') {
+				$anchoOperador = 65;
+			}else if($this->Rpc == 'no'){$anchoOperador = 94;}
 			$this->SetFont('Arial','B',8);
 			$this->Cell(25,4,utf8_decode('OPERADOR: '),'BL',0,'L');
 			$this->SetFont('Arial','',8);
-			$this->Cell(94,4,utf8_decode($_SESSION['p_Operador']),'BR',0,'L');
-			$this->SetFont('Arial','B',8);
-			$this->Cell(40,4,utf8_decode('MES: '),'B',0,'C');
-			$this->SetFont('Arial','',8);
-			$this->Cell(0,4,utf8_decode($this->mes),'BR',1,'L'); //FECHA DE ELABORACIÓN DEL DESPACHO - REEMPLAZAR
+			$this->Cell($anchoOperador,4,utf8_decode($_SESSION['p_Operador']),'BR',0,'L');
+			// si las entregas los despachos son todos RPC se dibujara el campo en el pdf de lo contrario no
+			if ($this->Rpc == 'si') {
+				$this->SetFont('Arial','B',8);
+				$this->Cell(19,4,utf8_decode('CONTRATO:'),'B',0,'L');
+				$this->SetFont('Arial','',8);
+				$this->Cell(40,4,utf8_decode($this->contrato),'BR',0,'L'); 
+				$this->SetFont('Arial','B',8);
+				$this->Cell(9,4,utf8_decode('MES:'),'B',0,'L');
+				$this->SetFont('Arial','',8);
+				$this->Cell(22,4,utf8_decode($this->mes),'BR',0,'L'); //FECHA DE ELABORACIÓN DEL DESPACHO - REEMPLAZAR	
+				$this->SetFont('Arial','B',8);
+				$this->Cell(16,4,utf8_decode('ENTREGA: '),'B',0,'L');
+				$this->SetFont('Arial','',8);
+				$entregaString = '';
+				if ($this->entrega < 10) {
+					$entregaString = "0".$this->entrega;
+				}else{$entregaString = $this->entrega;}
+				$this->Cell(0,4,utf8_decode($entregaString),'BR',1,'L'); //Entregas
+			}else if($this->Rpc == 'no'){
+				$this->SetFont('Arial','B',8);
+				$this->Cell(48,4,utf8_decode('MES:'),'B',0,'L');
+				$this->SetFont('Arial','',8);
+				$this->Cell(0,4,utf8_decode($this->mes),'BR',1,'L'); //FECHA DE ELABORACIÓN DEL DESPACHO - REEMPLAZAR	
+			}
 			$this->SetFont('Arial','B',8);
 			$this->Cell(14,4,utf8_decode('ETC: '),'BL',0,'L');
 			$this->SetFont('Arial','',8);
@@ -331,7 +424,7 @@ foreach ($sedes as $key => $sede) {
 				$maxEstudiantes = $Despacho["Cobertura"];
 				$tipoComplemento = $Despacho['Complemento'];
 
-				$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $tablaMes, $tipoComplemento);
+				$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $tablaMes, $tipoComplemento, $entrega, $Rpc, $contrato);
 				$pdf->AddPage();
 				$pdf->SetFont('Arial','',$fuenteFilasItems);
 				//PRODUCTOS

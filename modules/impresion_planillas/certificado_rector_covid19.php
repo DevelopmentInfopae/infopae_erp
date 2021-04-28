@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL);
+error_reporting(E_ALL); 
 include '../../config.php';
 require_once '../../autentication.php';
 require_once '../../db/conexion.php';
@@ -10,7 +10,7 @@ ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
 
 
-//var_dump($_POST);
+// var_dump($_POST);
 
 // Declaración de variables
 $diaInicialSemanaInicial = $_POST["diaInicialSemanaInicial"];
@@ -32,8 +32,22 @@ if($fecha_hasta != ""){
 
 //echo "<br><br>$fecha_hasta<br><br>";
 
+// mes que se va a utilizar para traer el numero de la entrega
+$mesEntrega = 0;
+$mesEntrega = $_POST['mes'];
+if($mesEntrega < 10){ $mesEntrega = '0'.$mesEntrega; }
+$mesEntrega = trim($mesEntrega);
 
 
+$entrega = '';
+// vamos a buscar el numero de la entrega que va a estar junto al mes 
+$consultaEntrega = "SELECT NumeroEntrega FROM planilla_dias WHERE mes = $mesEntrega;";
+$respuestaEntrega = $Link->query($consultaEntrega) or die('Error al consultar el numero de la entrega' . mysqli_error($Link));
+if ($respuestaEntrega->num_rows>0) {
+	$dataEntrega = $respuestaEntrega->fetch_assoc();
+	$entrega = $dataEntrega['NumeroEntrega'];
+}
+// var_dump($entrega);
 
 //Imprimir mes
 $imprimirMes = 0;

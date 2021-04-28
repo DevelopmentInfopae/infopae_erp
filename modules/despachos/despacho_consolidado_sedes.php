@@ -8,7 +8,7 @@ require_once '../../autentication.php';
 require('../../fpdf181/fpdf.php');
 require_once '../../db/conexion.php';
 include '../../php/funciones.php';
-
+ 
 
 $largoNombre = 30;
 $sangria = " - ";
@@ -27,6 +27,12 @@ $mes = $_POST['mesiConsulta'];
 if($mes < 10){ $mes = '0'.$mes; }
 
 $mes = trim($mes);
+
+// mes que se va a utilizar para traer el numero de la entrega
+$mesEntrega = $_POST['mesiConsulta'];
+if($mesEntrega < 10){ $mesEntrega = '0'.$mesEntrega; }
+$mesEntrega = trim($mesEntrega);
+
 $anno = $_POST['annoi'];
 $anno = substr($anno, -2);
 $anno = trim($anno);
@@ -89,7 +95,8 @@ $despachosRecibidos = $_POST;
 
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
-
+$contrato = '';
+$entrega = '';
 $mes = '';
 $sede = '';
 $dias = '';
@@ -104,6 +111,23 @@ $diasMostrar = array();
 $semanasMostrar = array();
 $nomSedes = array();
 $nomSede = array();
+
+// consulta para enviar el numero de contrato a los headers
+$consultaContrato = "SELECT NumContrato FROM parametros;";
+$respuestaContrato = $Link->query($consultaContrato) or die ('Error al consultar el contrato ' . mysqli_error($Link));
+if ($respuestaContrato->num_rows > 0) {
+	$dataContrato = $respuestaContrato->fetch_assoc();
+	$contrato = $dataContrato['NumContrato'];
+}
+
+// vamos a buscar el numero de la entrega que va a estar junto al mes 
+$consultaEntrega = "SELECT NumeroEntrega FROM planilla_dias WHERE mes = $mesEntrega;";
+$respuestaEntrega = $Link->query($consultaEntrega) or die('Error al consultar el numero de la entrega' . mysqli_error($Link));
+if ($respuestaEntrega->num_rows>0) {
+	$dataEntrega = $respuestaEntrega->fetch_assoc();
+	$entrega = $dataEntrega['NumeroEntrega'];
+}
+// var_dump($entrega);
 
 foreach ($despachosRecibidos as &$valor){
 	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst
