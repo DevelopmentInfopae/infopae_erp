@@ -28,7 +28,7 @@
 		<button class="btn btn-primary" onclick="window.location.href = '<?php echo $baseUrl; ?>/modules/insumos/despacho_insumo.php';"><span class="fa fa-plus"></span>  Nuevo</button>
 	  </div>
 	<?php } ?>
-  </div>
+  </div> 
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -155,10 +155,19 @@
 				<option value="">Seleccione institución</option>
 			  </select>
 			</div>
+
+			<div class="col-sm-4   form-group">
+				<label for="semana_final">Imprimir nombre del mes</label>
+					<div>
+						<input type="checkbox" name="imprimirMes" id="imprimirMes" checked>
+					</div>
+			</div>
+
+
 			<input type="hidden" name="buscar" value="1">
 
 
-			<?php
+			<?php 
 				$observaciones = "";
 				if(isset($_POST['observaciones']) && $_POST['observaciones'] != ""){
 					$observaciones = $_POST['observaciones'];
@@ -197,7 +206,7 @@
 			<div class="table-responsive">
 
 			<label>
-				<input type="checkbox" name="selecTodos" id="selecTodos"> Seleccionar todos
+				<input type="checkbox" class="i-checks" name="selecTodos" id="selecTodos"> Seleccionar todos
 			</label>
 
 			<form id="formDespachos" method="POST" target="_blank">
@@ -205,7 +214,7 @@
 			<input type="hidden" name="tablaMesFin" id="tablaMesFin" value="<?php echo $mesTablaFin; ?>">
 			<input type="hidden" name="despachos_seleccionados" id="despachos_seleccionados">
 			<input type="hidden" name="paginasObservaciones" id="paginasObservaciones" value="<?= $observaciones ?>">
-
+			<input type="hidden" name="mesImprimir" id="mesImprimir">
 			
 
 			
@@ -470,6 +479,7 @@
 						  '<li><a onclick="informeDespachos(1);"><span class="fa fa-file-excel-o"></span> Individual </a></li>'+
 						  '<li><a onclick="informeDespachos2(1);"><span class="fa fa-file-excel-o"></span> Individual 2 </a></li>'+
 						  '<li><a onclick="informeDespachos2Vertical(1);"><span class="fa fa-file-excel-o"></span> Individual Vertical </a></li>'+
+						  '<li><a onclick="informeDespachosVertical2(1);"><span class="fa fa-file-excel-o"></span> Individual Vertical 2</a></li>'+
 						  '<li><a onclick="informeDespachosInstitucion(1);"><span class="fa fa-file-excel-o"></span> Institución </a></li>'+
 						  '<li><a onclick="informeDespachosConsolidado(1);"><span class="fa fa-file-excel-o"></span> Consolidado </a></li>'+
 						  '<li><a onclick="editarDespacho();"><span class="fa fa-pencil"></span> Editar </a></li>'+

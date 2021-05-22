@@ -21,9 +21,7 @@ $(document).ready(function(){
 	// $('#nomMesFin').val($('#mes_inicio option:selected').text());
 	// $('#mes_fin').val($('#mes_inicio').val());
 
-	$('input').iCheck({
-     checkboxClass: 'icheckbox_square-green '
-  	});
+	$('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green' });
 
 	$.ajax({
 	   type: "POST",
@@ -250,6 +248,7 @@ function informeDespachos2(num){
 	}
 }
 
+
 function informeDespachos2Vertical(num){
 	if (num == 1) {
 		$('#formDespachos').prop('action', 'functions/fn_insumos_informe_despachos2_vertical.php').prop('method');
@@ -261,13 +260,37 @@ function informeDespachos2Vertical(num){
 		});
 
 		if (checks > 0) {
-			$('#formDespachos').submit();
+			var estado = $('#imprimirMes').prop("checked"); 
+			$('#formDespachos #mesImprimir').val(estado);
+			$('#formDespachos').submit(); 
 		} else {
 			Command: toastr.warning("Debe seleccionar al menos un despacho para exportar.", "No hay despacho seleccionados.", {onHidden : function(){
 			      				}})
 		}
 	}
 }
+
+function informeDespachosVertical2(num){
+	if (num == 1) {
+		$('#formDespachos').prop('action', 'functions/fn_insumos_informe_despachos_vertical2.php').prop('method');
+		var checks = 0;
+		$('input[name="sedes[]"]').each(function(){
+			if ($(this).prop('checked')) {
+				checks++;
+			}
+		});
+
+		if (checks > 0) {
+			var estado = $('#imprimirMes').prop("checked"); 
+			$('#formDespachos #mesImprimir').val(estado);
+			$('#formDespachos').submit(); 
+		} else {
+			Command: toastr.warning("Debe seleccionar al menos un despacho para exportar.", "No hay despacho seleccionados.", {onHidden : function(){
+			      				}})
+		}
+	}
+}
+
 
 function informeDespachosInstitucion(num){
 
