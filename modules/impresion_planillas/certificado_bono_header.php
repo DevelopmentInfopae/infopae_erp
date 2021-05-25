@@ -57,7 +57,7 @@ $aux = substr($aux, 0, 66);
 $pdf->Cell(70,4,utf8_decode($aux),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(16.5,4,'CODIGO DANE:',0,0,'L',False);
+$pdf->Cell(16.5,4,utf8_decode('CÓDIGO DANE:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(0,4,$sedes['codigo'],0,0,'L',False);
 $pdf->Ln(4);
@@ -115,7 +115,7 @@ $pdf->Ln(6);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->SetFont('Arial','B',$tamannoFuente-2);
+$pdf->SetFont('Arial','B',$tamannoFuente-1.5);
 
 $pdf->Rotate_text($current_x+2.9, $current_y+16, utf8_decode('Nº ORDEN'), 90);
 $pdf->Cell(4,24,'','TBL',0,'C',False);
@@ -130,7 +130,7 @@ $pdf->Cell(42,24,"",'TBL',0,'C',False);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+7+3.5);
-$pdf->MultiCell(17,2,utf8_decode("Nº IDENTIFICACION DEL TITULAR"),0,'C',false);
+$pdf->MultiCell(17,2,utf8_decode("Nº IDENTIFICACIÓN DEL TITULAR"),0,'C',false);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(17,24,'','TBL',0,'C',False);
 
@@ -167,7 +167,7 @@ $pdf->MultiCell(23,2, utf8_decode("LUGAR DONDE SE REALIZARÁ \n  EL CANJE DEL BO
 $pdf->SetXY($current_x+46, $current_y+3);
 $pdf->Cell(23,21,'','RB',0,'C',False);
 
-$pdf->SetFont('Arial','B',$tamannoFuente-2);
+$pdf->SetFont('Arial','B',$tamannoFuente-1.5);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+7);

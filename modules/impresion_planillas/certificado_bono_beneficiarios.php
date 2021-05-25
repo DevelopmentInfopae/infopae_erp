@@ -12,6 +12,8 @@ if ($respuestaFocalizacion->num_rows > 0) {
 			$pdf->AddPage();
 			include 'certificado_bono_header.php';
 		}
+		$tamannoFuente = 5;
+		$pdf->SetFont('Arial','',$tamannoFuente);
 		$pdf->Cell(4,$altoFila,utf8_decode($estudianteIndice),'BL',0,'C',False);
 
 		// Nombre del estudiante

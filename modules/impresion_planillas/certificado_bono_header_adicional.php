@@ -3,7 +3,7 @@ $titulo = "Programa de Alimentación Escolar - PAE \n Atención en el marco del 
 
 $tamannoFuente = 6;
 $pdf->SetFont('Arial','',$tamannoFuente);
-
+// exit(var_dump($_SESSION));
 $pdf->SetFont('Arial','B',$tamannoFuente+1);
 $logoInfopae = $_SESSION['p_Logo ETC'];
 $pdf->SetTextColor(0,0,0);
@@ -115,7 +115,7 @@ $pdf->Ln(6);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->SetFont('Arial','B',$tamannoFuente-2);
+$pdf->SetFont('Arial','B',$tamannoFuente-1.5);
 
 $pdf->Rotate_text($current_x+2.9, $current_y+16, utf8_decode('Nº ORDEN'), 90);
 $pdf->Cell(4,24,'','TBL',0,'C',False);
@@ -167,7 +167,7 @@ $pdf->MultiCell(23,2, utf8_decode("LUGAR DONDE SE REALIZARÁ \n  EL CANJE DEL BO
 $pdf->SetXY($current_x+46, $current_y+3);
 $pdf->Cell(23,21,'','RB',0,'C',False);
 
-$pdf->SetFont('Arial','B',$tamannoFuente-2);
+$pdf->SetFont('Arial','B',$tamannoFuente-1.5);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->SetXY($current_x, $current_y+7);
