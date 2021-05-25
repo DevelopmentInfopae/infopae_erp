@@ -181,7 +181,7 @@ class PDF extends PDF_PageGroup{
 		$this->Cell(36,4,utf8_decode(""),'B',0,'C',False);
 			
 		$this->Ln(3.9);
-		$this->Cell(150,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(125,4,utf8_decode(""),0,0,'C',False);
 		$this->Cell(0,10,utf8_decode("Impreso por: InfoPAE Versión ".$_SESSION['periodoActualCompleto']." www.infopae.com.co"),0,0,'L',False);
 
 	}
