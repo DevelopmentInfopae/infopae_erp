@@ -172,6 +172,7 @@
 					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/control_asistencia.php">Control de asistencia</a> </li>
 					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados.php">Certificados por institución</a> </li>
 					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados_covid19.php">Certificado Rector COVID19</a> </li>
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados_bono.php">Certificado Bono</a> </li>
 				</ul>
 			</li>
 			<li>
@@ -243,7 +244,6 @@
 				<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
-				<li><a href="#" class="sinDesarrollar">Informe de compras efectuadas al proveedor</a></li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
 			<?php } ?>
 		</ul>
@@ -310,7 +310,6 @@
 			<li><a href="<?= $baseUrl; ?>/modules/grupos_etarios">Grupos etarios</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/cronograma">Cronograma</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/noticias">Noticias</a></li>
-			<li><a href="#" class="sinDesarrollar">Perfiles de usuario</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/usuarios"><span class="nav-label">Usuarios</span></a> </li>
 			<li><a href="<?= $baseUrl; ?>/modules/proveedores">Proveedores</a></li>
 			<li>
