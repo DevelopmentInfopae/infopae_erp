@@ -22,7 +22,7 @@ if ($respuestaPlanillaDias->num_rows > 0) {
 }
 
 foreach ($registroPlanillaDias as $clave => $planillaDias) {
-  if ($posicionColumna > 3) {
+  if ($posicionColumna > 5) {
     if ($mes == date("m")) {
       if ($planillaDias <= date("d") && $planillaDias != "") {
         $columnasDiasEntregasRes .= "er." . $clave ." + ";
@@ -103,7 +103,7 @@ if($segmento == 4){
 // Por Discapacidad
 if($segmento == 5){
     $serieSegmento = "Etnia";
-    $consultaSegmento = "etnia";
+    $consultaSegmento = "et.DESCRIPCION";
 }
 
 // Por Resguardo
@@ -114,8 +114,8 @@ if($segmento == 6){
 
 // Por Poblacion Victima de Desplazamiento
 if($segmento == 7){
-    $serieSegmento = "Poblacion Victima de Desplazamiento";
-    $consultaSegmento = "cod_pob_victima";
+    $serieSegmento = "Población Victima";
+    $consultaSegmento = "po.nombre";
 }
 
 // Por Grado
@@ -141,6 +141,8 @@ $vsql = " SELECT
 FROM
   entregas_res_".$mes.$annoinicial." er ";
 
+if( $segmento == 5){ $vsql  = $vsql." LEFT JOIN etnia et ON er.etnia = et.id "; }
+if( $segmento == 7){ $vsql  = $vsql." LEFT JOIN pobvictima po ON er.cod_pob_victima = po.id "; }
 if( $segmento == 2){ $vsql  = $vsql." LEFT JOIN estrato es ON er.cod_estrato = es.id "; }
 if( $segmento == 4){ $vsql  = $vsql." LEFT JOIN discapacidades dis ON er.cod_discap = dis.id "; }
 if( $segmento == 8){ $vsql  = $vsql." LEFT JOIN grados g ON er.cod_grado = g.id "; }
@@ -153,6 +155,10 @@ if($institucion != ''){ $vsql = $vsql." AND er.cod_inst = '$institucion' "; }
 if($sede != ''){ $vsql = $vsql." AND er.cod_sede = '$sede' "; }
 $vsql = $vsql." GROUP BY (".$consultaSegmento.") ";
 
+if ($segmento == 8) {
+  $vsql .= 'ORDER BY er.cod_grado DESC';
+}
+
 $Link = new mysqli($Hostname, $Username, $Password, $Database);
 $result = $Link->query($vsql);
 $Link->close();
@@ -160,8 +166,9 @@ $Link->close();
 $valores=array();
 $titulos=array();
 $resultados=0;
-
+// exit(var_dump($vsql));
 while($row = $result->fetch_assoc()) {
+    $tituloString = '';
     $valores[] = $row['total'];
 
     if($segmento == 10) {
@@ -171,10 +178,70 @@ while($row = $result->fetch_assoc()) {
       } else if ($auxZona == 2) { $auxZona = 'RURAL'; }
 
       $titulos[] =  $auxZona;
-    } else { $titulos[] = $row['consulta']; }
+    } else {
+      $string = utf8_encode($row['consulta']);
+      if (tieneAcentos($string)) {
+        $tituloString = eliminar_acentos($string);
+      }else{
+        $tituloString = $row['consulta'];
+      }
+      $titulos[] = strtoupper($tituloString); 
+    }
   }
 
     $resultados++;
 
 
 echo json_encode(array("serieSegmento"=>$serieSegmento,"titulos"=>$titulos,"valores"=>$valores));
+
+
+function tieneAcentos($string)
+{
+  if(preg_match('/á|é|í|ó|ú|Á|É|Í|Ó|Ú|à|è|ì|ò|ù|À|È|Ì|Ò|Ù|ñ|Ñ|ä|ë|ï|ö|ü|Ä|Ë|Ï|Ö|Ü|â|ê|î|ô|û|Â|Ê|Î|Ô|Û|ý|Ý|ÿ/', $string)===1)
+    return true;
+  return false;
+}
+
+
+function eliminar_acentos($cadena){
+    
+    //Reemplazamos la A y a
+    $cadena = str_replace(
+    array('Á', 'À', 'Â', 'Ä', 'á', 'à', 'ä', 'â', 'ª'),
+    array('A', 'A', 'A', 'A', 'a', 'a', 'a', 'a', 'a'),
+    $cadena
+    );
+ 
+    //Reemplazamos la E y e
+    $cadena = str_replace(
+    array('É', 'È', 'Ê', 'Ë', 'é', 'è', 'ë', 'ê'),
+    array('E', 'E', 'E', 'E', 'e', 'e', 'e', 'e'),
+    $cadena );
+ 
+    //Reemplazamos la I y i
+    $cadena = str_replace(
+    array('Í', 'Ì', 'Ï', 'Î', 'í', 'ì', 'ï', 'î'),
+    array('I', 'I', 'I', 'I', 'i', 'i', 'i', 'i'),
+    $cadena );
+ 
+    //Reemplazamos la O y o
+    $cadena = str_replace(
+    array('Ó', 'Ò', 'Ö', 'Ô', 'ó', 'ò', 'ö', 'ô'),
+    array('O', 'O', 'O', 'O', 'o', 'o', 'o', 'o'),
+    $cadena );
+ 
+    //Reemplazamos la U y u
+    $cadena = str_replace(
+    array('Ú', 'Ù', 'Û', 'Ü', 'ú', 'ù', 'ü', 'û'),
+    array('U', 'U', 'U', 'U', 'u', 'u', 'u', 'u'),
+    $cadena );
+ 
+    //Reemplazamos la N, n, C y c
+    $cadena = str_replace(
+    array('Ñ', 'ñ', 'Ç', 'ç'),
+    array('N', 'n', 'C', 'c'),
+    $cadena
+    );
+    
+    return $cadena;
+  }

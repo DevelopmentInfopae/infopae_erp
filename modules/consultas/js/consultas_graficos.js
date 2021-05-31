@@ -62,6 +62,7 @@ function graficar_resumida (){
 		beforeSend: function(){},
 		success: function(data){
 			try {
+        console.log(data);
 				var obj = JSON.parse(data);
         var total = 0;
         var total2 = 0;
@@ -106,7 +107,7 @@ function graficar_resumida (){
             labels: obj.titulos,
             datasets: [{
                 data: obj.valores,
-                backgroundColor: ["#a3e1d4","#dedede","#b5b8cf","#5c7f78", "#b9fff0", "#2e403c", "#a6e5d8"]
+                backgroundColor: ["#a3e1d4","#dedede","#b5b8cf","#5c7f78", "#b9fff0", "#2e403c", "#a6e5d8",'#0B4337','#19AB8D', "#a3e1d4","#dedede","#b5b8cf","#5c7f78", "#b9fff0", "#2e403c", "#a6e5d8",'#0B4337','#19AB8D']
             }]
         } ;
 

@@ -16,8 +16,8 @@
             <option value="3">Sisben</option>
             <option value="4">Discapacidad</option>
             <option value="5">Etnia</option>
-            <option value="6">Resguardo</option>
-            <option value="7">Población Victima de Desplazamiento</option>
+            <!-- <option value="6">Resguardo</option> -->
+            <option value="7">Población Victima</option>
             <option value="8">Grado</option>
             <option value="9">Jornada Escolar</option>
             <option value="10">Zona Residencia Estudiante</option>
