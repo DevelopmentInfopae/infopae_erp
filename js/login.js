@@ -30,7 +30,7 @@ function doLogin() {
     			periodoActual:periodoActual
             },
         	success: function(i){
-                //alert(i);
+                // alert(i);
           		console.log(i);
                 if (i==0 || i==1 || i==5 || i==9) {
                     window.location = "index.php";
@@ -50,7 +50,10 @@ function doLogin() {
                     window.location = "cambiar_clave.php";
                 } else if (i == "-2"){
                     $("#ventanaInformar").modal();
-                } else {
+                } else if (i==7) {
+                    // console.log("Coordinador");
+                    window.location = "index_coordinador.php";
+                }else {
                     $('#debug').html(i);
                 }
         	}

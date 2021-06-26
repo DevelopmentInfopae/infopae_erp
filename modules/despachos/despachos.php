@@ -195,9 +195,35 @@
 							<div class="col-sm-4 col-md-2 form-group">
 								<label for="fechaInicial">Municipio</label>
 								<select class="form-control" name="municipio" id="municipio">
-								  <option value="">Seleccione uno</option>
-								  <?php
-									$consulta = " select DISTINCT codigoDANE, ciudad from ubicacion where 1=1 and ETC = 0 ";
+									<?php if ($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7"): ?>
+										<option value="">Seleccione uno</option>
+									<?php endif ?>
+								  	<?php
+								  	$condicionMunicipioInstitucion = '';
+								  	if ($_SESSION['perfil'] == "6") {
+								  		$codigoMunicipio;
+								  		$documentoRector = $_SESSION['num_doc'];
+								  		$consultaMunicipioInstitucion = "SELECT cod_mun FROM instituciones WHERE cc_rector = $documentoRector; ";
+								  		$respuestaMunicipioInstitucion = $Link->query($consultaMunicipioInstitucion) or die ('Error al consultar el municipio de la institución ' . mysqli_error($Link));
+								  		if ($respuestaMunicipioInstitucion->num_rows > 0) {
+								  			$dataMunicipioInstitucion = $respuestaMunicipioInstitucion->fetch_assoc();
+								  			$codigoMunicipio = $dataMunicipioInstitucion['cod_mun'];
+								  		}
+								  		$condicionMunicipioInstitucion = " AND CodigoDANE = $codigoMunicipio "; 
+								  	}
+								  	if ($_SESSION['perfil'] == "7") {
+								  		$codigoMunicipio = '';
+								  		$documentoCoordinador = $_SESSION['num_doc'];
+								  		$consultaMunicipioInstitucion = "SELECT i.cod_mun FROM instituciones i INNER JOIN sedes$periodoActual s ON s.cod_inst = i.codigo_inst WHERE s.id_coordinador = $documentoCoordinador LIMIT 1";
+								  		$respuestaMunicipioInstitucion = $Link->query($consultaMunicipioInstitucion) or die ('Error al consultar el municipio de la institución. ' . mysqli_error($Link));
+								  		if ($respuestaMunicipioInstitucion->num_rows > 0) {
+								  			$dataMunicipioInstitucion = $respuestaMunicipioInstitucion->fetch_assoc();
+								  			$codigoMunicipio = $dataMunicipioInstitucion['cod_mun'];
+								  		}
+								  		$condicionMunicipioInstitucion = " AND CodigoDANE = $codigoMunicipio ";	
+								  	}
+
+									$consulta = " select DISTINCT codigoDANE, ciudad from ubicacion where 1=1 and ETC = 0 $condicionMunicipioInstitucion ";
 									$DepartamentoOperador = $_SESSION['p_CodDepartamento'];
 									if($DepartamentoOperador != ''){
 									  $consulta = $consulta." and CodigoDANE like '$DepartamentoOperador%' ";
@@ -207,7 +233,7 @@
 									if($resultado->num_rows >= 1){
 									  while($row = $resultado->fetch_assoc()) {
 								  ?>
-									  <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($municipio_defecto["CodMunicipio"] == $row["codigoDANE"])){ echo " selected "; }?>><?= $row["ciudad"]; ?></option>
+									  <option value="<?= $row["codigoDANE"]; ?>" <?php if((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] == $row["codigoDANE"]) || ($municipio_defecto["CodMunicipio"] == $row["codigoDANE"]) || isset($codigoMunicipio)){ echo " selected "; }?>><?= $row["ciudad"]; ?></option>
 								  <?php
 									  }// Termina el while
 									}//Termina el if que valida que si existan resultados
@@ -218,14 +244,42 @@
 							<div class="col-sm-4 col-md-3 form-group">
 								<label for="institucion">Institución</label>
 								<select class="form-control" name="institucion" id="institucion">
-								  <option value="">Todas</option>
-								  <?php
+									<?php if ($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7"): ?>
+										<option value="">Todas</option>
+									<?php endif ?>
+		  
+								  	<?php
+								  	$condicionRector = '';
+								  	$codigoInstitucion;
 									if ((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ) || $municipio_defecto["CodMunicipio"] != "") {
+										// INICIO CODIGO VISTA RECTOR
+										if ($_SESSION['perfil'] == '6' && $_SESSION['num_doc'] != "" ) {
+											$consultaInstitucion = "SELECT codigo_inst FROM instituciones WHERE cc_rector = " .$_SESSION['num_doc']. " LIMIT 1;";
+											// echo $consultaInstitucion;
+											$respuestaInstitucion = $Link->query($consultaInstitucion) or die ('Error al consultar la institución' . mysqli_error($Link));
+											if ($respuestaInstitucion->num_rows > 0) {
+												$dataInstitucion = $respuestaInstitucion->fetch_assoc();
+												$codigoInstitucion = $dataInstitucion['codigo_inst'];	
+											}
+											$condicionRector = " AND s.cod_inst = $codigoInstitucion ";		
+										}
+										if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != "") {
+											$documentoCoordinador = $_SESSION['num_doc'];
+											$consultaInstitucion = "SELECT i.codigo_inst FROM instituciones i LEFT JOIN sedes$periodoActual s ON s.cod_inst = i.codigo_inst WHERE s.id_coordinador = $documentoCoordinador LIMIT 1 ";
+											$respuestaInstitucion = $Link->query($consultaInstitucion) or die ('Error al consultar la institucion. '.mysqli_error($Link));
+											if ($respuestaInstitucion->num_rows > 0) {
+												$dataInstitucion = $respuestaInstitucion->fetch_assoc();
+												$codigoInstitucion = $dataInstitucion['codigo_inst'];
+											}
+											$condicionRector = " AND s.cod_inst = $codigoInstitucion ";
+										}	
+									  
+
 									  $municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"];
 									  $consulta = "SELECT DISTINCT s.cod_inst, s.nom_inst FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE 1=1";
-									  $consulta = $consulta." AND s.cod_mun_sede = '$municipio'";
+									  $consulta = $consulta." AND s.cod_mun_sede = '$municipio' $condicionRector";
 									  $consulta = $consulta." ORDER BY s.nom_inst ASC";
-
+									  // var_dump($consulta);
 									  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 									  if($resultado->num_rows >= 1){
 										while($row = $resultado->fetch_assoc()) {
@@ -246,9 +300,35 @@
 							  <?php
 								$institucion = '';
 								if( isset($_GET['pb_institucion']) && $_GET['pb_institucion'] != '' ){
-								  $institucion = $_GET['pb_institucion'];
+								  	$institucion = $_GET['pb_institucion'];
+								    $condicionCoordinador = '';
+  									if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
+								  		$codigoSedes = "";
+								  		$documentoCoordinador = $_SESSION['num_doc'];
+								  		$consultaCodigoSedes = "SELECT cod_sede FROM sedes$periodoActual WHERE id_coordinador = $documentoCoordinador;";
+										$respuestaCodigoSedes = $Link->query($consultaCodigoSedes) or die('Error al consultar el código de la sede ' . mysqli_error($Link));
+										if ($respuestaCodigoSedes->num_rows > 0) {
+											$codigoInstitucion = '';
+											while ($dataCodigoSedes = $respuestaCodigoSedes->fetch_assoc()) {
+												$codigoSedeRow = $dataCodigoSedes['cod_sede'];
+												$consultaCodigoInstitucion = "SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = $codigoSedeRow;";
+												$respuestaCodigoInstitucion = $Link->query($consultaCodigoInstitucion) or die ('Error al consultar el código de la institución ' . mysqli_error($Link));
+												if ($respuestaCodigoInstitucion->num_rows > 0) {
+													$dataCodigoInstitucion = $respuestaCodigoInstitucion->fetch_assoc();
+													$codigoInstitucionRow = $dataCodigoInstitucion['cod_inst'];
+													if ($codigoInstitucionRow == $codigoInstitucion || $codigoInstitucion == '') {
+														$codigoSedes .= "'$codigoSedeRow'".",";
+														$codigoInstitucion = $codigoInstitucionRow; 
+													}
+												}
+											}
+										}
+										$codigoSedes = substr($codigoSedes, 0 , -1);
+										$condicionCoordinador = " AND s.cod_sede IN ($codigoSedes) ";
+								  	}
+
 								  $consulta = " select distinct s.cod_sede, s.nom_sede from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
-								  $consulta = $consulta."  and s.cod_inst = '$institucion' ";
+								  $consulta = $consulta."  and s.cod_inst = '$institucion' $condicionCoordinador ";
 								  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 								  if($resultado->num_rows >= 1){
 									while($row = $resultado->fetch_assoc()) {
@@ -445,10 +525,32 @@
 			$consulta = $consulta." and s.cod_sede = '".$sede."' ";
 		  }
 
-
-
-
-
+		  if(isset($_GET["pb_sede"]) && $_GET["pb_sede"] == "" ){
+		  	if ($_SESSION['perfil'] == "7") {
+		  		$documentoCoordinador = $_SESSION['num_doc'];
+		  		$codigoSedes = "";
+    			$consultaCodigoSedes = "SELECT cod_sede FROM sedes$periodoActual WHERE id_coordinador = $documentoCoordinador;";
+    			$respuestaCodigoSedes = $Link->query($consultaCodigoSedes) or die('Error al consultar el código de la sede ' . mysqli_error($Link));
+    			if ($respuestaCodigoSedes->num_rows > 0) {
+      				$codigoInstitucion = '';
+      				while ($dataCodigoSedes = $respuestaCodigoSedes->fetch_assoc()) {
+       	 				$codigoSedeRow = $dataCodigoSedes['cod_sede'];
+        				$consultaCodigoInstitucion = "SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = $codigoSedeRow;";
+        				$respuestaCodigoInstitucion = $Link->query($consultaCodigoInstitucion) or die ('Error al consultar el código de la institución ' . mysqli_error($Link));
+        				if ($respuestaCodigoInstitucion->num_rows > 0) {
+          					$dataCodigoInstitucion = $respuestaCodigoInstitucion->fetch_assoc();
+          					$codigoInstitucionRow = $dataCodigoInstitucion['cod_inst'];
+          					if ($codigoInstitucionRow == $codigoInstitucion || $codigoInstitucion == '') {
+            					$codigoSedes .= "'$codigoSedeRow'".",";
+            					$codigoInstitucion = $codigoInstitucionRow; 
+          					}
+        				}
+     	 			}
+    			}
+    			$codigoSedes = substr($codigoSedes, 0 , -1);
+    			$consulta .= " AND s.cod_sede IN ($codigoSedes) ";
+		  	}
+		  }
 
 		  if(isset($_GET["pb_tipoDespacho"]) && $_GET["pb_tipoDespacho"] != "" ){
 			$tipoDespacho = $_GET["pb_tipoDespacho"];
@@ -460,7 +562,7 @@
 			$consulta = $consulta." and s.cod_sede in (select cod_sede from rutasedes where IDRUTA = $ruta)";
 		  }
 
-
+		  // var_dump($consulta);
 		  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 ?>
 
@@ -738,19 +840,26 @@
 
 			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
 			botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
+			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
+				botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
+			<?php endif ?>
 			botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
+			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+				botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
+			<?php endif ?>
 			botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
-			botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
-
+			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+				botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
+			<?php endif ?>
+			
 			// Menu para COVID
 			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()">Entrega Raciones COVID-19 RI</a></li>';
 			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
-
-			botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
-
+			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+				botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
+			<?php endif ?>
+			
 			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
 				botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';
 				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a></li>';

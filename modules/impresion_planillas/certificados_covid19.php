@@ -53,14 +53,26 @@
 					<select class="form-control" name="municipio" id="municipio" required>
 						<option value="">Seleccione uno</option>
 						<?php
-						$consulta = "SELECT DISTINCT codigoDANE, ciudad FROM ubicacion WHERE ETC = 0 ";
+						$condicionMunicipioRector = '';
+						if ($_SESSION['perfil'] == "6") {
+							$documentoRector = $_SESSION['num_doc'];
+							$codigoMunicipio;
+							$consultaMunicipioInstitucion = "SELECT cod_mun FROM instituciones WHERE cc_rector = $documentoRector ";
+							$respuestaMunicipioInstitucion = $Link->query($consultaMunicipioInstitucion) or die ('Error al consultar el municipio de la institución ' . mysqli_error($Link));
+							if ($respuestaMunicipioInstitucion->num_rows > 0) {
+								$dataMunicipioInstitucion = $respuestaMunicipioInstitucion->fetch_assoc();
+								$codigoMunicipio = $dataMunicipioInstitucion['cod_mun'];
+							}
+							$condicionMunicipioRector =" AND CodigoDANE = $codigoMunicipio ";
+						}
+						$consulta = "SELECT DISTINCT codigoDANE, ciudad FROM ubicacion WHERE ETC = 0 $condicionMunicipioRector ";
 
 						$DepartamentoOperador = $_SESSION['p_CodDepartamento'];
 						if($DepartamentoOperador != ''){
 							$consulta = $consulta." and CodigoDANE like '$DepartamentoOperador%' ";
 						}
 						$consulta = $consulta." order by ciudad asc ";
-						//echo $consulta;
+						// echo $consulta;
 						$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 						if($resultado->num_rows >= 1){
 							while($row = $resultado->fetch_assoc()) { ?>
@@ -75,7 +87,10 @@
 				<div class="col-sm-4 form-group">
 					<label for="institucion">Institución</label>
 					<select class="form-control" name="institucion" id="institucion">
-						<option value="">Todas</option>
+						
+							<option value="">Todas</option>
+						
+						
 						<?php
 						if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $codigoDANE["CodMunicipio"]){
 							$municipio = $_GET["pb_municipio"] = $codigoDANE["CodMunicipio"];

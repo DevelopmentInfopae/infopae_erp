@@ -2,6 +2,7 @@
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 require '../../../vendor/autoload.php';
+ini_set('memory_limit','6000M');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -20,6 +21,45 @@ use PhpOffice\PhpSpreadsheet\Style\Supervisor;
 $periodo_actual = $_SESSION["periodoActual"];
 $mes = ($_GET["mes"] != "") ? $Link->real_escape_string($_GET["mes"]) : "";
 $semana = ($_GET["semana"] != "") ? $Link->real_escape_string($_GET["semana"]) : "";
+
+// Se crea una condicion para el caso que el usuario sea de tipo rector
+$condicionRector = "";
+if ($_SESSION['perfil'] == "6" && $_SESSION['num_doc'] != '') {
+	$consultaInstituciones = "SELECT codigo_inst FROM instituciones WHERE cc_rector = " . $_SESSION['num_doc'] . " LIMIT 1;";
+	$respuestaInstituciones = $Link->query($consultaInstituciones) or die ('Error al consultar la institución' . mysqli_error($Link));
+	if ($respuestaInstituciones->num_rows > 0) {
+		$dataInstituciones = $respuestaInstituciones->fetch_assoc();
+		$codigoIntitucion = $dataInstituciones['codigo_inst'];
+	}
+	$condicionRector = " WHERE enr.cod_inst = " . $codigoIntitucion . " ";
+}
+
+// Se crea una condicion para el caso que el usuario sea de tipo coordinador
+$condicionCoordinador = '';
+if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
+  	$codigoSedes = "";
+  	$documentoCoordinador = $_SESSION['num_doc'];
+  	$consultaCodigoSedes = "SELECT cod_sede FROM sedes$periodo_actual WHERE id_coordinador = $documentoCoordinador;";
+	$respuestaCodigoSedes = $Link->query($consultaCodigoSedes) or die('Error al consultar el código de la sede ' . mysqli_error($Link));
+	if ($respuestaCodigoSedes->num_rows > 0) {
+		$codigoInstitucion = '';
+		while ($dataCodigoSedes = $respuestaCodigoSedes->fetch_assoc()) {
+			$codigoSedeRow = $dataCodigoSedes['cod_sede'];
+			$consultaCodigoInstitucion = "SELECT cod_inst FROM sedes$periodo_actual WHERE cod_sede = $codigoSedeRow;";
+			$respuestaCodigoInstitucion = $Link->query($consultaCodigoInstitucion) or die ('Error al consultar el código de la institución ' . mysqli_error($Link));
+			if ($respuestaCodigoInstitucion->num_rows > 0) {
+				$dataCodigoInstitucion = $respuestaCodigoInstitucion->fetch_assoc();
+				$codigoInstitucionRow = $dataCodigoInstitucion['cod_inst'];
+				if ($codigoInstitucionRow == $codigoInstitucion || $codigoInstitucion == '') {
+					$codigoSedes .= "'$codigoSedeRow'".",";
+					$codigoInstitucion = $codigoInstitucionRow; 
+				}
+			}
+		}
+	}
+	$codigoSedes = substr($codigoSedes, 0 , -1);
+	$condicionCoordinador = " WHERE enr.cod_sede IN ($codigoSedes) ";
+}
 
 $consulta_planilla_dias = "SELECT * FROM planilla_dias WHERE mes = '$mes';";
 $respuesta_planilla_dias = $Link->query($consulta_planilla_dias) or die("Error al consulta planilla_dias: ". $Link->error);
@@ -84,8 +124,10 @@ $titulos_columnas = [
 $fila = 0;
 $cadena_dias_entregas = "";
 foreach ($planilla_dias as $clave_dia => $valor_dia) {
-	if ($fila > 2) {
+	if ($fila > 4) {
+		// exit(var_dump($clave_dia));
 		foreach ($planilla_semanas as $clave_semana => $valor_semana) {
+			// var_dump($valor_semana['dia']);	
 			if ($valor_dia == $valor_semana["dia"]) {
 				$titulos_columnas[] = $clave_dia;
 				$cadena_dias_entregas .= "IF($clave_dia = 1, 'X', '') AS $clave_dia ,";
@@ -118,7 +160,7 @@ $consulta_entregas = "SELECT
 	etn.DESCRIPCION AS nombre_etnia,
 	pvc.nombre AS nombre_poblacion_victima,
 	sed.cod_mun_sede AS codigo_municipio,
-	ubi.Departamento AS nombre_municipio,
+	ubi.Ciudad AS nombre_municipio,
 	ubi.region as region,
 	if(enr.zona_res_est = 1, 'Rural', 'Urbano') AS residencia,
 	enr.cod_inst AS codigo_institucion,
@@ -139,8 +181,9 @@ LEFT JOIN etnia etn ON etn.id = enr.etnia
 LEFT JOIN pobvictima pvc ON pvc.id = enr.cod_pob_victima
 INNER JOIN sedes$periodo_actual sed ON sed.cod_sede = enr.cod_sede
 INNER JOIN jornada jor ON jor.id = enr.cod_jorn_est
-INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede;";
+INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede $condicionRector $condicionCoordinador ";
 
+// exit(var_dump($consulta_entregas));
 $respuesta_entregas = $Link->query($consulta_entregas) or die("Error al consultar prioriozacion$semana: ". $Link->error);
 if ($respuesta_entregas->num_rows > 0){
 	$excel = new Spreadsheet();
@@ -176,7 +219,7 @@ if ($respuesta_entregas->num_rows > 0){
 	foreach(range("A", "Z") as $columna2) {
     	$archivo->getColumnDimension($columna2)->setAutoSize(true);
 	}
-
+// exit();
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 	header('Content-Disposition: attachment;filename=Entregas.xlsx');
 

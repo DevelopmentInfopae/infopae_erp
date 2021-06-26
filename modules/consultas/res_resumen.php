@@ -5,12 +5,40 @@
 </div>
 
 <?php
+// exit(var_dump($_POST));
   $vsql = "SELECT cod_sede AS cod_sede, u.Ciudad, nom_inst, nom_sede, SUM(er.D1) as D1, SUM(er.D2) as D2, SUM(er.D3) as D3, SUM(er.D4) as D4, SUM(er.D5) as D5, SUM(er.D6) as D6, SUM(er.D7) as D7, SUM(er.D8) as D8, SUM(er.D9) as D9, SUM(er.D10) as D10, SUM(er.D11) as D11, SUM(er.D12) as D12, SUM(er.D13) as D13, SUM(er.D14) as D14, SUM(er.D15) as D15, SUM(er.D16) as D16, SUM(er.D17) as D17, SUM(er.D18) as D18, SUM(er.D19) as D19, SUM(er.D20) as D20,
 SUM(er.D21) as D21, SUM(er.D22) as D22, SUM(er.D1 + er.D2 + er.D3 + er.D4 + er.D5 + er.D6 + er.D7 + er.D8 + er.D9 + er.D10 + er.D11 + er.D12 + er.D13 + er.D14 + er.D15 + er.D16 + er.D17 + er.D18 + er.D19 + er.D20 + er.D21 + er.D22 ) AS total
           FROM
 	          entregas_res_".$mes.$annoinicial." er
           LEFT JOIN ubicacion u ON u.CodigoDANE = er.cod_mun_sede AND u.ETC = 0
           WHERE 1 = 1";
+  
+  if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != "") {
+    if ($sede == '') {
+      $codigoSedes = "";
+      $documentoCoordinador = $_SESSION['num_doc'];
+      $consultaCodigoSedes = "SELECT cod_sede FROM sedes$periodoActual WHERE id_coordinador = $documentoCoordinador;";
+      $respuestaCodigoSedes = $Link->query($consultaCodigoSedes) or die('Error al consultar el código de la sede ' . mysqli_error($Link));
+      if ($respuestaCodigoSedes->num_rows > 0) {
+        $codigoInstitucion = '';
+        while ($dataCodigoSedes = $respuestaCodigoSedes->fetch_assoc()) {
+          $codigoSedeRow = $dataCodigoSedes['cod_sede'];
+          $consultaCodigoInstitucion = "SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = $codigoSedeRow;";
+          $respuestaCodigoInstitucion = $Link->query($consultaCodigoInstitucion) or die ('Error al consultar el código de la institución ' . mysqli_error($Link));
+          if ($respuestaCodigoInstitucion->num_rows > 0) {
+            $dataCodigoInstitucion = $respuestaCodigoInstitucion->fetch_assoc();
+            $codigoInstitucionRow = $dataCodigoInstitucion['cod_inst'];
+            if ($codigoInstitucionRow == $codigoInstitucion || $codigoInstitucion == '') {
+              $codigoSedes .= "'$codigoSedeRow'".",";
+              $codigoInstitucion = $codigoInstitucionRow; 
+            }
+          }
+        }
+      }
+      $codigoSedes = substr($codigoSedes, 0 , -1);
+      $vsql .= " AND er.cod_sede IN ($codigoSedes) ";
+    }
+  }        
 
   if($municipio != ''){ $vsql = $vsql." AND er.cod_mun_sede = '$municipio' "; }
   if($institucion != ''){ $vsql = $vsql." AND er.cod_inst = '$institucion' "; }

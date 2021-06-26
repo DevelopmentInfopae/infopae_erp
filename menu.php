@@ -13,19 +13,18 @@
 <?php } ?>
 
 
-
-
-
-
-
-
-
-
-
+<!-- ******************************************** SECCION MENU VISTA RECTOR ********************************************************************* -->
 
 <?php if($_SESSION['perfil'] == 6){ ?>
-	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/institucion.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Mi institución</span></a> </li>
-
+	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/institucion.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Mi Institución</span></a> 
+	</li>
+	<li>
+		<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+			<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
+		</ul>
+	</li>
 	<li>
 		<a href="#"><i class="fas fa-book-open"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
@@ -35,10 +34,65 @@
 				<ul class="nav nav-third-level">
 					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/control_asistencia.php">Control de asistencia</a> </li>
 					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados.php">Certificados por institución</a> </li>
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/certificados_covid19.php">Certificado Rector COVID19</a> </li>
 				</ul>
 			</li>
 		</ul>
 	</li>
+	<li>
+		<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+			<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
+		</ul>
+	</li>
+	<li>
+		<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level">
+			<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
+		</ul>
+	</li>
+	<li><a href="<?= $baseUrl; ?>/modules/fqrs/index.php"><i class="fa fa-question"></i> <span class="nav-label">FQRS</span></a></li>
+<?php } ?>
+
+
+<!-- ******************************************** SECCION MENU VISTA COORDINADOR ************************************************************** -->
+
+<?php if($_SESSION['perfil'] == 7){ ?>
+	<li> <a href="<?php echo $baseUrl; ?>/modules/instituciones/institucion.php"><i class="fa fa-graduation-cap"></i> <span class="nav-label">Mis Sedes </span></a> 
+	</li>
+	<li>
+		<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+			<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
+		</ul>
+	</li>
+	<li>
+		<a href="#"><i class="fas fa-book-open"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+			<li><a href="<?php echo $baseUrl; ?>/modules/consultas/consulta_resumida_entregas.php">Consulta resumida</a></li>
+			<li>
+				<a href="#" id="damian">Impresión de planillas<span class="fa arrow"></span></a>
+				<ul class="nav nav-third-level">
+					<li> <a href="<?php echo $baseUrl; ?>/modules/impresion_planillas/control_asistencia.php">Control de asistencia</a> </li>
+
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
+			<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
+		</ul>
+	</li>
+	<li>
+		<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level">
+			<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
+		</ul>
+	</li>
+	<li><a href="<?= $baseUrl; ?>/modules/fqrs/index.php"><i class="fa fa-question"></i> <span class="nav-label">FQRS</span></a></li>
 <?php } ?>
 
 
@@ -227,7 +281,7 @@
 		</li>
 	<?php } ?>
 
-		<li><a href="<?= $baseUrl; ?>/modules/nomina"><i class="fas fa-hand-holding-usd"></i>  Nómina</a></li>
+		<li><a href="<?= $baseUrl; ?>/modules/nomina"><i class="fas fa-hand-holding-usd"></i> <span class="nav-label"> Nómina </span></a></li>
 		<li><a href="<?= $baseUrl; ?>/modules/fqrs/index.php"><i class="fa fa-question"></i> <span class="nav-label">FQRS</span></a></li>
 
 	<li>
@@ -253,7 +307,7 @@
 
 
 
-<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 || $_SESSION['perfil'] == 5 || $_SESSION['perfil'] == 6 ){ ?>
+<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 8 || $_SESSION['perfil'] == 3 || $_SESSION['perfil'] == 5 || $_SESSION['perfil'] == 6 || $_SESSION['perfil'] == 7){ ?>
 	<li>
 		<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Asistencias</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
@@ -264,7 +318,7 @@
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/consumo.php"> Registro de consumos </a> </li>
 			<?php } ?>
 
-			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5  || $_SESSION['perfil'] == 6 ){ ?>
+			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5  || $_SESSION['perfil'] == 6 || $_SESSION['perfil'] == 7 ){ ?>
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/informe_asistencia.php"> Informe de asistencia </a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/registro_biometrico.php"> Registro Biometrico </a> </li>
 			<?php } ?>

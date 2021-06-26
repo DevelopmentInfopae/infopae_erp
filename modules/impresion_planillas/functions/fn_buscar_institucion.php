@@ -1,4 +1,6 @@
-<option value="">Todas</option>
+
+<option value="">Seleccione</option>
+
 <?php
 include '../../../config.php';
 require_once '../../../db/conexion.php';
@@ -11,32 +13,25 @@ $tipo = (isset($_POST['tipo']) && $_POST['tipo'] != '') ? mysqli_real_escape_str
 $periodoActual = $_SESSION['periodoActual'];
 $consulta = " select distinct s.cod_inst, s.nom_inst from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede 
 
-
 LEFT JOIN instituciones i ON s.cod_inst = i.codigo_inst
-
 
 where s.cod_mun_sede = '$municipio' ";
 
-if($_SESSION['perfil'] == 6){
-       
+if($_SESSION['perfil'] == "6"){  
 	$rectorDocumento = $_SESSION['num_doc'];
 	$consulta .= " and cc_rector = $rectorDocumento ";
+}
 
-
-
-	}
-
-
+if ($_SESSION['perfil'] == "7") {
+	$documentoCoordinador = $_SESSION['num_doc'];
+	$consulta .= " AND id_coordinador = $documentoCoordinador ";
+}
 
 
 if($tipo != ''){
 	$consulta .=" AND sc.$tipo > 0 ";
 }
 $consulta .= " ORDER BY s.nom_inst";
-
-
-
-
 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){

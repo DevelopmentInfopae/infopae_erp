@@ -1,4 +1,5 @@
 <?php
+ini_set('memory_limit','6000M');
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 require '../../../vendor/autoload.php';
@@ -17,9 +18,49 @@ use PhpOffice\PhpSpreadsheet\Style\Protection;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Style\Supervisor;
 
-$periodo_actual = $_SESSION["periodoActual"];
+$periodoActual = $_SESSION["periodoActual"];
 $mes = ($_GET["mes"] != "") ? $Link->real_escape_string($_GET["mes"]) : "";
 $semana = ($_GET["semana"] != "") ? $Link->real_escape_string($_GET["semana"]) : "";
+
+// seccion para exportar solo la informacion de la institucion si el usuario es rector
+$condicionRector = '';
+if ($_SESSION['perfil'] == '6' && $_SESSION['num_doc'] != '') {
+	$consultaInstitucion = "SELECT codigo_inst FROM instituciones WHERE cc_rector = " .$_SESSION['num_doc'] .";";
+	$respuestaInstitucion = $Link->query($consultaInstitucion) or die ('Error al consultar la institucion ' . mysqli_error($Link));
+	if ($respuestaInstitucion->num_rows > 0) {
+		$dataInstitucion = $respuestaInstitucion->fetch_assoc();
+		$codigoInstitucion = $dataInstitucion['codigo_inst'];
+	}
+	$condicionRector = " WHERE foc.cod_inst = $codigoInstitucion ";
+}
+
+$condicionCoordinador = '';
+if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
+  	$codigoSedes = "";
+  	$documentoCoordinador = $_SESSION['num_doc'];
+  	$consultaCodigoSedes = "SELECT cod_sede FROM sedes$periodoActual WHERE id_coordinador = $documentoCoordinador;";
+	$respuestaCodigoSedes = $Link->query($consultaCodigoSedes) or die('Error al consultar el código de la sede ' . mysqli_error($Link));
+	if ($respuestaCodigoSedes->num_rows > 0) {
+		$codigoInstitucion = '';
+		while ($dataCodigoSedes = $respuestaCodigoSedes->fetch_assoc()) {
+			$codigoSedeRow = $dataCodigoSedes['cod_sede'];
+			$consultaCodigoInstitucion = "SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = $codigoSedeRow;";
+			$respuestaCodigoInstitucion = $Link->query($consultaCodigoInstitucion) or die ('Error al consultar el código de la institución ' . mysqli_error($Link));
+			if ($respuestaCodigoInstitucion->num_rows > 0) {
+				$dataCodigoInstitucion = $respuestaCodigoInstitucion->fetch_assoc();
+				$codigoInstitucionRow = $dataCodigoInstitucion['cod_inst'];
+				if ($codigoInstitucionRow == $codigoInstitucion || $codigoInstitucion == '') {
+					$codigoSedes .= "'$codigoSedeRow'".",";
+					$codigoInstitucion = $codigoInstitucionRow; 
+				}
+			}
+		}
+	}
+	$codigoSedes = substr($codigoSedes, 0 , -1);
+	$condicionCoordinador = " WHERE foc.cod_sede IN ($codigoSedes) ";
+}
+
+
 
 $consulta_focalizacion = "SELECT
 	tdc.Abreviatura AS abreviatura,
@@ -56,9 +97,10 @@ LEFT JOIN estrato est ON est.id = foc.cod_estrato
 LEFT JOIN discapacidades dis ON dis.id = foc.cod_discap
 LEFT JOIN etnia etn ON etn.id = foc.etnia
 LEFT JOIN pobvictima pvc ON pvc.id = foc.cod_pob_victima
-LEFT JOIN sedes$periodo_actual sed ON sed.cod_sede = foc.cod_sede
+LEFT JOIN sedes$periodoActual sed ON sed.cod_sede = foc.cod_sede
 LEFT JOIN jornada jor ON jor.id = foc.cod_jorn_est
-LEFT JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede;";
+LEFT JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede $condicionRector $condicionCoordinador ";
+// exit(var_dump($consulta_focalizacion));
 $respuesta_focalizacion = $Link->query($consulta_focalizacion) or die("Error al consultar focalizacion$semana: ". $Link->error);
 
 if ($respuesta_focalizacion->num_rows > 0){

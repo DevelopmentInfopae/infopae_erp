@@ -14,9 +14,9 @@ $opciones = "<option value=\"\">Seleccione uno</option>";
 
 
 
-
+$periodoActual = $_SESSION['periodoActual'];
 $DepartamentoOperador = $_SESSION['p_CodDepartamento'];
-
+$condicionCoordinador = '';
 
 
 $consulta = " select distinct codigodane, ciudad from ubicacion ";
@@ -37,12 +37,21 @@ if($_SESSION['perfil'] == 6){
  }
 
 
-
+if ($_SESSION['perfil'] == "7") {
+  $documentoCoordinador = $_SESSION['num_doc'];
+  $consultaCodigoMunicipio = "SELECT i.cod_mun FROM instituciones i INNER JOIN sedes$periodoActual s ON s.cod_inst = i.codigo_inst WHERE s.id_coordinador = $documentoCoordinador LIMIT 1 ";
+  $respuestaCodigoMunicipio = $Link->query($consultaCodigoMunicipio) or die ('Error al consultar el codigo del municipio ' . mysqli_error($Link));
+  if ($respuestaCodigoMunicipio->num_rows > 0) {
+    $dataCodigoMunicipio = $respuestaCodigoMunicipio->fetch_assoc();
+    $codigoMunicipio = $dataCodigoMunicipio['cod_mun'];
+  }
+  $condicionCoordinador = " AND CodigoDANE = $codigoMunicipio ";
+}
 
 
 
 if($DepartamentoOperador != ''){
-  $consulta = $consulta." AND codigodane LIKE '$DepartamentoOperador%' ";
+  $consulta = $consulta." AND codigodane LIKE '$DepartamentoOperador%' $condicionCoordinador ";
 }
 $consulta = $consulta." order by ciudad asc ";
 

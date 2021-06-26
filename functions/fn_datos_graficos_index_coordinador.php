@@ -1,13 +1,7 @@
-<?php
+<?php 
 include '../config.php';
 require_once '../db/conexion.php';
-
-$actualizar = 0;
-$timeOption = 1;
-$codInst = 0;
-
-// timeOption 1 = semana
-// timeOption 2 = mes
+date_default_timezone_set('America/Bogota'); 
 
 if(isset($_POST['actualizar']) && $_POST['actualizar'] != ''){
 	$actualizar = $_POST['actualizar'];
@@ -17,10 +11,11 @@ if(isset($_POST['timeOption']) && $_POST['timeOption'] != ''){
 	$timeOption = $_POST['timeOption'];
 }
 
-if(isset($_POST['codInst']) && $_POST['codInst'] != ''){
-	$codInst = $_POST['codInst'];
+if(isset($_POST['codSede']) && $_POST['codSede'] != ''){
+	$codSede = $_POST['codSede'];
 }
 
+$codSede = substr($codSede, 0, -1);
 $barras = array();
 $barrasTotalesMes = array();
 $barrasTotalesSemana = array();
@@ -30,7 +25,6 @@ $entregasTotalesSemana = array();
 $labelsSemanas = array();
 $bandera = 0;
 
-date_default_timezone_set('America/Bogota'); 
 $mesActual = date('m'); 
 $diaActual = date('d'); 
 $indiceDiaActual = 0; 
@@ -45,13 +39,12 @@ if($resultado->num_rows >= 1){
 		} 
 	} 
 } 
-//var_dump($indiceDiaActual); 
 
 // La bandera la usamos para detectar si se encoontro el archivo de la consulta y en caso de que no, se actualiza los array y se genera el archivo.
 if($timeOption == 1){
- 	$rutaArchivo = "arrays_rector_semana_$codInst.txt";
+ 	$rutaArchivo = "arrays_coordinador_semana_$codSede.txt";
 }else{
-	$rutaArchivo = "arrays_rector_mes_$codInst.txt";
+	$rutaArchivo = "arrays_coordinador_mes_$codSede.txt";
 }
 
 if($actualizar == 0){
@@ -75,15 +68,16 @@ if($actualizar == 0){
 if($actualizar == 1 || $bandera > 0){
 	$periodoActual = $_SESSION['periodoActual'];
 	$consulta = "select ps.dia, ps.semana, ps.mes, ps.ano, 
-				(select sum(sc.num_est_focalizados) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_inst = '$codInst') as cantidad, 
-				(select sum(sc.APS) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_inst = '$codInst') as aps,
-				(select sum(sc.CAJMRI) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_inst = '$codInst') as cajmri,
-				(select sum(sc.CAJTRI) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_inst = '$codInst') as cajtri,
-				(select sum(sc.CAJMPS) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_inst = '$codInst') as cajmps,
-				(select sum(sc.CAJTPS) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_inst = '$codInst') as cajtps,
-				(select sum(sc.RPC) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_inst = '$codInst') as rpc
+				(select sum(sc.num_est_focalizados) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_sede IN ($codSede)) as cantidad, 
+				(select sum(sc.APS) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_sede IN ($codSede)) as aps,
+				(select sum(sc.CAJMRI) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_sede IN ($codSede)) as cajmri,
+				(select sum(sc.CAJTRI) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_sede IN ($codSede)) as cajtri,
+				(select sum(sc.CAJMPS) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_sede IN ($codSede)) as cajmps,
+				(select sum(sc.CAJTPS) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_sede IN ($codSede)) as cajtps,
+				(select sum(sc.RPC) from sedes_cobertura sc where sc.semana = ps.semana and sc.cod_sede IN ($codSede)) as rpc
 				from planilla_semanas ps 
-				ORDER BY ps.mes, ps.semana, ps.dia";		
+				ORDER BY ps.mes, ps.semana, ps.dia";
+				// exit(var_dump($consulta));		
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	$cantidadTotal = 0;
 	$mesInicial = 0;
@@ -178,13 +172,7 @@ if($actualizar == 1 || $bandera > 0){
 	$barrasTotalesMes[] = $aux;
 
 
-
-
-
-
 	// ENTREGAS !!!!!!!!!!!!!!!!
-
-
 
 	// Se va a recoger la información de planilla_dias para saber en que días se hicieron las entregas.
 	$meses = array();
@@ -210,8 +198,6 @@ if($actualizar == 1 || $bandera > 0){
 		}
 	}
 
-	// var_dump($meses);
-	// var_dump($mesesEntregados);
 
 	$indiceDia = 1;
 	$indiceSemana = 1;
@@ -223,7 +209,6 @@ if($actualizar == 1 || $bandera > 0){
 	$cantidadTotalMes = 0;
 	$cantidadTotalSemana = 0;
 	$consulta = " select * from planilla_semanas ps where mes <= $mesesEntregados ORDER BY ps.mes, ps.semana, ps.dia;";
-	//echo "<br><br>".$consulta."<br><br>";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
 		while($row = $resultado->fetch_assoc()){
@@ -251,7 +236,6 @@ if($actualizar == 1 || $bandera > 0){
 			}
 
 			if($buscarEntregas == 1){
-				// Cuando hay cambio de mes invocamos las entragas realizadas durante el mes
 				$consulta2 = " select ";
 				for ($i = 1 ; $i <= 31 ; $i++) {
 					if($i > 1){
@@ -268,11 +252,11 @@ if($actualizar == 1 || $bandera > 0){
 					}
 				}
 				$consulta2.= " from entregas_res_$mes$periodoActual ";
-				if($codInst != 0){
-					$consulta2 .= " where cod_inst = '$codInst' ";
+				if($codSede != ''){
+					$consulta2 .= " where cod_sede IN ($codSede) ";
 				}
-				// echo "<br><br>".$consulta2."<br><br>";
-				$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
+				// exit(var_dump($consulta2));
+				$resultado2 = $Link->query($consulta2) or die ('Error al consultar las entregas. '. mysqli_error($Link));
 				if($resultado2->num_rows >= 1){
 					$entregasMes = $resultado2->fetch_assoc();
 				}
@@ -281,7 +265,7 @@ if($actualizar == 1 || $bandera > 0){
 
 			// Como ya se hizo la búsqueda de las entregas para los días del mes empezamos con la captura de los totales
 			// para las semanas y los meses.
-			//var_dump($entregasMes);
+			// var_dump($entregasMes);
 			if($mes >= $mesActual){ 
 				if($indiceDia <= $indiceDiaActual){
 					$aux = 'D'.$indiceDia; 
@@ -302,15 +286,12 @@ if($actualizar == 1 || $bandera > 0){
 	$entregasTotalesSemana[] = array(intval($indiceSemana),intval($cantidadTotalSemana));
 
 
-
-
 	// Calculo de impresión de totales, se va a generar la cadena html para mostrar los totales.
-
 
     // Se va a recoger la información de planilla_dias para saber en que días se hicieron las entregas.
     $meses = array();
     $consulta = " select * from planilla_dias ";
-    $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+    $resultado = $Link->query($consulta) or die ('Error al consultar los meses. '. mysqli_error($Link));
     if($resultado->num_rows >= 1){
         while($row = $resultado->fetch_assoc()){
             $meses[] = $row;
@@ -335,12 +316,9 @@ if($actualizar == 1 || $bandera > 0){
 
     // Array de lo que se deberia ENTREGAR
     $consulta = "select sum(sc.APS) as APS, sum(sc.CAJMRI) as CAJMRI, sum(sc.CAJTRI) as CAJTRI, sum(sc.CAJMPS) as CAJMPS, sum(sc.CAJTPS) as CAJTPS, sum(sc.RPC) as RPC from planilla_semanas ps left join sedes_cobertura sc on ps.semana = sc.semana ";
-    if($codInst != 0){
-		$consulta .= " where sc.cod_inst = '$codInst' ";
+    if($codSede != ''){
+		$consulta .= " where sc.cod_sede IN ($codSede) ";
 	}
-
-
-
 
     $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
     if($resultado->num_rows >= 1){
@@ -375,11 +353,11 @@ if($actualizar == 1 || $bandera > 0){
 						$consulta .= "D$iD"; 
 					} 
 					$consulta .= " ) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual "; 
-					if($codInst != 0){ $consulta .= " where cod_inst = '$codInst' "; }
+					if($codSede != ''){ $consulta .= " where cod_sede IN ($codSede) "; }
 					$consulta .= " group by tipo_complem ";
 				}else{ 
 					$consulta .= " select sum(D1+D2+D3+D4+D5+D6+D7+D8+D9+D10+D11+D12+D13+D14+D15+D16+D17+D18+D19+D20+D21+D22+D23+D24+D25+D26+D27+D28+D29+D30+D31) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual ";
-					if($codInst != 0){ $consulta .= " where cod_inst = '$codInst' "; }
+					if($codSede != ''){ $consulta .= " where cod_sede IN ($codSede) "; }
 					$consulta .= " group by tipo_complem ";
 				}
 
@@ -391,7 +369,7 @@ if($actualizar == 1 || $bandera > 0){
 
 
 		if($consulta != ''){
-			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+			$resultado = $Link->query($consulta) or die ('Error al consultar las entregas. '. mysqli_error($Link));
 			if($resultado->num_rows >= 1){
 				while($row = $resultado->fetch_assoc()){
 					if(isset($totalesEntregados[$row['complemento']]) && !empty($totalesEntregados[$row['complemento']])){
@@ -504,11 +482,11 @@ if($actualizar == 1 || $bandera > 0){
 	}
 
 	// Escribiendo archivo plano
-	$file = fopen("arrays_rector_semana_$codInst.txt", "w");
+	$file = fopen("arrays_coordinador_semana_$codSede.txt", "w");
 	fwrite($file, json_encode(array("barras"=>$barrasTotalesSemana, "entregas"=>$entregasTotalesSemana, "labels"=>$labelsSemanas, "totales"=>$htmlTotales)) . PHP_EOL);
 	fclose($file);
 
-	$file = fopen("arrays_rector_mes_$codInst.txt", "w");
+	$file = fopen("arrays_coordinador_mes_$codSede.txt", "w");
 	fwrite($file, json_encode(array("barras"=>$barrasTotalesMes, "entregas"=>$entregasTotalesMes, "labels"=>$labelsSemanas, "totales"=>$htmlTotales)) . PHP_EOL);
 	fclose($file);
 }

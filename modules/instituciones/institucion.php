@@ -3,7 +3,7 @@
   set_time_limit (0);
   ini_set('memory_limit','6000M');
 
-  if($_SESSION['perfil'] != 6){
+  if($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7"){
     if(!isset($_REQUEST['codInst'])){ header('Location: instituciones.php'); }
   }
 
@@ -13,10 +13,18 @@
   if($_SESSION['perfil'] == 6){
     $rectorDocumento = $_SESSION['num_doc'];
     $consulta = " SELECT instituciones.*, ubicacion.Ciudad as municipio from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento limit 1  ";
-  }else{
+  }
+  // Quien consulta es el coordinador
+  else if($_SESSION['perfil'] == 7){
+    $documentoCoordinador = $_SESSION['num_doc'];
+    $consulta = "SELECT i.*, u.Ciudad as municipio FROM instituciones i LEFT JOIN ubicacion u ON i.cod_mun = u.codigoDANE LEFT JOIN sedes$periodoActual s ON s.cod_inst = i.codigo_inst WHERE s.id_coordinador = $documentoCoordinador LIMIT 1 ";
+  }
+  // Quien consulta no es ni rector ni coordinador y viene el codigo de institucion de instituciones
+  else{
   	$codInst = $_REQUEST['codInst'];
   	$consulta = " SELECT instituciones.*, ubicacion.Ciudad as municipio from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where codigo_inst = $codInst ";
   }
+  // exit(var_dump($consulta));
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
   if($resultado->num_rows >= 1){
@@ -39,7 +47,7 @@
           <li>
             <a href="<?php echo $baseUrl; ?>">Inicio</a>
           </li>
-					<?php   if($_SESSION['perfil'] != 6){ ?>
+					<?php   if($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7"){ ?>
           <li>
             <a href="<?php echo $baseUrl . '/modules/instituciones/instituciones.php'; ?>">Instituciones</a>
           </li>
@@ -59,7 +67,7 @@
           </button>
           <ul class="dropdown-menu pull-right keep-open-on-click" aria-labelledby="dropdownMenu1">
             <li>
-              <a href="#" data-codigoinstitucion="<?php echo $_POST["codInst"]; ?>" name="editarInstitucion" id="editarInstitucion"><i class="fa fa-pencil"></i> Editar </a>
+              <a href="#" class="editarInstitucion" data-codigoinstitucion = <?php echo $_POST["codInst"]; ?>><i class="fas fa-pencil-alt"></i> Editar </a>
             </li>
             <li>
               <a href="#" class="verDispositivos" data-codigoinstitucion="<?php echo $_POST["codInst"]; ?>"><i class="fa fa-eye fa-lg"></i> Ver dispositivos</a>
@@ -84,6 +92,9 @@
   </div>
   <?php } ?>
 </div>
+<!-- contenedor de modal para crear una nueva institucion -->
+<div id="contenedor_editar_institucion"></div>
+
 <!-- /.row wrapper de la cabecera de la seccion -->
 
 <div class="wrapper wrapper-content  animated fadeInRight">
@@ -107,9 +118,13 @@
                         </thead>
                         <tbody>
                           <?php
-                            $periodoActual = $_SESSION['periodoActual'];
-                            $consulta = " SELECT sed.id, sed.nom_sede, sed.cod_sede, sed.estado AS estadoSede, usu.nombre AS nombreCoordinador, jor.nombre AS nombreJornada, tipo_validacion AS tipoValidacion FROM sedes$periodoActual sed LEFT JOIN usuarios usu ON usu.id = sed.id_coordinador LEFT JOIN jornada jor ON jor.id = sed.jornada WHERE cod_inst = $institucionCodigo ORDER BY nom_sede ASC";
-                            $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+                            if ($_SESSION['perfil'] == "7") {
+                              $consulta = " SELECT sed.id, sed.nom_sede, sed.cod_sede, sed.estado AS estadoSede, usu.nombre AS nombreCoordinador, jor.nombre AS nombreJornada, tipo_validacion AS tipoValidacion FROM sedes$periodoActual sed LEFT JOIN usuarios usu ON usu.num_doc = sed.id_coordinador LEFT JOIN jornada jor ON jor.id = sed.jornada WHERE cod_inst = $institucionCodigo AND sed.id_coordinador = $documentoCoordinador ORDER BY nom_sede ASC";
+                            }else {
+                              $consulta = " SELECT sed.id, sed.nom_sede, sed.cod_sede, sed.estado AS estadoSede, usu.nombre AS nombreCoordinador, jor.nombre AS nombreJornada, tipo_validacion AS tipoValidacion FROM sedes$periodoActual sed LEFT JOIN usuarios usu ON usu.num_doc = sed.id_coordinador LEFT JOIN jornada jor ON jor.id = sed.jornada WHERE cod_inst = $institucionCodigo ORDER BY nom_sede ASC";
+                            }
+                            // exit(var_dump($consulta));
+                            $resultado = $Link->query($consulta) or die ('Error al consultar las sedes educativas. '. mysqli_error($Link));
                             if($resultado->num_rows >= 1){
                               while($row = $resultado->fetch_assoc()) { ?>
                                 <tr codsede="<?php echo $row["cod_sede"]; ?>" nomsede="<?php echo $row["nom_sede"]; ?>">
@@ -127,7 +142,7 @@
                                         </button>
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropDownMenu1">
                                           <li>
-                                            <a href="#" class="editarSede" data-codigosede="<?php echo $row["cod_sede"]; ?>"><i class="fa fa-pencil fa-lg"></i> Editar</a>
+                                            <a href="#" class="editarSede" data-codigosede="<?php echo $row["cod_sede"]; ?>"><i class="fas fa-pencil-alt fa-lg"></i> Editar</a>
                                           </li>
                                           <li>
                                             <a href="#" class="verDispositivosSede" data-codigosede="<?php echo $row["cod_sede"]; ?>"><i class="fa fa-eye fa-lg"></i> Ver Dispositivos</a>
@@ -142,7 +157,7 @@
                                           <li>
                                             <a href="#">
                                               Estado: &nbsp;
-                                              <input type="checkbox" id="inputEstadoSede" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24" <?php if($row["estadoSede"] == 1){ echo "checked"; } ?> onchange="confirmarCambioEstadoSede(<?php echo $row["id"]; ?>, this.checked);">
+                                              <input type="checkbox" id="inputEstadoSede<?php echo $row["id"]; ?>" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24" <?php if($row["estadoSede"] == 1){ echo "checked"; } ?> onchange="confirmarCambioEstadoSede(<?php echo $row["id"]; ?>, <?php echo $row["estadoSede"]; ?> );">
                                             </a>
                                           </li>
                                         </ul>
@@ -158,13 +173,14 @@
                         </tbody>
                       <tfoot>
                         <tr>
-                            <th>Nombre de la sede</th>
-                            <th>Nombre coordinador</th>
-                            <th>Jornada</th>
-                            <th>Tipo validación</th>
-                            <?php if($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-                            <th>Acciones</th>
-                            <?php } ?>
+                          <th>Código sede</th>
+                          <th>Nombre de la sede</th>
+                          <th>Nombre coordinador</th>
+                          <th>Jornada</th>
+                          <th>Tipo validación</th>
+                          <?php if($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+                          <th>Acciones</th>
+                          <?php } ?>
                         </tr>
                       </tfoot>
                       </table>
@@ -173,6 +189,8 @@
           </div>
           <div class="col-sm-4">
             <div class="ibox ">
+              <!-- validamos que no sea coordinador para mostrar la informacion del usuario -->
+              <?php if ($_SESSION['perfil'] != "7"): ?>
               <div class="ibox-content">
                 <?php
                 // Consulta para buscar los datos del Rector
@@ -235,36 +253,119 @@
                         ?>
                         </ul>
       							  <?php } ?>
+                      <?php if( $institucionTel != '' || $institucionCorreo != '' || $institucionCodigoDane != '' || $institucionMunicipio != ''){ ?>
+                        <p><strong>Datos de la institución:</strong></p>
+                      <?php } ?>
 
-                                    <?php if( $institucionTel != '' || $institucionCorreo != '' || $institucionCodigoDane != '' || $institucionMunicipio != ''){ ?>
-                                        <p><strong>Datos de la institución:</strong></p>
-                                    <?php } ?>
+                      <?php if( $institucionCodigoDane != ''){ ?>
+                         <p> <strong>Codigo DANE:</strong> <?php echo $institucionCodigoDane; ?> </p>
+                      <?php } ?>
 
+                      <?php if( $institucionMunicipio != ''){ ?>
+                        <p> <strong>Municipio:</strong> <?php echo $institucionMunicipio; ?> </p>
+                      <?php } ?>
+                                    
+                      <?php if( $institucionTel != ''){ ?>
+                        <p> <strong>Tel:</strong> <?php echo $institucionTel; ?> </p>
+                      <?php } ?>
 
+                      <?php if( $institucionCorreo != ''){ ?>
+                        <p> <strong>Correo:</strong> <a href="mailto:<?php echo $institucionCorreo; ?>"><?php echo $institucionCorreo; ?></a> </p>
+                      <?php } ?>
 
-
-
-                                    <?php if( $institucionCodigoDane != ''){ ?>
-                                        <p> <strong>Codigo DANE:</strong> <?php echo $institucionCodigoDane; ?> </p>
-                                    <?php } ?>
-                                    <?php if( $institucionMunicipio != ''){ ?>
-                                        <p> <strong>Municipio:</strong> <?php echo $institucionMunicipio; ?> </p>
-                                    <?php } ?>
-                                    <?php if( $institucionTel != ''){ ?>
-                                        <p> <strong>Tel:</strong> <?php echo $institucionTel; ?> </p>
-                                    <?php } ?>
-                                    <?php if( $institucionCorreo != ''){ ?>
-                                        <p> <strong>Correo:</strong> <a href="mailto:<?php echo $institucionCorreo; ?>"><?php echo $institucionCorreo; ?></a> </p>
-                                    <?php } ?>
-
-
-
-                              </div>
-                              </div>
-                          </div>
                       </div>
-                  </div><!-- /.ibox-content -->
-              </div>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- /.ibox-content -->
+            <?php endif ?>
+
+            <?php if ($_SESSION['perfil'] == "7"): ?>
+              <div class="ibox-content">
+                <?php
+                  $consulta = " SELECT * FROM usuarios WHERE num_doc = $documentoCoordinador LIMIT 1 ";
+                  $resultado = $Link->query($consulta) or die ('Error al consultar los datos de el coordinador. '. mysqli_error($Link));
+                    if($resultado->num_rows >= 1){
+                      $row = $resultado->fetch_assoc();
+                      $coordinadorNombre = $row['nombre'];
+                      $coordinadorFoto = $row['foto'];
+                      $coordinadorCorreo = $row['email'];
+                      $coordinadorUsuario = $row['id'];
+                    }
+                  
+                ?>
+                <div class="tab-content">
+                  <div id="contact-1" class="tab-pane active">
+                    <div class="row m-b-lg">
+                      <div class="col-lg-12 text-center">
+                        <h2><strong>Coordinador:</strong> <?= $coordinadorNombre; ?></h2>
+                        <div class="m-b-sm">
+                          <?php
+                          $aux = $coordinadorFoto;
+                          $aux = substr( $aux, 5);
+                          $foto = $baseUrl.$aux;
+                          if(!is_url_exist($foto)){
+                            $foto = $baseUrl."/img/no_image48.jpg";
+                          }
+                          ?>
+                          <img alt="image" class="img-circle" src="<?= $foto; ?>" style="width: 62px">
+                        </div>
+                        <a href="mailto<?= $coordinadorCorreo; ?>"><?= $coordinadorCorreo; ?></a>
+                      </div>
+                    </div>
+                    <div class="client-detail">
+                      <div class="full-height-scroll">
+                        <strong>Últimos Accesos</strong>
+                        <ul class="list-group clear-list">
+                        <?php
+                          // Consulta para buscar los ultimos accesos del Rector
+                          $consulta = " SELECT * FROM bitacora WHERE usuario = $coordinadorUsuario AND tipo_accion = 1 order by fecha desc limit 5  ";
+                          $resultado = $Link->query($consulta);
+                          if($resultado->num_rows >= 1){
+                            $auxPrimer = 0;
+                            while ($row = $resultado->fetch_assoc()) {
+                              $aux = $row['fecha'];
+                              $aux = date("h:i:s A d/m/Y", strtotime($aux));
+                        ?>
+                              <li class="list-group-item <?php if($auxPrimer == 0){ ?>fist-item<?php } ?>">
+                                <span class="pull-right"> <?= $aux; ?> </span>
+                                Inició sesión
+                              </li>
+                        <?php
+                              $auxPrimer++;
+                            }
+                          }
+                        ?>
+                        </ul>
+
+                      <?php if( $institucionTel != '' || $coordinadorCorreo != '' || $institucionCodigoDane != '' || $institucionMunicipio != ''){ ?>
+                        <p><strong>Datos:</strong></p>
+                      <?php } ?>
+
+                      <?php if( $institucionCodigoDane != ''){ ?>
+                         <p> <strong>Codigo DANE:</strong> <?= $institucionCodigoDane; ?> </p>
+                      <?php } ?>
+
+                      <?php if( $institucionMunicipio != ''){ ?>
+                        <p> <strong>Municipio:</strong> <?= $institucionMunicipio; ?> </p>
+                      <?php } ?>
+                                    
+                      <?php if( $institucionTel != ''){ ?>
+                        <p> <strong>Tel:</strong> <?= $institucionTel; ?> </p>
+                      <?php } ?>
+
+                      <?php if( $coordinadorCorreo != ''){ ?>
+                        <p> <strong>Correo:</strong> <a href="mailto:<?= $coordinadorCorreo; ?>"><?php echo $coordinadorCorreo; ?></a> </p>
+                      <?php } ?>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- /.ibox-content -->
+            <?php endif ?>
+
+            </div>
           </div>
       </div>
   </div>
@@ -283,7 +384,7 @@
         <div class="modal-footer">
           <input type="hidden" id="codigoACambiar">
           <input type="hidden" id="estadoACambiar">
-          <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstado();">Cancelar</button>
+          <button type="button" class="btn btn-danger btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstado();">Cancelar</button>
           <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="cambiarEstado();">Aceptar</button>
         </div>
       </div>
@@ -302,9 +403,9 @@
             <p class="text-center"></p>
         </div>
         <div class="modal-footer">
-          <input type="hidden" id="codigoACambiar">
-          <input type="hidden" id="estadoACambiar">
-          <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstadoSede();">Cancelar</button>
+          <input type="hidden" id="codigoACambiarSede">
+          <input type="hidden" id="estadoACambiarSede">
+          <button type="button" class="btn btn-danger btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstadoSede();">Cancelar</button>
           <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="cambiarEstadoSede();">Aceptar</button>
         </div>
       </div>
@@ -325,7 +426,8 @@
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
     <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-
+    <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+    
     <!-- Section Scripts -->
     <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/institucion.js"></script>
 
@@ -354,7 +456,7 @@
               sPrevious: 'Anterior'
             }
           },
-          buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel'} ]
+          buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3, 4] } } ]
         });
 
         var botonAcciones = '<div class="dropdown pull-right">'+

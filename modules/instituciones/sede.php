@@ -64,15 +64,18 @@
       <li>
           <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
+      <?php if ($_SESSION['perfil'] != 6 && $_SESSION['perfil'] != 7): ?> 
       <li>
       	<a href="<?php echo $baseUrl . '/modules/instituciones/sedes.php'; ?>">Sedes</a>
       </li>
+      <?php endif ?>
       <li class="active">
           <strong><?php echo $titulo; ?></strong>
       </li>
     </ol>
   </div>
 
+  <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
   <div class="col-lg-4">
     <div class="title-action">
 	  	<div class="btn-group">
@@ -80,10 +83,9 @@
           <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">
             Acciones <span class="caret"></span>
           </button>
-          <ul class="dropdown-menu pull-right keep-open-on-click" aria-labelledby="dropdownMenu1">
-        	<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+          	<ul class="dropdown-menu pull-right keep-open-on-click" aria-labelledby="dropdownMenu1">
 	            <li>
-	              <a href="#" data-codigosede="<?php echo $codSede; ?>" name="editarSede" id="editarSede"><i class="fa fa-pencil"></i> Editar </a>
+	              <a href="#" data-codigosede="<?php echo $codSede; ?>" name="editarSede" id="editarSede"><i class="fas fa-pencil-alt fa-lg"></i> Editar </a>
 	            </li>
 	            <li>
 	              <a href="#" class="verDispositivosSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-eye fa-lg"></i> Ver Dispositivos</a>
@@ -94,11 +96,10 @@
 	            <li>
 	              <a href="#" class="verTitularesSede" data-codigosede="<?php echo$codSede; ?>"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>
 	            </li>
-          	<?php } ?>
-            <li>
+	             <li>
 				<a href="sede_archivos.php?sede=<?php echo $codSede;  ?>"><i class="fa fa-cloud"></i> Ver Archivos </a>
-            </li>
-          <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+            	</li>
+          	
             <li class="divider"></li>
             <li >
               <a href="#">
@@ -106,12 +107,12 @@
                 <input type="checkbox" id="inputEstadoSede<?php echo $id; ?>" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="70" data-height="24" <?php if($estado == 1){ echo "checked"; } ?> onchange="confirmarCambioEstado(<?php echo $id; ?>, this.checked);">
               </a>
             </li>
-          <?php } ?>
           </ul>
         </div>
       </div>
     </div>
   </div>
+  <?php } ?>
 </div>
 
 <div class="wrapper wrapper-content  animated fadeInRight">
@@ -755,7 +756,7 @@
       <div class="modal-footer">
         <input type="hidden" id="codigoACambiar">
         <input type="hidden" id="estadoACambiar">
-        <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstado();">Cancelar</button>
+        <button type="button" class="btn btn-danger btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstado();">Cancelar</button>
         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="cambiarEstado();">Aceptar</button>
       </div>
     </div>
@@ -778,6 +779,9 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+
 
 <!-- Page-Level Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede.js"></script>

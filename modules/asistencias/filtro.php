@@ -18,7 +18,7 @@
 								<div class="row">
 
 
-									<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0 || $_SESSION["perfil"] == 5 || $_SESSION["perfil"] == 6 || $_SESSION["perfil"] == 3) { ?>
+									<?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0 || $_SESSION["perfil"] == 5 || $_SESSION["perfil"] == 6 || $_SESSION["perfil"] == 3 || $_SESSION['perfil'] == 7) { ?>
 										
 										<div class="col-sm-4 form-group">
 											<label for="mes">Mes</label>
@@ -48,7 +48,7 @@
 
 										<div class="col-sm-4 form-group">
 											<label for="dia">Día</label>
-									<select class="form-control" name="dia" id="dia" <?php if(!isset($diaNoObligatorio) || $diaNoObligatorio != 1){ ?>required<?php } ?>>
+											<select class="form-control" name="dia" id="dia" <?php if(!isset($diaNoObligatorio) || $diaNoObligatorio != 1){ ?>required<?php } ?>>
 												<option value="">Seleccione uno</option>									
 											</select>
 										</div>
@@ -92,7 +92,7 @@
 
 
 
-										<?php if($_SESSION["perfil"] != 5 && $_SESSION["perfil"] != 6){ ?>
+										<?php if($_SESSION["perfil"] != 5 && $_SESSION["perfil"] != 6 && $_SESSION['perfil'] != 7){ ?>
 											<div class="col-sm-4 form-group">
 												<label for="nivel">Nivel</label>
 												<select class="form-control" name="nivel" id="nivel" required>

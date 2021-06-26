@@ -33,9 +33,10 @@
 				    INNER JOIN tipo_casosfqrs tc ON tc.ID = f.tipo_caso
 				    INNER JOIN tipo_personafqrs tp ON tp.ID = f.tipo_persona
 				    INNER JOIN tipodocumento td ON td.id = f.tipo_doc
-				    INNER JOIN sedes20 s ON s.cod_sede = f.cod_sede
+				    INNER JOIN sedes".$_SESSION['periodoActual']." s ON s.cod_sede = f.cod_sede
 				    LEFT JOIN usuarios us ON us.id = f.id_responsable
 				WHERE f.ID = '". $id_fqrs ."'";
+    // exit(var_dump($consulta));            
 	$resultado = $Link->query($consulta) or die ("Error al consultar datos del fqrs: ". mysqli_error($Link));
 	if ($resultado->num_rows > 0) {
 		$caso = $resultado->fetch_object();
@@ -58,7 +59,7 @@
     </ol>
   </div>
   <div class="col-lg-4">
-  	<?php if ($caso->id_estado == 0) { ?>
+  	<?php if ($caso->id_estado == 0 && ($_SESSION['perfil'] == "0" || $_SESSION['perfil'] == "1")) { ?>
 	    <div class="title-action">
 	      <a href="#" class="btn btn-primary" id="boton_editar_caso"><i class="fa fa-check "></i> Guardar </a>
 	    </div>
@@ -228,7 +229,7 @@
     </div>
   </div>
 
-	<?php if ($caso->id_estado == 0) { ?>
+<?php if ($caso->id_estado == 0 && ($_SESSION['perfil'] == "0" || $_SESSION['perfil'] == "1")) { ?>
   <div class="row">
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
