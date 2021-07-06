@@ -183,6 +183,17 @@
 					<label for="fecha_hasta">Fecha hasta certificado</label>
 					<input class="form-control" type="date" name="fecha_hasta" id="fecha_hasta">
 				</div>
+				<div class="col-sm-4 form-group">
+					<div class="i-checks">
+						<label for="tipoFormato"> Versión Formato </label> <br>
+						<label>
+                      		<input type="radio" value="1" name="tipoPlanilla" checked="true" required="required"> Certificado V1  &nbsp;&nbsp;&nbsp;
+                    	</label>
+                    	<label>
+                      		<input type="radio" value="2" name="tipoPlanilla"  required="required"> Certificado V2  &nbsp;&nbsp;&nbsp;
+                    	</label>
+					</div>	
+				</div>
 			</div>
 
 			<div class="row">
@@ -192,14 +203,6 @@
 				</div>
 			</div>
 
-
-
-
-			<div class="row">
-			  <div class="col-sm-12">
-				<h3>Tipo de certificado</h3>
-			  </div>
-			</div><!-- /.row -->
 
 		
 			 
@@ -223,6 +226,9 @@
 					 <button class="btn btn-primary" type="button" id="btnBuscar" name="btnBuscar" value="1" ><strong>Buscar</strong></button>
 				</div>
 			</div>
+
+
+
 
 <?php
 	//var_dump($_GET);
@@ -658,6 +664,19 @@
   <input type="hidden" id="pb_ruta" name="pb_ruta" value="">
   <input type="hidden" id="pb_btnBuscar" name="pb_btnBuscar" value="">
 </form>
+
+<form method="post" name="formPlanillas2" id="formPlanillas2" action="certificado_rector_covid19_v2.php" target="_blank" >
+  	<input type="hidden" name="municipio" id="municipio">
+  	<input type="hidden" name="institucion" id="institucion">
+  	<input type="hidden" name="mes" id="mes">
+  	<input type="hidden" name="semana_inicial" id="semana_inicial">
+  	<input type="hidden" name="semana_final" id="semana_final">
+  	<input type="hidden" name="imprimirMes" id="imprimirMes">
+  	<input type="hidden" name="fecha_desde" id="fecha_desde">
+  	<input type="hidden" name="fecha_hasta" id="fecha_hasta">
+  	<input type="hidden" name="observaciones" id="observaciones">
+</form>
+
 
 </body>
 </html>
