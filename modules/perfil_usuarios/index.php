@@ -27,6 +27,9 @@
 							<tr>
 								<th>Identificador</th>
 								<th>Nombre</th>
+								<?php if ($_SESSION['perfil'] == "1" || $_SESSION['perfil'] == "0"): ?>
+									<th>Acciones</th>
+								<?php endif ?>	
 							</tr>
 						</thead>
 						<tbody>
@@ -39,6 +42,23 @@
 							<tr>
 								<td><?php echo $dataRespuesta['id']; ?></td>
 								<td><?php echo $dataRespuesta['nombre'] ?></td>
+								<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+									<td>
+										<div class="btn-group">
+                           					<div class="dropdown">
+                            					<button class="btn btn-primary btn-sm" type="button" id="accionesProducto" data-toggle="dropdown" aria-haspopup="true">
+                             					 Acciones
+                             	 					<span class="caret"></span>
+                            					</button>
+                           	 					<ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
+													<?php if ($dataRespuesta['id'] != "0"): ?>
+														<li><a onclick="editarPermisos(<?= $dataRespuesta['id']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
+													<?php endif ?>
+                            					</ul>
+                          					</div>
+                        				</div>
+									</td>
+								<?php } ?>	
 							</tr>
 							<?php
 								}
@@ -49,6 +69,9 @@
 							<tr>
 								<th>Identificador</th>
 								<th>Nombre</th>
+								<?php if ($_SESSION['perfil'] == "1" || $_SESSION['perfil'] == "0"): ?>
+									<th>Acciones</th>
+								<?php endif ?>								
 							</tr>
 						</tfoot>
 					</table>
@@ -57,6 +80,10 @@
 		</div> <!-- col-lg-12 -->
 	</div> <!-- row -->
 </div> <!-- wrapper -->
+
+<form method="Post" id="editarPerfilPermisos" action="editarPermisos.php" target="_blank" style="display: none;">
+  <input type="hidden" name="id" id="id">
+</form>
 
 <?php include '../../footer.php'; ?>
 

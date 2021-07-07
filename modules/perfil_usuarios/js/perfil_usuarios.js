@@ -33,3 +33,9 @@ $(document).ready(function () {
   		$('.containerBtn').html(botonAcciones);
 
 });
+
+function editarPermisos(id){
+  $('#editarPerfilPermisos #id').val(id);
+  $('#editarPerfilPermisos').submit();
+}
+
