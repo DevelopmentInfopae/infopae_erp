@@ -44,17 +44,20 @@
                   <select class="form-control" name="municipio" id="municipio" required="required">
                     <option value="">Seleccione uno</option>
                     <?php
+                      $limit = "";
                       $consulta = "SELECT DISTINCT CodigoDANE, ciudad FROM ubicacion WHERE ETC = 0";
                       if($_SESSION['perfil'] == 6){
                         $consulta = "SELECT ubicacion.ciudad as ciudad, ubicacion.CodigoDANE from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento";
+                        $limit = " LIMIT 1 ";
                        }
                        if ($_SESSION['perfil'] == "7") {
                         $documentoCoordinador = $_SESSION['num_doc'];
                         $consulta = "SELECT u.Ciudad as ciudad, u.CodigoDANE FROM instituciones i LEFT JOIN ubicacion u ON u.CodigoDANE = i.cod_mun LEFT JOIN sedes$periodoActual s ON s.cod_inst = i.codigo_inst WHERE s.id_coordinador = $documentoCoordinador ";
+                        $limit = " LIMIT 1 ";
                        }
 
-                      if($DepartamentoOperador != '') { $consulta = $consulta." and CodigoDANE like '$DepartamentoOperador%' "; }
-                      $consulta = $consulta." order by ciudad asc LIMIT 1";
+                      if($_SESSION['p_Municipio'] != '') { $consulta = $consulta." and CodigoDANE = '".$_SESSION['p_Municipio']."' "; }
+                      $consulta = $consulta." order by ciudad asc $limit ";
                       // var_dump($consulta);
 
                       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
