@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+  
+  if ($permisos['entrega_complementos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   require_once '../../db/conexion.php';
 
   set_time_limit (0);

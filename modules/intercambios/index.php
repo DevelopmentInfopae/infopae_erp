@@ -1,5 +1,10 @@
 		<?php
 			include '../../header.php';
+			 if ($permisos['novedades'] == "0") {
+    			?><script type="text/javascript">
+      				window.open('<?= $baseUrl ?>', '_self');
+    			</script>
+  			<?php exit();}
 			$titulo = 'Usuarios';
 		?>
 
@@ -76,6 +81,8 @@
 				</div>
 			</div>
 		</div>
+		
+		<input type="hidden" id="opcion" value="<?= $permisos['novedades'] ?>">
 
 		<?php include '../../footer.php'; ?>
 

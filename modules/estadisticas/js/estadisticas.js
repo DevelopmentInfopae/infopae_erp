@@ -110,7 +110,7 @@ function CargarTablas(){
 					    dom : 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons" B>',
 					    buttons : [{extend:'excel', title:'Dispositivos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4]}}],
 					    oLanguage: {
-					      sLengthMenu: 'Mostrando _MENU_ registros por pÁgina',
+					      sLengthMenu: 'Mostrando _MENU_ registros por página',
 					      sZeroRecords: 'No se encontraron registros',
 					      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
 					      sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
@@ -122,8 +122,15 @@ function CargarTablas(){
 					        sNext:     'Siguiente',
 					        sPrevious: 'Anterior'
 					      }
-					    }
-				    });
+					    },
+					error: function(request, status, err) {
+				        if (status == "timeout") {
+				            alert("Su petición demoro mas de lo permitido");
+				        } else {
+				            alert("error: " + request + status + err);
+				        }
+				    }
+					});
 
 					markersJ = [];
 					cityAreaData = [];

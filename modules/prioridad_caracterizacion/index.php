@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+        window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $titulo = 'Prioridad Caracterización'; 
 ?>
 
@@ -99,7 +106,7 @@
 		$('.bajarPrioriodadCaracterizacion').on('click', function(){bajarPrioriodadCaracterizacion($(this).data('idprioridadcaracterizacion'))});
 
 		$('#box-table').DataTable({
-		buttons: [ {extend: 'excel', title: 'Prioridad Caracterización', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2 ,3, 4] } } ],
+		buttons: [ {extend: 'excel', title: 'Prioridad Caracterización', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2 ,3] } } ],
     	dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"clear"><"html5buttons"B>',
     	order: [ 1, 'desc'],
     	oLanguage: {

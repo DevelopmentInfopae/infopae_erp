@@ -1,5 +1,12 @@
 	<?php
 	  include '../../header.php';
+
+	  if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    	?><script type="text/javascript">
+      		window.open('<?= $baseUrl ?>', '_self');
+    	</script>
+  	  <?php exit(); }
+
 	  $titulo = 'Dias de contrato';
 
 	  $arrayDiasContrato = [];
@@ -25,9 +32,11 @@
 	    </ol>
 	  </div><!-- /.col -->
 	  <div class="col-lg-4">
-	    <div class="title-action">
-	      <a href="#" id="confirmarGuardarRegistrosMes" class="btn btn-primary"><i class="fa fa-check"></i> Guardar </a>
-	    </div><!-- /.title-action -->
+	  	<?php if ($_SESSION['perfil'] == "0" || $permisos['configuracion'] == "2"): ?>
+	  		<div class="title-action">
+	      		<a href="#" id="confirmarGuardarRegistrosMes" class="btn btn-primary"><i class="fa fa-check"></i> Guardar </a>
+	    	</div><!-- /.title-action -->
+	  	<?php endif ?>
 	  </div><!-- /.col -->
 	</div><!-- /.row -->
 

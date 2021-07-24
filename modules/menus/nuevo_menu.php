@@ -1,10 +1,17 @@
-<?php 
+<?php
 $titulo = 'Nuevo menú de complementos alimentarios';
-require_once '../../header.php'; 
-
-if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<script>location.href='index.php';</script>"; } 
+require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
+
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 ?>
+
+<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2"): ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
@@ -36,7 +43,7 @@ $periodoActual = $_SESSION['periodoActual'];
         <div class="ibox-content contentBackground">
           <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"><!-- COLLAPSE -->
             <div class="panel panel-default">
-              <div class="panel-heading clearfix" role="tab" id="headingOne"> 
+              <div class="panel-heading clearfix" role="tab" id="headingOne">
                 <h4 class="panel-title"><span class="fa fa-file-text-o"></span>   Datos del menú
                   <a role="button" data-toggle="collapse" data-parent="#accordion" href="#producto" aria-expanded="true" aria-controls="producto" id="verDatosProducto" class="pull-right" style="color: #337ab7;">Editar</a>
                 </h4>
@@ -88,7 +95,7 @@ $periodoActual = $_SESSION['periodoActual'];
                       <label>Grupo Etario</label>
                       <select class="form-control" name="Cod_Grupo_Etario" id="Cod_Grupo_Etario">
                         <option value="">Seleccione...</option>
-                        <?php 
+                        <?php
                         $consultaGrupoEtario = "select * from grupo_etario";
                         $resultadoGrupoEtario = $Link->query($consultaGrupoEtario);
                         if ($resultadoGrupoEtario->num_rows > 0) {
@@ -153,7 +160,7 @@ $periodoActual = $_SESSION['periodoActual'];
             <div class="panel panel-default" id="fichaTecnicaPanel">
               <div class="panel-heading" role="tab" id="headingTwo">
                 <h4 class="panel-title"><span class="fa fa-list-alt"></span> Composición del menú
-                  
+
                   <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#fichaTecnica" aria-expanded="false" aria-controls="fichaTecnica" style="display: none;" id="verFichaTecnica"></a>
                 </h4>
               </div>
@@ -162,6 +169,7 @@ $periodoActual = $_SESSION['periodoActual'];
                   <form class="form" id="formFichaTecnica" method="post">
                     <input type="number" name="idProducto" id="idProducto" style="display: none;">
                     <input type="number" name="IdFT" id="IdFT" style="display: none;">
+                    <input type="number" name="TipoProductoFT" id="TipoProductoFT" style="display: none;">
                     <div class="form-group col-sm-12">
                       <label>Seleccione preparaciones</label>
                       <table class="table" id="tablaProductosFichaTecnicaDet">
@@ -177,7 +185,7 @@ $periodoActual = $_SESSION['periodoActual'];
                         <tbody id="tbodyProductos">
                           <tr class="productoFichaTecnicaDet">
                             <td>
-                              <select class="form-control" name="productoFichaTecnicaDet[1]" id="productoFichaTecnicaDet1" onchange="obtenerUnidadMedidaProducto(this, 1);" required>
+                              <select class="form-control" name="productoFichaTecnicaDet[1]" id="productoFichaTecnicaDet1" onchange="obtenerUnidadMedidaProducto(this, 1);" style="width: 100%;" required>
                                 <option value="">Cargando...</option>
                               </select>
                             </td>
@@ -217,6 +225,8 @@ $periodoActual = $_SESSION['periodoActual'];
               <div id="aportesCalyNut" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                 <div class="panel-body">
                   <form class="form" id="formCalyNut" method="post">
+                    <input type="number" name="idProductoCalyNut" id="idProductoCalyNut" style="display: none;">
+                    <input type="number" name="tipoProductoCalyNut" id="tipoProductoCalyNut" style="display: none;">
                     <div class="form-group col-sm-3">
                       <label>Calorías (Kcal)</label>
                       <input type="number" name="kcalxg" id="kcalxg" class="form-control" min='0' required>
@@ -318,7 +328,11 @@ $periodoActual = $_SESSION['periodoActual'];
     </div><!-- /.col-lg-12 -->
   </div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
-
+<?php else: ?>
+  <script type="text/javascript">
+    location.href="<?php echo $baseUrl ?>";
+  </script>
+<?php endif ?>
 
 <?php include '../../footer.php'; ?>
 
@@ -335,8 +349,9 @@ $periodoActual = $_SESSION['periodoActual'];
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
-<script src="<?php echo $baseUrl; ?>/modules/menus/js/menus.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
 
 <script type="text/javascript">/*
   console.log('Aplicando Data Table');
@@ -360,6 +375,11 @@ $periodoActual = $_SESSION['periodoActual'];
     }
     });*/
     $('#tipoProducto').change();
+
+
+    $('.productoFichaTecnicaDet select').select2({
+      width : "100%"
+    });
 </script>
 
 <?php mysqli_close($Link); ?>

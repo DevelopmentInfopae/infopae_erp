@@ -2,6 +2,12 @@
   include '../../header.php';
   require_once '../../db/conexion.php';
 
+  if ($permisos['despachos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $titulo = "Editar despachos";
   $fecha_despacho = "";
   $periodo_actual = $_SESSION['periodoActual'];
@@ -109,6 +115,8 @@
     $respuesta_tipo_vehiculos = $Link->query($consulta_tipo_vehiculos) or die("Error al consultar los tipo de vehiculos: ". $Link->error);
   }
 ?>
+
+<?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
@@ -312,6 +320,11 @@
     <?php endif ?>
   </div>
 </div>
+<?php else: ?>
+  <script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php endif ?>
 
 <?php include '../../footer.php'; ?>
 

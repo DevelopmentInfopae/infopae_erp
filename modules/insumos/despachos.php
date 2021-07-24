@@ -2,6 +2,13 @@
   $titulo = 'Despachos de insumos';
   $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
   require_once '../../header.php';
+
+  if ($permisos['despachos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $periodoActual = $_SESSION['periodoActual'];
 
   $codigoDANE = $_SESSION['p_Municipio'];
@@ -23,7 +30,7 @@
 	</ol>
   </div>
   <div class="col-lg-4">
-	<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+	<?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2") { ?>
 	  <div class="title-action">
 		<button class="btn btn-primary" onclick="window.location.href = '<?php echo $baseUrl; ?>/modules/insumos/despacho_insumo.php';"><span class="fa fa-plus"></span>  Nuevo</button>
 	  </div>
@@ -482,9 +489,11 @@
 						  '<li><a onclick="informeDespachosVertical2(1);"><span class="fa fa-file-excel-o"></span> Individual Vertical 2</a></li>'+
 						  '<li><a onclick="informeDespachosInstitucion(1);"><span class="fa fa-file-excel-o"></span> Institución </a></li>'+
 						  '<li><a onclick="informeDespachosConsolidado(1);"><span class="fa fa-file-excel-o"></span> Consolidado </a></li>'+
-						  '<li><a onclick="editarDespacho();"><span class="fa fa-pencil"></span> Editar </a></li>'+
-						  '<li><a data-toggle="modal" data-target="#modalEliminarDespachos"><span class="fa fa-trash"></span> Eliminar </a></li>'+
-						  '<li><a onclick=";"><span class="fa fa-clock-o"></span> Lote y Fec. Venc. </a></li>'+
+						  <?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
+						  	'<li><a onclick="editarDespacho();"><span class="fas fa-pencil-alt"></span> Editar </a></li>'+
+						  	'<li><a data-toggle="modal" data-target="#modalEliminarDespachos"><span class="fa fa-trash"></span> Eliminar </a></li>'+
+						  	'<li><a onclick=";"><span class="fa fa-clock-o"></span> Lote y Fec. Venc. </a></li>'+
+						  <?php endif ?>
 						'</ul>'+
 					'</div>';
 

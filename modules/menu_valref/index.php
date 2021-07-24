@@ -2,6 +2,13 @@
 $titulo = 'Aportes calóricos y nutricionales';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
+
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 ?>
 
 <style type="text/css">
@@ -20,7 +27,7 @@ $periodoActual = $_SESSION['periodoActual'];
     </ol>
   </div><!-- /.col -->
   <div class="col-lg-4">
-    <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
+    <?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2"): ?>
       <div class="title-action">
         <button class="btn btn-primary" onclick="window.location.href = 'nuevo_menuvalref.php';"><span class="fa fa-plus"></span>  Nuevo</button>
       </div>
@@ -70,8 +77,8 @@ $periodoActual = $_SESSION['periodoActual'];
                           <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
-                          <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-                            <li><a onclick="editarValRef(<?php echo $valRef['id']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
+                          <?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
+                            <li><a onclick="editarValRef(<?php echo $valRef['id']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
                             <li><a data-toggle="modal" data-target="#modalEliminarAportesCalyNut"  data-idvalref="<?php echo $valRef['id']; ?>"><span class="fa fa-trash"></span>  Eliminar</a></li>
                           <?php } ?>
                            <li><a><span class="fa fa-file-excel-o"></span> Exportar</a></li>

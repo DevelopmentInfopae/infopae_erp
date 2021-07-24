@@ -1,6 +1,14 @@
 <?php
 	include '../../header.php';
+
+	if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    	?><script type="text/javascript">
+        	window.open('<?= $baseUrl ?>', '_self');
+    	</script>
+  	<?php exit(); }
+
 	$titulo = 'Actualizar empleado';
+
 $periodoActual = $_SESSION["periodoActual"];
 
   $idEmpleado = (isset($_POST['idEmpleado']) && $_POST['idEmpleado'] != '') ? mysqli_real_escape_string($Link, $_POST['idEmpleado']) : '';

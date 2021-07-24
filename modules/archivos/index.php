@@ -1,5 +1,12 @@
 <?php
 include '../../header.php';
+
+if ($permisos['archivos_globales'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
@@ -60,7 +67,7 @@ $Link->set_charset("utf8");
 						<div class="hr-line-dashed"></div>
 						
 						
-						<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 ){ ?>
+						<?php if( $_SESSION['perfil'] == "0" || $permisos['archivos_globales'] == "2"){ ?>
 							<a class="btn btn-primary btn-block" href="#subirArchivos">Adjuntar Archivos</a>
 							<div class="hr-line-dashed"></div>
 						<?php } ?>
@@ -85,7 +92,7 @@ $Link->set_charset("utf8");
 							?>
 
 
-							<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 ){ ?>
+							<?php if( $_SESSION['perfil'] == 0 || $permisos['archivos_globales'] == "2"){ ?>
 								<li><a href="#editar-categorias"><i class="fa fa-pencil-square-o"></i> Editar Categorías</a></li>
 							<?php } ?>
 
@@ -196,7 +203,7 @@ $Link->set_charset("utf8");
 													$aux1 = date("h:i:s A d/m/Y", strtotime($aux));
 												?>
 												<small>Agregado: <?php echo $aux1 ?></small>
-												<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 ){ ?>
+												<?php if( $_SESSION['perfil'] == 0 || $permisos['archivos_globales'] == "2"){ ?>
 													<br><a href="" value="<?php echo $row['id']; ?>" class="btnBorrar"><small style="color: #ff7a7a;">Borrar</small></a>
 												<?php } ?>
 											</div>
@@ -237,7 +244,7 @@ $Link->set_charset("utf8");
 
 
 
-<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 ){ ?>
+<?php if( $_SESSION['perfil'] == 0 || $permisos['archivos_globales'] == "2"){ ?>
 	<div class="wrapper wrapper-content">
 		<div class="row">
 			<div class="col-lg-12">

@@ -60,41 +60,43 @@ $row = $resultado->fetch_assoc();
 				</li>
 			</ol>
 		</div>
-		<div class="col-lg-4">
-		  	<div class="title-action">
-				<div class="dropdown pull-right">
-			        <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
-			        </button>
-			        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-			        <?php if ($_SESSION['perfil'] == 1) : ?>
-			          	<li><a  onclick="editarTitular(<?php echo $numDoc; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
-			          	<li><a onclick="exportarTitular(<?php echo $numDoc;?>, <?php echo $semana; ?>)" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
-		          	<?php if ($row['activo'] == 1): ?> 		
-                    	<li data-idtitular="<?php echo $numDoc; ?>" data-accion="1">
-                    		<a onclick="confirmarCambioEstado(<?php echo $numDoc;?>, <?php echo $row['activo']; ?>, <?php echo "$semana"; ?>)"> Estado : 
-                    			<input id="inputEstado<?= $row['num_doc'];?>" class="form-control" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" checked>
-                    		</a>
-                    	</li>
-                   	<?php elseif($row['activo'] == 0): ?>
-                    	<li data-idtitular="<?php echo $numDoc;  ?>" data-accion="0">
-                    		<a onclick="confirmarCambioEstado(<?php echo $numDoc;?>, <?php echo $row['activo']; ?>, <?php echo "$semana"; ?>)"> Estado : 
-                    			<input id="inputEstado<?= $row['num_doc'];?>" class="form-control" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" >
-                    		</a>
-                    	</li>
-                    <?php endif ?>
-			        <?php else: ?>
-			       	  <?php if ($row['activo'] == 1): ?>
-			          	<li><a><span class="fa fa-check"></span> Estado : <b>Activo</b></a></li>
-			          <?php elseif ($row['activo'] == 0): ?>
-			          	<li><a></span> Estado : <b>Inactivo</b></a></li>
-			          <?php endif ?>
-			        <?php endif ?>
-
-			          
-			        </ul>
-		      	</div>
-	 		</div>
-		</div>
+		<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "1" || $permisos['titulares_derecho'] == "2"): ?>
+			<div class="col-lg-4">
+		  		<div class="title-action">
+					<div class="dropdown pull-right">
+			        	<button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
+			        	</button>
+			        	<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
+			        	<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") : ?>
+			          		<li><a  onclick="editarTitular(<?php echo $numDoc; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
+			          	<?php endif ?>	
+			          		<li><a onclick="exportarTitular(<?php echo $numDoc;?>, <?php echo $semana; ?>)" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
+			          	<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2"): ?>
+			          		<?php if ($row['activo'] == 1): ?> 		
+                    			<li data-idtitular="<?php echo $numDoc; ?>" data-accion="1">
+                    				<a onclick="confirmarCambioEstado(<?php echo $numDoc;?>, <?php echo $row['activo']; ?>, <?php echo "$semana"; ?>)"> Estado : 
+                    				<input id="inputEstado<?= $row['num_doc'];?>" class="form-control" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" checked>
+                    				</a>
+                    			</li>
+                   			<?php elseif($row['activo'] == 0): ?>
+                    			<li data-idtitular="<?php echo $numDoc;  ?>" data-accion="0">
+                    				<a onclick="confirmarCambioEstado(<?php echo $numDoc;?>, <?php echo $row['activo']; ?>, <?php echo "$semana"; ?>)"> Estado : 
+                    				<input id="inputEstado<?= $row['num_doc'];?>" class="form-control" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" >
+                    				</a>
+                    			</li>
+			        		<?php else: ?>
+			       	  			<?php if ($row['activo'] == 1): ?>
+			          				<li><a><span class="fa fa-check"></span> Estado : <b>Activo</b></a></li>
+			          			<?php elseif ($row['activo'] == 0): ?>
+			          				<li><a></span> Estado : <b>Inactivo</b></a></li>
+			          			<?php endif ?>
+			        		<?php endif ?>
+			          	<?php endif ?>	
+			        	</ul>
+		      		</div>
+	 			</div>
+			</div>
+		<?php endif ?>
 	</div>
 <div class="wrapper wrapper-content">
 	<div class="row animated fadeInRight">

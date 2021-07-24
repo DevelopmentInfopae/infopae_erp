@@ -3,8 +3,15 @@ $titulo = 'Editar aportes calóricos y nutricionales';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
-if(isset($_POST['idvalref'])){$idvalref = $_POST['idvalref'];} else {echo "<script>alert('Error al obtener datos de aportes calóricos y nutricionales');location.href='index.php';</script>";}
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
 
+if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<script>location.href='$baseUrl';</script>"; } 
+
+if(isset($_POST['idvalref'])){$idvalref = $_POST['idvalref'];} else {echo "<script>alert('Error al obtener datos de aportes calóricos y nutricionales');location.href='index.php';</script>";}
 
 $consulta = "SELECT * FROM menu_valref_nutrientes WHERE id = '".$idvalref."'";
 $resultado = $Link->query($consulta);

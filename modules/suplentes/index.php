@@ -3,6 +3,12 @@
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
+	if ($permisos['titulares_derecho'] == "0") {
+	    ?><script type="text/javascript">
+	      window.open('<?= $baseUrl ?>', '_self');
+	    </script>
+	<?php exit(); }
+
 	$titulo = "Suplentes";
 	$periodoActual = $_SESSION['periodoActual'];
 	$codigo_municipio = $_SESSION["p_Municipio"] ;
@@ -57,7 +63,7 @@
 	<div class="col-lg-4">
     	<div class="title-action">
 	    <?php 
-	    	if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+	    	if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") { ?>
 		    <div class="dropdown pull-right" id="">
 		    	<button class="btn btn-primary btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">
 		    		Acciones <span class="caret"></span>
@@ -288,7 +294,7 @@
 											<th>Grupo</th>
 											<th>Jornada</th>
 											<th>Edad</th>
-											<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
+											<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "1" || $permisos['titulares_derecho'] == "2"): ?>
 												<th>Acciones</th>
 											<?php endif ?>											
 										</tr>
@@ -304,7 +310,7 @@
 												<td><?php echo $suplente['grupo']; ?></td>
 												<td><?php echo $suplente['jornada']; ?></td>
 												<td><?php echo $suplente['edad']; ?></td>
-												<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
+												<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "1" || $permisos['titulares_derecho'] == "2"): ?>
 													<td>
 														<div class="btn-group">
 					                          				<div class="dropdown">
@@ -313,9 +319,9 @@
 					                              					<span class="caret"></span>
 					                            				</button>
 					                            				<ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
-					                           					
-					                           						<li><a onclick="editar_suplente(<?php echo $suplente['id']; ?> , '<?php echo $semanaPos;?>' )"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
-					                           					
+					                           						<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2"): ?>
+					                           							<li><a onclick="editar_suplente(<?php echo $suplente['id']; ?> , '<?php echo $semanaPos;?>' )"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
+					                           						<?php endif ?>
 					                            				</ul>
 					                          				</div>
 					                        			</div>
@@ -480,12 +486,15 @@
       responsive: true,
     }); 
 
-    var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li>'+
-    	<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
+	<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "1" || $permisos['titulares_derecho'] == "2"): ?>
+	  	var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li>'+
+    	<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2"): ?>
     		'<li><a class="subir_suplentes"><span class="fa fa-upload"></span> Importar</a></li>'+
     	<?php endif ?>
     	'</ul></div>';
     $('.containerBtn').html(btnAcciones);
+	<?php endif ?>  
+
 
 </script>
 

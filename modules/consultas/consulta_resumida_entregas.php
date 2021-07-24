@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['entrega_complementos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   set_time_limit (0);
   ini_set('memory_limit','6000M');
   $periodoActual = $_SESSION['periodoActual'];
@@ -358,6 +365,27 @@
                 </select>
               </div>
             </div>
+            <?php if ($_SESSION['p_Municipio'] == "0"): ?>
+              <div class="col-md-4">
+              <div class="form-group">
+                <label for="zona_exportar">Zona</label>
+                <select class="form-control" name="zona_exportar" id="zona_exportar" required>
+                  <option value="">Selección</option>
+                   <?php
+                    $consultaZona = "SELECT distinct Zona_Pae AS zona FROM sedes$periodoActual;";
+                    $resultadoZona = $Link->query($consultaZona);
+                    if($resultadoZona->num_rows > 0){
+                      while($registros = $resultadoZona->fetch_assoc()) {
+                  ?>
+                      <option value="<?= $registros["zona"]; ?>"><?= $registros["zona"]; ?></option>
+                  <?php
+                      }
+                    }
+                  ?>
+                </select>
+              </div>
+            </div>
+            <?php endif ?>
           </div>
         </form>
       </div>

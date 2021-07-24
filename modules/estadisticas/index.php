@@ -1,6 +1,13 @@
 <?php
 $titulo = 'Estadísticas';
 require_once '../../header.php';
+
+if ($permisos['informes'] == "0") {
+  ?><script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 ?>
@@ -194,9 +201,11 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <h3 class="text-center"><strong>Totales Tipo complemento por semana</strong></h3>
               <br>
               <div class="col-sm-4">
-                <table class="table table-bordered" id="complementoSemanas">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="complementoSemanas">
 
-                </table>
+                  </table>
+                </div>
               </div>
               <div class="col-sm-8">
                 <div id="graficaComplementoSemanas"></div>
@@ -207,9 +216,11 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <h3 class="text-center"><strong>Totales semana por tipo complemento alimentario y grupo etario</strong></h3>
               <br>
               <div class="col-sm-4">
-                <table class="table table-bordered" id="complementoEtarios">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="complementoEtarios">
 
-                </table>
+                  </table>
+                </div>
               </div>
               <div class="col-sm-8">
                 <div id="graficaComplementoEtarios"></div>
@@ -220,9 +231,11 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <h3 class="text-center"><strong>Totales por dias tipo complemento alimentario</strong></h3>
               <br>
               <div class="col-sm-4">
-                <table class="table table-bordered" id="complementoDias">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="complementoDias">
 
-                </table>
+                  </table>
+                </div>
               </div>
               <div class="col-sm-8">
                 <div id="graficaComplementoDias"></div>

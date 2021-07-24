@@ -1,5 +1,12 @@
 <?php
 	include '../../header.php';
+
+	if ($permisos['novedades'] == "0") {
+    	?><script type="text/javascript">
+      		window.open('<?= $baseUrl ?>', '_self');
+    	</script>
+  	<?php exit();}
+
 	require_once '../../db/conexion.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
@@ -8,6 +15,8 @@
 	$dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
 	if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
 ?>
+
+<?php if ($_SESSION['perfil'] == "0" || $permisos['novedades'] == "2"): ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
     <div class="col-lg-8">
@@ -269,7 +278,11 @@
     	</div><!-- /.col-lg-12 -->
   	</div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
-
+<?php else: ?>
+	<script type="text/javascript">
+      	window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php endif ?>
 <div class="modal fade" id="myModal" role="dialog">
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">

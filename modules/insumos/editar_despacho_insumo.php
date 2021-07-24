@@ -3,6 +3,13 @@
 
 $titulo = 'Editar despacho';
 require_once '../../header.php';
+
+if ($permisos['despachos'] == "0") {
+  ?><script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 
@@ -28,6 +35,8 @@ if ($resDatosDespacho->num_rows > 0) {
   echo $consDatosDespacho;
 }
 ?>
+
+<?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
@@ -336,7 +345,11 @@ if ($resDatosDespacho->num_rows > 0) {
    </div>
  </div>
 </div>
-
+<?php else: ?>
+  <script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php endif ?>
 
 <?php include '../../footer.php'; ?>
 

@@ -2,7 +2,15 @@
 $titulo = 'Editar titular de derecho';
 require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
-if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
+
+if ($permisos['titulares_derecho'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
+if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") {
+
 ?>
 <style type="text/css">
   .wizard .content{
@@ -43,15 +51,16 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
 
-          <?php if (isset($_POST['num_doc_editar'])) {
-
+          <?php 
+          if (isset($_POST['num_doc_editar'])) {
+            $semanaEditar = $_POST['semana_editar'];
             $num_doc = $_POST['num_doc_editar'];
             $semanas = [];
-            $consultarFocalizacion = "SELECT table_name AS tabla FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name like 'focalizacion%' ";
-            $resultadoFocalizacion = $Link->query($consultarFocalizacion);
-            if ($resultadoFocalizacion->num_rows > 0) {
-                while ($focalizacion = $resultadoFocalizacion->fetch_assoc()) {
-                  $semanas[] = $focalizacion['tabla'];
+            $consultarSemanas = "SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES = (SELECT DISTINCT(MES) FROM planilla_semanas WHERE SEMANA = $semanaEditar)";
+            $resultadoSemanas = $Link->query($consultarSemanas);
+            if ($resultadoSemanas->num_rows > 0) {
+                while ($dataSemanas = $resultadoSemanas->fetch_assoc()) {
+                  $semanas[] = "focalizacion".$dataSemanas['semana'];
                  }
             }
 
@@ -149,7 +158,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                 </div>
                 <div class="form-group col-sm-3">
                   <label>Fecha de nacimiento</label>
-                  <input type="date" name="fecha_nac" class="form-control" max="<?php echo date('Y-m-d') ?>" value="<?php echo $datosTitular['fecha_nac'] ?>" required>
+                  <input type="date" name="fecha_nac" class="form-control" min="<?php $month = date('m'); $day = date('d'); $year = date('Y'); echo ($year-18).'-'.$month.'-'.$day;?>" max="<?php  echo ($year-3).'-'.$month.'-'.$day; ?>" value="<?php echo $datosTitular['fecha_nac'] ?>" required>
                   <label for="fecha_nac" class="error"></label>
                 </div>
                 <?php
@@ -252,7 +261,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
 
                 <div class="form-group col-sm-3">
                   <label>Documento acudiente</label>
-                  <input type="text" name="doc_acudiente" id="doc_acudiente" class="form-control"  value="<?php echo $datosTitular['doc_acudiente'] ?>" required>
+                  <input type="text" name="doc_acudiente" id="doc_acudiente" class="form-control" onchange="validaCaracteres()" value="<?php echo $datosTitular['doc_acudiente'] ?>" required>
                   <label for="doc_acudiente" class="error"></label>
                 </div>
 
@@ -264,7 +273,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
 
                 <div class="form-group col-sm-3">
                   <label>Parentesco acudiente</label>
-                  <input type="text" name="parantesco_acudiente" id="parantesco_acudiente" class="form-control"  value="<?php echo $datosTitular['parantesco_acudiente'] ?>" required>
+                  <input type="text" name="parantesco_acudiente" id="parantesco_acudiente" class="form-control"  value="<?php echo $datosTitular['parentesco_acudiente'] ?>" required>
                   <label for="parantesco_acudiente" class="error"></label>
                 </div>
               </section>

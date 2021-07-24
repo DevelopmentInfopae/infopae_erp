@@ -4,6 +4,13 @@ if (!isset($_POST['codigoinsumover'])) { echo "<script>location.href='index.php'
 
 $titulo = 'Ver insumo';
 require_once '../../header.php';
+
+if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+  ?><script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 
 $codigoinsumo = $_POST['codigoinsumover'];

@@ -1,6 +1,8 @@
 <?php
 	require_once '../../../db/conexion.php';
   	require_once '../../../config.php';
+  	require_once '../../../permisos.php';
+
   	$periodoActual = $_SESSION['periodoActual'];
 
   	$condicionRector = '';
@@ -72,7 +74,7 @@
 	$resultado = $Link->query($consulta) or die ('Error al consultar los fqrs existentes' . mysqli_error($Link));
   	if($resultado->num_rows > 0){
   		while($registros = $resultado->fetch_assoc()) {
-  			if ($_SESSION['perfil'] == "0" || $_SESSION['perfil'] == "1") {
+  			if ($_SESSION['perfil'] == "0" || $permisos['fqrs'] == "2") {
   				$registros['input'] = '<div class="btn-group">
 	                                	<div class="dropdown">
 	                                  		<button class="btn btn-primary btn-sm" id="dLabel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -2,6 +2,13 @@
 $titulo = 'Infraestructuras';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
+
+if ($permisos['diagnostico_infraestructura'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 ?>
 
 <style type="text/css">
@@ -20,7 +27,7 @@ $periodoActual = $_SESSION['periodoActual'];
     </ol>
   </div><!-- /.col -->
   <div class="col-lg-4">
-    <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
+    <?php if ($_SESSION['perfil'] == "0" || $permisos['diagnostico_infraestructura'] == "2"): ?>
       <div class="title-action">
         <button class="btn btn-primary" onclick="window.location.href = 'nueva_infraestructura.php';"><span class="fa fa-plus"></span>  Nuevo</button>
       </div>
@@ -335,20 +342,21 @@ $periodoActual = $_SESSION['periodoActual'];
                       <td><?php echo $estados[$row1['Comedor_Escolar']]; ?></td>
                       <td><?php echo $conceptos_sanitario[$row1['Concepto_Sanitario']]; ?></td>
                       <td><?php echo $row1['Fecha_Expe']; ?></td>
-                      <td>
-                        <div class="btn-group">
-                          <div class="dropdown">
-                            <button class="btn btn-primary btn-sm" type="button" id="accionesProducto" data-toggle="dropdown" aria-haspopup="true">
-                              Acciones
-                              <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
-                              <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
-                              <li><a onclick="editarInfraestructura(<?php echo $row1['id']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
+                      <?php if ($_SESSION['perfil'] == "0" || $permisos['diagnostico_infraestructura'] == "1" || $permisos['diagnostico_infraestructura'] == "2"): ?>
+                        <td>
+                          <div class="btn-group">
+                            <div class="dropdown">
+                              <button class="btn btn-primary btn-sm" type="button" id="accionesProducto" data-toggle="dropdown" aria-haspopup="true">
+                                Acciones
+                                <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
+                                <?php if ($_SESSION['perfil'] == "0" || $permisos['diagnostico_infraestructura'] == "2"): ?>
+                                <li><a onclick="editarInfraestructura(<?php echo $row1['id']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
                                 <li>
                                   <a data-toggle="modal" data-target="#modalEliminarInfraestructura"  data-idinfraestructura="<?php echo $row1['id']; ?>"><span class="fa fa-trash"></span>  Eliminar</a>
                                 </li>
-                              <?php endif ?>
+                                <?php endif ?>
                                <li>
                                 <a href="exportar_infraestructuras.php?id=<?= $row1['id'] ?>"><span class="fa fa-file-excel-o"></span> Exportar</a>
                                </li>
@@ -356,6 +364,7 @@ $periodoActual = $_SESSION['periodoActual'];
                           </div>
                         </div>
                       </td>
+                      <?php endif ?>
                   	</tr>
                  <?php 
              		 }

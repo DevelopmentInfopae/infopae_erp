@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['fqrs'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $titulo = 'Fqrs';
 ?>
 
@@ -36,7 +43,7 @@
                 <th>Número documento</th>
                 <th>Estado</th>
                 <th>Fecha creación</th>
-                <?php if ($_SESSION['perfil'] == "0" || $_SESSION['perfil'] == "1"): ?>
+                <?php if ($_SESSION['perfil'] == "0" || $permisos['fqrs'] == "2"): ?>
                   <th class="text-center">Acciones</th>
                 <?php endif ?>   
               </tr>
@@ -54,7 +61,7 @@
                 <th>Número documento</th>
                 <th>Estado</th>
                 <th>Fecha creación</th>
-                <?php if ($_SESSION['perfil'] == "0" || $_SESSION['perfil'] == "1"): ?>
+                <?php if ($_SESSION['perfil'] == "0" || $permisos['fqrs'] == "2"): ?>
                   <th class="text-center">Acciones</th>
                 <?php endif ?> 
               </tr>
@@ -100,11 +107,11 @@
       {data: 'numero_documento'},
       {data: 'estado'},
       {data: 'fecha_creacion'},
-      <?php if ($_SESSION['perfil'] == "0" || $_SESSION['perfil'] == "1"): ?>
+      <?php if ($_SESSION['perfil'] == "0" || $permisos['fqrs'] == "2"): ?>
         {data: 'input', className: 'text-center'},
       <?php endif ?>
     ],
-    buttons: [ {extend: 'excel', title: '<?= $titulo; ?>', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3, 4, 5 ] } } ],
+    buttons: [ {extend: 'excel', title: '<?= $titulo; ?>', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ] } } ],
     dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"clear"><"html5buttons"B>',
     order: [ 1, 'asc' ],
     oLanguage: {

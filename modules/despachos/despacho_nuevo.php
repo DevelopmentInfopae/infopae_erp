@@ -1,10 +1,20 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['despachos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   include '../../db/conexion.php';
   set_time_limit (0);
   ini_set('memory_limit','6000M');
   $periodoActual = $_SESSION['periodoActual'];
+
 ?>
+
+<?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
@@ -239,6 +249,11 @@
     </div><!-- /.col-lg-12 -->
   </div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
+<?php else: ?>
+  <script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php endif ?>
 
 <?php include '../../footer.php'; ?>
 <!-- Mainly scripts -->

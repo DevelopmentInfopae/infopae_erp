@@ -1,5 +1,14 @@
 <?php
 include '../../config.php';
+require_once '../../db/conexion.php';
+include '../../permisos.php';
+
+if ($permisos['control_acceso'] == "0" || $permisos['control_acceso'] == "1") {
+    ?><script type="text/javascript">
+     	window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 ?>
 <!DOCTYPE html>
 <html lang="es">

@@ -3,6 +3,13 @@
   set_time_limit (0);
   ini_set('memory_limit','6000M');
   $periodoActual = $_SESSION['periodoActual'];
+
+  if ($permisos['despachos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   require_once '../../db/conexion.php';
 ?>
 
@@ -20,7 +27,7 @@
 	</div>
 	<div class="col-md-6 col-lg-4">
 		<div class="title-action">
-			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+			<?php if($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"){ ?>
 				<a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo</a>
 			<?php } ?>
 		</div>
@@ -837,37 +844,38 @@
 	<script src="<?php echo $baseUrl; ?>/modules/despachos/js/despachos.js?v=20200423"></script>
 	<script>
 		$(document).ready(function(){
+			<?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "1" || $permisos['despachos'] == "2"): ?>
+				var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
+					botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
+					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+						botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
+						botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
+					<?php endif ?>
+					botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
+					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+						botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
+					<?php endif ?>
+					botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
+					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+						botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
+					<?php endif ?>
+			
+					// Menu para COVID
+					botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()">Entrega Raciones COVID-19 RI</a></li>';
+					botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
+					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+						botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
+					<?php endif ?>
+					<?php if($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"){ ?>
+						botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';
+						botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a></li>';
+						botonAcciones += '<li><a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a></li>';
+					<?php } ?>
+					botonAcciones += '</ul></div>';
 
-			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
-			botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
-			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
-				botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
-			<?php endif ?>
-			botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
-			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-				botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
-			<?php endif ?>
-			botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
-			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-				botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
+				$('.containerBtn').html(botonAcciones);
 			<?php endif ?>
 			
-			// Menu para COVID
-			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()">Entrega Raciones COVID-19 RI</a></li>';
-			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
-			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-				botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
-			<?php endif ?>
-			
-			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
-				botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';
-				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()">Ingresar Lotes y Fechas de vencimiento</a></li>';
-				botonAcciones += '<li><a href="#" onclick="eliminar_despacho()">Eliminar Despacho</a></li>';
-			<?php } ?>
-			botonAcciones += '</ul></div>';
-
-			$('.containerBtn').html(botonAcciones);
 
 		});
 	</script>

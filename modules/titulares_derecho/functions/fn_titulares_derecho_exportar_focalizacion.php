@@ -18,9 +18,13 @@ use PhpOffice\PhpSpreadsheet\Style\Protection;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Style\Supervisor;
 
+set_time_limit(900);
+
 $periodoActual = $_SESSION["periodoActual"];
 $mes = ($_GET["mes"] != "") ? $Link->real_escape_string($_GET["mes"]) : "";
 $semana = ($_GET["semana"] != "") ? $Link->real_escape_string($_GET["semana"]) : "";
+
+$zona = ($_GET["zona"] != "") ? $Link->real_escape_string($_GET["zona"]) : "";
 
 // seccion para exportar solo la informacion de la institucion si el usuario es rector
 $condicionRector = '';
@@ -31,7 +35,7 @@ if ($_SESSION['perfil'] == '6' && $_SESSION['num_doc'] != '') {
 		$dataInstitucion = $respuestaInstitucion->fetch_assoc();
 		$codigoInstitucion = $dataInstitucion['codigo_inst'];
 	}
-	$condicionRector = " WHERE foc.cod_inst = $codigoInstitucion ";
+	$condicionRector = " AND foc.cod_inst = $codigoInstitucion ";
 }
 
 $condicionCoordinador = '';
@@ -57,10 +61,13 @@ if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
 		}
 	}
 	$codigoSedes = substr($codigoSedes, 0 , -1);
-	$condicionCoordinador = " WHERE foc.cod_sede IN ($codigoSedes) ";
+	$condicionCoordinador = " AND foc.cod_sede IN ($codigoSedes) ";
 }
 
-
+$condicionZona = '';
+if ($zona != 'undefined') {
+	$condicionZona .= " AND sed.Zona_Pae = '$zona' ";
+}
 
 $consulta_focalizacion = "SELECT
 	tdc.Abreviatura AS abreviatura,
@@ -99,7 +106,8 @@ LEFT JOIN etnia etn ON etn.id = foc.etnia
 LEFT JOIN pobvictima pvc ON pvc.id = foc.cod_pob_victima
 LEFT JOIN sedes$periodoActual sed ON sed.cod_sede = foc.cod_sede
 LEFT JOIN jornada jor ON jor.id = foc.cod_jorn_est
-LEFT JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede $condicionRector $condicionCoordinador ";
+LEFT JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede 
+WHERE 1 = 1 $condicionRector $condicionCoordinador $condicionZona ";
 // exit(var_dump($consulta_focalizacion));
 $respuesta_focalizacion = $Link->query($consulta_focalizacion) or die("Error al consultar focalizacion$semana: ". $Link->error);
 

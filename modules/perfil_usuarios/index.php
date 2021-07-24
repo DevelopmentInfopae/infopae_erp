@@ -1,5 +1,12 @@
  <?php
     include '../../header.php';
+
+    if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+      ?><script type="text/javascript">
+          window.open('<?= $baseUrl ?>', '_self');
+      </script>
+    <?php exit(); }
+
     $titulo = 'Perfil Usuarios'; 
 ?> 
 
@@ -22,13 +29,14 @@
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
 				<div class="ibox-content contentBackground">
-					<table id="box-table" class="table table-striped table-hover selectableRows table-responsive">
+					<div class="table-responsive">
+					<table id="box-table" class="table table-striped table-hover selectableRows">
 						<thead>
 							<tr>
 								<th>Identificador</th>
 								<th>Nombre</th>
 								<?php if ($_SESSION['perfil'] == "1" || $_SESSION['perfil'] == "0"): ?>
-									<th>Acciones</th>
+									<td align="center"><b>Acciones</b></td>
 								<?php endif ?>	
 							</tr>
 						</thead>
@@ -43,7 +51,7 @@
 								<td><?php echo $dataRespuesta['id']; ?></td>
 								<td><?php echo $dataRespuesta['nombre'] ?></td>
 								<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-									<td>
+									<td align="center">
 										<div class="btn-group">
                            					<div class="dropdown">
                             					<button class="btn btn-primary btn-sm" type="button" id="accionesProducto" data-toggle="dropdown" aria-haspopup="true">
@@ -70,11 +78,12 @@
 								<th>Identificador</th>
 								<th>Nombre</th>
 								<?php if ($_SESSION['perfil'] == "1" || $_SESSION['perfil'] == "0"): ?>
-									<th>Acciones</th>
+									<td align="center"><b>Acciones</b></td>
 								<?php endif ?>								
 							</tr>
 						</tfoot>
 					</table>
+					</div>
 				</div> <!-- ibox-content -->
 			</div> <!-- ibox -->
 		</div> <!-- col-lg-12 -->

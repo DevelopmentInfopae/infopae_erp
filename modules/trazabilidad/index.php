@@ -2,6 +2,13 @@
   $titulo = 'Trazabilidad de alimentos';
   $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
   require_once '../../header.php';
+
+  if ($permisos['informes'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $periodoActual = $_SESSION['periodoActual'];
 ?>
 
@@ -53,6 +60,15 @@
           }
           ?>
           <form class="form row" id="formBuscar" method="POST">
+            <div class="form-group col-sm-2">
+                <label>Fecha de </label>
+                <div class="row compositeDate">
+                  <select name="fecha_de" id="fecha_de" class="form-control ">
+                    <option value="1">Elaboración documento</option>
+                    <option value="2">Días despachados</option>
+                  </select>
+                </div>
+            </div>
             <div id="fechaDiasDespachos" style="display: none;">
               <div class="form-group col-sm-2">
                 <label>Desde</label>
@@ -90,6 +106,7 @@
                 </div>
               </div>
             </div>
+
             <div id="fechaElaboracion">
               <div class="form-group col-sm-2">
                 <label>Desde</label>
@@ -101,15 +118,7 @@
                 <input type="text" name="fecha_fin_elaboracion" id="fecha_fin_elaboracion" data-date-format="yyyy-mm-dd" value="" class="form-control datepicker">
               </div>
             </div>
-            <div class="form-group col-sm-2">
-              <label>Fecha de </label>
-              <div class="row compositeDate">
-                <select name="fecha_de" id="fecha_de" class="form-control ">
-                  <option value="1">Elaboración documento</option>
-                  <option value="2">Días despachados</option>
-                </select>
-              </div>
-            </div>
+
             <div class="form-group col-sm-3">
               <label>Municipio</label>
               <select class="form-control" name="municipio" id="municipio">
@@ -259,7 +268,8 @@
                   <tr>
                     <th>Tipo Doc</th>
                     <th>Número</th>
-                    <th>Fecha / Hora</th>
+                    <th>Fecha / Hora Elab</th>
+                    <th>Fecha Despacho</th>
                     <th>Responsable / Proveedor</th>
                     <th>Nombre Producto / Alimento</th>
                     <th>Unidad Medida</th>
@@ -281,7 +291,8 @@
                   <tr>
                     <th>Tipo Doc</th>
                     <th>Número</th>
-                    <th>Fecha / Hora</th>
+                    <th>Fecha / Hora Elab</th>
+                    <th>Fecha Despacho</th>
                     <th>Responsable / Proveedor</th>
                     <th>Nombre Producto / Alimento</th>
                     <th>Unidad Medida</th>
@@ -303,7 +314,7 @@
               $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
               $consulta = "SELECT
-                  pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab,  pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca
+                  pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca
                   FROM productosmov$numtabla AS pmov
                     INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero
                     INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
@@ -314,7 +325,7 @@
             } else if (isset($_POST['buscar'])) { //Si hay filtrado
               $inners="";
               $condiciones = "";
-              $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca";
+              $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab,  pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca";
 
               if (isset($_POST['fecha_de']) && $_POST['fecha_de'] != "") {
                 $fecha_de = $_POST['fecha_de'];
@@ -389,7 +400,7 @@
                             $txtTotales = "--";
                             $datos =" '".$txtTotales."' as Tipo, '".$txtTotales."' as Numero, '".$txtTotales."' as FechaMYSQL, '".$txtTotales."' as FechaHora_Elab, '".$txtTotales."' as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad,  '".$txtTotales."' as nomBodegaOrigen, '".$txtTotales."' as nomBodegaDestino,  '".$txtTotales."' as TipoTransporte, '".$txtTotales."' as Placa, '".$txtTotales."' as ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca ";
                           } else { //Si hay criterios, muestra los resultados agrupados
-                            $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca  ";
+                            $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca  ";
                           }
 
                           $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' GROUP BY pmovdet.CodigoProducto ";
@@ -487,6 +498,7 @@
         { data: 'Tipo'},
         { data: 'Numero'},
         { data: 'FechaHora_Elab'},
+        { data: 'fecha_despacho'},
         { data: 'Proveedor'},
         { data: 'Descripcion'},
         { data: 'Umedida'},

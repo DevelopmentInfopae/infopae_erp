@@ -3,7 +3,13 @@ $titulo = 'Nuevo dispositivo biométrico';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
-if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { 
+if ($permisos['dispositivos_biometricos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
+if ($_SESSION['perfil'] == "0" || $permisos['dispositivos_biometricos'] == "2") { 
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">

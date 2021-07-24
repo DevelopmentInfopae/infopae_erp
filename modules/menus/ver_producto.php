@@ -1,6 +1,12 @@
-<?php 
+<?php
 $titulo = 'Ver';
-require_once '../../header.php'; 
+require_once '../../header.php';
+
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
 
 $periodoActual = $_SESSION['periodoActual'];
 
@@ -35,7 +41,7 @@ if (isset($_REQUEST['idProducto'])) {
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="<?php echo $baseUrl.'/modules/menus/'.$link; ?>">Ver <?php echo $breadCumb; ?></a>
+        <a href="<?php echo $baseUrl.'/modules/menus2/'.$link; ?>">Ver <?php echo $breadCumb; ?></a>
       </li>
       <li class="active">
         <strong><?php echo $title; ?></strong>
@@ -48,14 +54,16 @@ if (isset($_REQUEST['idProducto'])) {
         <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-          <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-            <li><a onclick="editarProducto(<?php echo $_REQUEST['idProducto']; ?>)"><span class="fa fa-pencil"></span> Editar </a></li>
-            <?php if ($Producto['Inactivo'] == 0): ?>
-              <li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $Producto['Codigo']; ?>" data-tipocomplemento="<?php echo $Producto['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $Producto['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span> Eliminar </a></li>
-            <?php else: ?>
-              <li><a><span class="fa fa-ban"></span> Estado: <strong>Inactivo</strong></a></li>
-            <?php endif ?>
-          <?php } ?>
+					<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
+						<li><a onclick="editarProducto(<?php echo $_REQUEST['idProducto']; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
+						<?php if ($Producto['Inactivo'] == 0): ?>
+              <?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2"): ?>
+                <li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $Producto['Codigo']; ?>" data-tipocomplemento="<?php echo $Producto['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $Producto['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span> Eliminar </a></li>
+              <?php endif ?>
+						<?php else: ?>
+							<li><a><span class="fa fa-ban"></span> Estado: <strong>Inactivo</strong></a></li>
+						<?php endif ?>
+					<?php } ?>
           <li><a href="#" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
         </ul>
       </div>
@@ -90,7 +98,7 @@ if (isset($_REQUEST['idProducto'])) {
                   $consulta1= " SELECT * FROM productos".date('y')." where Codigo like '".substr($Producto['Codigo'], 0, 4)."%' AND nivel = 2";
                   $result1 = $Link->query($consulta1) or die ('Unable to execute query. '. mysqli_error($Link));
                   if($result1->num_rows > 0){
-                    if($row1 = $result1->fetch_assoc()){ 
+                    if($row1 = $result1->fetch_assoc()){
                       $subTipoProducto = $row1['Descripcion'];
                     }
                   }
@@ -115,7 +123,7 @@ if (isset($_REQUEST['idProducto'])) {
               <?php if ($Producto['Cod_Grupo_Etario'] != 0): ?>
               <div class="form-group col-sm-3" id="divGrupoEtario"  >
                 <label>Grupo Etario</label>
-                  <?php 
+                  <?php
                   $consultaGrupoEtario = "select * from grupo_etario where ID = ".$Producto['Cod_Grupo_Etario'];
                   $resultadoGrupoEtario = $Link->query($consultaGrupoEtario);
                   if ($resultadoGrupoEtario->num_rows > 0) {
@@ -158,7 +166,7 @@ if (isset($_REQUEST['idProducto'])) {
               <?php else: ?>
               <div class="form-group col-sm-3">
                 <label>Tipo de despacho</label>
-                    <?php 
+                    <?php
                   $consultaTipoDespacho = "select * from tipo_despacho where Id = ".$Producto['TipoDespacho'];
                   $resultadoTipoDespacho = $Link->query($consultaTipoDespacho);
                   if ($resultadoTipoDespacho->num_rows > 0) {
@@ -172,9 +180,9 @@ if (isset($_REQUEST['idProducto'])) {
                   <input type="text" class="form-control" value="<?php echo $tipoDespacho ?>" readonly>
               </div>
               <?php endif ?>
-              
+
               <hr class="col-sm-11">
-              <?php 
+              <?php
               if ($Producto['NombreUnidad1'] == "g" && $Producto['NombreUnidad3'] != "") {
                 $UnidadMedida1 = "g";
                 $style = "";
@@ -215,8 +223,8 @@ if (isset($_REQUEST['idProducto'])) {
                   <div class="form-group col-sm-3">
                     <label>Unidad de medida 1</label>
                     <select name="unidadMedidaPresentacion[1]" id="unidadMedidaPresentacion" class="form-control unidadMedidaPresentacion" >
-                      <?php 
-                      foreach ($options[$Producto['NombreUnidad1']] as $indice => $valor) { 
+                      <?php
+                      foreach ($options[$Producto['NombreUnidad1']] as $indice => $valor) {
                         if ($indice == $UnidadMedida1 ) { ?>
                           <option value="<?php echo $indice ?>" selected="true"><?php echo $valor; ?></option>
                         <?php } else { ?>
@@ -236,8 +244,8 @@ if (isset($_REQUEST['idProducto'])) {
                   <div class="form-group col-sm-3" style="display: none;"  id="divUnidadMedidaPresentacion">
                     <label>Unidad de medida 1</label>
                     <select name="unidadMedidaPresentacion[1]" id="unidadMedidaPresentacion" class="form-control unidadMedidaPresentacion">
-                      <?php 
-                      foreach ($options[$Producto['NombreUnidad1']] as $indice => $valor) { 
+                      <?php
+                      foreach ($options[$Producto['NombreUnidad1']] as $indice => $valor) {
                         if ($indice == $UnidadMedida1 ) { ?>
                           <option value="<?php echo $indice ?>" selected="true"><?php echo $valor; ?></option>
                         <?php } else { ?>
@@ -257,8 +265,8 @@ if (isset($_REQUEST['idProducto'])) {
                   <div class="form-group col-sm-3" style="display: none;"  id="divUnidadMedidaPresentacion">
                     <label>Unidad de medida 1</label>
                     <select name="unidadMedidaPresentacion[1]" id="unidadMedidaPresentacion" class="form-control unidadMedidaPresentacion">
-                      <?php 
-                      foreach ($options[$Producto['NombreUnidad1']] as $indice => $valor) { 
+                      <?php
+                      foreach ($options[$Producto['NombreUnidad1']] as $indice => $valor) {
                         if ($indice == $UnidadMedida1 ) { ?>
                           <option value="<?php echo $indice ?>" selected="true"><?php echo $valor; ?></option>
                         <?php } else { ?>
@@ -313,7 +321,7 @@ if (isset($_REQUEST['idProducto'])) {
               </div> <!-- DIV UNIDADES DE MEDIDA -->
               <hr class="col-sm-12">
             </div>
-            <?php 
+            <?php
               $consultaFichaTecnica = "select * from fichatecnica where Codigo = ".$Producto['Codigo'];
               $resultadoFichaTecnica = $Link->query($consultaFichaTecnica);
 
@@ -331,7 +339,7 @@ if (isset($_REQUEST['idProducto'])) {
             </div>
             <div class="col-lg-12 row"> -->
               <h3>Productos ficha técnica</h3>
-              <?php 
+              <?php
               $consultaFichaTecnicaDet = "select * from fichatecnicadet where IdFT = ".$fichaTecnica['Id'];
               $resultadoFichaTecnicaDet = $Link->query($consultaFichaTecnicaDet);
               if ($resultadoFichaTecnicaDet->num_rows > 0) {
@@ -349,7 +357,7 @@ if (isset($_REQUEST['idProducto'])) {
                     </tr>
                   </thead>
                   <tbody id="tbodyProductos">
-                <?php while ($fichatecnicadet = $resultadoFichaTecnicaDet->fetch_assoc()) { 
+                <?php while ($fichatecnicadet = $resultadoFichaTecnicaDet->fetch_assoc()) {
                   $cntFTD++;
                   ?>
                       <input type="hidden" name="IdFTDet[<?php echo $cntFTD ?>]" value="<?php echo $fichatecnicadet['Id'] ?>">
@@ -397,10 +405,10 @@ if (isset($_REQUEST['idProducto'])) {
                <hr class="col-sm-12">
             </div>
           <?php }//Si el producto tiene ficha tecnica ?>
-           <?php 
+           <?php
             $consultaCalyNut = "select * from menu_aportes_calynut where cod_prod = ".$Producto['Codigo'];
             $resultadoCalyNut = $Link->query($consultaCalyNut);
-            if ($resultadoCalyNut->num_rows > 0) { 
+            if ($resultadoCalyNut->num_rows > 0) {
               $calynut = $resultadoCalyNut->fetch_assoc();
             ?>
             <input type="hidden" name="IdCalyNut" value="<?php echo $calynut['id'] ?>">
@@ -550,7 +558,7 @@ if (isset($_REQUEST['idProducto'])) {
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 
 <!-- Section Scripts -->
-<script src="<?php echo $baseUrl; ?>/modules/menus/js/menus.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
 
 <script type="text/javascript">/*
   console.log('Aplicando Data Table');

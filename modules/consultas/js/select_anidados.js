@@ -469,8 +469,9 @@ function exportar_entregas(){
   if ($('#formulario_exportar_entregas').valid()) {
     var mes = $('#mes_exportar').val();
     var semana = $('#semana_exportar').val();
+    var zona = $('#zona_exportar').val();
 
-    window.open('functions/fn_sedes_exportar_entregas.php?mes='+mes+'&semana='+semana, '_blank');
+    window.open('functions/fn_sedes_exportar_entregas.php?mes='+mes+'&semana='+semana+'&zona='+zona, '_blank');
 
   }
 }

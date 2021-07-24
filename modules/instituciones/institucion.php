@@ -57,7 +57,7 @@
           </li>
       </ol>
   </div>
-  <?php if($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+  <?php if(($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "1" || $permisos['instituciones'] == "2") && ($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7")) { ?>
   <div class="col-lg-4">
     <div class="title-action">
       <div class="btn-group">
@@ -66,9 +66,11 @@
             Acciones <span class="caret"></span>
           </button>
           <ul class="dropdown-menu pull-right keep-open-on-click" aria-labelledby="dropdownMenu1">
-            <li>
-              <a href="#" class="editarInstitucion" data-codigoinstitucion = <?php echo $_POST["codInst"]; ?>><i class="fas fa-pencil-alt"></i> Editar </a>
-            </li>
+            <?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+                <li>
+                  <a href="#" class="editarInstitucion" data-codigoinstitucion = <?php echo $_POST["codInst"]; ?>><i class="fas fa-pencil-alt"></i> Editar </a>
+                </li>
+            <?php endif ?>
             <li>
               <a href="#" class="verDispositivos" data-codigoinstitucion="<?php echo $_POST["codInst"]; ?>"><i class="fa fa-eye fa-lg"></i> Ver dispositivos</a>
             </li>
@@ -78,13 +80,15 @@
             <li>
               <a href="#" class="verTitulares" data-codigoinstitucion="<?php echo $_POST["codInst"] ?>"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>
             </li>
-            <li class="divider"></li>
-            <li >
-              <a href="#">
-                Estado:
-                <input type="checkbox" id="inputEstadoIntitucion<?php echo $row["id"]; ?>" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="70" data-height="24" <?php if($row["estado"] == 1){ echo "checked"; } ?> onchange="confirmarCambioEstado(<?php echo $row["id"]; ?>, this.checked);">
-              </a>
-            </li>
+            <?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+              <li class="divider"></li>
+              <li >
+                <a href="#">
+                  Estado:
+                  <input type="checkbox" id="inputEstadoIntitucion<?php echo $row["id"]; ?>" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="70" data-height="24" <?php if($row["estado"] == 1){ echo "checked"; } ?> onchange="confirmarCambioEstado(<?php echo $row["id"]; ?>, this.checked);">
+                </a>
+              </li>
+            <?php endif ?>
           </ul>
          </div>
       </div>
@@ -111,7 +115,7 @@
                               <th>Nombre coordinador</th>
                               <th>Jornada</th>
                               <th>Tipo validación</th>
-                              <?php if($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+                              <?php if(($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "1" || $permisos['instituciones'] == "2") && ($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7")) { ?>
                               <th>Acciones</th>
                               <?php } ?>
                           </tr>
@@ -133,7 +137,7 @@
                                   <td><?php echo $row["nombreCoordinador"]; ?></td>
                                   <td><?php echo $row["nombreJornada"]; ?></td>
                                   <td><?php echo $row["tipoValidacion"]; ?></td>
-                                  <?php if($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+                                  <?php if(($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "1" || $permisos['instituciones'] == "2") && ($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7")) { ?>
                                   <td class="text-center">
                                     <div class="btn-group">
                                       <div class="dropdown pull-right">
@@ -141,9 +145,11 @@
                                           Acciones <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropDownMenu1">
-                                          <li>
-                                            <a href="#" class="editarSede" data-codigosede="<?php echo $row["cod_sede"]; ?>"><i class="fas fa-pencil-alt fa-lg"></i> Editar</a>
-                                          </li>
+                                          <?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+                                            <li>
+                                              <a href="#" class="editarSede" data-codigosede="<?php echo $row["cod_sede"]; ?>"><i class="fas fa-pencil-alt fa-lg"></i> Editar</a>
+                                            </li>
+                                          <?php endif ?>
                                           <li>
                                             <a href="#" class="verDispositivosSede" data-codigosede="<?php echo $row["cod_sede"]; ?>"><i class="fa fa-eye fa-lg"></i> Ver Dispositivos</a>
                                           </li>
@@ -153,13 +159,15 @@
                                           <li>
                                             <a href="#" class="verTitularesSede" data-codigosede="<?php echo $row["cod_sede"]; ?>"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>
                                           </li>
-                                          <li class="divider"></li>
-                                          <li>
-                                            <a href="#">
-                                              Estado: &nbsp;
-                                              <input type="checkbox" id="inputEstadoSede<?php echo $row["id"]; ?>" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24" <?php if($row["estadoSede"] == 1){ echo "checked"; } ?> onchange="confirmarCambioEstadoSede(<?php echo $row["id"]; ?>, <?php echo $row["estadoSede"]; ?> );">
-                                            </a>
-                                          </li>
+                                          <?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+                                            <li class="divider"></li>
+                                            <li>
+                                              <a href="#">
+                                                Estado: &nbsp;
+                                                <input type="checkbox" id="inputEstadoSede<?php echo $row["id"]; ?>" data-toggle="toggle" data-on="Activo" data-off="Inactivo" data-size="mini" data-width="70" data-height="24" <?php if($row["estadoSede"] == 1){ echo "checked"; } ?> onchange="confirmarCambioEstadoSede(<?php echo $row["id"]; ?>, <?php echo $row["estadoSede"]; ?> );">
+                                              </a>
+                                            </li>
+                                          <?php endif ?>
                                         </ul>
                                       </div>
                                     </div>
@@ -178,7 +186,7 @@
                           <th>Nombre coordinador</th>
                           <th>Jornada</th>
                           <th>Tipo validación</th>
-                          <?php if($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+                          <?php if(($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "1" || $permisos['instituciones'] == "2") && ($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7")) { ?>
                           <th>Acciones</th>
                           <?php } ?>
                         </tr>
@@ -458,24 +466,25 @@
           },
           buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel', exportOptions: { columns: [ 0, 1, 2, 3, 4] } } ]
         });
-
-        var botonAcciones = '<div class="dropdown pull-right">'+
+        <?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "1" || $permisos['instituciones'] == "2"): ?>
+          var botonAcciones = '<div class="dropdown pull-right">'+
                               '<button class="btn btn-primary btn-sm btn-outline" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true">'+
                                 'Acciones <span class="caret"></span>'+
                               '</button>'+
                               '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu2">'+
-                              <?php if($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+                              <?php if($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2") { ?>
                                 '<li><a id="crearSedeInstitucion" data-codigointitucion="<?php echo $institucionCodigo; ?>"> <i class="fa fa-plus"></i> Nueva </a></li>'+
                               <?php } ?>
                                 '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><span class="fa fa-file-pdf-o"></span> Exportar </a></li>'+
-                              <?php if($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+                              <?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
                                 '<li class="divider"></li>'+
                                 '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.csv"><i class="fa fa-download"></i> Descarga Plantilla .CSV </a></li>'+
                                 '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.xlsx"><i class="fa fa-download"></i> Descarga Plantilla .XLSX </a></li>'+
-                              <?php } ?>
+                              <?php endif ?>  
                               '</ul>'+
                             '</div>';
-        $('.containerBtn').html(botonAcciones);
+          $('.containerBtn').html(botonAcciones);  
+        <?php endif ?> 
       });
     </script>
 

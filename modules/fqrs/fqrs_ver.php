@@ -1,5 +1,12 @@
 <?php
 	include '../../header.php';
+
+    if ($permisos['fqrs'] == "0") {
+        ?><script type="text/javascript">
+            window.open('<?= $baseUrl ?>', '_self');
+        </script>
+    <?php exit(); }
+
 	$titulo = 'Ver Fqrs';
 
   	$id_fqrs = (isset($_POST['id_fqrs']) && $_POST['id_fqrs'] != '') ? mysqli_real_escape_string($Link, $_POST['id_fqrs']) : '';
@@ -59,7 +66,7 @@
     </ol>
   </div>
   <div class="col-lg-4">
-  	<?php if ($caso->id_estado == 0 && ($_SESSION['perfil'] == "0" || $_SESSION['perfil'] == "1")) { ?>
+  	<?php if ($caso->id_estado == 0 && ($_SESSION['perfil'] == "0" || $permisos['fqrs'] == "2")) { ?>
 	    <div class="title-action">
 	      <a href="#" class="btn btn-primary" id="boton_editar_caso"><i class="fa fa-check "></i> Guardar </a>
 	    </div>
@@ -229,7 +236,7 @@
     </div>
   </div>
 
-<?php if ($caso->id_estado == 0 && ($_SESSION['perfil'] == "0" || $_SESSION['perfil'] == "1")) { ?>
+<?php if ($caso->id_estado == 0 && ($_SESSION['perfil'] == "0" || $permisos['fqrs'] == "2")) { ?>
   <div class="row">
     <div class="col-lg-12">
       <div class="ibox float-e-margins">

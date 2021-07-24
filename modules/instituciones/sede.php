@@ -5,6 +5,12 @@
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
+	if ($permisos['instituciones'] == "0") {
+   	 	?><script type="text/javascript">
+      		window.open('<?= $baseUrl ?>', '_self');
+    	</script>
+  	<?php exit(); }
+
 	$titulo = "Sede";
 	$periodoActual = $_SESSION['periodoActual'];
 	$nomSede = (isset($_POST['nomSede'])) ? mysqli_real_escape_string($Link, $_POST['nomSede']) : '';
@@ -75,7 +81,7 @@
     </ol>
   </div>
 
-  <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+  <?php if(($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "1" || $permisos['instituciones'] == "2") && ($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7")) { ?>
   <div class="col-lg-4">
     <div class="title-action">
 	  	<div class="btn-group">
@@ -84,9 +90,11 @@
             Acciones <span class="caret"></span>
           </button>
           	<ul class="dropdown-menu pull-right keep-open-on-click" aria-labelledby="dropdownMenu1">
-	            <li>
-	              <a href="#" data-codigosede="<?php echo $codSede; ?>" name="editarSede" id="editarSede"><i class="fas fa-pencil-alt fa-lg"></i> Editar </a>
-	            </li>
+          		<?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+          			<li>
+	              		<a href="#" data-codigosede="<?php echo $codSede; ?>" name="editarSede" id="editarSede"><i class="fas fa-pencil-alt fa-lg"></i> Editar </a>
+	            	</li>
+          		<?php endif ?>
 	            <li>
 	              <a href="#" class="verDispositivosSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-eye fa-lg"></i> Ver Dispositivos</a>
 	            </li>
@@ -99,15 +107,16 @@
 	             <li>
 				<a href="sede_archivos.php?sede=<?php echo $codSede;  ?>"><i class="fa fa-cloud"></i> Ver Archivos </a>
             	</li>
-          	
-            <li class="divider"></li>
-            <li >
-              <a href="#">
-                Estado:
-                <input type="checkbox" id="inputEstadoSede<?php echo $id; ?>" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="70" data-height="24" <?php if($estado == 1){ echo "checked"; } ?> onchange="confirmarCambioEstado(<?php echo $id; ?>, this.checked);">
-              </a>
-            </li>
-          </ul>
+            	<?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+            		<li class="divider"></li>
+            		<li >
+              			<a href="#">
+                		Estado:
+                		<input type="checkbox" id="inputEstadoSede<?php echo $id; ?>" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="70" data-height="24" <?php if($estado == 1){ echo "checked"; } ?> onchange="confirmarCambioEstado(<?php echo $id; ?>, this.checked);">
+              			</a>
+            		</li>
+            	<?php endif ?>
+          	</ul>
         </div>
       </div>
     </div>

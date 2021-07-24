@@ -4,18 +4,29 @@ require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 
 $id = $_POST['idPerfil'];
-$estado = $_POST['estado'];
+$estado = (isset($_POST["estado"]) && $_POST["estado"] != '') ? mysqli_real_escape_string($Link, $_POST["estado"])  : '';
 $modulo = $_POST['modulo'];
+
+if ($estado == null || $estado == "") {
+  $respuestaAJAX = [
+    'estado' => 0,
+    'mensaje' => 'El permiso NO se actualizó exitosamente.'
+  ];
+  exit(json_encode($respuestaAJAX));
+}
 
 $nuevoEstado = "";
 $nuevoEstadoString = "";
 
-if ($estado == "1") {
+if ($estado == "0") {
 	$nuevoEstado = "0";
 	$nuevoEstadoString = "Desactivo";
-}else {
+}else if ($estado == "1") {
 	$nuevoEstado = "1";
-	$nuevoEstadoString = "Activo";
+	$nuevoEstadoString = "Lectura";
+}else if ($estado == "2") {
+  $nuevoEstado = "2";
+  $nuevoEstadoString = "Lectura y escritura";
 }
 
 $columna = "";
@@ -37,6 +48,7 @@ $columna = "";
   else if ($modulo == "control") { $columna = "control_acceso"; }
   else if ($modulo == "procesos") { $columna = "procesos"; }
   else if ($modulo == "configuracion") { $columna = "configuracion"; }
+  else if ($modulo == "escritura") { $columna = "escritura"; }
 
 $perfilNombre = "";
 $consultaNombre = " SELECT nombre FROM perfiles WHERE id = $id; ";
@@ -48,9 +60,9 @@ if ($respuestaNombre->num_rows > 0) {
 
 $sentenciaUpdate = " UPDATE perfiles SET $columna = $nuevoEstado WHERE id = $id; ";
 $respuestaUpdate = $Link->query($sentenciaUpdate) or die ('Error al actualizar los permisos. ' . mysqli_error($Link));
-
+// var_dump($sentenciaUpdate);
 if ($respuestaUpdate) {
-	$consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '83', 'Se ".$nuevoEstadoString." el modulo ".$columna." en el perfil: <strong>".$perfilNombre."</strong>')";
+	$consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '83', '".$nuevoEstadoString." el modulo ".$columna." en el perfil: <strong>".$perfilNombre."</strong>')";
     $Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
     $respuestaAJAX = [
     	'estado' => 1,

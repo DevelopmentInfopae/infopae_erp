@@ -3,6 +3,12 @@ $titulo = 'Ver dispositivo biométrico';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
+if ($permisos['dispositivos_biometricos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -26,7 +32,7 @@ $periodoActual = $_SESSION['periodoActual'];
         <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-          <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
+          <?php if ($_SESSION['perfil'] == "0" || $permisos['dispositivos_biometricos'] == "2"): ?>
           <li><a onclick="editarDispositivo(<?php echo $_POST['idDispositivoVer']; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
           <li><a data-toggle="modal" data-target="#modalEliminarDispositivo"  data-iddispositivo="<?php echo $_POST['idDispositivoVer']; ?>"><span class="fa fa-trash"></span>  Eliminar</a></li>
           <?php endif ?>

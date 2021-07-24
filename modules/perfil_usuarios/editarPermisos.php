@@ -1,5 +1,12 @@
 <?php 
     include '../../header.php';
+
+    if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+      ?><script type="text/javascript">
+          window.open('<?= $baseUrl ?>', '_self');
+      </script>
+    <?php exit(); }
+
     $titulo = 'Editar Permisos'; 
 
     $idPerfil = $_POST['id'];
@@ -24,7 +31,8 @@
     						p.asistencia AS asistencia,
     						p.control_acceso AS control,
     						p.procesos AS procesos,
-    						p.configuracion AS configuracion
+    						p.configuracion AS configuracion,
+    						p.escritura AS escritura
     					FROM perfiles p
     					WHERE id = $idPerfil;
     					";
@@ -72,9 +80,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Entregas Biometricas </h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['entregas_biometricas'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="entregas_biometricas" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['entregas_biometricas'] ?>, 'entregas_biometricas' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['entregas_biometricas'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="entregas_biometricas" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['entregas_biometricas'] ?>, 'entregas_biometricas' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="entregas_biometricas" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['entregas_biometricas'] ?>, 'entregas_biometricas' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['entregas_biometricas'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline  btn-group btn-group-justified" id="entregas_biometricas" value="<?= $informacion['entregas_biometricas'] ?>" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['entregas_biometricas'] ?>, 'entregas_biometricas' )">Inactivo</button>
@@ -87,9 +100,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Instituciones </h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['instituciones'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="instituciones" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['instituciones'] ?>, 'instituciones' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['instituciones'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="instituciones" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['instituciones'] ?>, 'instituciones' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="instituciones" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['instituciones'] ?>, 'instituciones' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['instituciones'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="instituciones" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['instituciones'] ?>, 'instituciones' )">Inactivo</button>
@@ -102,9 +120,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Archivos Globales</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['archivos'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="archivos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['archivos'] ?>, 'archivos' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['archivos'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="archivos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['archivos'] ?>, 'archivos' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="archivos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['archivos'] ?>, 'archivos' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['archivos'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="archivos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['archivos'] ?>, 'archivos' )">Inactivo</button>
@@ -121,9 +144,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Titulares Derecho</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">	
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['titulares'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="titulares" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['titulares'] ?>, 'titulares' )">Lectura y escritura</button>
+										<?php endif ?>	
+									<?php endif ?>	
 									<?php if ($informacion['titulares'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="titulares" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['titulares'] ?>, 'titulares' )">Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="titulares" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['titulares'] ?>, 'titulares' )">Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['titulares'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="titulares" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['titulares'] ?>, 'titulares' )">Inactivo</button>
@@ -136,9 +164,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Menús</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['menus'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="menus" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['menus'] ?>, 'menus' )">Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['menus'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="menus" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['menus'] ?>, 'menus' )">Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="menus" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['menus'] ?>, 'menus' )">Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['menus'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="menus" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['menus'] ?>, 'menus' )">Inactivo</button>
@@ -151,9 +184,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Diagnóstico Infraestructura</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">	
+								<div class="col-lg-5 col-sm-6">	
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['diagnostico'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="diagnostico" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['diagnostico']; ?>, 'diagnostico' )">Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['diagnostico'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="diagnostico" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['diagnostico']; ?>, 'diagnostico' )">Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="diagnostico" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['diagnostico']; ?>, 'diagnostico' )">Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['diagnostico'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="diagnostico" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['diagnostico']; ?>, 'diagnostico' )">Inactivo</button>
@@ -170,9 +208,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Dispositivos Biométricos</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['dispositivos'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="dispositivos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['dispositivos']; ?>, 'dispositivos' )">Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['dispositivos'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="dispositivos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['dispositivos']; ?>, 'dispositivos' )">Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="dispositivos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['dispositivos']; ?>, 'dispositivos' )">Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['dispositivos'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="dispositivos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['dispositivos']; ?>, 'dispositivos' )">Inactivo</button>
@@ -185,9 +228,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Despachos</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">	
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['despachos'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="despachos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['despachos']; ?>, 'despachos' )">Lectura y escritura</button>
+										<?php endif ?>	
+									<?php endif ?>
 									<?php if ($informacion['despachos'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="despachos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['despachos']; ?>, 'despachos' )">Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="despachos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['despachos']; ?>, 'despachos' )">Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['despachos'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="despachos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['despachos']; ?>, 'despachos' )">Inactivo</button>
@@ -200,9 +248,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Ordenes de Compra</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['ordenes'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="ordenes" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['ordenes']; ?>, 'ordenes' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['ordenes'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="ordenes" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['ordenes']; ?>, 'ordenes' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="ordenes" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['ordenes']; ?>, 'ordenes' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['ordenes'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="ordenes" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['ordenes']; ?>, 'ordenes' )">Inactivo</button>
@@ -219,9 +272,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Entrega de Complementos Alimentarios</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">	
+								<div class="col-lg-5 col-sm-6">	
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['entregas'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="entregas" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['entregas']; ?>, 'entregas' )">Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['entregas'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="entregas" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['entregas']; ?>, 'entregas' )">Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="entregas" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['entregas']; ?>, 'entregas' )">Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['entregas'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="entregas" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['entregas']; ?>, 'entregas' )" >Inactivo</button>
@@ -234,9 +292,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Novedades</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['novedades'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="novedades" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['novedades']; ?>, 'novedades' )">Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['novedades'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="novedades" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['novedades']; ?>, 'novedades' )">Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="novedades" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['novedades']; ?>, 'novedades' )">Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['novedades'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="novedades" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['novedades']; ?>, 'novedades' )" >Inactivo</button>
@@ -249,9 +312,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Nómina</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">	
+								<div class="col-lg-5 col-sm-6">	
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['nomina'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="nomina" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['nomina']; ?>, 'nomina' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['nomina'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="nomina" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['nomina']; ?>, 'nomina' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="nomina" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['nomina']; ?>, 'nomina' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['nomina'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="nomina" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['nomina']; ?>, 'nomina' )" >Inactivo</button>
@@ -268,9 +336,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Fqrs</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['fqrs'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="fqrs" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['fqrs']; ?>, 'fqrs' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['fqrs'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="fqrs" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['fqrs']; ?>, 'fqrs' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="fqrs" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['fqrs']; ?>, 'fqrs' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['fqrs'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="fqrs" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['fqrs']; ?>, 'fqrs' )" >Inactivo</button>
@@ -283,9 +356,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Informes</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">	
+								<div class="col-lg-5 col-sm-6">	
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['informes'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="informes" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['informes']; ?>, 'informes' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['informes'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="informes" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['informes']; ?>, 'informes' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="informes" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['informes']; ?>, 'informes' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['informes'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="informes" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['informes']; ?>, 'informes' )" >Inactivo</button>
@@ -298,9 +376,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Asistencia</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['asistencia'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="asistencia" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['asistencia']; ?>, 'asistencia' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['asistencia'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="asistencia" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['asistencia']; ?>, 'asistencia' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="asistencia" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['asistencia']; ?>, 'asistencia' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['asistencia'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="asistencia" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['asistencia']; ?>, 'asistencia' )" >Inactivo</button>
@@ -317,9 +400,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Control de Acceso</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">	
+								<div class="col-lg-5 col-sm-6">	
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['control'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="control" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['control']; ?>, 'control' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['control'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="control" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['control']; ?>, 'control' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="control" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['control']; ?>, 'control' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['control'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="control" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['control']; ?>, 'control' )" >Inactivo</button>
@@ -332,9 +420,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Procesos</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">
+								<div class="col-lg-5 col-sm-6">
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['procesos'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="procesos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['procesos']; ?>, 'procesos' )" >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['procesos'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="procesos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['procesos']; ?>, 'procesos' )" >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="procesos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['procesos']; ?>, 'procesos' )" >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['procesos'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="procesos" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['procesos']; ?>, 'procesos' )" >Inactivo</button>
@@ -347,9 +440,14 @@
 								<div class="col-lg-4 col-sm-6">
 									<label><h4>Configuración</h4></label>
 								</div>
-								<div class="col-lg-4 col-sm-6">	
+								<div class="col-lg-5 col-sm-6">	
+									<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+										<?php if ($informacion['configuracion'] == "2"): ?>
+											<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="configuracion" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['configuracion']; ?>, 'configuracion' )" <?php if($idPerfil != "1" && $idPerfil != "0"){ echo "disabled = true"; } ?> >Lectura y escritura</button>
+										<?php endif ?>
+									<?php endif ?>
 									<?php if ($informacion['configuracion'] == "1"): ?>
-										<button type="button" class="btn btn-primary btn-outline btn-group btn-group-justified" id="configuracion" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['configuracion']; ?>, 'configuracion' )" <?php if($idPerfil != "1" && $idPerfil != "0"){ echo "disabled = true"; } ?> >Activo</button>
+										<button type="button" class="btn btn-warning btn-outline btn-group btn-group-justified" id="configuracion" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['configuracion']; ?>, 'configuracion' )" <?php if($idPerfil != "1" && $idPerfil != "0"){ echo "disabled = true"; } ?> >Lectura</button>
 									<?php endif ?>
 									<?php if ($informacion['configuracion'] == "0"): ?>
 										<button type="button" class="btn btn-danger btn-outline btn-group btn-group-justified" id="configuracion" onclick="confirmarCambio(<?= $idPerfil; ?> , <?= $informacion['configuracion']; ?>, 'configuracion' )" <?php if($idPerfil != "1" && $idPerfil != "0"){ echo "disabled = true"; } ?> >Inactivo</button>

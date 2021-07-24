@@ -76,7 +76,10 @@ $(document).ready(function(){
 
 	botonAcciones += '</ul>'+ '</div>';
 
-	$('.containerBtn').html(botonAcciones);
+	var opciones = $('#opcion').val();
+	if (opciones == 2) {
+		$('.containerBtn').html(botonAcciones);
+	}
 });
 
 

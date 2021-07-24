@@ -1,5 +1,12 @@
 <?php
 include '../../header.php';
+
+if ($permisos['despachos'] == "0") {
+  ?><script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
@@ -12,10 +19,7 @@ $paginasObservaciones = 1;
 // $Link->set_charset("utf8");
 ?>
 
-
-
-
-
+<?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
             <div class="col-lg-8">
@@ -130,7 +134,7 @@ $mesAnno = '';
         // parametros del despacho
 
         $consulta = " select * from productosmov$mesAnno pm where pm.Numero = $despacho and pm.Documento='DES' ";
-
+        // echo $consulta;
         // echo "<br>Segunda consulta para traer los datos almacenados en productosmov 16 que complementan los parametros del despacho<br>$consulta<br>";
 
 
@@ -157,6 +161,7 @@ $mesAnno = '';
         inner join ubicacion u on s.cod_mun_sede = u.CodigoDANE and u.ETC = 0
         WHERE s.cod_sede = $bodegaDestino ";
 
+        // echo $consulta;
         //echo "<br>Tercera consulta para traer los datos de la sede<br>$consulta<br>";
 
         $resultado = $Link->query($consulta) or die ('Unable to execute query para traer los datos de la sede '. mysqli_error($Link));
@@ -479,6 +484,11 @@ $mesAnno = '';
     </div><!-- /.col-lg-12 -->
   </div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
+<?php else: ?>
+  <script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php endif ?>
 
 <?php include '../../footer.php'; ?>
 

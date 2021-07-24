@@ -1,6 +1,13 @@
 <?php 
 $titulo = 'Suplente';
 require_once '../../header.php';
+
+if ($permisos['titulares_derecho'] == "0") {
+  ?><script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 set_time_limit(0);
 ini_set('memory_limit','6000M');
 // exit(var_dump($_POST));
@@ -113,7 +120,7 @@ foreach ($meses as $key => $mes) {
   </div> <!-- col-lg-8 -->
   <div class="col-lg-4 col-sm-2">
     <div class="title-action">
-      <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) : ?>
+      <?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") : ?>
       <div class="dropdown pull-right">
         <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
         </button>

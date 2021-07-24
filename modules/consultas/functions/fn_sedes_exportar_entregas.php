@@ -21,6 +21,7 @@ use PhpOffice\PhpSpreadsheet\Style\Supervisor;
 $periodo_actual = $_SESSION["periodoActual"];
 $mes = ($_GET["mes"] != "") ? $Link->real_escape_string($_GET["mes"]) : "";
 $semana = ($_GET["semana"] != "") ? $Link->real_escape_string($_GET["semana"]) : "";
+$zona = ($_GET["zona"] != "") ? $Link->real_escape_string($_GET["zona"]) : "";
 
 // Se crea una condicion para el caso que el usuario sea de tipo rector
 $condicionRector = "";
@@ -31,7 +32,7 @@ if ($_SESSION['perfil'] == "6" && $_SESSION['num_doc'] != '') {
 		$dataInstituciones = $respuestaInstituciones->fetch_assoc();
 		$codigoIntitucion = $dataInstituciones['codigo_inst'];
 	}
-	$condicionRector = " WHERE enr.cod_inst = " . $codigoIntitucion . " ";
+	$condicionRector = " AND enr.cod_inst = " . $codigoIntitucion . " ";
 }
 
 // Se crea una condicion para el caso que el usuario sea de tipo coordinador
@@ -58,7 +59,12 @@ if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
 		}
 	}
 	$codigoSedes = substr($codigoSedes, 0 , -1);
-	$condicionCoordinador = " WHERE enr.cod_sede IN ($codigoSedes) ";
+	$condicionCoordinador = " AND enr.cod_sede IN ($codigoSedes) ";
+}
+
+$condicionZona = '';
+if ($zona != 'undefined') {
+	$condicionZona .= " AND  sed.Zona_Pae = '$zona' ";
 }
 
 $consulta_planilla_dias = "SELECT * FROM planilla_dias WHERE mes = '$mes';";
@@ -181,7 +187,9 @@ LEFT JOIN etnia etn ON etn.id = enr.etnia
 LEFT JOIN pobvictima pvc ON pvc.id = enr.cod_pob_victima
 INNER JOIN sedes$periodo_actual sed ON sed.cod_sede = enr.cod_sede
 INNER JOIN jornada jor ON jor.id = enr.cod_jorn_est
-INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede $condicionRector $condicionCoordinador ";
+INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede 
+WHERE 1 = 1 $condicionRector $condicionCoordinador $condicionZona
+";
 
 // exit(var_dump($consulta_entregas));
 $respuesta_entregas = $Link->query($consulta_entregas) or die("Error al consultar prioriozacion$semana: ". $Link->error);

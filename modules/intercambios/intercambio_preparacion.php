@@ -1,5 +1,12 @@
 <?php
 	include '../../header.php';
+
+	if ($permisos['novedades'] == "0") {
+    	?><script type="text/javascript">
+      		window.open('<?= $baseUrl ?>', '_self');
+    	</script>
+  	<?php exit();}
+
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
@@ -55,6 +62,7 @@
 
 
 
+<?php if ($_SESSION['perfil'] == "0" || $permisos['novedades'] == "2"): ?>
 
 <form action="" id="formParametros" name="formParametros" method="post">
 	<div class="wrapper wrapper-content  animated fadeInRight">
@@ -154,16 +162,11 @@
 	<!-- Aqui lleganlas cajas de ajax con la preparación original y las opciones para modificarla -->
 	<div class="boxPreparacion"></div>
 </form>
-
-
-
-
-
-
-
-
-
-
+<?php else: ?>
+	<script type="text/javascript">
+      	window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php endif ?>
 
 <?php include '../../footer.php'; ?>
 

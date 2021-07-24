@@ -13,6 +13,11 @@ $(document).ready(function(){
 	$('#nomMesFin').val($('#mes_inicio option:selected').text());
 
 	$('#fecha_inicio_elaboracion').trigger('change');
+
+	$('#municipio').on('change', function(){
+		$('#tipo_filtro').prop('selectedIndex',0);
+		$('#divBodegas').css('display', 'none');
+	})
 	// $('#fecha_fin_elaboracion').datepicker('setStartDate', $('#fecha_inicio_elaboracion').val());
 	// $('#fecha_inicio_elaboracion').datepicker('setEndDate', $('#fecha_fin_elaboracion').val());
 });
@@ -69,6 +74,7 @@ $('#tipo_filtro').on('change', function(){
 		$.ajax({
 		    type: "POST",
 		    url: "functions/fn_trazabilidad_obtener_bodegas.php",
+		    data: {"municipio" : $('#municipio').val()},
 		    beforeSend: function(){},
 		    success: function(data){
 		      $('#bodegas').html(data);

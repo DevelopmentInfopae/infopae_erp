@@ -1,8 +1,15 @@
 <?php
 require_once '../../header.php';
-set_time_limit (0);
+// set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
+
+if ($permisos['titulares_derecho'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -19,9 +26,11 @@ $periodoActual = $_SESSION['periodoActual'];
   	</div>
   	<div class="col-lg-4">
 	    <div class="title-action">
-	      <button class="btn btn-primary" name="boton_abri_ventana_exportar_focalizacion" id="boton_abri_ventana_exportar_focalizacion"><span class="fa fa-file-excel-o"></span> Exportar</button>
-	    	<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
-	      	<button class="btn btn-primary" onclick="window.location.href = 'nuevo_titular.php';"><span class="fa fa-plus"></span> Nuevo</button>
+	    	<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "1" || $permisos['titulares_derecho'] == "2"): ?>
+	    		<button class="btn btn-primary" name="boton_abri_ventana_exportar_focalizacion" id="boton_abri_ventana_exportar_focalizacion"><span class="fa fa-file-excel-o"></span> Exportar</button>
+	    	<?php endif ?>
+	    	<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2"): ?>
+	      		<button class="btn btn-primary" onclick="window.location.href = 'nuevo_titular.php';"><span class="fa fa-plus"></span> Nuevo</button>
 	    	<?php endif ?>
 	    </div>
   	</div>
@@ -120,6 +129,7 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 	} else {
  		$cod_sede = "";
 	}
+	$semana = $_POST['semana'];
 }
 ?>
 
@@ -150,7 +160,9 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 									<th>Zona</th>
 									<th>Región</th>
 								<?php endif ?>
-								<th>Acciones</th>
+								<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "1" || $permisos['titulares_derecho'] == "2"): ?>
+									<th>Acciones</th>
+								<?php endif ?>
 							</tr>
 						</thead>
 						<tbody>
@@ -169,6 +181,7 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 													f.Tipo_complemento, 
 													GROUP_CONCAT(f.Tipo_complemento) as complementos,
 													f.zona_res_est as zona,
+													f.activo,
 													ubicacion.region as region 
 											FROM focalizacion$semana f 
 												LEFT JOIN tipodocumento t ON t	.id = f.tipo_doc 
@@ -194,38 +207,49 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 											<td><?= $row['zona'] == 1 ? 'Rural' : 'Urbano' ?></td>
 											<td><?= $row['region'] ?></td>
 										<?php endif ?>
-										<td><div class="btn-group">
-				                          <div class="dropdown">
-				                            <button class="btn btn-primary btn-sm" type="button" id="accionesProducto" data-toggle="dropdown" aria-haspopup="true">
-				                              Acciones
-				                              <span class="caret"></span>
-				                            </button>
-				                            <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
-				                           	<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
-				                           		<li><a onclick="editarTitular(<?php echo $row['num_doc']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
-				                                <?php if ($row['activo'] == 1): ?>
-				                                <li data-idtitular="<?php echo $row['num_doc']; ?>" data-accion="1"><a> Estado : <input class="form-control estadoEst" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" checked></a></li>
-				                               	<?php elseif($row['activo'] == 0): ?>
-				                                <li data-idtitular="<?php echo $row['num_doc']; ?>" data-accion="0"><a> Estado : <input class="form-control estadoEst" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" ></a></li>
-				                                <?php endif ?>
-				                            <?php else: ?>
-				                                <?php if ($row['activo'] == 1): ?>
-				                                <li>
-				                                  <a><span class="fa fa-check"></span> Estado : <b>Activo</b></a>
-				                                </li>
-				                               	<?php elseif($row['activo'] == 0): ?>
-				                               	<li>
-				                                  <a></span> Estado : <b>Inactivo</b></a>
-				                                </li>
-				                                <?php endif ?>
-				                           	<?php endif ?>
-				                               <li>
-				                                <a><span class="fa fa-file-excel-o"></span> Exportar</a>
-				                               </li>
-				                            </ul>
-				                          </div>
-				                        </div>
+										<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "1" || $permisos['titulares_derecho'] == "2"): ?>
+										<td>
+											<div class="btn-group">
+				                          		<div class="dropdown">
+				                            		<button class="btn btn-primary btn-sm" type="button" id="accionesProducto" data-toggle="dropdown" aria-haspopup="true">
+				                              			Acciones
+				                              		<span class="caret"></span>
+				                            		</button>
+				                            		<ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
+				                           				<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2"): ?>
+				                           					<li><a onclick="editarTitular(<?php echo $row['num_doc']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
+				                           				<?php endif ?>	
+				                           				<li><a onclick="exportarTitular(<?php echo $row['num_doc'];?>, <?php echo $semana; ?>)"><span class="fa fa-file-excel-o"></span> Exportar</a></li>
+				                           				<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2"): ?>
+				                           					<?php if ($row['activo'] == 1): ?>
+					                                			<li data-idtitular="<?php echo $row['num_doc']; ?>" data-accion="1">
+					                                				<a onclick="confirmarCambioEstado(<?php echo $row['num_doc'];?>, <?php echo $row['activo']; ?>, <?php echo "$semana"; ?>)"> Estado : 
+					                                				<input id="inputEstado<?= $row['num_doc'];?>" class="form-control estadoEst" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" checked>
+					                                				</a>
+					                                			</li>
+					                            			<?php elseif($row['activo'] == 0): ?>
+					                                			<li data-idtitular="<?php echo $row['num_doc']; ?>" data-accion="0">
+					                                				<a onclick="confirmarCambioEstado(<?php echo $row['num_doc']; ?> , <?php echo $row['activo']; ?>, <?php echo "$semana"; ?>)"cambiarEstado> Estado : 
+					                                				<input id="inputEstado<?= $row['num_doc'];?>" class="form-control estadoEst" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" >
+					                                				</a>
+					                                			</li>
+					                            			<?php endif ?>
+				                           					<?php else: ?>
+				                                				<?php if ($row['activo'] == 1): ?>
+				                                					<li>
+				                                  						<a><span class="fa fa-check"></span> Estado : <b>Activo</b></a>
+				                                					</li>
+				                               					<?php elseif($row['activo'] == 0): ?>
+				                               						<li>
+				                                  						<a></span> Estado : <b>Inactivo</b></a>
+				                                					</li>
+				                                				<?php endif ?>
+				                                		<?php endif ?>	
+				                            		</ul>
+				                          		</div>
+				                        	</div>
 				                    	</td>
+				                   		<?php endif ?>
 									</tr>
 									<?php }
 								}
@@ -242,7 +266,7 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 								<th>Grupo</th>
 								<th>Jornada</th>
 								<th>Edad</th>
-								<th>Tipo COMP</th>
+								<th>Tipo complemento</th>
 								<?php if (isset($_GET['region'])): ?>
 									<th>Zona</th>
 									<th>Región</th>
@@ -301,6 +325,28 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
                 </select>
               </div>
             </div>
+            <?php if ($_SESSION['p_Municipio'] == "0"): ?>
+            	<div class="col-md-4">
+              		<div class="form-group">
+                		<label for="zona_exportar">Zona</label>
+                			<select class="form-control" name="zona_exportar" id="zona_exportar" required>
+                  		<option value="">Selección</option>
+                   		<?php
+                    		$consultaZona = "SELECT distinct Zona_Pae AS zona FROM sedes$periodoActual;";
+                    		$resultadoZona = $Link->query($consultaZona);
+                    		if($resultadoZona->num_rows > 0){
+                      			while($registros = $resultadoZona->fetch_assoc()) {
+                  		?>
+                      	<option value="<?= $registros["zona"]; ?>"><?= $registros["zona"]; ?></option>
+                  <?php
+                      }
+                    }
+                  ?>
+                </select>
+              </div>
+            </div>
+            <?php endif ?>
+
           </div>
         </form>
       </div>
@@ -312,9 +358,65 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
   </div>
 </div>
 
+<!-- ventana confirmar cambio de estado -->
+<div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header text-info" style="padding: 15px;">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
+      </div>
+      <div class="modal-body">
+          <p class="text-center"></p>
+      </div>
+      <div class="modal-footer">
+        <input type="hidden" id="documentoACambiar">
+        <input type="hidden" id="estadoACambiar">
+        <input type="hidden" id="semanaDeCambio">
+        <button type="button" class="btn btn-danger btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstado();">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="cambiarEstado();">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <form id="editar_titular" action="editar_titular.php" method="post">
 	<input type="hidden" name="num_doc_editar" id="num_doc_editar">
+	<input type="hidden" name="semana_editar" id="semana_editar" value="<?php if(isset($_POST['semana']) && $_POST['semana'] != ''){echo $_POST['semana']; }?>">
+</form>
+
+<form id="exportar_titular" action="exportar_titular.php" method="post">
+	<input type="hidden" name="num_doc_exportar" id="num_doc_exportar">
+	<input type="hidden" name="semana" id="semana">
+</form>
+
+
+<form action="despacho_por_sede.php" method="post" name="formDespachoPorSede" id="formDespachoPorSede">
+  <input type="hidden" name="despachoAnnoI" id="despachoAnnoI" value="">
+  <input type="hidden" name="despachoMesI" id="despachoMesI" value="">
+  <input type="hidden" name="despacho" id="despacho" value="">
+</form>
+
+<form action="despachos.php" id="parametrosBusqueda" method="get">
+  <input type="hidden" id="pb_annoi" name="pb_annoi" value="">
+  <input type="hidden" id="pb_mes" name="pb_mes" value="">
+  <input type="hidden" id="pb_diai" name="pb_diai" value="">
+  <input type="hidden" id="pb_annof" name="pb_annof" value="">
+  <input type="hidden" id="pb_mesf" name="pb_mesf" value="">
+  <input type="hidden" id="pb_diaf" name="pb_diaf" value="">
+  <input type="hidden" id="pb_tipo" name="pb_tipo" value="">
+  <input type="hidden" id="pb_municipio" name="pb_municipio" value="">
+  <input type="hidden" id="pb_institucion" name="pb_institucion" value="">
+  <input type="hidden" id="pb_sede" name="pb_sede" value="">
+  <input type="hidden" id="pb_tipoDespacho" name="pb_tipoDespacho" value="">
+  <input type="hidden" id="pb_ruta" name="pb_ruta" value="">
+  <input type="hidden" id="pb_btnBuscar" name="pb_btnBuscar" value="">
+</form>
+<form action="titular.php" method="post" name="verTitular" id="verTitular">
+  <input type="hidden" name="numDoc" id="numDoc">
+  <input type="hidden" name="tipoDoc" id="tipoDoc">
+  <input type="hidden" name="semana" id="semana" value="<?php if(isset($_POST['semana']) && $_POST['semana'] != ''){echo $_POST['semana']; }?>">
 </form>
 
 <?php include '../../footer.php'; ?>
@@ -340,45 +442,15 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 
 <script src="<?php echo $baseUrl; ?>/modules/titulares_derecho/js/titulares_derecho.js"></script>
 
-
-
-<!-- Page-Level Scripts -->
-
-
-<?php mysqli_close($Link); ?>
-
-<form action="despacho_por_sede.php" method="post" name="formDespachoPorSede" id="formDespachoPorSede">
-  <input type="hidden" name="despachoAnnoI" id="despachoAnnoI" value="">
-  <input type="hidden" name="despachoMesI" id="despachoMesI" value="">
-  <input type="hidden" name="despacho" id="despacho" value="">
-</form>
-
-<form action="despachos.php" id="parametrosBusqueda" method="get">
-  <input type="hidden" id="pb_annoi" name="pb_annoi" value="">
-  <input type="hidden" id="pb_mes" name="pb_mes" value="">
-  <input type="hidden" id="pb_diai" name="pb_diai" value="">
-  <input type="hidden" id="pb_annof" name="pb_annof" value="">
-  <input type="hidden" id="pb_mesf" name="pb_mesf" value="">
-  <input type="hidden" id="pb_diaf" name="pb_diaf" value="">
-  <input type="hidden" id="pb_tipo" name="pb_tipo" value="">
-  <input type="hidden" id="pb_municipio" name="pb_municipio" value="">
-  <input type="hidden" id="pb_institucion" name="pb_institucion" value="">
-  <input type="hidden" id="pb_sede" name="pb_sede" value="">
-  <input type="hidden" id="pb_tipoDespacho" name="pb_tipoDespacho" value="">
-  <input type="hidden" id="pb_ruta" name="pb_ruta" value="">
-  <input type="hidden" id="pb_btnBuscar" name="pb_btnBuscar" value="">
-</form>
-
-
-    <!-- Page-Level Scripts -->
-    <script>
+ 
+<script type="text/javascript">
 
   dataset1 = $('#tablaTitulares').DataTable({
-    /*order: [ 0, 'asc' ],*/
+    order: [ 0, 'asc' ],
     pageLength: 25,
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-    buttons : [{extend:'excel', title:'Titulares_semana', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10]}}],
+    buttons : [{extend:'excel', title:'Titulares_semana', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8]}}],
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',
@@ -395,20 +467,16 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
     }
     }).on("draw", function(){jQuery('.estadoEst').bootstrapToggle();});
    var btnAcciones = '<div class="dropdown pull-right" id="">'+
-	   						'<button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span>'+
-	   						'</button>'+
-	   						'<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">'+
-		   						'<li>'+
-		   							'<a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a>'+
-		   						'</li>'+
-                        		'<li><a href="'+ $('#inputBaseUrl').val() +'/modules/titulares_derecho/index.php<?= isset($_GET['region']) ? "" : "?region=1" ?>"><i class="fa fa-eye"></i> Ver zona </a></li>'+
-		   					'</ul>'+
+   						'<button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button>'+
+   								'<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">'+
+   									'<li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li>'+
+                        			'<li><a href="'+ $('#inputBaseUrl').val() +'/modules/titulares_derecho/index.php<?= isset($_GET['region']) ? "" : "?region=1" ?>"><i class="fa fa-eye"></i> Ver zona </a></li>'+
+		   						'</ul>'+
 	   				  '</div>';
 
   $('.containerBtn').html(btnAcciones);
 
-
-$(document).on('click', '.dropdown-menu li:nth-child(2)', function(event){
+  $(document).on('click', '.dropdown-menu li:nth-child(2)', function(event){
 	event.stopPropagation();
 });
 
@@ -431,15 +499,14 @@ $(document).on('click', '.dropdown-menu li:nth-child(2)', function(event){
     $('.select2').select2({
       width: "resolve"
     });
-    </script>
+
+</script>
 
 <form action="titular.php" method="post" name="verTitular" id="verTitular">
   <input type="hidden" name="numDoc" id="numDoc">
   <input type="hidden" name="tipoDoc" id="tipoDoc">
   <input type="hidden" name="semana" id="semana" value="<?php if(isset($_POST['semana']) && $_POST['semana'] != ''){echo $_POST['semana']; }?>">
 </form>
-
-
 
 
 </body>

@@ -15,14 +15,21 @@ $(document).ready(function(){
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
   }
- 
 });
 
 function confirmarCambio (id, opcion, modulo){
 	$('#id').val(id);
   $('#estadoACambiar').val(opcion);
   $('#moduloACambiar').val(modulo);
-  if(opcion){ textoEstado = 'Desactivar' } else { textoEstado = 'Activar'; }
+  if (id != 6 && id != 7) {
+    if (opcion == "0") { textoEstado1 = 'Lectura'; valorEstado1 = "1";  textoEstado2 = 'Lectura y escritura'; valorEstado2 = "2"; }
+    if (opcion == "1") { textoEstado1 = 'Inactivar'; valorEstado1 = "0";  textoEstado2 = 'Lectura y escritura'; valorEstado2 = "2"; }
+    if (opcion == "2") { textoEstado1 = 'Inactivar'; valorEstado1 = "0";  textoEstado2 = 'Lectura'; valorEstado2 = "1"; }
+  }
+  else{
+    if (opcion == "0") { textoEstado1 = 'Lectura'; valorEstado1 = "1"; }
+    if (opcion == "1") { textoEstado1 = 'Inactivar'; valorEstado1 = "0"; }
+  }
 
   var moduloString;
   if (modulo ==  "entregas_biometricas") {
@@ -63,11 +70,43 @@ function confirmarCambio (id, opcion, modulo){
     moduloString = "Configuración";
   }
 
-  $('#ventanaConfirmar .modal-body p').html('¿Esta seguro de ' + textoEstado + ' el modulo ' + moduloString + '?');
-  $('#ventanaConfirmar').modal();
+  // $('#ventanaConfirmar .modal-body p').html('¿Esta seguro de ' + textoEstado + ' el modulo ' + moduloString + '?');
+  // $('#ventanaConfirmar').modal();
+  if (id != 6 && id != 7) {
+    $('#ventanaConfirmar .modal-body').html('<div class= "row">'+
+                                            '<div class= "col-sm-12">'+
+                                              '<h3>'+moduloString+'</h3>'+                                             
+                                            '</div>'+
+                                            '<div class= "col-sm-6">'+
+                                              '<label>'+
+                                                '<input type="radio" name="estado" id="estado" value="'+valorEstado1+'"> ' +textoEstado1+
+                                              '</label>'+
+                                            '</div>'+
+                                            '<div class= "col-sm-6">'+ 
+                                              '<label>'+ 
+                                                '<input type="radio" name="estado" id="estado2" value="'+valorEstado2+'"> ' +textoEstado2+
+                                              '</label>'+  
+                                            '</div>'+  
+                                          '</div>'      
+                                            );
+    $('#ventanaConfirmar').modal();
+  }else {
+    $('#ventanaConfirmar .modal-body').html('<div class= "row">'+
+                                              '<div class= "col-sm-12">'+
+                                                '<h3>'+moduloString+'</h3>'+                                             
+                                              '</div>'+
+                                              '<div class= "col-sm-12">'+
+                                                '<label>'+
+                                                  '<input type="radio" name="estado" id="estado" value="'+valorEstado1+'"> ' +textoEstado1+
+                                                '</label>'+
+                                              '</div>'+ 
+                                            '</div>'      
+                                            );
+    $('#ventanaConfirmar').modal();
+  }
+  
 
 }
-
 
 function cambiarEstado() {
   $.ajax({
@@ -75,8 +114,9 @@ function cambiarEstado() {
   	type: 'POST',
   	data: {
       idPerfil: $('#id').val(), 
-      estado : $('#estadoACambiar').val(), 
-      modulo : $('#moduloACambiar').val() 
+      // estado : $('#estadoACambiar').val(), 
+      modulo : $('#moduloACambiar').val(),
+      estado : $('input:radio[name=estado]:checked').val()
     },
     dataType: 'json',
   	beforeSend: function(){ $('#loader').fadeIn(); }
@@ -112,3 +152,4 @@ function cambiarEstado() {
   });
   
 }
+

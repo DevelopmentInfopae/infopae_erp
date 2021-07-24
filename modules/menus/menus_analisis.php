@@ -1,8 +1,15 @@
-<?php 
+<?php
 $titulo = 'Menú';
-require_once '../../header.php'; 
+require_once '../../header.php';
 set_time_limit (0);
 ini_set('memory_limit','6000M');
+
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';
 $Link = new mysqli($Hostname, $Username, $Password, $Database);
@@ -16,6 +23,8 @@ $Link->set_charset("utf8");
 
 <?php
   $idProducto = $_POST['idProducto'];
+
+  // echo "PRODUCTO : ".$idProducto;
   $titulo = $_POST['descripcion'];
   $codigoMenu = $_POST['codigo'];
   $annoActual = $_SESSION['periodoActual'];
@@ -48,8 +57,8 @@ $Link->set_charset("utf8");
         <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-          <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-            <li><a onclick="editarProducto(<?php echo $idProducto; ?>)"><span class="fa fa-pencil"></span> Editar </a></li>
+          <?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
+            <li><a onclick="editarProducto(<?php echo $idProducto; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
             <?php if ($Producto['Inactivo'] == 0): ?>
               <li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $Producto['Codigo']; ?>" data-tipocomplemento="<?php echo $Producto['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $Producto['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span> Eliminar </a></li>
             <?php else: ?>
@@ -70,6 +79,9 @@ $Link->set_charset("utf8");
       <div class="ibox float-e-margins">
         <div class="ibox-content contentBackground">
 <?php
+
+      // echo "<br>Id del producto ".$idProducto."<br>";
+
 // 1. Producto
       // 2. Subproductos
       // 3. Materias primas
@@ -84,22 +96,12 @@ $Link->set_charset("utf8");
       $idProducto = $row['id'];
 
 
-      //echo "<br>Id del producto ".$idProducto."<br>";
 
       // 2. Subproductos
-      $consultaSubProductos =  "SELECT f.id as idFichaTecnica,fd.* FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."' ";
+      $consultaSubProductos =  "SELECT f.id as idFichaTecnica,fd.* FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."' AND fd.Componente NOT LIKE '%CONTRAMUESTRA%' ";
 
 
       //$consultaSubProductos =  "SELECT f.id as idFichaTecnica,fd.* FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.id = fd.IdFT WHERE fd.IdFT = '".$idProducto."' ";
-
-
-
-
-
-
-
-
-
 
 
       //echo "<br>Consulta sub productos<br>".$consultaSubProductos."<br>";
@@ -108,10 +110,9 @@ $Link->set_charset("utf8");
       while ($row = $result->fetch_assoc()){
          $subProductos[] = $row;
       }
-      //var_dump($subProductos);
 
       // Cantidad de materias y grupo alimenticio del subproducto
-      $consultaCantidadesGrupo = "SELECT idft, count(idFT) AS materias, max(cantidad), mac.grupo_alim FROM fichatecnicadet fd LEFT JOIN menu_aportes_calynut mac ON fd.codigo = mac.cod_prod WHERE fd.idFT IN (SELECT f.id FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."') GROUP BY idFT  ";
+      $consultaCantidadesGrupo = "SELECT idft, count(idFT) AS materias, max(cantidad), mac.grupo_alim FROM fichatecnicadet fd LEFT JOIN menu_aportes_calynut mac ON fd.codigo = mac.cod_prod WHERE fd.idFT IN (SELECT f.id FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."') AND mac.grupo_alim != \"Contramuestra\" GROUP BY idFT  ";
 
       //echo "<br>".$consultaCantidadesGrupo."<br>";
 
@@ -119,18 +120,17 @@ $Link->set_charset("utf8");
       while ($row = $result->fetch_assoc()){
          $cantidadesGrupo[] = $row;
       }
-      //var_dump($cantidadesGrupo);
 
       // 3. Materias primas
-      $consultaMateriasPrimas = " SELECT fd.*, mac.* FROM fichatecnicadet fd LEFT JOIN menu_aportes_calynut mac ON fd.codigo = mac.cod_prod WHERE fd.idFT IN (SELECT f.id FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."' ) ";
+      $consultaMateriasPrimas = " SELECT fd.*, mac.* FROM fichatecnicadet fd LEFT JOIN menu_aportes_calynut mac ON fd.codigo = mac.cod_prod WHERE fd.idFT IN (SELECT f.id FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."' ) AND mac.grupo_alim != \"Contramuestra\" ";
 
-      //echo "<br>".$consultaMateriasPrimas."<br>";
+      // exit(var_dump($consultaMateriasPrimas));
+      // "<br>".$consultaMateriasPrimas."<br>";
 
       $result = $Link->query($consultaMateriasPrimas) or die ('Unable to execute query. '. mysqli_error($Link));
       while ($row = $result->fetch_assoc()){
          $materiasPrimas[] = $row;
       }
-      //var_dump($materiasPrimas);
 
 
 
@@ -153,9 +153,6 @@ $Link->set_charset("utf8");
       while ($row = $result->fetch_assoc()){
          $valoresMenu = $row;
       }
-      //var_dump($valoresMenu);
-      //echo "<br><br>";
-
 ?>
 
 
@@ -262,18 +259,6 @@ $Link->set_charset("utf8");
 
             <?php
 
-
-
-
-
-
-
-
-
-
-
-
-
             for ($i=0; $i < count($subProductos) ; $i++) {
 
 
@@ -297,12 +282,6 @@ $Link->set_charset("utf8");
 
               $materias = $cantidadesGrupo[$indice]['materias'];
 
-
-
-
-
-
-
               ?>
               <tr>
 
@@ -325,9 +304,6 @@ $Link->set_charset("utf8");
                 }
 
 
-                //var_dump($ingredientes);
-
-
 
 
 
@@ -338,13 +314,12 @@ $Link->set_charset("utf8");
                     <td><?php echo $ingredientes[$k]['Componente']; ?></td>
                     <td style="text-align: center"><?php echo $ingredientes[$k]['codigo']; ?></td>
                     <td style="text-align: center"><?php echo $ingredientes[$k]['PesoBruto']; ?></td>
-                    <td style="text-align: center"><?php echo $ingredientes[$k]['Cantidad']; $tpesoNeto = $tpesoNeto + $ingredientes[$k]['Cantidad']; ?></td>
+                    <td style="text-align: center"><?php echo $ingredientes[$k]['PesoNeto']; ?></td>
 
 
 
                     <td style="text-align: center">
 
-                      <?php //var_dump($ingredientes); ?>
 
 
                       <?php if (is_null($ingredientes[$k]['kcalxg']) ) {
@@ -355,6 +330,7 @@ $Link->set_charset("utf8");
                         // Formula de las calorias ultima modificación 20160919
                         //$aux = $aux * 9;
                         //$aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux);
                         echo $aux;
                         $tkcal = $tkcal + $aux;
                       } ?>
@@ -366,6 +342,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['kcaldgrasa'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         $tkcaldgrasa = $tkcaldgrasa + $aux;
                       } ?>
@@ -377,6 +354,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Proteinas'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         $tProteinas = $tProteinas + $aux;
                       } ?>
@@ -388,7 +366,7 @@ $Link->set_charset("utf8");
 
 
                       $grasas = ($grasas / 100) * $ingredientes[$k]['Cantidad'];
-
+                      $grasas = round($grasas, 1);
                       echo $grasas;
                       $tgrasas = $tgrasas + $grasas;
                       ?>
@@ -401,6 +379,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Grasa_Sat'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         $tgrasaSaturada = $tgrasaSaturada + $aux;
                       } ?>
@@ -412,12 +391,11 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Grasa_poliins'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         $tgrasaInsaturada = $tgrasaInsaturada + $aux;
                       } ?>
                     </td>
-
-
 
                     <td style="text-align: center">
                       <?php if (is_null($ingredientes[$k]['Grasa_Monoins']) ) {
@@ -425,6 +403,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Grasa_Monoins'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Grasa_Monoins'];
                         $tgrasaMonoInsaturada = $tgrasaMonoInsaturada + $aux;
@@ -441,17 +420,12 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Grasa_Trans'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Grasa_Trans'];
                         $tgrasaTrans = $tgrasaTrans + $aux;
                       } ?>
                     </td>
-
-
-
-
-
-
 
                     <td style="text-align: center">
                       <!-- CORBOHIDRATOS (g) -->
@@ -462,32 +436,14 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Fibra_dietaria'] + $ingredientes[$k]['Azucares'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         $tcarbohidratos = $tcarbohidratos + $aux;
                       }
 
 
-
-
-
-
-
                       ?>
                     </td>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                     <td style="text-align: center">
                       <!-- Fibra dietaria -->
@@ -496,14 +452,12 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Fibra_dietaria'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Fibra_dietaria'];
                         $tFibra_dietaria = $tFibra_dietaria + $aux;
                       } ?>
                     </td>
-
-
-
 
                     <td style="text-align: center">
                       <?php if (is_null($ingredientes[$k]['Azucares']) ) {
@@ -511,6 +465,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Azucares'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
 
                         //echo $ingredientes[$k]['Azucares'];
@@ -518,13 +473,13 @@ $Link->set_charset("utf8");
                       } ?>
                     </td>
 
-
                     <td style="text-align: center">
                       <?php if (is_null($ingredientes[$k]['Colesterol']) ) {
                         echo '0'; $tColesterol = $tColesterol + 0;
                       }else{
                         $aux = $ingredientes[$k]['Colesterol'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Colesterol'];
                         $tColesterol = $tColesterol + $aux;
@@ -537,6 +492,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Sodio'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Sodio'];
                         $tSodio = $tSodio + $aux;
@@ -550,6 +506,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Zinc'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Sodio'];
                         $tZinc = $tZinc + $aux;
@@ -562,6 +519,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Calcio'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Calcio'];
                         $tCalcio = $tCalcio + $aux;
@@ -575,6 +533,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Hierro'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Hierro'];
                         $tHierro = $tHierro + $aux;
@@ -593,6 +552,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Vit_A'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Vit_A'];
                         $tVit_A = $tVit_A + $aux;
@@ -605,6 +565,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Vit_C'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Vit_C'];
                         $tVit_C = $tVit_C + $aux;
@@ -617,6 +578,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Vit_B1'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Vit_B1'];
                         $tVit_B1 = $tVit_B1 + $aux;
@@ -629,6 +591,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Vit_B2'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Vit_B2'];
                         $tVit_B2 = $tVit_B2 + $aux;
@@ -641,6 +604,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Vit_B3'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
                         //echo $ingredientes[$k]['Vit_B3'];
                         $tVit_B3 = $tVit_B3 + $aux;
@@ -653,6 +617,7 @@ $Link->set_charset("utf8");
                       }else{
                         $aux = $ingredientes[$k]['Acido_Fol'];
                         $aux = ($aux / 100) * $ingredientes[$k]['Cantidad'];
+                        $aux = round($aux, 1);
                         echo $aux;
 
                         //echo $ingredientes[$k]['Acido_Fol'];
@@ -767,28 +732,28 @@ $Link->set_charset("utf8");
 
                   <tr>
                     <td colspan="7" style="text-align: center">% DE ADECUACIÓN</td>
-                    <td style="text-align: center"><?php echo $pkcal; ?>%</td>
-                    <td style="text-align: center"><?php echo $pkcaldgrasa; ?>%</td>
-                    <td style="text-align: center"><?php echo $pProteinas; ?>%</td>
-                    <td style="text-align: center"><?php echo $pgrasas; ?>%</td>
-                    <td style="text-align: center"><?php echo $pgrasaSaturada; ?>%</td>
-                    <td style="text-align: center"><?php echo $pgrasaInsaturada; ?>%</td>
-                    <td style="text-align: center"><?php echo $pgrasaMonoInsaturada; ?>%</td>
-                    <td style="text-align: center"><?php echo $pgrasaTrans; ?>%</td>
-                    <td style="text-align: center"><?php echo $pcarbohidratos; ?>%</td>
-                    <td style="text-align: center"><?php echo $pFibra; ?>%</td>
-                    <td style="text-align: center"><?php echo $pAzucares; ?>%</td>
-                    <td style="text-align: center"><?php echo $pColesterol; ?>%</td>
-                    <td style="text-align: center"><?php echo $pSodio; ?>%</td>
-                    <td style="text-align: center"><?php echo $pZinc; ?>%</td>
-                    <td style="text-align: center"><?php echo $pCalcio; ?>%</td>
-                    <td style="text-align: center"><?php echo $pHierro; ?>%</td>
-                    <td style="text-align: center"><?php echo $pVit_A; ?>%</td>
-                    <td style="text-align: center"><?php echo $pVit_C; ?>%</td>
-                    <td style="text-align: center"><?php echo $pVit_B1; ?>%</td>
-                    <td style="text-align: center"><?php echo $pVit_B2; ?>%</td>
-                    <td style="text-align: center"><?php echo $pVit_B3; ?>%</td>
-                    <td style="text-align: center"><?php echo $pAcido_Fol; ?>%</td>
+                    <td style="text-align: center"><?php echo round($pkcal); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pkcaldgrasa, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pProteinas, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pgrasas, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pgrasaSaturada, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pgrasaInsaturada, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pgrasaMonoInsaturada, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pgrasaTrans, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pcarbohidratos, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pFibra, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pAzucares, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pColesterol, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pSodio, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pZinc, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pCalcio, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pHierro, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pVit_A, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pVit_C, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pVit_B1, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pVit_B2, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pVit_B3, 1); ?>%</td>
+                    <td style="text-align: center"><?php echo round($pAcido_Fol, 1); ?>%</td>
                   </tr>
 
 
@@ -815,7 +780,7 @@ $Link->set_charset("utf8");
 
 
       <div class="row" style="text-align: center;">
-     
+
             <div class="col-xs-4" style="display:inline-block;">
               <div class="table-responsive">
 
@@ -1034,7 +999,7 @@ $Link->set_charset("utf8");
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 
 <!-- Scripts sección del modulo -->
-<script src="<?php echo $baseUrl; ?>/modules/menus/js/menus.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
 <!-- Page-Level Scripts -->
 
 <?php mysqli_close($Link); ?>

@@ -1,5 +1,12 @@
 <?php
 include '../../header.php';
+
+if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+        window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];

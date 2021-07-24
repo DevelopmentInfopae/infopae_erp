@@ -44,10 +44,90 @@ $( document ).ready(function() {
 	});
 
 	$('#btnBuscar').click(function(){
-
-		if($('#formPlanillas').valid()){
-			$('#formPlanillas').submit();
+		var version = $('input:radio[name=tipoPlanilla]:checked').val();
+		if (version == 1) {
+			if($('#formPlanillas').valid()){
+				$('#formPlanillas').submit();
+			}
 		}
+		if (version == 2) {
+			if ($('#formPlanillas').valid()) {
+				municipio = $('#formPlanillas #municipio').val();
+				institucion = $('#formPlanillas #institucion').val();
+				mes = $('#formPlanillas #mes').val();
+				semanaInicial = $('#formPlanillas #semana_inicial').val();
+				semanaFinal = $('#formPlanillas #semana_final').val();
+				imprimirMes = $('#formPlanillas #imprimirMes').val();
+				fechaDesde = $('#formPlanillas #fecha_desde').val();
+				fechaHasta = $('#formPlanillas #fecha_hasta').val();
+				observaciones = $('#formPlanillas #observaciones').val();
+			}	
+				// console.log(municipio,institucion,mes, semanaInicial, semanaFinal, imprimirMes, fechaDesde, fechaHasta, observaciones);
+				$('#formPlanillas2 #municipio').val(municipio);
+				$('#formPlanillas2 #institucion').val(institucion);
+				$('#formPlanillas2 #mes').val(mes);
+				$('#formPlanillas2 #semana_inicial').val(semanaInicial);
+				$('#formPlanillas2 #semana_final').val(semanaFinal);
+				$('#formPlanillas2 #imprimirMes').val(imprimirMes);
+				$('#formPlanillas2 #fecha_desde').val(fechaDesde);
+				$('#formPlanillas2 #fecha_hasta').val(fechaHasta);
+				$('#formPlanillas2 #observaciones').val(observaciones);
+				$('#formPlanillas2').submit();
+		}
+
+
+
+
+
+
+		//
+		// console.log('Enviar Formulario');
+		// //Validaciones
+		// var bandera = 0;
+		// if( $('#mes').val() == '' ){
+		// 	bandera++;
+		// 	alert('Debe seleccionar un mes');
+		// 	$('#mes').focus();
+		// }
+		// else if( $('#municipio').val() == '' ){
+		// 	bandera++;
+		// 	alert('Debe seleccionar un municipio');
+		// 	$('#municipio').focus();
+		// }
+		// // else if( $('#institucion').val() == '' ){
+		// // 	bandera++;
+		// // 	alert('Debe seleccionar una institucion');
+		// // 	$('#institucion').focus();
+		// // }
+		// // else if( $('#sede').val() == '' ){
+		// // 	bandera++;
+		// // 	alert('Debe seleccionar una sede');
+		// // 	$('#sede').focus();
+		// // }
+		// else if( $('#tipo').val() == '' ){
+		// 	bandera++;
+		// 	alert('Debe seleccionar un tipo de complemento');
+		// 	$('#tipo').focus();
+		// }
+		//
+		// else{
+		// 	var tipoPlanilla = $('input[name="tipoPlanilla"]:checked').val();
+		// 	if (tipoPlanilla == null){
+		// 		bandera++;
+		// 		alert('Debe seleccionar un tipo de planilla');
+		// 		$('input[name="tipoPlanilla"]').focus();
+		// 	}
+		// }
+		//
+		//
+		//
+		// if(bandera == 0){
+		// 	$('#formPlanillas').submit();
+		// }
+
+
+
+
 
 
 	});

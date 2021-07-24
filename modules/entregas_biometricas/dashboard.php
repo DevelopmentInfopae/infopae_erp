@@ -7,8 +7,13 @@
 	require_once '../../db/conexion.php';
 	include '../../autentication.php';
 	include '../../php/funciones.php';
+	include '../../permisos.php';
 	$idUsr = $_SESSION['id_usuario'];
 	$fotoUsr = $_SESSION['foto'];
+
+	if ($permisos['entregas_biometricas'] == "0") {
+		header( 'Location:'.$baseUrl);
+	}
 
 	$dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
 	if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }

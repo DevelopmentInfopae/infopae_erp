@@ -2,6 +2,12 @@
   $titulo = 'Parámetros Iniciales';
   include '../../header.php';
 
+  if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $periodoActual = $_SESSION['periodoActual'];
   $consulta1 = "SELECT * FROM parametros;";
   $resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". mysql_error($Link));
@@ -23,11 +29,13 @@
     </ol>
   </div>
   <div class="col-lg-4">
-    <div class="title-action">
-      <a href="#" class="btn btn-primary" id="boton_guardar">
-        <i class="fa <?php if ($resultado1->num_rows > 0){ echo "fa-pencil"; } else { echo "fa-plus"; } ?>"></i> Guardar
-      </a>
-    </div>
+    <?php if ($_SESSION['perfil'] == "0" || $permisos['configuracion'] == "2"): ?>
+      <div class="title-action">
+        <a href="#" class="btn btn-primary" id="boton_guardar">
+          <i class="fa <?php if ($resultado1->num_rows > 0){ echo "fa-pencil"; } else { echo "fa-plus"; } ?>"></i> Guardar
+        </a>
+      </div>
+    <?php endif ?>
   </div>
 </div>
 
@@ -170,7 +178,7 @@
                 </div>
                 <div class="row">
                   <div class="form-group col-sm-6">
-                    <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumios."></i></label>
+                    <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumos."></i></label>
                     <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
                   </div>
                   <div class="col-sm-6">

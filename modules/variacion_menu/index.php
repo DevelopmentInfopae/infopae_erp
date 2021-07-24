@@ -1,5 +1,12 @@
 <?php
     include '../../header.php';
+
+    if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+      ?><script type="text/javascript">
+          window.open('<?= $baseUrl ?>', '_self');
+      </script>
+    <?php exit(); }
+
     $titulo = 'Variación Menú'; 
 ?> 
 
@@ -39,6 +46,7 @@
             <?php  
             $consulta = "SELECT id, descripcion FROM variacion_menu;";
             $respuesta = $Link->query($consulta) or die('Error al consultar la tabla variacion menu' . mysqli_error($consulta));
+            // exit(var_dump($respuesta));
             if ($respuesta->num_rows > 0) {
               while ($dataRespuesta = $respuesta->fetch_assoc()) {
             ?>
