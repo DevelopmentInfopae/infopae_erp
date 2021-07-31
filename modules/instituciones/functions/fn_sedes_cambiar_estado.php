@@ -6,8 +6,8 @@
 	$periodoActual = $_SESSION["periodoActual"];
 	$codigo = mysqli_real_escape_string($Link, $_POST["codigo"]);
 	$estado = mysqli_real_escape_string($Link, $_POST["estado"]);
-
-	$estado = ($estado == "true") ? 1 : 0;
+	// exit(var_dump($_POST));
+	$estado = ($estado == 1) ? 0 : 1;
 	
 	$consulta1="UPDATE sedes$periodoActual SET estado='$estado' WHERE id = '$codigo'";
 	$resultado1=$Link->query($consulta1);

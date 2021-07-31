@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  $('#editarInstitucion').click(function (){ editarInstitucion($(this)) });
+  // $('#editarInstitucion').click(function (){ editarInstitucion($(this)) });
   $(document).on('click', '#crearSedeInstitucion', function(){ crearSede($(this)); });
   $(document).on('click', '.editarSede', function(){ editarSede($(this)); });
   $(document).on('click', '.verDispositivos', function(){ verDispositivos($(this)); });
@@ -8,6 +8,9 @@ $(document).ready(function(){
   $(document).on('click', '.verInfraestructuraSede', function(){ verInfraestructurasSede($(this)); });
   $(document).on('click', '.verTitulares', function(){ verTitulares($(this)); });
   $(document).on('click', '.verTitularesSede', function(){ verTitularesSede($(this)); });
+
+  $(document).on('click', '.editarInstitucion', function(){ abrir_modal_editar_institucion($(this).data('codigoinstitucion')); });
+  $(document).on('click', '#editar_institucion', function(){ actualizarInstitucion(); })
 
   $('.dataTablesSedes tbody td:nth-child(-n+5)').click(function(){
   	$('#formVerSede #codSede').val($(this).closest('tr').attr('codsede'));
@@ -33,6 +36,49 @@ $(document).ready(function(){
  }
 });
 
+function abrir_modal_editar_institucion(codigoinstitucion){
+   $('#contenedor_editar_institucion').load($('#inputBaseUrl').val() +'/modules/instituciones/instituciones_editar.php?codigo='+codigoinstitucion);
+}
+
+function actualizarInstitucion(){
+  if($('#formEditarInstitucion').valid()){
+    datos = $('#formEditarInstitucion').serialize();
+    $.ajax({
+      type: "post",
+      url: "functions/fn_instituciones_actualizar.php",
+      dataType: 'json',
+      data : datos,
+      beforeSend: function(){ $('#loader').fadeIn(); },
+      success: function(data){
+        // console.log(data);
+        if(data.estado == 1){
+          Command: toastr.success(
+            data.mensaje,
+            'Actualizado',
+            { onHidden : function(){
+                $('#loader').fadeOut();
+                window.open('instituciones.php', '_self'); } }
+          );
+        } else {
+          Command: toastr.warning(
+            data.mensaje,
+            "Error al editar",
+            { onHidden: function(){ $('#loader').fadeOut(); } }
+          );
+        }
+      },
+      error: function(data){
+        console.log(data.responseText);
+        Command: toastr.error(
+          "Al parecer existe un problema con el servidor. Por favor contactese con el administrador del sitio InfoPae.",
+          "Error al guardar",
+          { onHidden: function(){ $('#loader').fadeOut(); } }
+        );
+      }
+    });
+  }
+}
+
 function crearSede(control){
   codigoInstitucion = control.data('codigointitucion');
   $('#formCrearSede #codigoInstitucion').val(codigoInstitucion);
@@ -45,11 +91,11 @@ function editarSede(control){
   $('#formEditarSede').submit();
 }
 
-function editarInstitucion(control){
-	codigoInstitucion = control.data('codigoinstitucion');
-	$('#formEditarInstitucion #codigoInstitucion').val(codigoInstitucion);
-	$('#formEditarInstitucion').submit();
-}
+// function editarInstitucion(control){
+// 	codigoInstitucion = control.data('codigoinstitucion');
+// 	$('#formEditarInstitucion #codigoInstitucion').val(codigoInstitucion);
+// 	$('#formEditarInstitucion').submit();
+// }
 
 function confirmarCambioEstado(codigoInstitucion, estado){
   $('#codigoACambiar').val(codigoInstitucion);
@@ -105,17 +151,17 @@ function revertirEstado(){
 
 // SEDES
 function confirmarCambioEstadoSede(codigoSede, estado){
-  $('#codigoACambiar').val(codigoSede);
-  $('#estadoACambiar').val(estado);
+  $('#codigoACambiarSede').val(codigoSede);
+  $('#estadoACambiarSede').val(estado);
 
-  if(estado){ textoEstado = 'Activar' } else { textoEstado = 'Inactivar'; }
+  if(estado){ textoEstado = 'Activar'; } else { textoEstado = 'Inactivar'; }
 
   $('#ventanaConfirmarSede .modal-body p').html('¿Esta seguro de <strong>' + textoEstado + '</strong> la Sede?');
   $('#ventanaConfirmarSede').modal();
 }
 
 function revertirEstadoSede(){
-  $codigoSede = $('#codigoACambiar').val();
+  $codigoSede = $('#codigoACambiarSede').val();
   var estado = $('#inputEstadoSede' + $codigoSede).prop('checked');
   if (estado) {
     $('#inputEstadoSede' + $codigoSede).bootstrapToggle('off');
@@ -130,8 +176,8 @@ function cambiarEstadoSede(){
     url: "functions/fn_sedes_cambiar_estado.php",
     dataType: 'json',
     data: {
-      codigo: $('#codigoACambiar').val(),
-      estado: $('#estadoACambiar').val()
+      codigo: $('#codigoACambiarSede').val(),
+      estado: $('#estadoACambiarSede').val()
     },
     beforeSend: function(){ $('#loader').fadeIn(); },
     success: function(data){

@@ -44,7 +44,9 @@ foreach ($tipo_complemento_datos as $key => $tipo_complemento) {
 
 $consulta = "SELECT ubicacion.Ciudad, instituciones.nom_inst, sedes.nom_sede, $txt_complementos FROM sedes$periodoActual as sedes
 	INNER JOIN  instituciones ON instituciones.codigo_inst = sedes.cod_inst
-    INNER JOIN ubicacion ON ubicacion.CodigoDANE = instituciones.cod_mun;";
+    INNER JOIN ubicacion ON ubicacion.CodigoDANE = instituciones.cod_mun
+    WHERE sedes.estado = 1;";
+// exit(var_dump($consulta));    
 $result = $Link->query($consulta) or die ('Error al consultar, revisar tabla tipo_complemento: '. mysqli_error($Link));
 $nrow = 2;
 if ($result->num_rows > 0) {

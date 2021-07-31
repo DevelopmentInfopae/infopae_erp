@@ -34,16 +34,22 @@
 	$semana = isset($_POST['semana']) ? $Link->real_escape_string($_POST['semana']) : '';
 	$cod_pob_victima = (isset($_POST['cod_pob_victima'])) ? $_POST['cod_pob_victima'] : "";
 
+	$nomAcudiente = (isset($_POST['nom_acudiente'])) ? $_POST['nom_acudiente'] : "";
+	$docAcudiente = (isset($_POST['doc_acudiente'])) ? $_POST['doc_acudiente'] : "";
+	$telAcudiente = (isset($_POST['tel_acudiente'])) ? $_POST['tel_acudiente'] : "";
+	$parantesco_acudiente = (isset($_POST['parantesco_acudiente'])) ? $_POST['parantesco_acudiente'] : "";
+
 	// Algoritmo para calcular la esdad del estudiante suplente.
 	$date1 = new DateTime($fecha_nac);
 	$date2 = new DateTime(date('d-m-Y'));
 	$diff = $date1->diff($date2);
 	$edad = $diff->y;
-
+	// exit(var_dump($_POST));
 	// Consulta utilizada para insertar un nuevo estudiante como suplente.
-	$nuevo_suplente = "UPDATE suplentes$semana SET ape1 = '$ape1', ape2 = '$ape2', nom1 = '$nom1', nom2 = '$nom2', genero = '$genero', dir_res = '$dir_res', cod_mun_res = '$cod_mun_res', telefono = '$telefono', cod_mun_nac = '$cod_mun_nac', fecha_nac = '$fecha_nac', cod_estrato = '$cod_estrato', sisben = '$sisben', cod_discap = '$cod_discap', etnia = '$etnia', cod_pob_victima = '$cod_pob_victima', cod_grado = '$cod_grado', nom_grupo = '$nom_grupo', cod_jorn_est = '$cod_jorn_est', repitente = '$repitente', edad = '$edad', zona_res_est = '$sector', activo = '$estado' WHERE id = '$id'";
+	$nuevo_suplente = "UPDATE suplentes$semana SET ape1 = '$ape1', ape2 = '$ape2', nom1 = '$nom1', nom2 = '$nom2', genero = '$genero', dir_res = '$dir_res', cod_mun_res = '$cod_mun_res', telefono = '$telefono', cod_mun_nac = '$cod_mun_nac', fecha_nac = '$fecha_nac', cod_estrato = '$cod_estrato', sisben = '$sisben', cod_discap = '$cod_discap', etnia = '$etnia', cod_pob_victima = '$cod_pob_victima', cod_grado = '$cod_grado', nom_grupo = '$nom_grupo', cod_jorn_est = '$cod_jorn_est', repitente = '$repitente', edad = '$edad', zona_res_est = '$sector', activo = '$estado', nom_acudiente = '$nomAcudiente', doc_acudiente = '$docAcudiente', tel_acudiente = '$telAcudiente', parentesco_acudiente = '$parantesco_acudiente' WHERE id = '$id'";
 
 	// Condición que verifica si la consulta se ejecutó exitosamente.
+	
 	if ($Link->query($nuevo_suplente) === TRUE)
 	{
 		$sqlBitacora = "INSERT INTO bitacora (id, fecha, usuario, tipo_accion, observacion) VALUES ('', '".date('Y-m-d H:i:s')."', '".$_SESSION['idUsuario']."', '48', 'Ingresó el suplente con número de identificación <strong>".$num_doc."	</strong>')";
@@ -51,14 +57,14 @@
 
 		$respuestaAJAX = [
 			"success" => 1,
-			"message" => "El suplente fue actualizado exitosamente.". $nuevo_suplente
+			"message" => "El suplente fue actualizado exitosamente."
 		];
 	}
 	else
 	{
 		$respuestaAJAX = [
 			"success" => 0,
-			"message" => "No fue posible actualizar el suplente.". $nuevo_suplente
+			"message" => "No fue posible actualizar el suplente."
 		];
 	}
 

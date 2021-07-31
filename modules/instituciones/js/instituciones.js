@@ -2,14 +2,20 @@ $(document).ready(function(){
   $(document).on('click', '.verDispositivos', function(){ verDispositivos($(this)); });
   $(document).on('click', '.verInfraestructura', function(){ verInfraestructura($(this)); });
   $(document).on('click', '.verTitulares', function(){ verTitulares($(this)); });
+  $(document).on('click', '#crearInstitucion', function() { abrir_modal_crear_institucion(); });
+  $(document).on('click', '#guardar_institucion', function() { guardarInstitucion(true); });
+  $(document).on('click', '.editarInstitucion', function(){ abrir_modal_editar_institucion($(this).data('codigoinstitucion')); });
+  $(document).on('click', '#editar_institucion', function(){ actualizarInstitucion(); })
 
-	$('.dataTablesInstituciones tbody td:nth-child(-n+2)').click(function(){
-		var aux = $(this).parent().attr('codInst');
-		$('#verInst #codInst').val(aux);
-		aux =$(this).parent().attr('nomInst');
-		$('#verInst #nomInst').val(aux);
-		$('#verInst').submit();
-	});
+
+  $('.dataTablesInstituciones').on('click', 'tbody tr td:nth-child(-n+3)', function(){
+    var aux = $(this).parent().attr('codinst');
+    $('#verInst #codInst').val(aux);
+    var aux2 = $(this).parent().attr('nominst');
+    $('#verInst #nomInst').val(aux2);
+    console.log(aux);
+    $('#verInst').submit();
+  })
 
   toastr.options = {
     "closeButton": true,
@@ -27,16 +33,15 @@ $(document).ready(function(){
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
   }
+ 
 });
 
-function crearInstitucion(){
-  window.open('instituciones_crear.php', '_self');
+function abrir_modal_crear_institucion(){
+  $('#contenedor_crear_institucion').load($('#inputBaseUrl').val() +'/modules/instituciones/instituciones_crear.php');
 }
 
-function editarInstitucion(codigoInstitucion, nombreInstitucion){
-  $('#formEditarInstitucion #codigoInstitucion').val(codigoInstitucion);
-  $('#formEditarInstitucion #nombreInstitucion').val(nombreInstitucion);
-  $('#formEditarInstitucion').submit();
+function abrir_modal_editar_institucion(codigoinstitucion){
+   $('#contenedor_editar_institucion').load($('#inputBaseUrl').val() +'/modules/instituciones/instituciones_editar.php?codigo='+codigoinstitucion);
 }
 
 function guardarInstitucion(continuar){
@@ -53,30 +58,43 @@ function guardarInstitucion(continuar){
         rector: $('#rector').val()
       },
       dataType: 'json',
-      beforeSend: function(){},
+      beforeSend: function(){$('#loader').fadeIn();},
       success: function(data){
-        $('#ventanaInformar .modal-body p').html(data.mensaje);
-        $('#ventanaInformar').modal();
-        $('#ventanaInformar').on('hidden.bs.modal', function (e) {
-          if(data.estado == 1){
-            if(continuar){
-              $('#formCrearInstitucion')[0].reset();
-            }else{
-              window.open('instituciones.php', '_self');
+        if(data.estado == 1){
+          Command: toastr.success(
+          data.mensaje,
+          "Creado",
+                  {
+                    onHidden : function(){
+                    $('#loader').fadeOut();
+                    window.open('instituciones.php', '_self');                                    
+                    }
+                  }  
+              );
             }
-          }
-        });
+            else
+            {
+              Command: toastr.warning(
+              data.mensaje,
+              "Error al crear",
+                  {
+                  onHidden : function(){ $('#loader').fadeOut(); }
+                  }
+              );
+            }
       },
-      error: function(data){ console.log(data);
-        $('#ventanaInformar .modal-body p').html("Al parecer existe un error al ejecutar el proceso. Por favor contacte con el administrador del InfoPAE.");
-        $('#ventanaInformar').modal();
+      error: function(data){            
+        console.log(data.responseText);
+        Command: toastr.error(
+            'Al parecer existe un error en el proceso',
+            "Error al crear",
+              {
+                onHidden : function(){ $('#loader').fadeOut(); }
+              }
+          );
       }
     });
   }
-
-  var heights = $(".col-sm-4").map(function() { return $(this).height(); }).get(),
-  maxHeight = Math.max.apply(null, heights);
-  $(".col-sm-4").height(maxHeight);
 }
 
 function actualizarInstitucion(){
@@ -89,17 +107,19 @@ function actualizarInstitucion(){
       data : datos,
       beforeSend: function(){ $('#loader').fadeIn(); },
       success: function(data){
-        console.log(data);
-        if(data.estado = 1){
+        // console.log(data);
+        if(data.estado == 1){
           Command: toastr.success(
             data.mensaje,
-            'Guardado',
-            { onHidden: function(){ $('#loader').fadeOut(); } }
+            'Actualizado',
+            { onHidden : function(){
+                $('#loader').fadeOut();
+                window.open('instituciones.php', '_self'); } }
           );
         } else {
-          Command: toastr.error(
+          Command: toastr.warning(
             data.mensaje,
-            "Error al guardar",
+            "Error al editar",
             { onHidden: function(){ $('#loader').fadeOut(); } }
           );
         }
@@ -128,7 +148,9 @@ function cargarArchivo(){
     data: formData,
     dataType: 'json',
     beforeSend: function(){ $('#loader').fadeIn(); },
-    success: function(data){ console.log(data);
+    success: function(data){ 
+      console.log(data);
+      // data = JSON.parse(data);
       if(data.estado == 1){
         Command: toastr.success(
           data.mensaje,
@@ -137,7 +159,7 @@ function cargarArchivo(){
             onHidden : function(){ $('#loader').fadeOut(); window.open($("#inputBaseUrl").val()+"/modules/instituciones/instituciones.php", "_self") }
           }
         );
-      } else {
+      } else if(data.estado == 0){
         Command: toastr.error(
           data.mensaje,
           "Error al procesar",
@@ -147,7 +169,8 @@ function cargarArchivo(){
         );
       }
     },
-    error: function(data){  console.log(data);
+    error: function(data){  
+      console.log(data);
       Command: toastr.error(
         "Existe un error con el archivo. Por favor verifique los datos suministrados. Posiblemente los códigos de instituciones se encuentran duplicados.",
         "Error al procesar",
@@ -156,6 +179,8 @@ function cargarArchivo(){
         }
       );
     }
+  }).done(function(data){
+    // console.log(data);
   });
 }
 

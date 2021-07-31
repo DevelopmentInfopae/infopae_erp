@@ -3,19 +3,22 @@
   require_once '../../../db/conexion.php';
 
   $numSemana = $_POST['numSemana'];
+  $mes = $_POST['mes'];
 
- ?>
- <tr id="semana_<?php echo $numSemana ?>">
-    <td>
-      <select name="semana[<?php echo $numSemana ?>]" id="semana<?php echo $numSemana ?>" onchange="validaCompSemana(this, 1)" class="form-control semana" required>
-        <option value="">Seleccione...</option>
-        <?php $consultarFocalizacion = "SELECT table_name AS tabla FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name like 'focalizacion%' ";
-		$resultadoFocalizacion = $Link->query($consultarFocalizacion);
-		if ($resultadoFocalizacion->num_rows > 0) {
-		    while ($focalizacion = $resultadoFocalizacion->fetch_assoc()) { ?>
-		    	<option value="<?php echo $focalizacion['tabla']; ?>">Semana <?php echo substr($focalizacion['tabla'], 12, 2); ?></option>
-		    <?php }
-		} ?>
+?>
+
+<tr id="semana_<?php echo $numSemana ?>">
+  <td>
+    <select name="semana[<?php echo $numSemana ?>]" id="semana<?php echo $numSemana ?>" onchange="validaCompSemana(this, 1)" class="form-control semana" required>
+      <option value="">Seleccione...</option>
+        <?php 
+          $consultarSemanas = "SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes;";
+		      $resultadoSemanas = $Link->query($consultarSemanas);
+		      if ($resultadoSemanas->num_rows > 0) {
+		        while ($dataSemanas = $resultadoSemanas->fetch_assoc()) { ?>
+		    	    <option value="<?= "focalizacion".$dataSemanas['semana']; ?>">Semana <?= $dataSemanas['semana']; ?></option>
+		        <?php }
+		      } ?>
       </select>
       <label for="#semana<?php echo $numSemana ?>" class="error"></label>
     </td>
