@@ -7,16 +7,11 @@ $(document).ready(function(){
 	var month = d.getMonth();
 	var day = d.getDate();
 	console.log("Hoy es "+day+" de "+month);	
-
 	$('#btnBuscar').click(function(){
 		$('#loader').fadeIn();
-	
-
-			if($('#form_asistencia').valid()){
-				cargarEstudiantes();
-			}
-
-
+		if($('#form_asistencia').valid()){
+			cargarEstudiantes();
+		}
 	});
 });
 

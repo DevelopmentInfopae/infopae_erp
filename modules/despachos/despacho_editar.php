@@ -17,6 +17,7 @@ $paginasObservaciones = 1;
 //     echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 // }
 // $Link->set_charset("utf8");
+// exit(var_dump($_POST));
 ?>
 
 <?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
@@ -108,9 +109,9 @@ $mesAnno = '';
         // Se va a recibir el numero d edespacho para hacer la consulta y traer los
         // encabezados del despacho.
         $claves = array_keys($_POST);
-        $aux = $claves[0];
+        $aux = $claves[1];
         $despacho = $_POST[$aux];
-        // var_dump($_POST);
+        // var_dump($despacho);
         $consulta = " select * from despachos_enc$mesAnno where Num_Doc = $despacho ";
         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
         if($resultado->num_rows >= 1){
@@ -163,7 +164,7 @@ $mesAnno = '';
 
         // echo $consulta;
         //echo "<br>Tercera consulta para traer los datos de la sede<br>$consulta<br>";
-
+        // exit(var_dump($consulta));
         $resultado = $Link->query($consulta) or die ('Unable to execute query para traer los datos de la sede '. mysqli_error($Link));
         if($resultado->num_rows >= 1){
           $row = $resultado->fetch_assoc();

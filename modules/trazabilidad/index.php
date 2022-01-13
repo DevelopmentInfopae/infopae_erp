@@ -10,6 +10,23 @@
   <?php exit(); }
 
   $periodoActual = $_SESSION['periodoActual'];
+
+   $entregaNom = array('1' => 'PRIMERA', '2' => 'SEGUNDA', '3' => 'TERCERA', '4' => 'CUARTA', '5' => 'QUINTA', '6' => 'SEXTA', '7' => 'SÉPTIMA', '8' => 'OCTAVA', '9' => 'NOVENA', '10' => 'DÉCIMA', '11' => 'UNDÉCIMA', '12' => 'DUODÉCIMA' );
+  $consultaTipoBusqueda = " SELECT tipo_busqueda FROM parametros ";
+  $respuestaTipoBusqueda = $Link->query($consultaTipoBusqueda) or die ('Error al consultar el tipo de busqueda ' . mysqli_error($Link));
+  if ($respuestaTipoBusqueda->num_rows > 0) {
+    $dataTipoBusqueda = $respuestaTipoBusqueda->fetch_assoc();
+    $tipoBusqueda = $dataTipoBusqueda['tipo_busqueda'];
+    if ($tipoBusqueda == "2") {
+      $consultaNumeroEntrega = " SELECT mes, NumeroEntrega FROM planilla_dias ";
+      $respuestaNumeroEntrega = $Link->query($consultaNumeroEntrega) or die ('Error al consultar el numero de la entrega ' . mysqli_error($Link));
+      if ($respuestaNumeroEntrega->num_rows > 0) {
+        while ($dataNumeroEntrega = $respuestaNumeroEntrega->fetch_assoc()) {
+          $numeroEntrega[$dataNumeroEntrega['mes']] = $dataNumeroEntrega['NumeroEntrega'];
+        }
+      }
+    }
+  }
 ?>
 
 <style type="text/css">
@@ -60,7 +77,8 @@
           }
           ?>
           <form class="form row" id="formBuscar" method="POST">
-            <div class="form-group col-sm-2">
+            <?php if ($tipoBusqueda == 1): ?>
+              <div class="form-group col-sm-2">
                 <label>Fecha de </label>
                 <div class="row compositeDate">
                   <select name="fecha_de" id="fecha_de" class="form-control ">
@@ -68,56 +86,66 @@
                     <option value="2">Días despachados</option>
                   </select>
                 </div>
-            </div>
-            <div id="fechaDiasDespachos" style="display: none;">
-              <div class="form-group col-sm-2">
-                <label>Desde</label>
-                <div class="row compositeDate">
-                  <div class="col-sm-8 nopadding">
-                    <select name="mes_inicio" id="mes_inicio" class="form-control ">
-                    <?php echo $opciones; ?>
-                    </select>
-                  </div>
-                  <div class="col-sm-4 nopadding">
-                    <select name="dia_inicio" id="dia_inicio" class="form-control">
-                      <option value="">dd</option>
-                      <?php for ($i=1; $i <= 31; $i++) { ?>
+              </div>
+              <div id="fechaDiasDespachos" style="display: none;">
+                <div class="form-group col-sm-2">
+                  <label>Desde</label>
+                  <div class="row compositeDate">
+                    <div class="col-sm-8 nopadding">
+                      <select name="mes_inicio" id="mes_inicio" class="form-control ">
+                        <?php echo $opciones; ?>
+                      </select>
+                    </div>
+                    <div class="col-sm-4 nopadding">
+                      <select name="dia_inicio" id="dia_inicio" class="form-control">
+                        <option value="">dd</option>
+                        <?php for ($i=1; $i <= 31; $i++) { ?>
                         <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                      <?php } ?>
-                    </select>
+                        <?php } ?>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group col-sm-2">
+                  <label>Hasta</label>
+                  <div class="row compositeDate">
+                    <div class="col-sm-8 nopadding">
+                      <input type="text" id="nomMesFin" value="Espere..." class="form-control" readonly>
+                      <input type="hidden" name="mes_fin" id="mes_fin" value="01">
+                    </div>
+                    <div class="col-sm-4 nopadding">
+                      <select name="dia_fin" id="dia_fin" class="form-control">
+                        <option value="">dd</option>
+                        <?php for ($i=1; $i <= 31; $i++) { ?>
+                          <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                        <?php } ?>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="form-group col-sm-2">
-                <label>Hasta</label>
-                <div class="row compositeDate">
-                  <div class="col-sm-8 nopadding">
-                    <input type="text" id="nomMesFin" value="Espere..." class="form-control" readonly>
-                    <input type="hidden" name="mes_fin" id="mes_fin" value="01">
-                  </div>
-                  <div class="col-sm-4 nopadding">
-                    <select name="dia_fin" id="dia_fin" class="form-control">
-                      <option value="">dd</option>
-                      <?php for ($i=1; $i <= 31; $i++) { ?>
-                        <option value="<?php echo $i ?>"><?php echo $i ?></option>
-                      <?php } ?>
-                    </select>
-                  </div>
+              <div id="fechaElaboracion">
+                <div class="form-group col-sm-2">
+                  <label>Desde</label>
+                  <input type="text" name="fecha_inicio_elaboracion" id="fecha_inicio_elaboracion" value="<?php echo date('Y-m')."-01" ?>"data-date-format="yyyy-mm-dd"  class="form-control datepicker">
+                </div>
+                <div class="form-group col-sm-2">
+                  <label>Hasta</label>
+                  <?php $mesSiguiente = date('m')+1; ?>
+                  <input type="text" name="fecha_fin_elaboracion" id="fecha_fin_elaboracion" data-date-format="yyyy-mm-dd" value="" class="form-control datepicker">
                 </div>
               </div>
-            </div>
-
-            <div id="fechaElaboracion">
-              <div class="form-group col-sm-2">
-                <label>Desde</label>
-                <input type="text" name="fecha_inicio_elaboracion" id="fecha_inicio_elaboracion" value="<?php echo date('Y-m')."-01" ?>"data-date-format="yyyy-mm-dd"  class="form-control datepicker">
-              </div>
-              <div class="form-group col-sm-2">
-                <label>Hasta</label>
-                <?php $mesSiguiente = date('m')+1; ?>
-                <input type="text" name="fecha_fin_elaboracion" id="fecha_fin_elaboracion" data-date-format="yyyy-mm-dd" value="" class="form-control datepicker">
-              </div>
-            </div>
+            <?php endif ?>
+            <?php if ($tipoBusqueda == "2"): ?>
+              <div class="col-lg-3 col-sm-6- col-xs-12">
+                <label for="numeroEntrega">Número Entrega</label>
+                <select id="numeroEntrega" name="numeroEntrega" class="form-control">
+                  <?php foreach ($numeroEntrega as $mes => $entrega): ?>
+                    <option value="<?= $mes; ?>"><?= $entregaNom[$entrega]; ?></option>
+                  <?php endforeach ?>
+                </select>
+              </div> <!-- col -->
+            <?php endif ?>
 
             <div class="form-group col-sm-3">
               <label>Municipio</label>
@@ -323,6 +351,7 @@
                     INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero
                   LIMIT 200;";
             } else if (isset($_POST['buscar'])) { //Si hay filtrado
+              $condicionFvto = "";
               $inners="";
               $condiciones = "";
               $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab,  pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca";
@@ -353,6 +382,16 @@
                     $condiciones.=") ";
                   }
                 }
+              }
+
+              if ($tipoBusqueda == "2" && $_POST['numeroEntrega'] != "") {
+                $numtabla = $_POST['numeroEntrega'].$_SESSION['periodoActual'];
+                $mesEntrega = $_POST['numeroEntrega'];
+                $mesEntregaAnterior = $mesEntrega - 1;
+                $mesEntregaSiguiente = $mesEntrega + 1;  
+                $mesEntregaAnterior = "0".$mesEntregaAnterior;
+                $mesEntregaSiguiente = "0".$mesEntregaSiguiente;
+                $condiciones .= " AND ( MONTH(denc.FechaHora_Elab) = '" .$_POST['numeroEntrega']. "' OR MONTH(denc.FechaHora_Elab) = '" .$mesEntregaAnterior."' OR  MONTH(denc.FechaHora_Elab) = '".$mesEntregaSiguiente."' )";
               }
 
               if (isset($_POST['tipo_documento']) && $_POST['tipo_documento'] != "") { //Si el tipo de documento se especificó
@@ -419,9 +458,9 @@
 
                   if (isset($_POST['tipo_complemento']) && $_POST['tipo_complemento'] != "") {
 
-                    if (!isset($bnd_inner_denc)) { //Si 'fecha de' es por elaboración de documento Traemos datos de tabla despachos enc
-                      $inners.= " INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero ";
-                    }
+                    // if (!isset($bnd_inner_denc)) { //Si 'fecha de' es por elaboración de documento Traemos datos de tabla despachos enc
+                    //   $inners.= " INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero ";
+                    // }
                     $condiciones.=" AND denc.Tipo_Complem = '".$_POST['tipo_complemento']."' ";
                   }
                 } else if ($filtro == 6) {
@@ -453,7 +492,7 @@
                                 INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
                                 INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
                                 INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero
-                                $inners $condiciones
+                                $inners WHERE 1 = 1 $condiciones
                             LIMIT 2000;";
           }?>
           <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
@@ -543,10 +582,14 @@
   <?php if (isset($_POST['buscar'])): ?>
     $('#btnBuscar').prop('disabled', true);
     $('#formBuscar').find('input, textarea, button, select').prop('disabled',true);
-    $('#fecha_de').val('<?php echo $_POST['fecha_de']; ?>').change();
-
-    $('#mes_inicio').val('<?php echo $_POST['mes_inicio']; ?>').change();
-    $('#mes_fin').val('<?php echo $_POST['mes_fin']; ?>').change();
+    <?php if ($tipoBusqueda == "1"): ?>
+      $('#fecha_de').val('<?php echo $_POST['fecha_de']; ?>').change();
+      $('#mes_inicio').val('<?php echo $_POST['mes_inicio']; ?>').change();
+      $('#mes_fin').val('<?php echo $_POST['mes_fin']; ?>').change();
+    <?php endif ?>
+    <?php if ($tipoBusqueda == "2"): ?>
+      $('#numeroEntrega').val('<?= $_POST['numeroEntrega']; ?>')
+    <?php endif ?>
 
     <?php if ($_POST['tipo_documento'] != ""): ?>
       $('#tipo_documento').val('<?php echo $_POST['tipo_documento']; ?>').change();
@@ -554,10 +597,10 @@
     <?php if ($_POST['tipo_filtro'] != ""): ?>
       $('#tipo_filtro').val('<?php echo $_POST['tipo_filtro']; ?>').change();
     <?php endif ?>
-    <?php if ($_POST['dia_inicio'] != ""): ?>
+    <?php if (isset($_POST['dia_inicio']) && $_POST['dia_inicio'] != ""): ?>
       $('#dia_inicio').val('<?php echo $_POST['dia_inicio']; ?>').change();
     <?php endif ?>
-    <?php if ($_POST['dia_fin'] != ""): ?>
+    <?php if (isset($_POST['dia_fin']) && $_POST['dia_fin'] != ""): ?>
       $('#dia_fin').val('<?php echo $_POST['dia_fin']; ?>').change();
     <?php endif ?>
     setTimeout(function() {

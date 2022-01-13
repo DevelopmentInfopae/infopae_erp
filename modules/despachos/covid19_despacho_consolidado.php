@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
 
-// var_dump($_POST);
+//var_dump($_POST);
 
 include '../../config.php';
 require_once '../../autentication.php';
@@ -36,13 +36,6 @@ $mes = $_POST['mesiConsulta'];
 if($mes < 10){ $mes = '0'.$mes; }
 
 $mes = trim($mes);
-
-// mes que se va a utilizar para traer el numero de la entrega
-$mesEntrega = $_POST['mesiConsulta'];
-if($mesEntrega < 10){ $mesEntrega = '0'.$mesEntrega; }
-
-$mesEntrega = trim($mesEntrega);
-
 $anno = $_POST['annoi'];
 $anno = substr($anno, -2);
 $anno = trim($anno);
@@ -97,14 +90,14 @@ $_POST = array_values($_POST);
 $annoActual = $tablaAnnoCompleto;
 $despachosRecibidos = $_POST;
 
-// var_dump($despachosRecibidos);
+//var_dump($despachosRecibidos);
 
 
 
 
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
-$entrega = '';
+
 $mes = '';
 $sede = '';
 $dias = '';
@@ -120,16 +113,16 @@ $semanasMostrar = array();
 $nomSedes = array();
 $nomSede = array();
 $fechaElaboracion = array();
+$telefono = '';
 
-// vamos a buscar el numero de la entrega que va a estar junto al mes 
-$consultaEntrega = "SELECT NumeroEntrega FROM planilla_dias WHERE mes = $mesEntrega;";
-$respuestaEntrega = $Link->query($consultaEntrega) or die('Error al consultar el numero de la entrega' . mysqli_error($Link));
-if ($respuestaEntrega->num_rows>0) {
-	$dataEntrega = $respuestaEntrega->fetch_assoc();
-	$entrega = $dataEntrega['NumeroEntrega'];
+$consultaTelefono = "SELECT telefono FROM parametros LIMIT 1;";
+$respuestaTelefono = $Link->query($consultaTelefono) or die ('Error al consultar el teléfono' . mysqli_error($Link));
+if ($respuestaTelefono->num_rows > 0) {
+	$dataTelefono = $respuestaTelefono->fetch_assoc();
+	$telefono = $dataTelefono['telefono'];
 }
-// var_dump($entrega);
 
+// echo $telefono;
 foreach ($despachosRecibidos as &$valor){
 	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor, s.nom_sede, s.nom_inst, s.cod_inst, s.cod_mun_sede , s.sector, s.direccion FROM despachos_enc$mesAnno de INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor";
 
@@ -330,9 +323,12 @@ $semana = $auxSemana;
 // Declaración de caracteristicas del PDF
 //class PDF extends FPDF{
 class PDF extends PDF_PageGroup{
-	function Header(){}
+
+	function Header(){
+		// $pdf->telefono;
+	}
 	function Footer(){
-		//$this->Cell(0, 6, 'Page '.$this->GroupPageNo().'/'.$this->PageGroupAlias(), 0, 0, 'C');
+		
 		$tamannoFuente = 6;
 		//$this->SetY(-40);
 		// $this->Cell(0,2,utf8_decode(""),'B',0,'C',False);
@@ -347,42 +343,57 @@ class PDF extends PDF_PageGroup{
 		$this->setXY($cx, $cy);
 		$this->Cell(0,3,utf8_decode($_SESSION['observacionesDespachos']),0,0,'L',False);
 
-		
+		// fila firmas
 		$this->SetFont('Arial','B',$tamannoFuente);
 		$this->Ln(11);
 		$this->Cell(33,4,utf8_decode("Firma de quien entrega la RPC:"),0,0,'L',False);
-		$this->Cell(67,4,utf8_decode(""),'B',0,'C',False);
-		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
-		$this->Cell(38,4,utf8_decode("Firma Rector o Representante CAE:"),0,0,'L',False);
-		$this->Cell(93,4,utf8_decode(""),'B',0,'C',False);
-		
+		$this->Cell(55,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(10,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(36,4,utf8_decode("Firma de Representante Legal Ut:"),0,0,'L',False);
+		$this->Cell(52,4,utf8_decode(""),'B',0,'L',False);
+		$this->Cell(10,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(52,4,utf8_decode("Firma Rector o Representante CAE o Supervisión:"),0,0,'L',False);
+		$this->Cell(70,4,utf8_decode(""),'B',0,'C',False);
 		$this->Ln(7);
+
+		// fila nombres
 		$this->Cell(35,4,utf8_decode("Nombre legible de quien entrega:"),0,0,'L',False);
-		$this->Cell(65,4,utf8_decode(""),'B',0,'C',False);
-		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
-		$this->Cell(47,4,utf8_decode("Nombre legible Rector o Representante CAE:"),0,0,'L',False);
-		$this->Cell(84,4,utf8_decode(""),'B',0,'C',False);
-		
+		$this->Cell(53,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(10,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(43,4,utf8_decode("Nombre Legible Representante Legal Ut:"),0,0,'L',False);
+		$this->SetFont('Arial','',$tamannoFuente);
+		$this->Cell(45,4,utf8_decode(strtoupper($_SESSION['p_nombre_representante_legal'])),'B',0,'L',False);
+		$this->SetFont('Arial','B',$tamannoFuente);
+		$this->Cell(10,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(62,4,utf8_decode("Nombre legible Rector o Representante CAE o Supervisión:"),0,0,'L',False);
+		$this->SetFont('Arial','',$tamannoFuente);
+		$this->Cell(60,4,utf8_decode("YEXICA NATALIA ARDILA RUIZ"),'B',0,'L',False);
 		$this->Ln(7);
+
+		// fila telefonos
+		$this->SetFont('Arial','B',$tamannoFuente);
 		$this->Cell(18,4,utf8_decode("Cargo / función:"),0,0,'L',False);
-		$this->Cell(25,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(22,4,utf8_decode(""),'B',0,'C',False);
 		$this->Cell(3,4,utf8_decode(""),0,0,'C',False);
+		$this->Cell(19,4,utf8_decode("Número telefónico:"),0,0,'L',False);
+		$this->Cell(26,4,utf8_decode(""),'B',0,'C',False);
+		$this->Cell(10,4,utf8_decode(""),0,0,'C',False);
 		$this->Cell(21,4,utf8_decode("Número telefónico:"),0,0,'L',False);
-		$this->Cell(33,4,utf8_decode(""),'B',0,'C',False);
-		$this->Cell(43,4,utf8_decode(""),0,0,'C',False);
-		
-		
-		
-		
+		$this->SetFont('Arial','',$tamannoFuente);
+		$this->Cell(67,4,utf8_decode($_SESSION["p_telefono"]),'B',0,'L',False);
+		$this->SetFont('Arial','B',$tamannoFuente);
+		$this->Cell(10,4,utf8_decode(""),0,0,'C',False);
 		$this->Cell(18,4,utf8_decode("Cargo / función:"),0,0,'L',False);
-		$this->Cell(41,4,utf8_decode(""),'B',0,'C',False);
-		
-		$this->Cell(13,4,utf8_decode(""),0,0,'C',False);
-		
+		$this->SetFont('Arial','',$tamannoFuente);
+		$this->Cell(54,4,utf8_decode("Dirección acceso y permanencia escolar / Supervisión"),'B',0,'L',False);	
+		$this->SetFont('Arial','B',$tamannoFuente);
+		$this->Cell(3,4,utf8_decode(""),0,0,'C',False);
 		$this->Cell(23,4,utf8_decode("Número telefónico"),0,0,'L',False);
-		$this->Cell(36,4,utf8_decode(""),'B',0,'C',False);
-	
+		$this->SetFont('Arial','',$tamannoFuente);
+		$this->Cell(24,4,utf8_decode("6463030 ext 267"),'B',0,'L',False);
+		$this->SetFont('Arial','B',$tamannoFuente);
 		
+
 		$this->Ln(3.9);
 		$this->Cell(150,4,utf8_decode(""),0,0,'C',False);
 		$this->Cell(0,10,utf8_decode("Impreso por: InfoPAE - www.infopae.com.co"),0,0,'L',False);
@@ -435,7 +446,7 @@ $pdf->StartPageGroup();
 
 
 $pdf->SetMargins(5, 5, 5);
-$pdf->SetAutoPageBreak(TRUE, 30);
+$pdf->SetAutoPageBreak(False, 7);
 $pdf->AliasNbPages();
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFillColor(255,255,255);
@@ -553,7 +564,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 		$numero = $despacho['num_doc'];
 
 		$consulta = " SELECT DISTINCT dd.id, dd.*, pmd.CantU1, CEILING(pmd.CantU2) as CantU2, CEILING(pmd.CantU3) as CantU3, CEILING(pmd.CantU4) as CantU4, CEILING(pmd.CantU5) as CantU5, pmd.CanTotalPresentacion, p.cantidadund2, p.cantidadund3, p.cantidadund4, p.cantidadund5, p.nombreunidad2, p.nombreunidad3, p.nombreunidad4, p.nombreunidad5 FROM despachos_det$mesAnno dd LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto LEFT JOIN productos$anno p ON dd.cod_Alimento = p.Codigo WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero ";
-		//echo "<br><br>$consulta<br><br>";	
+		// echo "<br><br>$consulta<br><br>";	
 	
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		if($resultado->num_rows >= 1){
@@ -694,7 +705,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 								INNER JOIN menu_aportes_calynut m ON p.Codigo=m.cod_prod
 								WHERE p.Codigo = $auxCodigo";
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-	
+	// echo $consulta . "<br><br>";
 		if($resultado->num_rows >= 1)
 		{
 			$row = $resultado->fetch_assoc();
@@ -751,6 +762,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 	/* Terminados los alimentos seguimos con el listado de los niños */
 	$filaActual = 1; 
 	include 'covid19_despacho_consolidado_estudiantes.php';
+
 	// $pdf->Ln(10);
 	
 	
@@ -790,6 +802,7 @@ foreach ($sede_unicas as $key => $sede_unica){
 				$pdf->Cell(0,$altoFila,utf8_decode(""),'BLR',0,'C',False);
 				$pdf->Ln($altoFila);
 			}
+			// include 'covid19_despacho_consolidado_firmas.php';
 		}
 	}
 	/* TERMINA PAGINA ADICIONAL */
@@ -815,5 +828,5 @@ foreach ($sede_unicas as $key => $sede_unica){
 
 
 
-
+// $pdf->setData($telefono);
 $pdf->Output();

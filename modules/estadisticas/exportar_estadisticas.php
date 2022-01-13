@@ -141,10 +141,27 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
     $sem=0;
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
+      if ($semana == $sem.'b') {
+        $mismaSemanaB = "SELECT COUNT(dia) as numero FROM planilla_semanas WHERE semana IN ('$semana','$sem') GROUP BY dia LIMIT 1";
+        $respuestaSemanaB = $Link->query($mismaSemanaB) or die('Error al consultar los días de la misma semana' . mysqli_error($Link));
+        if ($respuestaSemanaB->num_rows > 0) {
+          $dataSemanaB = $respuestaSemanaB->fetch_assoc();
+          $numeroDiasRepetidos = $dataSemanaB['numero'];
+          if ($numeroDiasRepetidos == 2) {
+            $diaD = 1;
+          }
+        }
+      }
       foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
         // echo $mes." - ".$semana." - ".$D." - ".$dia."</br>";
-        $datos.="SUM(D$diaD) + ";
-        $diaD++;
+        $consultaPlanillaDias = "SELECT D$diaD FROM planilla_dias WHERE D$diaD = $dia AND mes = $mes;";
+        // echo $consultaPlanillaDias."<br>";
+        $respuestaConsultaPlanillaDias = $Link->query($consultaPlanillaDias);
+        $consultaPlanillaDias = "SELECT D$diaD FROM planilla_dias WHERE D$diaD = $dia AND mes = $mes;";
+        if ($respuestaConsultaPlanillaDias->num_rows == 1) {
+          $datos.="SUM(D$diaD) + ";
+          $diaD++;
+        }
       }
       $datos = trim($datos, "+ ");
       $datos.= " AS semana_".$semana.", ";
@@ -907,20 +924,24 @@ if ($rescodDepartamento->num_rows > 0) {
 	}
 }
 
-$sem=0;
+$sem2=0;
   foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
     $datos = "";
     $diaD = 1;
-    
+    $sem;
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
-      $stringSemana = $semana;
-      $find = 'b';
-      $busquedaB = strrchr ($stringSemana, $find);
-        // echo $busquedaB;
-      if ($busquedaB == 'b' || $busquedaB == 'B') {
-        $diaD = 1;
-      }    
+    if ($semana == $sem.'b') {
+        $mismaSemanaB = "SELECT COUNT(dia) as numero FROM planilla_semanas WHERE semana IN ('$semana','$sem') GROUP BY dia LIMIT 1";
+        $respuestaSemanaB = $Link->query($mismaSemanaB) or die('Error al consultar los días de la misma semana' . mysqli_error($Link));
+        if ($respuestaSemanaB->num_rows > 0) {
+          $dataSemanaB = $respuestaSemanaB->fetch_assoc();
+          $numeroDiasRepetidos = $dataSemanaB['numero'];
+          if ($numeroDiasRepetidos == 2) {
+            $diaD = 1;
+          }
+        }
+      }   
       foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
         $consultaPlanillaDias = "SELECT D$diaD FROM planilla_dias WHERE D$diaD = $dia AND mes = $mes;";
             // echo $consultaPlanillaDias."<br>";
@@ -933,7 +954,8 @@ $sem=0;
       }
       $datos = trim($datos, "+ ");
       $datos.= " AS semana_".$semana.", ";
-      $sem ++; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
+      $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
+      $sem2++;
     }
     $datos = trim($datos, ", ");
     // echo $consultaRes."</br>";

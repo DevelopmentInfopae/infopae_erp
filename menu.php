@@ -20,8 +20,8 @@
 	<li>
 		<a href="#"><i class="fas fa-fingerprint"></i> <span class="nav-label">Entregas Biometricas</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
-			<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php"><span class="nav-label">Dashboard</span></a> </li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php"><span class="nav-label">Registrar entregas vía QR - BarCode</span></a> 
+			<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php">Dashboard</a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php">Registrar entregas vía QR - BarCode</a> 
 			</li>
 		</ul>
 	</li>
@@ -37,30 +37,30 @@
 	<li>
 		<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
-			<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php">Derecho</a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php">Suplentes</a> </li>
 		</ul>
 	</li>
 	<li>
 		<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
-			<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php"><span class="nav-label">Alimentos</span></a> </li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php"><span class="nav-label">Preparaciones</span></a> </li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref"><span class="nav-label">Aportes calóricos y nutricionales</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php">Alimentos</a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php">Preparaciones</a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/menus2">Menús</a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref">Aportes calóricos y nutricionales</a> </li>
 		</ul>
 	</li>
 	<li>
 		<a href="#"><i class="fa fa-bank"></i> <span class="nav-label">Diagnóstico Infraestructura</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
-			<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php"><span class="nav-label">Diagnóstico Infraestructura</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php">Diagnóstico Infraestructura</a> </li>
 		</ul>
 	</li>
 	<li>
 		<a href="#"><i class="fa fa-calculator"></i> <span class="nav-label">Dispositivos Biométricos</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
-			<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php"><span class="nav-label">Dispositivos Biométricos</span></a> </li>
-			<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php"><span class="nav-label">Formato Datos Personales</span></a></li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php">Dispositivos Biométricos</a> </li>
+			<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php">Formato Datos Personales</a></li>
 		</ul>
 	</li>
 	<li>
@@ -68,7 +68,7 @@
 		<ul class="nav nav-second-level">
 			<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
 			<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/despachos.php"><span class="nav-label">Insumos</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/insumos2/despachos.php">Insumos</a> </li>
 		</ul>
 	</li>
 	<li> 
@@ -115,7 +115,7 @@
 				<a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/index.php">Priorización</a>
 			</li>
 			<li>
-				<a href="#"><span class="nav-label">Focalización</span> <span class="fa arrow"></span></a>
+				<a href="#">Focalización <span class="fa arrow"></span></a>
 				<ul class="nav nav-third-level">
 					<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/index.php">Titulares</a></li>
 					<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/suplentes.php">Suplentes</a></li>
@@ -137,8 +137,8 @@
 		<a href="#"><i class="fas fa-layer-group"></i></i> <span class="nav-label">Informes</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
 			<?php if( $_SESSION['perfil'] != 9 ){ ?>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php"><span class="nav-label">Trazabilidad</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php"><span class="nav-label">Trazabilidad Insumos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php">Trazabilidad</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php">Trazabilidad Insumos</a> </li>
 			<?php } ?>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas_avanzadas/index.php">Estadisticas Avanzadas</a></li>
@@ -146,7 +146,7 @@
 				<li> <a href="<?= $baseUrl; ?>/modules/bitacora_usuarios/index.php">Bitácora de usuarios</a></li>
 				<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
 			<?php } ?>
 		</ul>
@@ -159,6 +159,7 @@
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias">Toma de asistencia</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/repitentes.php"> Selección de repitentes </a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/consumo.php"> Registro de consumos </a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/suplentes.php"> Selección de suplentes </a> </li>
 			<?php } ?>
 
 			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5  || $_SESSION['perfil'] == 6 || $_SESSION['perfil'] == 7 ){ ?>
@@ -187,23 +188,23 @@
 	<li>
 		<a href="#"><i class="fas fa-tools"></i> <span class="nav-label">Configuración</span><span class="fa arrow"></span></a>
 		<ul class="nav nav-second-level collapse">
-			<li> <a href="<?php echo $baseUrl; ?>/modules/parametros"><span class="nav-label">Parámetros generales</span></a> </li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/dias_contrato"><span class="nav-label">Días de contratos</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/parametros">Parámetros generales</a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/dias_contrato">Días de contratos</a> </li>
 			<li><a href="<?php echo $baseUrl; ?>/modules/complementos_alimentarios">Complementos alimentarios</a></li>
 			<li><a href="<?php echo $baseUrl; ?>/modules/insumos">Insumos</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/grupos_etarios">Grupos etarios</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/cronograma">Cronograma</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/noticias">Noticias</a></li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/usuarios"><span class="nav-label">Usuarios</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/usuarios">Usuarios</a> </li>
 			<li><a href="<?= $baseUrl; ?>/modules/proveedores">Proveedores</a></li>
 			<li>
-				<a href="#"><span class="nav-label">Rutas</span> <span class="fa arrow"></span></a>
+				<a href="#">Rutas <span class="fa arrow"></span></a>
 				<ul class="nav nav-third-level">
 					<li><a href="<?php echo $baseUrl; ?>/modules/rutas/rutas.php">Listar Rutas</a></li>
 					<li><a href="<?php echo $baseUrl; ?>/modules/rutas/ruta_nuevo.php">Nueva Ruta</a></li>
 				</ul>
 			</li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/bodegas"><span class="nav-label">Bodegas</span></a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/bodegas">Bodegas</a> </li>
 			<li><a href="<?= $baseUrl; ?>/modules/empleados">Empleados</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_vehiculos">Tipo vehiculo</a></li>
 			<li><a href="<?= $baseUrl; ?>/modules/tipo_despachos">Tipo alimentos</a></li>
@@ -239,9 +240,9 @@
 		<li>
 			<a href="#"><i class="fas fa-fingerprint"></i> <span class="nav-label">Entregas Biometricas</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php"><span class="nav-label">Dashboard</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php">Dashboard</a> </li>
 				<?php if ($permisos['entregas_biometricas'] == "2"): ?>
-					<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php"><span class="nav-label">Registrar entregas vía QR - BarCode</span></a> 
+					<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php"> Registrar entregas vía QR - BarCode</a> 
 					</li>
 				<?php endif ?>
 			</ul>
@@ -264,8 +265,8 @@
 		<li>
 			<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php">Derecho</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php">Suplentes</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -273,10 +274,10 @@
 		<li>
 			<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php"><span class="nav-label">Alimentos</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php"><span class="nav-label">Preparaciones</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref"><span class="nav-label">Aportes calóricos y nutricionales</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php">Alimentos</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php">Preparaciones</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2">Menús</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref">Aportes calóricos y nutricionales</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -284,7 +285,7 @@
 		<li>
 			<a href="#"><i class="fa fa-bank"></i> <span class="nav-label">Diagnóstico Infraestructura</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php"><span class="nav-label">Diagnóstico Infraestructura</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php">Diagnóstico Infraestructura</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -292,8 +293,8 @@
 		<li>
 			<a href="#"><i class="fa fa-calculator"></i> <span class="nav-label">Dispositivos Biométricos</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php"><span class="nav-label">Dispositivos Biométricos</span></a> </li>
-				<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php"><span class="nav-label">Formato Datos Personales</span></a></li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php">Dispositivos Biométricos</a> </li>
+				<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php">Formato Datos Personales</a></li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -305,7 +306,7 @@
 				<?php if ($permisos['despachos'] == "2"): ?>
 					<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
 				<?php endif ?>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/despachos.php"><span class="nav-label">Insumos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos2/despachos.php">Insumos</span></a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -316,7 +317,7 @@
 	<?php endif ?>
 	<?php if ($permisos['entrega_complementos'] == "1" || $permisos['entrega_complementos'] == "2"): ?>
 		<li>
-			<a href="#"><i class="fas fa-book-open"></i> <span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
+			<a href="#"><i class="fas fa-book-open"></i><span class="nav-label">Entregas de Complementos Alimentarios</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
 				<li><a href="<?php echo $baseUrl; ?>/modules/consultas/consulta_resumida_entregas.php">Consulta resumida</a></li>
 				<li>
@@ -357,7 +358,7 @@
 					<a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/index.php">Priorización</a>
 				</li>
 				<li>
-					<a href="#"><span class="nav-label">Focalización</span> <span class="fa arrow"></span></a>
+					<a href="#">Focalización<span class="fa arrow"></span></a>
 					<ul class="nav nav-third-level">
 						<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/index.php">Titulares</a></li>
 						<?php if ($permisos['novedades'] == "2"): ?>
@@ -387,8 +388,8 @@
 			<a href="#"><i class="fas fa-layer-group"></i></i> <span class="nav-label">Informes</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
 			<?php if( $_SESSION['perfil'] != 9 ){ ?>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php"><span class="nav-label">Trazabilidad</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php"><span class="nav-label">Trazabilidad Insumos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php">Trazabilidad</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php">Trazabilidad Insumos</a> </li>
 			<?php } ?>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas_avanzadas/index.php">Estadisticas Avanzadas</a></li>
@@ -396,7 +397,7 @@
 				<li> <a href="<?= $baseUrl; ?>/modules/bitacora_usuarios/index.php">Bitácora de usuarios</a></li>
 				<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
 			<?php } ?>
 			</ul>
@@ -410,6 +411,7 @@
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias">Toma de asistencia</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/repitentes.php"> Selección de repitentes </a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/consumo.php"> Registro de consumos </a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/suplentes.php"> Selección de suplentes </a> </li>
 			<?php } ?>
 
 			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5  || $_SESSION['perfil'] == 6 || $_SESSION['perfil'] == 7 ){ ?>
@@ -426,7 +428,7 @@
 	<?php endif ?>
 	<?php if ($permisos['control_acceso'] == "1" || $permisos['control_acceso'] == "2"): ?>
 		<li> 
-			<a href="<?php echo $baseUrl; ?>/modules/control_acceso/listado.php"><i class="far fa-clock"></i> <span class="nav-label">Control de Acceso</span></a> 
+			<a href="<?php echo $baseUrl; ?>/modules/control_acceso/listado.php"><i class="far fa-clock"></i><span class="nav-label">Control de Acceso</span></a> 
 		</li>
 	<?php endif ?>
 	<?php if ($permisos['procesos'] == "1" || $permisos['procesos'] == "2"): ?>
@@ -443,23 +445,23 @@
 		<li>
 			<a href="#"><i class="fas fa-tools"></i> <span class="nav-label">Configuración</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/parametros"><span class="nav-label">Parámetros generales</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/dias_contrato"><span class="nav-label">Días de contratos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/parametros">Parámetros generales</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/dias_contrato">Días de contratos</a> </li>
 				<li><a href="<?php echo $baseUrl; ?>/modules/complementos_alimentarios">Complementos alimentarios</a></li>
 				<li><a href="<?php echo $baseUrl; ?>/modules/insumos">Insumos</a></li>
 				<li><a href="<?= $baseUrl; ?>/modules/grupos_etarios">Grupos etarios</a></li>
 				<li><a href="<?= $baseUrl; ?>/modules/cronograma">Cronograma</a></li>
 				<li><a href="<?= $baseUrl; ?>/modules/noticias">Noticias</a></li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/usuarios"><span class="nav-label">Usuarios</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/usuarios">Usuarios</a> </li>
 				<li><a href="<?= $baseUrl; ?>/modules/proveedores">Proveedores</a></li>
 				<li>
-					<a href="#"><span class="nav-label">Rutas</span> <span class="fa arrow"></span></a>
+					<a href="#">Rutas<span class="fa arrow"></span></a>
 					<ul class="nav nav-third-level">
 						<li><a href="<?php echo $baseUrl; ?>/modules/rutas/rutas.php">Listar Rutas</a></li>
 						<li><a href="<?php echo $baseUrl; ?>/modules/rutas/ruta_nuevo.php">Nueva Ruta</a></li>
 					</ul>
 				</li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/bodegas"><span class="nav-label">Bodegas</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/bodegas">Bodegas</a> </li>
 				<li><a href="<?= $baseUrl; ?>/modules/empleados">Empleados</a></li>
 				<li><a href="<?= $baseUrl; ?>/modules/tipo_vehiculos">Tipo vehiculo</a></li>
 				<li><a href="<?= $baseUrl; ?>/modules/tipo_despachos">Tipo alimentos</a></li>
@@ -496,9 +498,9 @@
 		<li>
 			<a href="#"><i class="fas fa-fingerprint"></i> <span class="nav-label">Entregas Biometricas</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php"><span class="nav-label">Dashboard</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php">Dashboard</a> </li>
 				<?php if ($permisos['entregas_biometricas'] == "2"): ?>
-					<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php"><span class="nav-label">Registrar entregas vía QR - BarCode</span></a> 
+					<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php">Registrar entregas vía QR - BarCode</a> 
 					</li>
 				<?php endif ?>
 			</ul>
@@ -521,8 +523,8 @@
 		<li>
 			<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php">Derecho</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php">Suplentes</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -530,10 +532,10 @@
 		<li>
 			<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php"><span class="nav-label">Alimentos</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php"><span class="nav-label">Preparaciones</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref"><span class="nav-label">Aportes calóricos y nutricionales</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php">Alimentos</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php">Preparaciones</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2">Menús</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref">Aportes calóricos y nutricionales</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -541,7 +543,7 @@
 		<li>
 			<a href="#"><i class="fa fa-bank"></i> <span class="nav-label">Diagnóstico Infraestructura</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php"><span class="nav-label">Diagnóstico Infraestructura</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php">Diagnóstico Infraestructura</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -549,8 +551,8 @@
 		<li>
 			<a href="#"><i class="fa fa-calculator"></i> <span class="nav-label">Dispositivos Biométricos</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php"><span class="nav-label">Dispositivos Biométricos</span></a> </li>
-				<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php"><span class="nav-label">Formato Datos Personales</span></a></li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php">Dispositivos Biométricos</a> </li>
+				<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php">Formato Datos Personales</a></li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -562,7 +564,7 @@
 				<?php if ($permisos['despachos'] == "2"): ?>
 					<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
 				<?php endif ?>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/despachos.php"><span class="nav-label">Insumos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos2/despachos.php">Insumos</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -614,7 +616,7 @@
 					<a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/index.php">Priorización</a>
 				</li>
 				<li>
-					<a href="#"><span class="nav-label">Focalización</span> <span class="fa arrow"></span></a>
+					<a href="#">Focalización <span class="fa arrow"></span></a>
 					<ul class="nav nav-third-level">
 						<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/index.php">Titulares</a></li>
 						<?php if ($permisos['novedades'] == "2"): ?>
@@ -644,8 +646,8 @@
 			<a href="#"><i class="fas fa-layer-group"></i></i> <span class="nav-label">Informes</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
 			<?php if( $_SESSION['perfil'] != 9 ){ ?>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php"><span class="nav-label">Trazabilidad</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php"><span class="nav-label">Trazabilidad Insumos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php">Trazabilidad</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php">Trazabilidad Insumos</a> </li>
 			<?php } ?>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas_avanzadas/index.php">Estadisticas Avanzadas</a></li>
@@ -653,7 +655,7 @@
 				<li> <a href="<?= $baseUrl; ?>/modules/bitacora_usuarios/index.php">Bitácora de usuarios</a></li>
 				<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
 			<?php } ?>
 			</ul>
@@ -667,6 +669,7 @@
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias">Toma de asistencia</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/repitentes.php"> Selección de repitentes </a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/consumo.php"> Registro de consumos </a> </li>
+				<li> <a href="<?= $baseUrl; ?>/modules/asistencias/suplentes.php"> Selección de suplentes </a> </li>
 			<?php } ?>
 
 			<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5  || $_SESSION['perfil'] == 6 || $_SESSION['perfil'] == 7 ){ ?>
@@ -707,9 +710,9 @@
 		<li>
 			<a href="#"><i class="fas fa-fingerprint"></i> <span class="nav-label">Entregas Biometricas</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php"><span class="nav-label">Dashboard</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php">Dashboard</a> </li>
 				<?php if ($permisos['entregas_biometricas'] == "2"): ?>
-					<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php"><span class="nav-label">Registrar entregas vía QR - BarCode</span></a> 
+					<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php">Registrar entregas vía QR - BarCode</a> 
 					</li>
 				<?php endif ?>
 			</ul>
@@ -732,8 +735,8 @@
 		<li>
 			<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php">Derecho</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php">Suplentes</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -741,10 +744,10 @@
 		<li>
 			<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php"><span class="nav-label">Alimentos</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php"><span class="nav-label">Preparaciones</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref"><span class="nav-label">Aportes calóricos y nutricionales</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php">Alimentos</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php">Preparaciones</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2">Menús</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref">Aportes calóricos y nutricionales</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -752,7 +755,7 @@
 		<li>
 			<a href="#"><i class="fa fa-bank"></i> <span class="nav-label">Diagnóstico Infraestructura</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php"><span class="nav-label">Diagnóstico Infraestructura</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php">Diagnóstico Infraestructura</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -760,8 +763,8 @@
 		<li>
 			<a href="#"><i class="fa fa-calculator"></i> <span class="nav-label">Dispositivos Biométricos</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php"><span class="nav-label">Dispositivos Biométricos</span></a> </li>
-				<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php"><span class="nav-label">Formato Datos Personales</span></a></li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php">Dispositivos Biométricos</a> </li>
+				<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php">Formato Datos Personales</a></li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -773,7 +776,7 @@
 				<?php if ($permisos['despachos'] == "2"): ?>
 					<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
 				<?php endif ?>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/despachos.php"><span class="nav-label">Insumos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos2/despachos.php">Insumos</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -825,7 +828,7 @@
 					<a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/index.php">Priorización</a>
 				</li>
 				<li>
-					<a href="#"><span class="nav-label">Focalización</span> <span class="fa arrow"></span></a>
+					<a href="#">Focalización <span class="fa arrow"></span></a>
 					<ul class="nav nav-third-level">
 						<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/index.php">Titulares</a></li>
 						<?php if ($permisos['novedades'] == "2"): ?>
@@ -855,8 +858,8 @@
 			<a href="#"><i class="fas fa-layer-group"></i></i> <span class="nav-label">Informes</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
 			<?php if( $_SESSION['perfil'] != 9 ){ ?>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php"><span class="nav-label">Trazabilidad</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php"><span class="nav-label">Trazabilidad Insumos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php">Trazabilidad</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php">Trazabilidad Insumos</a> </li>
 			<?php } ?>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas_avanzadas/index.php">Estadisticas Avanzadas</a></li>
@@ -864,7 +867,7 @@
 				<li> <a href="<?= $baseUrl; ?>/modules/bitacora_usuarios/index.php">Bitácora de usuarios</a></li>
 				<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
 			<?php } ?>
 			</ul>
@@ -918,9 +921,9 @@
 		<li>
 			<a href="#"><i class="fas fa-fingerprint"></i> <span class="nav-label">Entregas Biometricas</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php"><span class="nav-label">Dashboard</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/dashboard.php">Dashboard</a> </li>
 				<?php if ($permisos['entregas_biometricas'] == "2"): ?>
-					<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php"><span class="nav-label">Registrar entregas vía QR - BarCode</span></a> 
+					<li> <a href="<?php echo $baseUrl; ?>/modules/entregas_biometricas/index.php">Registrar entregas vía QR - BarCode</a> 
 					</li>
 				<?php endif ?>
 			</ul>
@@ -943,8 +946,8 @@
 		<li>
 			<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php">Derecho</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php">Suplentes</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -952,10 +955,10 @@
 		<li>
 			<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php"><span class="nav-label">Alimentos</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php"><span class="nav-label">Preparaciones</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref"><span class="nav-label">Aportes calóricos y nutricionales</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_alimentos.php">Alimentos</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2/ver_preparaciones.php">Preparaciones</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2">Menús</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menu_valref">Aportes calóricos y nutricionales</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -963,7 +966,7 @@
 		<li>
 			<a href="#"><i class="fa fa-bank"></i> <span class="nav-label">Diagnóstico Infraestructura</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php"><span class="nav-label">Diagnóstico Infraestructura</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/infraestructuras/index.php">Diagnóstico Infraestructura</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -971,8 +974,8 @@
 		<li>
 			<a href="#"><i class="fa fa-calculator"></i> <span class="nav-label">Dispositivos Biométricos</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php"><span class="nav-label">Dispositivos Biométricos</span></a> </li>
-				<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php"><span class="nav-label">Formato Datos Personales</span></a></li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/index.php">Dispositivos Biométricos</a> </li>
+				<li><a href="<?php echo $baseUrl; ?>/modules/dispositivos_biometricos/formato_datos_personales.php">Formato Datos Personales</a></li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -984,7 +987,7 @@
 				<?php if ($permisos['despachos'] == "2"): ?>
 					<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
 				<?php endif ?>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/despachos.php"><span class="nav-label">Insumos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos2/despachos.php">Insumos</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -1036,7 +1039,7 @@
 					<a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/index.php">Priorización</a>
 				</li>
 				<li>
-					<a href="#"><span class="nav-label">Focalización</span> <span class="fa arrow"></span></a>
+					<a href="#">Focalización<span class="fa arrow"></span></a>
 					<ul class="nav nav-third-level">
 						<li><a href="<?php echo $baseUrl; ?>/modules/novedades_ejecucion/index.php">Titulares</a></li>
 						<?php if ($permisos['novedades'] == "2"): ?>
@@ -1066,8 +1069,8 @@
 			<a href="#"><i class="fas fa-layer-group"></i></i> <span class="nav-label">Informes</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
 			<?php if( $_SESSION['perfil'] != 9 ){ ?>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php"><span class="nav-label">Trazabilidad</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php"><span class="nav-label">Trazabilidad Insumos</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad/index.php">Trazabilidad</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/trazabilidad_insumos/index.php">Trazabilidad Insumos</a> </li>
 			<?php } ?>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas/index.php">Estadisticas</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/estadisticas_avanzadas/index.php">Estadisticas Avanzadas</a></li>
@@ -1075,7 +1078,7 @@
 				<li> <a href="<?= $baseUrl; ?>/modules/bitacora_usuarios/index.php">Bitácora de usuarios</a></li>
 				<li> <a href="#" class="sinDesarrollar">Informe CHIP</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php"><span class="nav-label">Informe de Insumos ordenados por proveedores</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
 			<?php } ?>
 			</ul>
@@ -1134,8 +1137,8 @@
 		<li>
 			<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php">Derecho</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php">Suplentes</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -1160,7 +1163,7 @@
 		<li>
 			<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2">Menús</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -1215,8 +1218,8 @@
 		<li>
 			<a href="#"><i class="fa fa-child"></i> <span class="nav-label">Titulares de Derecho</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php"> <span class="nav-label">Derecho</span></a> </li>
-				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php"> <span class="nav-label">Suplentes</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/titulares_derecho/index.php">Derecho</a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/suplentes/index.php">Suplentes</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>
@@ -1239,7 +1242,7 @@
 		<li>
 			<a href="#"><i class="fas fa-utensils"></i> <span class="nav-label">Menús</span><span class="fa arrow"></span></a>
 			<ul class="nav nav-second-level collapse">
-				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2"><span class="nav-label">Menús</span></a> </li>
+				<li> <a href="<?php echo $baseUrl; ?>/modules/menus2">Menús</a> </li>
 			</ul>
 		</li>
 	<?php endif ?>

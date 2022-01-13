@@ -5,37 +5,26 @@ require_once '../../../config.php';
 $municipio = '';
 
 if(isset($_POST['municipio']) && $_POST['municipio'] != ''){
-    $municipio = mysqli_real_escape_string($Link, $_POST['municipio']);
+  $municipio = mysqli_real_escape_string($Link, $_POST['municipio']);
 }else if(isset($_SESSION['p_Municipio']) && $_SESSION['p_Municipio'] != ''){
   $municipio = mysqli_real_escape_string($Link, $_SESSION['p_Municipio']);
 }
 
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-
-
 $periodoActual = $_SESSION['periodoActual'];
-$DepartamentoOperador = $_SESSION['p_CodDepartamento'];
+$codMunicipio = $_SESSION['p_Municipio'];
 $condicionCoordinador = '';
 
-
 $consulta = " select distinct codigodane, ciudad from ubicacion ";
-
 if($_SESSION['perfil'] == 6){
   $rectorDocumento = $_SESSION['num_doc'];
-  
-  
   $consulta .= " left join instituciones on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento";
-  
-  // $consulta = "SELECT ubicacion.ciudad as ciudad, ubicacion.CodigoDANE from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento";
-  
   $consulta .= " and etc <> \"1\" ";
 
  }else{
    $consulta .= " where etc <> \"1\" ";
-
  }
-
 
 if ($_SESSION['perfil'] == "7") {
   $documentoCoordinador = $_SESSION['num_doc'];
@@ -48,13 +37,12 @@ if ($_SESSION['perfil'] == "7") {
   $condicionCoordinador = " AND CodigoDANE = $codigoMunicipio ";
 }
 
-
-
-if($DepartamentoOperador != ''){
+if($codMunicipio == '0'){
   $consulta = $consulta." AND codigodane LIKE '$DepartamentoOperador%' $condicionCoordinador ";
+}else if($codMunicipio != '0'){
+  $consulta .= " AND codigoDANE = $codMunicipio ";
 }
 $consulta = $consulta." order by ciudad asc ";
-
 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){

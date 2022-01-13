@@ -206,12 +206,16 @@ $periodo = 1;
     $sem=0;
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
-      $stringSemana = $semana;
-      $find = 'b';
-      $busquedaB = strrchr ($stringSemana, $find);
-      // echo $busquedaB; 
-      if ($busquedaB == 'b' || $busquedaB == 'B') {
-        $diaD = 1;
+      if ($semana == $sem.'b') {
+        $mismaSemanaB = "SELECT COUNT(dia) as numero FROM planilla_semanas WHERE semana IN ('$semana','$sem') GROUP BY dia LIMIT 1";
+        $respuestaSemanaB = $Link->query($mismaSemanaB) or die('Error al consultar los días de la misma semana' . mysqli_error($Link));
+        if ($respuestaSemanaB->num_rows > 0) {
+          $dataSemanaB = $respuestaSemanaB->fetch_assoc();
+          $numeroDiasRepetidos = $dataSemanaB['numero'];
+          if ($numeroDiasRepetidos == 2) {
+            $diaD = 1;
+          }
+        }
       }  
       foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
         // echo $mes." - ".$semana." - ".$D." - ".$dia."</br>";

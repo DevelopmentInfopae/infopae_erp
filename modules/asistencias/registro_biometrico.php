@@ -53,13 +53,10 @@ $semanaActual = null;
 					<input type="hidden" id="semanaActual" value="<?php echo $semanaActual; ?>">
 					<input type="hidden" id="sede" value="">
                     <input type="hidden" id="validacion" name="validacion" value="Lector de Huella">
-
-
 					<div class="table-responsive table-asistencia">
 						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
 							<thead>
 								<tr>
-		
 									<th>Documento</th>
 									<th>Nombre</th>
 									<th>Grado</th>
@@ -67,10 +64,8 @@ $semanaActual = null;
 									<th>Fecha</th>
 								</tr>
 							</thead>
-
 							<tfoot>
 								<tr>
-				
 									<th>Documento</th>
 									<th>Nombre</th>
 									<th>Grado</th>
@@ -80,11 +75,9 @@ $semanaActual = null;
 							</tfoot>
 						</table>
 					</div>				
-
 					<div class="hr-line-dashed"></div>
 					<div class="form-group row">
 						<div class="col-sm-12">
-
 							<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5 ){ ?>
 							<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
 							<?php } ?>
@@ -97,31 +90,25 @@ $semanaActual = null;
 	</div><!-- /.row -->
 </div>
 
-
-
-
-
-
-
-
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
-<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
 <!-- Custom and plugin javascript -->
-<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
-<script src="<?php echo $baseUrl; ?>/modules/asistencias/js/registro_biometrico.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?= $baseUrl; ?>/theme/js/inspinia.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?= $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
+<script src="<?= $baseUrl; ?>/modules/asistencias/js/registro_biometrico.js?v=<?= $cacheBusting; ?>"></script>
 </body>
 </html>

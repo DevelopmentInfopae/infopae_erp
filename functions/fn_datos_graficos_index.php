@@ -390,7 +390,7 @@ if($actualizar == 1 || $bandera > 0){
 		}
 		$aux++;
 	}
-	// exit(var_dump($consulta));		
+	// exit(var_dump($consulta));	
 	if($consulta != ''){
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		if($resultado->num_rows >= 1){
@@ -474,7 +474,7 @@ if($actualizar == 1 || $bandera > 0){
  		$htmlTotales .= "<li> <h2 class='no-margins'> $entregado de $entregar </h2> <small>Complemento Alimentario Tarde</small> <div class='stat-percent'>$porcentaje% <i class='fa fa-level-up text-navy'></i></div> <div class='progress progress-mini'> <div style='width: $porcentaje%' class='progress-bar'></div> </div> </li>";
     }
 
-    // exit(var_dump($numeroDias));
+    
     if($totalesPorEntregar['RPC'] > 0){
         $entregar = $totalesPorEntregar['RPC'] / ($numeroDias != 0 ? $numeroDias : 1);
         $entregado = $totalesEntregados['RPC'];

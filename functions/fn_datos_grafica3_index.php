@@ -55,26 +55,27 @@ if ($respuestaMeses->num_rows > 0) {
 			$numeroDias = 0;	
 		}
 
-		$consultaEntregas = "SELECT tipo_complem $D FROM entregas_res_".$dataMeses['mes'].$periodoActual." GROUP BY tipo_complem;";
-		$respuestaEntregas = $Link->query($consultaEntregas) or die ('Error al consultar los consumos ' . mysqli_error($Link));
-		if ($respuestaEntregas->num_rows > 0) {
-			
-			$totalesPorComplemento = 0;
-			$totalGeneral = 0;
-			while ($dataEntregas = $respuestaEntregas->fetch_assoc()) {	
-				foreach ($valores as $complemento => $valor) {
-					$totalesComplemento = 0;
-					if ($dataEntregas['tipo_complem'] == $complemento) {
-						for ($i=1; $i <= $numeroDias ; $i++) { 
-							$totalesComplemento += $dataEntregas["D$i"];
-						}
-						$totalesPorComplemento += $totalesComplemento * $valor;
+		if ($dataMeses['mes'] <= $mesActual) {
+			$consultaEntregas = "SELECT tipo_complem $D FROM entregas_res_".$dataMeses['mes'].$periodoActual." GROUP BY tipo_complem;";
+			$respuestaEntregas = $Link->query($consultaEntregas) or die ('Error al consultar los consumos ' . mysqli_error($Link));
+			if ($respuestaEntregas->num_rows > 0) {
+				$totalesPorComplemento = 0;
+				$totalGeneral = 0;
+				while ($dataEntregas = $respuestaEntregas->fetch_assoc()) {	
+					foreach ($valores as $complemento => $valor) {
+						$totalesComplemento = 0;
+						if ($dataEntregas['tipo_complem'] == $complemento) {
+							for ($i=1; $i <= $numeroDias ; $i++) { 
+								$totalesComplemento += $dataEntregas["D$i"];
+							}
+							$totalesPorComplemento += $totalesComplemento * $valor;
 							// var_dump($totalesPorComplemento);
+						}
 					}
+					$totalGeneral = $totalesPorComplemento;
 				}
-				$totalGeneral = $totalesPorComplemento;
+				$cantidadTotal += $totalGeneral;
 			}
-			$cantidadTotal += $totalGeneral;
 		}
 	}
 }

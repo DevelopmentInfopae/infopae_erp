@@ -16,7 +16,6 @@
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
-
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
 		<h2>Informe de asistencias</h2>
@@ -34,7 +33,6 @@
 <!-- /.row wrapper de la cabecera de la seccion -->
 
 <?php include "filtro.php"  ?>
-
 <div class="wrapper wrapper-content  animated fadeInRight registroConsumo" style="display: none">
 	<div class="row">
 		<div class="col-sm-12">
@@ -51,8 +49,6 @@
 					<input type="hidden" id="semanaActual" value="<?php echo $semanaActual; ?>">
 					<input type="hidden" id="sede" value="">
 					<input type="hidden" id="validacion" name="validacion" value="Tablet">
-					
-
 					<div class="table-responsive table-asistencia">
 						<table class="table table-striped table-hover selectableRows dataTablesSedes" >
 							<thead>
@@ -80,14 +76,12 @@
 							</tfoot>
 						</table>
 					</div>				
-
 					<div class="hr-line-dashed"></div>
 					<div class="form-group row">
 						<div class="col-sm-12">
-
-							<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5 ){ ?>
+<!-- 							<?php if( $_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 5 ){ ?>
 							<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
-							<?php } ?>
+							<?php } ?> -->
 							<!-- <button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button> -->
 						</div>
 					</div>

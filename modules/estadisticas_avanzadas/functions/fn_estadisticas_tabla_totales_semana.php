@@ -19,6 +19,7 @@ $periodo = 1;
                           WHERE 
                            table_schema = DATABASE() AND table_name = 'entregas_res_".$dataDiasSemanas['MES']."$periodoActual'";
       $resTablas = $Link->query($consultaTablas);
+      // echo $consultaTablas;
       if ($resTablas->num_rows > 0) {
         $semanaPos =  $dataDiasSemanas['SEMANA'];
         $arrDias = explode(",", $dataDiasSemanas['Dias']);
@@ -49,35 +50,34 @@ $periodo = 1;
     $sem=0;
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
-      $stringSemana = $semana;
-      $find = 'b';
-      $busquedaB = strrchr ($stringSemana, $find);
-      // echo $busquedaB; 
-      if ($busquedaB == 'b' || $busquedaB == 'B') {
-        $diaD = 1;
+      // echo $consultaPlanillaDias."<br>";
+      if ($semana == $sem.'b') {
+        $mismaSemanaB = "SELECT COUNT(dia) as numero FROM planilla_semanas WHERE semana IN ('$semana','$sem') GROUP BY dia LIMIT 1";
+        $respuestaSemanaB = $Link->query($mismaSemanaB) or die('Error al consultar los días de la misma semana' . mysqli_error($Link));
+        if ($respuestaSemanaB->num_rows > 0) {
+          $dataSemanaB = $respuestaSemanaB->fetch_assoc();
+          $numeroDiasRepetidos = $dataSemanaB['numero'];
+          if ($numeroDiasRepetidos == 2) {
+            $diaD = 1;
+          }
+        }
       }
       foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
         // echo $mes." - ".$semana." - ".$D." - ".$dia."</br>";
         $consultaPlanillaDias = "SELECT D$diaD FROM planilla_dias WHERE D$diaD = $dia AND mes = $mes;";
-        // echo $consultaPlanillaDias."<br>";
         $respuestaConsultaPlanillaDias = $Link->query($consultaPlanillaDias);
         if ($respuestaConsultaPlanillaDias->num_rows == 1) {
           $datos.="SUM(D$diaD) + ";
           $diaD++;
         }
-
       }
-
       $datos = trim($datos, "+ ");
       $datos.= " AS semana_".$semana.", ";
       $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
     }
     $datos = trim($datos, ", ");
-    // echo $datos;
     $consultaRes = "SELECT $datos FROM $tabla";
-    // echo $consultaRes."</br>";
-    if ($resRes = $Link->query($consultaRes)) {
-    
+    if ($resRes = $Link->query($consultaRes)) {   
       if ($resRes->num_rows > 0) {
         if ($Res = $resRes->fetch_assoc()) {
             foreach($semanasP as $semanaP){ //según el último número de semana guardado previamente, recorremos las semanas que nos devuelve el mes.

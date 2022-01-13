@@ -1,14 +1,7 @@
-<?php
+<?php 
 $titulo = 'Preparaciones';
-require_once '../../header.php';
+require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
-
-if ($permisos['menus'] == "0") {
-  ?><script type="text/javascript">
-      window.open('<?= $baseUrl ?>', '_self');
-  </script>
-<?php exit(); }
-
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -24,11 +17,11 @@ if ($permisos['menus'] == "0") {
     </ol>
   </div><!-- /.col -->
   <div class="col-lg-4">
-    <div class="title-action">
-			<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
-				<button class="btn btn-primary" onclick="window.location.href = 'nueva_preparacion.php';"><span class="fa fa-plus"></span>  Nuevo</button>
-			<?php } ?>
-    </div>
+    <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+      <div class="title-action">
+        <button class="btn btn-primary" onclick="window.location.href = 'nueva_preparacion.php';"><span class="fa fa-plus"></span>  Nuevo</button>
+      </div>
+    <?php } ?>
   </div><!-- /.col -->
 </div><!-- /.row -->
 
@@ -39,7 +32,7 @@ if ($permisos['menus'] == "0") {
         <div class="ibox-content contentBackground">
 
               <!-- <div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$('.btnExportarExcel').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li></ul></div> -->
-
+          
         	<table class="table table-striped selectableRows" id="box-table">
         		<thead>
         			<tr>
@@ -53,12 +46,12 @@ if ($permisos['menus'] == "0") {
         			</tr>
         		</thead>
         		<tbody>
-        		<?php
+        		<?php 
               $consulta = "SELECT * FROM productos".date('y')." WHERE Codigo like '02%' AND nivel = '3'";
                 $result1 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                 if($result1->num_rows > 0){
 
-                  while($row1 = $result1->fetch_assoc()){
+                  while($row1 = $result1->fetch_assoc()){ 
                   	?>
 
                   	<tr idProducto="<?php echo $row1['Id']; ?>">
@@ -80,23 +73,19 @@ if ($permisos['menus'] == "0") {
                               <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
-															<li><a><span class="fa fa-file-excel-o"></span> Exportar</a></li>
-															<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
-																<li><a onclick="editarProducto(<?php echo $row1['Id']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
-																<?php if ($row1['Inactivo'] == 0): ?>
-																	<li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $row1['Codigo']; ?>" data-tipocomplemento="<?php echo $row1['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $row1['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span>  Eliminar</a></li>
-																<?php endif ?>
-
-															<?php } ?>
-
-
-
+                              <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+                                <li><a onclick="editarProducto(<?php echo $row1['Id']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
+                                <?php if ($row1['Inactivo'] == 0): ?>
+                                <li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $row1['Codigo']; ?>" data-tipocomplemento="<?php echo $row1['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $row1['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span>  Eliminar</a></li>
+                                <?php endif ?>
+                              <?php } ?>                               
+                              <li><a><span class="fa fa-file-excel-o"></span> Exportar</a></li>
                             </ul>
                           </div>
                         </div>
                       </td>
                   	</tr>
-                 <?php
+                 <?php 
              		 }
                 }
 	            ?>
@@ -128,10 +117,9 @@ if ($permisos['menus'] == "0") {
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Section Scripts -->
-<script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/menus/js/menus.js"></script>
 
 <script type="text/javascript">
   console.log('Aplicando Data Table');
@@ -162,8 +150,6 @@ if ($permisos['menus'] == "0") {
   /*
   dataset1.buttons().container().appendTo($('#btnExcelDataTable'));
   $('.btnExportar').removeAttr('class').css('color', '#333');*/
-
- 
 </script>
 
 <?php mysqli_close($Link); ?>

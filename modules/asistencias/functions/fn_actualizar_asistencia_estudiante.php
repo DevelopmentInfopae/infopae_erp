@@ -22,13 +22,6 @@ if(isset($_POST["dia"]) && $_POST["dia"] != ""){
 	$dia = $diaAsistencia;
 }
 
-
-
-
-
-
-
-
 $sede = mysqli_real_escape_string($Link, $_POST['sede']);
 $complemento = mysqli_real_escape_string($Link, $_POST['complemento']);
 
@@ -36,18 +29,11 @@ $documento = mysqli_real_escape_string($Link, $_POST['documento']);
 $tipoDocumento = mysqli_real_escape_string($Link, $_POST['tipoDocumento']); 
 $valor = mysqli_real_escape_string($Link, $_POST['valor']); 
 
-
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
-
-
-
 
 $mesTablaAsistencia = $mes;
 $annoTablaAsistencia = $anno;
 include 'fn_validar_existencias_tablas.php';
-
-
-
 
 $consultaRegistro = " select * from asistencia_det$mes$anno where mes = \"$mes\" and dia = \"$dia\" and tipo_doc = \"$tipoDocumento\" and num_doc = \"$documento\" and complemento = \"$complemento\" ";
 

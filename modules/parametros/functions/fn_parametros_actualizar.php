@@ -41,6 +41,8 @@
 	$pagina_web = (isset($_POST["pagina_web"]) && $_POST["pagina_web"] != '') ? mysqli_real_escape_string($Link, $_POST["pagina_web"]) : '';
 	$facebook = (isset($_POST["facebook"]) && $_POST["facebook"] != '') ? mysqli_real_escape_string($Link, $_POST["facebook"]) : '';
 	$twitter = (isset($_POST["twitter"]) && $_POST["twitter"] != '') ? mysqli_real_escape_string($Link, $_POST["twitter"]) : '';
+	$tipoBusqueda = (isset($_POST['tipoBusqueda']) && $_POST['tipoBusqueda'] != '') ? mysqli_real_escape_string($Link, $_POST['tipoBusqueda']) : "";
+
 
 	$consulta1 = "UPDATE parametros
 				SET
@@ -74,7 +76,8 @@
 					email = '$email',
 					pagina_web = '$pagina_web',
 					facebook = '$facebook',
-					twitter = '$twitter'
+					twitter = '$twitter',
+					tipo_busqueda = $tipoBusqueda
 				WHERE id = '$id'";
 	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". $Link->error);
 	if ($resultado1) {

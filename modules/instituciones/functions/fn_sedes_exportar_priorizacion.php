@@ -54,9 +54,7 @@ pri.Etario2_RPC AS grupo_etario_2_rpc,
 pri.Etario3_RPC AS grupo_etario_3_rpc
 FROM priorizacion$semana pri
 INNER JOIN sedes$periodo_actual sed ON sed.cod_sede = pri.cod_sede
-INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede
-WHERE sed.estado = 1
-";
+INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede";
 
 // exit(var_dump($consulta_priorizacion));
 

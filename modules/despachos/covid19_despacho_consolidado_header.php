@@ -1,9 +1,9 @@
 <?php
-$titulo = "Programa de Alimentación Escolar - PAE \n Atención en el marco del Estado de Emergencia, Económica, Social y Ecológica, derivado de la pandemia del COVID-19 \n Modalidad - ".$descripcionTipo;
+$titulo = "Programa de Alimentación Escolar - PAE \n Atención en el marco del Estado de Emergencia Sanitaria, derivado de la pandemia del COVID-19 \n Modalidad - ".$descripcionTipo;
 
 
 
- 
+
 
 
 
@@ -12,7 +12,7 @@ $tamannoFuente = 6;
 $pdf->SetFont('Arial','',$tamannoFuente);
 //header
 
-// var_dump($entrega);
+//var_dump($nomSedes);
 $nomSede = $nomSedes[$sede_unica];
 // var_dump($nomSede);
 // $nomInstitucion= $nomSede['nom_inst'];
@@ -144,18 +144,11 @@ $aux = $_SESSION['p_NumContrato'];
 $pdf->Cell(25,4,$aux,0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(7,4,utf8_decode('MES:'),0,0,'L',False);
+$pdf->Cell(17.6,4,utf8_decode('MES ATENCIÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-if($imprimirMes == 0){ $mes = ""; }
-$pdf->Cell(20,4,utf8_decode(strtoupper ($mes)),0,0,'L',False);
 
-$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(12.6,4,utf8_decode('ENTREGA:'),0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
-$entregaString = "";
-if($entrega < 10){$entregaString = "0".$entrega;}
-else{$entregaString = $entrega;}
-$pdf->Cell(5,4,utf8_decode($entregaString),0,0,'L',False);
+if($imprimirMes == 0){ $mes = ""; }
+$pdf->Cell(16,4,utf8_decode(strtoupper ($mes)." "),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(6,4,utf8_decode('AÑO:'),0,0,'L',False);
@@ -184,7 +177,7 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(8,4,utf8_decode('ZONA:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $aux = utf8_decode(strtoupper($nomSede['zona']));
-$pdf->Cell(11,4,$aux,'B',0,'L',False);
+$pdf->Cell(22,4,$aux,'B',0,'L',False);
 
 $pdf->Ln(4);
 $pdf->Ln(2);

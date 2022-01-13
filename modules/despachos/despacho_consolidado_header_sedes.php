@@ -235,14 +235,21 @@ $pdf->SetFillColor(255,255,255);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 
-// var_dump($auxDias);
-
-if($imprimirMes == 0){ $auxDias = ""; }
+// var_dump($nombreMesEntrega);
+// modificaciones jerson
+$mesString = '';
+$entregaString = '';
 if($entrega < 10){$entregaString = "0".$entrega;}
 else{$entregaString = $entrega;}
-$pdf->MultiCell(45,7.05,utf8_decode($auxDias . "\n" . "ENTREGA " .$entregaString),1,'C',False);
+if($imprimirMes == 0){ 
+  $auxDias = ""; 
+  $pdf->Cell(45,14.1,utf8_decode("ENTREGA " .$entregaString),1,0,'C',False);
+}else if($imprimirMes != 0){
+  $mesString = "MES: " .$nombreMesEntrega;
+  $pdf->MultiCell(45,7.05,utf8_decode($mesString . "\n" . "ENTREGA " .$entregaString),1,'C',False);
+}
 
-
+// end modificaciones jerson
 
 if(strpos($semana, ',') !== false){
     $aux = "SEMANAS: $semana";

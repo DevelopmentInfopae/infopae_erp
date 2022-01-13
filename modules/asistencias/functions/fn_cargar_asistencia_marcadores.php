@@ -17,11 +17,7 @@ if(isset($_POST['complemento']) && $_POST['complemento'] != ''){
 	$complemento = mysqli_real_escape_string($Link, $_POST['complemento']);
 }
 
-
 $anno = $annoAsistencia2D; 
-
-
-
 
 if(isset($_POST['mes']) && $_POST['mes'] != ""){
 	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
@@ -35,20 +31,9 @@ if(isset($_POST['dia']) && $_POST['dia'] != ""){
 	$dia = $diaAsistencia;
 }
 
-
-
-
-
-
-
-
-
-
-
 $consulta = "select a.* from asistencia_det$mes$anno a left join focalizacion$semanaActual f on f.tipo_doc = a.tipo_doc and f.num_doc = a.num_doc where a.dia = $dia and f.cod_sede = '$sede' and f.Tipo_complemento = \"$complemento\" ";
 
-//echo "<br>$consulta<br>";
-
+// echo "<br>$consulta<br>";
 $resultadoAJAX = array(
 	"estado" => 0,
 	"mensaje" => "Se ha presentado un error."

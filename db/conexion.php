@@ -1,19 +1,12 @@
 <?php
 
-// $Hostname = "198.57.248.97";
-// $Username = "infopae_sylvia";
-// $Password = "Sylopez19";
-// $Database = "infopae_soberano";
+$Hostname = "162.240.16.254";
 
-// $Hostname = "192.254.194.178";
-// $Username = "infopae_sylvia";
-// $Password = "Sylopez18";
-// $Database = "infopae_giron2019";
+$Username = "infopaed_sylvia";
 
-$Hostname = "192.254.134.21";
-$Username = "infopaes_sylvia";
-$Password = "Sylopez19";
-$Database = "infopaes_sadelante2";
+$Password = "Sylopez20";
+
+$Database = "infopaed_demo";
 
 
 

@@ -83,19 +83,25 @@ if ($rescodDepartamento->num_rows > 0) {
 	}
 }*/
 // exit(var_dump($diasSemanas));
-$sem=0;
+$sem2 = 0;
 foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
     $datos = "";
     $diaD = 1;
-    
+    $sem=0;
+
+
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
-        $stringSemana = $semana;
-      	$find = 'b';
-      	$busquedaB = strrchr ($stringSemana, $find);
-      	// echo $busquedaB; 
-      	if ($busquedaB == 'b' || $busquedaB == 'B') {
-        	$diaD = 1;
+      	if ($semana == $sem.'b') {
+        	$mismaSemanaB = "SELECT COUNT(dia) as numero FROM planilla_semanas WHERE semana IN ('$semana','$sem') GROUP BY dia LIMIT 1";
+        	$respuestaSemanaB = $Link->query($mismaSemanaB) or die('Error al consultar los días de la misma semana' . mysqli_error($Link));
+        	if ($respuestaSemanaB->num_rows > 0) {
+          		$dataSemanaB = $respuestaSemanaB->fetch_assoc();
+          		$numeroDiasRepetidos = $dataSemanaB['numero'];
+          		if ($numeroDiasRepetidos == 2) {
+            	$diaD = 1;
+          		} 
+        	}
       	}	
       	foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
 			$consultaPlanillaDias = "SELECT D$diaD FROM planilla_dias WHERE D$diaD = $dia AND mes = $mes;";
@@ -110,13 +116,16 @@ foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
 
       $datos = trim($datos, "+ ");
       $datos.= " AS semana_".$semana.", ";
-      $sem++;
+      $sem = $semana;
+      $sem2++;
+
       // $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
     }
 
     $datos = trim($datos, ", ");
 
 	$consMunicipios = "SELECT cod_mun_sede, $datos FROM $tabla GROUP BY cod_mun_sede";
+	// echo $consMunicipios;
 	$resMunicipios= $Link->query($consMunicipios);
  	if ($resMunicipios->num_rows > 0) {
  		while ($dataMunicipios = $resMunicipios->fetch_assoc()) {
@@ -163,16 +172,15 @@ foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
  	}
 }
 
-// echo $sem; // 2b
 $tabla = '';
 $numTds = 1;
 $semanaAct = "";
 $tHeadSemana = '<tr>
      				<th>Municipio</th>';
-// exit(var_dump($tota));     				
+// exit(var_dump($totalesMunicipios));     				
 foreach ($totalesMunicipios as $codigo => $semanaArr) {
     foreach ($semanaArr as $semana => $totales) { //recorremos todas las semanas obtenidas para crear las columnas
-	    if ($numTds <= $sem || $numTds."b" == $sem) {
+	    if ($numTds <= $sem2 || $numTds."b" == $sem2) {
 	    	if ($semana != $semanaAct) { //Si la semana en turno es igual a la última semana guardada, no se crea otra columna
 		        $numTds++; //aumentamos en 1 el número de columnas creadas
 
@@ -180,9 +188,9 @@ foreach ($totalesMunicipios as $codigo => $semanaArr) {
 					  '.ucwords(str_replace("_", " ", $semana)).'
 					</th>';
 	      	}
-
-	   		$semanaAct=$semana; //Guardamos el último número de semana del mes (incrementable sin reinicio por mes)
+	
 	    }
+	    $semanaAct=$semana; //Guardamos el último número de semana del mes (incrementable sin reinicio por mes)
     }
 }
 $tHeadSemana .= '<th>Total</th></tr>';

@@ -2,6 +2,12 @@
 $titulo = 'Ver';
 require_once '../../header.php';
 
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 
 $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Libra', 'g' => 'Gramos'), 'cc' => array('u' => 'Unidad', 'lt' => 'Litro', 'cc' => 'Centímetros cúbicos'), 'u' => array('u' => 'Unidad'));
@@ -48,17 +54,16 @@ if (isset($_REQUEST['idProducto'])) {
         <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-					<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-						<li><a onclick="editarProducto(<?php echo $_REQUEST['idProducto']; ?>)"><span class="fa fa-pencil"></span> Editar </a></li>
+					<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
+						<li><a onclick="editarProducto(<?php echo $_REQUEST['idProducto']; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
 						<?php if ($Producto['Inactivo'] == 0): ?>
-							<li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $Producto['Codigo']; ?>" data-tipocomplemento="<?php echo $Producto['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $Producto['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span> Eliminar </a></li>
+              <?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2"): ?>
+                <li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $Producto['Codigo']; ?>" data-tipocomplemento="<?php echo $Producto['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $Producto['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span> Eliminar </a></li>
+              <?php endif ?>
 						<?php else: ?>
 							<li><a><span class="fa fa-ban"></span> Estado: <strong>Inactivo</strong></a></li>
 						<?php endif ?>
 					<?php } ?>
-
-
-
           <li><a href="#" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
         </ul>
       </div>

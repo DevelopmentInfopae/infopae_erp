@@ -3,9 +3,6 @@ require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 require_once 'fn_fecha_asistencia.php';
 
-// var_dump($_POST);
-//var_dump($_SESSION);
-
 $anno = $annoAsistencia2D; 
 
 if( isset($_POST["mes"]) && $_POST["mes"] != "" ){
@@ -20,21 +17,13 @@ if( isset($_POST["dia"]) && $_POST["dia"] != "" ){
 	$dia = $diaAsistencia;
 }
 
-
-
-
-
-
 $sede = mysqli_real_escape_string($Link, $_POST['sede']);
 $complemento = mysqli_real_escape_string($Link, $_POST['complemento']);
 $semana = mysqli_real_escape_string($Link, $_POST['semana']);
 $grado = mysqli_real_escape_string($Link, $_POST['grado']);
 $grupo = mysqli_real_escape_string($Link, $_POST['grupo']);
 $banderaRegistros = mysqli_real_escape_string($Link, $_POST['banderaRegistros']);
-
-
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
-
 $asistencias = $_POST['asistencia'];
 
 $mesTablaAsistencia = $mes;
@@ -76,8 +65,7 @@ id_usuario = values(id_usuario),
 repite = values(repite), 
 consumio = values(consumio), 
 repitio = values(repitio) ";
-//echo $consulta;
-
+// echo $consulta;
 
 $result = $Link->query($consulta) or die ('Insert error'. mysqli_error($Link));
 if($result){

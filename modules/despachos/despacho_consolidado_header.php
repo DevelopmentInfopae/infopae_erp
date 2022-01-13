@@ -1,5 +1,6 @@
 <?php
 //header
+// var_dump($Rpc);
 $logoInfopae = $_SESSION['p_Logo ETC'];
 $pdf->SetFont('Arial');
 $pdf->SetTextColor(0,0,0);
@@ -16,22 +17,47 @@ $pdf->Cell(146.45,5.7,utf8_decode('ORDEN DE PEDIDO DE VIVERES POR MUNICIPIO'),0,
 $pdf->Cell(146.45,5.7,utf8_decode($descripcionTipo),0,5.7,'C',False);
 $pdf->Ln(0.19);
 
-$current_y = $pdf->GetY();
-$current_x = $pdf->GetX();
-$pdf->Cell(171.8,4.76,'',1,0,'L',False);
-$pdf->SetXY($current_x, $current_y);
-$pdf->Cell(20,4.76,utf8_decode('OPERADOR:'),0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(151.8,4.76,utf8_decode( $_SESSION['p_Operador'] ),0,0,'L',False);
+if ($Rpc == 'si') {
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+  // $pdf->Cell(171.8,4.76,'',1,0,'L',False);
+  $pdf->SetXY($current_x, $current_y);
+  $pdf->Cell(20,4.76,utf8_decode('OPERADOR:'),'L',0,'L',False);
+  $pdf->SetFont('Arial','',$tamannoFuente);
+  $pdf->Cell(140.8,4.76,utf8_decode( $_SESSION['p_Operador'] ),'R',0,'L',False);
+  $pdf->SetFont('Arial','B',$tamannoFuente);
+  $pdf->Cell(16,4.76,utf8_decode('CONTRATO:'),0,0,'L',false);
+  $pdf->SetFont('Arial','',$tamannoFuente);
+  $pdf->Cell(34,4.76,utf8_decode($contrato),'R',0,'L',false);
 
-$current_y = $pdf->GetY();
-$current_x = $pdf->GetX();
-$pdf->Cell(91.6,4.76,'',1,0,'L',False);
-$pdf->SetXY($current_x, $current_y);
-$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(13,4.76,utf8_decode('FECHA:'),0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(78.6,4.76,utf8_decode($fechaDespacho),0,0,'L',False);
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+  // $pdf->Cell(91.6,4.76,'',1,0,'L',False);
+  $pdf->SetXY($current_x, $current_y);
+  $pdf->SetFont('Arial','B',$tamannoFuente);
+  $pdf->Cell(27,4.76,utf8_decode('FECHA ELABORACIÓN:'),0,0,'L',False);
+  $pdf->SetFont('Arial','',$tamannoFuente);
+  $pdf->Cell(0,4.76,utf8_decode($fechaDespacho),'R',0,'L',False);
+}
+else if ($Rpc == 'no') {
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+  $pdf->Cell(171.8,4.76,'',1,0,'L',False);
+  $pdf->SetXY($current_x, $current_y);
+  $pdf->Cell(20,4.76,utf8_decode('OPERADOR:'),0,0,'L',False);
+  $pdf->SetFont('Arial','',$tamannoFuente);
+  $pdf->Cell(151.8,4.76,utf8_decode( $_SESSION['p_Operador'] ),0,0,'L',False);
+
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+  $pdf->Cell(91.6,4.76,'',1,0,'L',False);
+  $pdf->SetXY($current_x, $current_y);
+  $pdf->SetFont('Arial','B',$tamannoFuente);
+  $pdf->Cell(13,4.76,utf8_decode('FECHA:'),0,0,'L',False);
+  $pdf->SetFont('Arial','',$tamannoFuente);
+  $pdf->Cell(78.6,4.76,utf8_decode($fechaDespacho),0,0,'L',False);
+}
+
 $pdf->Ln(4.76);
 
 $current_y = $pdf->GetY();
@@ -52,7 +78,6 @@ if($ruta == '' || $ruta == 'Todos'){
   $pdf->SetFont('Arial','B',$tamannoFuente);
   $pdf->Cell(28,4.76,utf8_decode('MUNICIPIO O VEREDA:'),0,0,'L',False);
   $pdf->SetFont('Arial','',$tamannoFuente);
-
   $aux = '';
   for ($ii=0; $ii < count($municipios) ; $ii++) {
 	if($ii > 0){
@@ -60,13 +85,14 @@ if($ruta == '' || $ruta == 'Todos'){
 	}
 	$aux = $aux.$municipios[$ii];
   }
-  $pdf->Cell(53.4,4.76,utf8_decode($aux),0,0,'L',False);
+  $aux2 = substr($aux,0,100);
+  $pdf->Cell(53.4,4.76,utf8_decode($aux2),0,0,'L',False);
 
 }else{
   $pdf->SetFont('Arial','B',$tamannoFuente);
   $pdf->Cell(8,4.76,utf8_decode('RUTA:'),0,0,'L',False);
   $pdf->SetFont('Arial','',$tamannoFuente);
-  $pdf->Cell(46.8,4.76,$ruta,"R",0,'L',False);
+  $pdf->Cell(46.8,4.76,utf8_decode($ruta),"R",0,'L',False);
 
   $pdf->SetFont('Arial','B',$tamannoFuente);
   $pdf->Cell(16,4.76,utf8_decode('PROVEEDOR:'),"R",0,'L',False);
@@ -157,66 +183,92 @@ $pdf->Cell(36.7,4.7,utf8_decode($totalGrupo3),1,0,'C',False);
 $pdf->SetXY($current_x+36.7, $current_y);
 
 $pdf->SetFillColor(255,255,255);
-$current_y = $pdf->GetY();
-$current_x = $pdf->GetX();
-$pdf->Cell(45,14.1,'',1,0,'L',False);
-$pdf->SetXY($current_x, $current_y+2.35);
 
-
-
-
-
-$pdf->MultiCell(45,4.7,$auxDias,0,'C',False);
-
-$pdf->SetXY($current_x, $current_y+9.4);
-
-if(strpos($semana, ',') !== false){
-	$aux = "SEMANAS: $semana";
-}else{
-	$aux = "SEMANA: $semana";
+if ($Rpc == 'si') {
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+  $pdf->Cell(45,14.1,'',1,0,'L',False);
+  $pdf->SetXY($current_x, $current_y);
+  if($imprimirMes == 0){ 
+    $pdf->Cell(45,14.1,utf8_decode("ENTREGA: " .$numeroEntrega),1,0,'C',False);
+  }else if($imprimirMes != 0){
+    $mesString = "MES: " .$nombreMesEntrega;
+    $pdf->MultiCell(45,7.05,utf8_decode($mesString . "\n" . "ENTREGA: " .$numeroEntrega),1,'C',False);
+  }
+  $pdf->SetXY($current_x+45, $current_y);
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+  $pdf->Cell(57.8,14.1,'',1,0,'L',False);
+  $pdf->SetXY($current_x, $current_y+2.35);
+  if(strpos($auxCiclos, ',') !== false){
+    $aux = "SEMANAS: $auxCiclos";
+  }else{
+    $aux = "SEMANA: $auxCiclos";
+  }
+  $pdf->Cell(57.8,9.4,utf8_decode("N/A"),0,0,'C',False);
 }
-
-$pdf->MultiCell(45,4.7,$aux,0,'C',False);
-
-$pdf->SetXY($current_x+45, $current_y);
-
-$current_y = $pdf->GetY();
-$current_x = $pdf->GetX();
-$pdf->Cell(57.8,14.1,'',1,0,'L',False);
-$pdf->SetXY($current_x, $current_y+2.35);
-//$pdf->SetFont('Arial','B',$tamannoFuente);
-//$pdf->Cell(57.8,4.7,'SEMANA: '.$auxSemana,0,0,'C',False);
+else if ($Rpc == 'no') {
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+  $pdf->Cell(45,14.1,'',1,0,'L',False);
+  $pdf->SetXY($current_x, $current_y+2.35);
 
 
 
 
 
+  $pdf->MultiCell(45,4.7,$auxDias,0,'C',False);
 
-if(strpos($auxCiclos, ',') !== false){
-	$aux = "SEMANAS: $auxCiclos";
-}else{
-	$aux = "SEMANA: $auxCiclos";
+  $pdf->SetXY($current_x, $current_y+9.4);
+
+  if(strpos($semana, ',') !== false){
+    $aux = "SEMANAS: $semana";
+  }else{
+    $aux = "SEMANA: $semana";
+  }
+
+  $pdf->MultiCell(45,4.7,$aux,0,'C',False);
+
+  $pdf->SetXY($current_x+45, $current_y);
+
+  $current_y = $pdf->GetY();
+  $current_x = $pdf->GetX();
+  $pdf->Cell(57.8,14.1,'',1,0,'L',False);
+  $pdf->SetXY($current_x, $current_y+2.35);
+  //$pdf->SetFont('Arial','B',$tamannoFuente);
+  //$pdf->Cell(57.8,4.7,'SEMANA: '.$auxSemana,0,0,'C',False);
+
+
+
+
+
+
+  if(strpos($auxCiclos, ',') !== false){
+    $aux = "SEMANAS: $auxCiclos";
+  }else{
+    $aux = "SEMANA: $auxCiclos";
+  }
+  $pdf->Cell(57.8,4.7,$aux,0,0,'C',False);
+
+
+
+
+
+
+
+
+
+
+  $pdf->SetFont('Arial','',$tamannoFuente);
+  //$pdf->SetXY($current_x+34, $current_y+2.35);
+  //$pdf->Cell(10,4.7,$auxSemana,0,4.7,'L',False);
+  //$pdf->SetFont('Arial','B',$tamannoFuente);
+  $pdf->SetXY($current_x, $current_y+7,05);
+  $pdf->Cell(57.8,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
+  //$pdf->SetFont('Arial','',$tamannoFuente);
+  //$pdf->SetXY($current_x+33, $current_y+7,05);
+  //$pdf->Cell(57.8,4.7,$auxCiclos,0,0,'L',False);
 }
-$pdf->Cell(57.8,4.7,$aux,0,0,'C',False);
-
-
-
-
-
-
-
-
-
-
-$pdf->SetFont('Arial','',$tamannoFuente);
-//$pdf->SetXY($current_x+34, $current_y+2.35);
-//$pdf->Cell(10,4.7,$auxSemana,0,4.7,'L',False);
-//$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->SetXY($current_x, $current_y+7,05);
-$pdf->Cell(57.8,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
-//$pdf->SetFont('Arial','',$tamannoFuente);
-//$pdf->SetXY($current_x+33, $current_y+7,05);
-//$pdf->Cell(57.8,4.7,$auxCiclos,0,0,'L',False);
 
 $pdf->SetXY($current_x+57.8, $current_y);
 $current_y = $pdf->GetY();
@@ -224,10 +276,12 @@ $current_x = $pdf->GetX();
 $pdf->Cell(44.7,14.1,'',1,0,'L',False);
 $pdf->SetXY($current_x+2, $current_y+2.35);
 
+if ($Rpc == 'si') {
+  $totalEntregas = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
+  $pdf->Cell(40,10,$totalEntregas,0,0,'C',False);
+}
 
-
-
-
+else if ($Rpc == 'no') {
   $jm = '';
   $jt = '';
 
@@ -238,19 +292,16 @@ $pdf->SetXY($current_x+2, $current_y+2.35);
   }else if($jornada == 3){
   $jt = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
   }
-$pdf->Cell(7,4.7,'JM:',0,0,'L',False);
-$pdf->Cell(33,4.7,$jm,'B',0,'L',False);
-$pdf->SetXY($current_x+2, $current_y+7.05);
-$pdf->Cell(7,4.7,'JT:',0,0,'L',False);
-$pdf->Cell(33,4.7,$jt,'B',0,'L',False);
-
-
-
-
-
-
+  $pdf->Cell(7,4.7,'JM:',0,0,'L',False);
+  $pdf->Cell(33,4.7,$jm,'B',0,'L',False);
+  $pdf->SetXY($current_x+2, $current_y+7.05);
+  $pdf->Cell(7,4.7,'JT:',0,0,'L',False);
+  $pdf->Cell(33,4.7,$jt,'B',0,'L',False);
+}
 
 $pdf->SetXY($current_x, $current_y+14.1);
+
+
 $pdf->Ln(0.8);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);

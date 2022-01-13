@@ -51,6 +51,7 @@ $(document).ready(function(){
 
 	$( "#btnBuscar" ).click(function(){
 		console.log('Se va  a hacer una busqueda.');
+		$('#pb_entrega').val($('#numeroEntrega').val());
 		$("#pb_annoi").val($("#annoi").val());
 		$("#pb_mesi").val($("#mesi").val());
 		$("#pb_diai").val($("#diai").val());

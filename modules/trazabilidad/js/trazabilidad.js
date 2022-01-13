@@ -61,7 +61,9 @@ $('#tipo_filtro').on('change', function(){
 	$('#loader').fadeIn();
 
 	mesinicio = $('#mes_inicio').val();
-
+	if (mesinicio == undefined) {
+		mesinicio = $('#numeroEntrega').val();
+	}
 	var filtro = $(this).val();
 		$('#divBodegas').css('display', 'none');
 		$('#divConductores').css('display', 'none');

@@ -1,14 +1,7 @@
 <?php 
 $titulo = 'Editar';
 require_once '../../header.php'; 
-
-if ($permisos['menus'] == "0") {
-  ?><script type="text/javascript">
-      window.open('<?= $baseUrl ?>', '_self');
-  </script>
-<?php exit(); }
-
-if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<script>location.href='$baseUrl';</script>"; } 
+if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<script>location.href='index.php';</script>"; } 
 $periodoActual = $_SESSION['periodoActual'];
 
 $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Libra', 'g' => 'Gramos'), 'cc' => array('u' => 'Unidad', 'lt' => 'Litro', 'cc' => 'Centímetros cúbicos'), 'u' => array('u' => 'Unidad'));
@@ -42,7 +35,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="<?php echo $baseUrl.'/modules/menus2/'.$link; ?>">Ver <?php echo $breadCumb; ?></a>
+        <a href="<?php echo $baseUrl.'/modules/menus/'.$link; ?>">Ver <?php echo $breadCumb; ?></a>
       </li>
       <li class="active">
         <strong> Editar <?php echo $title; ?></strong>
@@ -160,7 +153,6 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
               <?php endif ?>
               <?php if (substr($Producto['Codigo'], 0, 2) == "01" || substr($Producto['Codigo'], 0, 2) == "02"): ?>
                 <div class="form-group col-sm-3" id="divVariacionMenu" >
-                  <?= $Producto['cod_variacion_menu'] ?>
                   <label>Variación menú</label>
                   <select class="form-control" name="variacionMenu" id="variacionMenu" required>
                     <option value="">Seleccione...</option>
@@ -226,40 +218,16 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
               <?php 
               if ($Producto['NombreUnidad1'] == "g" && $Producto['NombreUnidad3'] != "") {
                 $UnidadMedida1 = "g";
-                $CantUnd1 = round(1/$Producto['CantidadUnd1']);
                 $style = "";
               } else if ($Producto['NombreUnidad1'] == "g" && $Producto['NombreUnidad3'] == ""){
                 $UnidadMedida1 = "u";
                 $style = "display:none;";
-                if ($Producto['NombreUnidad1'] == "g" && $Producto['NombreUnidad2'] != "") {
-
-                  if (!isset($options['g'][$Producto['NombreUnidad2']])) {
-                    $UnidadMedida1 = $Producto['NombreUnidad1'];
-                    $CantUnd1 = round(1/$Producto['CantidadUnd1']);
-                    $style = "";
-                  } else {
-                    $UnidadMedida1 = $Producto['NombreUnidad2'];
-                    $CantUnd1 = $Producto['CantidadUnd2'];
-                  }
-                  
-                }
               } else if ($Producto['NombreUnidad1'] == "cc" && $Producto['NombreUnidad3'] != "") {
                 $UnidadMedida1 = "cc";
-                $CantUnd1 = round(1/$Producto['CantidadUnd1']);
                 $style = "";
               } else if ($Producto['NombreUnidad1'] == "cc" && $Producto['NombreUnidad3'] == ""){
                 $UnidadMedida1 = "u";
                 $style = "display:none;";
-                if ($Producto['NombreUnidad1'] == "cc" && $Producto['NombreUnidad2'] != "") {
-                  if (!isset($options['cc'][$Producto['NombreUnidad2']])) {
-                    $UnidadMedida1 = $Producto['NombreUnidad1'];
-                    $CantUnd1 = round(1/$Producto['CantidadUnd1']);
-                    $style = "";
-                  } else {
-                    $UnidadMedida1 = $Producto['NombreUnidad2'];
-                    $CantUnd1 = $Producto['CantidadUnd2'];
-                  }
-                }
               } else if ($Producto['NombreUnidad1'] == "u"){
                 $UnidadMedida1 = "u";
                 $style = "display:none;";
@@ -296,7 +264,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
                 </div>
               <?php endif ?>
               <div  id="medidasPresentacion">
-              <?php if ($Producto['NombreUnidad3'] == "gr" ||  $Producto['NombreUnidad3'] == "cc" || $Producto['NombreUnidad2'] != ""): ?>
+              <?php if ($Producto['NombreUnidad3'] == "gr" ||  $Producto['NombreUnidad3'] == "cc"): ?>
                 <div>
                   <div class="form-group col-sm-3">
                     <label>Unidad de medida 1</label>
@@ -314,7 +282,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
                   </div>
                   <div class="form-group col-sm-3">
                     <label>Cantidad de medida 1</label>
-                    <input type="number" name="cantPresentacion[1]"  id="cantPresentacion" class="form-control" value="<?php echo $CantUnd1 ?>" min="0">
+                    <input type="number" name="cantPresentacion[1]"  id="cantPresentacion" class="form-control" value="<?php echo $Producto['CantidadUnd2']*1000 ?>" min="0">
                   </div>
                 </div>
               <?php elseif(($Producto['NombreUnidad1'] == "gr" || $Producto['NombreUnidad1'] == "cc") && $Producto['NombreUnidad2'] == "u"): ?>
@@ -673,10 +641,9 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Section Scripts -->
-<script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js?v=20191209"></script>
+<script src="<?php echo $baseUrl; ?>/modules/menus/js/menus.js"></script>
 
 <script type="text/javascript">/*
   console.log('Aplicando Data Table');
@@ -700,7 +667,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
     }
     });*/
 
-    if ($('#IdFT').val() != null && $('#tipoProducto').val() != "04") {
+    if ($('#IdFT').val() != null) {
       for (var i = <?php if(isset($cntFTD)){echo $cntFTD;} else {echo 0;} ?>; i > 0; i--) {
         obtenerProductos(i);
       }
@@ -713,10 +680,6 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
     } else if ($('#tipoProducto').val() == "02") {
       ocultarDatosDetPreparado(2);
     }
-
-    $('.productoFichaTecnicaDet select').select2({
-      width : "100%"
-    });
 
     console.log(numProducto);
 </script>

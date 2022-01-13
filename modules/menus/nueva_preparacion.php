@@ -1,17 +1,10 @@
 <?php 
 $titulo = 'Nueva preparación';
 require_once '../../header.php'; 
+
+if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {} else { echo "<script>location.href='index.php';</script>"; } 
 $periodoActual = $_SESSION['periodoActual'];
-
-if ($permisos['menus'] == "0") {
-  ?><script type="text/javascript">
-      window.open('<?= $baseUrl ?>', '_self');
-  </script>
-<?php exit(); }
-
 ?>
-
-<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2"): ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
@@ -89,7 +82,6 @@ if ($permisos['menus'] == "0") {
                       <label>Grupo Etario</label>
                       <select class="form-control" name="Cod_Grupo_Etario" id="Cod_Grupo_Etario">
                         <option value="">Seleccione...</option>
-                        <option value="0">General</option>
                         <?php 
                         $consultaGrupoEtario = "select * from grupo_etario";
                         $resultadoGrupoEtario = $Link->query($consultaGrupoEtario);
@@ -163,17 +155,16 @@ if ($permisos['menus'] == "0") {
                   <form class="form" id="formFichaTecnica" method="post">
                     <input type="number" name="idProducto" id="idProducto" style="display: none;">
                     <input type="number" name="IdFT" id="IdFT" style="display: none;">
-                    <input type="number" name="TipoProductoFT" id="TipoProductoFT" style="display: none;">
                     <div class="form-group col-sm-12">
                       <label>Seleccione alimentos</label>
                       <table class="table" id="tablaProductosFichaTecnicaDet">
                         <thead>
                           <tr>
-                            <th style="width: 30%;">Alimento</th>
-                            <th style="width: 17.5%;" class="datoPreparado" style="display: none;">Unidad de medida</th>
-                            <th style="width: 17.5%;" class="datoPreparado">Cantidad</th>
-                            <th style="width: 17.5%;" class="datoPreparado">Peso Bruto</th>
-                            <th style="width: 17.5%;" class="datoPreparado">Peso Neto</th>
+                            <th>Alimento</th>
+                            <th class="datoPreparado" style="display: none;">Unidad de medida</th>
+                            <th class="datoPreparado">Cantidad</th>
+                            <th class="datoPreparado">Peso Bruto</th>
+                            <th class="datoPreparado">Peso Neto</th>
                           </tr>
                         </thead>
                         <tbody id="tbodyProductos">
@@ -218,8 +209,6 @@ if ($permisos['menus'] == "0") {
               <div id="aportesCalyNut" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                 <div class="panel-body">
                   <form class="form" id="formCalyNut" method="post">
-                    <input type="number" name="idProductoCalyNut" id="idProductoCalyNut" style="display: none;">
-                    <input type="number" name="tipoProductoCalyNut" id="tipoProductoCalyNut" style="display: none;">
                     <div class="form-group col-sm-3">
                       <label>Calorías (Kcal)</label>
                       <input type="number" name="kcalxg" id="kcalxg" class="form-control" min='0' required>
@@ -321,11 +310,7 @@ if ($permisos['menus'] == "0") {
     </div><!-- /.col-lg-12 -->
   </div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
-<?php else: ?>
-  <script type="text/javascript">
-    location.href="<?php echo $baseUrl ?>";
-  </script>
-<?php endif ?>
+
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
@@ -341,11 +326,9 @@ if ($permisos['menus'] == "0") {
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
-
 
 <!-- Section Scripts -->
-<script src="<?php echo $baseUrl; ?>/modules/menus2/js/menus.js"></script>
+<script src="<?php echo $baseUrl; ?>/modules/menus/js/menus.js"></script>
 
 <script type="text/javascript">/*
   console.log('Aplicando Data Table');
@@ -369,10 +352,6 @@ if ($permisos['menus'] == "0") {
     }
     });*/
     $('#tipoProducto').change();
-
-    $('.productoFichaTecnicaDet select').select2({
-      width : "100%"
-    });
 </script>
 
 <?php mysqli_close($Link); ?>

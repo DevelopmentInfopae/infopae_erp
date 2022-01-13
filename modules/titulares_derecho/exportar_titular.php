@@ -342,11 +342,17 @@ $subtitulosInformacionBasica = "B11:B33";
 $tablaInformacionBasica = "C11:F33";
 
 $meses;
-$consultaMeses = "SELECT DISTINCT(mes) FROM planilla_semanas;";
-$respuestaMeses = $Link->query($consultaMeses) or die ('Error al consultar planilla semanas');
-if ($respuestaMeses->num_rows > 0) {
-	while ($dataMeses = $respuestaMeses->fetch_assoc()) {
-		$meses[] = $dataMeses;
+$consultaNumMes = " SELECT mes FROM planilla_semanas WHERE semana = $semana ";
+$respuestaNumMes = $Link->query($consultaNumMes) or die ('Error al consultar el numero de mes ' . mysqli_error($Link));
+if ($respuestaNumMes->num_rows > 0) {
+	$dataNumMes = $respuestaNumMes->fetch_assoc();
+	$mesActual = $dataNumMes['mes'];
+	$consultaMeses = "SELECT DISTINCT(mes) FROM planilla_semanas WHERE mes <= $mesActual ;";
+	$respuestaMeses = $Link->query($consultaMeses) or die ('Error al consultar planilla semanas');
+	if ($respuestaMeses->num_rows > 0) {
+		while ($dataMeses = $respuestaMeses->fetch_assoc()) {
+			$meses[] = $dataMeses;
+		}
 	}
 }
 

@@ -59,7 +59,7 @@
 		$consulta_suplente_focalizado = "SELECT * FROM focalizacion$semana WHERE num_doc = '$num_doc'";
 		$respuesta_suplente_focalizado = $Link->query($consulta_suplente_focalizado);
 		if ($respuesta_suplente_focalizado->num_rows > 0)
-		{
+			{
 			$respuestaAJAX = [
 				"success" => 0,
 				"message" => "El número de documento ingresado ya se encuentra focalizado."
@@ -71,7 +71,7 @@
 		// Consulta que retorna si el estudiante ya existe como suplente.
 		$resultado_existe_suplente = $Link->query("SELECT num_doc  FROM suplentes$semana WHERE num_doc = '$num_doc';");
 		if ($resultado_existe_suplente->num_rows > 0)
-		{
+			{
 			$respuestaAJAX = [
 				"success" => 0,
 				"message" => "El número de documento ingresado ya se encuentra registrado como suplente."
@@ -112,7 +112,7 @@
 		$consulta_suplente_focalizado = "SELECT * FROM focalizacion$semana WHERE num_doc = '$cod_mun'";
 		$respuesta_suplente_focalizado = $Link->query($consulta_suplente_focalizado);
 		if ($respuesta_suplente_focalizado->num_rows > 0)
-		{
+			{
 			$respuestaAJAX = [
 				"success" => 0,
 				"message" => "El número de documento ingresado ya se encuentra focalizado."

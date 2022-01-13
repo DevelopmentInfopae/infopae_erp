@@ -1,5 +1,29 @@
-jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
+jQuery.extend(jQuery.validator.messages, { 
+	required: "Este campo es obligatorio.", 
+	remote: "Por favor, rellena este campo.", 
+	email: "Por favor, escribe una dirección de correo válida", 
+	url: "Por favor, escribe una URL válida.", 
+	date: "Por favor, escribe una fecha válida.", 
+	dateISO: "Por favor, escribe una fecha (ISO) válida.", 
+	number: "Por favor, escribe un número entero válido.", 
+	digits: "Por favor, escribe sólo dígitos.", 
+	creditcard: "Por favor, escribe un número de tarjeta válido.", 
+	equalTo: "Por favor, escribe el mismo valor de nuevo.", 
+	accept: "Por favor, escribe un valor con una extensión aceptada.", 
+	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), 
+	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), 
+	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), 
+	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), 
+	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 
+toastr.options = { 
+	newestOnTop: true, 
+	closeButton: false, 
+	progressBar: true, 
+	preventDuplicates: false, 
+	showMethod: 'slideDown', 
+	timeOut: 3500, };
 
 
 var total = 0;
@@ -8,22 +32,16 @@ var ausentes = [];
 var repitentes = [];
 var datatables = null;
 
-
-
 for (x=0; x<=localStorage.length-1; x++)  {  
   clave = localStorage.key(x); 
-  //document.write("La clave " + clave + "contiene el valor " + localStorage.getItem(clave) + "<br />");  
-  console.log("La clave " + clave + " contiene el valor " + localStorage.getItem(clave));  
+  // console.log("La clave " + clave + " contiene el valor " + localStorage.getItem(clave));  
 }
 
-console.log(localStorage.getItem("wappsi_sede"));
-
 $(document).ready(function(){
-
 	var d = new Date();
 	var month = d.getMonth();
 	var day = d.getDate();
-	console.log("Hoy es "+day+" de "+month);
+	// console.log("Hoy es "+day+" de "+month);
 
 	if(day != localStorage.getItem("wappsi_dia_actual") || month != localStorage.getItem("wappsi_mes_actual")){
 		console.log("Se estaba trabajndo  "+localStorage.getItem("wappsi_dia_actual")+" de "+localStorage.getItem("wappsi_mes_actual"));
@@ -43,7 +61,7 @@ $(document).ready(function(){
 	total = localStorage.getItem("wappsi_total");
 	faltan = localStorage.getItem("wappsi_faltan");
 
-
+	// console.log(faltan);
 	if ( JSON.parse(localStorage.getItem("wappsi_ausentes")) === null) {
 		localStorage.setItem("wappsi_ausentes", JSON.stringify(ausentes));
 	}
@@ -55,26 +73,7 @@ $(document).ready(function(){
 	ausentes = JSON.parse(localStorage.getItem("wappsi_ausentes"));
 	repitentes = JSON.parse(localStorage.getItem("wappsi_repitentes"));
 
-	console.log("Repitentes");
-	console.log(repitentes);	
-	console.log("Ausentes");
-	console.log(ausentes);
-
-
-
-
-
-
 	$("#sede").val(localStorage.getItem("wappsi_sede"));
-
-	// $(".asistenciaFaltantes").html(faltan);
-	// $(".asistenciaTotal").html(total);
-
-
-	console.log("Total: "+total);
-	console.log("Faltan: "+faltan);
-
-
 
 	$('#btnBuscar').click(function(){
 		if($('#form_asistencia').valid()){
@@ -82,69 +81,37 @@ $(document).ready(function(){
 		}
 	});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	// Check a cada item
-	$(document).on('ifChecked', '.checkbox-header-repite', function () { 
-		if( (faltan) > 0 ){
+	$(document).on('ifChecked', '.checkbox-header-repite', function () {
+		if (faltan > 1) {
 			$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
-			console.log("S");
+			// console.log("S");
 			faltan--;
 			localStorage.setItem("wappsi_faltan", faltan);
 			$(".asistenciaFaltantes").html(faltan);
-
 			var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
 			aux.push($(this).val());
-			console.log(aux);
+			// console.log(aux);
 			localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
-
-
-
-
-			
-
-
-
-			// if(faltan <= 0){$( ".checkbox-header:not(:checked)").iCheck('disable'); }
-
-
-
-		}
+			// console.log( 'faltan ' + faltan);
+		}else if (faltan == 1) {
+			faltan--;
+			localStorage.setItem("wappsi_faltan", faltan);
+			$(".asistenciaFaltantes").html(faltan);
+			var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
+			aux.push($(this).val());
+			// console.log(aux);
+			localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
+			// console.log( 'faltan ' + faltan);
+			$( ".checkbox-header:not(:checked)").iCheck('disable');
+		}	
 	});
 
-
-
-
-
-
-	
 	// unCheck a cada item
 	$(document).on('ifUnchecked', '.checkbox-header-repite', function () { 
-		console.log("Faltan: "+faltan);
+		// console.log("Faltan: "+faltan);
 		$('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); 
-		console.log("N");
+		// console.log("N");
 		faltan++;
 		localStorage.setItem("wappsi_faltan", faltan);
 		$(".asistenciaFaltantes").html(faltan);
@@ -157,57 +124,21 @@ $(document).ready(function(){
 			}		
 			localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
 
-
-
-
-
-
-
-
 			if(faltan > 0){
 				$( ".checkbox-header:not(:checked)").iCheck('enable'); 
 			}
 
 	});
 
-
-
-
-
-
-
-
-	// ************************************************************
-	// ************************************************************
-	// ************************************************************
-	// ************************************************************
-	// ************************************************************
-	// ************************************************************
-	// ************************************************************
-
-
-
-
-
-
-
-
-
-
-
-
 	$( "#grado" ).change(function() {
 		cargarGrupos();
 	});
 
-
-
 	$('.btnGuardar').click(function(){
-		datatables.search('').draw();
+		// datatables.search('').draw();
+		// localStorage.setItem("wappsi_faltan", faltan);
 		guardarRepitentes();
 	});		
-
-
 
 	$('#btnRestablecerContadores').click(function(){
 		restablecerContadores();
@@ -215,7 +146,7 @@ $(document).ready(function(){
 });
 
 function validarAsistenciaSellada(){
-	console.log("Validación de sistencia Sellada");
+	// console.log("Validación de sistencia Sellada");
 	var formData = new FormData();
 	formData.append('semanaActual', $('#semanaActual').val());
 	formData.append('sede', $('#sede').val());
@@ -228,7 +159,7 @@ function validarAsistenciaSellada(){
 		data: formData,
 		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
-			console.log(data);
+			// console.log(data);
 			if(data.estado == 1){
 				Command:toastr.warning(data.mensaje,"Atención",{onHidden:function(){$('#loader').fadeOut(); location.reload();}});
 
@@ -260,26 +191,20 @@ function cargarRepitentes(){
 		var dia = "";
 	}
 
-
-
 	if($('#semana').val() != "" && $('#semana').val() != null ){
 		var semanaActual = $('#semana').val();
 	}else{
 		var semanaActual = $('#semanaActual').val();
 	}
 
-
 	var sede = $('#sede').val();
 	var complemento = $('#complemento').val();
 	var nivel = $('#nivel').val();
 	var grado = $('#grado').val();
 	var grupo = $('#grupo').val();
-
-
-
-
-	var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
-	console.log(aux);
+	actualizarMarcadores(0);
+	// var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
+	// console.log(aux);
 	//var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
 	//console.log(aux);
 	if ( $.fn.DataTable.isDataTable( '.dataTablesSedes' ) ) {datatables.destroy(); }
@@ -305,19 +230,12 @@ function cargarRepitentes(){
 			"render": function ( data, type, full, meta ) {
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
-				var repite = full.repite;
-
-				
-				var index = aux.indexOf(documento);
-				
+				var repite = full.repite;			
+				// var index = aux.indexOf(documento);		
 				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite\" ";
 				
-				//if (index > -1) { opciones = opciones + " checked "; }else{ }
-				
-				if(repite == 1){opciones = opciones + " checked "; }
-				
+				if(repite == 1){opciones = opciones + " checked "; }				
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
-
 				return opciones;
 			}
 		},
@@ -332,27 +250,16 @@ function cargarRepitentes(){
 				var tipoDocumento = full.tipo_doc;
 				var documento = full.num_doc;
 				var repite = full.repite;
-				var favorito = full.favorito;
-
-				
-				var index = aux.indexOf(documento);
-				
+				var favorito = full.favorito;				
+				// var index = aux.indexOf(documento);
 				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-favorito\" ";
-				
-				//if (index > -1) { opciones = opciones + " checked "; }else{ }
-				
+
 				if(favorito != null){
 					opciones = opciones + " checked favorito=\"1\" "; 
 				}else{
 					opciones = opciones + " favorito=\"0\" ";	
 				}
-
-
-
-
-
-
-				
+		
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
 
 				return opciones;
@@ -380,35 +287,26 @@ function cargarRepitentes(){
 	//pageLength: 10,
 	responsive: true,
 	"preDrawCallback": function( settings ) {
+		// actualizarMarcadores(0);
 		if(dibujado == 0){
 			$('#loader').fadeIn();
 		}
 	}
 	}).on("draw", function(){ 
 		if(dibujado == 0){
-			$('#loader').fadeOut();
-			actualizarMarcadores(0);
+			$('#loader').fadeOut();			
 			dibujado++;
+		}if (faltan == '0') {
+			$( ".checkbox-header:not(:checked)").iCheck('disable');
 		}
-		totalEstudiantesSede(); 
+		// totalEstudiantesSede(); 
 		$('.estadoSede').bootstrapToggle(); 
-
-
-
 
 		$('.i-checks').iCheck({
 		checkboxClass: 'icheckbox_square-green',
 		radioClass: 'iradio_square-green',
 		});
 		
-
-
-
-
-
-
-
-
 		//iCheck for checkbox and radio inputs
         $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
         checkboxClass: 'icheckbox_minimal-blue',
@@ -425,10 +323,6 @@ function cargarRepitentes(){
         radioClass   : 'iradio_flat-green'
         });
 
-
-        //if(faltan <= 0){$( ".checkbox-header:not(:checked)").iCheck('disable'); }
-
-
 	});	
 }
 
@@ -441,14 +335,12 @@ function restablecerContadores(){
 }
 
 function guardarRepitentes(){
-	console.log("Guardar asistencia.");
+	// console.log(faltan);
+	// localStorage.setItem("wappsi_faltan", faltan);
 	var bandera = 0;	
 	var repitente = [];
 	var documento = "";
 	var tipoDocumento = "";
-
-
-
 	var mes = "";
 	var dia = "";
 
@@ -458,28 +350,13 @@ function guardarRepitentes(){
 
 	if($('#dia').val() != "" && $('#dia').val() != null){
 		var dia = $('#dia').val();	
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
+	}	
 
 	if($('#semana').val() != "" && $('#semana').val() != null){
 		var semana = $('#semana').val();	
 	}else{
 		var semana = $('#semanaActual').val();	
 	}
-
 
 	var formData = new FormData();
 	formData.append('mes', mes);
@@ -522,13 +399,6 @@ function guardarRepitentes(){
 		formData.append('repitente['+documento+'][favorito]', 0);
 		//console.log(documento+" Favorito: "+0);
 	});
-	//bandera++;
-
-
-
-
-
-
 
 	if(cantidadRepitentes <= 0){
 		bandera++;
@@ -545,16 +415,15 @@ function guardarRepitentes(){
 			processData: false,
 			data: formData,
 			beforeSend: function(){ $("#loader").fadeIn(); },
-			success: function(data){
-				if(data.state == 1){
+			success: function(data){ 
+				if(data.state == 1){ console.log(localStorage);
 					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
-					// location.href="URL para redireccionar";
-					location.reload();
+					location.reload();			
 					}});
 				}else{
 					Command:toastr.error(data.message,"Error al hacer el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});
 				}
-			},
+							},
 			error: function(data){
 				console.log(data);
 				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){ $('#loader').fadeOut(); }});
