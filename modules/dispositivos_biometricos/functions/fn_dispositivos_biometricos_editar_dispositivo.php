@@ -3,7 +3,7 @@
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 
-
+// exit(var_dump($_POST));
 if (isset($_POST['cod_sede'])) {
 	$cod_sede = $_POST['cod_sede'];
 } else {
@@ -46,6 +46,20 @@ if (isset($_POST['nom_sede'])) {
 	$nom_sede = "";
 }
 
+$serialSinEspacios = trim($num_serial);
+$caracteres = strlen($serialSinEspacios);
+if ($caracteres == 0) {
+	echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "No se puede crear serial en blanco o con caracteres."}]}';
+	exit();
+}
+
+$serialSinEspacios = trim($num_serial);
+if ($serialSinEspacios < 0) {
+	echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "No se puede crear serial negativo."}]}';
+	exit();
+}
+
+
 $sqlDispositivo = "UPDATE dispositivos SET referencia = '".$referencia."', num_serial = '".$num_serial."', cod_sede = '".$cod_sede."', id_usuario = '".$id_usuario."', tipo = '".$tipo."' WHERE id = ".$iddispositivo;
 
 if ($Link->query($sqlDispositivo)===true) {
@@ -70,6 +84,8 @@ if ($Link->query($sqlDispositivo)===true) {
 		} else {
 			$idBiometria = "";
 		}
+
+
 
 		$cntEditarBiometria = 0;
 		$sqlIngresarBiometria = "INSERT INTO biometria (id, tipo_doc, num_doc, id_dispositivo, id_bioest, cod_sede) VALUES ";
@@ -97,7 +113,7 @@ if ($Link->query($sqlDispositivo)===true) {
 					echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error actualizar las biometrías 2."}]}';
 				}
 			} else {
-				echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "Error al ingresar las nuevas biometrías '.$sqlIngresarBiometria.'"}]}';
+				echo '{"respuesta" : [{"exitoso" : "1", "respuesta" : "Editado con éxito."}]}';
 			}
 		} else {
 			if (sizeof($idBiometria) == $cntEditarBiometria) {

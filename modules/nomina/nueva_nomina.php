@@ -1,5 +1,12 @@
 <?php
 	include '../../header.php';
+
+	if ($permisos['nomina'] == "0" || $permisos['nomina'] == "1") {
+    	?><script type="text/javascript">
+      		window.open('<?= $baseUrl ?>', '_self');
+    	</script>
+  	<?php exit(); }
+
 	$titulo = 'Nueva nómina';
 ?>
 

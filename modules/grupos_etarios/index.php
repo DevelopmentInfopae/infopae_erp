@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $titulo = 'Grupo etarios';
 ?>
 
@@ -55,7 +62,7 @@
                         Acciones <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu pull-right" aria-labelledby="dLabel">
-                        <li><a href="#" class="editarGrupoEtario" data-codigogrupoetario="<?php echo $registros['ID']; ?>"><i class="fa fa-pencil fa-lg"></i> Editar</a></li>
+                        <li><a href="#" class="editarGrupoEtario" data-codigogrupoetario="<?php echo $registros['ID']; ?>"><i class="fas fa-pencil-alt fa-lg"></i> Editar</a></li>
                         <li><a href="#" class="confirmarGrupoEtario" data-codigogrupoetario="<?php echo $registros['ID']; ?>"><i class="fa fa-trash fa-lg"></i> Eliminar</a></li>
                       </ul>
                     </div>

@@ -25,7 +25,7 @@ if($respuesta_suplentes->num_rows > 0)
                                         '</button>'.
                                         '<ul class="dropdown-menu pull-right" aria-labelledby="acciones_suplentes">'.
                                           '<li>'.
-                                            '<a href="#" class="editar_suplente" id="'.$suplente['id'].'" data-semana="'.$semana.'"><i class="fa fa-pencil fa-lg"></i> Editar</a>'.
+                                            '<a href="#" class="editar_suplente" id="'.$suplente['id'].'" data-semana="'.$semana.'"><i class="fas fa-pencil-alt fa-lg"></i> Editar</a>'.
                                           '</li>'.
                                           // '<li class="divider"></li>'.
                                           // '<li>'.

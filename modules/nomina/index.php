@@ -1,5 +1,12 @@
 <?php
 	include '../../header.php';
+
+  if ($permisos['nomina'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
 	$titulo = 'Nómina';
 ?>
 
@@ -19,9 +26,11 @@
     </ol>
   </div>
   <div class="col-lg-4">
-    <div class="title-action">
-      <a href="nueva_nomina.php" class="btn btn-primary"><i class="fa fa-plus"></i> Nueva </a>
-    </div>
+    <?php if ($_SESSION['perfil'] == "0" || $permisos['nomina'] == "2"): ?>
+      <div class="title-action">
+        <a href="nueva_nomina.php" class="btn btn-primary"><i class="fa fa-plus"></i> Nueva </a>
+      </div>
+    <?php endif ?>
   </div>
 </div>
 

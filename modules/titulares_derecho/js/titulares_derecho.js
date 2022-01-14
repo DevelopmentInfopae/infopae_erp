@@ -12,6 +12,7 @@ $(document).ready(function(){
     $(".col-sm-3").height(maxHeight);
 
   jQuery.extend(jQuery.validator.messages, {//Configuración jquery valid
+    step : "Por favor, escribe un número entero",
     required: "Este campo es obligatorio.",
     remote: "Por favor, rellena este campo.",
     email: "Por favor, escribe una dirección de correo válida",
@@ -47,7 +48,10 @@ $(document).ready(function(){
       "showMethod": "fadeIn",
       "hideMethod": "fadeOut"
     }
+
+    // console.log($('#estado'));
 });
+
 
 var numSemana = $('.semana').length;
 var numSemanaInicial = $('.semana').length;
@@ -59,6 +63,58 @@ $('#tablaTitulares tbody td:nth-child(-n+9)').on('click', function(){
   $('#verTitular #tipoDoc').val(aux);
   $('#verTitular').submit();
 });
+
+function confirmarCambioEstado(num_doc, estado, semana){
+  console.log(num_doc, estado, semana);
+  if(estado){ textoEstado = 'Inactivar'; } else { textoEstado = 'Activar'; }
+  $('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>' + textoEstado + '</strong> del titular?');
+  $('#ventanaConfirmar').modal();
+  $('#documentoACambiar').val(num_doc);
+  $('#estadoACambiar').val(estado);
+  $('#semanaDeCambio').val(semana);
+}
+
+function cambiarEstado(){
+  $.ajax({
+    url: 'functions/fn_titulares_derecho_cambio_estado.php',
+    type: 'POST',
+    data: {documento : $('#documentoACambiar').val(), 
+          estado : $('#estadoACambiar').val(), 
+          semana : $('#semanaDeCambio').val()},
+    dataType: 'json',
+    beforeSend: function(){ $('#loader').fadeIn(); }
+  })
+  .done(function(data) {
+    if (data.estado == 1) {
+      Command: toastr.success(
+          data.mensaje,
+          "Cambio de estado", { onHidden : function(){ $('#loader').fadeOut(); } }
+          );
+      } else {
+        Command: toastr.error(
+          data.mensaje,
+          "Error al cambiar estado", { onHidden : function(){ $('#loader').fadeOut(); } }
+          );
+      } 
+  })
+  .fail(function() {
+    console.log("error");
+  })
+  .always(function() {
+    // console.log("complete");
+  });
+  
+}
+
+function revertirEstado(){
+  $documento = $('#documentoACambiar').val();
+  var estado = $('#inputEstado' + $documento).prop('checked');
+  if (estado) {
+    $('#inputEstado' + $documento).bootstrapToggle('off');
+  } else {
+    $('#inputEstado' + $documento).bootstrapToggle('on');
+  }
+}
 
 function obtenerSedes(institucion){
   $.ajax({
@@ -73,18 +129,25 @@ function obtenerSedes(institucion){
 }
 
 function agregarSemana(){
-  $('#loader').fadeIn();
-  numSemana++;
-  $.ajax({
+  var mes = ($('#mes').val());
+  if (mes == 0) {
+    alert('Por favor selecciona un mes');
+    $('#mes').focus();
+  }else {
+    $('#mes').prop('disabled', 'disabled');
+      numSemana++;
+    $.ajax({
       type: "POST",
       url: "functions/fn_titulares_derecho_armar_complemento_semana.php",
-      data: {"numSemana":numSemana},
-      beforeSend: function(){},
+      data: {"numSemana" : numSemana, "mes" : mes},
+      beforeSend: function(){  $('#loader').fadeIn(); },
       success: function(data){
         $('#semanasComplemento').append(data);
         $('#loader').fadeOut();
       }
     });
+  }
+
 }
 
 function eliminarSemana(){
@@ -164,8 +227,12 @@ $('#formTitular').on('submit', function(event){
       data: datos,
       beforeSend: function(){},
       success: function(data){
-        if (data == "1") {
+        data = JSON.parse(data);
+        console.log(data);
+        if (data.estado == "1") {
          Command: toastr.success("Se guardó el estudiante con éxito.", "Guardado con éxito.", {onHidden : function(){location.reload();}})
+        }else if (data.estado == "0") {
+          Command: toastr.error("El numero de documento ya se encuentra registrado la semana " + data.semana + " ", "Error.", {onHidden : function(){location.reload();}})
         }
       }
     });
@@ -184,7 +251,7 @@ $('#formTitularEditar').on('submit', function(event){
       beforeSend: function(){},
       success: function(data){
         if (data == "1") {
-         Command: toastr.success("Se actualizó el estudiante con éxito.", "Actualizado con éxito.", {onHidden : function(){location.href="index.php";}})
+         Command: toastr.success("No Se actualizó el estudiante con éxito.", "Actualizado con éxito.", {onHidden : function(){location.href="index.php";}})
         } else {
           console.log(data);
         }
@@ -219,33 +286,6 @@ function editarTitular(num_doc){
 }
 
 
-
-$(document).on('change', '.dropdown li:nth-child(2)', function(){
-      var idtitular = $(this).data('idtitular');
-      accion = $(this).data('accion');
-      if ($(this).find('input').prop('checked') == false) {
-        $('#idtitular').val(idtitular);
-        $('#modalEliminarTitular').modal();
-      } else if ($(this).find('input').prop('checked')) {
-          $('#loader').fadeIn();
-          $.ajax({
-            type: "POST",
-            url: "functions/fn_titulares_derecho_activar_titular.php",
-            data: {"num_doc" : idtitular},
-            beforeSend: function(){},
-            success: function(data){
-              if (data == "1") {
-                Command: toastr.success("Se activó con éxito el estudiante.", "Activado con éxito", {onHidden : function(){$('#loader').fadeOut();}})
-              } else if (data == "0") {
-                console.log(data);
-                Command: toastr.error("Error al activar.", "Error", {onHidden : function(){}})
-              } else {
-                console.log(data);
-              }
-            }
-          });
-      }
-});
 
 function eliminarTitular(){
   $('#modalEliminarTitular').modal('hide');
@@ -321,8 +361,8 @@ function exportar_focalizacion(){
   if ($('#formulario_exportar_focalizacion').valid()) {
     var mes = $('#mes_exportar').val();
     var semana = $('#semana_exportar').val();
-
-    window.open('functions/fn_titulares_derecho_exportar_focalizacion.php?mes='+mes+'&semana='+semana, '_blank');
+    var zona = $('#zona_exportar').val();
+    window.open('functions/fn_titulares_derecho_exportar_focalizacion.php?mes='+mes+'&semana='+semana+'&zona='+zona, '_blank');
 
   }
 }
@@ -340,4 +380,27 @@ function buscarSemanasMesExportar(control){
       console.log(data.responseText);
     }
   });
+}
+
+function exportarTitular(numDoc, semana){
+  // console.log(numDoc, semana);
+  $('#exportar_titular #num_doc_exportar').val(numDoc);
+  $('#exportar_titular #semana').val(semana);
+  $('#exportar_titular').submit();
+}
+
+function validaDocAcudiente(){
+  documentoTitular = $('#num_doc').val();
+  documentoAcudiente = $('#doc_acudiente').val();
+  if (documentoTitular == documentoAcudiente) {
+    alert('El documento del acudiente no puede ser igual a documento de titular');
+    $('#doc_acudiente').val('');
+    $('#doc_acudiente').focus();
+  }
+}
+
+function validaCaracteres(){  
+    var docAcudiente = $('#doc_acudiente').val();
+    docAcudiente2 = docAcudiente.replace(/[^A-Z a-z 0-9]/gi, '');
+    $('#doc_acudiente').val(docAcudiente2);
 }

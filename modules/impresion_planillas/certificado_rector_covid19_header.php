@@ -1,5 +1,6 @@
 <?php
 
+// var_dump($entrega);
 
 $tamannoFuente = 8;
 
@@ -79,12 +80,23 @@ $aux = $fecha_hasta;
 
 $pdf->Cell(32,5,utf8_decode($aux),'R',0,'L',false);
 
-
-$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(25,5,utf8_decode('MES:'),'R',0,'L',false);
-$pdf->SetFont('Arial','',$tamannoFuente);
+// funte para que no se salga la fecha y entrega
+$tamañoFuente2 = 7.8; 
+$pdf->SetFont('Arial','B',$tamañoFuente2);
+$pdf->Cell(10,5,utf8_decode('MES:'),'R',0,'L',false);
+$pdf->SetFont('Arial','',$tamañoFuente2);
 $aux = mb_strtoupper($mesLetras);
-$pdf->Cell(38,5,$aux,0,0,'L',false);
+$pdf->Cell(25.5,5,utf8_decode($aux),'R',0,'L',false);
+
+$tamañoFuente2 = 7.5; 
+$pdf->SetFont('Arial','B',$tamañoFuente2);
+$pdf->Cell(16,5,utf8_decode('ENTREGA:'),'R',0,'L',false);
+if($entrega < 10){$entregaString = "0".$entrega;}
+else{$entregaString = $entrega;}
+
+$pdf->SetFont('Arial','',$tamañoFuente2);
+$pdf->Cell(0,5,utf8_decode($entregaString),0,0,'L',false);
+
 
 
 

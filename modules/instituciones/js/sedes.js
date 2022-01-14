@@ -100,7 +100,7 @@ function confirmarCambioEstado(codigoSede, estado){
   $('#codigoACambiar').val(codigoSede);
   $('#estadoACambiar').val(estado);
 
-  if(estado){ textoEstado = 'Activar' } else { textoEstado = 'Inactivar'; }
+  if(estado){ textoEstado = 'Activar'; } else { textoEstado = 'Inactivar'; }
 
   $('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>' + textoEstado + '</strong> la Sede?');
   $('#ventanaConfirmar').modal();
@@ -244,7 +244,7 @@ function subirArchivoFocalizacion()
     formData.append('semana', $('#semanaFocalizacion').val());
     formData.append('validar', $('#validar').prop('checked'));
     formData.append('archivoFocalizacion', $('#archivoFocalizacion')[0].files[0]);
-
+    // console.log(formData);
     $.ajax({
       type: "post",
       url: "functions/fn_sedes_cargar_archivo_focalizacion.php",

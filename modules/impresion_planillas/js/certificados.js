@@ -44,62 +44,10 @@ $( document ).ready(function() {
 	});
 
 	$('#btnBuscar').click(function(){
+
 		if($('#formPlanillas').valid()){
 			$('#formPlanillas').submit();
 		}
-
-
-
-
-
-		//
-		// console.log('Enviar Formulario');
-		// //Validaciones
-		// var bandera = 0;
-		// if( $('#mes').val() == '' ){
-		// 	bandera++;
-		// 	alert('Debe seleccionar un mes');
-		// 	$('#mes').focus();
-		// }
-		// else if( $('#municipio').val() == '' ){
-		// 	bandera++;
-		// 	alert('Debe seleccionar un municipio');
-		// 	$('#municipio').focus();
-		// }
-		// // else if( $('#institucion').val() == '' ){
-		// // 	bandera++;
-		// // 	alert('Debe seleccionar una institucion');
-		// // 	$('#institucion').focus();
-		// // }
-		// // else if( $('#sede').val() == '' ){
-		// // 	bandera++;
-		// // 	alert('Debe seleccionar una sede');
-		// // 	$('#sede').focus();
-		// // }
-		// else if( $('#tipo').val() == '' ){
-		// 	bandera++;
-		// 	alert('Debe seleccionar un tipo de complemento');
-		// 	$('#tipo').focus();
-		// }
-		//
-		// else{
-		// 	var tipoPlanilla = $('input[name="tipoPlanilla"]:checked').val();
-		// 	if (tipoPlanilla == null){
-		// 		bandera++;
-		// 		alert('Debe seleccionar un tipo de planilla');
-		// 		$('input[name="tipoPlanilla"]').focus();
-		// 	}
-		// }
-		//
-		//
-		//
-		// if(bandera == 0){
-		// 	$('#formPlanillas').submit();
-		// }
-
-
-
-
 
 
 	});

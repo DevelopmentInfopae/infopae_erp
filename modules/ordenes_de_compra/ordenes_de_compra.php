@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['orden_compra'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   set_time_limit (0);
   ini_set('memory_limit','6000M');
   $periodoActual = $_SESSION['periodoActual'];
@@ -20,7 +27,7 @@
 	</div>
 	<div class="col-md-6 col-lg-4">
 		<div class="title-action">
-			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+			<?php if($_SESSION['perfil'] == "0" || $permisos['orden_compra'] == "2"){ ?>
 				<a href="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/orden_de_compra_nueva.php" target="_self" class="btn btn-primary"><i class="fa fa-plus"></i> Nuevo</a>
 			<?php } ?>
 		</div>
@@ -633,28 +640,18 @@
 	<script src="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/js/ordenes_de_compra.js?v=20200423"></script>
 	<script>
 		$(document).ready(function(){
-			
-			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
-			
-			
-			botonAcciones += '<li> <a href="#" onclick="ordenesConsolidado()">Consolidado</a> </li>';
-			botonAcciones += '<li> <a href="#" onclick="eliminar_orden()">Eliminar Orden</a> </li>';
-			
-			// <div><button type="button" onclick="ordenesConsolidado()">Consolidado</button></div>
-			
-			
-		
-
-			botonAcciones += '</ul></div>';
+			<?php if ($_SESSION['perfil'] == "0" || $permisos['orden_compra'] == "1" || $permisos['orden_compra'] == "2"): ?>
+				var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
+				botonAcciones += '<li> <a href="#" onclick="ordenesConsolidado()">Consolidado</a> </li>';
+				<?php if ($_SESSION['perfil'] == "0" || $permisos['orden_compra'] == "2"): ?>
+					botonAcciones += '<li> <a href="#" onclick="eliminar_orden()">Eliminar Orden</a> </li>';
+				<?php endif ?>
+				botonAcciones += '</ul></div>';
 
 			$('.containerBtn').html(botonAcciones);
-
+			<?php endif ?>
 		});
 	</script>
-
-
-	<!-- Page-Level Scripts -->
-
 
 <?php mysqli_close($Link); ?>
 

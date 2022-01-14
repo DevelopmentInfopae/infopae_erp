@@ -26,6 +26,7 @@ function CargarTablas(){
 	type:"POST",
 	url:"functions/fn_estadisticas_tabla_totales_semana.php",
 	success:function(data){
+		// console.log(data);
 		data = JSON.parse(data);
 		$('#tHeadSemana').html(data['thead']);
 		$('#tBodySemana').html(data['tbody']);
@@ -68,6 +69,7 @@ function CargarTablas(){
 				json_tcom[0] = ['Mes'];
 
 				info = data['info'];
+				// console.log(info);
 				cnt=0;
 				$.each(info, function(mes, ArrayT){
 					cnt++;
@@ -95,10 +97,12 @@ function CargarTablas(){
 					"diasSemanas" : data['diasSemanas']
 				},
 				success : function(data) {
+					// console.log(data);
 					$('#tHeadSemanaMun').html(data['thead']);
 					$('#tBodySemanaMun').html(data['tbody']);
 					$('#tFootSemanaMun').html(data['tfoot']);
 					info = data['info'];
+
 					dataset1 = $('#tablaMunicipios').DataTable({
 					    order: [ 0, 'asc' ],
 					    pageLength: 10,
@@ -106,7 +110,7 @@ function CargarTablas(){
 					    dom : 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons" B>',
 					    buttons : [{extend:'excel', title:'Dispositivos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4]}}],
 					    oLanguage: {
-					      sLengthMenu: 'Mostrando _MENU_ registros por pÁgina',
+					      sLengthMenu: 'Mostrando _MENU_ registros por página',
 					      sZeroRecords: 'No se encontraron registros',
 					      sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
 					      sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
@@ -118,8 +122,15 @@ function CargarTablas(){
 					        sNext:     'Siguiente',
 					        sPrevious: 'Anterior'
 					      }
-					    }
-				    });
+					    },
+					error: function(request, status, err) {
+				        if (status == "timeout") {
+				            alert("Su petición demoro mas de lo permitido");
+				        } else {
+				            alert("error: " + request + status + err);
+				        }
+				    }
+					});
 
 					markersJ = [];
 					cityAreaData = [];
@@ -157,7 +168,7 @@ function CargarTablas(){
 					setTimeout(function() {$('#loader').fadeOut();}, 2000);
 				},
 				error : function(data){
-					console.log(data.responseText);
+					// console.log(data.responseText);
 				},
 			});
 
@@ -265,7 +276,7 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 			$('#complementoEtarios').html(data['tabla']);
 
 			info = data['info'];
-
+			// console.log(info);
 			delete json;
 			json = [];
 			json[0] = ['Complemento'];
@@ -316,6 +327,7 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 				json[numGE3].push(total);
 			})
 
+			// console.log(json);
 			google.charts.load('current', {packages: ['corechart', 'bar']});
 			google.charts.setOnLoadCallback(function(){
 				armarGrafica(json, 'Totales semana por tipo complemento alimentario y grupo etario', 'Ordenado por complemento', 'graficaComplementoEtarios', 'right', 1);
@@ -364,8 +376,8 @@ function verSemana(semana, diasSemanas, tipoComplementos){
 
 
 function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
-	console.log(idDiv);
-	console.log(json);
+	// console.log(idDiv);
+	// console.log(json);
     var data = google.visualization.arrayToDataTable(json);
 
     if (multiColumn == 1) {
@@ -389,8 +401,8 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
     var options = {
     	title: titulo,
         width: "100%",
-        height: 300,
-        bar: {groupWidth: "95%"},
+        height: "40%",
+        bar: {groupWidth: "90%"},
         chart: {
           title: titulo,
           subtitle: subtitulo,
@@ -400,12 +412,12 @@ function armarGrafica(json, titulo, subtitulo, idDiv, legendPos, multiColumn) {
         },
         annotations : {
         	textStyle: {
-		      fontSize: 10,
-		      bold: true,
+		      fontSize: 12,
+		      bold: false,
 		      italic: false,
-		      color: '#ffffff',
-		      auraColor: '#676a6c',
-		      opacity: 0.8
+		      color: '#000000',
+		      // auraColor: '#676a6c',
+		      opacity: 1
 		    }
         },
         colors: ['#0B4337','#137A65', '#19AB8D', '#23E1BA', '#9af5d9']

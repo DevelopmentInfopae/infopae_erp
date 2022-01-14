@@ -7,6 +7,16 @@ $(document).ready(function() {
         var aux = $('.timeOption.active').attr('value');
         buscarCantidadesGraficos(0,aux);
     });
+
+    buscarCantidadesGraficos2(0,1);
+    $('#btnActualizarGrafica2').click(function(){ actualizarGraficas2(); });
+    $('.timeOption').click(function(){
+        $('.timeOption').removeClass('active');
+        $(this).addClass('active');
+        var aux = $('.timeOption.active').attr('value');
+        buscarCantidadesGraficos2(0,aux);
+    });
+    buscarCatidadesGraficos3();
 });
 
 // Linea
@@ -20,6 +30,11 @@ function gd(year, month, day) {
 function actualizarGraficas() {
     var aux = $('.timeOption.active').attr('value');
     buscarCantidadesGraficos(1,aux);
+}
+
+function actualizarGraficas2() {
+    // var aux = $('.timeOption.active').attr('value');
+    buscarCantidadesGraficos2(1);
 }
 
 function buscarCantidadesGraficos(actualizar,timeOption){
@@ -37,9 +52,6 @@ function buscarCantidadesGraficos(actualizar,timeOption){
 			try {
 				var obj = JSON.parse(data);
 
-                console.log(obj.barras);
-                console.log(obj.entregas);
-
                 $('#listaTotales').html(obj.totales);
                 graficar(obj.entregas,obj.barras,timeOption,obj.labels);
 			}
@@ -52,13 +64,62 @@ function buscarCantidadesGraficos(actualizar,timeOption){
 	})
 	.always(function(){
         $('#loader').fadeOut();
-    	console.log('Terminó el Ajax');
+    	// console.log('Terminó el Ajax');
 	});
 }
 
+function buscarCantidadesGraficos2(actualizar){
+    // El parametro actualizar cuando es 0 solo lle el archivo arrays.txt
+    // cuando es igual a 1 actualiza el contenido del archivo.
+    $.ajax({
+        type: "POST",
+        data: {
+            "actualizar":actualizar
+        },
+        url: "functions/fn_datos_graficos2_index.php",
+        beforeSend: function(){ $('#loader').fadeIn(); },
+        success: function(data){
+            try {
+                var obj2 = JSON.parse(data);
+                $('#listaTotales2').html(obj2.totales);
+
+                graficar2(obj2.entregas,obj2.barras,obj2.labels);
+                // console.log(obj.entregas);
+            }
+            catch(err) {
+                $('.debug2').html(err.message);
+                $('.debug2').append('<br/><br/>');
+                $('.debug2').append(data);
+            }
+        }
+    })
+    .always(function(){
+        $('#loader').fadeOut();
+        // console.log('Terminó el Ajax');
+    });
+}
+
+function buscarCatidadesGraficos3(){
+    $.ajax({
+        url: 'functions/fn_datos_grafica3_index.php',
+        type: 'POST'
+    })
+    .done(function(data) {
+        console.log(data);
+        var obj3 = JSON.parse(data);
+        graficar3(obj3.ejecutado, obj3.porEjecutar);
+    })
+    .fail(function() {
+        console.log("error");
+    })
+    .always(function() {
+        // console.log("complete");
+    });
+    
+}
 
 function graficar(data2,data3,timeOption,labels){
-            console.log('Cambios en el dibujo '+timeOption);
+            // console.log('Cambios en el dibujo '+timeOption);
             if(timeOption == 1){
 
                 var tickArray = labels;
@@ -219,4 +280,49 @@ function graficar(data2,data3,timeOption,labels){
             var previousPoint = null, previousLabel = null;
 
             $.plot($("#flot-dashboard-chart"), dataset, options);
+}
+
+
+function graficar2(data2,data3,labels){ 
+    var lineData = {
+        labels: labels,
+        datasets: [
+            {
+                label: 'valor $',
+                backgroundColor: 'rgba(26,179,148,0.5)',
+                borderColor: "rgba(26,179,148,0.7)",
+                pointBackgroundColor: "rgba(28,132,198,1)",
+                pointBorderColor: "#fff",
+                data: data2
+            }
+        ]
+    };
+
+    var lineOptions = {
+        responsive: true
+    };
+
+
+    var ctx = document.getElementById("lineChart").getContext("2d");
+    new Chart(ctx, {type: 'line', data: lineData, options:lineOptions});
+
+}
+
+function graficar3(ejecutado, porEjecutar){
+    var doughnutData = {
+        labels: ["% Ejecutado","% Por Ejecutar" ],
+        datasets: [{
+            data: [ejecutado, porEjecutar],
+            backgroundColor: ["#a3e1d4","#dedede"]
+        }]
+    } ;
+
+
+    var doughnutOptions = {
+        responsive: true
+    };
+
+
+    var ctx4 = document.getElementById("doughnutChart").getContext("2d");
+    new Chart(ctx4, {type: 'doughnut', data: doughnutData, options:doughnutOptions});
 }

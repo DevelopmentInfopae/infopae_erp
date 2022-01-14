@@ -1,6 +1,13 @@
 <?php 
 $titulo = 'Estadísticas Avanzadas'; 
 require_once '../../header.php'; 
+
+if ($permisos['informes'] == "0") {
+  ?><script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 ?>
@@ -72,7 +79,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <h2><strong>Totales por tipo complemento alimentario</strong></h2>
               <br>
             </div>
-            <div class="col-md-5 col-sm-5 col-xs-5">
+            <div class="col-md-5 col-sm-12">
                 <br>
                 <br>
               <div class="table-responsive">
@@ -89,7 +96,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
                 </table>
               </div>
             </div>
-            <div class="col-md-7 col-sm-7 col-xs-7 nopadding">
+            <div class="col-md-7 col-sm-12 nopadding">
               <div id="graficaTotalesComplemento"></div>
             </div>
           </div>
@@ -499,7 +506,7 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
               <h2 style="text-align: center;"><strong>Valor de recursos ejecutados</strong></h2>
               <br>
           <div class="row">
-          <div class="col-sm-4">
+          <div class="col-md-4 col-sm-12">
                   <?php
                     $consValores = "SELECT 'ValorContrato' AS Concepto, ValorContrato FROM parametros
                                   UNION
@@ -530,13 +537,13 @@ $mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "
                     <?php endforeach ?>
                   </table>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-4 col-sm-12">
               <table class="table table-bordered table-striped table-hover selectableRows" id="tablaValoresEjecutadosPorcentajes">
 
               </table>
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-md-4 col-sm-12">
                 <div id="graficaValoresEjecutadosPorcentajes"></div>
             </div>
             </div>

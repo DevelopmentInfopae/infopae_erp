@@ -1,5 +1,12 @@
 <?php
 include '../../header.php';
+
+if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+        window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';
 $Link = new mysqli($Hostname, $Username, $Password, $Database);

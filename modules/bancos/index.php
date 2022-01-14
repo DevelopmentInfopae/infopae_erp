@@ -1,6 +1,13 @@
 <?php 
 $titulo = 'Bancos';
 require_once '../../header.php';
+
+if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+        window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">

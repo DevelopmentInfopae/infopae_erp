@@ -15,9 +15,36 @@ $mesesNom = [
 	"11" => "Noviembre",
 	"12" => "Diciembre"];
 
-$diasSemanas = $_POST['diasSemanas'];
+// $diasSemanas = $_POST['diasSemanas'];
 $periodoActual = $_SESSION['periodoActual'];
 $codDepartamento = $_SESSION['p_CodDepartamento'];
+
+$periodo = 1;
+$diasSemanas = [];
+$consDiasSemanas = "SELECT GROUP_CONCAT(DIA) AS Dias, MES, SEMANA FROM planilla_semanas WHERE CONCAT(ANO, '-', MES, '-', DIA) <= '".date('Y-m-d')."' GROUP BY SEMANA";
+
+  // echo $consDiasSemanas;
+$resDiasSemanas = $Link->query($consDiasSemanas);
+if ($resDiasSemanas->num_rows > 0) {
+    while ($dataDiasSemanas = $resDiasSemanas->fetch_assoc()) {
+      	$semanasP[$periodo] = $dataDiasSemanas['SEMANA'];
+      	$consultaTablas = "SELECT 
+                           table_name AS tabla
+                          FROM 
+                           information_schema.tables
+                          WHERE 
+                           table_schema = DATABASE() AND table_name = 'entregas_res_".$dataDiasSemanas['MES']."$periodoActual'";
+      	$resTablas = $Link->query($consultaTablas);
+      	if ($resTablas->num_rows > 0) {
+        	$semanaPos = $dataDiasSemanas['SEMANA'];
+        	$arrDias = explode(",", $dataDiasSemanas['Dias']);
+        	sort($arrDias);
+        // print_r($arrDias);
+        	$diasSemanas[$dataDiasSemanas['MES']][$semanaPos] = $arrDias; //obtenemos un array ordenado del siguiente modo array[mes][semana] = array[dias]
+      }
+      $periodo++;
+    }
+  }
 
 $municipios = [];
 $totalesMunicipios = [];
@@ -55,32 +82,57 @@ if ($rescodDepartamento->num_rows > 0) {
 		$codDepartamento = $datacodDepartamento['CodDepartamento'];
 	}
 }*/
-
+// exit(var_dump($diasSemanas));
+$sem2 = 0;
 foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
     $datos = "";
     $diaD = 1;
     $sem=0;
+
+
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
-      foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
-        $datos.="SUM(D$diaD) + ";
-        $diaD++;
-      }
+      	if ($semana == $sem.'b') {
+        	$mismaSemanaB = "SELECT COUNT(dia) as numero FROM planilla_semanas WHERE semana IN ('$semana','$sem') GROUP BY dia LIMIT 1";
+        	$respuestaSemanaB = $Link->query($mismaSemanaB) or die('Error al consultar los días de la misma semana' . mysqli_error($Link));
+        	if ($respuestaSemanaB->num_rows > 0) {
+          		$dataSemanaB = $respuestaSemanaB->fetch_assoc();
+          		$numeroDiasRepetidos = $dataSemanaB['numero'];
+          		if ($numeroDiasRepetidos == 2) {
+            	$diaD = 1;
+          		} 
+        	}
+      	}	
+      	foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
+			$consultaPlanillaDias = "SELECT D$diaD FROM planilla_dias WHERE D$diaD = $dia AND mes = $mes;";
+        	// echo $consultaPlanillaDias."<br>";
+        	$respuestaConsultaPlanillaDias = $Link->query($consultaPlanillaDias);
+        	$consultaPlanillaDias = "SELECT D$diaD FROM planilla_dias WHERE D$diaD = $dia AND mes = $mes;";
+        	if ($respuestaConsultaPlanillaDias->num_rows == 1) {
+          		$datos.="SUM(D$diaD) + ";
+          		$diaD++;
+       	 	}
+      	}
 
       $datos = trim($datos, "+ ");
       $datos.= " AS semana_".$semana.", ";
-      $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
+      $sem = $semana;
+      $sem2++;
+
+      // $sem = $semana; //guardamos el último número de semana del mes, el cual incrementa sin reiniciar en cada mes.
     }
 
     $datos = trim($datos, ", ");
 
 	$consMunicipios = "SELECT cod_mun_sede, $datos FROM $tabla GROUP BY cod_mun_sede";
+	// echo $consMunicipios;
 	$resMunicipios= $Link->query($consMunicipios);
  	if ($resMunicipios->num_rows > 0) {
  		while ($dataMunicipios = $resMunicipios->fetch_assoc()) {
  			foreach ($municipios as $codigo => $Ciudad) {
  				if ($codigo == $dataMunicipios['cod_mun_sede']) {
-		 			for ($i=1; $i <= $sem ; $i++) {
+		 			foreach ($semanasP as $semanaP) {
+		 				$i = $semanaP;
 		 				if (strlen($i) == 1) { $i = "0".$i; }
 
 		 				if (!isset($dataMunicipios["semana_".$i]) && !isset($totalesMunicipios[$Ciudad]["semana_".$i])) {
@@ -125,9 +177,10 @@ $numTds = 1;
 $semanaAct = "";
 $tHeadSemana = '<tr>
      				<th>Municipio</th>';
+// exit(var_dump($totalesMunicipios));     				
 foreach ($totalesMunicipios as $codigo => $semanaArr) {
     foreach ($semanaArr as $semana => $totales) { //recorremos todas las semanas obtenidas para crear las columnas
-	    if ($numTds <= $sem) {
+	    if ($numTds <= $sem2 || $numTds."b" == $sem2) {
 	    	if ($semana != $semanaAct) { //Si la semana en turno es igual a la última semana guardada, no se crea otra columna
 		        $numTds++; //aumentamos en 1 el número de columnas creadas
 
@@ -135,9 +188,9 @@ foreach ($totalesMunicipios as $codigo => $semanaArr) {
 					  '.ucwords(str_replace("_", " ", $semana)).'
 					</th>';
 	      	}
-
-	   		$semanaAct=$semana; //Guardamos el último número de semana del mes (incrementable sin reinicio por mes)
+	
 	    }
+	    $semanaAct=$semana; //Guardamos el último número de semana del mes (incrementable sin reinicio por mes)
     }
 }
 $tHeadSemana .= '<th>Total</th></tr>';
@@ -146,7 +199,8 @@ $tBodySemana="";
 foreach ($totalesMunicipios as $codigo => $semanaArr) {
 	$tBodySemana .= "<tr>
 						<td>".$codigo."</td>";
-	for ($l=1; $l < $numTds ; $l++) { //según el número de columnas creadas, recorremos las semanas obtenidas
+	foreach ($semanasP as $semanaP) { //según el número de columnas creadas, recorremos las semanas obtenidas
+		$l = $semanaP;
 		if (strlen($l) == 1) { $l = "0".$l; }
 
 		if (isset($semanaArr["semana_".$l])) { //Si en el mes en turno, está la semana del recorrido "for" imprimimos el valor en la columna nueva.
@@ -164,7 +218,8 @@ foreach ($totalesMunicipios as $codigo => $semanaArr) {
 $tFootSemana ='<tr>
 	<th>TOTAL</th>';
 
-for ($l=1; $l <= count($sumTotalesSemanas); $l++) {
+foreach ($semanasP as $semanaP) {
+	$l = $semanaP;
 	if (strlen($l) == 1) { $l = "0".$l; }
 
 	$suma_total_semana = (isset($sumTotalesSemanas["semana_".$l])) ? $sumTotalesSemanas["semana_".$l] : 0;

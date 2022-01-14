@@ -6,6 +6,12 @@
 
   $titulo = "Instituciones";
   $periodoActual = $_SESSION['periodoActual'];
+
+  if ($permisos['instituciones'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -20,10 +26,10 @@
           </li>
       </ol>
   </div>
-  <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+  <?php if($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2") { ?>
   <div class="col-lg-4">
     <div class="title-action">
-      <a href="#" class="btn btn-primary" onclick="crearInstitucion();"><i class="fa fa-plus"></i> Nuevo</a>
+      <a href="#" class="btn btn-primary" id="crearInstitucion"><i class="fa fa-plus"></i> Nuevo</a>
     </div>
   </div>
   <?php } ?>
@@ -38,12 +44,13 @@
                       <thead>
                         <tr>
     						            <th>Municipio</th>
+                            <th>Código</th>
                             <th>Institución</th>
                             <?php if (isset($_GET['region'])): ?>
                               <th>Zona</th>
                               <th>Región</th>
                             <?php endif ?>
-                            <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+                            <?php if($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2") { ?>
                             <th class="text-center">Acciones</th>
                             <?php } ?>
                         </tr>
@@ -69,12 +76,13 @@
                               while($row = $resultado->fetch_assoc()) { ?>
                                 <tr codInst="<?php echo $row["codigo_inst"]; ?>" nomInst="<?php echo $row["nom_inst"]; ?>">
                 									<td><?php echo $row["ciudad"]; ?></td>
+                                  <td><?php echo $row["codigo_inst"]; ?></td>
                 									<td><?php echo $row["nom_inst"]; ?></td>
                                   <?php if (isset($_GET['region'])): ?>
                                     <td><?php echo $row["sector"] == 1 ? "Rural" : "Urbano"; ?></td>
                                     <td><?php echo $row["region"]; ?></td>
                                   <?php endif ?>
-                                  <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+                                  <?php if($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2") { ?>
                                   <td class="text-center">
                                     <div class="btn-group">
                                       <div class="dropdown pull-right">
@@ -83,7 +91,7 @@
                                         </button>
                                         <ul class="dropdown-menu pull-right" aria-labelledby="dropDownMenu1">
                                           <li>
-                                            <a href="#" onclick="editarInstitucion('<?php echo $row["codigo_inst"]; ?>', '<?php echo $row["nom_inst"]; ?>');"><i class="fa fa-pencil fa-lg"></i> Editar</a>
+                                            <a href="#" class="editarInstitucion" data-codigoinstitucion = <?php echo $row['codigo_inst']; ?>><i class="fas fa-pencil-alt fa-lg"></i>  Editar</a>
                                           </li>
                                         </ul>
                                       </div>
@@ -98,9 +106,10 @@
                       </tbody>
                       <tfoot>
                         <tr>
-              						<th>Municipio</th>
-              						<th>Institución</th>
-                          <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+							            <th>Municipio</th>
+							            <th>Código</th>
+              				    <th>Institución</th>
+                          <?php if($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2") { ?>
                           <th class="text-center">Acciones</th>
                           <?php } ?>
                         </tr>
@@ -111,6 +120,12 @@
           </div>
      </div>
 </div>
+
+<!-- contenedor de modal para crear una nueva institucion -->
+<div id="contenedor_crear_institucion"></div>
+
+<!-- contenedor de modal para crear una nueva institucion -->
+<div id="contenedor_editar_institucion"></div>
 
 <!-- Ventana modal confirmar -->
 <div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
@@ -148,8 +163,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-
-<!-- Section Scripts -->
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/instituciones.js"></script>
 
 <?php mysqli_close($Link); ?>
@@ -178,16 +192,17 @@
             sPrevious: 'Anterior'
           }
         },
-        buttons: [ {extend: 'excel', title: 'Instituciones', className: "btnExportarExcel"} ]
+        buttons: [ {extend: 'excel', title: 'Instituciones', className: "btnExportarExcel", exportOptions: { columns: [ 0, 1, 2] } } ]
       });
 
-    <?php if($_SESSION["perfil"] == 1 || $_SESSION["perfil"] == 0) { ?>
+    <?php if($_SESSION['perfil'] == "0" || ($permisos['instituciones'] == "1" || $permisos['instituciones'] == "2")) { ?>
       var botonAcciones = '<div class="dropdown pull-right">'+
                             '<button class="btn btn-primary btn-sm btn-outline" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true">'+
                               'Acciones <span class="caret"></span>'+
                             '</button>'+
                             '<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu2">'+
                               '<li><a tabindex="0" aria-controls="box-table" href="#" onclick="$(\'.btnExportarExcel\').click();"><span class="fa fa-file-pdf-o"></span> Exportar </a></li>'+
+                              <?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
                               '<li>'+
                                 '<a class="fileinput fileinput-new" data-provides="fileinput">'+
                                   '<span class="btn-file">'+
@@ -203,6 +218,7 @@
                               '<li class="divider"></li>'+
                               '<li><a href="'+ $('#inputBaseUrl').val() +'/download/instituciones/Plantilla_Instituciones.csv"><i class="fa fa-download"></i> Descarga Plantilla .CSV </a></li>'+
                               '<li><a href="'+ $('#inputBaseUrl').val() +'/download/instituciones/Plantilla_Instituciones.xlsx"><i class="fa fa-download"></i> Descarga Plantilla .XLSX </a></li>'+
+                              <?php endif ?>
                               '<li><a href="'+ $('#inputBaseUrl').val() +'/modules/instituciones/instituciones.php<?= isset($_GET['region']) ? "" : "?region=1" ?>"><i class="fa fa-eye"></i> Ver zona </a></li>'+
                             '</ul>'+
                           '</div>';

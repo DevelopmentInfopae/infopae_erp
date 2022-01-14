@@ -1,4 +1,23 @@
 $(document).ready(function(){
+
+	// start codigo jerson
+	var municipioRector = $('#municipio').val();
+	if (municipioRector != "" && municipioRector != "0") {
+		var tipo = $('#tipoRacion').val();
+		var municipio = municipioRector;
+		buscar_institucion(municipio,tipo);
+		var institucionRector = $('#institucion').val();
+
+		if (institucionRector != "" && institucionRector != "0") {
+			var tipo = $('#tipoRacion').val();
+			var municipio = $('#municipio').val();
+			var semana = $('#semana').val();
+			buscar_sede(semana,municipio,tipo,institucionRector);
+		}
+	}
+
+	// end codigo jerson
+
 	var cantidadDetallados = 0;
 	var mes = $('#mesi').val();
 	var mesText = $("#mesi option[value='"+mes+"']").text()
@@ -32,6 +51,7 @@ $(document).ready(function(){
 
 	$( "#btnBuscar" ).click(function(){
 		console.log('Se va  a hacer una busqueda.');
+		$('#pb_entrega').val($('#numeroEntrega').val());
 		$("#pb_annoi").val($("#annoi").val());
 		$("#pb_mesi").val($("#mesi").val());
 		$("#pb_diai").val($("#diai").val());
@@ -91,10 +111,9 @@ $(document).ready(function(){
 
 });
 
+
+
 function buscar_institucion(municipio,tipo){
-	console.log('Actualizando lista de instituciones.');
-	console.log(municipio);
-	console.log(tipo);
 	var datos = {"municipio":municipio,"tipo":tipo};
 		$.ajax({
 			type: "POST",
@@ -106,6 +125,7 @@ function buscar_institucion(municipio,tipo){
 			success: function(data){
 				//$('#debug').html(data);
 				$('#institucion').html(data);
+				var respuestaInstitucion = data;
 			}
 		})
 		.done(function(){ })

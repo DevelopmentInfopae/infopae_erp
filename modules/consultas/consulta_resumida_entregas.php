@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['entrega_complementos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   set_time_limit (0);
   ini_set('memory_limit','6000M');
   $periodoActual = $_SESSION['periodoActual'];
@@ -78,11 +85,15 @@
                   <?php
                     if (isset($departamento) && $departamento != "") {
                       $vsql = "select distinct ciudad, codigodane from ubicacion where ETC = 0 and codigodane like '$departamento%' order by ciudad asc";
-			                if($_SESSION['perfil'] == 6){
+			                if($_SESSION['perfil'] == "6"){
 				               $rectorDocumento = $_SESSION['num_doc'];
-				               $vsql = "SELECT ubicacion.ciudad as ciudad, ubicacion.CodigoDANE as codigodane from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento limit 1";
+				               $vsql = "SELECT ubicacion.ciudad as ciudad, ubicacion.CodigoDANE as codigodane from instituciones left join ubicacion on instituciones.cod_mun = ubicacion.CodigoDANE where cc_rector = $rectorDocumento limit 1 ";
 			                }
-
+                      if ($_SESSION['perfil'] == "7") {
+                        $documentoCoordinador = $_SESSION['num_doc'];
+                        $vsql = "SELECT u.Ciudad as ciudad, u.CodigoDANE AS codigodane FROM ubicacion u LEFT JOIN sedes$periodoActual s ON s.cod_mun_sede = u.CodigoDANE WHERE id_coordinador = $documentoCoordinador LIMIT 1 ";
+                      }
+                      // exit(var_dump($vsql));
                       $result = $Link->query($vsql);
                   ?>
                     <option value="">TODOS</option>
@@ -108,27 +119,18 @@
                       $vsql = "select distinct s.cod_inst, s.nom_inst from sedes".$periodoactual." s LEFT JOIN instituciones i ON s.cod_inst = i.codigo_inst where cod_mun_sede = '$municipio' ";
 
                       if($_SESSION['perfil'] == 6){
-       
-
-                      $vsql .= " and cc_rector = $rectorDocumento ";
-
-
-
+                        $vsql .= " and cc_rector = $rectorDocumento ";
                       } 
-
+                      else if($_SESSION['perfil'] == "7"){
+                        $vsql .= " AND id_coordinador = $documentoCoordinador ";
+                      }
 
                       $vsql .= " order by nom_inst asc ";
-                      //echo "<br><br>$vsql<br><br>";
-
-
-
-
-
-
-
                       $result = $Link->query($vsql);
                   ?>
-                  <option value="">TODOS</option>
+                  <option value="">Seleccione</option>
+                  
+                  
                   <?php while($row = $result->fetch_assoc()) {  ?>
                   <option value="<?php echo $row["cod_inst"]; ?>" <?php if (isset($_POST['institucion']) && ($_POST['institucion'] == $row["cod_inst"]) ) { echo 'selected'; }  ?>   ><?php echo $row["nom_inst"]; ?></option>
                   <?php
@@ -147,15 +149,35 @@
 								<select id="sede" name="sede" onchange="buscar_estudiantes();" class="form-control">
 									<?php
 									if (isset($_POST["institucion"]) && $_POST["institucion"] != "") {
-
 										$institucion = $_POST["institucion"];
+                    if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != "") {
+                      $codigoSedes = "";
+                      $documentoCoordinador = $_SESSION['num_doc'];
+                      $consultaCodigoSedes = "SELECT cod_sede FROM sedes$periodoActual WHERE id_coordinador = $documentoCoordinador;";
+                      $respuestaCodigoSedes = $Link->query($consultaCodigoSedes) or die('Error al consultar el código de la sede ' . mysqli_error($Link));
+                      if ($respuestaCodigoSedes->num_rows > 0) {
+                        $codigoInstitucion = '';
+                        while ($dataCodigoSedes = $respuestaCodigoSedes->fetch_assoc()) {
+                          $codigoSedeRow = $dataCodigoSedes['cod_sede'];
+                          $consultaCodigoInstitucion = "SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = $codigoSedeRow;";
+                          $respuestaCodigoInstitucion = $Link->query($consultaCodigoInstitucion) or die ('Error al consultar el código de la institución ' . mysqli_error($Link));
+                          if ($respuestaCodigoInstitucion->num_rows > 0) {
+                            $dataCodigoInstitucion = $respuestaCodigoInstitucion->fetch_assoc();
+                            $codigoInstitucionRow = $dataCodigoInstitucion['cod_inst'];
+                            if ($codigoInstitucionRow == $codigoInstitucion || $codigoInstitucion == '') {
+                              $codigoSedes .= "'$codigoSedeRow'".",";
+                              $codigoInstitucion = $codigoInstitucionRow; 
+                            }
+                          }
+                        }
+                      }
+                      $codigoSedes = substr($codigoSedes, 0 , -1);
+                      $condicionCoordinador = " AND cod_sede IN ($codigoSedes) ";
+                    }
 
-										$vsql = "select distinct cod_sede, nom_sede from sedes".$periodoactual." where cod_inst = '$institucion' order by nom_sede asc";
+										$vsql = "select distinct cod_sede, nom_sede from sedes".$periodoactual." where cod_inst = '$institucion' $condicionCoordinador order by nom_sede asc";
 
 										$result = $Link->query($vsql);
-
-
-
 
 										?>
 										<option value="">TODOS</option>
@@ -343,6 +365,27 @@
                 </select>
               </div>
             </div>
+            <?php if ($_SESSION['p_Municipio'] == "0"): ?>
+              <div class="col-md-4">
+              <div class="form-group">
+                <label for="zona_exportar">Zona</label>
+                <select class="form-control" name="zona_exportar" id="zona_exportar" required>
+                  <option value="">Selección</option>
+                   <?php
+                    $consultaZona = "SELECT distinct Zona_Pae AS zona FROM sedes$periodoActual;";
+                    $resultadoZona = $Link->query($consultaZona);
+                    if($resultadoZona->num_rows > 0){
+                      while($registros = $resultadoZona->fetch_assoc()) {
+                  ?>
+                      <option value="<?= $registros["zona"]; ?>"><?= $registros["zona"]; ?></option>
+                  <?php
+                      }
+                    }
+                  ?>
+                </select>
+              </div>
+            </div>
+            <?php endif ?>
           </div>
         </form>
       </div>

@@ -2,6 +2,12 @@
   $titulo = 'Parámetros Iniciales';
   include '../../header.php';
 
+  if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $periodoActual = $_SESSION['periodoActual'];
   $consulta1 = "SELECT * FROM parametros;";
   $resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". mysql_error($Link));
@@ -23,11 +29,13 @@
     </ol>
   </div>
   <div class="col-lg-4">
-    <div class="title-action">
-      <a href="#" class="btn btn-primary" id="boton_guardar">
-        <i class="fa <?php if ($resultado1->num_rows > 0){ echo "fa-pencil"; } else { echo "fa-plus"; } ?>"></i> Guardar
-      </a>
-    </div>
+    <?php if ($_SESSION['perfil'] == "0" || $permisos['configuracion'] == "2"): ?>
+      <div class="title-action">
+        <a href="#" class="btn btn-primary" id="boton_guardar">
+          <i class="fa <?php if ($resultado1->num_rows > 0){ echo "fa-pencil"; } else { echo "fa-plus"; } ?>"></i> Guardar
+        </a>
+      </div>
+    <?php endif ?>
   </div>
 </div>
 
@@ -36,6 +44,9 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h3>Información Operador</h3>
+        </div><!--  ibox-title -->
         <div class="ibox-content contentBackground">
           <form id="formParametros" action="" method="post">
             <div class="row">
@@ -169,15 +180,15 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="form-group col-sm-6">
-                    <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumios."></i></label>
-                    <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
-                  </div>
                   <div class="col-sm-6">
                     <div class="form-group">
                       <label for="mesContrato">Mes de contrato</label>
                       <input type="number" id="mesContrato" class="form-control" name="mesContrato" value="<?php if (isset($datos['MesContrato']) && $datos['MesContrato'] != '') { echo $datos['MesContrato']; } ?>" <?php if (isset($datos['MesContrato']) && $datos['MesContrato'] != '') { echo 'readOnly'; } ?> required>
                     </div>
+                  </div>
+                  <div class="form-group col-sm-6">
+                    <label for="anio">Año de contrato</label>
+                    <input type="text" class="form-control" value="<?php if(isset($datos['ano']) && $datos['ano'] != '') { echo $datos['ano']; } else { echo date('Y'); } ?>" readOnly disabled>
                   </div>
                 </div>
                 <!--  -->
@@ -192,30 +203,13 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="form-group col-sm-6">
-                    <label for="anio">Año de contrato</label>
-                    <input type="text" class="form-control" value="<?php if(isset($datos['ano']) && $datos['ano'] != '') { echo $datos['ano']; } else { echo date('Y'); } ?>" readOnly disabled>
-                  </div>
+
                   <div class="form-group col-sm-6">
                     <label for="ValorContrato">ValorContrato</label>
                     <input type="number" name="ValorContrato" id="ValorContrato" class="form-control" value="<?php if (isset($datos['ValorContrato']) && $datos['ValorContrato'] != '') { echo $datos['ValorContrato']; } ?>">
                   </div>
                 </div>
-                <div class="row">
-                  <div class="form-group col-sm-6">
-                    <label>Permitir repitentes</label><br>
-                    <label>
-                      <input type="radio" name="PermitirRepitentes" value="1" <?= $datos['PermitirRepitentes'] == 1 ? 'checked="checked"' : '' ?>>
-                      Si
-                    </label>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <label>
-                      <input type="radio" name="PermitirRepitentes" value="0" <?= $datos['PermitirRepitentes'] == 0 ? 'checked="checked"' : '' ?>>
-                      No
-                    </label>
-                  </div>
 
-                </div>
                 <div class="row">
                   <div class="col-sm-6">
                     <div class="form-group">
@@ -273,6 +267,48 @@
     </div>
   </div>
 </div>
+
+
+<!-- Configuracion funcionalidad -->
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h3>Configuración Funcionalidad</h3>
+        </div><!--  ibox-title -->
+        <div class="ibox-content">
+          <div class="row">
+            <div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+              <label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumos."></i>
+              </label>
+              <input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
+            </div> <!-- col -->
+            <div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+              <label for="tipoBusqueda">Tipo de búsqueda <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique la forma en que se realizará las búsquedas"></i></label>
+              <select id="tipoBusqueda" name="tipoBusqueda" class="form-control">
+                <option value="1" <?= ($datos['tipo_busqueda'] == "1") ? 'selected' : '' ?> >Búsqueda por fecha</option>
+                <option value="2" <?= ($datos['tipo_busqueda'] == "2") ? 'selected' : '' ?> >Búsqueda por entrega</option>
+              </select>
+            </div> <!-- col -->
+            <div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+              <label>Permitir repitentes</label><br>
+              <label>
+                <input type="radio" name="PermitirRepitentes" value="1" <?= $datos['PermitirRepitentes'] == 1 ? 'checked="checked"' : '' ?>>
+                  Si
+              </label>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <label>
+                <input type="radio" name="PermitirRepitentes" value="0" <?= $datos['PermitirRepitentes'] == 0 ? 'checked="checked"' : '' ?>>
+                  No
+              </label>
+            </div> <!-- col -->
+          </div><!-- row -->
+        </div> <!-- ibox-content -->
+      </div> <!-- float-e-margins -->      
+    </div> <!-- col-lg-12 -->
+  </div> <!-- row -->
+</div> <!-- fadeInRight -->
 
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
@@ -356,6 +392,7 @@
     </div>
   </div>
 </div>
+
 
 <?php include '../../footer.php'; ?>
 

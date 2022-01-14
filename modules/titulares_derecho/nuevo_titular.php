@@ -3,7 +3,13 @@ $titulo = 'Nuevo titular de derecho';
 require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 
-if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
+if ($permisos['titulares_derecho'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
+if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") {
 ?>
 
 <style type="text/css">
@@ -71,7 +77,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                 </div>
                 <div class="form-group col-sm-3">
                   <label>N° de documento</label>
-                  <input type="number" name="num_doc" id="num_doc" class="form-control" min="0" onblur="validaNumDoc(this)" required>
+                  <input type="number" name="num_doc" id="num_doc" class="form-control" min="1" step="1" onblur="validaNumDoc(this), validaDocAcudiente()" required>
                   <label for="num_doc" class="error"></label>
                 </div>
                 <div class="form-group col-sm-3">
@@ -108,7 +114,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                 </div>
                 <div class="form-group col-sm-3">
                   <label>Fecha de nacimiento</label>
-                  <input type="date" name="fecha_nac" class="form-control" max="<?php echo date('Y-m-d') ?>" required>
+                  <input type="date" name="fecha_nac" class="form-control" min="<?php $month = date('m'); $day = date('d'); $year = date('Y'); echo ($year-18).'-'.$month.'-'.$day;?>" max="<?php  echo ($year-3).'-'.$month.'-'.$day; ?>" required>
                   <label for="fecha_nac" class="error"></label>
                 </div>
                 <?php
@@ -197,7 +203,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
 
                 <div class="form-group col-sm-3">
                   <label>Documento acudiente</label>
-                  <input type="text" name="doc_acudiente" id="doc_acudiente" class="form-control" required>
+                  <input type="text" name="doc_acudiente" id="doc_acudiente" class="form-control"  onchange="validaCaracteres()" onblur="validaDocAcudiente()" value="0" required>
                   <label for="doc_acudiente" class="error"></label>
                 </div>
 
@@ -341,6 +347,32 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                   </select>
                   <label for="repitente" class="error"></label>
                 </div>
+
+                <div class="form-group col-sm-3">
+                  <label>Mes</label>
+                  <select name="mes" class="form-control" id="mes" required>
+                    <option value="0">Seleccione...</option>
+                    <?php 
+                    $mesNombre = '';
+                    $arrayMeses = array('01' => 'ENERO', '02' => 'FEBRERO', '03' => 'MARZO', '04' => 'ABRIL', '05' => 'MAYO', '06' => 'JUNIO', '07' => 'JULIO', '08' => 'AGOSTO', '09' => 'SEPTIEMBRE', '10' => 'OCTUBRE', '11' => 'NOVIEMBRE', '12' => 'DICIEMBRE');
+                    $consultaMeses = "SELECT DISTINCT(MES) AS mes FROM planilla_semanas;";
+                    $respuestaMeses = $Link->query($consultaMeses) or die ('Error al consultar los meses ' . mysqli_error($Link));
+                    if ($respuestaMeses->num_rows > 0) {
+                      while ($dataMeses = $respuestaMeses->fetch_assoc()) { 
+                        foreach ($arrayMeses as $key => $nombre) {
+                          if ($dataMeses['mes'] == $key) {
+                            $mesNombre = $nombre;
+                          }
+                        }
+                        ?>
+                        <option value="<?= $dataMeses['mes']; ?>"> <?= $mesNombre; ?> </option>
+                    <?php  }
+                    }
+                    ?>
+                  </select>
+                  <label for="mes" class="error"></label>
+                </div>
+
                 <div class="col-sm-12">
                   <span class="btn btn-primary" onclick="agregarSemana()"><i class="fa fa-plus"></i></span>
                   <span class="btn btn-primary" onclick="eliminarSemana()"><i class="fa fa-minus"></i></span>
@@ -353,38 +385,9 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
                         <th>Tipo complemento</th>
                       </tr>
                     </thead>
+
                     <tbody id="semanasComplemento">
-                      <tr id="semana_1">
-                        <td>
-                          <select name="semana[1]" id="semana1" onchange="validaCompSemana(this, 1)" class="form-control semana" required>
-                            <option value="">Seleccione...</option>
-                            <?php $consultarFocalizacion = "SELECT table_name AS tabla FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name like 'focalizacion%' ";
-                        $resultadoFocalizacion = $Link->query($consultarFocalizacion);
-                        if ($resultadoFocalizacion->num_rows > 0) {
-                            while ($focalizacion = $resultadoFocalizacion->fetch_assoc()) { ?>
-                              <option value="<?php echo $focalizacion['tabla']; ?>">Semana <?php echo substr($focalizacion['tabla'], 12, 2); ?></option>
-                            <?php }
-                        } ?>
-                          </select>
-                          <label for="#semana1" class="error"></label>
-                        </td>
-                        <td>
-                          <select name="tipo_complemento[1]" id="tipo_complemento1" onchange="validaCompSemana(this, 2)" class="form-control tipo_complemento" required>
-                            <option value="">Seleccione...</option>
-                            <?php
-                            $consultarGrados = "SELECT * FROM tipo_complemento ORDER BY ID ASC";
-                            $resultadoGrados = $Link->query($consultarGrados);
-                            if ($resultadoGrados->num_rows > 0) {
-                              while ($grado = $resultadoGrados->fetch_assoc()) { ?>
-                                <option value="<?php echo $grado['CODIGO'] ?>"><?php echo $grado['CODIGO']." (".$grado['DESCRIPCION'].")" ?></option>
-                              <?php }
-                            }
-                             ?>
-                          </select>
-                          <br>
-                          <label for="#tipo_complemento1" class="error"></label>
-                        </td>
-                      </tr>
+
                     </tbody>
                     <tfoot>
                       <tr>
@@ -456,11 +459,13 @@ form.children("div").steps({
     },
     onStepChanging: function (event, currentIndex, newIndex)
     {
+
         form.validate().settings.ignore = ":disabled,:hidden";
         return form.valid();
     },
     onFinishing: function (event, currentIndex)
-    {
+    { 
+        console.log('estamos aca en la segundavalid');
         form.validate().settings.ignore = ":disabled";
         return form.valid();
     },

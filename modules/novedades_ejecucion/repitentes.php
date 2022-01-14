@@ -1,10 +1,16 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['novedades'] == "0" || $permisos['novedades'] == "1") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit();}
+
   $titulo = 'Novedades de repitentes';
 
   $codigo_municipio = $_SESSION['p_Municipio'];
   $codigo_departamento = $_SESSION['p_CodDepartamento'];
-
 
 ?>
 <link rel="stylesheet" href="css/custom.css">
@@ -24,7 +30,7 @@
   </div>
   <div class="col-lg-4">
     <div class="title-action">
-			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+			<?php if($_SESSION['perfil'] == "0" || $permisos['novedades'] == "2"){ ?>
 				<a href="#" class="btn btn-primary disabled boton_guardar_novedades_repitentes"><i class="fa fa-check"></i> Guardar</a>
 			<?php } ?>
 		</div>

@@ -24,6 +24,13 @@ ini_set('memory_limit','6000M');
 
 $titulo = "Entregas Biometricas";
 include '../../header.php';
+
+if ($permisos['entregas_biometricas'] == "0" || $permisos['entregas_biometricas'] == "1") {
+	?><script type="text/javascript">
+		window.open('<?= $baseUrl ?>', '_self');
+	</script>
+<?php exit(); }
+
 $cacheBusting = date("YmdHis");
 ?>
 

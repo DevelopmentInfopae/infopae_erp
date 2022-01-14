@@ -40,6 +40,19 @@ if (isset($_POST['nom_sede'])) {
 	$nom_sede = "";
 }
 
+$serialSinEspacios = trim($num_serial);
+$caracteres = strlen($serialSinEspacios);
+if ($caracteres == 0) {
+	echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "No se puede crear serial en blanco o con caracteres."}]}';
+	exit();
+}
+
+$serialSinEspacios = trim($num_serial);
+if ($serialSinEspacios < 0) {
+	echo '{"respuesta" : [{"exitoso" : "0", "respuesta" : "No se puede crear serial negativo."}]}';
+	exit();
+}
+
 $sqlDispositivo = "INSERT INTO dispositivos (referencia, num_serial, cod_sede, id_usuario, tipo) VALUES ('".$referencia."', '".$num_serial."', '".$cod_sede."', '".$id_usuario."', '".$tipo."')";
 
 if ($Link->query($sqlDispositivo)===true) {

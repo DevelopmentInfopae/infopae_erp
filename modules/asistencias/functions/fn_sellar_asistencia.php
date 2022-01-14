@@ -7,9 +7,6 @@ include 'fn_fecha_asistencia.php';
 $tipoValidacion = 'Planilla';
 $bandera = 0;
 
-// var_dump($_POST);
-//var_dump($_SESSION);
-
 $anno = $annoAsistencia2D;
 $annoCompleto = $annoasistencia; 
 
@@ -18,7 +15,6 @@ if(isset($_POST['mes']) && $_POST['mes'] != ""){
 }else{
 	$mes = $mesAsistencia;
 }
-
 if(isset($_POST['dia']) && $_POST['dia'] != ""){
 	$dia = mysqli_real_escape_string($Link, $_POST['dia']);
 }else{
@@ -29,8 +25,6 @@ $mesTablaAsistencia = $mes;
 $annoTablaAsistencia = $anno;
 include 'fn_validar_existencias_tablas.php';
 
-// Representación numérica del día de la semana
-// 0 (para domingo) hasta 6 (para sábado)
 $fechaConsulta = "$annoCompleto-$mes-$dia";
 $fechaConsulta = strtotime($fechaConsulta);
 $diaSemana = date("w", $fechaConsulta);
@@ -68,10 +62,7 @@ else if($primerDia == 'viernes'){
 else if($primerDia == 'sabado'){
 	$primerDia = 6;
 }
-
 $indice = $primerDia;
-
-
 $consecutivo = 1;
 if($indice != $diaSemana){
 	while($indice != $diaSemana){
@@ -89,24 +80,14 @@ if($indice != $diaSemana){
 }
 
 // La variable $consecutivo corresponde al consecutivo de día en una semana de 5 días
-
-
-//Buscando el consecutivo del día actual dentro del mes.
+// Buscando el consecutivo del día actual dentro del mes.
 $consulta = " select D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28, D29, D30, D31 from planilla_dias where mes = \"$mes\" and ano = \"$annoCompleto\" "; 
-
-//echo $consulta;
 $result = $Link->query($consulta) or die ('Leyendo planilla dias.'.$consulta. mysqli_error($Link));
 $row = $result->fetch_assoc();
 $diaIndice = array_search($dia, $row);
-//var_dump($diaIndice);
-//echo array_search($dia, $row);
-//var_dump($row);
-
-
+// exit(var_dump($consulta));
 // INSERTANDO NOVEDADES DE FOCALIZACIÓN
 // Se va a cargar la asistencia del día actual para hacer la sinserción
-
-
 // Hay que buscar el tipo de complementeo
 $consulta = "";
 $consultaConsumo = "";
@@ -119,13 +100,15 @@ $repitentes = 0;
 $entregas = 0;
 
 // Todos los registros de ese día en 0
-$consultaConsumo = " update entregas_res_$mes$anno set $diaIndice = \"0\" where cod_Sede = \"$sede\"";
+$consultaConsumo = " update entregas_res_$mes$anno set $diaIndice = \"1\" where cod_Sede = \"$sede\" AND tipo = \"F\" ";
 //echo "<br><br>$consultaConsumo<br><br>";
 $resultConsumo = $Link->query($consultaConsumo) or die ('Error al actualizar Entregas Res<br>'.$consultaConsumo. mysqli_error($Link));
 
 $consulta3 = " insert into novedades_focalizacion (id_usuario, fecha_hora, cod_sede, tipo_doc_titular, num_doc_titular, tipo_complem, semana, d1, d2, d3, d4, d5, estado, tiponovedad ) values ";
 
 $consultaConsumo = "";
+$consultaRepite1 = "";
+$consultaRepite0 = "";
 
 $consultaRepite = " insert into entregas_res_$mes$anno (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, $diaIndice) ";
 
@@ -134,9 +117,6 @@ $repitentes = 0;
 
 while($row = $result->fetch_assoc()){
 	
-	//$aux++;
-	//echo "<br>$aux<br>";
-	// var_dump($row);	
 	$tipoDoc = $row['tipo_doc'];
 	$numDoc = $row['num_doc'];
 	$complemento = $row['complemento'];
@@ -175,7 +155,6 @@ while($row = $result->fetch_assoc()){
 
 	$consulta3 .= " , \"1\" ";
 	$consulta3 .= " , \"1\" ";
-
 	$consulta3 .= " ) ";
 	
 	if($repitio == 1){
@@ -213,37 +192,49 @@ while($row = $result->fetch_assoc()){
 
 	Buscar en focalización -> Complemento niño
 	*/
-	//echo "<br><br>$diaIndice<br><br>";
 	//Tiene que actualizar solo a los tipo F asi como los que repiten son tipo R
-	if($consumio == 1){
+	if($consumio == 0){
 		$consultaConsumo .= " update entregas_res_$mes$anno set $diaIndice = \"$consumio\" where tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and cod_Sede = \"$sede\" and tipo = \"F\" and tipo_complem = \"$complemento\" and TipoValidacion = \"$tipoValidacion\" ; ";
 	}
-	if($repitio == 1){
-		if($repitentes > 0){
-			$consultaRepite .= " UNION ALL ";
+	if ($repitio == 0) {
+		$consultaRepitioEntregas0 = " SELECT num_doc FROM entregas_res_$mes$anno WHERE cod_sede = \"$sede\" AND num_doc = '$numDoc' AND Tipo = \"R\" AND TipoValidacion = \"$tipoValidacion\" ";
+		$respuestaRepitioEntregas0 = $Link->query($consultaRepitioEntregas0) or die ('Error al consultar los repitentes ' . mysqli_error($Link));
+		if ($respuestaRepitioEntregas0->num_rows > 0) {
+			$consultaRepite0 = " UPDATE entregas_res_$mes$anno SET $diaIndice = \"$repitio\" WHERE cod_sede = \"$sede\" AND num_doc = \"$numDoc\" AND Tipo = \"R\" AND TipoValidacion = \"$tipoValidacion\" ; ";
 		}
-		$repitentes++;
-		$consultaRepite .= " select tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo,  \"R\" as tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, \"1\" as $diaIndice from  entregas_res_$mes$anno WHERE tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and cod_Sede = \"$sede\" ";
+	}
+	if($repitio == 1){
+		// validamos si ese repitente ya existe en la tabla entregas, si existe se actualiza el D que esta repitiendo si no se crea
+		$consultaRepitioEntregas = " SELECT num_doc FROM entregas_res_$mes$anno WHERE  cod_sede = \"$sede\" AND num_doc = '$numDoc' AND Tipo = \"R\" AND TipoValidacion = \"$tipoValidacion\" ";
+		$respuestaRepitioEntregas = $Link->query($consultaRepitioEntregas) or die ('Error al consultar los repitentes ' . mysqli_error($Link));
+		if ($respuestaRepitioEntregas->num_rows > 0) {
+			$consultaRepite1 .= " UPDATE entregas_res_$mes$anno SET $diaIndice = \"$repitio\" WHERE cod_sede = \"$sede\" AND num_doc = \"$numDoc\" AND Tipo = \"R\" AND TipoValidacion = \"$tipoValidacion\" ; ";
+		}else{
+			if($repitentes > 0){
+				$consultaRepite .= " UNION ALL ";
+			}
+			$repitentes++;
+			$consultaRepite .= " select tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo,  \"R\" as tipo, tipo_complem1, tipo_complem2, tipo_complem3, tipo_complem4, tipo_complem5, tipo_complem, \"1\" as $diaIndice from  entregas_res_$mes$anno WHERE tipo_doc = \"$tipoDoc\" and num_doc = \"$numDoc\" and cod_Sede = \"$sede\" ";
+		}
 	}
 	$aux++;
 }
+
+
 // Ejecutar actualización en novedades de focalización.
 $consulta3 .= " ON DUPLICATE KEY UPDATE d$indice = values(d$indice); ";
 $consultaRepite .= " ON DUPLICATE KEY UPDATE d$indice = values(d$indice); ";
-//echo "<br><br>$consulta3<br><br>";
-//echo "<br><br>$consultaConsumo<br><br>";
-//echo "<br><br>$consultaRepite<br><br>";
-
+if($repitentes == 0){ $consultaRepite = ""; }
+// echo "<br><br>$consulta3<br><br>";
+// echo "<br><br>$consultaConsumo<br><br>";
+// echo "<br><br>$consultaRepite<br><br>";
+// exit(var_dump($consultaRepite1));
 // CIERRE DE LA ASISTENCIA
-$consultaCierre = "insert into  asistencia_enc$mes$anno ( dia, semana, mes, cod_sede, complemento, estado ) values ( \"$dia\", \"$semana\", \"$mes\", \"$sede\", \"$complemento\", 2 ) ";
+$consultaCierre = " insert into  asistencia_enc$mes$anno ( dia, semana, mes, cod_sede, complemento, estado ) values ( \"$dia\", \"$semana\", \"$mes\", \"$sede\", \"$complemento\", 2 ) ";
 $consultaCierre .= " ON DUPLICATE KEY UPDATE estado = values(estado); ";
 
-
-
-$consultaGeneral = $consulta3." ".$consultaConsumo." ".$consultaRepite." ".$consultaCierre;
-//echo $consultaGeneral;
-
-
+$consultaGeneral = $consulta3." ".$consultaConsumo." ".$consultaRepite." ".$consultaCierre. " " .$consultaRepite1. " " .$consultaRepite0;  
+// echo $consultaGeneral;
 
 $result = $Link->multi_query($consultaGeneral) or die ('Insert error'. mysqli_error($Link));
 

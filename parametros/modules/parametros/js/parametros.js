@@ -16,7 +16,7 @@ $(document).ready(function(){
    "hideMethod": "fadeOut"
  }
 });
-
+  
 function guardarParametros(){
   if($("#formParametros").valid()){
     if($("#id").val() != ''){ ruta = "functions/fn_parametros_actualizar.php" } else { ruta = "functions/fn_parametros_crear.php"; }
@@ -42,8 +42,8 @@ function guardarParametros(){
       success: function(data){
         if(data.estado == 1){
           Command: toastr.success(
-            data.mensaje,
-            "Guardado",
+            data.mensaje, 
+            "Guardado", 
             {
               onHidden : function(){
                 $('#loader').fadeOut();
@@ -54,8 +54,8 @@ function guardarParametros(){
           );
         } else {
           Command: toastr.error(
-            data.mensaje,
-            "Error al guardar",
+            data.mensaje, 
+            "Error al guardar", 
             {
               onHidden : function(){ $('#loader').fadeOut(); }
             }
@@ -64,8 +64,8 @@ function guardarParametros(){
       },
       error: function(data){ console.log(data);
         Command: toastr.error(
-          "Al parecer existe un problema en el servidor. Por favor comuníquese con el adminstrador del sitio InfoPAE.",
-          "Error al procesar",
+          "Al parecer existe un problema en el servidor. Por favor comuníquese con el adminstrador del sitio InfoPAE.", 
+          "Error al procesar", 
           {
             onHidden : function(){ $('#loader').fadeOut(); }
           }

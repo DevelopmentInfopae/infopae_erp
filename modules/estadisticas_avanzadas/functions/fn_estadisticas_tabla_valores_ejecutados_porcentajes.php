@@ -84,8 +84,8 @@ $porejecutar = $valorContrato - $ejecutado;
 $porcenEjecutado = 100 * $ejecutado / $valorContrato;
 $porcenPorEjecutar = 100 * $porejecutar / $valorContrato;
 
-$porcenEjecutado = round($porcenEjecutado, 0);
-$porcenPorEjecutar = round($porcenPorEjecutar, 0);
+// $porcenEjecutado = round($porcenEjecutado, 0);
+// $porcenPorEjecutar = round($porcenPorEjecutar, 0);
 
 $tabla="";
 
@@ -94,8 +94,8 @@ $tabla.="<thead><tr><th></th><th>Total</th><th>%</th><tr></thead>";
 $tabla.="<tbody>";
 
 $tabla.="<tr><td>Valor Contrato</td><td>$ ".number_format($valorContrato, 0, "", ".")."</td><td>100%</td></tr>";
-$tabla.="<tr><td>Valor por Ejecutar</td><td>$ ".number_format($porejecutar, 0, "", ".")."</td><td>".number_format($porcenPorEjecutar, 0, ",", ".")."%</td></tr>";
-$tabla.="<tr><td>Valor Ejecutado</td><td>$ ".number_format($ejecutado, 0, "", ".")."</td><td>".number_format($porcenEjecutado, 0, ",", ".")."%</td></tr>";
+$tabla.="<tr><td>Valor por Ejecutar</td><td>$ ".number_format($porejecutar, 0, "", ".")."</td><td>".number_format($porcenPorEjecutar, 2, ",", ".")."%</td></tr>";
+$tabla.="<tr><td>Valor Ejecutado</td><td>$ ".number_format($ejecutado, 0, "", ".")."</td><td>".number_format($porcenEjecutado, 2, ",", ".")."%</td></tr>";
 
 $tabla.="<tbody>";
 

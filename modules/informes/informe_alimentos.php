@@ -1,5 +1,12 @@
 <?php
 require_once '../../header.php';
+
+if ($permisos['informes'] == "0") {
+  ?><script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $titulo = 'Informes de alimentos.';
 
 $periodoActual = $_SESSION['periodoActual'];

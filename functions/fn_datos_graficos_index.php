@@ -13,6 +13,7 @@ $barrasTotalesMes = array();
 $entregasTotalesMes = array();
 $barrasTotalesSemana = array();
 $entregasTotalesSemana = array();
+$total = [];
 
 date_default_timezone_set('America/Bogota');
 $mesActual = date('m');
@@ -24,24 +25,21 @@ $consulta = "select * from planilla_dias where mes = \"$mesActual\"";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$row = $resultado->fetch_assoc();
-	for($iD = 1; $iD <= 22; $iD++){
+	for($iD = 1; $iD <= 31; $iD++){
 		if($row["D$iD"] == $diaActual){
 			$indiceDiaActual = $iD;
 		}
 	}
 }
-//var_dump($indiceDiaActual);
 
-
+// var_dump($consulta);
 // timeOption 1 = semana
 // timeOption 2 = mes
-// timeOption 3 = día
 
 if(isset($_POST['actualizar']) && $_POST['actualizar'] != ''){ $actualizar = $_POST['actualizar']; }
 if(isset($_POST['timeOption']) && $_POST['timeOption'] != ''){ $timeOption = $_POST['timeOption']; }
 
 // La bandera la usamos para detectar si se encoontro el archivo de la consulta y en caso de que no, se actualiza los array y se genera el archivo.
-
 
 if($timeOption == 1){
  	$rutaArchivo = "arrays_semana.txt";
@@ -69,28 +67,51 @@ if($actualizar == 0){
 
 if($actualizar == 1 || $bandera > 0){
 	$periodoActual = $_SESSION['periodoActual'];
-	$consulta = "select ps.dia, ps.semana, ps.mes, ps.ano, (select sum(sc.num_est_focalizados) from sedes_cobertura sc where sc.semana = ps.semana) as cantidad from planilla_semanas ps";
+	// consulta para traer los totales por complemento que estan en sedes cobertura
+	$consulta = "select ps.dia, ps.semana, ps.mes, ps.ano, 
+				(select sum(sc.num_est_focalizados) from sedes_cobertura sc where sc.semana = ps.semana) as cantidad, 
+				(select sum(sc.APS) from sedes_cobertura sc where sc.semana = ps.semana) as aps,
+				(select sum(sc.CAJMRI) from sedes_cobertura sc where sc.semana = ps.semana) as cajmri,
+				(select sum(sc.CAJTRI) from sedes_cobertura sc where sc.semana = ps.semana) as cajtri,
+				(select sum(sc.CAJMPS) from sedes_cobertura sc where sc.semana = ps.semana) as cajmps,
+				(select sum(sc.CAJTPS) from sedes_cobertura sc where sc.semana = ps.semana) as cajtps,
+				(select sum(sc.RPC) from sedes_cobertura sc where sc.semana = ps.semana) as rpc
+				from planilla_semanas ps ORDER BY ps.mes, ps.semana, ps.dia";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	$cantidadTotal = 0;
 	$mesInicial = 0;
-
+	// exit(var_dump($consulta));
 	$semanaInicial = 0;
 	$semanaConsecutivo = 0;
 	$totalSemana = 0;
-
+	
 	if($resultado->num_rows >= 1){
 	    while($row = $resultado->fetch_assoc()){
+	    	$dias = [];
+	    	$consultaDias = "SELECT DISTINCT(ps.dia) AS dia, ps.semana, ps.mes FROM planilla_semanas ps INNER JOIN sedes_cobertura sc ON ps.mes = sc.mes where ps.mes = " . $row['mes'] ." AND sc.RPC != 0;";
+	    	// var_dump($consultaDias);
+			$respuestaDias = $Link->query($consultaDias) or die ('Error al consultar los dias ' .mysqli_error($Link));
+			if ($respuestaDias->num_rows > 0) {
+				while ($dataDias = $respuestaDias->fetch_assoc()) {
+					// var_dump($dataDias);	
+				$dias[] = $dataDias;
+				}
+				$numeroDias = count($dias);	
+			}else {
+				$numeroDias = 0;	
+			}
+					
 	    	if($mesInicial != $row['mes'] && $mesInicial == 0 ){
 	    		$mesInicial = $row['mes'];
 	    	}else if($mesInicial != $row['mes'] && $mesInicial != 0 ){
 	    		// Cuando se termina el mes guarda los valores
 	    		$tiempo = intval($mesInicial);
-	    		$cantidad = intval($cantidadTotal);
+	    		$cantidad = $cantidadTotal;
 	    		unset($aux);
 	    		$aux[] = $tiempo;
 	    		$aux[] = $cantidad;
 	    		$barrasTotalesMes[] = $aux;
-
+	    		// exit(var_dump($aux));
 	    		$cantidadTotal = 0;
 	    		$mesInicial = $row['mes'];
 	    	}
@@ -101,10 +122,11 @@ if($actualizar == 1 || $bandera > 0){
 	    	}else if($semanaInicial != $row['semana'] && $semanaInicial != 0 ){
 	    		// Cuando se termina la semana guarda los valores
 	    		$tiempo = intval($semanaConsecutivo);
-	    		$cantidad = intval($totalSemana);
+	    		$cantidad = $totalSemana;
 	    		unset($aux);
 	    		$aux[] = $tiempo;
 	    		$aux[] = $cantidad;
+	    		// exit(var_dump($cantidad));
 	    		$barrasTotalesSemana[] = $aux;
 	    		$labelsSemanas[] = array($semanaConsecutivo,$semanaInicial,true);
 	    		$totalSemana = 0;
@@ -116,18 +138,24 @@ if($actualizar == 1 || $bandera > 0){
 	    	$mes = $row['mes'];
 	    	$anno = $row['ano'];
 	    	$tiempo = intval(strtotime("$anno-$mes-$dia")*1000);
-	    	$cantidad = intval($row['cantidad']);
+	    	$cantidad = ( ($row['aps'] ) + 
+	    				  ($row['cajmri'] ) + 
+	    				  ($row['cajtri'] ) + 
+	    				  ($row['cajmps'] ) + 
+	    				  ($row['cajtps'] ) + 
+	    				  (($row['rpc']/($numeroDias != 0 ? $numeroDias : 1)))
+	    				); 
 	    	$cantidadTotal = $cantidadTotal + $cantidad;
 	    	$totalSemana = $totalSemana + $cantidad;
 	    	unset($aux);
 	    	$aux[] = $tiempo;
 	    	$aux[] = $cantidad;
 	    	$barras[] = $aux;
+	    	// exit(var_dump($row['aps']));
 	    }
 	}
 
 	// Termina de calcular cuanto es lo que se debe entregar
-	// var_dump($barras);
 
 	// Guarda el total de la ultima semana
 	$tiempo = intval($semanaConsecutivo);
@@ -146,7 +174,7 @@ if($actualizar == 1 || $bandera > 0){
 	$aux[] = $cantidad;
 	$barrasTotalesMes[] = $aux;
 
-
+	// exit(var_dump($barrasTotalesSemana));
 
 
 
@@ -179,7 +207,7 @@ if($actualizar == 1 || $bandera > 0){
 		}
 	}
 
-	// var_dump($meses);
+	// var_dump($mesesEntregados);
 
 
 	$indiceDia = 1;
@@ -192,10 +220,8 @@ if($actualizar == 1 || $bandera > 0){
 	$cantidadTotalMes = 0;
 	$cantidadTotalSemana = 0;
 	
-	
-	
-	$consulta = " select * from planilla_semanas where mes <= $mesesEntregados ";
-	//echo "<br><br>".$consulta."<br><br>";
+		
+	$consulta = " select * from planilla_semanas ps where mes <= $mesesEntregados ORDER BY ps.mes, ps.semana, ps.dia";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
 		while($row = $resultado->fetch_assoc()){
@@ -231,7 +257,7 @@ if($actualizar == 1 || $bandera > 0){
 			if($buscarEntregas == 1){
 				// Cuando hay cambio de mes invocamos las entragas realizadas durante el mes
 				$consulta2 = " select ";
-				for ($i = 1 ; $i <= 22 ; $i++){
+				for ($i = 1 ; $i <= 31 ; $i++){
 					if($i > 1){
 						$consulta2.= " , ";
 					}
@@ -257,7 +283,7 @@ if($actualizar == 1 || $bandera > 0){
 
 			// Como ya se hizo la búsqueda de las entregas para los días del mes empezamos con la captura de los totales
 			// para las semanas y los meses.
-			//var_dump($entregasMes);
+			// var_dump($entregasMes);
 
 			if($mes >= $mesActual){
 				if($indiceDia <= $indiceDiaActual){
@@ -274,14 +300,14 @@ if($actualizar == 1 || $bandera > 0){
 			}
 			$indiceDia++;
 
-
+			// exit(var_dump($entregasMes));
 
 		}
 	}
 	$entregasTotalesMes[] = array(intval($mesInicial),intval($cantidadTotalMes));
 	$entregasTotalesSemana[] = array(intval($indiceSemana),intval($cantidadTotalSemana));
 
-
+	// exit(var_dump($entregasTotalesSemana));
 
 
 	// Calculo de impresión de totales, se va a generar la cadena html para mostrar los totales.
@@ -298,7 +324,7 @@ if($actualizar == 1 || $bandera > 0){
     }
 
     // Se correra el array para validar hasta donde estan creadas las tablas de entregas res.
-		// var_dump($mesConsulta);
+		// var_dump($meses);
 		// var_dump($periodoActual);
 		$mesesEntregados = array();
     foreach ($meses as $mes) {
@@ -312,62 +338,79 @@ if($actualizar == 1 || $bandera > 0){
 				break;
 			}
 		}
-		//var_dump($mesesEntregados);
+		// var_dump($mesesEntregados);
 		
 		// Se obtuvieron los meses en los que hubieron entregas
 
 
     // Array de lo que se deberia ENTREGAR
-    $consulta = " select sum(sc.APS) as APS, sum(sc.CAJMRI) as CAJMRI, sum(sc.CAJTRI) as CAJTRI, sum(sc.CAJMPS) as CAJMPS from planilla_semanas ps left join sedes_cobertura sc on ps.semana = sc.semana ";
+    $consulta = " select sum(sc.APS) as APS, sum(sc.CAJMRI) as CAJMRI, sum(sc.CAJTRI) as CAJTRI, sum(sc.CAJMPS) as CAJMPS, sum(sc.CAJTPS) as CAJTPS, sum(sc.RPC) as RPC from planilla_semanas ps left join sedes_cobertura sc on ps.semana = sc.semana ";
     $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
     if($resultado->num_rows >= 1){
         $row = $resultado->fetch_assoc();
         $totalesPorEntregar = $row;
     }
 
-    // Se manejará un array de totales para la suma de los totales entregados de cada complemento
+    // Se manejará un array de totales para la suma de los totales entregados de cada complemento 
+
     $totalesEntregados = array();
     $consulta = "";
     $aux = 0;
+    $numeroDiaHastaActual = 0;
     foreach ($mesesEntregados as $mes){
-			if($aux > 0){
-				$consulta .= " union ";
-			}
-			if($mes == $mesActual){
-				$consulta .= " select sum( ";
-				for($iD = 1; $iD <= $indiceDiaActual; $iD++){
-					if($iD > 1){
-						$consulta .= "+";
-					}
-					$consulta .= "D$iD";
-				}
-				$consulta .= " ) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual group by tipo_complem ";
-			}else{
-				$consulta .= " select sum(D1+D2+D3+D4+D5+D6+D7+D8+D9+D10+D11+D12+D13+D14+D15+D16+D17+D18+D19+D20+D21+D22) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual group by tipo_complem ";
-			}
-			$aux++;
+    	$consultaNumDias = "SELECT DIA FROM planilla_semanas where MES = $mesActual AND DIA <= $diaActual;";
+    	$respuestaNumDias = $Link->query($consultaNumDias) or die ('Error al consultar el numero de dias ' .mysqli_error($Link));
+    	if ($respuestaNumDias->num_rows > 0) {
+    		$diasNum = [];
+    		while ($dataNumDias = $respuestaNumDias->fetch_assoc()) {
+    			
+    			$diasNum [] = $dataNumDias;
+    		}
+    		$numeroDiaHastaActual = count($diasNum);
+    	}
+    	// echo $numeroDiaHastaActual . "<br>";
+		if($aux > 0){
+			$consulta .= " union ";
 		}
-		// var_dump($consulta);
-		if($consulta != ''){
-			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-			if($resultado->num_rows >= 1){
-				while($row = $resultado->fetch_assoc()){
-					if(isset($totalesEntregados[$row['complemento']])){
-						$totalesEntregados[$row['complemento']] = $totalesEntregados[$row['complemento']] + $row['cantidad'];
-					}else{
-						$totalesEntregados[$row['complemento']] = $row['cantidad'];
-					}
+		if($mes == $mesActual){
+			// echo $indiceDiaActual;
+			$consulta .= " select sum( ";
+			for($iD = 1; $iD <= $numeroDiaHastaActual; $iD++){
+				if($iD > 1){
+					$consulta .= "+";
+				}
+				$consulta .= "D$iD";
+			}
+			if ($numeroDiaHastaActual == 0) {
+				$consulta .= "0";
+			}
+			$consulta .= " ) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual group by tipo_complem ";
+		}else{
+			$consulta .= " select sum(D1+D2+D3+D4+D5+D6+D7+D8+D9+D10+D11+D12+D13+D14+D15+D16+D17+D18+D19+D20+D21+D22+D23+D24+D25+D26+D27+D28+D29+D30+D31) as cantidad, tipo_complem as complemento  from entregas_res_$mes$periodoActual group by tipo_complem ";
+		}
+		$aux++;
+	}
+	// exit(var_dump($consulta));	
+	if($consulta != ''){
+		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+		if($resultado->num_rows >= 1){
+			while($row = $resultado->fetch_assoc()){
+				if(isset($totalesEntregados[$row['complemento']]) && !empty($totalesEntregados[$row['complemento']])){
+					$totalesEntregados[$row['complemento']] = $totalesEntregados[$row['complemento']] + $row['cantidad'];
+				}else{
+					$totalesEntregados[$row['complemento']] = $row['cantidad'];
 				}
 			}
 		}
+	}
 
     // Impresión
-
-    // var_dump($totalesPorEntregar);
     // APS
     // CAJMRI
     // CAJTRI
     // CAJMPS
+	// CAJTPS
+	// RPC	
 
    	$htmlTotales = "";
    	if($totalesPorEntregar['APS'] > 0){
@@ -404,9 +447,45 @@ if($actualizar == 1 || $bandera > 0){
         $entregado = number_format($entregado, 0, '.', ',');
         $porcentaje = number_format($porcentaje, 2, '.', ',');
 
- 		$htmlTotales .= "<li> <h2 class='no-margins'> $entregado de $entregar </h2> <small>Complemento Alimentario RI</small> <div class='stat-percent'>$porcentaje% <i class='fa fa-level-up text-navy'></i></div> <div class='progress progress-mini'> <div style='width: $porcentaje%' class='progress-bar'></div> </div> </li>";
+ 		$htmlTotales .= "<li> <h2 class='no-margins'> $entregado de $entregar </h2> <small>Complemento Alimentario Ración Industrializada</small> <div class='stat-percent'>$porcentaje% <i class='fa fa-level-up text-navy'></i></div> <div class='progress progress-mini'> <div style='width: $porcentaje%' class='progress-bar'></div> </div> </li>";
     }
 
+    if($totalesPorEntregar['CAJTRI'] > 0){
+        $entregar = $totalesPorEntregar['CAJTRI'];
+        $entregado = $totalesEntregados['CAJTRI'];
+        $porcentaje = ($entregado/$entregar)*100;
+
+        $entregar = number_format($entregar, 0, '.', ',');
+        $entregado = number_format($entregado, 0, '.', ',');
+        $porcentaje = number_format($porcentaje, 2, '.', ',');
+
+ 		$htmlTotales .= "<li> <h2 class='no-margins'> $entregado de $entregar </h2> <small>Complemento Alimentario Tarde Ración Industrializada</small> <div class='stat-percent'>$porcentaje% <i class='fa fa-level-up text-navy'></i></div> <div class='progress progress-mini'> <div style='width: $porcentaje%' class='progress-bar'></div> </div> </li>";
+    }
+
+    if($totalesPorEntregar['CAJTPS'] > 0){
+        $entregar = $totalesPorEntregar['CAJTPS'];
+        $entregado = $totalesEntregados['CAJTPS'];
+        $porcentaje = ($entregado/$entregar)*100;
+
+        $entregar = number_format($entregar, 0, '.', ',');
+        $entregado = number_format($entregado, 0, '.', ',');
+        $porcentaje = number_format($porcentaje, 2, '.', ',');
+
+ 		$htmlTotales .= "<li> <h2 class='no-margins'> $entregado de $entregar </h2> <small>Complemento Alimentario Tarde</small> <div class='stat-percent'>$porcentaje% <i class='fa fa-level-up text-navy'></i></div> <div class='progress progress-mini'> <div style='width: $porcentaje%' class='progress-bar'></div> </div> </li>";
+    }
+
+    
+    if($totalesPorEntregar['RPC'] > 0){
+        $entregar = $totalesPorEntregar['RPC'] / ($numeroDias != 0 ? $numeroDias : 1);
+        $entregado = $totalesEntregados['RPC'];
+        $porcentaje = ($entregado/$entregar)*100;
+
+        $entregar = number_format($entregar, 0, '.', ',');
+        $entregado = number_format($entregado, 0, '.', ',');
+        $porcentaje = number_format($porcentaje, 2, '.', ',');
+        // exit(var_dump($numeroDias != 0 ? $numeroDias : 1));	
+ 		$htmlTotales .= "<li> <h2 class='no-margins'> $entregado de $entregar </h2> <small>Ración para preparar en casa</small> <div class='stat-percent'>$porcentaje% <i class='fa fa-level-up text-navy'></i></div> <div class='progress progress-mini'> <div style='width: $porcentaje%' class='progress-bar'></div> </div> </li>";
+    }
 
 	// var_dump($barrasTotalesMes);
 	// var_dump($barrasTotalesSemana);
@@ -417,7 +496,7 @@ if($actualizar == 1 || $bandera > 0){
 
 
 
-
+    // exit(var_dump($barrasTotalesSemana));
 	if($timeOption == 1){
 		echo json_encode(array("barras"=>$barrasTotalesSemana, "entregas"=>$entregasTotalesSemana, "labels"=>$labelsSemanas, "totales"=>$htmlTotales));
 	}else{

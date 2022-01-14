@@ -1,5 +1,5 @@
 <?php
-$titulo = "Programa de Alimentación Escolar - PAE \n Atención en el marco del Estado de Emergencia, Económica, Social y Ecológica, derivado de la pandemia del COVID-19 \n Modalidad - ".$descripcionTipo;
+$titulo = "Programa de Alimentación Escolar - PAE \n Atención en el marco del Estado de Emergencia Sanitaria, derivado de la pandemia del COVID-19 \n Modalidad - ".$descripcionTipo;
 
 
 

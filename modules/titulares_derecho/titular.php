@@ -60,32 +60,43 @@ $row = $resultado->fetch_assoc();
 				</li>
 			</ol>
 		</div>
-		<div class="col-lg-4">
-		  	<div class="title-action">
-				<div class="dropdown pull-right">
-			        <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
-			        </button>
-			        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-			        <?php if ($_SESSION['perfil'] == 1) : ?>
-			          <li><a  onclick="editarTitular(<?php echo $numDoc; ?>)"><span class="fa fa-pencil"></span> Editar </a></li>
-		          	<?php if ($row['activo'] == 1): ?>
-                    	<li data-idtitular="<?php echo $numDoc; ?>" data-accion="1"><a> Estado : <input class="form-control" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" checked></a></li>
-                   	<?php elseif($row['activo'] == 0): ?>
-                    	<li data-idtitular="<?php echo $numDoc;  ?>" data-accion="0"><a> Estado : <input class="form-control" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" ></a></li>
-                    <?php endif ?>
-			        <?php else: ?>
-			       	  <?php if ($row['activo'] == 1): ?>
-			          	<li><a><span class="fa fa-check"></span> Estado : <b>Activo</b></a></li>
-			          <?php elseif ($row['activo'] == 0): ?>
-			          	<li><a></span> Estado : <b>Inactivo</b></a></li>
-			          <?php endif ?>
-			        <?php endif ?>
-
-			          <li><a href="#" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
-			        </ul>
-		      	</div>
-	 		</div>
-		</div>
+		<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "1" || $permisos['titulares_derecho'] == "2"): ?>
+			<div class="col-lg-4">
+		  		<div class="title-action">
+					<div class="dropdown pull-right">
+			        	<button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
+			        	</button>
+			        	<ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
+			        	<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") : ?>
+			          		<li><a  onclick="editarTitular(<?php echo $numDoc; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
+			          	<?php endif ?>	
+			          		<li><a onclick="exportarTitular(<?php echo $numDoc;?>, <?php echo $semana; ?>)" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
+			          	<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2"): ?>
+			          		<?php if ($row['activo'] == 1): ?> 		
+                    			<li data-idtitular="<?php echo $numDoc; ?>" data-accion="1">
+                    				<a onclick="confirmarCambioEstado(<?php echo $numDoc;?>, <?php echo $row['activo']; ?>, <?php echo "$semana"; ?>)"> Estado : 
+                    				<input id="inputEstado<?= $row['num_doc'];?>" class="form-control" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" checked>
+                    				</a>
+                    			</li>
+                   			<?php elseif($row['activo'] == 0): ?>
+                    			<li data-idtitular="<?php echo $numDoc;  ?>" data-accion="0">
+                    				<a onclick="confirmarCambioEstado(<?php echo $numDoc;?>, <?php echo $row['activo']; ?>, <?php echo "$semana"; ?>)"> Estado : 
+                    				<input id="inputEstado<?= $row['num_doc'];?>" class="form-control" type="checkbox" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="74px" >
+                    				</a>
+                    			</li>
+			        		<?php else: ?>
+			       	  			<?php if ($row['activo'] == 1): ?>
+			          				<li><a><span class="fa fa-check"></span> Estado : <b>Activo</b></a></li>
+			          			<?php elseif ($row['activo'] == 0): ?>
+			          				<li><a></span> Estado : <b>Inactivo</b></a></li>
+			          			<?php endif ?>
+			        		<?php endif ?>
+			          	<?php endif ?>	
+			        	</ul>
+		      		</div>
+	 			</div>
+			</div>
+		<?php endif ?>
 	</div>
 <div class="wrapper wrapper-content">
 	<div class="row animated fadeInRight">
@@ -160,30 +171,6 @@ $row = $resultado->fetch_assoc();
 						<br>
 							<?php echo $row['cod_estrato']; ?>
 						</p>
-						<!-- <div class="row m-t-lg">
-							<div class="col-md-4">
-								<span class="bar">5,3,9,6,5,9,7,3,5,2</span>
-								<h5><strong>169</strong> Entregas</h5>
-							</div>
-							<div class="col-md-4">
-								<span class="line">5,3,9,6,5,9,7,3,5,2</span>
-								<h5><strong>28</strong> Novedades</h5>
-							</div>
-							<div class="col-md-4">
-								<span class="bar">5,3,2,-1,-3,-2,2,3,5,2</span>
-								<h5><strong>240</strong> Ausencias</h5>
-							</div>
-						</div> -->
-						<div class="user-button">
-							<!-- <div class="row">
-								<div class="col-md-6">
-									<button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-envelope"></i> Send Message</button>
-								</div>
-								<div class="col-md-6">
-									<button type="button" class="btn btn-default btn-sm btn-block"><i class="fa fa-coffee"></i> Buy a coffee</button>
-								</div>
-							</div> -->
-						</div>
 					</div>
 			</div>
 		</div>
@@ -211,15 +198,6 @@ $row = $resultado->fetch_assoc();
 						<a class="collapse-link">
 							<i class="fa fa-chevron-up"></i>
 						</a>
-						<!-- <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<i class="fa fa-wrench"></i>
-						</a>
-						<ul class="dropdown-menu dropdown-user">
-							<li><a href="#">Config option 1</a>
-							</li>
-							<li><a href="#">Config option 2</a>
-							</li>
-						</ul> -->
 						<a class="close-link">
 							<i class="fa fa-times"></i>
 						</a>
@@ -257,9 +235,21 @@ $row = $resultado->fetch_assoc();
 							$mesesEntregas[] = $aux;
 						}
 
+						$condicionDia = '';
+						$consultaUltimoMes = "SELECT MAX(mes) AS mes FROM planilla_semanas;";
+						$respuestaUltimoMes = $Link->query($consultaUltimoMes) or die('Error al consultar el ultimo mes ' . mysqli_error($Link));
+						if ($respuestaUltimoMes->num_rows > 0) {
+							$dataUltimoMes = $respuestaUltimoMes->fetch_assoc();
+							$ultimoMes = $dataUltimoMes['mes'];
+						}
+
+						if ($ultimoMes == date('m')) {
+							$condicionDia = " AND DIA <= " . date('d') . " ";
+						}
+
 						//Consulta planilla semanas
-						$consulta = " select * from planilla_semanas WHERE MES <= ".date('m')." AND DIA <= ".date('d')."";
-						// $consulta = " select * from planilla_semanas";
+						$consulta = " select * from planilla_semanas WHERE MES <= ".date('m'). $condicionDia ." ";
+						// var_dump($consulta);	
 						$diasCobertura = array();
 						$entregas = array();
 						$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
@@ -268,7 +258,7 @@ $row = $resultado->fetch_assoc();
 								$diasCobertura[] = $row;
 							}
 						}
-
+						// var_dump($diasCobertura);
 						//Buscando las entregas
 						foreach ($mesesEntregas as $mesEntregas) {
 							$consulta = " select * from entregas_res_$mesEntregas$periodoActual where tipo_doc_nom = '$tipoDoc' and num_doc = '$numDoc' order by id ";
@@ -280,8 +270,9 @@ $row = $resultado->fetch_assoc();
 								}
 							}
 						}
-
+						// exit(var_dump($entregas));
 						for ($i=1; $i <= $ultimoMes ; $i++) {
+
 							if($i < 10){
 								$aux = '0'.$i;
 							}else{
@@ -310,9 +301,10 @@ $row = $resultado->fetch_assoc();
 
 
 								$entregasMes = $entregas[$key];
-								for ($i=1; $i < 22 ; $i++) {
+								for ($i=1; $i < 31 ; $i++) {
+									// echo $indiceDia;
 									$indiceDia++;
-
+									// exit(var_dump($diasCobertura[$indiceDia]));
 									if(isset($diasCobertura[$indiceDia])){
 										$diaCobertura = $diasCobertura[$indiceDia];
 									}
@@ -322,8 +314,8 @@ $row = $resultado->fetch_assoc();
 									//var_dump($diaCobertura);
 									$aux = 'D'.$i;
 									$varlorEntrega = $entregasMes[$aux];
-
-									//var_dump($varlorEntrega);
+									// exit(var_dump($varlorEntrega));
+									// exit(var_dump($varlorEntrega));
 									if($varlorEntrega == 0){
 										if(isset($entregas[$key+1])){
 											$entregasMesOtroRegistro = $entregas[$key+1];
@@ -332,7 +324,7 @@ $row = $resultado->fetch_assoc();
 												if($entregasMesOtroRegistro[$aux] == 1){
 													//echo "<br> Otro registro del mismo mes positivo";
 													$otroRegistro = 1;
-													//$semana[$diaCobertura['NOMDIAS']] = 'X';
+													// $semana[$diaCobertura['NOMDIAS']] = 'X';
 												}
 											}
 										}
@@ -352,7 +344,7 @@ $row = $resultado->fetch_assoc();
 										if($semanaActual != $diaCobertura['SEMANA']){
 											if($semanaActual != 0){
 												//echo "<br>Nueva semana";
-												//var_dump($semana);
+												// var_dump($semana);
 												//var_dump($indiceDia);
 												$fila = '';
 												$fila .= '<tr>';
@@ -384,9 +376,10 @@ $row = $resultado->fetch_assoc();
 									if($varlorEntrega == 1){
 										$semana[$diaCobertura['NOMDIAS']] = 'X';
 									}
+									// exit(var_dump($semana[$diaCobertura['NOMDIAS']]));
 
 								}
-
+								// var_dump($semana);
 
 
 								//$diasCobertura
@@ -678,8 +671,36 @@ $row = $resultado->fetch_assoc();
 	</div>
 </div>
 
+
+<!-- ventana confirmar cambio de estado -->
+<div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header text-info" style="padding: 15px;">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
+      </div>
+      <div class="modal-body">
+          <p class="text-center"></p>
+      </div>
+      <div class="modal-footer">
+        <input type="hidden" id="documentoACambiar">
+        <input type="hidden" id="estadoACambiar">
+        <input type="hidden" id="semanaDeCambio">
+        <button type="button" class="btn btn-danger btn-outline btn-sm" data-dismiss="modal" onclick="revertirEstado();">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="cambiarEstado();">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <form id="editar_titular" action="editar_titular.php" method="post">
 	<input type="hidden" name="num_doc_editar" id="num_doc_editar">
+</form>
+
+<form id="exportar_titular" action="exportar_titular.php" method="post">
+	<input type="hidden" name="num_doc_exportar" id="num_doc_exportar">
+	<input type="hidden" name="semana" id="semana">
 </form>
 
 <?php include '../../footer.php'; ?>

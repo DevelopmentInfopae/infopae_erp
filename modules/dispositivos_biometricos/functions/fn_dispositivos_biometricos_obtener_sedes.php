@@ -1,4 +1,4 @@
-<option value="">Seleccione...</option>
+<option value="" selected="selected">Seleccione...</option>
 <?php 
   require_once '../../../config.php';
   require_once '../../../db/conexion.php';

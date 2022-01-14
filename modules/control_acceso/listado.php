@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+
+  	if ($permisos['control_acceso'] == "0") {
+    	?><script type="text/javascript">
+     	 	window.open('<?= $baseUrl ?>', '_self');
+    	</script>
+	<?php exit(); }
+
   set_time_limit (0);
   ini_set('memory_limit','6000M');
   $periodoActual = $_SESSION['periodoActual'];
@@ -54,7 +61,7 @@
 	</div>
 	<div class="col-md-6 col-lg-4">
 		<div class="title-action">
-			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+			<?php if($_SESSION['perfil'] == "0" || $permisos['control_acceso'] == "2"){ ?>
 				<a href="<?php echo $baseUrl; ?>/modules/control_acceso/index.php" target="_blank" class="btn btn-primary"> <!-- <i class="fa fa-plus"></i>  --> Control de acceso</a>
 			<?php } ?>
 		</div>

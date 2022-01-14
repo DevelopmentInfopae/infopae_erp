@@ -1,5 +1,12 @@
 <?php
 include '../../header.php';
+
+if ($permisos['despachos'] == "0") {
+  ?><script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
@@ -10,12 +17,10 @@ $paginasObservaciones = 1;
 //     echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 // }
 // $Link->set_charset("utf8");
+// exit(var_dump($_POST));
 ?>
 
-
-
-
-
+<?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
             <div class="col-lg-8">
@@ -104,9 +109,9 @@ $mesAnno = '';
         // Se va a recibir el numero d edespacho para hacer la consulta y traer los
         // encabezados del despacho.
         $claves = array_keys($_POST);
-        $aux = $claves[0];
+        $aux = $claves[1];
         $despacho = $_POST[$aux];
-        // var_dump($_POST);
+        // var_dump($despacho);
         $consulta = " select * from despachos_enc$mesAnno where Num_Doc = $despacho ";
         $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
         if($resultado->num_rows >= 1){
@@ -130,7 +135,7 @@ $mesAnno = '';
         // parametros del despacho
 
         $consulta = " select * from productosmov$mesAnno pm where pm.Numero = $despacho and pm.Documento='DES' ";
-
+        // echo $consulta;
         // echo "<br>Segunda consulta para traer los datos almacenados en productosmov 16 que complementan los parametros del despacho<br>$consulta<br>";
 
 
@@ -157,8 +162,9 @@ $mesAnno = '';
         inner join ubicacion u on s.cod_mun_sede = u.CodigoDANE and u.ETC = 0
         WHERE s.cod_sede = $bodegaDestino ";
 
+        // echo $consulta;
         //echo "<br>Tercera consulta para traer los datos de la sede<br>$consulta<br>";
-
+        // exit(var_dump($consulta));
         $resultado = $Link->query($consulta) or die ('Unable to execute query para traer los datos de la sede '. mysqli_error($Link));
         if($resultado->num_rows >= 1){
           $row = $resultado->fetch_assoc();
@@ -479,6 +485,11 @@ $mesAnno = '';
     </div><!-- /.col-lg-12 -->
   </div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
+<?php else: ?>
+  <script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php endif ?>
 
 <?php include '../../footer.php'; ?>
 

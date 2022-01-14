@@ -42,9 +42,6 @@ if($grupo != "" ){
 
 $consulta .= " order by f.cod_grado, f.nom_grupo, f.ape1 ";
 
-// echo "<br>Busqueda de registros existentes.<br>";
-// echo "<br><br>$consulta<br><br>";
-
 $resultado = $Link->query($consulta);
 
 if($resultado){
@@ -55,5 +52,5 @@ if($resultado){
 		}
 	}
 }
-
+// echo($consulta)
 

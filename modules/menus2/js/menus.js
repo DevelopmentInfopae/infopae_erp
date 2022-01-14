@@ -724,5 +724,10 @@ function eliminarFTDet(){
 });
 }
 
+function exportarProducto(id){
+  $('#exportar_producto #idProductoExportar').val(id);
+  $('#exportar_producto').submit();
+}
+
 /*ELIMINAR PRODUCTO*/
 

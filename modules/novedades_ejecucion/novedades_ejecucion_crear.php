@@ -1,5 +1,12 @@
 <?php
 	include '../../header.php';
+
+	if ($permisos['novedades'] == "0") {
+    	?><script type="text/javascript">
+      		window.open('<?= $baseUrl ?>', '_self');
+    	</script>
+  	<?php exit();}
+
 	require_once '../../db/conexion.php';
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
@@ -7,6 +14,8 @@
 
 	$titulo = "Nueva novedad de focalización";
 ?>
+	<?php if ($_SESSION['perfil'] == "0" || $permisos['novedades'] == "2"): ?>
+
 	<link rel="stylesheet" href="css/custom.css">
 	<div class="flagFaltantes"><span id="complementos_faltantes">0</span> de <span id="total_priorizacion">0</span> </div>
 
@@ -190,6 +199,11 @@
 			</form>
   	</div>
 	</div>
+	<?php else: ?>
+		<script type="text/javascript">
+      		window.open('<?= $baseUrl ?>', '_self');
+    	</script>	
+	<?php endif ?>
 
 	<?php include '../../footer.php'; ?>
 

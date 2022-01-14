@@ -3,6 +3,12 @@ $titulo = 'Ver infraestructura';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
+if ($permisos['diagnostico_infraestructura'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $Infraestructura;
 
 if (isset($_POST['cod_sede']) && $_POST['cod_sede'] != "") {
@@ -89,15 +95,15 @@ if ($resultadoDotaciones->num_rows > 0) {
       </li>
     </ol>
   </div><!-- /.col -->
+  <?php if ($_SESSION['perfil'] == "0" || $permisos['diagnostico_infraestructura'] == "1" || $permisos['diagnostico_infraestructura'] == "2"): ?>
   <div class="col-lg-4">
     <div class="title-action">
-<!--       <button class="btn btn-primary" onclick="validForm(0, 0, 0);" id="segundoBtnSubmit" style="display: none;"><span class="fa fa-check"></span> Guardar</button> -->
       <div class="dropdown pull-right">
         <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-          <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
-            <li><a onclick="editarInfraestructura(<?php echo $idinfraestructura; ?>)"><span class="fa fa-pencil"></span> Editar </a></li>
+          <?php if ($_SESSION['perfil'] == "0" || $permisos['diagnostico_infraestructura'] == "2"): ?>
+            <li><a onclick="editarInfraestructura(<?php echo $idinfraestructura; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
             <li><a data-toggle="modal" data-target="#modalEliminarInfraestructura"  data-idinfraestructura="<?php echo $idinfraestructura; ?>"><span class="fa fa-trash"></span> Eliminar </a></li>
           <?php endif ?>
           <li><a href="exportar_infraestructuras.php?id=<?= $idinfraestructura ?>" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
@@ -105,6 +111,7 @@ if ($resultadoDotaciones->num_rows > 0) {
       </div>
     </div><!-- /.title-action -->
   </div><!-- /.col -->
+   <?php endif ?>
 </div><!-- /.row -->
 
 

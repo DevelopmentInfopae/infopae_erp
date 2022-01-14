@@ -7,9 +7,6 @@ $sede = "";
 $complemento = "";
 $total = "";
 
-
-
-
 if(isset($_POST['semana']) && $_POST['semana'] != ''){
 	$semanaActual = mysqli_real_escape_string($Link, $_POST['semana']);
 }else{
@@ -17,7 +14,6 @@ if(isset($_POST['semana']) && $_POST['semana'] != ''){
 		$semanaActual = mysqli_real_escape_string($Link, $_POST['semanaActual']);
 	}
 }
-
 
 if(isset($_POST['sede']) && $_POST['sede'] != ''){
 	$sede = mysqli_real_escape_string($Link, $_POST['sede']);
@@ -27,15 +23,6 @@ if(isset($_POST['complemento']) && $_POST['complemento'] != ''){
 }
 
 $consulta = " select count(distinct num_doc) as total from focalizacion$semanaActual where cod_sede = \"$sede\" and Tipo_complemento = \"$complemento\" ";
-//echo "<br><br>$consulta<br><br>";
-
-
-
-
-
-
-
-
 
 $resultado = $Link->query($consulta) or die ('No se pudo cargar el total de estudiantes focalizados en  la sede. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){

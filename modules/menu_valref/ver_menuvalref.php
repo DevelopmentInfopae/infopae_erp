@@ -3,6 +3,12 @@ $titulo = 'Ver aportes calóricos y nutricionales';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 if(isset($_POST['idvalref'])){$idvalref = $_POST['idvalref'];} else {echo "<script>alert('Error al obtener datos de aportes calóricos y nutricionales');location.href='index.php';</script>";}
 
 $consulta = "SELECT * FROM menu_valref_nutrientes WHERE id = '".$idvalref."'";
@@ -42,8 +48,8 @@ if ($resultado->num_rows > 0) {
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
-            <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-              <li><a onclick="editarValRef(<?php echo $menuValRef['id']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
+            <?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
+              <li><a onclick="editarValRef(<?php echo $menuValRef['id']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
               <li><a data-toggle="modal" data-target="#modalEliminarAportesCalyNut"  data-idvalref="<?php echo $menuValRef['id']; ?>"><span class="fa fa-trash"></span>  Eliminar</a></li>
             <?php } ?>
              <li><a><span class="fa fa-file-excel-o"></span> Exportar</a></li>

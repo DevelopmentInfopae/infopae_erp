@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL);
+error_reporting(E_ALL); 
 include '../../config.php';
 require_once '../../autentication.php';
 require_once '../../db/conexion.php';
@@ -10,7 +10,7 @@ ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
 
 
-//var_dump($_POST);
+// var_dump($_POST);
 
 // Declaración de variables
 $diaInicialSemanaInicial = $_POST["diaInicialSemanaInicial"];
@@ -32,8 +32,22 @@ if($fecha_hasta != ""){
 
 //echo "<br><br>$fecha_hasta<br><br>";
 
+// mes que se va a utilizar para traer el numero de la entrega
+$mesEntrega = 0;
+$mesEntrega = $_POST['mes'];
+if($mesEntrega < 10){ $mesEntrega = '0'.$mesEntrega; }
+$mesEntrega = trim($mesEntrega);
 
 
+$entrega = '';
+// vamos a buscar el numero de la entrega que va a estar junto al mes 
+$consultaEntrega = "SELECT NumeroEntrega FROM planilla_dias WHERE mes = $mesEntrega;";
+$respuestaEntrega = $Link->query($consultaEntrega) or die('Error al consultar el numero de la entrega' . mysqli_error($Link));
+if ($respuestaEntrega->num_rows>0) {
+	$dataEntrega = $respuestaEntrega->fetch_assoc();
+	$entrega = $dataEntrega['NumeroEntrega'];
+}
+// var_dump($entrega);
 
 //Imprimir mes
 $imprimirMes = 0;
@@ -136,16 +150,17 @@ if($resultado->num_rows >= 1){
 }
 
 //Instituciones
-$consulta = "SELECT DISTINCT s.cod_inst,s.nom_inst,s.cod_mun_sede,u.ciudad,u.Departamento, usu.nombre AS nombre_rector, usu.num_doc AS documento_rector
+$condicionInstitucion = (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND s.cod_inst = '".$_POST["institucion"]."' " : "";
+$consulta = " SELECT DISTINCT s.cod_inst,s.nom_inst,s.cod_mun_sede,u.ciudad,u.Departamento, usu.nombre AS nombre_rector, usu.num_doc AS documento_rector
 FROM sedes$anno2d s
 INNER JOIN sedes_cobertura AS sc ON (s.cod_inst=sc.cod_inst AND s.cod_Sede=sc.cod_Sede)
 INNER JOIN ubicacion u ON(s.cod_mun_sede=u.codigoDANE) and u.ETC = 0
 INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
 LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
-WHERE sc.ano='$anno' AND sc.mes='$mes' AND s.cod_mun_sede='$municipio'";
-$consulta .= (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND s.cod_inst = '".$_POST["institucion"]."'" : "";
+WHERE sc.ano='$anno' AND sc.mes='$mes' AND s.cod_mun_sede='$municipio' $condicionInstitucion ORDER BY u.Ciudad, ins.nom_inst "
+;
 
-//echo "<br><br>$consulta<br><br>";
+// exit(var_dump($consulta));
 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. Linea 78: '. mysqli_error($Link));
 
@@ -199,6 +214,7 @@ $entregasSedes = array();
 $consulta = "SELECT cod_inst,cod_sede,nom_sede, tipo_complem, ". trim($columnasDiasEntregasDias, ", ") .", (". trim($camposDiasEntregasDias, " + ") .") AS numdias FROM entregas_res_$mes$anno2d WHERE (". trim($columnasCondicionEntregasDias, "+ ") .") > 0 AND cod_mun_sede = $municipio";
 $consulta .= (isset($_POST["institucion"]) && $_POST["institucion"] != "") ? " AND cod_inst = '". $_POST["institucion"] ."'" : "";
 $consulta .= " GROUP BY cod_sede,tipo_complem";
+$consulta.= " ORDER BY  nom_sede ";
 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){

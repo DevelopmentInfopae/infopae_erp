@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $titulo = 'Complementos alimentarios';
 ?>
 
@@ -16,9 +23,11 @@
     </ol>
   </div>
   <div class="col-lg-4">
-    <div class="title-action">
-      <a href="#" class="btn btn-primary" id="crearComplementosAlimentarios"><i class="fa fa-plus"></i> Nuevo </a>
-    </div>
+    <?php if ($_SESSION['perfil'] == "0" || $permisos['configuracion'] == "2"): ?>
+      <div class="title-action">
+        <a href="#" class="btn btn-primary" id="crearComplementosAlimentarios"><i class="fa fa-plus"></i> Nuevo </a>
+      </div>
+    <?php endif ?>
   </div>
 </div>
 
@@ -59,7 +68,7 @@
                         Acciones <span class="caret"></span>
                       </button>
                       <ul class="dropdown-menu pull-right" aria-labelledby="dLabel">
-                        <li><a href="#" class="editarComplementoAlimentario" data-codigotipocomplemento="<?php echo $registros['codigoTipoComplemento']; ?>" data-idtipocomplemento="<?php echo $registros['idTipoComplemento']; ?>"><i class="fa fa-pencil fa-lg"></i> Editar</a></li>
+                        <li><a href="#" class="editarComplementoAlimentario" data-codigotipocomplemento="<?php echo $registros['codigoTipoComplemento']; ?>" data-idtipocomplemento="<?php echo $registros['idTipoComplemento']; ?>"><i class="fas fa-pencil-alt fa-lg"></i> Editar</a></li>
                       </ul>
                     </div>
                   </div>

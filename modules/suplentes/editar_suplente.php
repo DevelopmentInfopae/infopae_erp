@@ -2,10 +2,18 @@
 $titulo = 'Editar Suplente';
 require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
-if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
+
+if ($permisos['titulares_derecho'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
+if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2")
 {
   $codigo_municipio = $_SESSION['p_Municipio'];
   $codigo_departamento = $_SESSION['p_CodDepartamento'];
+  // var_dump($_POST);
 ?>
 <style type="text/css">
   .wizard .content{
@@ -40,18 +48,16 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
             <div class="ibox float-e-margins">
                 <div class="ibox-content contentBackground">
                 <?php
-                  if (isset($_POST['id_suplente']))
-                  {
-                    $consulta_suplente = "SELECT * FROM suplentes". $_POST['semana'] ." WHERE id = '".$_POST['id_suplente']."'";
-                    $resultadoBuscarSuplente = $Link->query($consulta_suplente);
-                    if ($resultadoBuscarSuplente->num_rows > 0)
-                    {
-                      while($registroBuscarSuplente = $resultadoBuscarSuplente->fetch_assoc())
-                      {
-                        $suplente = $registroBuscarSuplente;
-                      }
-                    }
-                  ?>
+                    if (isset($_POST['id_suplente'])){
+                        $consulta_suplente = "SELECT * FROM suplentes". $_POST['semana'] ." WHERE id = '".$_POST['id_suplente']."'";
+                        $resultadoBuscarSuplente = $Link->query($consulta_suplente);
+                        if ($resultadoBuscarSuplente->num_rows > 0){
+                            while($registroBuscarSuplente = $resultadoBuscarSuplente->fetch_assoc()){
+                            $suplente = $registroBuscarSuplente;
+                            }
+                        }
+                        // var_dump($suplente);
+                ?>
                     <form class="form row" id="formSuplentesEditar">
                         <div>
                             <h3>Datos del estudiante</h3>
@@ -80,7 +86,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <label>N° de documento</label>
-                                    <input type="number" name="num_doc" id="num_doc" class="form-control" min="0" value="<?php echo $suplente['num_doc']; ?>" readonly>
+                                    <input type="text" name="num_doc" id="num_doc" class="form-control" value="<?php echo $suplente['num_doc']; ?>" readonly>
                                     <label for="num_doc" class="error"></label>
                                 </div>
                                 <div class="form-group col-sm-3">
@@ -106,7 +112,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
                                 <div class="form-group col-sm-3">
                                     <label>Género</label>
                                     <select name="genero" class="form-control" required>
-                                        <option value="">Seleccione...</option>
+                                        <!-- <option value="">Seleccione...</option> -->
                                         <option value="F" <?= (isset($suplente) && $suplente["genero"] == "F") ? "selected" : ""; ?>>Femenino</option>
                                         <option value="M" <?= (isset($suplente) && $suplente["genero"] == "M") ? "selected" : ""; ?>>Masculino</option>
                                     </select>
@@ -121,12 +127,12 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
                               <div class="row">
                                 <div class="form-group col-sm-3">
                                     <label>Fecha de nacimiento</label>
-                                    <input type="date" name="fecha_nac" class="form-control" max="<?php echo date('Y-m-d') ?>" value="<?php echo $suplente['fecha_nac'] ?>" required>
+                                    <input type="date" name="fecha_nac" class="form-control"min="<?php $month = date('m'); $day = date('d'); $year = date('Y'); echo ($year-18).'-'.$month.'-'.$day;?>" max="<?php  echo ($year-3).'-'.$month.'-'.$day; ?>" value="<?php echo $suplente['fecha_nac'] ?>" required>
                                     <label for="fecha_nac" class="error"></label>
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <label>Ciudad de nacimiento</label>
-                                    <select name="cod_mun_nac" class="form-control" required>
+                                    <select name="cod_mun_nac" class="form-control select2" required>
                                         <option value="">Seleccione...</option>
                                     <?php
                                         $resultadoMunicipios = $Link->query("SELECT DISTINCT CodigoDANE, Ciudad FROM ubicacion ORDER BY Ciudad ASC");
@@ -148,7 +154,7 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <label>Ciudad de residencia</label>
-                                    <select name="cod_mun_res" class="form-control" required>
+                                    <select name="cod_mun_res" class="form-control select2" required>
                                         <option value="">seleccione</option>
                                     <?php
                                         $consultaMunicipios = "SELECT DISTINCT ubicacion.CodigoDANE, ubicacion.Ciudad
@@ -189,24 +195,24 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
                                 <div class="form-group col-sm-3">
                                     <label for="sector">Sector</label>
                                     <div class="radio" style="margin-top: 5px; margin-bottom: 0px;">
-                                        <label>
+                                        <!-- <label> -->
                                             <input type="radio" name="sector" id="urbano" value="1" <?= (isset($suplente) && $suplente["zona_res_est"] == "1") ? "checked": ""; ?> required> Urbano
-                                        </label>
-                                        <label>
+                                        <!-- </label> -->
+                                        <!-- <label> -->
                                             <input type="radio" name="sector" id="rural" value="2" <?= (isset($suplente) && $suplente["zona_res_est"] == "2") ? "checked": ""; ?> required> Rural
-                                        </label>
+                                        <!-- </label> -->
                                     </div>
                                     <label for="sector" class="error"></label>
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <label for="sector">Estado</label>
                                     <div class="radio" style="margin-top: 5px; margin-bottom: 0px;">
-                                        <label>
+                                        <!-- <label> -->
                                             <input type="radio" name="estado" id="activo" value="1" <?= (isset($suplente) && $suplente["activo"] == "1") ? "checked": ""; ?> required> Activo
-                                        </label>
-                                        <label>
+                                        <!-- </label> -->
+                                        <!-- <label> -->
                                             <input type="radio" name="estado" id="inactivo" value="0" <?= (isset($suplente) && $suplente["activo"] == "0") ? "checked": ""; ?> required> Inactivo
-                                        </label>
+                                        <!-- </label> -->
                                     </div>
                                     <label for="estado" class="error"></label>
                                 </div>
@@ -214,6 +220,33 @@ if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
                                 <!-- <div class="col-sm-12">
                                     <em id="errorEst" style="display: none; font-size: 120%;"> <b>Nota : </b>Ya ha sido registrado un estudiante con el número de documento especificado en <b><span id="semanasErr"></span></b>.</em>
                                 </div> -->
+                                <div class="col-sm-12">
+                                    <h3>Datos familiares</h3>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label>Nombre acudiente</label>
+                                    <input type="text" name="nom_acudiente" id="nom_acudiente" class="form-control"  value="<?php echo $suplente['nom_acudiente'] ?>" required>
+                                    <label for="nom_acudiente" class="error"></label>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label>Documento acudiente</label>
+                                    <input type="text" name="doc_acudiente" id="doc_acudiente" class="form-control" onchange="validaCaracteres()"  value="<?php echo $suplente['doc_acudiente'] ?>" required>
+                                    <label for="doc_acudiente" class="error"></label>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label>Teléfono acudiente</label>
+                                    <input type="number" name="tel_acudiente" id="tel_acudiente" class="form-control"  value="<?php echo $suplente['tel_acudiente'] ?>" min="0" required>
+                                    <label for="tel_acudiente" class="error"></label>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label>Parentesco acudiente</label>
+                                    <input type="text" name="parantesco_acudiente" id="parantesco_acudiente" class="form-control"  value="<?php echo $suplente['parentesco_acudiente'] ?>" required>
+                                    <label for="parantesco_acudiente" class="error"></label>
+                                </div>
                             </section>
                             <h3>Información especial</h3>
                             <section>

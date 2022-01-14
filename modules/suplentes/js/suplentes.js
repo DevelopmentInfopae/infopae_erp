@@ -20,6 +20,7 @@ $(document).ready(function() {
 
   jQuery.extend(jQuery.validator.messages,
   {
+    step : "Por favor, escribe un número entero",
     required: "Este campo es obligatorio.",
     remote: "Por favor, rellena este campo.",
     email: "Por favor, escribe una dirección de correo válida",
@@ -39,91 +40,97 @@ $(document).ready(function() {
     min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
   });
 
-  // $('#tablaSuplentes tbody td:nth-child(-n+8)').on('click', function() { ver_suplente($(this).parent().attr('numDoc'), $(this).parent().attr('tipoDoc')); });
+  $('#tabla_suplentes tbody td:nth-child(-n+8)').on('click', function() { ver_suplente($(this).parent().attr('id'), $(this).parent().attr('semana')); });
   $('#loader').fadeOut();
-  $(document).on('click', '#boton_buscar_suplentes', buscar_suplentes);
   $(document).on('change', '#mes', function(){ buscarSemanasMes($(this)); });
   $(document).on('click', '.boton_subir_suplentes', function(){ subir_suplentes(); });
   $(document).on('change', '#institucion', function() { buscar_sedes($(this).val()); });
   $(document).on('click', '.subir_suplentes', function() { $('#ventana_subir_suplentes').modal(); });
   $(document).on('click', '.editar_suplente', function() { editar_suplente($(this).prop('id'), $(this).data('semana')); });
+
   $(document).on('change', '#tipo_doc', function() { $('#abreviatura').val($("#tipo_doc option:selected").data('abreviatura')); });
   $('input[name="estado"]').on('ifChecked', function() { cambiar_estado($(this).val()); });
+
+
 });
 
-function buscar_suplentes()
-{
-  if ($('#formulario_buscar_suplentes').valid())
-  {
-    $('#contenedor_listado').show();
-    $('#loader').show();
-    $('#tabla_suplentes').DataTable({
-      ajax: {
-        method: 'post',
-        url: 'functions/fn_suplentes_buscar_suplentes.php',
-        data: {
-          sede: $('#sede').val(),
-          semana: $('#semana').val()
-        }
-      },
-      columns:[
-        { data: 'num_doc'},
-        { data: 'tipo_doc_nom'},
-        { data: 'nombre'},
-        { data: 'genero'},
-        { data: 'grado'},
-        { data: 'nom_grupo'},
-        { data: 'jornada'},
-        { data: 'edad'},
-        { data: 'acciones'}
-      ],
-      destroy: true,
-      pageLength: 25,
-      responsive: true,
-      dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-      buttons : [{extend:'excel', title:'Suplentes', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7]}}],
-      oLanguage: {
-        sLengthMenu: 'Mostrando _MENU_ registros por página',
-        sZeroRecords: 'No se encontraron registros',
-        sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-        sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-        sSearch:         'Buscar: ',
-        oPaginate:{
-          sFirst:    'Primero',
-          sLast:     'Último',
-          sNext:     'Siguiente',
-          sPrevious: 'Anterior'
-        }
-      },
-      rowCallback: function(row, data)
-      {
-        row.id = data.id;
-        row.className = 'editar_suplente';
-        row.dataset.semana = $('#semana option:selected').val();
-      },
-      initComplete: function(settings, json)
-      {
-        var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li><li><a class="subir_suplentes"><span class="fa fa-upload"></span> Importar</a></li></ul></div>';
-        $('.containerBtn').html(btnAcciones);
-        $('#loader').hide();
-      }
-    });
-  }
-  else
-  {
-    $('#contenedor_listado').hide();
-  }
-}
-
-// function ver_suplente(numDoc, tipoDoc) {
-//     $('#verSuplente #numDoc').val(numDoc);
-//     $('#verSuplente #tipoDoc').val(tipoDoc);
-//     $('#verSuplente').submit();
+// function buscar_suplentes()
+// {
+//   if ($('#formulario_buscar_suplentes').valid())
+//   {
+//     $('#contenedor_listado').show();
+//     $('#loader').show();
+//     $('#tabla_suplentes').DataTable({
+//       ajax: {
+//         method: 'post',
+//         url: 'functions/fn_suplentes_buscar_suplentes.php',
+//         data: {
+//           sede: $('#sede').val(),
+//           semana: $('#semana').val()
+//         }
+//       },
+//       columns:[
+//         { data: 'num_doc'},
+//         { data: 'tipo_doc_nom'},
+//         { data: 'nombre'},
+//         { data: 'genero'},
+//         { data: 'grado'},
+//         { data: 'nom_grupo'},
+//         { data: 'jornada'},
+//         { data: 'edad'},
+//         { data: 'acciones'}
+//       ],
+//       destroy: true,
+//       pageLength: 25,
+//       responsive: true,
+//       dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
+//       buttons : [{extend:'excel', title:'Suplentes', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7]}}],
+//       oLanguage: {
+//         sLengthMenu: 'Mostrando _MENU_ registros por página',
+//         sZeroRecords: 'No se encontraron registros',
+//         sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+//         sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+//         sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+//         sSearch:         'Buscar: ',
+//         oPaginate:{
+//           sFirst:    'Primero',
+//           sLast:     'Último',
+//           sNext:     'Siguiente',
+//           sPrevious: 'Anterior'
+//         }
+//       },
+//       rowCallback: function(row, data)
+//       {
+//         row.id = data.id;
+//         row.className = 'ver_suplente';
+//         row.dataset.semana = $('#semana option:selected').val();
+//       },
+//       initComplete: function(settings, json)
+//       {
+//         var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar </a></li><li><a class="subir_suplentes"><span class="fa fa-upload"></span> Importar</a></li></ul></div>';
+//         $('.containerBtn').html(btnAcciones);
+//         $('#loader').hide();
+//       }
+//     });
+//   }
+//   else
+//   {
+//     $('#contenedor_listado').hide();
+//   }
 // }
+
+
+
+function ver_suplente(id, semana) {
+    // console.log(semana);
+    $('#verSuplente #id').val(id);
+    $('#verSuplente #semana').val(semana);
+    $('#verSuplente').submit();
+}
 
 function editar_suplente(id_suplente, semana)
 {
+  // console.log(id_suplente, semana);
   $('#formulario_editar_suplente #id_suplente').val(id_suplente);
   $('#formulario_editar_suplente #semana').val(semana);
 
@@ -156,7 +163,7 @@ function buscar_sedes(institucion)
   $.ajax({
     type: "post",
     url: "functions/fn_suplentes_buscar_sedes.php",
-    data: { "municipio" : institucion }
+    data: { "institucion" : institucion }
   })
   .done(function(data)
   {
@@ -190,10 +197,9 @@ $('#formulario_crear_suplente').on('submit', function(event){
       if (data.success == 1)
       {
         Command: toastr.success(data.message, 'Guardado con éxito.', {onHidden : function() { location.reload(); }});
-      }
-      else
+      }else
       {
-        Command: toastr.error(data.message, 'Proceso cancelado');
+        Command: toastr.error(data.message, 'Proceso cancelado' , {onHidden: function(){ $('#loader').fadeOut(); }});
       }
     },
     error: function (data)
@@ -308,3 +314,10 @@ function cambiar_estado(estado)
   });
 
 }
+
+function validaCaracteres(){  
+    var docAcudiente = $('#doc_acudiente').val();
+    docAcudiente2 = docAcudiente.replace(/[^A-Z a-z 0-9]/gi, '');
+    $('#doc_acudiente').val(docAcudiente2);
+}
+

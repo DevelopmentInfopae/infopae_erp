@@ -3,8 +3,13 @@ $titulo = 'Editar infraestructura';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
+if ($permisos['diagnostico_infraestructura'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
 
-if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) {
+if ($_SESSION['perfil'] == "0" || $permisos['diagnostico_infraestructura'] == "2") {
 
 $idinfraestructura = $_POST['idinfraestructura'];
 
@@ -69,6 +74,8 @@ if ($resultadoDotaciones->num_rows > 0) {
   }
 }
 ?>
+
+
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
     <h2><?php echo $titulo; ?></h2>

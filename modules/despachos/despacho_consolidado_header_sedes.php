@@ -1,6 +1,7 @@
 <?php
 //header
-//$pdf->SetXY(8,6.31);
+//$pdf->SetXY(8,6.31); 
+// var_dump($contrato);
 $logoInfopae = $_SESSION['p_Logo ETC'];
 $pdf->SetFont('Arial');
 $pdf->SetTextColor(0,0,0);
@@ -19,20 +20,26 @@ $pdf->Ln(0.19);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->Cell(171.8,4.76,'',1,0,'L',False);
+$pdf->Cell(161.8,4.76,'',1,0,'L',False);
 $pdf->SetXY($current_x, $current_y);
 $pdf->Cell(20,4.76,utf8_decode('OPERADOR:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(151.8,4.76,utf8_decode( $_SESSION['p_Operador'] ),0,0,'L',False);
+$pdf->Cell(141.8,4.76,utf8_decode( $_SESSION['p_Operador'] ),0,0,'L',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
-$pdf->Cell(91.6,4.76,'',1,0,'L',False);
+$pdf->Cell(101.6,4.76,'',1,0,'L',False);
 $pdf->SetXY($current_x, $current_y);
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(13,4.76,utf8_decode('FECHA:'),0,0,'L',False);
+$pdf->Cell(15,4.76,utf8_decode('CONTRATO:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(78.6,4.76,utf8_decode($fechaDespacho),0,0,'L',False);
+$pdf->Cell(36.6,4.76,utf8_decode($contrato),'R',0,'L',False);
+
+$pdf->SetFont('Arial','B',$tamannoFuente);
+$pdf->Cell(26,4.76,utf8_decode('FECHA ELABORACIÓN:'),0,0,'L',False);
+$pdf->SetFont('Arial','',$tamannoFuente);
+$pdf->Cell(25.6,4.76,utf8_decode($fechaDespacho),0,0,'L',False);
 $pdf->Ln(4.76);
 
 $current_y = $pdf->GetY();
@@ -228,12 +235,21 @@ $pdf->SetFillColor(255,255,255);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 
+// var_dump($nombreMesEntrega);
+// modificaciones jerson
+$mesString = '';
+$entregaString = '';
+if($entrega < 10){$entregaString = "0".$entrega;}
+else{$entregaString = $entrega;}
+if($imprimirMes == 0){ 
+  $auxDias = ""; 
+  $pdf->Cell(45,14.1,utf8_decode("ENTREGA " .$entregaString),1,0,'C',False);
+}else if($imprimirMes != 0){
+  $mesString = "MES: " .$nombreMesEntrega;
+  $pdf->MultiCell(45,7.05,utf8_decode($mesString . "\n" . "ENTREGA " .$entregaString),1,'C',False);
+}
 
-
-if($imprimirMes == 0){ $auxDias = ""; }
-$pdf->Cell(45,14.1,$auxDias,1,0,'C',False);
-
-
+// end modificaciones jerson
 
 if(strpos($semana, ',') !== false){
     $aux = "SEMANAS: $semana";

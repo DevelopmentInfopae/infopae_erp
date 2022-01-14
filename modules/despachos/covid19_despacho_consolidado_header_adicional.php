@@ -1,5 +1,5 @@
 <?php
-$titulo = "Registro De Novedades - Repitentes Y/O Suplentes Del Programa De Alimentación Escolar - PAE\nAtención en el marco del Estado de Emergencia, Económica, Social y Ecológica, derivado de la pandemia del COVID-19\nModalidad - ".$descripcionTipo;
+$titulo = "Registro De Novedades - Repitentes Y/O Suplentes Del Programa De Alimentación Escolar - PAE\nAtención en el marco del Estado de Emergencia Sanitaria, derivado de la pandemia del COVID-19\nModalidad - ".$descripcionTipo;
 
 
 

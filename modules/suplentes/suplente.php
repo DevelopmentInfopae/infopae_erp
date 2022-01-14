@@ -2,6 +2,13 @@
 include '../../header.php';
 set_time_limit (0);
 ini_set('memory_limit','6000M');
+
+if ($permisos['titulares_derecho'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';
 $Link = new mysqli($Hostname, $Username, $Password, $Database);

@@ -1,15 +1,19 @@
 <?php 
-  require_once '../../../config.php';
-  require_once '../../../db/conexion.php';
+require_once '../../../config.php';
+require_once '../../../db/conexion.php';
 
-  $iddispositivo = $_POST['iddispositivo'];
+$iddispositivo = $_POST['iddispositivo'];
+$sede = $_POST['sede'];
+// exit(var_dump($_POST));
 
-	$consulta = "SELECT id_bioest FROM biometria WHERE id_dispositivo = ".$iddispositivo." order by id_bioest desc limit 1";
-	$resultado = $Link->query($consulta);
-	if ($resultado->num_rows > 0) {
-		if ($cons = $resultado->fetch_assoc() ) {
-			$consecutivo = $cons['id_bioest']+1;
-		}
-		echo $consecutivo;
+
+$consulta = "SELECT id_bioest FROM biometria WHERE id_dispositivo = ".$iddispositivo." order by id_bioest desc limit 1";
+$resultado = $Link->query($consulta);
+if ($resultado->num_rows > 0) {
+	if ($cons = $resultado->fetch_assoc() ) {
+		$consecutivo = $cons['id_bioest']+1;
 	}
- ?>
+	echo $consecutivo;
+	exit();
+}
+

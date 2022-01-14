@@ -7,9 +7,14 @@
 	require_once '../../db/conexion.php';
 	include '../../autentication.php';
 	include '../../php/funciones.php';
+	include '../../permisos.php';
 	$idUsr = $_SESSION['id_usuario'];
 	$fotoUsr = $_SESSION['foto'];
 
+	if ($permisos['entregas_biometricas'] == "0") {
+		header( 'Location:'.$baseUrl);
+	}
+	// exit(var_dump($baseUrl));
 	$dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
 	if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
 
@@ -230,8 +235,9 @@
 
 	</div>
 	
-
-
+	<?php 
+	// include 'desencadenador.php';
+	 ?>
 
 
 
@@ -258,7 +264,7 @@
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/flot/jquery.flot.time.js"></script>
 
 	<!-- Custom and plugin javascript -->
-	<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/dashboard.js?v=<?= $cacheBusting; ?>"></script>
+	<script src="<?php echo $baseUrl; ?>/modules/entregas_biometricas/js/dashboard.js"></script>
 
 </body>
 </html>

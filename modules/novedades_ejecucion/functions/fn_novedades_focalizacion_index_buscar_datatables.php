@@ -9,10 +9,7 @@
 
   $condicion = ($codSede != "") ? "AND nf.cod_sede = $codSede" : "";
   $consultaNovedades = "SELECT nf.id, u.Ciudad as municipio, s.nom_inst, s.nom_sede, td.Abreviatura,nf.num_doc_titular , nf.tipo_complem, nf.semana, nf.d1, nf.d2, nf.d3, nf.d4, nf.d5, nf.observaciones,
-                          IF((SELECT CONCAT(nom1, ' ', nom2, ' ', ape1, ' ', ape2) AS nombre FROM focalizacion01 WHERE num_doc = nf.num_doc_titular) IS NOT NULL,
-                              (SELECT CONCAT(nom1, ' ', nom2, ' ', ape1, ' ', ape2) AS nombre FROM focalizacion01 WHERE num_doc = nf.num_doc_titular),
-                              (SELECT CONCAT(nom1, ' ', nom2, ' ', ape1, ' ', ape2) AS nombre FROM suplentes WHERE num_doc = nf.num_doc_titular)
-                          ) AS nombre
+                          (SELECT CONCAT(nom1, ' ', nom2, ' ', ape1, ' ', ape2) AS nombre FROM focalizacion01 WHERE num_doc = nf.num_doc_titular) AS nombre
                         FROM novedades_focalizacion nf
                           LEFT JOIN sedes$periodoActual s ON nf.cod_sede = s.cod_sede
                           LEFT JOIN tipodocumento td ON nf.tipo_doc_titular = td.id

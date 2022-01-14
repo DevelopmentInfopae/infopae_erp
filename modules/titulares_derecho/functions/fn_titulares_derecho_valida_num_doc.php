@@ -11,7 +11,7 @@ $consultarFocalizacion = "SELECT table_name AS tabla FROM information_schema.tab
 $resultadoFocalizacion = $Link->query($consultarFocalizacion);
 if ($resultadoFocalizacion->num_rows > 0) {
 	while ($focalizacion = $resultadoFocalizacion->fetch_assoc()) { 
-		$validaEstudiante = "SELECT * FROM ".$focalizacion['tabla']." WHERE num_doc = ".$num_doc." AND activo = 0";
+		$validaEstudiante = "SELECT * FROM ".$focalizacion['tabla']." WHERE num_doc = ".$num_doc."";
 		$resultadoValidaEstudiante = $Link->query($validaEstudiante);
 		if ($resultadoValidaEstudiante->num_rows > 0) {
 			$semanas.="Semana ".substr($focalizacion['tabla'], 12, 2).", ";

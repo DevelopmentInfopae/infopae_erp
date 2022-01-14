@@ -1,6 +1,12 @@
 <?php
 	include '../../header.php';
 
+	if ($permisos['novedades'] == "0") {
+    	?><script type="text/javascript">
+      		window.open('<?= $baseUrl ?>', '_self');
+    	</script>
+  	<?php exit();}
+
 	$periodoActual = $_SESSION['periodoActual'];
 
 	set_time_limit (0);
@@ -64,7 +70,7 @@
 	<div class="col-lg-4">
 		<div class="title-action">
 			<?php if($estado == 1){ ?>
-				<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+				<?php if($_SESSION['perfil'] == "0" || $permisos['novedades'] == "2"){ ?>
 					<button id="btnReversarIntercambio" type="button" class="btn btn-primary"><i class="fa fa-undo"></i> Reversar Intercambio</button>
 				<?php } ?>
 			<?php } ?>

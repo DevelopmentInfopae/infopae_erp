@@ -182,8 +182,34 @@ $alturaLinea = 4;
 
 if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
 {
+	$condicionCoordinador = '';
+  	if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
+  		$codigoSedes = "";
+  		$documentoCoordinador = $_SESSION['num_doc'];
+  		$consultaCodigoSedes = "SELECT cod_sede FROM sedes$periodoActual WHERE id_coordinador = $documentoCoordinador;";
+		$respuestaCodigoSedes = $Link->query($consultaCodigoSedes) or die('Error al consultar el código de la sede ' . mysqli_error($Link));
+		if ($respuestaCodigoSedes->num_rows > 0) {
+			$codigoInstitucion = '';
+			while ($dataCodigoSedes = $respuestaCodigoSedes->fetch_assoc()) {
+				$codigoSedeRow = $dataCodigoSedes['cod_sede'];
+				$consultaCodigoInstitucion = "SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = $codigoSedeRow;";
+				$respuestaCodigoInstitucion = $Link->query($consultaCodigoInstitucion) or die ('Error al consultar el código de la institución ' . mysqli_error($Link));
+				if ($respuestaCodigoInstitucion->num_rows > 0) {
+					$dataCodigoInstitucion = $respuestaCodigoInstitucion->fetch_assoc();
+					$codigoInstitucionRow = $dataCodigoInstitucion['cod_inst'];
+					if ($codigoInstitucionRow == $codigoInstitucion || $codigoInstitucion == '') {
+						$codigoSedes .= "'$codigoSedeRow'".",";
+						$codigoInstitucion = $codigoInstitucionRow; 
+					}
+				}
+			}
+		}
+		$codigoSedes = substr($codigoSedes, 0 , -1);
+		$condicionCoordinador = " AND cod_sede IN ($codigoSedes) ";
+  	}
+
 	$consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, ". trim($dia_consulta, ", ") ."
-	FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento' AND tipo = 'F'";
+	FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento' AND tipo = 'F' $condicionCoordinador ";
 	if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro'"; }
 	$consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
 

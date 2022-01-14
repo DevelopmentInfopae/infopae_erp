@@ -1,6 +1,13 @@
 <?php
 $titulo = 'Alimentos';
 require_once '../../header.php';
+
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 ?>
 
@@ -18,7 +25,7 @@ $periodoActual = $_SESSION['periodoActual'];
   </div><!-- /.col -->
   <div class="col-lg-4">
     <div class="title-action">
-			<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+			<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
 				<button class="btn btn-primary" onclick="window.location.href = 'nuevo_alimento.php';"><span class="fa fa-plus"></span>  Nuevo</button>
 			<?php } ?>
     </div>
@@ -81,15 +88,11 @@ $periodoActual = $_SESSION['periodoActual'];
                               <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
-															<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-																<li><a onclick="editarProducto(<?php echo $row1['Id']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
+															<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
+																<li><a onclick="editarProducto(<?php echo $row1['Id']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
 																<li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $row1['Codigo']; ?>" data-tipocomplemento="<?php echo $row1['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $row1['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span>  Eliminar</a></li>
 															<?php } ?>
-															<li><a><span class="fa fa-file-excel-o"></span> Exportar</a></li>
-
-
-
-
+															<li><a onclick="exportarProducto(<?php echo $row1['Id']; ?>)"><span class="fa fa-file-excel-o"></span> Exportar</a></li>
                                <?php if ($row1['Inactivo'] == 0): ?>
                                <?php endif ?>
                             </ul>
@@ -114,6 +117,12 @@ $periodoActual = $_SESSION['periodoActual'];
 <form method="Post" id="editar_producto" action="editar_producto.php" style="display: none;">
   <input type="hidden" name="idProducto" id="idProductoEditar">
 </form>
+
+<!-- form para exportar el producto  -->
+<form method="Post" id="exportar_producto" action="exportarProducto.php" style="display: none;">
+  <input type="hidden" name="idProductoExportar" id="idProductoExportar">
+</form>
+
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->

@@ -3,11 +3,7 @@ require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 include 'fn_fecha_asistencia.php';
 
-// var_dump($_POST);
-//var_dump($_SESSION);
-
 $anno = $annoAsistencia2D;
-
 
 if(isset($_POST['mes']) && $_POST['mes'] != ""){
 	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
@@ -21,45 +17,23 @@ if(isset($_POST['dia']) && $_POST['dia'] != ""){
 	$dia = $diaAsistencia;
 }
 
-
-
-
-
 $sede = mysqli_real_escape_string($Link, $_POST['sede']);
 $complemento = mysqli_real_escape_string($Link, $_POST['complemento']);
 $semana = mysqli_real_escape_string($Link, $_POST['semana']);
 $id_usuario = mysqli_real_escape_string($Link, $_SESSION['id_usuario']);
-
 $repitentes = $_POST['repitente'];
-
-
 $tipo_doc = "";
 $num_doc = "";
 $repite = "";
-
-
-
 $mesTablaAsistencia = $mes;
 $annoTablaAsistencia = $anno;
 include 'fn_validar_existencias_tablas.php';
-
-
-
-
-
-
-
-
-
 $consulta = "";
 
-
 foreach ($repitentes as $repitente){
-
 	$tipo_doc = mysqli_real_escape_string($Link, $repitente["tipoDocumento"]);
 	$num_doc = mysqli_real_escape_string($Link, $repitente["documento"]);
 	$repite = mysqli_real_escape_string($Link, $repitente["repite"]);
-
 	$favorito = "";
 	if(isset($repitente["favorito"]) && $repitente["favorito"] != ""){
 		$favorito = mysqli_real_escape_string($Link, $repitente["favorito"]);

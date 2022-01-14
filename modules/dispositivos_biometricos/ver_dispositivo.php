@@ -3,6 +3,12 @@ $titulo = 'Ver dispositivo biométrico';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
+if ($permisos['dispositivos_biometricos'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -22,16 +28,15 @@ $periodoActual = $_SESSION['periodoActual'];
   </div><!-- /.col -->
   <div class="col-lg-4">
     <div class="title-action">
-      <!-- <button class="btn btn-primary" onclick="submitForm();" id="segundoBtnSubmit" style="display: none;"><span class="fa fa-check"></span> Guardar</button> -->
       <div class="dropdown pull-right">
         <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-          <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
-          <li><a onclick="editarDispositivo(<?php echo $_POST['idDispositivoVer']; ?>)"><span class="fa fa-pencil"></span> Editar </a></li>
+          <?php if ($_SESSION['perfil'] == "0" || $permisos['dispositivos_biometricos'] == "2"): ?>
+          <li><a onclick="editarDispositivo(<?php echo $_POST['idDispositivoVer']; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
           <li><a data-toggle="modal" data-target="#modalEliminarDispositivo"  data-iddispositivo="<?php echo $_POST['idDispositivoVer']; ?>"><span class="fa fa-trash"></span>  Eliminar</a></li>
           <?php endif ?>
-          <li><a href="#" ><span class="fa fa-file-excel-o"></span> Exportar </a></li>
+          <li><a onclick="exportarDispositivo(<?php echo $_POST['idDispositivoVer']; ?>);"><span class="fa fa-file-excel-o"></span> Exportar </a></li>
         </ul>
       </div>
     </div><!-- /.title-action -->
@@ -95,25 +100,10 @@ $periodoActual = $_SESSION['periodoActual'];
           <div class="form-group col-sm-3">
             <label>Usuario</label>
             <input type="text" name="id_usuario" id="id_usuario" class="form-control" value="<?php echo $infoDispositivo['nom_usu']; ?>" readonly required>
-            <!-- <select name="id_usuario" id="id_usuario" class="form-control" required>
-              <option value="">Seleccione...</option>
-              <?php 
-                $obtenerUsuarios = "SELECT * FROM usuarios WHERE Tipo_Usuario = 'Manipuladora' or Tipo_Usuario = 'Coordinador' AND Estado = 1";
-                $resultadoUsuarios = $Link->query($obtenerUsuarios);
-                if ($resultadoUsuarios->num_rows > 0) {
-                  while ($Usuarios = $resultadoUsuarios->fetch_assoc()) { ?>
-                    <option value="<?php echo $Usuarios['id'] ?>"><?php echo $Usuarios['nombre']; ?></option>
-                  <?php }
-                }
-               ?>
-            </select> -->
           </div>
           <div class="form-group col-sm-3">
             <label>Tipo dispositivo</label>
             <input type="text" name="tipo" id="tipo" class="form-control" value="<?php echo $infoDispositivo['tipo']; ?>" readonly required>
-            <!-- <select name="tipo" id="tipo" class="form-control" required>
-              <option value='Lector Huella Dactilar'>Lector Huella Dactilar</option>
-            </select> -->
           </div>
         </form>
         <div class="col-sm-12">
@@ -132,32 +122,7 @@ $periodoActual = $_SESSION['periodoActual'];
     </div>
     <div id="datosBiometria" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
       <div class="panel-body">
-        <form class="form" id="formFocalizacion">
-          <!-- <div class="col-sm-3">
-            <label>Semana focalización</label>
-            <select name="semana_focalizacion" id="semana_focalizacion" class="form-control" multiple required>
-
-              <?php 
-              $consultarFocalizacion = "SELECT 
-                                         table_name AS tabla
-                                        FROM 
-                                         information_schema.tables
-                                        WHERE 
-                                         table_schema = DATABASE() AND table_name like 'focalizacion%'";
-              $resultadoFocalizacion = $Link->query($consultarFocalizacion);
-              if ($resultadoFocalizacion->num_rows > 0) {
-                while ($focalizacion = $resultadoFocalizacion->fetch_assoc()) { ?>
-                  <option value="<?php echo $focalizacion['tabla']; ?>">Semana <?php echo substr($focalizacion['tabla'], 12, 2); ?></option>
-               <?php  }
-              }
-               ?>
-            </select>
-          </div>
-        </form>
-        <div class="col-sm-12">
-          <button class="btn btn-success" onclick="buscarEstudiantes();"><span class="fa fa-search"></span>  Buscar estudiantes</button>
-        </div> -->
-        
+        <form class="form" id="formFocalizacion">        
         <form class="form" id="formBiometria">
           <div class="col-sm-12">
             <table class="table" id="tablaEstudiantes">
@@ -187,7 +152,6 @@ $periodoActual = $_SESSION['periodoActual'];
                  }
                }
 
-
               if (strlen($infoDispositivo['id']) == 1) {
                  $idDisp = "00".$infoDispositivo['id'];
                } else if (strlen($infoDispositivo['id']) == 2) {
@@ -212,6 +176,7 @@ $periodoActual = $_SESSION['periodoActual'];
                }
 
                 $consultarBiometria = "SELECT ".$selectFoc." tipodocumento.nombre as tdocnom, biometria.* FROM biometria INNER JOIN tipodocumento ON biometria.tipo_doc = tipodocumento.id ".$sqlFoc." WHERE id_dispositivo = ".$idDisp;
+                // echo $consultarBiometria;
                 $resultadoBiometria = $Link->query($consultarBiometria);
 
                 if ($resultadoBiometria->num_rows > 0) {
@@ -257,6 +222,8 @@ $periodoActual = $_SESSION['periodoActual'];
   <input type="hidden" name="idDispositivoexportar" id="idDispositivoexportar">
 </form>
 
+
+
 <?php else: ?>
 Dispositivo no definido.
 <?php endif ?>
@@ -267,6 +234,26 @@ Dispositivo no definido.
   </div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
 
+ <!-- modal eliminar biometria -->
+<div class="modal inmodal fade" id="modalEliminarDispositivo" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+ <div class="modal-dialog modal-sm">
+   <div class="modal-content">
+     <div class="modal-header text-info" style="padding: 15px;">
+       <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Cerrar</span></button>
+       <h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Confirmación InfoPAE </h3>
+     </div>
+     <div class="modal-body" style="text-align: center;">
+         <span>¿Está seguro de borrar Dispositivo Biométrico?</span>
+         <input type="hidden" name="iddispositivoEli" id="iddispositivoEli">
+         <!-- <input type="hidden" name="numbiometria" id="numbiometria"> -->
+     </div>
+     <div class="modal-footer">
+       <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> No</button>
+       <button type="button" class="btn btn-primary btn-sm" onclick="eliminarDispositivo()"><i class="fa fa-check"></i> Si</button>
+     </div>
+   </div>
+ </div>
+</div>
 
 <?php include '../../footer.php'; ?>
 
@@ -291,7 +278,7 @@ Dispositivo no definido.
 <script type="text/javascript">
   console.log('Aplicando Data Table');
   dataset1 = $('#tablaEstudiantes').DataTable({
-    order: [ 0, 'asc' ],
+    order: [ 4, 'asc' ],
     pageLength: 25,
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',

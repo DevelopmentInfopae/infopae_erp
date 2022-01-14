@@ -3,6 +3,13 @@ include '../../header.php';
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
+
+if ($permisos['instituciones'] == "0") {
+   	 ?><script type="text/javascript">
+      	window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+
 require_once '../../db/conexion.php';
 $Link = new mysqli($Hostname, $Username, $Password, $Database);
 if ($Link->connect_errno) {
@@ -85,8 +92,10 @@ if($resultado->num_rows >= 1){
                         <a href="#" class="file-control <?php if(isset($_GET['tipo']) && $_GET['tipo'] == 2){ echo " active "; } ?>" value="2" >Imagenes</a>
                         <a href="#" class="file-control <?php if(isset($_GET['tipo']) && $_GET['tipo'] == 3){ echo " active "; } ?>" value="3">PDF</a>
                         <div class="hr-line-dashed"></div>
-                        <a class="btn btn-primary btn-block" href="#subirArchivos">Adjuntar Archivos</a>
-						<div class="hr-line-dashed"></div>
+                        <?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+                        	<a class="btn btn-primary btn-block" href="#subirArchivos">Adjuntar Archivos</a>
+							<div class="hr-line-dashed"></div>
+                        <?php endif ?>
                         <h5>Categoría</h5>
                         <ul class="folder-list" style="padding: 0">
                             <li><a href="#" class="category-control <?php if((isset($_GET['categoriaFnd']) && $_GET['categoriaFnd'] == 0) || !isset($_GET['categoriaFnd'])){ echo " active "; } ?>" value="0"><i class="fa fa-folder"></i> Todos</a></li>
@@ -163,7 +172,10 @@ if($resultado->num_rows >= 1){
 													$aux1 = date("h:i:s A d/m/Y", strtotime($aux));
 												?>
 										        <small>Agregado: <?php echo $aux1 ?></small>
-												<br><a href="" value="<?php echo $row['id']; ?>" class="btnBorrar"><small style="color: #ff7a7a;">Borrar</small></a>
+												<br>
+												<?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+													<a href="" value="<?php echo $row['id']; ?>" class="btnBorrar"><small style="color: #ff7a7a;">Borrar</small></a>
+												<?php endif ?>
 										    </div>
 										</a>
 										</div>
@@ -184,25 +196,7 @@ if($resultado->num_rows >= 1){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -259,7 +253,7 @@ if($resultado->num_rows >= 1){
         </div>
     </div>
 </div>
-
+<?php endif ?>
 <?php include '../../footer.php'; ?>
 
     <!-- Mainly scripts -->

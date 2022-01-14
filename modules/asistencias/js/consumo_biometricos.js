@@ -1,4 +1,31 @@
-jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
+jQuery.extend(jQuery.validator.messages, { 
+	required: "Este campo es obligatorio.", 
+	remote: "Por favor, rellena este campo.", 
+	email: "Por favor, escribe una dirección de correo válida", 
+	url: "Por favor, escribe una URL válida.", 
+	date: "Por favor, escribe una fecha válida.", 
+	dateISO: "Por favor, escribe una fecha (ISO) válida.", 
+	number: "Por favor, escribe un número entero válido.", 
+	digits: "Por favor, escribe sólo dígitos.", 
+	creditcard: "Por favor, escribe un número de tarjeta válido.", 
+	equalTo: "Por favor, escribe el mismo valor de nuevo.", 
+	accept: "Por favor, escribe un valor con una extensión aceptada.", 
+	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), 
+	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), 
+	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), 
+	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), 
+	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), 
+	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") 
+});
+
+toastr.options = { 
+	newestOnTop: true, 
+	closeButton: false, 
+	progressBar: true, 
+	preventDuplicates: false, 
+	showMethod: 'slideDown', 
+	timeOut: 3500, 
+};
 
 var total = 0;
 var faltan = 0;
@@ -13,13 +40,7 @@ localStorage.removeItem("wappsi_repitentes");
 localStorage.removeItem("wappsi_no_consumieron");
 localStorage.removeItem("wappsi_no_repitieron");
 
-	
-
-
 $(document).ready(function(){
-
-	
-
 
 	var sedeP = $("#sedeP").val();
 	var institucionP = $("#institucionP").val();
@@ -27,11 +48,6 @@ $(document).ready(function(){
 	console.log(institucionP);
 	localStorage.setItem("wappsi_institucion", institucionP);
 	localStorage.setItem("wappsi_sede", sedeP);
-	//$("#institucion").val(institucionP);
-	// localStorage.setItem("wappsi_sede",sedeP);
-	// cargarSedes();
-
-
 	var d = new Date();
 	var month = d.getMonth();
 	var day = d.getDate();
@@ -43,16 +59,6 @@ $(document).ready(function(){
 	if(day != localStorage.getItem("wappsi_dia_actual") || month != localStorage.getItem("wappsi_mes_actual")){
 		console.log("Se estaba trabajndo  "+localStorage.getItem("wappsi_dia_actual")+" de "+localStorage.getItem("wappsi_mes_actual"));
 		console.log("Borrar almacenamiento local");
-		// localStorage.setItem("wappsi_dia_actual", day);
-		// localStorage.setItem("wappsi_mes_actual", month);
-		// localStorage.setItem("wappsi_institucion", "");
-		// localStorage.setItem("wappsi_sede", "");
-		// localStorage.removeItem("wappsi_total");
-		// localStorage.removeItem("wappsi_faltan");
-		// localStorage.removeItem("wappsi_ausentes");
-		// localStorage.removeItem("wappsi_repitentes");
-		// localStorage.removeItem("wappsi_no_consumieron");
-		// localStorage.removeItem("wappsi_no_repitieron");
 	}
 
 	total = localStorage.getItem("wappsi_total");
@@ -80,34 +86,9 @@ $(document).ready(function(){
 	noConsumieron = JSON.parse(localStorage.getItem("wappsi_no_consumieron"));
 	noRepitieron = JSON.parse(localStorage.getItem("wappsi_no_repitieron"));
 
-	console.log("Repitentes");
-	console.log(repitentes);	
-	console.log("Ausentes");
-	console.log(ausentes);
-	console.log("No Consumierón");
-	console.log(noConsumieron);	
-	console.log("No Repitierón");
-	console.log(noRepitieron);
-
 	$("#sede").val(localStorage.getItem("wappsi_sede"));
-
-	// $(".asistenciaFaltantes").html(faltan);
-	// $(".asistenciaTotal").html(total);
-
-
 	$(".asistenciaFaltantes").html(0);
 	$(".asistenciaTotal").html(0);
-
-	
-
-	console.log("Total: "+total);
-	console.log("Faltan: "+faltan);
-
-
-
-
-
-
 
 	$('#btnBuscar').click(function(){
 		if($('#form_asistencia').valid()){
@@ -127,13 +108,9 @@ $(document).ready(function(){
 		guardarEntregas(1);
 	});
 
-
 	$('#ventanaConfirmar .btnNo').click(function(){
 		var aux = $("#asistenteTramite").val();
 		aux = ".checkbox-header-asistencia."+aux;
-		
-		//console.log(aux);
-		// Cambiar de estado un check recien cambiado.
 		$(aux).iCheck('destroy');
 		if( $(aux).prop('checked') ) {
 			$(aux).prop( "checked", false );
@@ -148,19 +125,6 @@ $(document).ready(function(){
 		actualizarAsistencia();
 	});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	$('.btnGuardar').click(function(){
 		$("#loader").fadeIn();
 		datatables.search('').draw();
@@ -168,18 +132,15 @@ $(document).ready(function(){
 	});	
 
 
-
-
-
 	// Check todos consumieron
 	$(document).on('ifChecked', '.checkbox-header-consumio-all', function () { 
-		console.log("Check todos consumieron.");
+		// console.log("Check todos consumieron.");
 		$('.checkbox-header-consume:enabled').iCheck('check');
 	});	
 
 	// unCheck todos consumieron
 	$(document).on('ifUnchecked', '.checkbox-header-consumio-all', function () { 
-		console.log("Check todos consumieron.");
+		// console.log("Check todos consumieron.");
 		$('.checkbox-header-consume').iCheck('uncheck');
 		$( ".checkbox-header-repite").iCheck('uncheck'); 
 		$( ".checkbox-header-repite").iCheck('disable'); 
@@ -187,7 +148,7 @@ $(document).ready(function(){
 
 	// Check todos repitio
 	$(document).on('ifChecked', '.checkbox-header-repitio-all', function () { 
-		console.log("Check todos repitieron.");
+		// console.log("Check todos repitieron.");
 		// $('.checkbox-header-repite:enabled').iCheck('check');
 		$( ".checkbox-header-repite:enabled" ).each(function( index ) {
 			aux = $(this).parent();
@@ -205,102 +166,49 @@ $(document).ready(function(){
 
 	// unCheck todos repitio
 	$(document).on('ifUnchecked', '.checkbox-header-repitio-all', function () { 
-		console.log("Check todos repitieron.");
+		// console.log("Check todos repitieron.");
 		$('.checkbox-header-repite').iCheck('uncheck');
 	});
 
 
-		// $('#asistenteTramite').val($(this).val());
-		// $('#tipoDocumentoAsistenteTramite').val($(this).attr('tipoDocumento'));
-		// $('#valorActualizacion').val(1);
-		// $('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>que desea hacer cambios en los registros de la asistencia</strong> para este estudiante? ');
-  		// 		$('#ventanaConfirmar').modal();	
-	// checkbox-header-repitio-all
-
-
-
-
-
-
-
-
 	// Check a cada item de la columna Consumió
 	$(document).on('ifChecked', '.checkbox-header-consume', function () { 
-		console.log("Check en un elemento de consumio.");
 		if( (faltan) > 0 ){
 			$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
-			console.log("S");
 			faltan--;
 			localStorage.setItem("wappsi_faltan", faltan);
 			$(".asistenciaFaltantes").html(faltan);
-
-			// Quitando del array de los que no consumieron.	
 			var aux = JSON.parse(localStorage.getItem("wappsi_no_consumieron"));
 			var index = aux.indexOf($(this).val());
 			if (index > -1) {
 				aux.splice(index, 1);
 			}		
-			console.log(aux);
 			localStorage.setItem("wappsi_no_consumieron", JSON.stringify(aux));	
-
-
-
 			if(faltan <= 0){
 				$( ".checkbox-header-repite:not(:checked)").iCheck('disable'); 
 			}else{
 				aux = $(this).val();
 				$( ".checkbox-header-repite."+aux).iCheck('enable'); 	
 			}
-
-
-
 		}
 	});
-
-
-
-
-
 	
 	// unCheck a cada item de la columna Consumió
 	$(document).on('ifUnchecked', '.checkbox-header-consume', function () { 
 		$(".checkbox-header-repite."+$(this).val()).iCheck('uncheck');
-
-
-		console.log("Faltan: "+faltan);
 		$('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); 
-		console.log("N");
 		faltan++;
 		localStorage.setItem("wappsi_faltan", faltan);
-		$(".asistenciaFaltantes").html(faltan);
-
-
-		// localStorage.removeItem("wappsi_no_consumieron");
-		// console.log(localStorage.getItem("wappsi_no_consumieron"));		
+		$(".asistenciaFaltantes").html(faltan);	
 		var aux = JSON.parse(localStorage.getItem("wappsi_no_consumieron"));
 		aux.push($(this).val());
-		console.log(aux);
 		localStorage.setItem("wappsi_no_consumieron", JSON.stringify(aux));
-
-
-		// Si este estudiante que no consume esta entre los repitentes, hay que quitarlo de la lista de repitentes.
-
 		var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
 		var index = aux.indexOf($(this).val());
 		if (index > -1) {
 			aux.splice(index, 1);
 		}		
-		console.log(aux);
 		localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
-
-
-
-
-		// if(faltan > 0){
-		// 	$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
-		// }
-
-
 		aux = $(this).val();
 		$( ".checkbox-header-repite."+aux).iCheck('uncheck'); 
 		$( ".checkbox-header-repite."+aux).iCheck('disable'); 
@@ -310,7 +218,6 @@ $(document).ready(function(){
 	$(document).on('ifChecked', '.checkbox-header-repite', function () { 
 		if( (faltan) > 0 ){
 			$('.checkbox'+ $(this).data('columna')).iCheck('check'); 
-			console.log("S");
 			faltan--;
 			localStorage.setItem("wappsi_faltan", faltan);
 			$(".asistenciaFaltantes").html(faltan);
@@ -320,8 +227,6 @@ $(document).ready(function(){
 			console.log(aux);
 			localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
 
-	
-
 			if(faltan <= 0){
 				$( ".checkbox-header-repite:not(:checked)").iCheck('disable'); 
 			}
@@ -330,26 +235,19 @@ $(document).ready(function(){
 	
 	// unCheck a cada item de la columna Repitió
 	$(document).on('ifUnchecked', '.checkbox-header-repite', function () { 
-		console.log("Faltan: "+faltan);
 		$('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); 
-		console.log("N");
 		faltan++;
 		localStorage.setItem("wappsi_faltan", faltan);
 		$(".asistenciaFaltantes").html(faltan);
-
-
 		var aux = JSON.parse(localStorage.getItem("wappsi_repitentes"));
 		var index = aux.indexOf($(this).val());
 		if (index > -1) {
 			aux.splice(index, 1);
 		}		
 		localStorage.setItem("wappsi_repitentes", JSON.stringify(aux));
-
-		
-
-		// if(faltan > 0){
-		// 	$( ".checkbox-header-repite:not(:checked)").iCheck('enable'); 
-		// }
+		if (faltan > 0) {
+			$( ".checkbox-header-repite:not(:checked)").iCheck('enable');
+		}
 	});
 
 	// Check a cada item de la columna Asistencia
@@ -370,11 +268,7 @@ $(document).ready(function(){
 		$('#valorActualizacion').val(0);
 		$('#ventanaConfirmar .modal-body p').html('¿Esta seguro de <strong>que desea hacer cambios en los registros de la asistencia</strong> para este estudiante? ');
   		$('#ventanaConfirmar').modal();
-	});
-
-
-
-	
+	});	
 });
 
 function validarAsistenciaSellada(){
@@ -411,51 +305,25 @@ function validarAsistenciaSellada(){
 function cargarEstudiantes(){
 	var dibujado = 0;
 	var sede = localStorage.getItem("wappsi_sede");
-
 	var auxNoConsumieron = JSON.parse(localStorage.getItem("wappsi_no_consumieron"));
 	var auxNoRepitieron = JSON.parse(localStorage.getItem("wappsi_no_repitieron"));
 	var auxRepitentes = JSON.parse(localStorage.getItem("wappsi_repitentes"));
 	var auxConsumieron = JSON.parse(localStorage.getItem("wappsi_consumieron"));
 	var auxRepitieron = JSON.parse(localStorage.getItem("wappsi_repitieron"));
-
-
-
 	var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
-
-	
-
 	var mes = "";
 	var semanaActual = "";
 	var dia = "";
+	actualizarMarcadores(1);
 
-	if($('#dia').val() != "" && $('#dia').val() != null){
-		dia = $("#dia").val();	
-	}
-
-	if($('#mes').val() != "" && $('#mes').val() != null){
-		mes = $("#mes").val();	
-	}	
-
-	if($('#semana').val() != "" && $('#semana').val() != null){
-		semanaActual = $("#semana").val();	
-	}else{
-		semanaActual = $('#semanaActual').val();
-	}	
-	
-
-
-
-
-
-
-
-
-
-
+	if($('#dia').val() != "" && $('#dia').val() != null){ dia = $("#dia").val();}
+	if($('#mes').val() != "" && $('#mes').val() != null){ mes = $("#mes").val();}	
+	if($('#semana').val() != "" && $('#semana').val() != null){ semanaActual = $("#semana").val();}else{ semanaActual = $('#semanaActual').val();}
 	var sede = $('#sede').val();
 	var nivel = $('#nivel').val();
 	var grado = $('#grado').val();
 	var grupo = $('#grupo').val();
+	var complemento = $('#complemento').val();
 
 	if ( $.fn.DataTable.isDataTable( '.dataTablesSedes' ) ) {datatables.destroy(); }
 	
@@ -470,7 +338,8 @@ function cargarEstudiantes(){
 			sede: sede,
 			nivel: nivel,
 			grado: grado,
-			grupo: grupo
+			grupo: grupo,
+			complemento : complemento
 		}
 	},
 	columns:[
@@ -485,19 +354,9 @@ function cargarEstudiantes(){
 				if(asistencia == null){
 					asistencia = 1;
 				}
-
-
-
-				
-
-				
 				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-asistencia "+documento+"\" ";
-				
 				if (asistencia == 1) { opciones = opciones + " checked "; }
-				// else { opciones = opciones + " disabled "; }
-
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
-
 				return opciones;
 			}
 		},	
@@ -513,17 +372,9 @@ function cargarEstudiantes(){
 				var documento = full.num_doc;
 				var asistencia = full.asistencia;			
 				var consumio = full.consumio; 
-
-				
-
-				
 				var opciones = " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-consume "+documento+"\" ";
-				
-				//if (asistencia != 1) { opciones = opciones + " disabled "; }
 				if (consumio == 1) { opciones = opciones + " checked "; }
-
 				opciones = opciones + " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
-
 				return opciones;
 			}
 		},	
@@ -531,17 +382,9 @@ function cargarEstudiantes(){
 			sortable: false,
 			className: "textoCentrado",
 			"render": function ( data, type, full, meta ) {
-				// var tipoDocumento = full.tipo_doc;
-				// var documento = full.num_doc;
-				// var asistencia = full.asistencia;
-				// var index = auxRepitentes.indexOf(documento);
-				// if (index > -1) {opciones = "Si"; }else{opciones = "No"; }
-				
-
 				var repite = full.repite; 
 				var opciones = ""; 
 				if (repite == 1) {opciones = "Si"; }else{opciones = "No"; }
-
 				return opciones;
 			}
 		},		
@@ -554,19 +397,14 @@ function cargarEstudiantes(){
 				var asistencia = full.asistencia; 
 				var consumio = full.consumio; 			
 				var repitio = full.repitio;	
-				//var index = auxRepitieron.indexOf(documento);	
 				var opciones = "";			
 				opciones += " <div class=\"i-checks text-center\"> <input type=\"checkbox\" class=\"checkbox-header checkbox-header-repite "+documento+"\" ";		
-			
-				console.log(documento+" "+asistencia+" - "+consumio);
 				if (asistencia == 1 && consumio == 1 && repitio == 1){
 					opciones += " checked ";
 				}
-
 				if (asistencia == 0 || consumio == 0){
 					opciones += " disabled ";			
 				}
-
 				opciones += " data-columna=\"1\" value=\""+documento+"\" tipoDocumento = \""+tipoDocumento+"\"/> </div> ";
 				return opciones;
 			}
@@ -601,29 +439,12 @@ function cargarEstudiantes(){
 		$('.registroConsumo').slideDown();
 		if(dibujado == 0){
 			$('#loader').fadeOut();
-			dibujado++;
-			actualizarMarcadores(1);
-
+			dibujado++;			
 		}
-		totalEstudiantesSede(); 
-		$('.estadoSede').bootstrapToggle(); 
-
-
-
-
 		$('.i-checks').iCheck({
 		checkboxClass: 'icheckbox_square-green',
 		radioClass: 'iradio_square-green',
 		});
-		
-
-
-
-
-
-
-
-
 		//iCheck for checkbox and radio inputs
         $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
         checkboxClass: 'icheckbox_minimal-blue',
@@ -640,54 +461,30 @@ function cargarEstudiantes(){
         radioClass   : 'iradio_flat-green'
         });
 
-
         if(faltan <= 0){$( ".checkbox-header-repite:not(:checked)").iCheck('disable'); }
-
 
 	});	
 }
 
 function guardarEntregas(flagSellar){
-	
-
-
-	console.log("Guardar asistencia.");
+	// console.log("Guardar asistencia.");
 	var bandera = 0;	
 	var repitente = [];
 	var documento = "";
 	var tipoDocumento = "";
-
 	var mes = "";
 	var semana = "";
 	var dia = "";
 
-	if($("#mes").val() != "" && $("#mes").val() != null){
-		mes = $("#mes").val();
-	}
-
-
-	if($("#semana").val() != "" && $("#semana").val() != null){
-		semana = $("#semana").val();
-	}else{
-		semana = $('#semanaActual').val();	
-	}
-	
-	if($("#dia").val() != "" && $("#dia").val() != null){
-		dia = $("#dia").val();
-	}
-
-
-
-
-
-
-
+	if($("#mes").val() != "" && $("#mes").val() != null){ mes = $("#mes").val(); }
+	if($("#semana").val() != "" && $("#semana").val() != null){ semana = $("#semana").val(); }else{ semana = $('#semanaActual').val();}
+	if($("#dia").val() != "" && $("#dia").val() != null){ dia = $("#dia").val();}
 	var formData = new FormData();
-
 	formData.append('mes', mes);
 	formData.append('dia', dia);
 	formData.append('semana', semana);
 	formData.append('sede', $('#sede').val());
+	formData.append('complemento', $('#complemento').val());
 
 	$( ".checkbox-header-consume:checked").each(function(){
 		documento = $(this).val();
@@ -722,23 +519,13 @@ function guardarEntregas(flagSellar){
 			beforeSend: function(){ $("#loader").fadeIn(); },
 			success: function(data){
 				if(data.state == 1){
-
-
 					if(flagSellar == 1){
 						sellarAsistencia(1);
 					}else{
 						Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
-						// location.href="URL para redireccionar";
 						location.reload();
 						}});
 					}
-
-
-
-
-
-
-
 				}else{
 					Command:toastr.error(data.message,"Error al hacer el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});
 				}
@@ -765,28 +552,9 @@ function actualizarAsistencia(){
 	var semana = "";
 	var dia = "";
 
-	if($("#mes").val() != "" && $("#mes").val() != null){
-		mes = $("#mes").val();
-	}
-
-	if($("#semana").val() != "" && $("#semana").val() != null){
-		semana = $("#semana").val();
-	}else{
-		semana = $('#semanaActual').val();
-	}
-
-	if($("#dia").val() != "" && $("#dia").val() != null){
-		dia = $("#dia").val();
-	}
-
-
-
-
-
-
-
-
-
+	if($("#mes").val() != "" && $("#mes").val() != null){ mes = $("#mes").val(); }
+	if($("#semana").val() != "" && $("#semana").val() != null){ semana = $("#semana").val(); }else{ semana = $('#semanaActual').val(); }
+	if($("#dia").val() != "" && $("#dia").val() != null){ dia = $("#dia").val(); }
 	var formData = new FormData();
 	formData.append('mes', mes);
 	formData.append('semana', semana);
@@ -795,6 +563,7 @@ function actualizarAsistencia(){
 	formData.append('documento', $('#asistenteTramite').val());
 	formData.append('tipoDocumento', $('#tipoDocumentoAsistenteTramite').val());
 	formData.append('valor', $('#valorActualizacion').val());
+	formData.append('complemento', $('#complemento').val());
 	$.ajax({
 		type: "post",
 		url: "functions/fn_actualizar_asistencia_estudiante.php",
@@ -812,9 +581,7 @@ function actualizarAsistencia(){
 					$( ".checkbox-header-consume."+aux).iCheck('uncheck'); 
 					$( ".checkbox-header-consume."+aux).iCheck('disable'); 
 					$( ".checkbox-header-repite."+aux).iCheck('uncheck'); 
-					$( ".checkbox-header-repite."+aux).iCheck('disable'); 
-
-
+					$( ".checkbox-header-repite."+aux).iCheck('disable');
 
 				}else{
 					$( ".checkbox-header-consume."+aux).iCheck('enable'); 
@@ -831,7 +598,6 @@ function actualizarAsistencia(){
 	});
 }
 
-
 function sellarAsistencia(flag){
 	if(flag != 1){
 		console.log('Despliegue de modal para confirmar Sellar asistencia');
@@ -839,42 +605,18 @@ function sellarAsistencia(flag){
   		$('#ventanaSellar').modal();
 	}else{
 		console.log('Inicia Sellar asistencia');
-
-
-
-
-
 		var mes = "";
 		var semana = "";
 		var dia = "";
-
-		if( $("#mes").val() != "" && $("#mes").val() != null ){
-			mes = $("#mes").val();
-		}
-
-		if( $("#semana").val() != "" && $("#semana").val() != null ){
-			semana = $("#semana").val();
-		}else{
-			semana =  $('#semanaActual').val();
-		}
-
-		if( $("#dia").val() != "" && $("#dia").val() != null ){
-			dia = $("#dia").val();
-		}
-
-
-
-
-
+		if( $("#mes").val() != "" && $("#mes").val() != null ){ mes = $("#mes").val(); }
+		if( $("#semana").val() != "" && $("#semana").val() != null ){ semana = $("#semana").val(); }else{ semana =  $('#semanaActual').val(); }
+		if( $("#dia").val() != "" && $("#dia").val() != null ){ dia = $("#dia").val(); }
 		var formData = new FormData();
 		formData.append('mes', mes);
 		formData.append('semana', semana);
 		formData.append('dia', dia);
-
-
 		formData.append('sede', $('#sede').val());
-
-
+		formData.append('complemento', $('#complemento').val());
 		$.ajax({
 			type: "post",
 			url: "functions/fn_sellar_asistencia.php",

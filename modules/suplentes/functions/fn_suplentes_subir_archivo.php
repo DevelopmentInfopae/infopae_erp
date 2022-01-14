@@ -4,7 +4,8 @@ require_once '../../../db/conexion.php';
 
 $mes = isset($_POST['mes']) ? $Link->real_escape_string($_POST['mes']) : '';
 $semana = isset($_POST['semana']) ? $Link->real_escape_string($_POST['semana']) : '';
-
+$documentos = [];
+$condicionMunicipio = '';
 // Consulta que valida si ya existe la tabla y datos de suplentes para la semana seleccionada.
 $consulta_validar_semana = "SHOW TABLES LIKE 'suplentes$semana'";
 $respuesta_validar_semana = $Link->query($consulta_validar_semana) or die("Error al consultar tabla suplentes$semana: ". $Link->error);
@@ -40,6 +41,20 @@ if($respuesta_estudiantes_focalizados->num_rows > 0)
 	}
 }
 
+// consulta para traer los municipios del contrato 
+if ($_SESSION['p_Municipio'] == "0") {
+	$condicionMunicipio = "WHERE codigoDANE like '".$_SESSION['p_CodDepartamento']."%';";
+}else if($_SESSION['p_Municipio'] != "0"){
+	$condicionMunicipio = "WHERE codigoDANE = '" . $_SESSION['p_Municipio']."';";
+}
+$consultaMunicipios = "SELECT codigoDANE FROM ubicacion " . $condicionMunicipio;
+$respuestaMunicipios = $Link->query($consultaMunicipios) or die ('Error al consultar los municipios ' . mysqli_error($Link));
+if ($respuestaMunicipios->num_rows > 0) {
+	while ($dataMunicipios = $respuestaMunicipios->fetch_assoc()) {
+		$municipios[] = $dataMunicipios['codigoDANE'];
+	}
+}
+// exit(var_dump($municipios));
 $archivo_suplentes = fopen($_FILES['archivo_suplentes']['tmp_name'], 'r');
 $separador_registros = (count(fgetcsv($archivo_suplentes, null, ",")) > 1) ? "," : ";";
 
@@ -47,6 +62,15 @@ $separador_registros = (count(fgetcsv($archivo_suplentes, null, ",")) > 1) ? ","
 $fila = 1;
 while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == TRUE)
 {
+	if (in_array($registro[1], $documentos)) {
+		$respuesta_ajax = [
+			'success' => 0,
+			'message' => 'El Número de documento se encuentra <strong>repetido</strong>.<br><strong>Registros número : ' .$fila. '</strong>'
+		];
+		echo json_encode($respuesta_ajax);
+		exit();
+	}
+
 	if(empty($registro[0]))
 	{
 		$respuesta_ajax = [
@@ -67,6 +91,16 @@ while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == T
 		exit();
 	}
 
+	if($registro[1] < 0 || strrpos($registro[1],",") || strrpos($registro[1],"-"))
+	{
+		$respuesta_ajax = [
+			'success' => 0,
+			'message' => 'El Número de documento no puede ser <strong>Negativo</strong>.<br> o ser <strong>Decimal</strong>.<br> <strong>Registro número: '. $fila
+		];
+		echo json_encode($respuesta_ajax);
+		exit();
+	}
+
 	if (in_array($registro[1], $focalizados))
 	{
 		$respuesta_ajax = [
@@ -76,6 +110,27 @@ while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == T
 		echo json_encode($respuesta_ajax);
 		exit();
 	}
+
+	if(empty($registro[3]))
+	{
+		$respuesta_ajax = [
+			'success' => 0,
+			'message' => 'El Primer Apellido no puede estar <strong>vacío</strong>.<br><strong>Registro número: '. $fila
+		];
+		echo json_encode($respuesta_ajax);
+		exit();
+	}
+
+	if(empty($registro[5]))
+	{
+		$respuesta_ajax = [
+			'success' => 0,
+			'message' => 'El Primer Nombre no puede estar <strong>vacío</strong>.<br><strong>Registro número: '. $fila
+		];
+		echo json_encode($respuesta_ajax);
+		exit();
+	}
+
 
 	if(empty($registro[7]))
 	{
@@ -216,67 +271,81 @@ while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == T
 		echo json_encode($respuesta_ajax);
 		exit();
 	}
-
+	$documentos[] = $registro[1];
 	$fila++;
 }
 
-$consulta_crear_tabla_suplente = "CREATE TABLE `suplentes$semana` (
-`id` INT(11) NOT NULL AUTO_INCREMENT,
-`tipo_doc` INT(11) NULL DEFAULT '0',
-`num_doc` VARCHAR(24) NULL DEFAULT '-',
-`tipo_doc_nom` VARCHAR(10) NULL DEFAULT NULL,
-`ape1` VARCHAR(50) NULL DEFAULT '-',
-`ape2` VARCHAR(50) NULL DEFAULT '-',
-`nom1` VARCHAR(50) NULL DEFAULT '-',
-`nom2` VARCHAR(50) NULL DEFAULT '-',
-`genero` VARCHAR(1) NULL DEFAULT '-',
-`dir_res` VARCHAR(200) NULL DEFAULT NULL,
-`cod_mun_res` INT(11) NULL DEFAULT NULL,
-`telefono` VARCHAR(50) NULL DEFAULT NULL,
-`cod_mun_nac` INT(11) NULL DEFAULT '0',
-`fecha_nac` DATE NULL DEFAULT NULL,
-`cod_estrato` INT(11) NULL DEFAULT '0',
-`sisben` DECIMAL(5,3) NULL DEFAULT '0.000',
-`cod_discap` INT(11) NULL DEFAULT '0',
-`etnia` INT(11) NULL DEFAULT '0',
-`resguardo` INT(11) NULL DEFAULT '0',
-`cod_pob_victima` INT(11) NULL DEFAULT '0',
-`des_dept_nom` INT(11) NULL DEFAULT NULL,
-`nom_mun_desp` INT(11) NULL DEFAULT NULL,
-`cod_sede` BIGINT(20) NULL DEFAULT '0',
-`cod_inst` BIGINT(20) NULL DEFAULT '0',
-`cod_mun_inst` INT(11) NULL DEFAULT NULL,
-`cod_mun_sede` INT(11) NULL DEFAULT NULL,
-`nom_sede` VARCHAR(200) NULL DEFAULT NULL,
-`nom_inst` VARCHAR(200) NULL DEFAULT NULL,
-`cod_grado` INT(11) NULL DEFAULT '0',
-`nom_grupo` INT(11) NULL DEFAULT NULL,
-`cod_jorn_est` INT(11) UNSIGNED NULL DEFAULT '0',
-`estado_est` VARCHAR(20) NULL DEFAULT NULL,
-`repitente` VARCHAR(2) NULL DEFAULT NULL,
-`edad` VARCHAR(4) NULL DEFAULT '0',
-`zona_res_est` INT(11) NULL DEFAULT '0',
-`id_disp_est` INT(11) UNSIGNED NULL DEFAULT '0',
-`TipoValidacion` VARCHAR(50) NULL DEFAULT '',
-`activo` TINYINT(1) UNSIGNED NULL DEFAULT '0',
-PRIMARY KEY (`id`),
-INDEX `Acel_est1` (`num_doc`, `cod_jorn_est`, `cod_grado`, `cod_pob_victima`, `cod_inst`, `cod_discap`) USING BTREE
-)
-COLLATE='utf8_general_ci'
-ENGINE=InnoDB;";
-$respuesta_crear_tabla_suplente = $Link->query($consulta_crear_tabla_suplente) or die("Error al crear tabla de suplente$semana: ". $Link->error);
-if (! $respuesta_crear_tabla_suplente)
-{
+if ($fila > 1) {
+	// exit(var_dump($documentos));
+	$consulta_crear_tabla_suplente = "CREATE TABLE `suplentes$semana` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`tipo_doc` INT(11) NULL DEFAULT '0',
+	`num_doc` VARCHAR(24) NULL DEFAULT '-',
+	`tipo_doc_nom` VARCHAR(10) NULL DEFAULT NULL,
+	`ape1` VARCHAR(50) NULL DEFAULT '-',
+	`ape2` VARCHAR(50) NULL DEFAULT '-',
+	`nom1` VARCHAR(50) NULL DEFAULT '-',
+	`nom2` VARCHAR(50) NULL DEFAULT '-',
+	`genero` VARCHAR(1) NULL DEFAULT '-',
+	`dir_res` VARCHAR(200) NULL DEFAULT NULL,
+	`cod_mun_res` INT(11) NULL DEFAULT NULL,
+	`telefono` VARCHAR(50) NULL DEFAULT NULL,
+	`cod_mun_nac` INT(11) NULL DEFAULT '0',
+	`fecha_nac` DATE NULL DEFAULT NULL,
+	`cod_estrato` INT(11) NULL DEFAULT '0',
+	`sisben` DECIMAL(5,3) NULL DEFAULT '0.000',
+	`cod_discap` INT(11) NULL DEFAULT '0',
+	`etnia` INT(11) NULL DEFAULT '0',
+	`resguardo` INT(11) NULL DEFAULT '0',
+	`cod_pob_victima` INT(11) NULL DEFAULT '0',
+	`des_dept_nom` INT(11) NULL DEFAULT NULL,
+	`nom_mun_desp` INT(11) NULL DEFAULT NULL,
+	`cod_sede` BIGINT(20) NULL DEFAULT '0',
+	`cod_inst` BIGINT(20) NULL DEFAULT '0',
+	`cod_mun_inst` INT(11) NULL DEFAULT NULL,
+	`cod_mun_sede` INT(11) NULL DEFAULT NULL,
+	`nom_sede` VARCHAR(200) NULL DEFAULT NULL,
+	`nom_inst` VARCHAR(200) NULL DEFAULT NULL,
+	`cod_grado` INT(11) NULL DEFAULT '0',
+	`nom_grupo` INT(11) NULL DEFAULT NULL,
+	`cod_jorn_est` INT(11) UNSIGNED NULL DEFAULT '0',
+	`estado_est` VARCHAR(20) NULL DEFAULT NULL,
+	`repitente` VARCHAR(2) NULL DEFAULT NULL,
+	`edad` VARCHAR(4) NULL DEFAULT '0',
+	`zona_res_est` INT(11) NULL DEFAULT '0',
+	`id_disp_est` INT(11) UNSIGNED NULL DEFAULT '0',
+	`TipoValidacion` VARCHAR(50) NULL DEFAULT '',
+	`activo` TINYINT(1) UNSIGNED NULL DEFAULT '0',
+	`nom_acudiente` VARCHAR(200) NULL DEFAULT '',
+	`doc_acudiente` VARCHAR(20) NULL DEFAULT '',
+	`tel_acudiente` VARCHAR(50) NULL DEFAULT '',
+	`parentesco_acudiente` VARCHAR(50) NULL DEFAULT '',
+	PRIMARY KEY (`id`),
+	INDEX `Acel_est1` (`num_doc`, `cod_jorn_est`, `cod_grado`, `cod_pob_victima`, `cod_inst`, `cod_discap`) USING BTREE
+	)
+	COLLATE='utf8_general_ci'
+	ENGINE=InnoDB;";
+	$respuesta_crear_tabla_suplente = $Link->query($consulta_crear_tabla_suplente) or die("Error al crear tabla de suplente$semana: ". $Link->error);
+	if (! $respuesta_crear_tabla_suplente)
+	{
+		$respuesta_ajax = [
+			'success' => 0,
+			'message' => 'No fue posible crear la tabla para la importación de datos.'
+		];
+		echo json_encode($respuesta_ajax);
+		exit();
+	}
+}else if ($fila == 1) {
 	$respuesta_ajax = [
 		'success' => 0,
-		'message' => 'No fue posible crear la tabla para la importación de datos.'
+		'message' => 'El archivo esta vacío.'
 	];
 	echo json_encode($respuesta_ajax);
 	exit();
 }
 
 // Ciclo para generar la cadena de texto para la consulta de inserción.
-$consulta_insertar_suplentes = "INSERT INTO suplentes$semana (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo) VALUES ";
+$consulta_insertar_suplentes = "INSERT INTO suplentes$semana (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, nom_acudiente, doc_acudiente, tel_acudiente, parentesco_acudiente) VALUES ";
 
 $archivo_suplentes = fopen($_FILES['archivo_suplentes']['tmp_name'], 'r');
 $separador_registros = (count(fgetcsv($archivo_suplentes, null, ",")) > 1) ? "," : ";";
@@ -318,11 +387,16 @@ while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == T
 	$zona_residencia = $registro[33];
 	$discapacidad = $registro[34];
 	$tipo_validacion = $registro[35];
-	$activo = $registro[36];
-
-	$consulta_insertar_suplentes .= "('$tipo_documento', '$numero_documento', '$tipo_documento_nombre', '$primer_apellido', '$segundo_apellido', '$primer_nombre', '$segundo_nombre', '$genero', '$direccion_residencia', '$codigo_municipio_residencia', '$telefono', '$codigo_municipio_nacimiento', '$fecha_nacimiento', '$codigo_estrato', '$sisben', '$codigo_discapacidad', '$etnia', '$resguardo', '$poblacion_victima', '$nombre_departamento', '$nombre_municipio', '$codigo_sede', '$codigo_institucion', '$codigo_municipio_institucion', '$codigo_municipio_sede', '$nombre_sede', '$nombre_institucion', '$grado', '$grupo', '$jornada', '$estado', '$repitente', '$edad', '$zona_residencia', '$discapacidad', '$tipo_validacion', '$activo'), ";
+	$nom_acudiente = $registro[37];
+	$doc_acudiente = $registro[38];
+	$tel_acudiente = $registro[39];
+	$parentesco_acudiente = $registro[40];
+	// $activo = $registro[41];
+// exit(var_dump($registro));
+	$consulta_insertar_suplentes .= "('$tipo_documento', '$numero_documento', '$tipo_documento_nombre', '$primer_apellido', '$segundo_apellido', '$primer_nombre', '$segundo_nombre', '$genero', '$direccion_residencia', '$codigo_municipio_residencia', '$telefono', '$codigo_municipio_nacimiento', '$fecha_nacimiento', '$codigo_estrato', '$sisben', '$codigo_discapacidad', '$etnia', '$resguardo', '$poblacion_victima', '$nombre_departamento', '$nombre_municipio', '$codigo_sede', '$codigo_institucion', '$codigo_municipio_institucion', '$codigo_municipio_sede', '$nombre_sede', '$nombre_institucion', '$grado', '$grupo', '$jornada', '$estado', '$repitente', '$edad', '$zona_residencia', '$discapacidad', '$tipo_validacion', '0', '$nom_acudiente', '$doc_acudiente', '$tel_acudiente', '$parentesco_acudiente'), ";
 }
 
+// exit(var_dump($consulta_insertar_suplentes));
 $respuesta_insertar_suplentes = $Link->query(trim($consulta_insertar_suplentes, ', ')) or die('Error al insertar datos de suplentes: '. $Link->error);
 if ($respuesta_insertar_suplentes === FALSE)
 {

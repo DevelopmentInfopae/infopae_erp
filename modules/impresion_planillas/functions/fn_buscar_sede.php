@@ -1,14 +1,12 @@
 <option value="">Todas</option>
 <?php
-include '../../../config.php';
-require_once '../../../autentication.php';
-$periodoActual = $_SESSION['periodoActual'];
-require_once '../../../db/conexion.php';
-  //var_dump($_POST);
+  include '../../../config.php';
+  require_once '../../../autentication.php';
+  require_once '../../../db/conexion.php';
 
+  $periodoActual = $_SESSION['periodoActual'];
   $municipio = '';
   $institucion = '';
-
 
   if(isset($_POST['municipio'])){
     $municipio = $_POST['municipio'];
@@ -17,8 +15,6 @@ require_once '../../../db/conexion.php';
   if(isset($_POST['institucion'])){
     $institucion = $_POST['institucion'];
   }
-
-
 
 
   $Link = new mysqli($Hostname, $Username, $Password, $Database);
@@ -43,14 +39,30 @@ require_once '../../../db/conexion.php';
   }
 
 
-
-
-
-
-
-
-
-//echo $consulta;
+  if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
+    $codigoSedes = "";
+    $documentoCoordinador = $_SESSION['num_doc'];
+    $consultaCodigoSedes = "SELECT cod_sede FROM sedes$periodoActual WHERE id_coordinador = $documentoCoordinador;";
+    $respuestaCodigoSedes = $Link->query($consultaCodigoSedes) or die('Error al consultar el código de la sede ' . mysqli_error($Link));
+    if ($respuestaCodigoSedes->num_rows > 0) {
+      $codigoInstitucion = '';
+      while ($dataCodigoSedes = $respuestaCodigoSedes->fetch_assoc()) {
+        $codigoSedeRow = $dataCodigoSedes['cod_sede'];
+        $consultaCodigoInstitucion = "SELECT cod_inst FROM sedes$periodoActual WHERE cod_sede = $codigoSedeRow;";
+        $respuestaCodigoInstitucion = $Link->query($consultaCodigoInstitucion) or die ('Error al consultar el código de la institución ' . mysqli_error($Link));
+        if ($respuestaCodigoInstitucion->num_rows > 0) {
+          $dataCodigoInstitucion = $respuestaCodigoInstitucion->fetch_assoc();
+          $codigoInstitucionRow = $dataCodigoInstitucion['cod_inst'];
+          if ($codigoInstitucionRow == $codigoInstitucion || $codigoInstitucion == '') {
+            $codigoSedes .= "'$codigoSedeRow'".",";
+            $codigoInstitucion = $codigoInstitucionRow; 
+          }
+        }
+      }
+    }
+    $codigoSedes = substr($codigoSedes, 0 , -1);
+    $consulta .= " AND s.cod_sede IN ($codigoSedes) ";
+  }
 
 
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));

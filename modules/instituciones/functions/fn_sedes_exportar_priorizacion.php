@@ -47,10 +47,17 @@ pri.Etario3_CAJTRI AS grupo_etario_3_cajtri,
 pri.CAJMPS AS cajmps,
 pri.Etario1_CAJMPS AS grupo_etario_1_cajmps,
 pri.Etario2_CAJMPS AS grupo_etario_2_cajmps,
-pri.Etario3_CAJMPS AS grupo_etario_3_cajmps
+pri.Etario3_CAJMPS AS grupo_etario_3_cajmps,
+pri.RPC AS rpc,
+pri.Etario1_RPC AS grupo_etario_1_rpc,
+pri.Etario2_RPC AS grupo_etario_2_rpc,
+pri.Etario3_RPC AS grupo_etario_3_rpc
 FROM priorizacion$semana pri
 INNER JOIN sedes$periodo_actual sed ON sed.cod_sede = pri.cod_sede
 INNER JOIN ubicacion ubi ON ubi.CodigoDANE = sed.cod_mun_sede";
+
+// exit(var_dump($consulta_priorizacion));
+
 $respuesta_priorizacion = $Link->query($consulta_priorizacion) or die("Error al consultar prioriozacion$semana: ". $Link->error);
 if ($respuesta_priorizacion->num_rows > 0){
 	$fila = 2;
@@ -91,6 +98,10 @@ if ($respuesta_priorizacion->num_rows > 0){
 	$archivo->setCellValue("V1", "Grupo etario 1 CAJMPS")->getStyle('V1')->applyFromArray($estilos_titulos);
 	$archivo->setCellValue("W1", "Grupo etario 2 CAJMPS")->getStyle('W1')->applyFromArray($estilos_titulos);
 	$archivo->setCellValue("X1", "Grupo etario 3 CAJMPS")->getStyle('X1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("Y1", "RPC")->getStyle('Y1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("Z1", "Grupo etario 1 RPC")->getStyle('Z1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("AA1", "Grupo etario 2 RPC")->getStyle('AA1')->applyFromArray($estilos_titulos);
+	$archivo->setCellValue("AB1", "Grupo etario 3 RPC")->getStyle('AB1')->applyFromArray($estilos_titulos);
 
 	while($registros_priorizacion = $respuesta_priorizacion->fetch_assoc()){
 		$archivo->setCellValue("A". $fila, $registros_priorizacion["ciudad"]);
@@ -117,12 +128,16 @@ if ($respuesta_priorizacion->num_rows > 0){
 		$archivo->setCellValue("V". $fila, $registros_priorizacion["grupo_etario_1_cajmps"]);
 		$archivo->setCellValue("W". $fila, $registros_priorizacion["grupo_etario_2_cajmps"]);
 		$archivo->setCellValue("X". $fila, $registros_priorizacion["grupo_etario_3_cajmps"]);
+		$archivo->setCellValue("Y". $fila, $registros_priorizacion["rpc"]);
+		$archivo->setCellValue("Z". $fila, $registros_priorizacion["grupo_etario_1_rpc"]);
+		$archivo->setCellValue("AA". $fila, $registros_priorizacion["grupo_etario_2_rpc"]);
+		$archivo->setCellValue("AB". $fila, $registros_priorizacion["grupo_etario_3_rpc"]);
 		$priorizaciones[] = $registros_priorizacion;
 
 		$fila++;
 	}
 
-	foreach(range("A","V") as $columna) {
+	foreach(range("A","AB") as $columna) {
     $archivo->getColumnDimension($columna)->setAutoSize(true);
 	}
 

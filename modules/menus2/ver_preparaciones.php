@@ -2,6 +2,13 @@
 $titulo = 'Preparaciones';
 require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
+
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -18,7 +25,7 @@ $periodoActual = $_SESSION['periodoActual'];
   </div><!-- /.col -->
   <div class="col-lg-4">
     <div class="title-action">
-			<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
+			<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
 				<button class="btn btn-primary" onclick="window.location.href = 'nueva_preparacion.php';"><span class="fa fa-plus"></span>  Nuevo</button>
 			<?php } ?>
     </div>
@@ -74,8 +81,8 @@ $periodoActual = $_SESSION['periodoActual'];
                             </button>
                             <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
 															<li><a><span class="fa fa-file-excel-o"></span> Exportar</a></li>
-															<?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-																<li><a onclick="editarProducto(<?php echo $row1['Id']; ?>)"><span class="fa fa-pencil"></span>  Editar</a></li>
+															<?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
+																<li><a onclick="editarProducto(<?php echo $row1['Id']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
 																<?php if ($row1['Inactivo'] == 0): ?>
 																	<li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $row1['Codigo']; ?>" data-tipocomplemento="<?php echo $row1['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $row1['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span>  Eliminar</a></li>
 																<?php endif ?>

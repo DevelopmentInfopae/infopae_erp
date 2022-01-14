@@ -1,5 +1,12 @@
 <?php
 	include '../../header.php';
+
+  if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
 	$titulo = 'Actualizar Grupo etario';
 
   $codigoGrupoEtario = (isset($_POST['codigoGrupoEtario']) && $_POST['codigoGrupoEtario'] != '') ? mysqli_real_escape_string($Link, $_POST['codigoGrupoEtario']) : '';

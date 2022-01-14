@@ -14,10 +14,10 @@ if(isset($_POST['semanaActual']) && $_POST['semanaActual'] != ''){
 if(isset($_POST['sede']) && $_POST['sede'] != ''){
 	$sede = mysqli_real_escape_string($Link, $_POST['sede']);
 }
-
+// exit(var_dump($sede));
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " SELECT tipo_complemento AS complemento FROM focalizacion".$semanaActual." WHERE cod_sede = 16830700164701
+$consulta = " SELECT tipo_complemento AS complemento FROM focalizacion".$semanaActual." WHERE cod_sede = $sede
 GROUP BY complemento ORDER BY complemento asc ";
 
 //echo $consulta;

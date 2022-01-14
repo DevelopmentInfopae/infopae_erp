@@ -25,29 +25,12 @@ if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){
 	$anno = $annoAsistencia2D; 
 	$mes = $mesAsistencia;
 	$dia = $diaAsistencia;
-
-
-
-
-
-
 	$mesTablaAsistencia = $mes;
 	$annoTablaAsistencia = $anno;
 	include 'fn_validar_existencias_tablas.php';
 
-
-
-
-
-
-
-
-
-
 	$consulta = "select * from asistencia_enc$mes$anno where estado = \"2\" and mes = \"$mes\" and semana = \"$semanaActual\" and dia = \"$dia\" and cod_sede = \"$sede\" and complemento = \"$complemento\" ";
 
-
-	
 	$resultado = $Link->query($consulta);
 	if($resultado->num_rows > 0){
 		$resultadoAJAX = array(

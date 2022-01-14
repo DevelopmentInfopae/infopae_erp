@@ -6,6 +6,12 @@ $(document).ready(function(){
   $(document).on('click', '.verInfraestructuraSede', function(){ verInfraestructurasSede($(this)); });
   $(document).on('click', '.verTitularesSede', function(){ verTitularesSede($(this)); });
 
+    //Configuración de los radio button
+  $('input').iCheck({
+    checkboxClass: 'icheckbox_square',
+    radioClass: "iradio_square-green"
+  });
+
 	$('.titular').click(function(){
 		var aux = $(this).attr('numDoc');
 		$('#verTitular #numDoc').val(aux);
@@ -33,6 +39,22 @@ $(document).ready(function(){
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
   }
+
+    jQuery.extend(jQuery.validator.messages, {step:"Por favor ingresa un número entero", required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", 
+      email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", 
+      date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", 
+      number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", 
+      creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", 
+      accept: "Por favor, escribe un valor con una extensión aceptada.", 
+      maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), 
+      minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), 
+      rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), 
+      range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), 
+      max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), 
+      min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
+
+  var municipio = $('#municipio').val();
+  buscarInstitucion(municipio);
 });
 
 function editarSede(control){
@@ -78,6 +100,7 @@ function buscarTipoComplemento(jornada){
 function guardarSede(continuar){
   if($('#formCrearSede').valid()){
   	var formData = new FormData();
+    formData.append('zonaPae', $('#zonaPae').val());
     formData.append('email', $('#email').val());
     formData.append('codigo', $('#codigo').val());
     formData.append('nombre', $('#nombre').val());
@@ -139,6 +162,7 @@ function actualizarSede(continuar){
   if($('#formActualizarSede').valid()){
     var formData = new FormData();
     formData.append('id', $('#id').val());
+    formData.append('zonaPae', $('#zonaPae').val());
     formData.append('email', $('#email').val());
     formData.append('codigo', $('#codigo').val());
     formData.append('nombre', $('#nombre').val());
@@ -148,7 +172,7 @@ function actualizarSede(continuar){
     formData.append('direccion', $('#direccion').val());
     formData.append('variacion', $('#variacion').val());
     formData.append('imagen', $('#imagen')[0].files[0]);
-    formData.append('institucion', $('#institucion').val());
+    formData.append('institucion', $('.institucion').val());
     formData.append('coordinador', $('#coordinador').val());
     formData.append('complemento', $('#complemento').val());
     formData.append('manipuladora', $('#manipuladora').val());

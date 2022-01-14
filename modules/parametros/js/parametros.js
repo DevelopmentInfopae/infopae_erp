@@ -63,6 +63,7 @@ function guardarParametros(){
     formData.append('pagina_web', $('#pagina_web').val());
     formData.append('facebook', $('#facebook').val());
     formData.append('twitter', $('#twitter').val());
+    formData.append('tipoBusqueda', $('#tipoBusqueda').val());
 
     $.ajax({
       type: "POST",

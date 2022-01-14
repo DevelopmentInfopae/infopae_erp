@@ -2,6 +2,15 @@
 $titulo = 'Nuevos aportes calóricos y nutricionales';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
+
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
+if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<script>location.href='$baseUrl';</script>"; } 
+
 ?>
 
 <style type="text/css">

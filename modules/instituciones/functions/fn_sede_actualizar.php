@@ -5,6 +5,7 @@
 	// Declaración de variables pasadas mediante AJAX
 	$periodoActual = $_SESSION["periodoActual"];
 	$id = (isset($_POST['id']) && $_POST['id'] != '') ? mysqli_real_escape_string($Link, $_POST["id"]) : '';
+	$zona = (isset($_POST["zonaPae"])  && $_POST["email"] != '') ? mysqli_real_escape_string($Link, $_POST["zonaPae"])  : '';
 	$email = (isset($_POST['email']) && $_POST['email'] != '') ?  mysqli_real_escape_string($Link, $_POST["email"]) : '';
 	$codigo = (isset($_POST['codigo']) && $_POST['codigo'] != '') ? mysqli_real_escape_string($Link, $_POST["codigo"]) : '';
 	$estado = (isset($_POST['estado']) && $_POST['estado'] != '') ? mysqli_real_escape_string($Link, $_POST["estado"]) : '';
@@ -21,13 +22,18 @@
 	$coordinador = (isset($_POST['coordinador']) && $_POST['coordinador'] != '') ? mysqli_real_escape_string($Link, $_POST["coordinador"]) : '';
 	$manipuladoras = (isset($_POST['manipuladora']) && $_POST['manipuladora'] != '') ? mysqli_real_escape_string($Link, $_POST['manipuladora']) : '0';
 
+	$updateZonaPae = '';
+	if ($zona != 'undefined') {
+		$updateZonaPae .= " Zona_Pae = '$zona', ";
+	}
+
 	// Consultar si la sede ya existe en la BD
   $consulta1 = "SELECT cod_sede AS codigoSede FROM sedes$periodoActual WHERE cod_sede = '$codigo' AND id <> '$id'";
 	$resultado1 = $Link->query($consulta1);
 	if($resultado1->num_rows > 0){
     $respuestaAJAX = [
     	"estado" => 0,
-    	"mensaje" => "El codigo de sede N°: <strong>".$codigo."</strong> ya se encuentra registrado en el sistema. Por favor intente con un código diferente."
+    	"mensaje" => "El código de sede N°: <strong>".$codigo."</strong> ya se encuentra registrado en el sistema. Por favor intente con un código diferente."
     ];
 	 } else {
 	 	// Validar que el correo electrónico
@@ -36,7 +42,7 @@
 		if($resultadoEmail->num_rows > 0){
 			$respuestaAJAX = [
 	    	"estado" => 0,
-	    	"mensaje" => "El email: <strong>".$email."</strong> ya se encuentra registrado en el sistema. Por favor intente con un código diferente."
+	    	"mensaje" => "El Email: <strong>".$email."</strong> ya se encuentra registrado en el sistema. Por favor intente con un Email diferente."
 	    ];
 		} else {
 			// Consulta para obtener nombre de la institución.
@@ -46,7 +52,8 @@
 			$nombreInstitucion = $regNomInt['nom_inst'];
 
 			// Insertar la sede
-			$consultaActualizar = "UPDATE sedes$periodoActual SET cod_inst='$institucion', cod_sede='$codigo', nom_sede='$nombre', cod_mun_sede='$municipio', nom_inst='$nombreInstitucion', tipo_validacion='$validacion', Tipo_Complemento='$complemento', direccion='$direccion', telefonos='$telefono', email='$email', id_coordinador='$coordinador', sector='$sector', cod_variacion_menu='$variacion', estado='$estado', jornada='$jornada', cantidad_Manipuladora='$manipuladoras' WHERE id='$id'";
+			$consultaActualizar = "UPDATE sedes$periodoActual SET cod_inst='$institucion', cod_sede='$codigo', nom_sede='$nombre', cod_mun_sede='$municipio', nom_inst='$nombreInstitucion', tipo_validacion='$validacion', $updateZonaPae Tipo_Complemento='$complemento', direccion='$direccion', telefonos='$telefono', email='$email', id_coordinador='$coordinador', sector='$sector', cod_variacion_menu='$variacion', estado='$estado', jornada='$jornada', cantidad_Manipuladora='$manipuladoras' WHERE id='$id'";
+			// exit(var_dump($consultaActualizar));
 			$resultadoActualizar = $Link->query($consultaActualizar);
 			if($resultadoActualizar){
 				if(isset($_FILES["imagen"]["name"])){
@@ -70,7 +77,7 @@
 
 								$respuestaAJAX = [
 						    	"estado" => 1,
-						    	"mensaje" => "La sede ha sido actualizó con éxito!"
+						    	"mensaje" => "La sede ha sido actualizada con éxito!"
 						    ];
 
 						    $consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('" . date("Y-m-d H-i-s") . "', '" . $_SESSION["idUsuario"] . "', '39', 'Actualizó la sede: ". $nombre ." y se actualizó la imágen')";
@@ -102,13 +109,13 @@
 
 					$respuestaAJAX = [
 			    	"estado" => 1,
-			    	"mensaje" => "La sede ha sido actualizó con éxito!"
+			    	"mensaje" => "La sede ha sido actualizada con éxito!"
 			    ];
 				}
 			} else {
 				$respuestaAJAX = [
 		    	"estado" => 0,
-		    	"mensaje" => "La sede NO ha sido actualizó con éxito!"
+		    	"mensaje" => "La sede NO ha sido actualizada con éxito!"
 		    ];
 			}
 		}

@@ -52,6 +52,7 @@
         $_SESSION["p_Municipio"] = $row["CodMunicipio"];
         $_SESSION["p_nombre_representante_legal"] = $row["nombre_representante_legal"];
         $_SESSION["p_documento_representante_legal"] = $row["documento_representante_legal"];
+        $_SESSION["p_telefono"] = $row["telefono"];
         //Termina carga de parametros de la aplicación
 
         if($row1["nueva_clave"] == '' || $row1["nueva_clave"] < 1 ){

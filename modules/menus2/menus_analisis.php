@@ -3,6 +3,13 @@ $titulo = 'Menú';
 require_once '../../header.php';
 set_time_limit (0);
 ini_set('memory_limit','6000M');
+
+if ($permisos['menus'] == "0") {
+  ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';
 $Link = new mysqli($Hostname, $Username, $Password, $Database);
@@ -50,8 +57,8 @@ $Link->set_charset("utf8");
         <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">  Acciones <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-          <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0) { ?>
-            <li><a onclick="editarProducto(<?php echo $idProducto; ?>)"><span class="fa fa-pencil"></span> Editar </a></li>
+          <?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") { ?>
+            <li><a onclick="editarProducto(<?php echo $idProducto; ?>)"><span class="fas fa-pencil-alt"></span> Editar </a></li>
             <?php if ($Producto['Inactivo'] == 0): ?>
               <li><a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $Producto['Codigo']; ?>" data-tipocomplemento="<?php echo $Producto['Cod_Tipo_complemento']; ?>" data-ordenciclo="<?php echo $Producto['Orden_Ciclo']; ?>"><span class="fa fa-trash"></span> Eliminar </a></li>
             <?php else: ?>
@@ -117,7 +124,8 @@ $Link->set_charset("utf8");
       // 3. Materias primas
       $consultaMateriasPrimas = " SELECT fd.*, mac.* FROM fichatecnicadet fd LEFT JOIN menu_aportes_calynut mac ON fd.codigo = mac.cod_prod WHERE fd.idFT IN (SELECT f.id FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo WHERE fd.IdFT = '".$idProducto."' ) AND mac.grupo_alim != \"Contramuestra\" ";
 
-      //echo "<br>".$consultaMateriasPrimas."<br>";
+      // exit(var_dump($consultaMateriasPrimas));
+      // "<br>".$consultaMateriasPrimas."<br>";
 
       $result = $Link->query($consultaMateriasPrimas) or die ('Unable to execute query. '. mysqli_error($Link));
       while ($row = $result->fetch_assoc()){

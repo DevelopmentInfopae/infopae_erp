@@ -1,10 +1,15 @@
 <?php
   require_once '../../header.php';
-
   $titulo = 'Nuevo suplente';
   $periodoActual = $_SESSION['periodoActual'];
 
-  if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0)
+  if ($permisos['titulares_derecho'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
+  if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2")
   {
     $codigo_departamento = $_SESSION['p_CodDepartamento'];
     $codigo_municipio = $_SESSION['p_Municipio'];
@@ -70,12 +75,12 @@
                   </div>
                   <div class="form-group col-sm-3">
                     <label>N° de documento</label>
-                    <input type="number" name="num_doc" id="num_doc" class="form-control" min="0" required>
+                    <input type="number" name="num_doc" id="num_doc" class="form-control" min="1" step="1" required >
                     <label for="num_doc" class="error"></label>
                   </div>
                   <div class="form-group col-sm-3">
                     <label>Fecha de nacimiento</label>
-                    <input type="date" name="fecha_nac" class="form-control" max="<?php echo date('Y-m-d') ?>" required>
+                    <input type="date" name="fecha_nac" class="form-control" min="<?php $month = date('m'); $day = date('d'); $year = date('Y'); echo ($year-18).'-'.$month.'-'.$day;?>" max="<?php  echo ($year-3).'-'.$month.'-'.$day; ?>" required>
                     <label for="fecha_nac" class="error"></label>
                   </div>
                   <div class="form-group col-sm-3">
@@ -83,7 +88,13 @@
                     <select name="cod_mun_nac" class="form-control" required>
                       <option value="">seleccione</option>
                       <?php
-                        $consulta_municipios = "SELECT DISTINCT CodigoDANE, Ciudad FROM ubicacion ORDER BY Ciudad ASC";
+                        if ($_SESSION['p_Municipio'] == '0') {
+                          $condicionMunicipio = " WHERE CodigoDANE LIKE '" .$_SESSION['p_CodDepartamento']. "%'";
+                        }elseif ($_SESSION['p_Municipio'] != '0') {
+                          $condicionMunicipio = " WHERE CodigoDANE = '" .$_SESSION['p_Municipio'] . "'";
+                        }
+                        $consulta_municipios = "SELECT DISTINCT(CodigoDANE), Ciudad FROM ubicacion ".$condicionMunicipio." ORDER BY Ciudad ASC";
+                        // var_dump($consulta_municipios);
                         $resultadoMunicipios = $Link->query($consulta_municipios);
                         if ($resultadoMunicipios->num_rows > 0)
                         {
@@ -129,7 +140,7 @@
                   </div>
                   <div class="form-group col-sm-3">
                     <label>Teléfono</label>
-                    <input type="number" name="telefono" class="form-control" min="0" required>
+                    <input type="text" name="telefono" class="form-control" min="0" required>
                     <label for="telefono" class="error"></label>
                   </div>
                   <div class="form-group col-sm-3">
@@ -190,19 +201,45 @@
                     </select>
                     <label for="cod_estrato" class="error"></label>
                   </div>
+
+                  <div class="form-group col-sm-3">
+                    <label for="nomAcudiente">Nombre acudiente</label>
+                    <input type="text" name="nomAcudiente" id="nomAcudiente" class="form-control">
+                    <label for="nomAcudiente" class="error"></label>
+                  </div>
+
+                  <div class="form-group col-sm-3">
+                    <label for="doc_acudiente">Documento acudiente</label>
+                    <input type="text" name="doc_acudiente" id="doc_acudiente" onchange="validaCaracteres()" class="form-control">
+                    <label for="doc_acudiente" class="error"></label>
+                  </div>
+
+                  <div class="form-group col-sm-3">
+                    <label for="telAcudiente">Teléfono acudiente</label>
+                    <input type="text" name="telAcudiente" id="telAcudiente" class="form-control">
+                    <label for="telAcudiente" class="error"></label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-sm-3">
+                    <label for="parentescoAcudiente">Parentesco acudiente</label>
+                    <input type="text" name="parentescoAcudiente" id="parentescoAcudiente" class="form-control">
+                    <label for="parentescoAcudiente" class="error"></label>
+                  </div>
+
                   <div class="form-group col-sm-3">
                     <label for="sector">Sector</label>
                     <div class="radio" style="margin-top: 5px; margin-bottom: 0px;">
-                      <label>
-                        <input type="radio" name="sector" id="urbano" value="1" checked required> Urbano
-                      </label>
-                      <label>
-                        <input type="radio" name="sector" id="rural" value="2" required> Rural
-                      </label>
+                      <!-- <label> -->
+                        <input type="radio" name="sector" id="urbano" value="2" checked required> Urbano
+                      <!-- </label> -->
+                      <!-- <label> -->
+                        <input type="radio" name="sector" id="rural" value="1" required> Rural
+                      <!-- </label> -->
                     </div>
                     <label for="sector" class="error"></label>
                   </div>
-                </div>
+                </div> <!-- row -->
                 <div class="col-sm-12">
                     <em id="errorEst" style="display: none; font-size: 120%;" class="text-danger"> <b>Nota : </b>Ya ha sido registrado un estudiante con el número de documento especificado en <b><span id="semanasErr"></span></b>.</em>
                 </div>
@@ -375,15 +412,13 @@
                     <select class="form-control" id="semana" name="semana">
                       <option value="">seleccione</option>
                       <?php
-                        $consulta_semanas = "SELECT TABLE_NAME AS tabla
-                                            FROM INFORMATION_SCHEMA.TABLES
-                                            WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME LIKE 'suplentes%'";
+                        $consulta_semanas = "SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas;";
                         $resultado_semanas = $Link->query($consulta_semanas) or die ('Error al consultar planilla_semanas: '. $Link->error);
                         if($resultado_semanas->num_rows > 0)
                         {
                           while($semana = $resultado_semanas->fetch_assoc())
                           {
-                            $nombre_semana = str_replace('suplentes', '', $semana["tabla"]);
+                            $nombre_semana = $semana['semana'];
                       ?>
                             <option value="<?= $nombre_semana; ?>" <?php if(isset($_POST['semana']) && $_POST['semana'] == $nombre_semana){ echo " selected "; } ?>><?= $nombre_semana; ?></option>
                       <?php

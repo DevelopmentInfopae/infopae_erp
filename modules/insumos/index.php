@@ -1,6 +1,13 @@
 <?php
 $titulo = 'Insumos';
 require_once '../../header.php';
+
+if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+  ?><script type="text/javascript">
+    window.open('<?= $baseUrl ?>', '_self');
+  </script>
+<?php exit(); }
+
 $periodoActual = $_SESSION['periodoActual'];
 
 $tiposInsumos = [];
@@ -12,7 +19,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
     $tiposInsumos[$tipoInsumo['Codigo']] = $tipoInsumo['Descripcion'];
   }
 }
-
+// var_dump($tipoInsumo);
 ?>
 
 <style type="text/css">
@@ -31,7 +38,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
     </ol>
   </div><!-- /.col -->
   <div class="col-lg-4">
-    <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
+    <?php if ($_SESSION['perfil'] == "0" || $permisos['configuracion'] == "2"): ?>
       <div class="title-action">
         <button class="btn btn-primary" onclick="window.location.href = 'nuevo_insumo.php';"><span class="fa fa-plus"></span>  Nuevo</button>
       </div>
@@ -54,7 +61,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
               $insumos[] = $insumo;
             }
           }
-
+          // var_dump($insumos);
 
            ?>
 
@@ -74,7 +81,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
               <?php foreach ($insumos as $ins): ?>
                 <tr codigoinsumo="<?php echo $ins['Codigo']; ?>">
                   <td><?php echo $ins['Codigo']; ?></td>
-                  <td><?php echo $tiposInsumos[substr($ins['Codigo'], 0, 4)]; ?></td>
+                  <td><?php echo strtoupper($tiposInsumos[substr($ins['Codigo'], 0, 4)]); ?></td>
                   <td><?php echo $ins['Descripcion']; ?></td>
                   <td><?php echo $ins['NombreUnidad1']; ?></td>
                   <td><?php echo $ins['CantidadUnd1']; ?></td>
@@ -87,7 +94,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
                         </button>
                         <ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
                           <?php if ($_SESSION['perfil'] == 1 || $_SESSION['perfil'] == 0): ?>
-                          <li><a onclick="editarInsumo('<?php echo $ins['Codigo']; ?>')"><span class="fa fa-pencil"></span>  Editar</a></li>
+                          <li><a onclick="editarInsumo('<?php echo $ins['Codigo']; ?>')"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
                             <li>
                               <a data-toggle="modal" data-target="#modalEliminar"  data-codigo="<?php echo $ins['Codigo']; ?>"><span class="fa fa-trash"></span>  Eliminar</a>
                             </li>

@@ -25,8 +25,12 @@ $fechaDespacho = $hoy;
 $mesAnno = '';
 $mes = $_POST['mesiConsulta'];
 if($mes < 10){ $mes = '0'.$mes; }
-
 $mes = trim($mes);
+
+$mesEntrega = $_POST['mesiConsulta'];
+if($mesEntrega < 10){ $mesEntrega = '0'.$mesEntrega; }
+$mesEntrega = trim($mesEntrega);
+
 $anno = $_POST['annoi'];
 $anno = substr($anno, -2);
 $anno = trim($anno);
@@ -83,7 +87,7 @@ $_POST = array_values($_POST);
 $annoActual = $tablaAnnoCompleto;
 $despachosRecibidos = $_POST;
 
-//var_dump($despachosRecibidos);
+// var_dump($despachosRecibidos);
 
 // Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
 
@@ -99,6 +103,64 @@ $despachos = array();
 $municipios = array();
 $diasMostrar = array();
 $semanasMostrar = array();
+$complementos = [];
+$contrato = '';
+$nombreMesEntrega = '';
+$numeroEntrega = '';
+$totalDespachosRPC = 0;
+$Rpc = '';
+
+// MODIFICACIONES JERSON
+foreach ($despachosRecibidos as $key => $documento) {
+	$consultaTipoComplemento = "SELECT Tipo_Complem FROM despachos_enc" .$mesEntrega.$tablaAnno. " WHERE Num_Doc = " .$documento. ";";
+	$respuestaTipoComplemento = $Link->query($consultaTipoComplemento) or die ('Error al consultar el tipo de complemento' . mysqli_error($Link));
+	if ($respuestaTipoComplemento->num_rows > 0) {
+		$dataTipoComplemento = $respuestaTipoComplemento->fetch_assoc();
+		$complementos[] = $dataTipoComplemento['Tipo_Complem'];
+	}
+}
+
+foreach ($complementos as $key => $complemento) {
+	if ($complemento == 'RPC') {
+		$totalDespachosRPC ++;
+	}
+}
+
+if ($totalDespachosRPC == count($despachosRecibidos)) {
+	$Rpc = 'si';
+}else if ($totalDespachosRPC != count($despachosRecibidos)) {
+	$Rpc = 'no';
+}
+
+if ($Rpc == 'si') {
+	$consultaMesEntrega = "SELECT NombreMes FROM planilla_dias WHERE mes =".$mesEntrega.";";
+	$respuestaMesEntrega = $Link->query($consultaMesEntrega) or die('Error al consulta el nombre del mes de entrega ' .mysqli_error($Link));
+	if ($respuestaMesEntrega->num_rows > 0) {
+		$dataMesEntrega = $respuestaMesEntrega->fetch_assoc();
+		$nombreMesEntrega = $dataMesEntrega['NombreMes'];
+	}
+
+	$consultaNumeroEntrega = "SELECT NumeroEntrega FROM planilla_dias WHERE mes =".$mesEntrega.";";
+	$respuestaNumeroEntrega = $Link->query($consultaNumeroEntrega) or die('Error al consulta el nombre del mes de entrega ' .mysqli_error($Link));
+	if ($respuestaNumeroEntrega->num_rows > 0) {
+		$dataNumeroEntrega = $respuestaNumeroEntrega->fetch_assoc();
+		$numeroEntrega = $dataNumeroEntrega['NumeroEntrega'];
+	}
+	if ($numeroEntrega < 10) {
+		$numeroEntrega = "0".$numeroEntrega;
+	}
+
+
+	$consultaContrato = "SELECT NumContrato FROM parametros;";
+	$respuestaContrato = $Link->query($consultaContrato) or die('Error al consultar el número de contrato ' .mysqli_error($Link));
+	if ($respuestaContrato->num_rows > 0) {
+		$dataContrato = $respuestaContrato->fetch_assoc();
+		$contrato = $dataContrato['NumContrato'];
+	}
+}
+
+
+// END MODIFICACIONES JERSON
 
 foreach ($despachosRecibidos as &$valor){
 	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada, pm.Nombre AS nombre_proveedor FROM despachos_enc$mesAnno de INNER JOIN productosmov$mesAnno pm ON de.Num_Doc = pm.Numero INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO WHERE Tipo_Doc = 'DES' AND de.Num_Doc = $valor ";
@@ -793,6 +855,6 @@ if($current_y > 162)
 	include 'despacho_consolidado_header.php';
 }
 
-include 'despacho_firma_planilla.php';
+include 'despacho_firma_planilla_consolidado.php';
 
 $pdf->Output();

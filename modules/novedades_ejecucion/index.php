@@ -1,5 +1,12 @@
 <?php
   include '../../header.php';
+
+  if ($permisos['novedades'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit();}
+
   $titulo = 'Novedades de focalización';
 
   $codigo_municipio = $_SESSION['p_Municipio'];
@@ -19,7 +26,7 @@
   </div>
   <div class="col-lg-4">
     <div class="title-action">
-			<?php if($_SESSION['perfil'] == 0 || $_SESSION['perfil'] == 1){ ?>
+			<?php if($_SESSION['perfil'] == "0" || $permisos['novedades'] == "2"){ ?>
 				<a href="#" class="btn btn-primary" onclick="crearNovedadPriorizacion();"><i class="fa fa-plus"></i> Nuevo </a>
 			<?php } ?>
 		</div>

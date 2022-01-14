@@ -1,5 +1,12 @@
 <?php 
   include '../../header.php';
+
+  if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+  <?php exit(); }
+
   $titulo = 'Usuarios';
 ?>
 
@@ -84,7 +91,7 @@
                                     Acciones <span class="caret"></span>
                                   </button>
                                   <ul class="dropdown-menu pull-right" aria-labelledby="dLabel">
-                                    <li><a href="#" class="btnEditarUsuario" data-idusuario="' . $row["idUsuario"] . '"><i class="fa fa-pencil fa-lg"></i> Editar</a></li>'.
+                                    <li><a href="#" class="btnEditarUsuario" data-idusuario="' . $row["idUsuario"] . '"><i class="fas fa-pencil-alt fa-lg"></i> Editar</a></li>'.
                                     $eliminar .
                                     '<li><a href="#" onclick="restaurarContrasenaLista(' . $row["idUsuario"] . ');"><i class="fa fa-retweet fa-lg"></i> Restaurar password</a></li>
                                     <li><a style="cursor: default"><i class="fa fa-check fa-lg"></i> Estado: <strong>'.$estado.'</strong></a></li>

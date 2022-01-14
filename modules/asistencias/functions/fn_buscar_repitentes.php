@@ -5,24 +5,14 @@ include 'fn_fecha_asistencia.php';
 
 // Declaración de variables.
 $data = [];
-
 $mes = "";
 $dia = "";
-
 $semanaActual = "";
 $sede = "";
 $nivel = "";
 $grado = "";
 $grupo = "";
-
-
 $anno = $annoAsistencia2D; 
-
-
-
-
-
-
 
 if(isset($_POST["mes"]) && $_POST["mes"] != ""){
 	$mes = mysqli_real_escape_string($Link, $_POST["mes"]);
@@ -36,12 +26,7 @@ if(isset($_POST["dia"]) && $_POST["dia"] != ""){
 	$dia = $diaAsistencia;
 }
 
-
-
 $periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
-
-// var_dump($_POST);
-
 $semanaActual = (isset($_POST["semanaActual"]) && $_POST["semanaActual"] != "") ? mysqli_real_escape_string($Link, $_POST["semanaActual"]) : "";
 $sede = (isset($_POST["sede"]) && $_POST["sede"] != "") ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
 $complemento = (isset($_POST["complemento"]) && $_POST["complemento"] != "") ? mysqli_real_escape_string($Link, $_POST["complemento"]) : "";
@@ -67,34 +52,19 @@ if($grupo != "" ){
 }
 $consulta .= " ORDER BY r.num_doc desc, f.cod_grado asc , f.nom_grupo asc , f.ape1 asc ";
 
-
-//echo "<br><br>$consulta<br><br>";
-
-
-
-
-
-
-
-
-
-
-
-
-
 $resultado = $Link->query($consulta);
 if($resultado){
 	if($resultado->num_rows > 0){
-	  while($row = $resultado->fetch_assoc()) {
-	    $data[] = $row;
-	  }
+	  	while($row = $resultado->fetch_assoc()) {
+	    	$data[] = $row;
+	  	}
 	}
 
 	$output = [
-	  'sEcho' => 1,
-	  'iTotalRecords' => count($data),
-	  'iTotalDisplayRecords' => count($data),
-	  'aaData' => $data
+	  	'sEcho' => 1,
+	  	'iTotalRecords' => count($data),
+	  	'iTotalDisplayRecords' => count($data),
+	  	'aaData' => $data
 	];
 
 	echo json_encode($output);
