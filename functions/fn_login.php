@@ -55,6 +55,13 @@
         $_SESSION["p_telefono"] = $row["telefono"];
         //Termina carga de parametros de la aplicación
 
+        $consultaGruposEtarios = " SELECT count(ID) as 'cantidad' FROM grupo_etario "; 
+        $resultadoGruposEtarios = $Link->query($consultaGruposEtarios);
+        if ($resultadoGruposEtarios->num_rows > 0) {
+          $dataGruposEtarios = $resultadoGruposEtarios->fetch_assoc();
+        }
+        $_SESSION['cant_gruposEtarios'] = $dataGruposEtarios['cantidad']; 
+
         if($row1["nueva_clave"] == '' || $row1["nueva_clave"] < 1 ){
           echo 'nueva_clave';
           $_SESSION['nueva_clave'] = 'si';

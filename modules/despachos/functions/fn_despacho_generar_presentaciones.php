@@ -2,8 +2,16 @@
 // Marzo 8 de 2017, se va a calcular de a cuerdo a las presentaciones, cuanto se de be enviar de cada presentación
 // tomamos como base la variable cantund3 > 0 dado que la mayoria de los productos tienen hasta la 2.
 // Este proceso se repite para cada grupo etario.
+$cantidadNecesaria = 0;
+for ($m=1; $m <= $cantGruposEtarios ; $m++) {
+    $grupoIndex = "grupo".$m; 
+    if (isset($auxAlimento[$grupoIndex])) {
+        $cantidadAux = $auxAlimento[$grupoIndex] * $sede[$grupoIndex];
+    }
+    $cantidadNecesaria = $cantidadNecesaria + $cantidadAux;
+}
 
-$cantidadNecesaria = ($auxAlimento["grupo1"] * $sede["grupo1"]) + ($auxAlimento["grupo2"] * $sede["grupo2"]) + ($auxAlimento["grupo3"] * $sede["grupo3"]);
+// $cantidadNecesaria = ($auxAlimento["grupo1"] * $sede["grupo1"]) + ($auxAlimento["grupo2"] * $sede["grupo2"]) + ($auxAlimento["grupo3"] * $sede["grupo3"]);
 
 $valor2 = '';
 $valor3 = '';
