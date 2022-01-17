@@ -215,7 +215,7 @@ foreach ($variaciones as $id => $variacion) {
 		$consulta = $consulta." ps.DIA = ".$dias[$i]." ";
 	}
 	if(count($dias) > 0){ $consulta = $consulta." ) "; }
-	$consulta = $consulta." order by ftd.codigo asc ";
+	$consulta = $consulta." order by ftd.codigo asc, ft.Codigo ASC ";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
 		$aux = 0;
@@ -315,7 +315,7 @@ foreach ($variaciones as $id => $variacion) {
 			}
 		}
 	}
-	$items = $itemsIngredientes;
+	$items = $itemsIngredientes; 
 
 	// Se armara un array con las coverturas de las sedes para cada uno de los grupos etarios  y al final se creara un array con los totales de las sedes.
 	$cantGruposEtarios = $_SESSION['cant_gruposEtarios']; 
@@ -402,12 +402,13 @@ foreach ($variaciones as $id => $variacion) {
 		$cantidadItems = count($items);
 	}
 
+// **** *************************************************************************************************************************************************************************//
 	// Si la bandera es igual a cero entonces no existen registros para el esa sede en esa semana y podemos proceder a hacer la inserción.
 	if($bandera == 0 && $cantidadItems > 0){
 		// Vamos a crear el Array de complementosCantidades para hacer las
 		// inserciones con las cantidades precisas
 		// Para poder contabilizar que cantidad de un alimento para un grupo etario para un día determinado de la semana, se hace necesario la inclusion de 5 variables d1,d2,d3,d4,d5 que representan los días de actividad escolar para cada uno de los grupos etarios, en total serian 15 variables que se agregarian al array.
-		$item = $items[0];
+		$item = $items[0]; 
 		$complementoCantidades = array(
 			"nomDias" => $item["NOMDIAS"],
 			"codigoPreparado" => $item["codigoPreparado"],
@@ -477,7 +478,7 @@ foreach ($variaciones as $id => $variacion) {
 		// Agregando el primer complemento al Array de complementosCantidades, a
 		// continuación se agregaran los demas elementos buscando cuales se repiten
 		// para poder determinar las cantidades de cada complemento.
-		$complementosCantidades[] = $complementoCantidades;
+		$complementosCantidades[] = $complementoCantidades; 
 		for ($i=1; $i <  count($items); $i++) {
 			$item = $items[$i];
 			$encontrado = 0;
@@ -491,7 +492,7 @@ foreach ($variaciones as $id => $variacion) {
 							$grupoIndex = "grupo".$n;
 							$complemento[$cantidadGrupoIndex]++;
 							if (isset($complemento[$grupoIndex])) {
-								$complemento[$grupoIndex] = $complemento[$grupoIndex] + $item['cantidad'] * $item['cantidadPresentacion'];
+								$complemento[$grupoIndex] = $complemento[$grupoIndex] + ($item['cantidad'] * $item['cantidadPresentacion']);
 								$complemento["total"] = $complemento["total"] + $complemento[$grupoIndex];
 							}
 							for ($m=1; $m <=5 ; $m++) { 
@@ -543,6 +544,12 @@ foreach ($variaciones as $id => $variacion) {
 					$cantidadGrupoArray = "cantidadGrupo".$m;
 					$complementoNuevo[$cantidadGrupoArray] = 0;
 				}
+
+				for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
+					$grupoArrayIndex = "grupo".$m;
+					$complementoNuevo[$grupoArrayIndex] = 0;
+				}
+
 				for ($m=1; $m <= $cantGruposEtarios; $m++) {
 					for ($n=1; $n <= 5 ; $n++) { 
 				 		$grupodiasArray = "grupo".$m."_d".$n;
@@ -585,8 +592,10 @@ foreach ($variaciones as $id => $variacion) {
 				$complementosCantidades[] = $complementoNuevo;
 			} // encontrado 
 		}// Termina el for externo el de los items
-
 		$_SESSION['complementosCantidades'] = $complementosCantidades;
+		// var_dump($complementosCantidades);
+// *****************************************************************************************************************************************************************//
+
 
 		/* Insertando movimiento */
 		/* Leyendo el consecutivo */
@@ -616,6 +625,8 @@ foreach ($variaciones as $id => $variacion) {
 		date_default_timezone_set('America/Bogota');
 		$fecha = date("Y-m-d H:i:s");
 
+// ************************************* INSERCIONES TABLAS PRODUCTOS MOV   ********************************************************************************************//
+
 		for ($i=0; $i < count($sedes); $i++){
 			$bodegaDestino = $sedes[$i];
 			$consecutivo = $consecutivos[$i];
@@ -632,7 +643,7 @@ foreach ($variaciones as $id => $variacion) {
 				$cantidad = 0;
 				$auxConsulta = '';
 				$auxConsulta = $auxConsulta." ( ";
-				$auxAlimento = $complementosCantidades[$j];
+				$auxAlimento = $complementosCantidades[$j]; 
 				$sede = $sedesCobertura[$i]; 
 				if ($auxAlimento['variacion_menu'] != $sedes_variaciones[$sede['cod_sede']]) {
 					continue;
@@ -684,8 +695,12 @@ foreach ($variaciones as $id => $variacion) {
 				}
 			}
 		}
-
 		$resultado = $Link->query($consulta) or die ('Unable to execute query - Inserción en productosmovdet '. mysqli_error($Link));
+
+// ***************************************************** FIN INSERCIONES TABLAS PRODUCTOS MOV **************************************************************************//		
+
+
+//  **************************************************** INSERCIONES TABLAS DESPACHOS **********************************************************************************//
 
 		/************************* Modificación que agregar 3 campos mas para la tabla despachos_encMESAÑO *************************/
 		// Consulta que inserta los registros en la tabla despachos_encMESAÑO.
@@ -711,7 +726,7 @@ foreach ($variaciones as $id => $variacion) {
 			}
 
 			for ($j=0; $j < count($complementosCantidades) ; $j++) {
-				$complemento = $complementosCantidades[$j];
+				$complemento = $complementosCantidades[$j]; 
 				for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
 					$grupoIndex = "grupo".$m;
 					if (isset($complemento[$grupoIndex])) {
@@ -743,14 +758,14 @@ foreach ($variaciones as $id => $variacion) {
 
 		$consulta = " insert into despachos_det$annoMes (tipo_doc, num_doc, cod_alimento, id_grupoetario, cantidad, d1, d2, d3, d4, d5) values ";
 		$banderaPrimero = 0;
-		for ($i=0; $i < count($sedesCobertura) ; $i++) {
+		for ($i=0; $i < count($sedesCobertura) ; $i++) {  // ciclo recorrer las sedes
 			$sede = $sedesCobertura[$i];
-			for ($j=0; $j < count($complementosCantidades) ; $j++){
+			for ($j=0; $j < count($complementosCantidades) ; $j++){  // cilo recorre los alimentos
 
 				// Se toman los datos del alimento en una cadena auxiliar para despues
 				// validar si la cantidad es mayor a cero y agregar a la cadena que va
 				// a hacer la insersión
-				$auxAlimento = $complementosCantidades[$j];
+				$auxAlimento = $complementosCantidades[$j]; 
 				if ($auxAlimento['variacion_menu'] != $sedes_variaciones[$sede['cod_sede']]) {
 					continue;
 				}
@@ -792,10 +807,12 @@ foreach ($variaciones as $id => $variacion) {
 					$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
 					$consulta = $consulta." ) ";
 
-				}else{
-					for ($m=0; $m <= $cantGruposEtarios ; $m++) { 
-						$indexGrupo = "grupo".$m;
-						if ( (isset($auxAlimento[$indexGrupo]) && $auxAlimento[$indexGrupo] > 0) && ( isset($sede[$indexGrupo]) && $sede[$indexGrupo] > 0) ) {
+				}else{ 
+					for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
+						$indexGrupo = "grupo".$m; 
+						$auxAlimentoCodicional = $auxAlimento[$indexGrupo];
+						$auxSedeCondicional = $sede[$indexGrupo];
+						if ( $auxAlimentoCodicional > 0   &&  $auxSedeCondicional > 0  ) {
 							if($banderaPrimero == 0){
 								$banderaPrimero++;
 							}else{
@@ -806,25 +823,26 @@ foreach ($variaciones as $id => $variacion) {
 							$consulta = $consulta." ( ";
 							$codigo = $auxAlimento['codigo'];
 							$componente = $auxAlimento['Componente'];							
-							$cantidad = $auxAlimento[$indexGrupo] * $sede[$indexGrupo];
 							$unidad = $auxAlimento['unidadMedida'];
 							$consecutivo = $consecutivos[$i];
 							for ($n=1; $n <= 5 ; $n++) { 
 								$grupoDiaIndex = "grupo".$m."_d".$n;
-								$d[$n] = $auxAlimento[$grupoDiaIndex] * $sede[$indexGrupo];
+								$d[$n] = $auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]/5);
 							}
 							$d1 = $d[1];
 							$d2 = $d[2];
 							$d3 = $d[3];
 							$d4 = $d[4];
 							$d5 = $d[5];
+							$cantidad = $d1 + $d2 + $d3 + $d4 + $d5;
 							$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5";
 							$consulta = $consulta." ) ";
 						}
 					}
 				}
 			}// Termina el for de los alimentos
-		}
+		}// termina el for de las sedes 
+
 		$resultado = $Link->query($consulta) or die ('Inserción despachos_det - Unable to execute query. '. mysqli_error($Link));
 		$Link->close();
 		$despachado = true;
