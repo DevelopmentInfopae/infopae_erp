@@ -68,6 +68,9 @@ if($resultado->num_rows >= 1){
 	}
 }
 
+// contar el numero de dias para posteriores operaciones 
+$cantidadDias = count($dias); 
+
 // Se van a buscar el mes y el año a partir de la tabla de planilla semana y se va a verificar la existencia de las tablas.
 $consulta = " select ano, mes, semana from planilla_semanas where semana = '$semana' limit 1 ";
 $resultado = $Link->query($consulta) or die ('Error al cosultar planillas_semanas: '. mysqli_error($Link));
@@ -401,7 +404,7 @@ foreach ($variaciones as $id => $variacion) {
 	if(isset($items)){
 		$cantidadItems = count($items);
 	}
-
+	// exit(var_dump($items));	
 // **** *************************************************************************************************************************************************************************//
 	// Si la bandera es igual a cero entonces no existen registros para el esa sede en esa semana y podemos proceder a hacer la inserción.
 	if($bandera == 0 && $cantidadItems > 0){
@@ -452,22 +455,27 @@ foreach ($variaciones as $id => $variacion) {
 				$complementoCantidades[$grupoIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 				$complementoCantidades["total"] = $complementoCantidades[$grupoIndex];
 				for ($j=1; $j <=5 ; $j++) { 
-					$grupoDiaIndex = "grupo".$i."_d".$j;
-					$auxDias = $item["NOMDIAS"];
+					// $grupoDiaIndex = "grupo".$i."_d".$j;
+					$auxDias = $item["NOMDIAS"]; 
 					switch ($auxDias) {
-						case "lunes" || "Lunes":
+						case ("lunes"):
+							$grupoDiaIndex = "grupo".$i."_d".'1';
 							$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 						break;
-						case "martes" || "Martes":
+						case ("martes"):
+							$grupoDiaIndex = "grupo".$i."_d".'2';
 							$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 						break;
-						case "miércoles" || "Miércoles":
+						case ("miércoles"):
+							$grupoDiaIndex = "grupo".$i."_d".'3';
 							$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 						break;
-						case "jueves" || "Jueves":
+						case ("jueves"):
+							$grupoDiaIndex = "grupo".$i."_d".'4';
 							$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 						break;
-						case "viernes" || "Viernes":
+						case ("viernes"):
+							$grupoDiaIndex = "grupo".$i."_d".'5';
 							$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 						break;
 					}
@@ -480,12 +488,12 @@ foreach ($variaciones as $id => $variacion) {
 		// para poder determinar las cantidades de cada complemento.
 		$complementosCantidades[] = $complementoCantidades; 
 		for ($i=1; $i <  count($items); $i++) {
-			$item = $items[$i];
+			$item = $items[$i]; 
 			$encontrado = 0;
-			for ($j=0; $j < count($complementosCantidades) ; $j++) {
+			for ($j=0; $j < count($complementosCantidades) ; $j++) { 
 				$complemento = $complementosCantidades[$j]; 
 				if($item["codigo"] == $complemento['codigo']){
-					$encontrado++;
+					$encontrado++; 
 					for ($n=1; $n <= $cantGruposEtarios; $n++) { 	
 						if($item["Cod_Grupo_Etario"] == $n){
 							$cantidadGrupoIndex = "cantidadGrupo".$n;
@@ -495,24 +503,29 @@ foreach ($variaciones as $id => $variacion) {
 								$complemento[$grupoIndex] = $complemento[$grupoIndex] + ($item['cantidad'] * $item['cantidadPresentacion']);
 								$complemento["total"] = $complemento["total"] + $complemento[$grupoIndex];
 							}
+							$auxDias = $item["NOMDIAS"];
 							for ($m=1; $m <=5 ; $m++) { 
-								$grupoDiaIndex = "grupo".$n."_d".$m;
-								$auxDias = $item["NOMDIAS"];
-								switch ($auxDias) {
-									case "lunes" || "Lunes":
-										$complemento[$grupoDiaIndex] = $complemento[$grupoDiaIndex] + $item['cantidad'] * $item['cantidadPresentacion'];
+								// $grupoDiaIndex = "grupo".$n."_d".$m;
+								switch ($auxDias) { 
+									case ("lunes"):
+										$grupoDiaIndex = "grupo".$n."_d".'1';
+										$complemento[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 									break;
-									case "martes" || "Martes":
-										$complemento[$grupoDiaIndex] = $complemento[$grupoDiaIndex] + $item['cantidad'] * $item['cantidadPresentacion'];
+									case ("martes"):
+										$grupoDiaIndex = "grupo".$n."_d".'2';
+										$complemento[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 									break;
-									case "miércoles" || "Miércoles":
-										$complemento[$grupoDiaIndex] = $complemento[$grupoDiaIndex] + $item['cantidad'] * $item['cantidadPresentacion'];
+									case ("miércoles"):
+										$grupoDiaIndex = "grupo".$n."_d".'3';
+										$complemento[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 									break;
-									case "jueves" || "Jueves":
-										$complemento[$grupoDiaIndex] = $complemento[$grupoDiaIndex] + $item['cantidad'] * $item['cantidadPresentacion'];
+									case ("jueves"):
+										$grupoDiaIndex = "grupo".$n."_d".'4';
+										$complemento[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 									break;
-									case "viernes" || "Viernes":
-										$complemento[$grupoDiaIndex] = $complemento[$grupoDiaIndex] + $item['cantidad'] * $item['cantidadPresentacion'];
+									case ("viernes"):
+										$grupoDiaIndex = "grupo".$n."_d".'5';
+										$complemento[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 									break;
 								}
 							}
@@ -567,23 +580,28 @@ foreach ($variaciones as $id => $variacion) {
 							$complementoNuevo["total"] = $complementoNuevo[$grupoIndex];
 						}
 						for ($n=1; $n <=5 ; $n++) { 
-							$grupoDiaIndex = "grupo".$m."_d".$n;
+							// $grupoDiaIndex = "grupo".$m."_d".$n;
 							$auxDias = $item["NOMDIAS"];
 							switch ($auxDias) {
-								case "lunes" || "Lunes":
+								case ("lunes"):
+									$grupoDiaIndex = "grupo".$m."_d".'1';
 									$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 								break;
-								case "martes" || "Martes":
+								case ("martes"):
+									$grupoDiaIndex = "grupo".$m."_d".'2';
 									$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 								break;
-								case "miércoles" || "Miércoles":
+								case ("miércoles"):
+									$grupoDiaIndex = "grupo".$m."_d".'3';
 									$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 								break;
-								case "jueves" || "Jueves":
+								case ("jueves"):
+									$grupoDiaIndex = "grupo".$m."_d".'4';
 									$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 								break;
-								case "viernes" || "Viernes":
-										$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								case ("viernes"):
+									$grupoDiaIndex = "grupo".$m."_d".'5';
+									$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
 								break;
 							}
 						}
@@ -827,7 +845,7 @@ foreach ($variaciones as $id => $variacion) {
 							$consecutivo = $consecutivos[$i];
 							for ($n=1; $n <= 5 ; $n++) { 
 								$grupoDiaIndex = "grupo".$m."_d".$n;
-								$d[$n] = $auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]/5);
+								$d[$n] = $auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]);
 							}
 							$d1 = $d[1];
 							$d2 = $d[2];
