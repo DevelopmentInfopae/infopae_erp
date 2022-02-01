@@ -8,10 +8,7 @@ require('../../fpdf182/fpdf.php');
 require_once '../../db/conexion.php';
 include '../../php/funciones.php';
 
-//var_dump($_POST);
-
-
-
+// exit(var_dump($_POST));
 $largoNombre = 30;
 $sangria = " - ";
 $tamannoFuente = 6;
@@ -41,27 +38,13 @@ if ($resGrupoEtario->num_rows > 0) { while ($ge = $resGrupoEtario->fetch_assoc()
 $annoActual = $tablaAnnoCompleto;
 
 /* Busqueda de las ordenes de compra por sedes */
-$ordenesCompra = $_POST['ordenesCompra'];
-//var_dump($ordenesCompra);
-//$ordenCompraGeneral = $_POST['ordenCompra'];
-
+$ordenesCompra = $_POST['ordenesCompra']; 
 $consulta = "SELECT Num_Doc AS ordenSede FROM orden_compra_enc$mesAnno WHERE Num_OCO IN ($ordenesCompra)";
-//echo "<br><br>$consulta<br><br>";
-
-
-
-
 
 $resultado = $Link->query($consulta);
 while($row = $resultado->fetch_assoc()){
 	$despachosRecibidos[] = $row['ordenSede'];
 }
-/* Termina Busqueda de las ordenes de compra por sedes */
-
-//var_dump($despachosRecibidos);
-
-// Se va a hacer una cossulta pare cojer los datos de cada movimiento, entre ellos el municipio que lo usaremos en los encabezados de la tabla.
-
 
 $tipoComplemento = '';
 $mes = '';
@@ -78,22 +61,10 @@ $diasMostrar = array();
 $semanasMostrar = array();
 
 foreach ($despachosRecibidos as &$valor){
-	
-	
-	
 	$consulta = "SELECT de.*, tc.descripcion, u.Ciudad, tc.jornada , p.Nombrecomercial, td.Descripcion AS tipo_despacho
-	
-	
-	
-	
-	FROM orden_compra_enc$mesAnno de INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO LEFT JOIN proveedores p ON p.Nitcc = de.proveedor 
-	LEFT JOIN tipo_despacho td ON td.Id = de.TipoDespacho
-	WHERE Tipo_Doc = 'OCOS' AND de.Num_Doc = $valor ";
-
-
-	//echo "<br><br>$consulta<br><br>";
-
-
+				FROM orden_compra_enc$mesAnno de INNER JOIN sedes$anno s ON de.cod_Sede = s.cod_sede INNER JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN tipo_complemento tc ON de.Tipo_Complem = tc.CODIGO LEFT JOIN proveedores p ON p.Nitcc = de.proveedor 
+				LEFT JOIN tipo_despacho td ON td.Id = de.TipoDespacho
+				WHERE Tipo_Doc = 'OCOS' AND de.Num_Doc = $valor ";
 
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
@@ -106,7 +77,7 @@ foreach ($despachosRecibidos as &$valor){
 		$despacho['semana'] = $row['Semana'];
 		$despacho['cobertura'] = $row['Cobertura'];
 		$despacho['ciudad'] = $row['Ciudad'];
-		$descripcionTipo = $row['descripcion'];
+		$descripcionTipo[$row['descripcion']] = $row['descripcion'];
 		$jornada = $row['jornada'];
 		$nombre_proveedor = $row["Nombrecomercial"];
 		$nit_proveedor = $row["proveedor"];
@@ -114,7 +85,6 @@ foreach ($despachosRecibidos as &$valor){
 		$tipoDespacho = $row['tipo_despacho'];
 
 		$tipoComplemento = $row['Tipo_Complem'];
-
 
 		$aux = $row['FechaHora_Elab'];
 		$aux = strtotime($aux);
@@ -179,13 +149,6 @@ foreach ($despachosRecibidos as &$valor){
 	$despachos[] = $despacho;
 }
 
-// var_dump($semanasMostrar);
-// var_dump($ciclos);
-
-
-
-
-
 $auxDias = '';
 for ($i=0; $i < count($diasMostrar) ; $i++)
 {
@@ -202,7 +165,7 @@ sort($semanasMostrar);
 $ciclos = array_unique ($ciclos);
 sort($ciclos);
 
-$auxDias = "X ".$cantDias." DIAS ".$auxDias." ".$mes;
+$auxDias = "X ".$cantDias." DIAS ".$auxDias." ";
 $auxDias = strtoupper($auxDias);
 
 $auxSemana = '';
@@ -211,6 +174,7 @@ for ($i=0; $i < count($semanasMostrar) ; $i++)
 	if($i > 0){ $auxSemana = $auxSemana.", "; }
 	$auxSemana = $auxSemana."'$semanasMostrar[$i]'";
 }
+// exit(var_dump($auxSemana));
 
 $auxCiclos = '';
 //$auxCiclos = $ciclos[0];
@@ -247,34 +211,24 @@ $total2 = 0;
 $total3 = 0;
 $totalTotal = 0;
 
-$sede_unicas = array_unique($sedes);
-foreach ($sede_unicas as $key => $sede_unica)
-{
-	$auxSede = $sede_unica;
-
-	$consulta = "SELECT DISTINCT max(Cobertura_G1) AS Cobertura_G1, max(Cobertura_G2) as Cobertura_G2, max(Cobertura_G3) AS Cobertura_G3, cod_sede, (max(Cobertura_G1) + max(Cobertura_G2) + max(Cobertura_G3)) sumaCoberturas FROM orden_compra_enc$mesAnno WHERE semana in ($semana) AND cod_sede = $auxSede AND Tipo_Complem = '". $tipo ."' ORDER BY sumaCoberturas DESC LIMIT 1";
-	//echo "<br><br>$consulta<br><br>";
-
-	// Consulta que busca las coberturas de las diferentes sedes.
-	$resultado = $Link->query($consulta) or die ("Error en la consulta: Catidades coberturas<br><br>$consulta<br><br>". mysqli_error($Link));
+// cambios para traer las coberturas consolidadas
+$consultaCoberturas = " SELECT SUM(Cobertura_G1) AS Cobertura_G1, SUM(Cobertura_G2) AS Cobertura_G2, SUM(Cobertura_G3) AS Cobertura_G3, ( SUM(Cobertura_G1) + SUM(Cobertura_G2) + SUM(Cobertura_G3) ) AS sumaCoberturas FROM orden_compra_enc$mesAnno WHERE Num_OCO IN ($ordenesCompra)  ";
+$resultado = $Link->query($consultaCoberturas) or die ("Error en la consulta: Catidades coberturas<br><br>$consulta<br><br>". mysqli_error($Link));
 	if($resultado->num_rows >= 1)
 	{
 		while($row = $resultado->fetch_assoc())
 		{
-			$sedeCobertura['cod_sede'] = $row['cod_sede'];
 			$sedeCobertura['grupo1'] = $row["Cobertura_G1"];
 			$sedeCobertura['grupo2'] = $row["Cobertura_G2"];
 			$sedeCobertura['grupo3'] = $row["Cobertura_G3"];
 			$sedeCobertura['total'] = $row["Cobertura_G1"] + $row["Cobertura_G2"] + $row["Cobertura_G3"];
-			$sedesCobertura[] = $sedeCobertura;
 
-			$total1 += $row["Cobertura_G1"];
-			$total2 += $row["Cobertura_G2"];
-			$total3 += $row["Cobertura_G3"];
+			$total1 = $row["Cobertura_G1"];
+			$total2 = $row["Cobertura_G2"];
+			$total3 = $row["Cobertura_G3"];
 			$totalTotal = $totalTotal +  $sedeCobertura['total'];
 		}
 	}
-}
 
 $totalesSedeCobertura  = [
 	"grupo1" => $total1,
@@ -293,28 +247,10 @@ $totalcons = "";
 // Vamos a buscar los alimentos de los depachos
 $alimentos = array();
 $tg = [];
-for ($i=0; $i < count($despachos) ; $i++)
-{
+for ($i=0; $i < count($despachos) ; $i++) {
 	$despacho = $despachos[$i];
 	$numero = $despacho['num_doc'];
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
 	$consulta = " SELECT DISTINCT dd.id, dd.*, p.cantidadund2, p.cantidadund3, p.cantidadund4, p.cantidadund5, p.nombreunidad2, p.nombreunidad3, p.nombreunidad4, p.nombreunidad5 FROM orden_compra_det$mesAnno dd LEFT JOIN productos$anno p ON dd.cod_Alimento = p.Codigo WHERE dd.Tipo_Doc = 'OCOS' AND dd.Num_Doc = $numero ";
-
-	//echo "<br><br>$consulta<br><br>";
-
-
-
-
-
 
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1)
@@ -336,27 +272,11 @@ for ($i=0; $i < count($despachos) ; $i++)
 			$auxGrupo = $row['Id_GrupoEtario'];
 			$alimento['grupo'.$auxGrupo] = $row['Cantidad'];
 			
-			
-			
-			
-			
-			
-			
-			//$alimento['cantotalpresentacion'] = ($row['CantU2'] * $row['cantidadund2']) + ($row['CantU3'] * $row['cantidadund3']) + ($row['CantU4'] * $row['cantidadund4']) + ($row['CantU5'] * $row['cantidadund5']);
-			// $alimento['cantu2'] = $row['CantU2'];
-			// $alimento['cantu3'] = $row['CantU3'];
-			// $alimento['cantu4'] = $row['CantU4'];
-			// $alimento['cantu5'] = $row['CantU5'];
 			$alimento['cantotalpresentacion'] = 0;
 			$alimento['cantu2'] = 0;
 			$alimento['cantu3'] = 0;
 			$alimento['cantu4'] = 0;
 			$alimento['cantu5'] = 0;
-
-
-
-
-
 
 			// Guardamos el numero de documento para discriminar la unidades de cada despacho
 			$alimento['Num_Doc'] = $row['Num_Doc'];
@@ -371,12 +291,9 @@ for ($i=0; $i < count($despachos) ; $i++)
 		}
 	}
 }
-//var_dump($alimentos);
-
 
 // Vamos unificar los alimentos para que no se repitan
 $alimento = $alimentos[0];
-
 
 if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
 if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
@@ -395,20 +312,6 @@ for ($i=1; $i < count($alimentos) ; $i++){
 		if($alimento['codigo'] == $alimentoTotal['codigo']){
 			$encontrado++;
 			
-			
-			/*
-			CONSULTA DE CONTROL DE LA SUMA DE CANTIDADES
-			0307001 ACEITE
-			0303007 ARROZ BLANCO
-			*/
-			// if($alimento['codigo'] == '0307001'){
-			// 	echo "<br>Tenia:<br>";
-			// 	var_dump($alimentoTotal['cantotalpresentacion']);
-			// }
-
-
-
-			
 			if($alimentoTotal['Num_Doc'] != $alimento['Num_Doc']){
 				$alimentoTotal['cantotalpresentacion'] = $alimentoTotal['cantotalpresentacion'] + $alimento['cantotalpresentacion'];
 				$alimentoTotal['cantu2'] = $alimentoTotal['cantu2'] + $alimento['cantu2'];
@@ -424,33 +327,12 @@ for ($i=1; $i < count($alimentos) ; $i++){
 				$alimentoTotal['grupo3'] = $alimentoTotal['grupo3'] + $alimento['grupo3'];
 				
 				$alimentosTotales[$j] = $alimentoTotal;
-				/*
-				CONSULTA DE CONTROL DE LA SUMA DE CANTIDADES
-				0307001 ACEITE
-				0303007 ARROZ BLANCO
-				*/
-				// if($alimento['codigo'] == '0307001'){
-				// 	var_dump($alimento['Num_Doc']);
-				// 	var_dump($alimento['cantotalpresentacion']);
-				// 	var_dump($alimentoTotal['cantotalpresentacion']);
-				// }
-
-
-
-
 			break;
 		}
 	}
 
 	if($encontrado == 0) { $alimentosTotales[] = $alimento; }
 }
-//var_dump($alimentosTotales);
-
-
-
-
-
-
 
 // Vamos a traer los datos que faltan para mostrar en la tabla
 for ($i=0; $i < count($alimentosTotales) ; $i++)
@@ -458,32 +340,14 @@ for ($i=0; $i < count($alimentosTotales) ; $i++)
 	$alimentoTotal = $alimentosTotales[$i];
 	$auxCodigo = $alimentoTotal['codigo'];
 	$auxDespacho = $alimentoTotal["Num_Doc"];
-	$consulta = "SELECT DISTINCT p.Codigo, p.Descripcion AS Componente, p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5
-	
-	
-
-
-
-
-
+	$consulta = "SELECT DISTINCT p.Codigo, p.Descripcion AS Componente, p.nombreunidad2 presentacion,m.grupo_alim,m.orden_grupo_alim, p.NombreUnidad2, p.NombreUnidad3, p.NombreUnidad4, p.NombreUnidad5,
+		(SELECT Redondeo FROM tipo_despacho WHERE Id = p.TipoDespacho) AS redondeo
 
 							FROM productos$anno p
 							LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
 							INNER JOIN menu_aportes_calynut m ON p.Codigo=m.cod_prod
 							WHERE p.Codigo = $auxCodigo";
-
-
-
-	//echo "<br><br>$consulta<br><br>";
-
-
-
-
-
-
-
-
-
+	// var_dump($consulta);						
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
 	if($resultado->num_rows >= 1)
@@ -500,7 +364,7 @@ for ($i=0; $i < count($alimentosTotales) ; $i++)
 		$alimentoTotal['nombreunidad3'] = $row['NombreUnidad3'];
 		$alimentoTotal['nombreunidad4'] = $row['NombreUnidad4'];
 		$alimentoTotal['nombreunidad5'] = $row['NombreUnidad5'];
-
+		$alimentoTotal['redondeo'] = $row['redondeo'];
 		$alimentosTotales[$i] = $alimentoTotal;
 	}
 }
@@ -667,6 +531,15 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario){
 
 		$pdf->Cell(13.141, 4, number_format($aux, 2, '.', ''), 'LB', 0, 'C', FALSE);
 
+
+		if ($alimento['redondeo'] == 1) {
+			if ($aux <= 0.5) {
+				$aux = ceil($aux);
+			}else if ($aux > 0.5) {
+				$aux = round($aux,0);
+			}	
+		}
+
 		if($alimento['presentacion'] == 'u')
 		{
 			if (strpos($alimento['componente'], "HUEVO9999") !== FALSE)
@@ -737,7 +610,7 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario){
 
 
 
-while($indiceLinea < 35){
+while($indiceLinea < 34){
 	$indiceLinea++;
 	$pdf->Cell(49,4,'','LB',0,'L',FALSE);
 	$pdf->Cell(13.1, 4,'', 'LB', 0, 'C', FALSE);

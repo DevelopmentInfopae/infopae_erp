@@ -308,6 +308,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 	(SELECT cantu5 FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantu5,
 	(SELECT Umedida FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS Umedida,
 	(SELECT cantotalpresentacion FROM productosmovdet$mesAnno WHERE Documento = 'DES' AND Numero = $despacho AND CodigoProducto = $auxCodigo limit 1 ) AS cantotalpresentacion,
+	(SELECT Redondeo FROM tipo_despacho WHERE Id = p.TipoDespacho) AS redondeo,
 
 	p.cantidadund2,
 	p.cantidadund3,
@@ -321,12 +322,13 @@ for ($k=0; $k < count($_POST) ; $k++){
 	FROM productos$anno p
 	LEFT JOIN fichatecnicadet ftd ON ftd.codigo=p.Codigo
 	INNER JOIN menu_aportes_calynut m ON p.Codigo = m.cod_prod
+
 	WHERE p.Codigo = $auxCodigo
 	ORDER BY m.orden_grupo_alim ASC, p.Descripcion DESC ";
 
 	// CONSULTA DETALLES DE ALIMENTOS DE ESTE DESPACHO
 	// where ftd.codigo = $auxCodigo and ftd.tipo = 'Alimento'
-	//echo "<br><br>".$consulta."<br><br>";
+	// echo "<br><br>".$consulta."<br><br>";
 
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
@@ -354,6 +356,7 @@ for ($k=0; $k < count($_POST) ; $k++){
 		$alimento['cantu3'] = $row['cantu3'];
 		$alimento['cantu4'] = $row['cantu4'];
 		$alimento['cantu5'] = $row['cantu5'];
+		$alimento['redondeo'] = $row['redondeo'];
 		$alimento['cantotalpresentacion'] = $row['cantotalpresentacion'];
 		$alimento['cantidadund2'] = $row['cantidadund2'];
 		$alimento['cantidadund3'] = $row['cantidadund3'];
@@ -807,10 +810,13 @@ if($alimento['grupo_alim'] == "Contramuestra"){
 	//$aux = number_format($aux, 2, '.', '');
 }
 
-
-
-
-
+if ($alimento['redondeo'] == 1) {
+	if ($aux <= 0.5) {
+		$aux = ceil($aux);
+	}else if ($aux > 0.5) {
+		$aux = round($aux,0);
+	}	
+}
 
 
 
@@ -822,6 +828,8 @@ if ($alimento['presentacion'] == 'u') {
 	$aux = round(0+$aux);
   }
 }
+
+
 $aux = number_format($aux, 2, '.', '');
 
 // // CANTIDAD ENTREGADA

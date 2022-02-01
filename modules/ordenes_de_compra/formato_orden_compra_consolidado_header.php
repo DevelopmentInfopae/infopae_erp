@@ -5,7 +5,7 @@ $pdf->SetFont('Arial');
 $pdf->SetTextColor(0,0,0);
 $pdf->SetLineWidth(.05);
 $pdf->Image($logoInfopae, 25 ,7, 65, 10,'jpg', '');
-$pdf->Cell(103,10,'','TLB',0,'C',False);
+$pdf->Cell(103,10,'','LT',0,'C',False);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 //$pdf->MultiCell(0,17.29,'',0,'C',false);
@@ -38,21 +38,29 @@ $pdf->Cell(0,2.5,utf8_decode('ORDEN DE COMPRA A PROVEEDORES Nº ').utf8_decode($
 
 
 
+// modificacion para agregar varios complementos
+$alturaComplentos  = 0; 
+foreach ($descripcionTipo as $key => $value) {
+	$pdf->Cell(0,2.5,utf8_decode($value),0,2.5,'C',False);
+	$alturaComplentos += 2.5;
+}
 
+$pdf->Cell(0,2.5,utf8_decode($tipoDespacho),'RLB',2.5,'C',False);
+$alturaComplentos += 2.5;
+$cordenadaY = $pdf->GetY();
+$cordenadaX = $pdf->GetX();
+$pdf->SetXY($cordenadaX-103, $cordenadaY-$alturaComplentos);
+$pdf->Cell(0,$alturaComplentos,'','BL',0,'C',False);
 
-
-
-$pdf->Cell(0,2.5,utf8_decode($descripcionTipo),0,2.5,'C',False);
-$pdf->Cell(0,2.5,utf8_decode($tipoDespacho),0,2.5,'C',False);
-$pdf->Ln(0);
+$pdf->Ln(1.5);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 //$pdf->Cell(103,4.76,'','LBR',0,'L',False);
-$pdf->SetXY($current_x, $current_y);
-$pdf->Cell(15,4.76,utf8_decode('OPERADOR:'),'LB',0,'L',False);
+$pdf->SetXY($current_x, $current_y+$alturaComplentos);
+$pdf->Cell(15,4.76,utf8_decode('OPERADOR:'),'TLB',0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(60,4.76,utf8_decode( $_SESSION['p_Operador'] ),'B',0,'L',False);
+$pdf->Cell(60,4.76,utf8_decode( $_SESSION['p_Operador'] ),'BT',0,'L',False);
 
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
@@ -191,20 +199,20 @@ $pdf->Cell(31.838,14.1,'','LB',0,'L',False);
 
 
 // N° DÍAS A ATENDER
-$pdf->SetXY($current_x, $current_y+2.35);
+$pdf->SetXY($current_x, $current_y+1);
 if($tipoComplemento == 'RPC'){
 	if($_POST['imprimirMesIC']){
-		$pdf->MultiCell(31.838,4.7,mb_strtoupper($mes),0,'C',False);
+		$pdf->MultiCell(31.838,2.66,mb_strtoupper($mes),0,'C',False);
 	}
 }else{
-	$pdf->MultiCell(31.838,4.7,$auxDias,0,'C',False);
+	$pdf->MultiCell(31.838,2.66,$auxDias,0,'C',False);
 	$pdf->SetXY($current_x, $current_y+9.4);
 	if(strpos($semana, ',') !== false){
 		$aux = "SEMANAS: $semana";
 	}else{
 		$aux = "SEMANA: $semana";
 	}
-	$pdf->MultiCell(31.838,4.7,$aux,0,'C',False);
+	$pdf->MultiCell(31.838,2.66,$aux,0,'C',False);
 }
 
 // N° DE MENÚ
@@ -212,17 +220,17 @@ $pdf->SetXY($current_x+31.838, $current_y);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();
 $pdf->Cell(30,14.1,'','LB',0,'L',False);
-$pdf->SetXY($current_x, $current_y+2.35);
+$pdf->SetXY($current_x, $current_y+1);
 if($tipoComplemento == 'RPC'){
 	$aux = "N/A";
 	$pdf->Cell(30,4.7,$aux,0,0,'C',False);
 }
 else{
 	if(strpos($auxCiclos, ',') !== false){ $aux = "SEMANAS: $auxCiclos"; }else{ $aux = "SEMANA: $auxCiclos"; }
-	$pdf->Cell(30,4.7,$aux,0,0,'C',False);
+	$pdf->Cell(30,3.5,$aux,0,0,'C',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->SetXY($current_x, $current_y+7,05);
-	$pdf->Cell(30,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
+	$pdf->SetXY($current_x, $current_y+5);
+	$pdf->MultiCell(30,2.66,'MENUS: '.$auxMenus,0,'C',False);
 }
 
 

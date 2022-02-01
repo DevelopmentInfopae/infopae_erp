@@ -18,6 +18,14 @@
     $rectorDocumento = $_SESSION['num_doc'];
    }
 
+   $consultaComplementos = " SELECT CODIGO FROM tipo_complemento ";
+   $respuestaComplementos = $Link->query($consultaComplementos) or die ('Error al consultar los complementos ' . mysqli_error($Link));
+   if ($respuestaComplementos->num_rows > 0) {
+     while ($dataComplementos = $respuestaComplementos->fetch_assoc()) {
+       $complementos[$dataComplementos['CODIGO']] = $dataComplementos['CODIGO'];
+     }
+   }
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -63,10 +71,11 @@
                         $limit = " LIMIT 1 ";
                        }
 
-                      if($_SESSION['p_Municipio'] != '') { $consulta = $consulta." and CodigoDANE = '".$_SESSION['p_Municipio']."' "; }
+                      if($_SESSION['p_Municipio'] != '0') { $consulta = $consulta." and CodigoDANE = '".$_SESSION['p_Municipio']."' "; }
+                      else if ($_SESSION['p_Municipio'] == 0) { $consulta = $consulta. " and CodigoDANE like '" .$_SESSION['p_CodDepartamento']. "%'"; }
                       $consulta = $consulta." order by ciudad asc $limit ";
                       // var_dump($consulta);
-
+                      // exit(var_dump($_SESSION));
                       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                       if($resultado->num_rows > 0){
                         while($row = $resultado->fetch_assoc()) {
@@ -160,7 +169,7 @@
               <div class="row">
                 <div class="col-sm-4 form-group">
                   <label for="institucion">Institución</label>
-                  <select class="form-control" name="institucion" id="institucion" required="required">
+                  <select class="form-control" name="institucion" id="institucion" >
                     <option value="">Todas</option>
                     <?php
                       if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" || $municipio_defecto["CodMunicipio"])
@@ -240,7 +249,10 @@
                 <div class="col-sm-4 form-group">
                   <label for="tipo">Tipo Complemento</label>
                   <select class="form-control" name="tipo" id="tipo" required>
-                    <option value="">seleccione</option>
+                    <option value="">Seleccione</option>
+                    <?php foreach ($complementos as $key => $value) { ?>
+                      <option value="<?= $key ?>"><?= $value ?></option>
+                    <?php } ?>
                   </select>
                 </div>
               </div>

@@ -14,12 +14,13 @@ $mes = $_POST['mes'];
 $anno = $_SESSION['p_ano'];
 $tipoComplemento = $_POST['tipo'];
 $operador = $_SESSION['p_Operador'];
-$institucion = $_POST['institucion'];
+$institucion = (isset($_POST['institucion']) && $_POST['institucion'] != '') ? $_POST['institucion'] : "";
 $municipioNm = $_POST['municipioNm'];
 $tipoPlanilla = $_POST['tipoPlanilla'];
 $periodoActual = $_SESSION['periodoActual'];
 $departamento = $_SESSION['p_Departamento'];
 $sedeParametro = (isset($_POST['sede']) && $_POST['sede'] != '') ? $_POST['sede'] : "";
+$municipio = $_POST['municipio'];
 
 // Variables para el rango de fechas de búsqueda.
 if (isset($_POST["semana_inicial"]) && $_POST["semana_inicial"] != "") {
@@ -46,7 +47,7 @@ if($mes < 10){
 }
 
 //Primera consulta: los dias de la s entregas
-$consulta = "SELECT ID, ANO, MES, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias where ano='$anno' AND mes='$mes'";
+$consulta = "SELECT ID, ANO, MES, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias where ano='$anno' AND mes='$mes'"; 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if ($resultado->num_rows >= 1) {
 	while ($row = $resultado->fetch_assoc()) {
@@ -86,20 +87,44 @@ foreach ($dias as $clave => $dia)
 }
 
 // Termina de revisar si tiene más de un mes
-
 $auxDias = trim($dia_consulta, ", ");
 $auxDias = str_replace(" ", "", $auxDias);
 $auxDias = str_replace("D", "", $auxDias);
 $auxDias = array_map('intval', explode(',', $auxDias));
 //var_dump($auxDias);
 
-//Segunda consulta: las sedes
-$consulta_sedes = "SELECT DISTINCT s.cod_sede, s.cod_inst,s.nom_inst,s.nom_sede,s.cod_mun_sede,sc.num_est_focalizados
+$consultaPriorizacion = '';
+$consultaSemanas = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES = '$mes' ";
+$respuestaSemanas = $Link->query($consultaSemanas) or die ('Error al consultar las semanas involucradas ' . mysqli_error($Link));
+if ($respuestaSemanas->num_rows > 0) {
+	while ($dataSemanas = $respuestaSemanas->fetch_assoc()) {
+		$tablaPriorizacion = "priorizacion".$dataSemanas['semana'];
+		$consulta = " show tables like '$tablaPriorizacion' "; 
+		$result = $Link->query($consulta) or die ('Error al consultar existencia de tablas de priorizacion: '. mysqli_error($Link));
+		$existe = $result->num_rows;
+		if ($existe == 1) {
+			$consultaPriorizacion .= " SELECT p.cod_sede, s.cod_inst, s.nom_inst, s.nom_sede, s.cod_mun_sede, p.num_est_focalizados
 									FROM sedes$periodoActual s
-									INNER JOIN sedes_cobertura AS sc ON (s.cod_inst=sc.cod_inst AND s.cod_Sede=sc.cod_Sede)
-									WHERE sc.cod_inst= '$institucion' AND sc.ano = '$anno' AND sc.mes='$mes'";
-if($sedeParametro != '') { $consulta_sedes .= " and sc.cod_sede = '$sedeParametro' "; }
-$resultado_sedes = $Link->query($consulta_sedes) or die ('Unable to execute query. '. mysqli_error($Link));
+									INNER JOIN $tablaPriorizacion AS p ON s.cod_sede = p.cod_sede
+									INNER JOIN ubicacion AS u ON s.cod_mun_sede = u.codigoDANE
+									WHERE u.codigoDANE = '$municipio'  ";
+			if ($institucion != '') { $consultaPriorizacion .= " and s.cod_inst = '$institucion' "; }									
+			if ($sedeParametro != '') { $consultaPriorizacion .= " and p.cod_sede = '$sedeParametro' "; } 
+			$consultaPriorizacion .= ' UNION ALL ';		
+		}					
+	}
+}
+$consultaPriorizacion = trim($consultaPriorizacion, "UNION ALL ");
+
+//Segunda consulta: las sedes
+// $consulta_sedes = "SELECT DISTINCT s.cod_sede, s.cod_inst,s.nom_inst,s.nom_sede,s.cod_mun_sede,sc.num_est_focalizados
+// 									FROM sedes$periodoActual s
+// 									INNER JOIN sedes_cobertura AS sc ON (s.cod_inst=sc.cod_inst AND s.cod_Sede=sc.cod_Sede)
+// 									INNER JOIN ubicacion AS u ON s.cod_mun_sede = u.CodigoDANE
+// 									WHERE u.codigoDANE = '$municipio' AND sc.ano = '$anno' AND sc.mes='$mes'";
+// if ($institucion != '') { $consulta_sedes .= " and sc.cod_inst = '$institucion' "; }									
+// if ($sedeParametro != '') { $consulta_sedes .= " and sc.cod_sede = '$sedeParametro' "; } 
+$resultado_sedes = $Link->query($consultaPriorizacion) or die ('Unable to execute query. '. mysqli_error($Link)); 
 if($resultado_sedes->num_rows > 0) {
 	while($registros_sedes = $resultado_sedes->fetch_assoc()) {
 		$codigo = $registros_sedes['cod_sede'];
@@ -126,7 +151,7 @@ class PDF extends PDF_Rotate
 		$logoInfopae = $_SESSION['p_Logo ETC'];
 		if ($this->tipoPlanilla == 5 || $this->tipoPlanilla == 7 || $this->tipoPlanilla == 8)
 		{
-			$tituloPlanilla = "Registro de novedades - repitentes y/o suplentes del programa de alimentaciÓn escolar - pae";
+			$tituloPlanilla = "Registro de novedades y/o suplentes del programa de alimentaciÓn escolar - pae";
 		}
 		else if ($this->tipoPlanilla == 6)
 		{
@@ -180,8 +205,8 @@ include '../../php/funciones.php';
 $lineas = 25;
 $alturaLinea = 4;
 
-if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
-{
+if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
+
 	$condicionCoordinador = '';
   	if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
   		$codigoSedes = "";
@@ -208,13 +233,51 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
 		$condicionCoordinador = " AND cod_sede IN ($codigoSedes) ";
   	}
 
-	$consulta = "SELECT id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, etnia, genero, edad, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo, tipo_complem, ". trim($dia_consulta, ", ") ."
-	FROM entregas_res_$mes$anno2d WHERE cod_inst=$institucion AND tipo_complem='$tipoComplemento' AND tipo = 'F' $condicionCoordinador ";
-	if($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro'"; }
+	$consulta = "SELECT id, 
+						tipo_doc, 
+						num_doc, 
+						tipo_doc_nom, 
+						nom1, 
+						nom2, 
+						ape1, 
+						ape2, 
+						etnia, 
+						genero, 
+						edad, 
+						dir_res, 
+						cod_mun_res, 
+						telefono, 
+						cod_mun_nac, 
+						fecha_nac, 
+						cod_estrato, 
+						sisben, 
+						cod_discap, 
+						etnia, 
+						resguardo, 
+						cod_pob_victima, 
+						des_dept_nom, 
+						nom_mun_desp, 
+						cod_inst, 
+						cod_sede, 
+						cod_grado, 
+						nom_grupo, 
+						cod_jorn_est, 
+						estado_est, 
+						repitente,
+						edad, 
+						zona_res_est, 
+						id_disp_est, 
+						TipoValidacion, 
+						activo, 
+						tipo_complem, 
+						". trim($dia_consulta, ", ") ."
+				FROM entregas_res_$mes$anno2d 
+				WHERE cod_mun_res = '$municipio' AND tipo_complem='$tipoComplemento' AND tipo = 'F' ";
+	if ($institucion != '') { $consulta .= " and cod_inst = '$institucion'"; }			
+	if ($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro'"; }
+	if ($condicionCoordinador != ''){ $consulta .= " $condicionCoordinador "; }
 	$consulta .= " ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc ";
-
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
-
 	$codigo = '';
 	if($resultado->num_rows >= 1){
 		while($row = $resultado->fetch_assoc()){
@@ -227,11 +290,10 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
 		echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
 	}
 
-
 	foreach ($estudiantes as $estudiantesSede) {
 		// Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
 		$codigoSede = $estudiantesSede[0]['cod_sede'];
-		$consulta = "SELECT count(id) AS titulares, sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
+		$consulta = "SELECT count(id) AS titulares, sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'"; 
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. <br>'.$consulta.'<br>'. mysqli_error($Link));
 		if($resultado->num_rows > 0) {
 			while($row = $resultado->fetch_assoc()) {
@@ -242,7 +304,8 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
 		$paginas = ceil(count($estudiantesSede) / $lineas);
 		$pagina = 1;
 		$linea = 1;
-
+		$tipoPlanilla2 = $tipoPlanilla;
+		$pdf->set_data($tipoPlanilla2);
 		$pdf->AddPage();
 		$pdf->SetTextColor(0,0,0);
 		$pdf->SetFillColor(255,255,255);
@@ -263,6 +326,8 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
 				$alturaCuadroFilas = $alturaLinea * ($linea-1);
 				$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
 				include 'planillas_footer_v2.php';
+				$tipoPlanilla2 = $tipoPlanilla;
+				$pdf->set_data($tipoPlanilla2);
 				$pdf->AddPage();
 				$pagina++;
 				include 'planillas_header_v2.php';
@@ -290,30 +355,23 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
 			// Aqui es donde se cambia de acuerdo a la plantilla
 			$entregasEstudiante = 0;
 			for($j = 0 ; $j < 24 ; $j++) {
-					if($tipoPlanilla != 2) {
-						if($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
-
-						// if($dia < 10){ $auxDia = 'D0'.$dia; } else { $auxDia = 'D'.$dia; }
-						$auxDia = 'D'.$dia;
-
-						if(isset($estudiante[$auxDia]) && $estudiante[$auxDia] == 1 && $tipoPlanilla != 6) {
-							$pdf->Cell(6,$alturaLinea,utf8_decode('x'),'R',0,'C',False);
-							$entregasEstudiante++;
-						}
-						else{
-							$pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
-						}
-
+				if($tipoPlanilla != 2) {
+					if($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
+					$auxDia = 'D'.$dia;
+					if(isset($estudiante[$auxDia]) && $estudiante[$auxDia] == 1 && $tipoPlanilla != 6) {
+						$pdf->Cell(6,$alturaLinea,utf8_decode('x'),'R',0,'C',False);
+						$entregasEstudiante++;
 					}
 					else{
-						$pdf->Cell(6,$alturaLinea,utf8_decode(' '),'R',0,'C',False);
+						$pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 					}
-
+				}
+				else{
+					$pdf->Cell(6,$alturaLinea,utf8_decode(' '),'R',0,'C',False);
+				}
 				$dia++;
 			}
 			$pdf->SetTextColor(0,0,0);
-
-
 			if($tipoPlanilla == 4) { $pdf->Cell(0,$alturaLinea,$entregasEstudiante,'R',0,'C',False); }
 			// Termina donde se cambia de acuerdo a la plantilla
 
@@ -323,14 +381,67 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4)
 			$racionesProgramadas += $entregasEstudiante;
 		}
 
+		//Termina impresión de estudiantes de la sede
+		$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
+		$alturaCuadroFilas = $alturaLinea * ($linea-1);
+		$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
+		include 'planillas_footer_v2.php';
+		$tipoPlanillaN = 5;
+		$pdf->set_data($tipoPlanillaN);
+		$linea = 1;
+		$lineas = 25;
+		$pdf->AddPage();
+		$pdf->SetTextColor(0,0,0);
+		$pdf->SetFillColor(255,255,255);
+		$pdf->SetDrawColor(0,0,0);
 
-
-				//Termina impresión de estudiantes de la sede
+		include 'planillas_header_v2.php';
+		$pdf->SetLineWidth(.05);
+		for($i = 0 ; $i < 25 ; $i++){
+			if($linea > $lineas){
 				$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 				$alturaCuadroFilas = $alturaLinea * ($linea-1);
 				$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
-
 				include 'planillas_footer_v2.php';
+				$pdf->AddPage();
+				include 'planillas_header_v2.php';
+				$pdf->SetFont('Arial','',$tamannoFuente);
+				$linea = 1;
+			}
+
+			$x = $pdf->GetX();
+			$y = $pdf->GetY();
+			$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
+			$pdf->Cell(10,$alturaLinea,"",'R',0,'C',False);
+			$pdf->Cell(22,$alturaLinea,"",'R',0,'L',False);
+			$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+			$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+			$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+			$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+			$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
+			$pdf->Cell(7,$alturaLinea,"",'R',0,'C',False);
+			$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
+			$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
+			$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
+			$pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
+
+				// Aqui es donde se cambia de acuerdo a la plantilla
+				for($j = 0 ; $j < 24 ; $j++)
+				{
+					$pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+				}
+				// Termina donde se cambia de acuerdo a la plantilla
+				$pdf->SetXY($x, $y);
+				$pdf->Cell(0,$alturaLinea,'','B',1);
+				$linea++;
+			}
+
+			$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
+			$alturaCuadroFilas = $alturaLinea * ($linea-1);
+			$pdf->Cell(0,$alturaCuadroFilas,"",1,0,'R',False);
+
+			include 'planillas_footer_v2.php';
+		// include 'planillas_header_v2.php';
 	}
 }
 else if ($tipoPlanilla == 5)
@@ -367,10 +478,12 @@ else if ($tipoPlanilla == 5)
 				$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(10,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(22,$alturaLinea,"",'R',0,'L',False);
-				$pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
-				$pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
-				$pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
-				$pdf->Cell(31.4,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
+				$pdf->Cell(7,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
@@ -408,6 +521,7 @@ else if ($tipoPlanilla == 6)
 	$consulta_suplentes = '';
 	$parametro_sede_suplente = '';
 	if($sedeParametro != '') { $parametro_sede_suplente = " AND cod_sede = '$sedeParametro' "; }
+	if($institucion != '') { $parametro_institucion_suplente = " AND cod_inst = '$institucion' "; }
 
 	while ($semana_suplente = $respuesta_semana->fetch_assoc())
 	{
@@ -415,7 +529,7 @@ else if ($tipoPlanilla == 6)
 		$consulta_suplentes .= "(SELECT
 													id, tipo_doc, num_doc, tipo_doc_nom, nom1, nom2, ape1, ape2, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_inst, cod_sede, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente,edad, zona_res_est, id_disp_est, TipoValidacion, activo
 												FROM suplentes$numero_semana
-												WHERE cod_inst = '$institucion' $parametro_sede_suplente) UNION ALL ";
+												WHERE cod_mun_res = $municipio $parametro_institucion_suplente $parametro_sede_suplente) UNION ALL ";
 	}
 	$consulta_suplentes_general = "SELECT * FROM (". trim($consulta_suplentes, "UNION ALL ") .") AS TG GROUP BY num_doc, cod_sede ORDER BY cod_sede, cod_grado, nom_grupo, ape1, ape2, nom1, nom2";
 
@@ -508,20 +622,22 @@ else if ($tipoPlanilla == 7){
 	foreach ($sedes as $sede){
 		// Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
 		$codigoSede = $sede['cod_sede'];
-		$consulta = "SELECT count(id) AS titulares, sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
-		//echo "<br><br>$consulta<br><br>";
+		$codigoInstitucion = $sede['cod_inst'];
+		// var_dump($codigoSede);
+		$consulta = "SELECT count(id) AS titulares, sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$codigoInstitucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
+		// exit(var_dump($consulta));
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. <br>'.$consulta.'<br>'. mysqli_error($Link));
 		if($resultado->num_rows > 0) {
 			while($row = $resultado->fetch_assoc()) {
 				$totales = $row;
 			}
 		}
- 		$consulta_suplente_repitentes_sede = "SELECT * FROM entregas_res_$mes$anno2d WHERE cod_inst = '$institucion' AND cod_sede = '$codigoSede' AND (tipo = 'S' OR tipo = 'R') AND tipo_complem='$tipoComplemento' ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
-		//echo "<br><br>$consulta_suplente_repitentes_sede<br><br>";
-		
+ 		$consulta_suplente_repitentes_sede = "SELECT * FROM entregas_res_$mes$anno2d WHERE cod_inst = '$codigoInstitucion' AND cod_sede = '$codigoSede' AND (tipo = 'S' OR tipo = 'R') AND tipo_complem='$tipoComplemento' ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
+		// echo "<br><br>$consulta_suplente_repitentes_sede<br><br>";
+		// exit(var_dump($consulta_suplente_repitentes_sede));
 		$respuesta_suplente_repitentes_sede = $Link->query($consulta_suplente_repitentes_sede) or die("Error al consultar suplentes y repitentes en entregas_res_$mes$anno2d: ". $Link->error);
 		if ($respuesta_suplente_repitentes_sede->num_rows > 0)
-		{
+		{	
 			$linea = 1;
 			$lineas = 25;
 			$pagina = 1;
@@ -537,7 +653,7 @@ else if ($tipoPlanilla == 7){
 			$pdf->SetLineWidth(.05);
 
 			while($suplente_repitente_sede = $respuesta_suplente_repitentes_sede->fetch_assoc())
-			{
+			{	
 				$numero_estudiantes++;
 				$suplente_repitente_sede = (object) $suplente_repitente_sede;
 
@@ -603,7 +719,7 @@ else if ($tipoPlanilla == 7){
 		}
 		else
 		{
-			echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
+			echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>"; 
 		}
 	}
 }
@@ -612,9 +728,10 @@ else if ($tipoPlanilla == 8)
 	foreach ($sedes as $sede)
 	{
 		$codigoSede = $sede['cod_sede'];
+		$codigoInstitucion = $sede['cod_inst'];
 		$consulta_suplente_repitentes_sede = "SELECT *
 		FROM entregas_res_$mes$anno2d
-		WHERE cod_inst = '$institucion'
+		WHERE cod_inst = '$codigoInstitucion'
 			AND cod_sede = '$codigoSede'
 			AND (tipo = 'S' OR tipo = 'R')
 			AND tipo_complem='$tipoComplemento'
@@ -707,12 +824,16 @@ else if ($tipoPlanilla == 8)
 		}
 		else
 		{
-			echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
+			echo "<script>alert('No existen registros con los filtros seleccionados.');  window.close(); </script>"; 
 		}
 	}
 }
 else
 {
+	foreach ($sedes as $sede){ 
+		// Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
+		$codigoSede = $sede['cod_sede'];
+		$mesAdicional = 0;	
 		// Cuando piden la planilla vacia
 		$pdf->AddPage();
 		$pdf->SetTextColor(0,0,0);
@@ -723,7 +844,7 @@ else
 		$lineas = 25;
 		$linea = 1;
 		$alturaLinea = 4;
-		$codigoSede = null;
+		// $codigoSede = null;
 
 		include 'planillas_header_v2.php';
 		$pdf->SetLineWidth(.05);
@@ -771,7 +892,9 @@ else
 		$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 		$alturaCuadroFilas = $alturaLinea * ($linea-1);
 		$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
+	
 		include 'planillas_footer_v2.php';
+	}	
 }
 
 $pdf->Output();
