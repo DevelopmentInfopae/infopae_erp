@@ -204,7 +204,7 @@ foreach ($despachosRecibidos as &$valor){
 			$semanasMostrar[] =  $row['Semana'];
 			$semana = $row['Semana'];
 			$consulta = " select * from planilla_semanas where SEMANA = '$semana' ";
-			//echo "<br><br>$consulta<br><br>";
+			// echo "<br><br>$consulta<br><br>";
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 			$cantDias = $resultado->num_rows;
 			if($resultado->num_rows >= 1)
@@ -266,7 +266,7 @@ sort($semanasMostrar);
 $ciclos = array_unique ($ciclos);
 sort($ciclos);
 
-$auxDias = "X ".$cantDias." DIAS ".$auxDias." ".$mes;
+$auxDias = "X ".$cantDias." DIAS ".$auxDias." ";
 $auxDias = strtoupper($auxDias);
 
 $auxSemana = '';
@@ -371,8 +371,24 @@ for ($i=0; $i < count($despachos) ; $i++)
 	
 	
 	
-	$consulta = " SELECT DISTINCT dd.id, dd.*, pmd.CantU1, CEILING(pmd.CantU2) as CantU2, CEILING(pmd.CantU3) as CantU3, CEILING(pmd.CantU4) as CantU4, CEILING(pmd.CantU5) as CantU5, pmd.CanTotalPresentacion, p.cantidadund2, p.cantidadund3, p.cantidadund4, p.cantidadund5, p.nombreunidad2, p.nombreunidad3, p.nombreunidad4, p.nombreunidad5 FROM despachos_det$mesAnno dd LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto LEFT JOIN productos$anno p ON dd.cod_Alimento = p.Codigo WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero ";
-	//echo "<br><br>$consulta<br><br>";
+	$consulta = " SELECT DISTINCT 	dd.id, dd.*, 
+									pmd.CantU1, 
+									CEILING(pmd.CantU2) as CantU2, 
+									CEILING(pmd.CantU3) as CantU3, 
+									CEILING(pmd.CantU4) as CantU4, 
+									CEILING(pmd.CantU5) as CantU5, 
+									pmd.CanTotalPresentacion, 
+									p.cantidadund2, 
+									p.cantidadund3, 
+									p.cantidadund4, 
+									p.cantidadund5, 
+									p.nombreunidad2, 
+									p.nombreunidad3, 
+									p.nombreunidad4, 
+									p.nombreunidad5,
+									(SELECT Redondeo FROM tipo_despacho WHERE Id = p.TipoDespacho) AS redondeo 
+									FROM despachos_det$mesAnno dd LEFT JOIN productosmovdet$mesAnno pmd ON dd.Tipo_Doc = pmd.Documento AND dd.Num_Doc = pmd.Numero AND dd.cod_Alimento = pmd.CodigoProducto LEFT JOIN productos$anno p ON dd.cod_Alimento = p.Codigo WHERE dd.Tipo_Doc = 'DES' AND dd.Num_Doc = $numero ";
+	// echo "<br><br>$consulta<br><br>";
 
 
 
@@ -423,7 +439,7 @@ for ($i=0; $i < count($despachos) ; $i++)
 			$alimento['nombreunidad3'] = '';
 			$alimento['nombreunidad4'] = '';
 			$alimento['nombreunidad5'] = '';
-			
+			$alimento['redondeo'] = $row['redondeo'];
 			$alimento['cantidadund2'] = $row['cantidadund2'];;
 			$alimento['cantidadund3'] = $row['cantidadund3'];;
 			$alimento['cantidadund4'] = $row['cantidadund4'];;
@@ -724,20 +740,15 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario)
 		
 		$pdf->Cell(13.141, 4, number_format($aux, 2, '.', ''), 1, 0, 'C', FALSE);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		// manejo de redondeos segun el tipo de despacho
+		if ($alimento['redondeo'] == 1) {
+			if ($aux <= 0.5) {
+				$aux = ceil($aux);
+			}else if ($aux > 0.5) {
+				$aux = round($aux,0);
+			}	
+		}
+		
 		if($alimento['presentacion'] == 'u')
 		{
 			if (strpos($alimento['componente'], "HUEVO9999") !== FALSE)

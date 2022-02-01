@@ -7,9 +7,9 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(26,$tamannoFuente,utf8_decode('CÓDIGO DANE:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(40,$tamannoFuente,utf8_decode($_SESSION['p_CodDepartamento']),0,0,'L',False);
-
-if($codigoSede){
-	if(isset($sedes[$codigoSede])){
+// exit(var_dump($codigoSede));
+if($codigoSede){ 	
+	if(isset($sedes[$codigoSede])){ 
 		$nombre_sede = $sedes[$codigoSede]['nom_sede'];
 		$codigo_sede = $codigoSede;
 		$nombre_institucion = $sedes[$codigoSede]['nom_inst'];
@@ -42,9 +42,9 @@ $totalProgramadoMes = 0; //variable para sumar los totales de cada semana y obte
 $diasCubiertos = 0;
 $tpm = 0;
 $diasSemana = 0;
-
-if ($tipoPlanilla != 6)
-{
+// exit(var_dump($tipoPlanilla));
+if ($tipoPlanilla != 6 && $tipoPlanilla != 1)
+{	
 	foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas obtenidas para cambiar la tabla de priorización, ej : priorizacion01, priorizacion02, etc
 		//obtenemos el total de priorizaciones por complemento seleccionado de la semana en turno, luego lo multiplicamos por el número de días que tiene la semana en turno.
 		$consTotalEntregado = "SELECT DISTINCT SEMANA AS SM, MES AS MS, COUNT(DIA) AS dias_semana,
@@ -53,7 +53,7 @@ if ($tipoPlanilla != 6)
 							    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM AND MES = MS)
 							) AS total_entregas
 							FROM planilla_semanas WHERE SEMANA = '".$semana."' AND MES = '".$mes."';";
-
+							// echo $consTotalEntregado ."<br>";	
 
 		$resTotalEntregado = $Link->query($consTotalEntregado);
 
@@ -126,7 +126,13 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(35,$tamannoFuente,utf8_decode('MES ATENCIÓN:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 
-$mesNm = mesNombre($_POST['mes']);
+$mesPos = $_POST['mes'];
+$consultaNombreMes = " SELECT NombreMes FROM planilla_dias WHERE mes = '$mesPos' ";
+$respuestaNombreMes = $Link->query($consultaNombreMes) or die ('Error al consultar el nombre del mes ' . mysqli_error($Link));
+if ($respuestaNombreMes->num_rows > 0) {
+	$dataNombreMes = $respuestaNombreMes->fetch_assoc();
+	$mesNm = $dataNombreMes['NombreMes'];
+}
 if($mesAdicional > 0) {
 	$mesAdicional = intval($_POST['mes']+1);
 	if($mesAdicional > 12) {
@@ -135,6 +141,7 @@ if($mesAdicional > 0) {
 	$mesNm.=' - '.$mesAdicional;
 }
 $pdf->Cell(30,$tamannoFuente,utf8_decode($mesNm),0,0,'L',False);
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(10,$tamannoFuente,utf8_decode('AÑO:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
@@ -190,7 +197,7 @@ $pdf->Cell(22,14,utf8_decode(''),'R',0,'C',False);
 $x = $pdf->GetX();
 $y = $pdf->GetY();
 $pdf->SetXY($x, $y-1.6);
-if ($tipoPlanilla == 5 || $tipoPlanilla == 6 || $tipoPlanilla == 7 || $tipoPlanilla == 8) { $anchoDatosNombre = 31.4; } else { $anchoDatosNombre = 28; }
+if ( $tipoPlanilla == 6 || $tipoPlanilla == 7 || $tipoPlanilla == 8) { $anchoDatosNombre = 31.4; } else { $anchoDatosNombre = 28; }
 $pdf->Cell($anchoDatosNombre,14,utf8_decode('1° Nombre'),0,0,'C',False);
 $pdf->SetXY($x, $y+1.6);
 $pdf->Cell($anchoDatosNombre,14,utf8_decode('del Titular'),0,0,'C',False);
@@ -238,7 +245,7 @@ $pdf->Cell(5,14,utf8_decode(''),'R',0,'C',False);
 
 
 // Condición que oculta o muestra las columnas de sexo y grado.
-if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
+if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4 || $tipoPlanilla == 5) {
 	$x = $pdf->GetX();
 	$y = $pdf->GetY();
 	$pdf->SetXY($x, $y);

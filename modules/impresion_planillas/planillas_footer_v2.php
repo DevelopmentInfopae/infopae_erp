@@ -129,7 +129,7 @@ $pdf->SetFont('Arial','B',7);
 $Y = $pdf->GetY();
 $pdf->MultiCell(42,3,'FIRMA, NOMBRE Y DOC. RESPONSABLE DEL OPERADOR',0,'L');
 $pdf->SetXY(45, $Y);
-$pdf->Cell(120,10, strtoupper($_SESSION["p_nombre_representante_legal"]) ." ". $_SESSION["p_documento_representante_legal"],'LR',0,'L',False);
+$pdf->Cell(120,10, utf8_decode(strtoupper($_SESSION["p_nombre_representante_legal"])) ." ". $_SESSION["p_documento_representante_legal"],'LR',0,'L',False);
 
 $Y = $pdf->GetY();
 $pdf->MultiCell(43,3,'FIRMA, NOMBRE Y DOC. RECTOR ESTABLECIMIENTO EDUCATIVO',0,'L');
