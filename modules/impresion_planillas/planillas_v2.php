@@ -233,45 +233,45 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 		$condicionCoordinador = " AND cod_sede IN ($codigoSedes) ";
   	}
 
-	$consulta = "SELECT id, 
-						tipo_doc, 
-						num_doc, 
-						tipo_doc_nom, 
-						nom1, 
-						nom2, 
-						ape1, 
-						ape2, 
-						etnia, 
-						genero, 
-						edad, 
-						dir_res, 
-						cod_mun_res, 
-						telefono, 
-						cod_mun_nac, 
-						fecha_nac, 
-						cod_estrato, 
-						sisben, 
-						cod_discap, 
-						etnia, 
-						resguardo, 
-						cod_pob_victima, 
-						des_dept_nom, 
-						nom_mun_desp, 
-						cod_inst, 
-						cod_sede, 
-						cod_grado, 
-						nom_grupo, 
-						cod_jorn_est, 
-						estado_est, 
-						repitente,
-						edad, 
-						zona_res_est, 
-						id_disp_est, 
-						TipoValidacion, 
-						activo, 
-						tipo_complem, 
+	$consulta = "SELECT e.id, 
+						e.tipo_doc, 
+						e.num_doc, 
+						e.tipo_doc_nom, 
+						e.nom1, 
+						e.nom2, 
+						e.ape1, 
+						e.ape2, 
+						e.genero, 
+						e.edad, 
+						e.dir_res, 
+						e.cod_mun_res, 
+						e.telefono, 
+						e.cod_mun_nac, 
+						e.fecha_nac, 
+						e.cod_estrato, 
+						e.sisben, 
+						e.cod_discap, 
+						CASE WHEN et.ID = 99 THEN 'SP' WHEN et.ID != 99 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia, 
+						e.resguardo, 
+						e.cod_pob_victima, 
+						e.des_dept_nom, 
+						e.nom_mun_desp, 
+						e.cod_inst, 
+						e.cod_sede, 
+						e.cod_grado, 
+						e.nom_grupo, 
+						e.cod_jorn_est, 
+						e.estado_est, 
+						e.repitente,
+						e.edad, 
+						e.zona_res_est, 
+						e.id_disp_est, 
+						e.TipoValidacion, 
+						e.activo, 
+						e.tipo_complem, 
 						". trim($dia_consulta, ", ") ."
-				FROM entregas_res_$mes$anno2d 
+				FROM entregas_res_$mes$anno2d AS e
+				INNER JOIN etnia AS et ON et.ID = e.etnia
 				WHERE cod_mun_res = '$municipio' AND tipo_complem='$tipoComplemento' AND tipo = 'F' ";
 	if ($institucion != '') { $consulta .= " and cod_inst = '$institucion'"; }			
 	if ($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro'"; }
@@ -345,7 +345,8 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 			$pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['ape1']),'R',0,'L',False);
 			$pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['ape2']),'R',0,'L',False);
 			$pdf->Cell(5,$alturaLinea,utf8_decode($estudiante["edad"]),'R',0,'C',False);
-			$pdf->Cell(7,$alturaLinea,utf8_decode(($estudiante['etnia'] == $datos_etnia["ID"]) ? "" : "X"),'R',0,'C',False);
+			$etniaEncurso = substr($estudiante['etnia'],0,11);
+			$pdf->Cell(19,$alturaLinea,utf8_decode($etniaEncurso), 'R', 0, 'C', False);
 			$pdf->Cell(5,$alturaLinea,utf8_decode($estudiante['genero']),'R',0,'C',False);
 			$pdf->Cell(5,$alturaLinea,utf8_decode($estudiante['cod_grado']),'R',0,'C',False);
 			$pdf->Cell(8,$alturaLinea,utf8_decode($estudiante['nom_grupo']),'R',0,'C',False);
@@ -354,7 +355,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 
 			// Aqui es donde se cambia de acuerdo a la plantilla
 			$entregasEstudiante = 0;
-			for($j = 0 ; $j < 24 ; $j++) {
+			for($j = 0 ; $j < 22 ; $j++) {
 				if($tipoPlanilla != 2) {
 					if($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
 					$auxDia = 'D'.$dia;
@@ -419,14 +420,14 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 			$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
 			$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
 			$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
-			$pdf->Cell(7,$alturaLinea,"",'R',0,'C',False);
+			$pdf->Cell(19,$alturaLinea,"",'R',0,'C',False);
 			$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
 			$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
 			$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
 			$pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
 
 				// Aqui es donde se cambia de acuerdo a la plantilla
-				for($j = 0 ; $j < 24 ; $j++)
+				for($j = 0 ; $j < 22 ; $j++)
 				{
 					$pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 				}
@@ -483,14 +484,14 @@ else if ($tipoPlanilla == 5)
 				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
 				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
 				$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
-				$pdf->Cell(7,$alturaLinea,"",'R',0,'C',False);
+				$pdf->Cell(19,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
 
 				// Aqui es donde se cambia de acuerdo a la plantilla
-				for($j = 0 ; $j < 24 ; $j++)
+				for($j = 0 ; $j < 22 ; $j++)
 				{
 					$pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 				}
@@ -521,7 +522,7 @@ else if ($tipoPlanilla == 6)
 	$consulta_suplentes = '';
 	$parametro_sede_suplente = '';
 	if($sedeParametro != '') { $parametro_sede_suplente = " AND cod_sede = '$sedeParametro' "; }
-	if($institucion != '') { $parametro_institucion_suplente = " AND cod_inst = '$institucion' "; }
+	if($institucion != '') { $parametro_institucion_suplente = " AND cod_inst = '$institucion' "; } else { $parametro_institucion_suplente = "";}
 
 	while ($semana_suplente = $respuesta_semana->fetch_assoc())
 	{
@@ -533,7 +534,7 @@ else if ($tipoPlanilla == 6)
 	}
 	$consulta_suplentes_general = "SELECT * FROM (". trim($consulta_suplentes, "UNION ALL ") .") AS TG GROUP BY num_doc, cod_sede ORDER BY cod_sede, cod_grado, nom_grupo, ape1, ape2, nom1, nom2";
 
-	$respuesta_suplentes = $Link->query(trim($consulta_suplentes_general, 'UNION ALL ')) or die ('Error al consultar suplentes: '. $Link->error);
+	$respuesta_suplentes = $Link->query(trim($consulta_suplentes_general, 'UNION ALL ')) or die ('Error al consultar suplentes');
 
 	$codigo = '';
 	if($respuesta_suplentes->num_rows > 0)
@@ -601,7 +602,7 @@ else if ($tipoPlanilla == 6)
 
 			// Aqui es donde se cambia de acuerdo a la plantilla
 			$entregasEstudiante = 0;
-			for($j = 0 ; $j < 24 ; $j++) {
+			for($j = 0 ; $j < 22 ; $j++) {
 				$pdf->Cell(6,$alturaLinea,utf8_decode(' '),'R',0,'C',False);
 			}
 			$pdf->SetTextColor(0,0,0);
@@ -687,7 +688,7 @@ else if ($tipoPlanilla == 7){
 				// Impresión de las 24 columnas para los días.
 				$total_entregas_por_estudiante = 0;
 				$auxOtrosDiasMes = 0;
-				for($j = 0 ; $j < 24 ; $j++){
+				for($j = 0 ; $j < 22 ; $j++){
 					$auxIndice = $j+1;
 					if (in_array($auxIndice, $auxDias)) {
 						$dia_entrega_estudiante = $suplente_repitente_sede->{'D'.$auxIndice};
@@ -789,7 +790,7 @@ else if ($tipoPlanilla == 8)
 				// Impresión de las 24 columnas para los días.
 				$total_entregas_por_estudiante = 0;
 				$auxOtrosDiasMes = 0;
-				for($j = 0 ; $j < 24 ; $j++)
+				for($j = 0 ; $j < 22 ; $j++)
 				{
 					$auxIndice = $j+1;
 					if (in_array($auxIndice, $auxDias)){
@@ -874,13 +875,13 @@ else
 			$pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
 			$pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
 			$pdf->Cell(5,$alturaLinea,utf8_decode(''),'R',0,'C',False);
-			$pdf->Cell(7,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+			$pdf->Cell(19,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			$pdf->Cell(5,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			$pdf->Cell(5,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			$pdf->Cell(8,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			$pdf->Cell(13,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 
-			for($j = 0 ; $j < 24 ; $j++){
+			for($j = 0 ; $j < 22 ; $j++){
 				$pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			}
 

@@ -2,10 +2,11 @@
 <?php 
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
-
+// var_dump($_GET);
 $condicionRector = '';
-$municipio = $_POST['municipio'];
+$municipio = $_GET['municipio'];
 $periodoActual = $_SESSION['periodoActual'];
+$institucion = $_GET['institucion'];
 
 if ($_SESSION['perfil'] == 6 && $_SESSION['num_doc'] != '') {
 	$consultaInstitucion = "SELECT codigo_inst FROM instituciones WHERE cc_rector = " . $_SESSION['num_doc'] ."";
@@ -33,6 +34,6 @@ $consulta = "SELECT * FROM instituciones WHERE cod_mun = '".$municipio."' $condi
 $resultado = $Link->query($consulta);
 if ($resultado->num_rows > 0) {
 	while ($mun = $resultado->fetch_assoc()) { ?>
-		<option value="<?php echo $mun['codigo_inst']; ?>"><?php echo $mun['nom_inst']; ?></option>
+		<option value="<?php echo $mun['codigo_inst']; ?>" <?php if($institucion !== '' && $institucion == $mun['codigo_inst'] ){ echo "selected" ;} ?> ><?php echo $mun['nom_inst']; ?></option>
 	<?php }
 }

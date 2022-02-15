@@ -124,10 +124,6 @@ $(document).ready(function(){
       $('#table tbody p').remove();
     });
 
-    $('#municipio').on('change', function(){
-      $('#table tbody tr').remove(); 
-      $('#table tbody p').remove();
-    });
 });
 
 function buscarProveedores () {
@@ -222,7 +218,7 @@ function añadirSedes(){
        				"sede" : sede,
        				"ruta" : ruta
        		},
-       		beforeSend: function(){ $('#loader').fadeIn(); $('#table tbody tr').remove(); $('#table tbody p').remove();},
+       		beforeSend: function(){ $('#loader').fadeIn();},
       		success: function(data){
         		$('#tbodySedesDespachos').append(data);
         		$('#loader').fadeOut();

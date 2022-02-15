@@ -3,9 +3,10 @@
   	require_once '../../../config.php';
   	require_once '../../../db/conexion.php';
 
-  	$cod_inst = $_POST['cod_inst'];
+  	$cod_inst = $_GET['cod_inst'];
   	$periodoActual = $_SESSION['periodoActual'];
   	$condicionCoordinador = '';
+  	$cod_sede = $_GET['cod_sede'];
 
   	if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
   		$codigoSedes = "";
@@ -37,7 +38,7 @@
 	$resultado = $Link->query($consultaInstParametros);
 	if ($resultado->num_rows > 0) {
 		while ($institucion = $resultado->fetch_assoc()) { ?>
-		  <option value="<?php echo $institucion['cod_sede'] ?>"><?php echo $institucion['nom_sede'] ?></option>
+		  <option value="<?php echo $institucion['cod_sede'] ?>" <?php if($cod_sede !== '' && $cod_sede == $institucion['cod_sede'] ){ echo "selected" ;} ?> ><?php echo $institucion['nom_sede'] ?></option>
 		<?php }
 	} else { ?>
 		<option value="">Sin sedes</option>

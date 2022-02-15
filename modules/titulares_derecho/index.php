@@ -110,7 +110,15 @@ if ($permisos['titulares_derecho'] == "0") {
 	</div>
 </div>
 
+<?php if (isset($_POST['municipio_titular'])): ?>
+	<input type="hidden" id="municipio_post" name = 'municipio_post' value = <?= $_POST['municipio_titular']; ?> >
+	<input type="hidden" id="institucion_post" name = 'institucion_post' value = <?= $_POST['institucion_titular']; ?> >
+	<input type="hidden" id="sede_post" name = 'sede_post' value = <?= $_POST['sede_titular']; ?> >
+<?php endif ?>
+
+
 <?php
+
 if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 	$semana = $_POST['semana'];
 
@@ -496,9 +504,9 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 	setTimeout(function() {$('#sede_titular').val('<?php echo $_POST['sede_titular']; ?>').change();}, 2200);
 <?php endif ?>
 
-    $('.select2').select2({
-      width: "resolve"
-    });
+    // $('.select2').select2({
+    //   width: "resolve"
+    // });
 
 </script>
 

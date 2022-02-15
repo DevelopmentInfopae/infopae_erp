@@ -135,12 +135,12 @@ $pdf->SetXY($x1, $y1);
 $pdf->MultiCell(14,4,utf8_decode("TIPO RACIÓN"),0,'C',false);
 $x1 = $x1 + 14;
 $pdf->SetXY($x1, $y1);
-$pdf->Cell(157.66,4,utf8_decode('N° DE RACIONES POR DÍA'),'B',0,'C',false);
+$pdf->Cell(165,4,utf8_decode('N° DE RACIONES POR DÍA'),'B',0,'C',false);
 $y2 = $y1 + 4;
 $pdf->SetXY($x1, $y2);
 
 $auxIndice = 1;
-for ($i=0; $i < 21 ; $i++) {
+for ($i=0; $i < 22 ; $i++) {
 	$dia = '';
 	$aux = $auxIndice;
 	if($aux < 10){
@@ -173,7 +173,7 @@ $pdf->Cell(0,8,utf8_decode("NOVEDADES "),'R',0,'C',false);
 $pdf->SetXY($x, $y);
 $pdf->Cell(85,8,utf8_decode(''),'R',0,'L',false);
 $pdf->Cell(14,8,utf8_decode(''),'R',0,'L',false);
-$pdf->Cell(157.66,8,utf8_decode(''),'R',0,'L',false);
+$pdf->Cell(165,8,utf8_decode(''),'R',0,'L',false);
 $pdf->Cell(16,8,utf8_decode(''),'R',0,'L',false);
 $pdf->Cell(16,8,utf8_decode(''),'R',0,'L',false);
 $pdf->Cell(0,8,utf8_decode(''),'R',1,'L',false);

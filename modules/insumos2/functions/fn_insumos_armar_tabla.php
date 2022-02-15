@@ -12,7 +12,7 @@ $institucion = ((isset($_POST['institucion']) && $_POST['institucion'] != "") ? 
 $sede = ((isset($_POST['sede'])&& $_POST['sede'] != "") ? $_POST['sede'] : "");
 $ruta = ((isset($_POST['ruta']) && $_POST['ruta'] != "") ? $_POST['ruta'] : "");
 
-$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 $respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 if ($respuestaSemanaPriorizacion->num_rows > 0) {
 	$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -22,7 +22,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 	if ($mes < 10) {
 		$mes = "0".$mes;
 	}
-	$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+	$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 	$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 	if ($respuestaSemanaPriorizacion->num_rows > 0) {
 		$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -32,7 +32,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 		if ($mes < 10) {
 			$mes = "0".$mes;
 		}
-		$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+		$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 		$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 		if ($respuestaSemanaPriorizacion->num_rows > 0) {
 			$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -42,7 +42,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 			if ($mes < 10) {
 				$mes = "0".$mes;
 			}
-			$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+			$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 			$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 			if ($respuestaSemanaPriorizacion->num_rows > 0) {
 				$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -52,7 +52,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 				if ($mes < 10) {
 					$mes = "0".$mes;
 				}
-				$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+				$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 				$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 				if ($respuestaSemanaPriorizacion->num_rows > 0) {
 					$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -62,7 +62,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 					if ($mes < 10) {
 						$mes = "0".$mes;
 					}
-					$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+					$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 					$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 					if ($respuestaSemanaPriorizacion->num_rows > 0) {
 						$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -72,7 +72,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 						if ($mes < 10) {
 							$mes = "0".$mes;
 						}
-						$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+						$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 						$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 						if ($respuestaSemanaPriorizacion->num_rows > 0) {
 							$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -82,7 +82,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 							if ($mes < 10) {
 								$mes = "0".$mes;
 							}
-							$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+							$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 							$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 							if ($respuestaSemanaPriorizacion->num_rows > 0) {
 								$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -92,7 +92,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 								if ($mes < 10) {
 									$mes = "0".$mes;
 								}
-								$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+								$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 								$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 								if ($respuestaSemanaPriorizacion->num_rows > 0) {
 									$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -102,7 +102,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 									if ($mes < 10) {
 										$mes = "0".$mes;
 									}
-									$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+									$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 									$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 									if ($respuestaSemanaPriorizacion->num_rows > 0) {
 										$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -112,7 +112,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 										if ($mes < 10) {
 											$mes = "0".$mes;
 										}
-										$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+										$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 										$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 										if ($respuestaSemanaPriorizacion->num_rows > 0) {
 											$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -122,7 +122,7 @@ if ($respuestaSemanaPriorizacion->num_rows > 0) {
 											if ($mes < 10) {
 												$mes = "0".$mes;
 											}
-											$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY mes LIMIT 1 ";
+											$consultaSemanaPriorizacion = " SELECT semana FROM sedes_cobertura WHERE mes = '$mes' ORDER BY semana DESC LIMIT 1 ";
 											$respuestaSemanaPriorizacion = $Link->query($consultaSemanaPriorizacion) or die ('Error al consultar la priorizacion ' .mysqli_error($Link));
 											if ($respuestaSemanaPriorizacion->num_rows > 0) {
 												$dataSemanaPriorizacion = $respuestaSemanaPriorizacion->fetch_assoc();
@@ -213,6 +213,4 @@ if ($respuestaTabla->num_rows > 0) {
 			<td><?= $value['sede']; ?></td>
 		</tr>
 	<?php endforeach ?>
-<?php else: ?>
-	<center><p>No se encontraron sedes priorizadas</p></center>
 <?php endif ?>
