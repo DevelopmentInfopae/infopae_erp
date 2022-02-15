@@ -246,7 +246,7 @@ if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 				$pdf->Cell(14,4,utf8_decode($entrega['tipo_complem']),'R',0,'C',false);
 
 				$total = 0;
-				for ($i=0; $i < 21 ; $i++) {
+				for ($i=0; $i < 22 ; $i++) {
 					$auxIndice = $i+1;
 					if($auxIndice < 10){
 						$auxIndice = 'D0'.$auxIndice;
@@ -332,7 +332,7 @@ if (array_key_exists($institucion['cod_inst'], $sedesInstitucion)) {
 		$pdf->Cell(14,4,utf8_decode($aux),'R',0,'C',false);
 
 		$total = 0;
-		for ($i=0; $i < 21 ; $i++) {
+		for ($i=0; $i < 22 ; $i++) {
 			$pdf->Cell(7.5,4,utf8_decode($totalesPorDia[$i]),'R',0,'C',false);
 		}
 

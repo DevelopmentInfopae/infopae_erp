@@ -3,8 +3,9 @@
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 
-$tabla = "focalizacion".$_POST['semana'];
+$tabla = "focalizacion".$_GET['semana'];
 $sedes = "sedes".$_SESSION['periodoActual'];
+$municipio = $_GET['municipio'];
 $condicionInstitucion = '';
 
 if ($_SESSION['perfil'] == "6" && $_SESSION['num_doc'] != "") {
@@ -40,6 +41,6 @@ $consulta = "SELECT ubicacion.CodigoDANE, ubicacion.Ciudad FROM $tabla as F
 $resultado = $Link->query($consulta);
 if ($resultado->num_rows > 0) {
 	while ($mun = $resultado->fetch_assoc()) { ?>
-		<option value="<?php echo $mun['CodigoDANE']; ?>"><?php echo $mun['Ciudad']; ?></option>
+		<option value="<?php echo $mun['CodigoDANE']; ?>" <?php if ($municipio !== '' && $municipio == $mun['CodigoDANE']) {echo "selected";} ?> ><?php echo $mun['Ciudad']; ?></option>
 	<?php }
 }

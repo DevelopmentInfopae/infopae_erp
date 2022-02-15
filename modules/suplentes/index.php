@@ -195,7 +195,7 @@
 												$condicionRector = " codigo_inst = $codigoInstitucion ";
  											}
 
-											$consulta_instituciones = "SELECT codigo_inst AS codigo, nom_inst AS nombre FROM instituciones WHERE $condicionRector ORDER BY nom_inst";
+											$consulta_instituciones = "SELECT codigo_inst AS codigo, nom_inst AS nombre FROM instituciones WHERE 1=1 $condicionRector ORDER BY nom_inst";
 											// var_dump($consulta_instituciones);
 											$respuesta_instituciones = $Link->query($consulta_instituciones) or die("Error al consultar las instituciones: ". $Link->error);
 											if ($respuesta_instituciones->num_rows > 0){
@@ -375,68 +375,68 @@
 <?php endif ?>
 
 <div class="modal inmodal fade" id="ventana_subir_suplentes" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header text-primary" style="padding: 15px;">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-        <h3><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i> Subir suplentes </h3>
-      </div>
-      <div class="modal-body">
+  	<div class="modal-dialog modal-sm">
+    	<div class="modal-content">
+      		<div class="modal-header text-primary" style="padding: 15px;">
+        		<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        		<h3><i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i> Subir suplentes </h3>
+      		</div>
+      		<div class="modal-body">
 				<form action="" name="form_subir_suplentes" id="form_subir_suplentes">
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label for="mes">Mes</label>
-                <select class="form-control" name="mes" id="mes" required>
-                  <option value="">Selección</option>
-                  <?php
-                    $consulta_meses = "SELECT DISTINCT MES AS mes FROM planilla_semanas;";
-                    $respuesta_meses = $Link->query($consulta_meses) or die('Error al consultar los meses: '. $Link->error);
-                    if($respuesta_meses->num_rows > 0){
-                      while($mes = $respuesta_meses->fetch_assoc()) {
-                  ?>
-                      <option value="<?= $mes["mes"]; ?>"><?= $meses[$mes["mes"]]; ?></option>
-                  <?php
-                      }
-                    }
-                  ?>
-                </select>
-              </div>
-            </div>
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label for="mes">Semana</label>
-                <select class="form-control" name="semana_modal" id="semana_modal" required>
-                  <option value="">seleccione</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label for="archivo_suplentes">Archivo</label>
-                <div class="input-group">
-	                <div class="fileinput fileinput-new" data-provides="fileinput">
-								    <span class="btn btn-default btn-file"><span class="fileinput-new">seleccione</span>
-								    <span class="fileinput-exists">cambiar</span><input type="file" name="archivo_suplentes" id="archivo_suplentes" accept=".csv" required="required" /></span>
-								    <span class="fileinput-filename"></span>
-								    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none; vertical-align: middle;">×</a>
-									</div>
-                </div>
-                <label for="archivo_suplentes" class="error" style="display: none;"></label>
-              </div>
-              <label class="text-warning">Para mayor eficacia es mejor subir el archivo con extensión .CSV </label>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-outline btn-sm" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary btn-sm boton_subir_suplentes">Aceptar</button>
-      </div>
-    </div>
-  </div>
+	          	<div class="row">
+	            	<div class="col-sm-12">
+	              		<div class="form-group">
+	                		<label for="mes">Mes</label>
+	               	 		<select class="form-control" name="mes" id="mes" required>
+	                  			<option value="">Selección</option>
+	                  			<?php
+	                    			$consulta_meses = "SELECT DISTINCT MES AS mes FROM planilla_semanas;";
+	                    			$respuesta_meses = $Link->query($consulta_meses) or die('Error al consultar los meses: '. $Link->error);
+	                    			if($respuesta_meses->num_rows > 0){
+	                      				while($mes = $respuesta_meses->fetch_assoc()) {
+	                  			?>
+	                      		<option value="<?= $mes["mes"]; ?>"><?= $meses[$mes["mes"]]; ?></option>
+	                  			<?php
+	                      				}
+	                    			}
+	                  			?>
+	                		</select>
+	              		</div>
+	            	</div>
+	            	<div class="col-sm-12">
+	              		<div class="form-group">
+	                		<label for="mes">Semana</label>
+	                		<select class="form-control" name="semana_modal" id="semana_modal" required>
+	                 	 		<option value="">seleccione</option>
+	                		</select>
+	              		</div>
+	            	</div>
+	          	</div>
+	          	<div class="row">
+	            	<div class="col-sm-12">
+	              		<div class="form-group">
+	                		<label for="archivo_suplentes">Archivo</label>
+	                		<div class="input-group">
+		                		<div class="fileinput fileinput-new" data-provides="fileinput">
+									<span class="btn btn-default btn-file"><span class="fileinput-new">seleccione</span>
+									<span class="fileinput-exists">cambiar</span><input type="file" name="archivo_suplentes" id="archivo_suplentes" accept=".csv" required="required" /></span>
+									<span class="fileinput-filename"></span>
+									<a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none; vertical-align: middle;">×</a>
+								</div>
+	                		</div>
+	                		<label for="archivo_suplentes" class="error" style="display: none;"></label>
+	              		</div>
+	              		<label class="text-warning">Para mayor eficacia es mejor subir el archivo con extensión .CSV </label>
+	            	</div>
+	          	</div>
+        		</form>
+      		</div>
+      		<div class="modal-footer">
+        		<button type="button" class="btn btn-default btn-outline btn-sm" data-dismiss="modal">Cancelar</button>
+        		<button type="button" class="btn btn-primary btn-sm boton_subir_suplentes">Aceptar</button>
+      		</div>
+    	</div>
+  	</div>
 </div>
 
 <?php include '../../footer.php'; ?>

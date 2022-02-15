@@ -35,7 +35,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes";
 
 	}else if ($complemento == 'CAJMRI') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -49,7 +49,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes";
 
 	}else if ($complemento == 'CAJTRI') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -63,7 +63,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes";
 
 	}else if ($complemento == 'CAJMPS') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -77,7 +77,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes";
 
 	}else if ($complemento == 'CAJTPS') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -91,7 +91,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes"; 
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes"; 
 
 	}else if ($complemento == 'RPC') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -105,7 +105,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes"; 
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes"; 
 
 	}else if ($complemento == 'ALL') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -122,7 +122,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
 
 	}
-	$resultadoCupos = $Link->query($consultaCupos);
+	$resultadoCupos = $Link->query($consultaCupos); 
 	if ($resultadoCupos->num_rows > 0) {
 		while ($cps = $resultadoCupos->fetch_assoc()) {
 			$cupos[$cps['mes']]['Cobertura'] = $cps['Cupos'];
@@ -333,17 +333,18 @@ function calcularCantidad ($cins, $sede, $Link, $mes, $complemento) {
 	}
 	$datos = datosProducto($cins, $sede, $Link);
 	$cantxMes = $datos['cantxMes'] > 0 ? $datos['cantxMes'] : 1;
-
+	// exit(var_dump($cantCuposCalcular));
 	if (strpos($datos['uMedida2'], " kg") || strpos($datos['uMedida2'], " lt")) {
 		$cantxMes = $cantxMes * 1000;
 	} else if (strpos($datos['uMedida2'], " lb")) {
-		$cantxMes = $cantxMes * 500;
+		$cantxMes = $cantxMes * 1000;
 	}
+	// exit(var_dump($cantxMes));
 	$conteoIns = substr($cins, 2, 2);
 	if ($conteoIns == '01') { 
 		$coberturas = obtenerCoberturas($sede, $Link, $mes, $complemento);
 		$cantidad = ceil($coberturas['Cobertura'] / $cantCuposCalcular) * $cantxMes;
-
+		// exit(var_dump($cantidad));
 	} else if ($conteoIns == "02") {
 		if ($complemento == 'APS') {
 			$select = 'Manipuladora_APS';

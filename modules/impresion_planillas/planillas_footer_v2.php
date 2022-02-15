@@ -150,6 +150,8 @@ if ($respuesta_tipo_complementos->num_rows > 0) {
 		$texto_convenciones .= "* ". $registros_tipo_complementos["codigo"] .": ". $registros_tipo_complementos["descripcion"] .". ";
 	}
 }
+
+$texto_convenciones .= "* SP: Sin pertenencia étnica";
 /*********************************************************/
 $pdf->SetFont('Arial','B',6);
 $pdf->Cell(0, 2.9, utf8_decode('CONVENCIONES: '),0,1);

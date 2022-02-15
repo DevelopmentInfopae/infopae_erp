@@ -313,10 +313,12 @@ function eliminarTitular(){
 
 $('#semana').on('change', function(){
   $('#loader').fadeIn();
+  municipio = $('#municipio_post').val();
+  // console.log(municipio);
   $.ajax({
-    type: "POST",
+    type: "GET",
     url: "functions/fn_titulares_derecho_obtener_municipios.php",
-    data: {"semana" : $(this).val()},
+    data: {"semana" : $(this).val(), "municipio" : municipio},
     beforeSend: function(){},
     success: function(data){
       $('#municipio_titular').html(data);
@@ -325,29 +327,58 @@ $('#semana').on('change', function(){
   })
 });
 
+// cambio municipio
 $('#municipio_titular').on('change', function(){
   $('#loader').fadeIn();
+  institucion = $('#institucion_post').val();
+  if ($(this).val() === null) {
+    municipio = $('#municipio_post').val();
+  }else{
+    municipio = $(this).val();
+  }
+  if(institucion === undefined){
+    institucion = '';
+  } else {
+    institucion = $('#institucion_post').val();
+  }
+  // console.log(institucion);
   $.ajax({
-    type: "POST",
+    type: "GET",
     url: "functions/fn_titulares_derecho_obtener_instituciones.php",
-    data: {"municipio" : $(this).val()},
+    data: {"municipio" : municipio, "institucion" : institucion },
     beforeSend: function(){},
     success: function(data){
       $('#institucion_titular').html(data);
+      $('#institucion_titular').select2();
       $('#loader').fadeOut();
+      $('#sede_titular').select2();
+      $('#sede_titular').select2("val", "0");
     }
   })
 });
 
 $('#institucion_titular').on('change', function(){
   $('#loader').fadeIn();
+  if ($(this).val() === null) {
+    institucion = $('#institucion_post').val();
+  }else{
+    institucion = $(this).val();
+  }
+
+  sede = $('#sede_post').val();
+  if(sede === undefined){
+    sede = '';
+  } else {
+    sede = $('#sede_post').val();
+  }
   $.ajax({
-    type: "POST",
+    type: "GET",
     url: "functions/fn_titulares_derecho_obtener_sedes.php",
-    data: {"cod_inst" : $(this).val()},
+    data: {"cod_inst" : institucion, 'cod_sede' : sede},
     beforeSend: function(){},
     success: function(data){
       $('#sede_titular').html(data);
+      $('#sede_titular').select2();
       $('#loader').fadeOut();
     }
   })
