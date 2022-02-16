@@ -34,6 +34,8 @@
 										<th>Mes</th>
 										<th>Semana</th>
 										<th>Tipo de novedad</th>
+										<th>Menú</th>
+										<th>Variación</th>
 										<th>Tipo de complemento</th>
 										<th>Grupo etario</th>
 										<th>Fecha registro</th>
@@ -48,6 +50,8 @@
 										<th>Mes</th>
 										<th>Semana</th>
 										<th>Tipo de novedad</th>
+										<th>Menú</th>
+										<th>Variación</th>
 										<th>Tipo de complemento</th>
 										<th>Grupo etario</th>
 										<th>Fecha registro</th>

@@ -33,13 +33,8 @@ function inicializarFunciones(){
 function  buscarPreparacion(){
 	$('.boxPreparacion').html('');
 	if($('#formParametros').valid()){
-
-		console.log("Buscar preparación");
-
 		var formData = new FormData();
-
 		formData.append('preparacion', $('#preparaciones').val());
-
 		$.ajax({
 			type: "post",
 			url: "functions/fn_buscar_preparacion.php",
@@ -62,14 +57,8 @@ function  buscarPreparacion(){
 	}
 }
 
-
 function cargarOpcionesDeProducto(){
 	var valor = "";
-	console.log("Cargar opciones de prodcuto");
-
-	// var formData = new FormData();
-	// formData.append('mes', $('#mes').val());
-
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_productos_preparacion.php",
@@ -98,27 +87,18 @@ function cargarOpcionesDeProducto(){
 function cargarOpcionesDeNuevoProducto(indiceProductosAjuste){
 	var indice = indiceProductosAjuste;
 	var valor = "";
-	console.log("Cargar opciones de producto nuevo");
-
-	// var formData = new FormData();
-	// formData.append('mes', $('#mes').val());
-
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_productos_preparacion.php",
 		dataType: "json",
 		contentType: false,
 		processData: false,
-		//data: formData,
 		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
 			if(data.estado == 1){
-				//console.log(data);
 				console.log(indice);
 				$('#productoFichaTecnicaDet'+indice).append(data.opciones);
 				$('#productoFichaTecnicaDet'+indice).select2({width : "100%"});
-				// $('.productoFichaTecnicaDet select').append(data.opciones);
-				// 
 				$('#loader').fadeOut();
 			}
 			else{
@@ -155,10 +135,8 @@ function anadirProducto(){
 function obtenerUnidadMedidaProducto(elemento, indice){
 	console.log(indice);
 	var codigo = $('#productoFichaTecnicaDet'+indice).val();
-	
 	var formData = new FormData();
 	formData.append('codigo', codigo);
-
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_unidad_de_producto.php",
@@ -191,12 +169,8 @@ function quitarProducto(elemento){
 }
 
 function guardarIntercambio(){
-	console.log("Guadar intercambio de alimentos");
 	if($('#formParametros').valid()){
-		console.log("Formulario validado.");
-
 		var formData = new FormData();
-		
 		formData.append('mes', $('#mes').val());
 		formData.append('semana', $('#semana').val());
 		formData.append('dia', $('#dia').val());
@@ -205,25 +179,23 @@ function guardarIntercambio(){
 		formData.append('codigoMenu', $('#codigoMenu').val());
 		formData.append('menu', $('#menu').val());
 		formData.append('preparacion', $('#preparaciones').val());
-
+		formData.append('numero_menu', $('#numero_menu').val());
+		formData.append('variacion', $('#variacion').val());
 		$( ".tablaAjuste tbody tr" ).each(function() {
 			var producto = $(this).find('.producto').val();
 			var productoNombre = $(this).find('.producto option:selected').text();
 			var unidad = $(this).find('.unidad').val();
 			var pesoBruto = $(this).find('.pesoBruto').val();
 			var pesoNeto = $(this).find('.pesoNeto').val();
-
 			formData.append('productos['+producto+'][producto]', producto);
 			formData.append('productos['+producto+'][productoNombre]', productoNombre);
 			formData.append('productos['+producto+'][unidad]', unidad);
 			formData.append('productos['+producto+'][pesoBruto]', pesoBruto);
 			formData.append('productos['+producto+'][pesoNeto]', pesoNeto);
 		});
-
 		formData.append('fechaVencimiento', $('#fechaVencimiento').val());
 		formData.append('foto', $('#foto')[0].files[0]);
 		formData.append('observaciones', $('#observaciones').val());
-
 		$.ajax({
 			type: "post",
 			url: "functions/fn_guardar_intercambio_alimento.php",

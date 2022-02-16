@@ -9,6 +9,8 @@ $(document).ready(function(){
 			{ data: 'mes', className: "text-center" },
 			{ data: 'semana', className: "text-center" },
 			{ data: 'tipo' },
+			{ data: 'menu' },
+			{ data: 'variacion' },
 			{ data: 'tipo_complemento', className: "text-center" },
 			{ data: 'grupo_etario' },
 			{ data: 'fecha_registro' },
@@ -16,8 +18,6 @@ $(document).ready(function(){
 			{ data: 'estado', className: "text-center" }
 		],
 		buttons: [ {extend: 'excel', title: 'Sedes', className: 'btnExportarExcel'
-		//, exportOptions: { columns: [0,1,2,3,4,5,6,7] } 
-	
 		} ],
 		dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
 		oLanguage: {
@@ -34,7 +34,7 @@ $(document).ready(function(){
 				sPrevious: 'Anterior'
 			}
 		},
-		pageLength: 10,
+		pageLength: 25,
 		responsive: true,
 		"preDrawCallback": function( settings ) {
 			$('#loader').fadeIn();
@@ -81,57 +81,6 @@ $(document).ready(function(){
 		$('.containerBtn').html(botonAcciones);
 	}
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 function crearNovedadPriorizacion(){

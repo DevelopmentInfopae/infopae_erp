@@ -26,40 +26,25 @@ function inicializarFunciones(){
 
 	$('.btnGuardar').click(function(){
 		guardarIntercambio();
-	});
-
-
-
-	// indiceProductosAjuste = $('.tablaAjuste tbody tr').length;
-	// console.log("indiceProductosAjuste = "+indiceProductosAjuste);
-	
-	// $('.quitarProducto').click(function(){
-	// 	quitarProducto(this);
-	// });		
+	});	
 }
 
 function  buscarMenusSemana(){
 	if($('#formParametros').valid()){
-
-		console.log("Buscar preparación");
-
 		var formData = new FormData();
-
 		formData.append('mes', $('#mes').val());
 		formData.append('semana', $('#semana').val());
 		formData.append('tipoComplemento', $('#tipoComplemento').val());
 		formData.append('grupoEtario', $('#grupoEtario').val());
-
+		formData.append('variacion', $('#variacion').val());
 		$.ajax({
 			type: "post",
 			url: "functions/fn_buscar_menus_semana.php",
-			//dataType: "json",
 			contentType: false,
 			processData: false,
 			data: formData,
 			beforeSend: function(){ $('#loader').fadeIn(); },
 			success: function(data){
-				//console.log(data);
 				$(".boxPreparacion").html(data);
 				$('#loader').fadeOut();
 				inicializarFunciones();
@@ -74,15 +59,12 @@ function  buscarMenusSemana(){
 
 function cargarOpcionesDeMenu(){
 	var valor = "";
-	console.log("Cargar opciones de prodcuto");
 	var menusSeleccionados = [];
 	$( ".menuDia" ).each(function() {
-		//console.log($(this).val());
 		if($(this).val()){
 			menusSeleccionados.push($(this).val());
 		}
 	});
-	//console.log(menusSeleccionados);	
 
 	var formData = new FormData();
 	formData.append('mes', $('#mes').val());
@@ -90,7 +72,7 @@ function cargarOpcionesDeMenu(){
 	formData.append('tipoComplemento', $('#tipoComplemento').val());
 	formData.append('grupoEtario', $('#grupoEtario').val());
 	formData.append('menusSeleccionados', menusSeleccionados);
-
+	formData.append('variacion', $('#variacion').val());
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_opciones_de_menu.php",
@@ -118,36 +100,24 @@ function cargarOpcionesDeMenu(){
 
 
 function guardarIntercambio(){
-	console.log("Guadar intercambio de menús días");
 	if($('#formParametros').valid()){
-		console.log("Formulario validado.");
-
 		var formData = new FormData();
-		
 		formData.append('mes', $('#mes').val());
 		formData.append('semana', $('#semana').val());
 		formData.append('tipoComplemento', $('#tipoComplemento').val());
 		formData.append('grupoEtario', $('#grupoEtario').val());
-
+		formData.append('variacion', $('#variacion').val());
 		$( ".menuDia" ).each(function() {
 			var dia = $(this).attr("dia");
 			var menu = $(this).attr("menu");
 			var codigoMenu = $(this).val();
-
-			console.log("día "+dia);
-			console.log("Menú "+menu);
-			console.log("Codigo Menú "+codigoMenu);
-
-
 			formData.append('menu['+codigoMenu+'][ordenCiclo]', menu);
 			formData.append('menu['+codigoMenu+'][codigo]', codigoMenu);
-
 		});
 
 		formData.append('fechaVencimiento', $('#fechaVencimiento').val());
 		formData.append('foto', $('#foto')[0].files[0]);
 		formData.append('observaciones', $('#observaciones').val());
-
 		$.ajax({
 			type: "post",
 			url: "functions/fn_guardar_intercambio_dia_menu.php",
@@ -175,6 +145,3 @@ function guardarIntercambio(){
 
 	}
 }
-
-
-

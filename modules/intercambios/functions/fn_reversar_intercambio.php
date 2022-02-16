@@ -1,7 +1,6 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
-
 $periodoActual = $_SESSION['periodoActual'];
 
 // Respuesta en caso de error
@@ -17,29 +16,22 @@ $codigoIntercambio = '';
 if(isset($_POST['idIntercambio']) && $_POST['idIntercambio'] != ''){
 	$idIntercambio = mysqli_real_escape_string($Link, $_POST['idIntercambio']);
 }
-
 if(isset($_POST['tipoIntercambio']) && $_POST['tipoIntercambio'] != ''){
 	$tipoIntercambio = mysqli_real_escape_string($Link, $_POST['tipoIntercambio']);
 }
-
 if(isset($_POST['codigoIntercambio']) && $_POST['codigoIntercambio'] != ''){
 	$codigoIntercambio = mysqli_real_escape_string($Link, $_POST['codigoIntercambio']);
 }
 
 // Cosulta del Id de la ficha técnica
 $consultaFichaTecnica = " select * from fichatecnica where Codigo = \"$codigoIntercambio\" ";
-//echo $consultaFichaTecnica;
 $resultadoFichaTecnica = $Link->query($consultaFichaTecnica);
 if ($resultadoFichaTecnica->num_rows > 0) {
 	$fichaTecnica = $resultadoFichaTecnica->fetch_assoc();
 	$idFichaTecnica = $fichaTecnica['Id'];
 }
 
-// var_dump($_POST);
-// echo $idFichaTecnica;
-
 if($tipoIntercambio == 1){
-
 	// Borrar de la tabla de fichatecnicadet los productos que corresponden al IdFT
 	$query = " delete from fichatecnicadet where idFT = $idFichaTecnica ";
 	$result = $Link->query($query) or die ('Delete error'. mysqli_error($Link));

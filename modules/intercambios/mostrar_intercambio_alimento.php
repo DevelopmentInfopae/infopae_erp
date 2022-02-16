@@ -41,11 +41,16 @@
 								</div>
 
 								<div class="col-sm-4 form-group">
-									<label for="menu">Menú</label>
-									<input type="text" class="form-control" name="menu" id="menu" value="<?= $menu ?>" readonly="readonly">												
+									<label for="variacion">Variación</label>
+									<input type="text" class="form-control" name="variacion" id="variacion" value="<?= $variacion ?>" readonly="readonly">
 								</div>
 
-								<div class="col-sm-12 form-group">
+								<div class="col-sm-4 form-group">
+									<label for="menu">Menú</label>
+									<input type="text" class="form-control" name="menu" id="menu" value="<?= $menu ?>" readonly="readonly">				
+								</div>
+
+								<div class="col-sm-8 form-group">
 									<label for="preparaciones">Preparaciones</label>
 									<input type="text" class="form-control" name="preparaciones" id="preparaciones" value="<?= $producto ?>" readonly="readonly">	
 								</div>
