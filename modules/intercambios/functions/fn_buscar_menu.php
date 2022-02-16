@@ -4,26 +4,13 @@ require_once '../../../config.php';
 
 $periodoActual = $_SESSION['periodoActual'];
 $codigoMenu = "";
-
-//menu
-// SELECT p.* FROM planilla_semanas ps
-// LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo 
-// WHERE ps.MES = "05" AND ps.SEMANA = "16" AND ps.DIA = "2"
-// AND p.Cod_Tipo_complemento = "APS"
-// AND p.Cod_Grupo_Etario = "1"
-// AND  p.Codigo LIKE '01%' AND p.Nivel = 3 
-
-
-// Consulta para buscar las preparaciones d eun menú
-// SELECT f.id as idFichaTecnica,fd.* FROM fichatecnica f LEFT JOIN fichatecnicadet fd ON f.Codigo = fd.codigo 
-// WHERE fd.IdFT = '424'
-
-
 $mes = '';
 $semana = '';
 $dia = '';
 $tipoComplemento = '';
 $grupoEtario = '';
+$descripcionMenu = 'No encontrado';
+$Orden_Ciclo = '';
 
 if(isset($_POST['mes']) && $_POST['mes'] != ''){
 	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
@@ -40,26 +27,31 @@ if(isset($_POST['tipoComplemento']) && $_POST['tipoComplemento'] != ''){
 if(isset($_POST['grupoEtario']) && $_POST['grupoEtario'] != ''){
 	$grupoEtario = mysqli_real_escape_string($Link, $_POST['grupoEtario']);
 }
-
+if(isset($_POST['variacion']) && $_POST['variacion'] != ''){
+	$variacion = mysqli_real_escape_string($Link, $_POST['variacion']);
+}
 $opciones = "<option value=\"\">Seleccione uno</option>";
 
-$consulta = " SELECT p.* FROM planilla_semanas ps LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND ps.DIA = \"$dia\"AND p.Cod_Tipo_complemento = \"$tipoComplemento\"AND p.Cod_Grupo_Etario = \"$grupoEtario\"AND  p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
-
-//echo $consulta;
-
+$consulta = " 	SELECT p.* 
+				FROM planilla_semanas ps 
+				LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo 
+				WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND ps.DIA = \"$dia\"AND p.Cod_Tipo_complemento = \"$tipoComplemento\"AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND  p.Codigo LIKE \"01%\" AND p.Nivel = 3 AND p.cod_variacion_menu = \"$variacion\" ";
+// echo "$consulta";
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los menú. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$respuesta = 1;
 	while($row = $resultado->fetch_assoc()){
 		$codigoMenu = $row["Codigo"];
 		$descripcionMenu = $row["Descripcion"];	
+		$Orden_Ciclo = $row['Orden_Ciclo'];
 	}
 }if($resultado){
 	$resultadoAJAX = array(
 		"estado" => 1,
 		"mensaje" => "Se ha cargado con exito.",
 		"codigoMenu" => $codigoMenu,
-		"descripcionMenu" => $descripcionMenu
+		"descripcionMenu" => $descripcionMenu,
+		"Orden_Ciclo" => $Orden_Ciclo
 	);
 }else{
 	$resultadoAJAX = array(

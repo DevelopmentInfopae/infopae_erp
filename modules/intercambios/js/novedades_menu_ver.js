@@ -2,9 +2,6 @@ function crearNovedadPriorizacion(){
   window.open('novedades_priorizacion_crear.php', '_self');
 }
 $(document).ready(function(){
-	//$('.priorizacionAction').fadeIn();
-	//buscar_municipios();
-	
 	$('#btnReversarIntercambio').click(function(){
 		reversar();
 	});
@@ -14,47 +11,34 @@ $(document).ready(function(){
 		reversar(1);
 	});
 
-
-
-
-
-
-
-
-
-
-
-
-
-    $('#municipio').change(function(){
-        var municipio = $(this).val();
+	$('#municipio').change(function(){
+    var municipio = $(this).val();
 		buscar_institucion(municipio);
 		$('#sede').html('<option value = "">Seleccione una</option>');
 	});
 
 	$('#institucion').change(function(){
-        var institucion = $(this).val();
-        buscar_sede(institucion);
+    var institucion = $(this).val();
+    buscar_sede(institucion);
 	});
 
 	$('#institucion').change(function(){
-        var institucion = $(this).val();
-        buscar_sede(institucion);
+    var institucion = $(this).val();
+    buscar_sede(institucion);
 	});
 
 	$('#sede').change(function(){
-        var sede = $(this).val();
-        buscar_meses(sede);
-    });
+    var sede = $(this).val();
+    buscar_meses(sede);
+  });
 
 	$('#mes').change(function(){
-        var mes = $(this).val();
+    var mes = $(this).val();
 		var sede = $('#sede').val();
-        buscar_semanas(mes,sede);
-    });
+    buscar_semanas(mes,sede);
+  });
 
-    $('#btnBuscar').click(function(){
-		//$("#myModal").modal();
+	$('#btnBuscar').click(function(){
 		validar_semanas_cantidades();
 	});
 

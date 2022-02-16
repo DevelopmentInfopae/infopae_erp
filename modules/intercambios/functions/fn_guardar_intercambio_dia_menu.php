@@ -8,11 +8,6 @@ $fecha = date('Y-m-d H:i:s');
 $carpeta = 'upload/novedades/menu/';
 $carpetaFisica = '../../../upload/novedades/menu/';
 $nuevoId = 0;
-
-//var_dump($_POST);
-//var_dump($_FILES);
-//var_dump($_SESSION);
-
 $usuario = $_SESSION['id_usuario'];
 $mes = '';
 $semana = '';
@@ -21,7 +16,6 @@ $grupoEtario = '';
 $fechaVencimiento = '';
 $observaciones = '';
 $rutaArchivo = '';
-
 
 if(isset($_POST['mes']) && $_POST['mes'] != ''){
 	$mes = mysqli_real_escape_string($Link, $_POST['mes']);
@@ -43,6 +37,9 @@ if(isset($_POST['fechaVencimiento']) && $_POST['fechaVencimiento'] != ''){
 if(isset($_POST['observaciones']) && $_POST['observaciones'] != ''){
   $observaciones = mysqli_real_escape_string($Link, $_POST['observaciones']);
 }
+if(isset($_POST['variacion']) && $_POST['variacion'] != ''){
+  $variacion = mysqli_real_escape_string($Link, $_POST['variacion']);
+}
 
 
 // Respuesta en caso de error
@@ -53,7 +50,7 @@ $resultadoAJAX = array(
 
 
 // Registro del encabezdo de la novedad
-$query = " insert into novedades_menu (mes, semana, tipo_complem, cod_grupo_etario,  observaciones, url_archivo, fecha_registro, estado, fecha_vencimiento, id_usuario, tipo_intercambio) values (\"$mes\", \"$semana\", \"$tipoComplemento\", \"$grupoEtario\", \"$observaciones\", \"\", \"$fecha\", \"1\", \"$fechaVencimiento\", \"$usuario\", \"3\") ";
+$query = " insert into novedades_menu (mes, semana, variacion_menu, tipo_complem, cod_grupo_etario,  observaciones, url_archivo, fecha_registro, estado, fecha_vencimiento, id_usuario, tipo_intercambio) values (\"$mes\", \"$semana\", \"$variacion\", \"$tipoComplemento\", \"$grupoEtario\", \"$observaciones\", \"\", \"$fecha\", \"1\", \"$fechaVencimiento\", \"$usuario\", \"3\") ";
 
 //echo "<br><br>$query<br><br>";
 $result = $Link->query($query) or die ('Insertando novedad'. mysqli_error($Link)); 
@@ -86,19 +83,18 @@ if (isset($_FILES["foto"])) {
 
 // Para poder hacer el registro del intercambio de los menus debo saber el orden_ciclo de los menus que escogi
 $menus = $_POST['menu'];
-//var_dump($menus);
 $menusConsulta = array();
 foreach ($menus as $menu) {
 	$menusConsulta[] = $menu['codigo'];
 }
 unset($menus);
-//var_dump($menusConsulta);
 $menusConsulta = implode( ", ", $menusConsulta );
 
-// Buscando los registros originales
+// Buscando los ciclos originales de los nuevos menus seleccionados
+$menusOriginales = [];
 $query = " SELECT 0 AS tipo, \"$nuevoId\" as novedad, p.Codigo, p.Orden_Ciclo FROM planilla_semanas ps LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
 $query .= " union SELECT 0 AS tipo, \"$nuevoId\" as novedad, p2.Codigo, p2.Orden_Ciclo FROM productos$periodoActual p2 where p2.Codigo IN ($menusConsulta)  ";
-//echo $query;
+// echo $query; exit();
 $result = $Link->query($query) or die ('Error al cargar los registros originales.'. mysqli_error($Link));
 if ($result->num_rows > 0) {
 	while($row = $result->fetch_assoc()){
@@ -109,8 +105,8 @@ $menusSeleccionados =  $_POST['menu'];
 
 $menusConCambios = array();
 
-//var_dump( $menusOriginales );
-//var_dump( $menusSeleccionados );
+// var_dump( $menusOriginales ); exit();
+// var_dump( $menusSeleccionados ); exit();
 foreach ($menusOriginales as $menuOriginal) {
 	$auxCodigo = $menuOriginal['Codigo'];
 	if(isset($menusSeleccionados[$auxCodigo])){
@@ -128,7 +124,7 @@ foreach ($menusOriginales as $menuOriginal) {
 		}
 	}
 }
-//var_dump( $menusConCambios );
+// var_dump( $menusConCambios );
 
 // Inserción del detalle de la novedad
 $aux = 0;
@@ -144,7 +140,7 @@ foreach ($menusConCambios as $menu) {
 	$aux++;
 	$queryCambioEnMenu .= " update productos$periodoActual set Orden_Ciclo = \"$ordenCicloDestino\" where Codigo = \"$codigo\"; ";
 }
-//echo $query;
+// echo $query;
 $Link->query($query) or die ('Error inserción de registros originales en el detalle de la novedad'. mysqli_error($Link));
 
 $result = $Link->multi_query($queryCambioEnMenu) or die ('Update error'. mysqli_error($Link));

@@ -1,20 +1,32 @@
-jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
-
+jQuery.extend(jQuery.validator.messages, { 
+	required: "Este campo es obligatorio.", 
+	remote: "Por favor, rellena este campo.", 
+	email: "Por favor, escribe una dirección de correo válida", 
+	url: "Por favor, escribe una URL válida.", 
+	date: "Por favor, escribe una fecha válida.", 
+	dateISO: "Por favor, escribe una fecha (ISO) válida.", 
+	number: "Por favor, escribe un número entero válido.", 
+	digits: "Por favor, escribe sólo dígitos.", 
+	creditcard: "Por favor, escribe un número de tarjeta válido.", 
+	equalTo: "Por favor, escribe el mismo valor de nuevo.", 
+	accept: "Por favor, escribe un valor con una extensión aceptada.", 
+	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), 
+	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), 
+	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), 
+	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), 
+	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), 
+	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 
 $(document).ready(function(){
-
 	cargarTiposComplementos();
 	cargarGruposEtarios();
-
 	if(localStorage.getItem("wappsi_mes") != null){
 		$( "#mes" ).val(localStorage.getItem("wappsi_mes"));
 		cargarSemanas();	
 	}
-
 	if(localStorage.getItem("wappsi_dia") != null){
 		$( "#dia" ).val(localStorage.getItem("wappsi_dia"));
 	}
-
 	$( "#mes" ).change(function() {
 		localStorage.setItem("wappsi_mes", $("#mes").val());
 		cargarSemanas();
@@ -22,7 +34,6 @@ $(document).ready(function(){
 			buscarMenu();
 		}
 	});
-
 	$( "#semana" ).change(function() {
 		localStorage.setItem("wappsi_semana", $("#semana").val());
 		cargarDias();
@@ -30,40 +41,32 @@ $(document).ready(function(){
 			buscarMenu();
 		}
 	});
-
 	$( "#dia" ).change(function() {
 		localStorage.setItem("wappsi_dia", $("#dia").val());
 		if($("#codigoMenu").length > 0){
 			buscarMenu();
 		}
 	});
-
 	$( "#tipoComplemento" ).change(function() {
 		if($("#codigoMenu").length > 0){
 			buscarMenu();
 		}
 	});
-
 	$( "#grupoEtario" ).change(function() {
 		if($("#codigoMenu").length > 0){
 			buscarMenu();
 		}
 	});
-
-
-
-
-	
-
-
-
-
+	$( "#variacion" ).change(function() {
+		if($("#codigoMenu").length > 0){
+			buscarMenu();
+		}
+	});
 });
 
 function cargarSemanas(){
 	var formData = new FormData();
 	formData.append('mes', $('#mes').val());
-
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_semanas.php",
@@ -177,17 +180,15 @@ function cargarGruposEtarios(){
 }
 
 function buscarMenu(){
-	if($('#mes').val() != "" && $('#semana').val() != "" && $('#dia').val() != "" && $('#tipoComplemento').val() != "" && $('#grupoEtario').val() != ""){
-		
-		console.log('Se procede a la busqueda del menú.');
-
+	if($('#mes').val() != "" && $('#semana').val() != "" && $('#dia').val() != "" && $('#tipoComplemento').val() != "" && $('#grupoEtario').val() != "" 
+		&& $('#variacion').val() != "" ){
 		var formData = new FormData();
 		formData.append('mes', $('#mes').val());
 		formData.append('semana', $('#semana').val());
 		formData.append('dia', $('#dia').val());
 		formData.append('tipoComplemento', $('#tipoComplemento').val());
 		formData.append('grupoEtario', $('#grupoEtario').val());
-
+		formData.append('variacion', $('#variacion').val());
 		$.ajax({
 			type: "post",
 			url: "functions/fn_buscar_menu.php",
@@ -198,9 +199,10 @@ function buscarMenu(){
 			beforeSend: function(){ $('#loader').fadeIn(); },
 			success: function(data){
 				if(data.estado == 1){
-					//console.log(data);
+					// console.log(data.Orden_Ciclo);
 					$('#codigoMenu').val(data.codigoMenu);
 					$('#menu').val(data.codigoMenu+" - "+data.descripcionMenu);
+					$('#numero_menu').val(data.Orden_Ciclo);
 					if($('#preparaciones').length != 0){
 						buscarPreparaciones();
 					}
@@ -218,12 +220,9 @@ function buscarMenu(){
 	}
 }
 
-function buscarPreparaciones(){
-	console.log('Buscar preparaciones.');
-	
+function buscarPreparaciones(){	
 	var formData = new FormData();
 	formData.append('codigoMenu', $('#codigoMenu').val());
-
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_preparaciones.php",

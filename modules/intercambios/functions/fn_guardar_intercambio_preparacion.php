@@ -6,9 +6,6 @@ $fecha = date('Y-m-d H:i:s');
 $carpeta = 'upload/novedades/menu/';
 $carpetaFisica = '../../../upload/novedades/menu/';
 $nuevoId = 0;
-
-//var_dump($_POST);
-
 $usuario = $_SESSION['id_usuario'];
 $mes = '';
 $semana = '';
@@ -18,8 +15,6 @@ $grupoEtario = '';
 $fechaVencimiento = '';
 $observaciones = '';
 $rutaArchivo = '';
-
-
 
 if(isset($_POST['mes']) && $_POST['mes'] != ''){
   $mes = mysqli_real_escape_string($Link, $_POST['mes']);
@@ -46,12 +41,16 @@ if(isset($_POST['observaciones']) && $_POST['observaciones'] != ''){
 }
 
 $codigoMenu = '';
-// $codigoMenuOriginal = "";
 
 if(isset($_POST['codigoMenu']) && $_POST['codigoMenu'] != ''){
 	$codigoMenu = mysqli_real_escape_string($Link, $_POST['codigoMenu']);
 }
-
+if(isset($_POST['numero_menu']) && $_POST['numero_menu'] != ''){
+  $numero_menu = mysqli_real_escape_string($Link, $_POST['numero_menu']);
+}
+if(isset($_POST['variacion']) && $_POST['variacion'] != ''){
+  $variacion = mysqli_real_escape_string($Link, $_POST['variacion']);
+}
 
 // Respuesta en caso de error
 $resultadoAJAX = array(
@@ -60,22 +59,15 @@ $resultadoAJAX = array(
 );
 
 $consultaFichaTecnica = " select * from fichatecnica where Codigo = \"$codigoMenu\" ";
-
-//echo "<br><br>$consultaFichaTecnica<br><br>";
-
 $resultadoFichaTecnica = $Link->query($consultaFichaTecnica);
 if ($resultadoFichaTecnica->num_rows > 0) {
 	$fichaTecnica = $resultadoFichaTecnica->fetch_assoc();
 	$idFichaTecnica = $fichaTecnica['Id'];
     $consultaFichaTecnicaDet = "select * from fichatecnicadet where IdFT = ".$idFichaTecnica;
-    
-    //echo "<br><br>$consultaFichaTecnicaDet<br><br>";
-
     $resultadoFichaTecnicaDet = $Link->query($consultaFichaTecnicaDet);
     if ($resultadoFichaTecnicaDet->num_rows > 0) {
-
       // Registro del encabezdo de la novedad
-      $query = " insert into novedades_menu (mes, semana, dia, menu, tipo_complem, cod_grupo_etario, cod_producto, observaciones, url_archivo, fecha_registro, estado, fecha_vencimiento, id_usuario, tipo_intercambio) values (\"$mes\", \"$semana\", \"$dia\", \"$codigoMenu\", \"$tipoComplemento\", \"$grupoEtario\", \"$codigoMenu\", \"$observaciones\", \"\", \"$fecha\", \"1\", \"$fechaVencimiento\", \"$usuario\", \"2\") "; 
+      $query = " insert into novedades_menu (mes, semana, dia, menu, variacion_menu, tipo_complem, cod_grupo_etario, cod_producto, observaciones, url_archivo, fecha_registro, estado, fecha_vencimiento, id_usuario, tipo_intercambio) values (\"$mes\", \"$semana\", \"$dia\", \"$numero_menu\", \"$variacion\", \"$tipoComplemento\", \"$grupoEtario\", \"$codigoMenu\", \"$observaciones\", \"\", \"$fecha\", \"1\", \"$fechaVencimiento\", \"$usuario\", \"2\") "; 
 
       //echo "<br><br>$query<br><br>";
       $result = $Link->query($query) or die ('Insertando novedad'. mysqli_error($Link)); 
@@ -105,22 +97,14 @@ if ($resultadoFichaTecnica->num_rows > 0) {
         
       }
       /* Termina tratamiento del archivo */
-
-      // Registro del detalle de la novedad
-      
       // Inserción de los registros originales
       $query = " INSERT INTO novedades_menudet (tipo, id_novedad, cod_producto) SELECT 0 AS tipo, \"$nuevoId\" as novedad, ftd.codigo from fichatecnicadet ftd where ftd.IdFT = \"$idFichaTecnica\"";
-      //echo $query;
       $Link->query($query) or die ('Error inserción de registros originales en el detalle de la novedad'. mysqli_error($Link));
     	
-
-
-
     	// Borrar de la tabla de fichatecnicadet los productos que corresponden al IdFT
     	$query = " delete from fichatecnicadet where idFT = $idFichaTecnica ";
     	$result = $Link->query($query) or die ('Delete error'. mysqli_error($Link));   
     	
-
     	// Hacer el registro de los productos para el IdFT
     	$productos = $_POST['productos'];
 

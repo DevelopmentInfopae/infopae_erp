@@ -10,27 +10,30 @@
 					<div class="row">
 						<div class="col-sm-12">				
 							<div class="row">
-
-								<div class="col-sm-6 form-group">
+								<div class="col-sm-4 form-group">
 									<label for="mes">Mes</label>
 									<input type="text" class="form-control" name="mes" id="mes" value="<?= $mesNm ?>" readonly="readonly">	
 								</div>
 								
-								<div class="col-sm-6 form-group">
+								<div class="col-sm-4 form-group">
 									<label for="semana">Semana</label>
 									<input type="text" class="form-control" name="semana" id="semana" value="<?= $semana ?>" readonly="readonly">	
 								</div>
 
-								<div class="col-sm-6 form-group">
+								<div class="col-sm-4 form-group">
 									<label for="tipoComplemento">Tipo de complemento</label>
 									<input type="text" class="form-control" name="tipoComplemento" id="tipoComplemento" value="<?= $tipoComplemento ?>" readonly="readonly">	
 								</div>
 
-								<div class="col-sm-6 form-group">
+								<div class="col-sm-4 form-group">
 									<label for="grupoEtario">Grupo etario</label>
 									<input type="text" class="form-control" name="grupoEtario" id="grupoEtario" value="<?= $grupoEtario ?>" readonly="readonly">	
 								</div>
 
+								<div class="col-sm-4 form-group">
+									<label for="variacion">Variación</label>
+									<input type="text" class="form-control" name="variacion" id="variacion" value="<?= $variacion ?>" readonly="readonly">
+								</div>
 							</div>
 						</div>
 					</div>
@@ -42,8 +45,6 @@
 
 <?php 
 	$consulta = " SELECT nmd.*, p.Descripcion FROM novedades_menudet nmd LEFT JOIN productos$periodoActual p ON nmd.cod_producto = p.Codigo WHERE nmd.id_novedad = $idNovedad AND nmd.tipo = 0 ORDER by nmd.orden_ciclo "; 
-	//echo $idNovedad;
-	//echo "<br>$consulta<br>";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query - Leyendo novedad det '. mysqli_error($Link));
 ?>
 

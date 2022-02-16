@@ -8,23 +8,16 @@ $(document).ready(function(){
 
 function  buscarPreparacionesIntercambio(){
 	if($('#formParametros').valid()){
-
-		console.log("Buscar preparaciónes del menú");
-
 		var formData = new FormData();
-
 		formData.append('menu', $('#codigoMenu').val());
-
 		$.ajax({
 			type: "post",
 			url: "functions/fn_buscar_preparaciones_intercambio.php",
-			//dataType: "json",
 			contentType: false,
 			processData: false,
 			data: formData,
 			beforeSend: function(){ $('#loader').fadeIn(); },
 			success: function(data){
-				//console.log(data);
 				$(".boxPreparacion").html(data);
 				$('#loader').fadeOut();
 				inicializarFunciones();
@@ -47,7 +40,6 @@ function inicializarFunciones(){
 			autoclose: 'true'
 		});
 	});
-
 	cargarOpcionesDeProducto();
 	indiceProductosAjuste = $('.tablaAjuste tbody tr').length;
 	console.log("indiceProductosAjuste = "+indiceProductosAjuste);
@@ -58,7 +50,6 @@ function inicializarFunciones(){
 	$('.btnGuardar').click(function(){
 		guardarIntercambio();
 	});
-
 }
 
 function cargarOpcionesDeProducto(){
@@ -68,7 +59,7 @@ function cargarOpcionesDeProducto(){
 	var formData = new FormData();
 	formData.append('grupoEtario', $('#grupoEtario').val());
 	formData.append('tipoComplemento', $('#tipoComplemento').val());
-
+	formData.append('variacion',$('#variacion').val());
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_opciones_preparaciones.php",
@@ -162,12 +153,8 @@ function quitarProducto(elemento){
 }
 
 function guardarIntercambio(){
-	console.log("Guadar intercambio de preparación");
 	if($('#formParametros').valid()){
-		console.log("Formulario validado.");
-
-		var formData = new FormData();
-		
+		var formData = new FormData();	
 		formData.append('mes', $('#mes').val());
 		formData.append('semana', $('#semana').val());
 		formData.append('dia', $('#dia').val());
@@ -175,24 +162,18 @@ function guardarIntercambio(){
 		formData.append('grupoEtario', $('#grupoEtario').val());
 		formData.append('codigoMenu', $('#codigoMenu').val());
 		formData.append('menu', $('#menu').val());
-
+		formData.append('numero_menu', $('#numero_menu').val());
+		formData.append('variacion', $('#variacion').val());
 		$( ".tablaAjuste tbody tr" ).each(function() {
 			var producto = $(this).find('.producto').val();
 			var productoNombre = $(this).find('.producto option:selected').text();
-
-			console.log(producto);
-			console.log(productoNombre);
-
 			formData.append('productos['+producto+'][producto]', producto);
 			formData.append('productos['+producto+'][productoNombre]', productoNombre);
 
 		});
-
-		
 		formData.append('fechaVencimiento', $('#fechaVencimiento').val());
 		formData.append('foto', $('#foto')[0].files[0]);
 		formData.append('observaciones', $('#observaciones').val());
-
 		$.ajax({
 			type: "post",
 			url: "functions/fn_guardar_intercambio_preparacion.php",
