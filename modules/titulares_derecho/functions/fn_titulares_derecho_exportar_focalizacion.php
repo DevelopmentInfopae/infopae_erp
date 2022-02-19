@@ -90,7 +90,7 @@ $consulta_focalizacion = "SELECT
 	foc.cod_sede AS codigo_sede,
 	sed.nom_sede AS nombre_sede,
 	sed.cod_mun_sede AS codigo_municipio,
-	ubi.Departamento AS nombre_municipio,
+	ubi.Ciudad AS nombre_municipio,
 	ubi.region as region,
 	foc.zona_res_est as zona,
 	foc.cod_grado AS grado,
