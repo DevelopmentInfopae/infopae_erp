@@ -500,8 +500,8 @@ foreach ($sedes as $key => $sede) {
 						} else {
 							$pdf->Cell(75,$alturaFilasItems,utf8_decode($detalles['Descripcion']),'BLR',0,'L');
 							$pdf->Cell(40,$alturaFilasItems,utf8_decode($detalles['Umedida']),'BR',0,'C');
-							$pdf->Cell(40,$alturaFilasItems,utf8_decode(number_format($detalles['CanTotalPresentacion'], 2, '.', ',')),'BR',0,'C');
-							$pdf->Cell(0,$alturaFilasItems,utf8_decode((number_format($detalles['NombreUnidad1'] == 'u' ? ceil($detalles['CanTotalPresentacion']) : strpos($detalles['NombreUnidad2'], 'kg') || strpos($detalles['NombreUnidad2'], 'lt') ? ceil($detalles['CanTotalPresentacion']) : $detalles['CanTotalPresentacion'], 2, '.', ','))) ,'BR',1,'C');
+							$pdf->Cell(40,$alturaFilasItems,utf8_decode(number_format($detalles['CanTotalPresentacion'], 1, '.', ',')),'BR',0,'C');
+							$pdf->Cell(0,$alturaFilasItems,utf8_decode((number_format($detalles['NombreUnidad1'] == 'u' ? ceil($detalles['CanTotalPresentacion']) : $detalles['CanTotalPresentacion'], 1, '.', ','))) ,'BR',1,'C');
 						}
 					}
 				}

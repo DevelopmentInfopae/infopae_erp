@@ -18,12 +18,14 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->Cell(72,$altura,utf8_decode('RACIONES MENSUALES PROGRAMADAS CAJM:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
 	$pdf->Cell(10,$altura,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla != 1) ? $totalProgramadoMes : ""), "B", 0, 'C', False);
-
+	// exit(var_dump($totales['entregas']));
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJM:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
+	if ($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
 	$pdf->Cell(10,$altura,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8) ? $totales['entregas'] : "" ),"B",0,'C',False);
+	$pdf->SetTextColor(0,0,0);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
@@ -54,7 +56,9 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJT:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
+	if ($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
 	$pdf->Cell(10,$altura,(($tipoComplemento == "CAJTRI" || $tipoComplemento == "CAJTPS") && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8) ? $totales['entregas'] : "" ),"B",0,'C',False);
+	$pdf->SetTextColor(0,0,0);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
@@ -85,7 +89,9 @@ if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlani
 	$pdf->SetFont('Arial','B',$tamannoFuente);
 	$pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS ALMUERZOS:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
+	if ($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
 	$pdf->Cell(10,$altura,(($tipoComplemento == "APS" && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8)) ? $totales['entregas'] : "" ), "B", 0, 'C', False);
+	$pdf->SetTextColor(0,0,0);
 
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);

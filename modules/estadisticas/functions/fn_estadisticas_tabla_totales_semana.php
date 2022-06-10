@@ -8,28 +8,28 @@ $periodo = 1;
 $diasSemanas = [];
 $consDiasSemanas = "SELECT GROUP_CONCAT(DIA) AS Dias, MES, SEMANA FROM planilla_semanas WHERE CONCAT(ANO, '-', MES, '-', DIA) <= '".date('Y-m-d')."' GROUP BY SEMANA";
 
-  // echo $consDiasSemanas;
-  $resDiasSemanas = $Link->query($consDiasSemanas);
-  if ($resDiasSemanas->num_rows > 0) {
-    while ($dataDiasSemanas = $resDiasSemanas->fetch_assoc()) {
-      $semanasP[$periodo] = $dataDiasSemanas['SEMANA'];
-      $consultaTablas = "SELECT 
-                           table_name AS tabla
-                          FROM 
-                           information_schema.tables
-                          WHERE 
-                           table_schema = DATABASE() AND table_name = 'entregas_res_".$dataDiasSemanas['MES']."$periodoActual'";
-      $resTablas = $Link->query($consultaTablas);
-      if ($resTablas->num_rows > 0) {
-        $semanaPos = $dataDiasSemanas['SEMANA'];
-        $arrDias = explode(",", $dataDiasSemanas['Dias']);
-        sort($arrDias);
-        // print_r($arrDias);
-        $diasSemanas[$dataDiasSemanas['MES']][$semanaPos] = $arrDias; //obtenemos un array ordenado del siguiente modo array[mes][semana] = array[dias]
-      }
-      $periodo++;
+// echo $consDiasSemanas;
+$resDiasSemanas = $Link->query($consDiasSemanas);
+if ($resDiasSemanas->num_rows > 0) {
+  while ($dataDiasSemanas = $resDiasSemanas->fetch_assoc()) {
+    $semanasP[$periodo] = $dataDiasSemanas['SEMANA'];
+    $consultaTablas = " SELECT 
+                          table_name AS tabla
+                        FROM 
+                          information_schema.tables
+                        WHERE 
+                          table_schema = DATABASE() AND table_name = 'entregas_res_".$dataDiasSemanas['MES']."$periodoActual'";
+    $resTablas = $Link->query($consultaTablas);
+    if ($resTablas->num_rows > 0) {
+      $semanaPos = $dataDiasSemanas['SEMANA'];
+      $arrDias = explode(",", $dataDiasSemanas['Dias']);
+      sort($arrDias);
+      // print_r($arrDias);
+      $diasSemanas[$dataDiasSemanas['MES']][$semanaPos] = $arrDias; //obtenemos un array ordenado del siguiente modo array[mes][semana] = array[dias]
     }
+    $periodo++;
   }
+}
 
   $tipoComplementos = [];
   $consComplemento="SELECT * FROM tipo_complemento";

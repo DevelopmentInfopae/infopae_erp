@@ -54,8 +54,6 @@ function inicializarFunciones(){
 
 function cargarOpcionesDeProducto(){
 	var valor = "";
-	console.log("Cargar opciones de prodcuto");
-
 	var formData = new FormData();
 	formData.append('grupoEtario', $('#grupoEtario').val());
 	formData.append('tipoComplemento', $('#tipoComplemento').val());
@@ -112,11 +110,10 @@ function anadirProducto(){
 function cargarOpcionesDeNuevoProducto(indiceProductosAjuste){
 	var indice = indiceProductosAjuste;
 	var valor = "";
-	console.log("Cargar opciones de producto nuevo");
-
 	var formData = new FormData();
+	formData.append('tipoComplemento', $('#tipoComplemento').val());
 	formData.append('grupoEtario', $('#grupoEtario').val());
-
+	formData.append('variacion',$('#variacion').val());
 	$.ajax({
 		type: "post",
 		url: "functions/fn_buscar_opciones_preparaciones.php",

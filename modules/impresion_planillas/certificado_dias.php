@@ -137,7 +137,7 @@ foreach ($dias as $indiceDias => $dia) {
 
 // 5.Entregas por sedes
 $sedesInstitucion = array();
-$consulta = "SELECT cod_inst, cod_sede, nom_sede, tipo_complem, ". trim($camposEntregaDias, ", ") . ", (". trim($sumaCamposEntregasDias, " + ") .") AS numdias FROM entregas_res_$mes$periodoActual WHERE (". trim($sumaCamposEntregasDias, " + ") .") > 0 AND cod_mun_sede = $municipio GROUP BY cod_sede , tipo_complem ";
+$consulta = "SELECT cod_inst, cod_sede, nom_sede, tipo_complem, ". trim($camposEntregaDias, ", ") . ", (". trim($sumaCamposEntregasDias, " + ") .") AS numdias FROM entregas_res_$mes$periodoActual WHERE (". trim($sumaCamposEntregasDias, " + ") .") > 0 AND cod_mun_sede = $municipio GROUP BY cod_sede , tipo_complem  ORDER BY  nom_sede";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){

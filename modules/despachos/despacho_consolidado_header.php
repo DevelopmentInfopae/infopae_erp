@@ -211,22 +211,22 @@ else if ($Rpc == 'no') {
   $current_y = $pdf->GetY();
   $current_x = $pdf->GetX();
   $pdf->Cell(45,14.1,'',1,0,'L',False);
-  $pdf->SetXY($current_x, $current_y+1.8);
+  $pdf->SetXY($current_x, $current_y+2.35);
 
 
 
 
 
-  $pdf->MultiCell(45,3.525,$auxDias,0,'C',False);
+  $pdf->MultiCell(45,4.7,$auxDias,0,'C',False);
 
-  $pdf->SetXY($current_x, $current_y+8);
+  $pdf->SetXY($current_x, $current_y+9.4);
 
   if(strpos($semana, ',') !== false){
     $aux = "SEMANAS: $semana";
   }else{
     $aux = "SEMANA: $semana";
   }
-// exit(var_dump($aux));
+
   $pdf->MultiCell(45,4.7,$aux,0,'C',False);
 
   $pdf->SetXY($current_x+45, $current_y);
@@ -234,7 +234,7 @@ else if ($Rpc == 'no') {
   $current_y = $pdf->GetY();
   $current_x = $pdf->GetX();
   $pdf->Cell(57.8,14.1,'',1,0,'L',False);
-  $pdf->SetXY($current_x, $current_y+1.8);
+  $pdf->SetXY($current_x, $current_y+2.35);
   //$pdf->SetFont('Arial','B',$tamannoFuente);
   //$pdf->Cell(57.8,4.7,'SEMANA: '.$auxSemana,0,0,'C',False);
 
@@ -242,15 +242,15 @@ else if ($Rpc == 'no') {
 
 
 
-// exit(var_dump($auxCiclos));
+
   if(strpos($auxCiclos, ',') !== false){
     $aux = "SEMANAS: $auxCiclos";
   }else{
     $aux = "SEMANA: $auxCiclos";
   }
-  $pdf->Cell(57.8,3.525,$aux,0,0,'C',False);
+  $pdf->Cell(57.8,4.7,$aux,0,0,'C',False);
 
-  // exit(var_dump($aux));
+
 
 
 
@@ -263,8 +263,8 @@ else if ($Rpc == 'no') {
   //$pdf->SetXY($current_x+34, $current_y+2.35);
   //$pdf->Cell(10,4.7,$auxSemana,0,4.7,'L',False);
   //$pdf->SetFont('Arial','B',$tamannoFuente);
-  $pdf->SetXY($current_x, $current_y+5);
-  $pdf->MultiCell(57.8,3.525,'MENUS: '.$auxMenus,'RL','C',False);
+  $pdf->SetXY($current_x, $current_y+7,05);
+  $pdf->Cell(57.8,4.7,'MENUS: '.$auxMenus,0,0,'C',False);
   //$pdf->SetFont('Arial','',$tamannoFuente);
   //$pdf->SetXY($current_x+33, $current_y+7,05);
   //$pdf->Cell(57.8,4.7,$auxCiclos,0,0,'L',False);

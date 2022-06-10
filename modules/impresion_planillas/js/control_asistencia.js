@@ -88,9 +88,11 @@ function imprimir_planilla()
 {
 	var SUPLENTE = 6;
 	var vacia = 1;
+	var blanco = 2;
+	var programada = 3;
+	var diligenciada = 4;
 	tipo_complemento = $('input[name="tipoPlanilla"]:checked').val();
-	// console.log(tipo_complemento);
-	if (tipo_complemento == SUPLENTE || tipo_complemento == vacia)
+	if (tipo_complemento == SUPLENTE || tipo_complemento == vacia || tipo_complemento == blanco || tipo_complemento == programada || tipo_complemento == diligenciada)
 	{
 		$('#tipo').removeAttr('required');
 	}

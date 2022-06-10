@@ -310,6 +310,10 @@
                     <th>Lote</th>
                     <th>Fecha Vence</th>
                     <th>Marca</th>
+                    <th>Fecha Sacrificio</th>
+                    <th>Fecha Empaque</th>
+                    <th>Codigo Interno</th>
+                    <th>Observacion</th>
                   </tr>
                 </thead>
                 <tbody id="tBodyTrazabilidad">
@@ -333,6 +337,10 @@
                     <th>Lote</th>
                     <th>Fecha Vence</th>
                     <th>Marca</th>
+                    <th>Fecha Sacrificio</th>
+                    <th>Fecha Empaque</th>
+                    <th>Codigo Interno</th>
+                    <th>Observacion</th>
                   </tr>
                 </tfoot>
               </table>
@@ -342,19 +350,19 @@
               $numtabla = $mesTablaInicio.$_SESSION['periodoActual'];
 
               $consulta = "SELECT
-                  pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca
+                  pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca, pmovdet.fecha_sacrificio, pmovdet.fecha_empaque, pmovdet.codigo_interno, pmovdet.observacion
                   FROM productosmov$numtabla AS pmov
                     INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero
                     INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
                     INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
                     INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
                     INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero
-                  LIMIT 200;";
+                  LIMIT 2000;";
             } else if (isset($_POST['buscar'])) { //Si hay filtrado
               $condicionFvto = "";
               $inners="";
               $condiciones = "";
-              $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab,  pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca";
+              $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab,  pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(pmovdet.Cantidad, 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca, pmovdet.fecha_sacrificio, pmovdet.fecha_empaque, pmovdet.codigo_interno, pmovdet.observacion";
 
               if (isset($_POST['fecha_de']) && $_POST['fecha_de'] != "") {
                 $fecha_de = $_POST['fecha_de'];
@@ -439,7 +447,7 @@
                             $txtTotales = "--";
                             $datos =" '".$txtTotales."' as Tipo, '".$txtTotales."' as Numero, '".$txtTotales."' as FechaMYSQL, '".$txtTotales."' as FechaHora_Elab, '".$txtTotales."' as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad,  '".$txtTotales."' as nomBodegaOrigen, '".$txtTotales."' as nomBodegaDestino,  '".$txtTotales."' as TipoTransporte, '".$txtTotales."' as Placa, '".$txtTotales."' as ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca ";
                           } else { //Si hay criterios, muestra los resultados agrupados
-                            $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca  ";
+                            $datos=" pmov.Tipo, pmov.Numero, pmov.FechaMYSQL, denc.FechaHora_Elab, pmov.fecha_despacho, pmov.Nombre as Proveedor, pmovdet.Descripcion, pmovdet.Umedida, FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, bodegas.NOMBRE as nomBodegaOrigen, b2.NOMBRE as nomBodegaDestino, tipovehiculo.Nombre as TipoTransporte, pmov.Placa, pmov.ResponsableRecibe, pmovdet.Lote, pmovdet.FechaVencimiento, pmovdet.Marca, pmovdet.fecha_sacrificio, pmovdet.fecha_empaque, pmovdet.codigo_interno, pmovdet.observacion  ";
                           }
 
                           $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' GROUP BY pmovdet.CodigoProducto ";
@@ -550,11 +558,15 @@
         { data: 'Lote'},
         { data: 'FechaVencimiento'},
         { data: 'Marca'},
+        { data: 'fecha_sacrificio'},
+        { data: 'fecha_empaque'},
+        { data: 'codigo_interno'},
+        { data: 'observacion'},
       ],
     pageLength: 25,
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-    buttons : [{extend:'excel', title:'Trazabilidad_alimentos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]}}],
+    buttons : [{extend:'excel', title:'Trazabilidad_alimentos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}}],
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',

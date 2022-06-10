@@ -53,7 +53,7 @@ if ($tipoPlanilla != 6 && $tipoPlanilla != 1){
 							) AS total_entregas
 							FROM planilla_semanas WHERE SEMANA = '".$semana."' AND MES = '".$mes."';";	
 		$resTotalEntregado = $Link->query($consTotalEntregado);
-
+		// var_dump($consTotalEntregado);
 		//Si el SQL se ejecuta correctamente y hay datos, es decir si encuentra la tabla priorización$semana (priorizacion03, priorizacion03b, etc)
 		if ($resTotalEntregado !== FALSE && $resTotalEntregado->num_rows > 0) {
 		  $te = $resTotalEntregado->fetch_assoc();

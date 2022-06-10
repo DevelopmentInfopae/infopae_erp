@@ -475,18 +475,7 @@ function guardar_priorizacion(){
 				}
 			}
 		);
-	} else if($('#foto').val() == '') {
-		Command: toastr.error(
-			'Debe seleccionar un archivo.',
-			'Validación de formulario',
-			{
-				onHidden: function() {
-					$('#foto').focus();
-					bandera++;
-				}
-			}
-		);
-	}
+	} 
 
 	if(bandera == 0){
 		var formData = new FormData($("#formArchivos")[0]);

@@ -12,6 +12,7 @@ $(document).ready(function(){
   $(document).on('click', '#boton_abri_ventana_exportar_priorizacion', function(){ abrir_ventana_exportar_priorizacion(); });
   $(document).on('click', '#exportar_priorizacion', function(){ exportar_priorizacion(); });
   $(document).on('click', '#descargarPlantillaManipuladoras', descarga_plantilla_manipuladoras);
+  $(document).on('click', '#descargarPlantillaPriorizacion', descarga_plantilla_priorizacion);
 	// Configuración del pligin toast
 	toastr.options = {
     "closeButton": true,
@@ -322,6 +323,10 @@ function exportar_priorizacion(){
 
 function descarga_plantilla_manipuladoras() {
   location.href = 'functions/fn_sedes_descargar_plantilla_manipuladoras.php';
+}
+
+function descarga_plantilla_priorizacion() {
+  location.href = 'functions/fn_sedes_descargar_plantilla_priorizacion.php';
 }
 
 function subir_archivo_manipuladoras() {
