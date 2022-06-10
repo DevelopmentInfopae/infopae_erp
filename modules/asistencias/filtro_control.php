@@ -17,7 +17,7 @@
 							<form action="" id="form_control_asistencia" name="form_control_asistencia" method="get">
 								<input type="hidden" name="validacion" id="validacion" value="<?= $validacion; ?>">
 
-
+								<?php exit(var_dump($validacion))  ?>
 
 
 

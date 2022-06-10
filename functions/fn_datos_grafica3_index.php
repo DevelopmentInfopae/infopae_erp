@@ -56,25 +56,31 @@ if ($respuestaMeses->num_rows > 0) {
 		}
 
 		if ($dataMeses['mes'] <= $mesActual) {
-			$consultaEntregas = "SELECT tipo_complem $D FROM entregas_res_".$dataMeses['mes'].$periodoActual." GROUP BY tipo_complem;";
-			$respuestaEntregas = $Link->query($consultaEntregas) or die ('Error al consultar los consumos ' . mysqli_error($Link));
-			if ($respuestaEntregas->num_rows > 0) {
-				$totalesPorComplemento = 0;
-				$totalGeneral = 0;
-				while ($dataEntregas = $respuestaEntregas->fetch_assoc()) {	
-					foreach ($valores as $complemento => $valor) {
-						$totalesComplemento = 0;
-						if ($dataEntregas['tipo_complem'] == $complemento) {
-							for ($i=1; $i <= $numeroDias ; $i++) { 
-								$totalesComplemento += $dataEntregas["D$i"];
+			$tablaEntregas = "entregas_res_".$dataMeses['mes'].$periodoActual;
+			$consultaExistencia = " show tables like '$tablaEntregas' "; 
+			$result = $Link->query($consultaExistencia) or die ('Error al consultar existencia de tablas de entregas: '. mysqli_error($Link));
+			$existe = $result->num_rows;
+			if ($existe == 1) {
+				$consultaEntregas = "SELECT tipo_complem $D FROM entregas_res_".$dataMeses['mes'].$periodoActual." GROUP BY tipo_complem;";
+				$respuestaEntregas = $Link->query($consultaEntregas) or die ('Error al consultar los consumos ' . mysqli_error($Link));
+				if ($respuestaEntregas->num_rows > 0) {
+					$totalesPorComplemento = 0;
+					$totalGeneral = 0;
+					while ($dataEntregas = $respuestaEntregas->fetch_assoc()) {	
+						foreach ($valores as $complemento => $valor) {
+							$totalesComplemento = 0;
+							if ($dataEntregas['tipo_complem'] == $complemento) {
+								for ($i=1; $i <= $numeroDias ; $i++) { 
+									$totalesComplemento += $dataEntregas["D$i"];
+								}
+								$totalesPorComplemento += $totalesComplemento * $valor;
+								// var_dump($totalesPorComplemento);
 							}
-							$totalesPorComplemento += $totalesComplemento * $valor;
-							// var_dump($totalesPorComplemento);
 						}
+						$totalGeneral = $totalesPorComplemento;
 					}
-					$totalGeneral = $totalesPorComplemento;
+					$cantidadTotal += $totalGeneral;
 				}
-				$cantidadTotal += $totalGeneral;
 			}
 		}
 	}

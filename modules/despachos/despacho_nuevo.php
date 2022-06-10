@@ -12,6 +12,14 @@
   ini_set('memory_limit','6000M');
   $periodoActual = $_SESSION['periodoActual'];
 
+  $mesesNombre = ["01" => "ENERO", "02" => "FEBRERO", "03" => "MARZO", "04" => "ABRIL", "05" => "MAYO", "06" => "JUNIO", "07" => "JULIO", "08" => "AGOSTO", "09" => "SEPTIEMBRE", "10" => "OCTUBRE", "11" => "NOVIEMBRE", "12" => "DICIEMBRE"];
+  $consultaMeses = " SELECT DISTINCT(MES) AS mes FROM planilla_semanas ";
+  $respuestaMeses = $Link->query($consultaMeses) or die ('Error al consultar los meses ' . mysqli_error($Link));
+  if ($respuestaMeses->num_rows > 0) {
+      while ($dataMeses = $respuestaMeses->fetch_assoc()) {
+        $mesesNm[$dataMeses['mes']] = $mesesNombre[$dataMeses['mes']];
+      }
+  }
 ?>
 
 <?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
@@ -66,11 +74,22 @@
                 </select>
                 <input type="hidden" id="proveedorEmpleadoNm" name="proveedorEmpleadoNm" value="">
               </div><!-- /.col -->
+
+              <div class="col-sm-4 col-md-3 form-group">
+                <label for="mes">Mes</label>
+                <select class="form-control" name="mes" id="mes">
+                  <option value="">Seleccione uno</option>
+                  <?php foreach ($mesesNm as $key => $value): ?>
+                    <option value="<?= $key ?>"><?= $value ?></option>
+                  <?php endforeach ?>
+                </select>
+              </div>  <!-- col -->
+
               <div class="col-sm-4 col-md-3 form-group">
                 <label for="subtipo">Semana</label>
                 <select class="form-control" name="semana" id="semana">
                   <option value="">Seleccione una</option>
-                  <?php
+   <!--                <?php
                   $consulta = " select DISTINCT SEMANA from planilla_semanas ";
                   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                   if($resultado->num_rows >= 1){
@@ -79,7 +98,7 @@
                       <?php
                     }
                   }
-                  ?>
+                  ?> -->
                 </select>
               </div>
               <div class="col-sm-4 col-md-3 form-group">

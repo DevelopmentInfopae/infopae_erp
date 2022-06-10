@@ -385,8 +385,26 @@ if($resultado->num_rows >= 1){
     ( SELECT sum(D3) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D3,
     ( SELECT sum(D4) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D4,
     ( SELECT sum(D5) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D5,
-
-
+    ( SELECT sum(D6) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D6,
+    ( SELECT sum(D7) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D7,
+    ( SELECT sum(D8) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D8,
+    ( SELECT sum(D9) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D9,
+    ( SELECT sum(D10) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D10,
+    ( SELECT sum(D11) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D11,
+    ( SELECT sum(D12) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D12,
+    ( SELECT sum(D13) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D13,
+    ( SELECT sum(D14) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D14,
+    ( SELECT sum(D15) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D15,
+    ( SELECT sum(D16) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D16,
+    ( SELECT sum(D17) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D17,
+    ( SELECT sum(D18) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D18,
+    ( SELECT sum(D19) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D19,
+    ( SELECT sum(D20) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D20,
+    ( SELECT sum(D21) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D21,
+    ( SELECT sum(D22) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D22,
+    ( SELECT sum(D23) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D23,
+    ( SELECT sum(D24) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D24,
+    ( SELECT sum(D25) FROM despachos_det$mesAnno WHERE Tipo_Doc = 'DES' AND Num_Doc = $despacho AND cod_Alimento = $auxCodigo ) AS D25,
 
 
     p.cantidadund2,
@@ -474,11 +492,11 @@ if($resultado->num_rows >= 1){
         $alimento['nombreunidad4'] = $row['nombreunidad4'];
         $alimento['nombreunidad5'] = $row['nombreunidad5'];
 
-        $alimento['D1'] = $row['D1'];
-        $alimento['D2'] = $row['D2'];
-        $alimento['D3'] = $row['D3'];
-        $alimento['D4'] = $row['D4'];
-        $alimento['D5'] = $row['D5'];
+        $alimento['D1'] = $row['D1'] + $row['D6'] + $row['D11'] + $row['D16'] + $row['D21'];
+        $alimento['D2'] = $row['D2'] + $row['D7'] + $row['D12'] + $row['D17'] + $row['D22'];
+        $alimento['D3'] = $row['D3'] + $row['D8'] + $row['D13'] + $row['D18'] + $row['D23'];
+        $alimento['D4'] = $row['D4'] + $row['D9'] + $row['D14'] + $row['D19'] + $row['D24'];
+        $alimento['D5'] = $row['D5'] + $row['D10'] + $row['D15'] + $row['D20'] + $row['D25'];
 
 
 

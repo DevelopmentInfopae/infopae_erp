@@ -148,6 +148,7 @@ function cargarMunicipios(){
 }
 
 function cargarInstituciones(){
+	// console.log($('#validacion').val());
 	var formData = new FormData();
 	formData.append('municipio', $('#municipio').val());
 	if($('#validacion').val() != null){

@@ -60,6 +60,16 @@
 			}
 		}
 	}
+
+	$cantGruposEtarios = $_SESSION['cant_gruposEtarios'];
+	$consultaComplementos = "SELECT CODIGO FROM tipo_complemento ";
+	$respuestaComplementos = $Link->query($consultaComplementos) or die ('Error al consultar los complementos' . mysqli_error($Link));
+	if ($respuestaComplementos->num_rows > 0) {
+		while ($dataComplementos = $respuestaComplementos->fetch_assoc()) {
+			$complementos[] = $dataComplementos['CODIGO']; 
+		}
+	}
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -89,34 +99,34 @@
           <button class="btn btn-primary" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true">
             Acciones <span class="caret"></span>
           </button>
-          	<ul class="dropdown-menu pull-right keep-open-on-click" aria-labelledby="dropdownMenu1">
-          		<?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
-          			<li>
-	              		<a href="#" data-codigosede="<?php echo $codSede; ?>" name="editarSede" id="editarSede"><i class="fas fa-pencil-alt fa-lg"></i> Editar </a>
-	            	</li>
-          		<?php endif ?>
-	            <li>
-	              <a href="#" class="verDispositivosSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-eye fa-lg"></i> Ver Dispositivos</a>
+          <ul class="dropdown-menu pull-right keep-open-on-click" aria-labelledby="dropdownMenu1">
+          	<?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+          		<li>
+	              <a href="#" data-codigosede="<?php echo $codSede; ?>" name="editarSede" id="editarSede"><i class="fas fa-pencil-alt fa-lg"></i> Editar </a>
 	            </li>
-	            <li>
-	              <a href="#" class="verInfraestructuraSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-bank fa-lg"></i> Ver Infraestructura</a>
-	            </li>
-	            <li>
-	              <a href="#" class="verTitularesSede" data-codigosede="<?php echo$codSede; ?>"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>
-	            </li>
-	             <li>
-				<a href="sede_archivos.php?sede=<?php echo $codSede;  ?>"><i class="fa fa-cloud"></i> Ver Archivos </a>
-            	</li>
-            	<?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
-            		<li class="divider"></li>
-            		<li >
-              			<a href="#">
+          	<?php endif ?>
+	          <li>
+	            <a href="#" class="verDispositivosSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-eye fa-lg"></i> Ver Dispositivos</a>
+	          </li>
+	          <li>
+	            <a href="#" class="verInfraestructuraSede" data-codigosede="<?php echo $codSede; ?>"><i class="fa fa-bank fa-lg"></i> Ver Infraestructura</a>
+	          </li>
+	          <li>
+	           	<a href="#" class="verTitularesSede" data-codigosede="<?php echo$codSede; ?>"><i class="fa fa-child fa-lg"></i> Ver Titulares</a>
+	          </li>
+	          <li>
+							<a href="sede_archivos.php?sede=<?php echo $codSede;  ?>"><i class="fa fa-cloud"></i> Ver Archivos </a>
+            </li>
+            <?php if ($_SESSION['perfil'] == "0" || $permisos['instituciones'] == "2"): ?>
+            	<li class="divider"></li>
+            		<li>
+              		<a href="#">
                 		Estado:
                 		<input type="checkbox" id="inputEstadoSede<?php echo $id; ?>" data-toggle="toggle" data-size="mini" data-on="Activo" data-off="Inactivo" data-width="70" data-height="24" <?php if($estado == 1){ echo "checked"; } ?> onchange="confirmarCambioEstado(<?php echo $id; ?>, this.checked);">
-              			</a>
+              		</a>
             		</li>
             	<?php endif ?>
-          	</ul>
+          </ul>
         </div>
       </div>
     </div>
@@ -130,47 +140,47 @@
       <div class="ibox">
       	<div class="ibox-content">
       		<div class="row">
-  				<div class="col-sm-2">
-					<div class="fachadaSede">
-						<?php if($fotoFachada == '') { ?>
-							<img src="<?php echo $baseUrl ?>/img/no_image.jpg" alt="Foto de sede">
-						<?php } else { ?>
-							<img src="<?php echo $fotoFachada; ?>" alt="Foto de sede">
-						<?php } ?>
-					</div>
-  				</div>
-  				<div class="col-sm-4">
-  					<dl class="dl-horizontal">
-	                    <dt>
-	    					<?php if($datos_sede['municipio'] != ''){ ?>
-								<strong>Municipio: </strong><br>
-	    					<?php } ?>
-	    					<?php if($sector != ''){ ?>
-								<strong>Sector: </strong><br>
-	    					<?php } ?>
-						  	<?php if($coordinador != ''){ ?>
-	    						<strong>Coordinador: </strong><br>
-	    					<?php } ?>
-	    					<?php if($direccion != ''){ ?>
-		    					<strong>Dirección: </strong><br>
-	    					<?php } ?>
-	    					<?php if($telefonos != ''){ ?>
-		    					<strong>Telefonos: </strong><br>
-	    					<?php } ?>
-	    					<?php if($email != ''){ ?>
-								<strong>Correo electronico: </strong><br>
-	    					<?php } ?>
-	    					<?php if($nombreJornada != ''){ ?>
-								<strong>Jornada: </strong><br>
-	    					<?php } ?>
-	    					<?php if($tipoValidacion != ''){ ?>
-								<strong>Tipo validación: </strong><br>
-	    					<?php } ?>
-	    					<?php if($tipoVariacion != ''){ ?>
-								<strong>Variación menú: </strong><br>
-	    					<?php } ?>
-						</dt>
-						<dd>
+  					<div class="col-sm-2">
+							<div class="fachadaSede">
+								<?php if($fotoFachada == '') { ?>
+									<img src="<?php echo $baseUrl ?>/img/no_image.jpg" alt="Foto de sede">
+								<?php } else { ?>
+									<img src="<?php echo $fotoFachada; ?>" alt="Foto de sede">
+								<?php } ?>
+							</div>
+  					</div>
+  					<div class="col-sm-4">
+  						<dl class="dl-horizontal">
+	              <dt>
+		    					<?php if($datos_sede['municipio'] != ''){ ?>
+										<strong>Municipio: </strong><br>
+		    					<?php } ?>
+		    					<?php if($sector != ''){ ?>
+										<strong>Sector: </strong><br>
+		    					<?php } ?>
+							  	<?php if($coordinador != ''){ ?>
+		    						<strong>Coordinador: </strong><br>
+		    					<?php } ?>
+		    					<?php if($direccion != ''){ ?>
+			    					<strong>Dirección: </strong><br>
+		    					<?php } ?>
+		    					<?php if($telefonos != ''){ ?>
+			    					<strong>Telefonos: </strong><br>
+		    					<?php } ?>
+		    					<?php if($email != ''){ ?>
+										<strong>Correo electronico: </strong><br>
+		    					<?php } ?>
+		    					<?php if($nombreJornada != ''){ ?>
+										<strong>Jornada: </strong><br>
+		    					<?php } ?>
+		    					<?php if($tipoValidacion != ''){ ?>
+										<strong>Tipo validación: </strong><br>
+		    					<?php } ?>
+		    					<?php if($tipoVariacion != ''){ ?>
+										<strong>Variación menú: </strong><br>
+		    					<?php } ?>
+								</dt>
+							<dd>
 	    					<?php if($datos_sede['municipio'] != ''){ ?>
 		    					<?php echo $datos_sede['municipio']; ?><br>
 	    					<?php } ?>
@@ -198,24 +208,24 @@
 	    					<?php if($tipoVariacion != ''){ ?>
 		    					<?php echo $tipoVariacion; ?><br>
 	    					<?php } ?>
-						</dd>
-					</dl>
+							</dd>
+						</dl>
   				</div>
   				<div class="col-sm-6">
-					<label>Manipuladoras</label></br>
-					<label>
-						<?php
-							$cantidad_manipuladoras = $manipuladoras;
-							while($manipuladoras > 0)
-							{
-						?>
-						<i class="fa fa-child fa-2x text-muted"></i>
-						<?php
-							$manipuladoras--;
-							}
-						?>
-					</label>
-					<label class="text-muted" style="font-size: 26px;">= <?php echo $cantidad_manipuladoras; ?></label>
+						<label>Manipuladoras</label></br>
+						<label>
+							<?php
+								$cantidad_manipuladoras = $manipuladoras;
+								while($manipuladoras > 0)
+								{
+							?>
+							<i class="fa fa-child fa-2x text-muted"></i>
+							<?php
+								$manipuladoras--;
+								}
+							?>
+						</label>
+						<label class="text-muted" style="font-size: 26px;">= <?php echo $cantidad_manipuladoras; ?></label>
   				</div>
   			</div>
   			<div class="row">
@@ -224,24 +234,18 @@
   						<thead>
   							<tr>
   								<th>Complemento</th>
-  								<th>CAJMPS</th>
-  								<th>CAJTPS</th>
-  								<th>APS</th>
-  								<th>CAJMRI</th>
-  								<th>CAJTRI</th>
-  								<th>RPC</th>
-  								<th>Total</th>
+										<?php foreach ($complementos as $key => $value): ?>
+											<th><?= $value; ?></th>
+										<?php endforeach ?>
+									<th>Total</th>	
   							</tr>
   						</thead>
   						<tbody>
   							<tr>
   								<td>Cantidad manipuladoras</td>
-  								<td><?= $datos_sede['Manipuladora_CAJMPS'] ?></td>
-  								<td><?= $datos_sede['Manipuladora_CAJTPS'] ?></td>
-  								<td><?= $datos_sede['Manipuladora_APS'] ?></td>
-  								<td><?= $datos_sede['Manipuladora_CAJMRI'] ?></td>
-  								<td><?= $datos_sede['Manipuladora_CAJTRI'] ?></td>
-  								<td><?= $datos_sede['Manipuladora_RPC'] ?></td>
+  								<?php foreach ($complementos as $key => $value): ?>
+										<td><?= $datos_sede['Manipuladora_'.$value]; ?></td>
+  								<?php endforeach ?>
   								<td><?= $datos_sede['cantidad_Manipuladora'] ?></td>
   							</tr>
   						</tbody>
@@ -254,130 +258,59 @@
   </div>
 </div>
 
-
 <div class="wrapper wrapper-content  animated fadeInRight">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="ibox">
-                <div class="ibox-content">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="ibox">
+        <div class="ibox-content">
 					<?php
-					$priorizacion = array();
-					$totalesPriorizacion = array();
-					$totalesPriorizacion['APS'] = 0;
-					$totalesPriorizacion['CAJMRI'] = 0;
-					$totalesPriorizacion['CAJTRI'] = 0;
-					$totalesPriorizacion['CAJMPS'] = 0;
-					$totalesPriorizacion['CAJTPS'] = 0;
-					$totalesPriorizacion['RPC'] = 0;
+						$priorizacion = array();
+						$totalesPriorizacion = array();
+						foreach ($complementos as $key => $value) {
+							$totalesPriorizacion[$value] = 0;
+						}
 
-					for ($i=1; $i <= 3 ; $i++) {
-						$totalesPriorizacion['Etario'.$i.'_APS'] = 0;
-						$totalesPriorizacion['Etario'.$i.'_CAJMRI'] = 0;
-						$totalesPriorizacion['Etario'.$i.'_CAJTRI'] = 0;
-						$totalesPriorizacion['Etario'.$i.'_CAJMPS'] = 0;
-						$totalesPriorizacion['Etario'.$i.'_CAJTPS'] = 0;
-						$totalesPriorizacion['Etario'.$i.'_RPC'] = 0;
-					}
+						for ($i=1; $i <= $cantGruposEtarios ; $i++) {
+							foreach ($complementos as $key => $value) {
+								$totalesPriorizacion['Etario'.$i.'_'.$value] = 0;
+							}
+						}
 
-					foreach ($semanas as $semana) {
-						$consulta = "SELECT * FROM sedes_cobertura WHERE semana = '$semana' AND cod_sede = '$codSede'";
-
-						$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-						if($resultado->num_rows >= 1) {
-							while($row = $resultado->fetch_assoc()) {
-
-								if(isset($priorizacion['APS'][$semana]) && floatval($priorizacion['APS'][$semana]) > 0){
-									$priorizacion['APS'][$semana] = $priorizacion['APS'][$semana] + $row['APS'];
-								} else {
-									$priorizacion['APS'][$semana] = $row['APS'];
-								}
-
-								if(isset($priorizacion['CAJMRI'][$semana]) && floatval($priorizacion['CAJMRI'][$semana]) > 0) {
-									$priorizacion['CAJMRI'][$semana] = $priorizacion['CAJMRI'][$semana] + $row['CAJMRI'];
-								} else {
-									$priorizacion['CAJMRI'][$semana] = $row['CAJMRI'];
-								}
-
-								if(isset($priorizacion['CAJTRI'][$semana]) && floatval($priorizacion['CAJTRI'][$semana]) > 0) {
-									$priorizacion['CAJTRI'][$semana] = $priorizacion['CAJTRI'][$semana] + $row['CAJTRI'];
-								} else {
-									$priorizacion['CAJTRI'][$semana] = $row["CAJTRI"];
-								}
-
-								if(isset($priorizacion['CAJMPS'][$semana]) && floatval($priorizacion['CAJMPS'][$semana]) > 0) {
-									$priorizacion['CAJMPS'][$semana] = $priorizacion['CAJMPS'][$semana] + $row['CAJMPS'];
-								}else{
-									$priorizacion['CAJMPS'][$semana] = $row['CAJMPS'];
-								}
-
-								if (isset($priorizacion["CAJTPS"][$semana]) && floatval($priorizacion["CAJTPS"][$semana]) > 0) {
-									$priorizacion["CAJTPS"][$semana] = $priorizacion["CAJTPS"][$semana] + $row["CAJTPS"];
-								} else {
-									$priorizacion["CAJTPS"][$semana] = $row["CAJTPS"];
-								}
-
-								if (isset($priorizacion["RPC"][$semana]) && floatval($priorizacion["RPC"][$semana]) > 0) {
-									$priorizacion["RPC"][$semana] = $priorizacion["RPC"][$semana] + $row["RPC"];
-								} else {
-									$priorizacion["RPC"][$semana] = $row["RPC"];
-								}
-
-								for ($i=1; $i <= 3 ; $i++) {
-									if(isset($priorizacion['Etario'.$i.'_APS'][$semana]) && floatval($priorizacion['Etario'.$i.'_APS'][$semana]) > 0) {
-										$priorizacion['Etario'.$i.'_APS'][$semana] = $priorizacion['Etario'.$i.'_APS'][$semana] + $row['Etario'.$i.'_APS'];
-									} else {
-										$priorizacion['Etario'.$i.'_APS'][$semana] = $row['Etario'.$i.'_APS'];
+						foreach ($semanas as $semana) {
+							$consulta = "SELECT * FROM sedes_cobertura WHERE semana = '$semana' AND cod_sede = '$codSede'";
+							$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+							if($resultado->num_rows >= 1) {
+								while($row = $resultado->fetch_assoc()) {
+									foreach ($complementos as $key => $value) {
+										if (isset($priorizacion[$value][$semana]) && floatval($priorizacion[$value][$semana]) > 0 ) {
+											$priorizacion[$value][$semana] = $priorizacion[$value][$semana] + $row[$value];
+										}else{
+											$priorizacion[$value][$semana] = $row[$value];
+										}
 									}
 
-									if(isset($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) && floatval($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) > 0) {
-										$priorizacion['Etario'.$i.'_CAJMRI'][$semana] = $priorizacion['Etario'.$i.'_CAJMRI'][$semana] + $row['Etario'.$i.'_CAJMRI'];
-									} else {
-										$priorizacion['Etario'.$i.'_CAJMRI'][$semana] = $row['Etario'.$i.'_CAJMRI'];
+									for ($i=1; $i <= $cantGruposEtarios ; $i++) {
+										foreach ($complementos as $key => $value) {
+											if (isset($priorizacion['Etario'.$i.'_'.$value][$semana]) && floatval($priorizacion['Etario'.$i.'_'.$value][$semana]) > 0 ) {
+												$priorizacion['Etario'.$i.'_'.$value][$semana] = $priorizacion['Etario'.$i.'_'.$value][$semana] + $row['Etario'.$i.'_'.$value];
+											} else {
+												$priorizacion['Etario'.$i.'_'.$value][$semana] = $row['Etario'.$i.'_'.$value];
+											}
+										}
 									}
 
-									if(isset($priorizacion['Etario'.$i.'_CAJTRI'][$semana]) && floatval($priorizacion['Etario'.$i.'_CAJTRI'][$semana]) > 0){
-										$priorizacion['Etario'.$i.'_CAJTRI'][$semana] = $priorizacion['Etario'.$i.'_CAJTRI'][$semana] + $row['Etario'.$i.'_CAJTRI'];
-									} else {
-										$priorizacion['Etario'.$i.'_CAJTRI'][$semana] = $row['Etario'.$i.'_CAJTRI'];
+									foreach ($complementos as $key => $value) {
+										$totalesPriorizacion[$value] = $totalesPriorizacion[$value] + $row[$value];
 									}
 
-									if(isset($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) && floatval($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) > 0) {
-										$priorizacion['Etario'.$i.'_CAJMPS'][$semana] = $priorizacion['Etario'.$i.'_CAJMPS'][$semana] + $row['Etario'.$i.'_CAJMPS'];
-									} else {
-										$priorizacion['Etario'.$i.'_CAJMPS'][$semana] = $row['Etario'.$i.'_CAJMPS'];
+									for ($i=1; $i <= $cantGruposEtarios ; $i++) {
+										foreach ($complementos as $key => $value) {
+											$totalesPriorizacion['Etario'.$i.'_'.$value] = $totalesPriorizacion['Etario'.$i.'_'.$value] + $row['Etario'.$i.'_'.$value];
+										}
 									}
-
-									if (isset($priorizacion["Etario".$i."_CAJTPS"][$semana]) && floatval($priorizacion["Etario".$i."_CAJTPS"][$semana]) > 0) {
-										$priorizacion["Etario".$i."_CAJTPS"][$semana] = $priorizacion["Etario".$i."_CAJTPS"][$semana] + $row["Etario".$i."_CAJTPS"];
-									} else {
-										$priorizacion["Etario".$i."_CAJTPS"][$semana] = $row["Etario".$i."_CAJTPS"];
-									}
-
-									if (isset($priorizacion["Etario".$i."_RPC"][$semana]) && floatval($priorizacion["Etario".$i."_RPC"][$semana]) > 0) {
-										$priorizacion["Etario".$i."_RPC"][$semana] = $priorizacion["Etario".$i."_RPC"][$semana] + $row["Etario".$i."_RPC"];
-									} else {
-										$priorizacion["Etario".$i."_RPC"][$semana] = $row["Etario".$i."_RPC"];
-									}
-								}
-
-								$totalesPriorizacion['APS'] = $totalesPriorizacion['APS'] + $row['APS'];
-								$totalesPriorizacion['CAJMRI'] = $totalesPriorizacion['CAJMRI'] + $row['CAJMRI'];
-								$totalesPriorizacion['CAJTRI'] = $totalesPriorizacion['CAJTRI'] + $row['CAJTRI'];
-								$totalesPriorizacion['CAJMPS'] = $totalesPriorizacion['CAJMPS'] + $row['CAJMPS'];
-								$totalesPriorizacion['CAJTPS'] = $totalesPriorizacion['CAJTPS'] + $row['CAJTPS'];
-								$totalesPriorizacion['RPC'] = $totalesPriorizacion['RPC'] + $row['RPC'];
-
-								for ($i=1; $i <= 3 ; $i++) {
-									$totalesPriorizacion['Etario'.$i.'_APS'] = $totalesPriorizacion['Etario'.$i.'_APS'] + $row['Etario'.$i.'_APS'];
-									$totalesPriorizacion['Etario'.$i.'_CAJMRI'] = $totalesPriorizacion['Etario'.$i.'_CAJMRI'] + $row['Etario'.$i.'_CAJMRI'];
-									$totalesPriorizacion['Etario'.$i.'_CAJTRI'] = $totalesPriorizacion['Etario'.$i.'_CAJTRI'] + $row['Etario'.$i.'_CAJTRI'];
-									$totalesPriorizacion['Etario'.$i.'_CAJMPS'] = $totalesPriorizacion['Etario'.$i.'_CAJMPS'] + $row['Etario'.$i.'_CAJMPS'];
-									$totalesPriorizacion['Etario'.$i.'_CAJTPS'] = $totalesPriorizacion['Etario'.$i.'_CAJTPS'] + $row['Etario'.$i.'_CAJTPS'];
-									$totalesPriorizacion['Etario'.$i.'_RPC'] = $totalesPriorizacion['Etario'.$i.'_RPC'] + $row['Etario'.$i.'_RPC'];
 								}
 							}
 						}
-					}
 					?>
 					<h2>Priorización</h2>
 					<div class="table-responsive">
@@ -392,135 +325,27 @@
 								</tr>
 							</thead>
 							<tbody>
-								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
+								<?php foreach ($complementos as $key => $value): ?>
+									<?php for ($i=1; $i <= $cantGruposEtarios ; $i++) {  ?>
+										<tr>
+											<td>Etario <?= $i; ?> <?= $value; ?></td>
+												<?php foreach ($semanas as $semana){ ?>
+													<td class="text-center">
+														<?= (isset($priorizacion['Etario'.$i.'_'.$value][$semana])) ? $priorizacion['Etario'.$i.'_'.$value][$semana] : ""; ?>
+													</td>
+												<?php } ?>
+											<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_'.$value]; ?></td>
+										</tr>
+									<?php } ?>
 									<tr>
-										<td>Etario <?= $i; ?> APS</td>
-										<?php foreach ($semanas as $semana){ ?>
-											<td class="text-center">
-												<?= (isset($priorizacion['Etario'.$i.'_APS'][$semana])) ? $priorizacion['Etario'.$i.'_APS'][$semana] : ""; ?>
-											</td>
-										<?php } ?>
-										<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_APS']; ?></td>
-									</tr>
-								<?php } ?>
+										<th>Total <?= $value; ?></th>
+											<?php foreach ($semanas as $semana){ ?>
+												<th class="text-center"><?= isset($priorizacion[$value][$semana]) ? $priorizacion[$value][$semana] : ""; ?></th>
+											<?php } ?>
+										<th class="text-center"><?= $totalesPriorizacion[$value]; ?></th>
+									</tr>	
+								<?php endforeach ?>
 
-								<tr>
-									<th>Total APS</th>
-									<?php foreach ($semanas as $semana){ ?>
-										<th class="text-center"><?= isset($priorizacion['APS'][$semana]) ? $priorizacion['APS'][$semana] : ""; ?></th>
-									<?php } ?>
-									<th class="text-center"><?= $totalesPriorizacion['APS']; ?></th>
-								</tr>
-
-								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-								<tr>
-									<td>Etario <?= $i; ?> CAJMRI</td>
-									<?php foreach ($semanas as $semana){ ?>
-										<td class="text-center">
-											<?= isset($priorizacion['Etario'.$i.'_CAJMRI'][$semana]) ? $priorizacion['Etario'.$i.'_CAJMRI'][$semana] : ""; ?>
-										</td>
-									<?php } ?>
-									<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_CAJMRI']; ?></td>
-								</tr>
-								<?php } ?>
-
-								<tr>
-									<th>Total CAJMRI</th>
-									<?php foreach ($semanas as $semana){ ?>
-										<th class="text-center">
-											<?= isset($priorizacion['CAJMRI'][$semana]) ? $priorizacion['CAJMRI'][$semana] : ""; ?>
-										</th>
-									<?php } ?>
-									<th class="text-center"><?= $totalesPriorizacion['CAJMRI']; ?></th>
-								</tr>
-
-								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-								<tr>
-									<td>Etario <?= $i; ?> CAJTRI</td>
-									<?php foreach ($semanas as $semana){ ?>
-										<td class="text-center">
-											<?= isset($priorizacion['Etario'.$i.'_CAJTRI'][$semana]) ? $priorizacion['Etario'.$i.'_CAJTRI'][$semana] : ""; ?>
-										</td>
-									<?php } ?>
-									<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_CAJTRI']; ?></td>
-								</tr>
-								<?php } ?>
-
-								<tr>
-									<th>Total CAJTRI</th>
-									<?php foreach ($semanas as $semana){ ?>
-										<th class="text-center">
-											<?= isset($priorizacion['CAJTRI'][$semana]) ? $priorizacion['CAJTRI'][$semana] : ""; ?>
-										</th>
-									<?php } ?>
-									<th class="text-center"><?= $totalesPriorizacion['CAJTRI']; ?></th>
-								</tr>
-
-								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-									<tr>
-										<td>Etario <?= $i; ?> CAJMPS</td>
-										<?php foreach ($semanas as $semana){ ?>
-											<td class="text-center">
-												<?= isset($priorizacion['Etario'.$i.'_CAJMPS'][$semana]) ? $priorizacion['Etario'.$i.'_CAJMPS'][$semana] : ""; ?>
-											</td>
-										<?php } ?>
-										<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_CAJMPS']; ?></td>
-									</tr>
-								<?php } ?>
-
-								<tr>
-									<th>Total CAJMPS</th>
-									<?php foreach ($semanas as $semana){ ?>
-										<th class="text-center">
-											<?= isset($priorizacion['CAJMPS'][$semana]) ? $priorizacion['CAJMPS'][$semana] : ""; ?>
-										</th>
-									<?php } ?>
-									<th class="text-center"><?= $totalesPriorizacion['CAJMPS']; ?></th>
-								</tr>
-
-								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-									<tr>
-										<td>Etario <?= $i; ?> CAJTPS</td>
-										<?php foreach ($semanas as $semana){ ?>
-											<td class="text-center">
-												<?= isset($priorizacion['Etario'.$i.'_CAJTPS'][$semana]) ? $priorizacion['Etario'.$i.'_CAJTPS'][$semana] : ""; ?>
-											</td>
-										<?php } ?>
-										<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_CAJTPS']; ?></td>
-									</tr>
-								<?php } ?>
-
-								<tr>
-									<th>Total CAJTPS</th>
-									<?php foreach ($semanas as $semana){ ?>
-										<th class="text-center">
-											<?= isset($priorizacion['CAJTPS'][$semana]) ? $priorizacion['CAJTPS'][$semana] : ""; ?>
-										</th>
-									<?php } ?>
-									<th class="text-center"><?= $totalesPriorizacion['CAJTPS']; ?></th>
-								</tr>
-
-								<?php for ($i=1; $i <= 3 ; $i++) {  ?>
-									<tr>
-										<td>Etario <?= $i; ?> RPC</td>
-										<?php foreach ($semanas as $semana){ ?>
-											<td class="text-center">
-												<?= isset($priorizacion['Etario'.$i.'_RPC'][$semana]) ? $priorizacion['Etario'.$i.'_RPC'][$semana] : ""; ?>
-											</td>
-										<?php } ?>
-										<td class="text-center"><?= $totalesPriorizacion['Etario'.$i.'_RPC']; ?></td>
-									</tr>
-								<?php } ?>
-
-								<tr>
-									<th>Total RPC</th>
-									<?php foreach ($semanas as $semana){ ?>
-										<th class="text-center">
-											<?= isset($priorizacion['RPC'][$semana]) ? $priorizacion['RPC'][$semana] : ""; ?>
-										</th>
-									<?php } ?>
-									<th class="text-center"><?= $totalesPriorizacion['RPC']; ?></th>
-								</tr>
 							</tbody>
 							<tfoot>
 								<tr>
@@ -566,18 +391,18 @@
             </tbody>
             <tfoot>
               <tr>
-				<th>Municipio</th>
-				<th>Institución</th>
-				<th>Sede</th>
-				<th>Fecha</th>
-				<th>APS</th>
-				<th>CAJMRI</th>
-				<th>CAJTRI</th>
-				<th>CAJMPS</th>
-				<th>CAJTPS</th>
-				<th>RPC</th>
-				<th>Semana</th>
-				<th>Observaciones</th>
+								<th>Municipio</th>
+								<th>Institución</th>
+								<th>Sede</th>
+								<th>Fecha</th>
+								<th>APS</th>
+								<th>CAJMRI</th>
+								<th>CAJTRI</th>
+								<th>CAJMPS</th>
+								<th>CAJTPS</th>
+								<th>RPC</th>
+								<th>Semana</th>
+								<th>Observaciones</th>
               </tr>
             </tfoot>
           </table>

@@ -320,6 +320,7 @@ if ($fila > 1) {
 	`doc_acudiente` VARCHAR(20) NULL DEFAULT '',
 	`tel_acudiente` VARCHAR(50) NULL DEFAULT '',
 	`parentesco_acudiente` VARCHAR(50) NULL DEFAULT '',
+	`tipo_complem` VARCHAR(50) NULL DEFAULT '',
 	PRIMARY KEY (`id`),
 	INDEX `Acel_est1` (`num_doc`, `cod_jorn_est`, `cod_grado`, `cod_pob_victima`, `cod_inst`, `cod_discap`) USING BTREE
 	)
@@ -345,7 +346,7 @@ if ($fila > 1) {
 }
 
 // Ciclo para generar la cadena de texto para la consulta de inserción.
-$consulta_insertar_suplentes = "INSERT INTO suplentes$semana (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, nom_acudiente, doc_acudiente, tel_acudiente, parentesco_acudiente) VALUES ";
+$consulta_insertar_suplentes = "INSERT INTO suplentes$semana (tipo_doc, num_doc, tipo_doc_nom, ape1, ape2, nom1, nom2, genero, dir_res, cod_mun_res, telefono, cod_mun_nac, fecha_nac, cod_estrato, sisben, cod_discap, etnia, resguardo, cod_pob_victima, des_dept_nom, nom_mun_desp, cod_sede, cod_inst, cod_mun_inst, cod_mun_sede, nom_sede, nom_inst, cod_grado, nom_grupo, cod_jorn_est, estado_est, repitente, edad, zona_res_est, id_disp_est, TipoValidacion, activo, nom_acudiente, doc_acudiente, tel_acudiente, parentesco_acudiente, tipo_complem) VALUES ";
 
 $archivo_suplentes = fopen($_FILES['archivo_suplentes']['tmp_name'], 'r');
 $separador_registros = (count(fgetcsv($archivo_suplentes, null, ",")) > 1) ? "," : ";";
@@ -391,9 +392,10 @@ while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == T
 	$doc_acudiente = $registro[38];
 	$tel_acudiente = $registro[39];
 	$parentesco_acudiente = $registro[40];
+	$tipo_complem = $registro[36];
 	// $activo = $registro[41];
 // exit(var_dump($registro));
-	$consulta_insertar_suplentes .= "('$tipo_documento', '$numero_documento', '$tipo_documento_nombre', '$primer_apellido', '$segundo_apellido', '$primer_nombre', '$segundo_nombre', '$genero', '$direccion_residencia', '$codigo_municipio_residencia', '$telefono', '$codigo_municipio_nacimiento', '$fecha_nacimiento', '$codigo_estrato', '$sisben', '$codigo_discapacidad', '$etnia', '$resguardo', '$poblacion_victima', '$nombre_departamento', '$nombre_municipio', '$codigo_sede', '$codigo_institucion', '$codigo_municipio_institucion', '$codigo_municipio_sede', '$nombre_sede', '$nombre_institucion', '$grado', '$grupo', '$jornada', '$estado', '$repitente', '$edad', '$zona_residencia', '$discapacidad', '$tipo_validacion', '0', '$nom_acudiente', '$doc_acudiente', '$tel_acudiente', '$parentesco_acudiente'), ";
+	$consulta_insertar_suplentes .= "('$tipo_documento', '$numero_documento', '$tipo_documento_nombre', '$primer_apellido', '$segundo_apellido', '$primer_nombre', '$segundo_nombre', '$genero', '$direccion_residencia', '$codigo_municipio_residencia', '$telefono', '$codigo_municipio_nacimiento', '$fecha_nacimiento', '$codigo_estrato', '$sisben', '$codigo_discapacidad', '$etnia', '$resguardo', '$poblacion_victima', '$nombre_departamento', '$nombre_municipio', '$codigo_sede', '$codigo_institucion', '$codigo_municipio_institucion', '$codigo_municipio_sede', '$nombre_sede', '$nombre_institucion', '$grado', '$grupo', '$jornada', '$estado', '$repitente', '$edad', '$zona_residencia', '$discapacidad', '$tipo_validacion', '0', '$nom_acudiente', '$doc_acudiente', '$tel_acudiente', '$parentesco_acudiente', '$tipo_complem'), ";
 }
 
 // exit(var_dump($consulta_insertar_suplentes));

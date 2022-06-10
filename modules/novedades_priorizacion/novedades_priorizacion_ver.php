@@ -257,36 +257,30 @@
 						</div><!-- /.ibox-content -->
 					</div><!-- /.ibox float-e-margins -->
 
-					<div class="ibox float-e-margins priorizacionAction">
-						<div class="ibox-content contentBackground">
-							<div class="row">
-								<div class="col-sm-6 form-group">
-									<label for="observaciones">Observaciones</label>
-									<textarea name="observaciones" id="observaciones" class="form-control" rows="8" cols="80" readonly><?php echo $datosNovedad['observaciones']; ?></textarea>
-								</div><!-- /.col -->
-								<div class="col-sm-6 form-group">
-									<label for="departamento">Archivo</label>
-									<div style="text-align:center; box-sizing:border-box; padding:20px">
-										<?php
-										$url = $baseUrl."/".$datosNovedad['arch_adjunto'];
-										$ext = substr($url,-3);
-										//var_dump($ext);
-										?>
-
-
-										<a href="<?php echo $url; ?>" target="_blank" style="color:#1ab394;">
-
-
+					<!-- vamos a mostrar el archivo solo si existe una direccion si no el div ira completo con la observacion -->
+					<?php if ($datosNovedad['arch_adjunto'] !== ""): ?> 
+						<div class="ibox float-e-margins priorizacionAction">
+							<div class="ibox-content contentBackground">
+								<div class="row">
+									<div class="col-sm-6 form-group">
+										<label for="observaciones">Observaciones</label>
+										<textarea name="observaciones" id="observaciones" class="form-control" rows="8" cols="80" readonly><?php echo $datosNovedad['observaciones']; ?></textarea>
+									</div><!-- /.col -->
+									<div class="col-sm-6 form-group">
+										<label for="departamento">Archivo</label>
+										<div style="text-align:center; box-sizing:border-box; padding:20px">
 											<?php
-											if($ext == 'pdf'){
-												echo "<i class=\"fa fa-file-pdf-o\" style=\"font-size:60px\"></i>";
-											}else{
-												echo "<i class=\"fa fa-file-image-o\" style=\"font-size:60px\"></i>";
-											}
-											 ?>
-
-
-
+												$url = $baseUrl."/".$datosNovedad['arch_adjunto'];
+												$ext = substr($url,-3);
+											?>
+											<a href="<?php echo $url; ?>" target="_blank" style="color:#1ab394;">
+											<?php
+												if($ext == 'pdf'){
+													echo "<i class=\"fa fa-file-pdf-o\" style=\"font-size:60px\"></i>";
+												}else{
+													echo "<i class=\"fa fa-file-image-o\" style=\"font-size:60px\"></i>";
+												}
+											?>
 											<h3>Ver Archivo</h3>
 										</a>
 									</div>
@@ -295,23 +289,23 @@
 						</div><!-- /.ibox-content -->
 					</div><!-- /.ibox float-e-margins -->
 
+					<?php else: ?>
+						<div class="ibox float-e-margins priorizacionAction">
+							<div class="ibox-content contentBackground">
+								<div class="row">
+									<div class="col-sm-12 form-group">
+										<label for="observaciones">Observaciones</label>
+										<textarea name="observaciones" id="observaciones" class="form-control" rows="8" cols="80" readonly><?php echo $datosNovedad['observaciones']; ?></textarea>
+									</div><!-- /.col -->
+								</div><!-- -/.row -->
+							</div><!-- /.ibox-content -->
+						</div><!-- /.ibox float-e-margins -->
+					<?php endif ?>
 
 				</form>
-
-
-
-
     	</div><!-- /.col-lg-12 -->
   	</div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
-
-
-
-
-
-
-
-
 
 <div class="modal fade" id="myModal" role="dialog">
 	<div class="modal-dialog modal-sm">
@@ -329,11 +323,6 @@
 		</div>
 	</div>
 </div>
-
-
-
-
-
 
 <?php include '../../footer.php'; ?>
 

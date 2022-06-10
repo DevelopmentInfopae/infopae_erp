@@ -592,7 +592,7 @@
                         '<li class="divider"></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla sedes.CSV</a></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/sedes/Plantilla_Sedes.xlsx" dowload> <i class="fa fa-download"></i> Descarga plantilla sedes.XLSX </a></li>'+
-                        '<li><a href="'+ $('#inputBaseUrl').val() +'/download/priorizacion/Plantilla_Priorizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla priorización .CSV</a></li>'+
+                        '<li><a id="descargarPlantillaPriorizacion"> <i class="fa fa-download"></i> Descarga plantilla priorización .CSV</a></li>'+
                         '<li><a href="'+ $('#inputBaseUrl').val() +'/download/focalizacion/Plantilla_Focalizacion.csv" dowload> <i class="fa fa-download"></i> Descarga plantilla focalización .CSV</a></li>'+
                         '<li><a href="#" onclick="$(\'#exportarManipuladoras\').submit();"> <i class="fa fa-download"></i> Generar archivo manipuladoras </a></li>'+
                         '<li><a id="descargarPlantillaManipuladoras"> <i class="fa fa-download"></i> Descarga plantilla manipuladoras.CSV</a></li>'+                    

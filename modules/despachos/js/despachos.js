@@ -70,11 +70,12 @@ $(document).ready(function(){
 	});
 
 	dataset1 = $('#box-table-movimientos').DataTable({
-		order: [ 1, 'desc' ],
+		order: [[ 7, 'asc' ], [ 9, 'asc' ], [ 10, 'asc' ]],
 		dom: 'lr<"containerBtn"><"inputFiltro"f>tip',
 		pageLength: 25,
 		lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
 		responsive: true,
+		aoColumnDefs: [{ "bVisible": false, "aTargets": [9] }],
 		oLanguage: {
 			sLengthMenu: 'Mostrando _MENU_ registros por página',
 			sZeroRecords: 'No se encontraron registros',
@@ -521,18 +522,18 @@ function despachos_por_sede(){
 				}
 			}
 
-			if(bandera == 0){
-				if(tipo == ''){
-					tipo = $("#tipo_"+despacho).val();
-				}
-				else{
-					if(tipo != $("#tipo_"+despacho).val()){
-						bandera++;
-						alert('');
-						Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
-					}
-				}
-			}
+			// if(bandera == 0){
+			// 	if(tipo == ''){
+			// 		tipo = $("#tipo_"+despacho).val();
+			// 	}
+			// 	else{
+			// 		if(tipo != $("#tipo_"+despacho).val()){
+			// 			bandera++;
+			// 			alert('');
+			// 			Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
+			// 		}
+			// 	}
+			// }
 		}
 	});
 
@@ -851,13 +852,14 @@ function editar_despacho(){
 }
 
 function eliminar_despacho(){
-	console.log('Se va a eliminar un despacho');
-	//Contando los elementos checked
 	var cant = 0;
 	var despacho = 0;
 	var tipo = '';
 	var estado = '';
 	var bandera = 0;
+	var despachosSeleccionados = '';
+
+	//Contando los elementos checked
 	$("tbody input:checked").each(function(){
 		if(bandera == 0){
 			cant++;
@@ -866,11 +868,8 @@ function eliminar_despacho(){
 				bandera++;
 				alert('Solo se pueden eliminar despachos en estado Pendiente.');
 				return false;
-			}
-			if(cant > 1){
-				alert('Debe seleccionar solo un despacho para eliminar');
-				bandera++;
-				return false;
+			}else {
+				despachosSeleccionados += "'" + despacho + "',";
 			}
 		}
 	}); // Termina de revisar cada uno de los elementos que se encuentren checkeados.
@@ -883,13 +882,13 @@ function eliminar_despacho(){
 	if(bandera == 0){
 		var r = confirm("Confirma que desea eliminar este registro.");
 		if (r == true) {
+
 			// Se va agregar el año y el mes para hacer la eliminación en la tabla correspondiente
 			var annoi = $('#annoi').val();
 			var mesi = $('#mesi').val();
 
-
 			// Se va a envíar la variable despacho para iniciar el procesos de eliminación.
-			var datos = {"despacho":despacho,"annoi":annoi,"mesi":mesi};
+			var datos = { "despachos" : despachosSeleccionados, "annoi" : annoi, "mesi" : mesi };
 			$.ajax({
 				type: "POST",
 				url: "functions/fn_despacho_eliminar.php",
@@ -905,7 +904,6 @@ function eliminar_despacho(){
 						alert('Se ha eliminado con éxito el despacho.');
 						location.reload();
 					}
-					//$('#municipio').html(data);
 				}
 			})
 			.done(function(){ })

@@ -35,7 +35,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes";
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC";
 
 	}else if ($complemento == 'CAJMRI') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -49,7 +49,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes";
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC";
 
 	}else if ($complemento == 'CAJTRI') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -63,7 +63,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes";
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC";
 
 	}else if ($complemento == 'CAJMPS') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -77,7 +77,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes";
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC";
 
 	}else if ($complemento == 'CAJTPS') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -91,7 +91,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes"; 
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC"; 
 
 	}else if ($complemento == 'RPC') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -105,7 +105,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes"; 
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC"; 
 
 	}else if ($complemento == 'ALL') {
 		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
@@ -119,7 +119,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
 							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
 							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes";
+						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes ORDER BY SEMANA DESC";
 
 	}
 	$resultadoCupos = $Link->query($consultaCupos); 

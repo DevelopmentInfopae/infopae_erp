@@ -747,6 +747,7 @@
 		  de.estado,
 		  u.Ciudad,
 		  b.NOMBRE AS bodegaOrigen,
+		  s.nom_inst AS nom_inst,
 		  s.nom_sede AS bodegaDestino
 		  FROM
 		  despachos_enc$tablaMes$tablaAnno de
@@ -948,6 +949,7 @@
 				  <th>Tipo Despacho</th>
 				  <th> Municipio </th>
 				  <th>Bodega Origen</th>
+				  <th type="hidden" >Institución</th>
 				  <th> Bodega Destino </th>
 				  <th>Estado</th>
 				</tr>
@@ -1005,6 +1007,7 @@
 
 					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Ciudad']; ?></td>
 					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['bodegaOrigen']; ?></td>
+					<td type ="hidden" > <?php echo $row['nom_inst']; ?> </td>
 					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['bodegaDestino']; ?></td>
 
 					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');">
@@ -1048,6 +1051,7 @@
 				  <th>Tipo Despacho</th>
 				  <th> Municipio </th>
 				  <th>Bodega Origen</th>
+				  <th type="hidden" > Institución</th>
 				  <th> Bodega Destino </th>
 				  <th>Estado</th>
 				</tr>
@@ -1117,23 +1121,23 @@
 				var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
 					botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
 					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-						botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
-						botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
+						// botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
+					botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
 					<?php endif ?>
 					botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
 					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
 						botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
 					<?php endif ?>
-					botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
+					// botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
 					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-						botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
+						// botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
 					<?php endif ?>
 			
 					// Menu para COVID
-					botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()">Entrega Raciones COVID-19 RI</a></li>';
-					botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
+					// botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()">Entrega Raciones COVID-19 RI</a></li>';
+					// botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
 					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-						botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
+						// botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
 					<?php endif ?>
 					<?php if($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"){ ?>
 						botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';

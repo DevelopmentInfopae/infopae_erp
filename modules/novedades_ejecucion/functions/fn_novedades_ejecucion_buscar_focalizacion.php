@@ -59,7 +59,9 @@
 							FROM entregas_res_$mes$perido_actual e
 								RIGHT JOIN focalizacion$semana f ON e.num_doc = f.num_doc AND e.cod_sede = f.cod_sede  AND e.tipo_complem = f.Tipo_complemento
 								INNER JOIN tipodocumento td ON f.tipo_doc = td.id
-							WHERE f.cod_sede = $sede AND e.tipo_complem = '$tipoComplemento' AND f.activo = 1 AND e.tipo='F'";
+							WHERE f.cod_sede = $sede AND e.tipo_complem = '$tipoComplemento' AND f.activo = 1 AND e.tipo='F'
+							ORDER BY e.cod_grado, e.nom_grupo, e.ape1, e.ape2, e.nom1, e.nom2 asc
+							";
 
 	$respuesta_focalizados = $Link->query($consulta_focalizados) or die('Error al consultar focalizacion: '. $Link->error);
 	if($respuesta_focalizados->num_rows > 0)

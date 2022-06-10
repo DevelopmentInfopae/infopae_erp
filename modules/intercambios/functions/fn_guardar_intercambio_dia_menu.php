@@ -92,7 +92,7 @@ $menusConsulta = implode( ", ", $menusConsulta );
 
 // Buscando los ciclos originales de los nuevos menus seleccionados
 $menusOriginales = [];
-$query = " SELECT 0 AS tipo, \"$nuevoId\" as novedad, p.Codigo, p.Orden_Ciclo FROM planilla_semanas ps LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 ";
+$query = " SELECT 0 AS tipo, \"$nuevoId\" as novedad, p.Codigo, p.Orden_Ciclo FROM planilla_semanas ps LEFT JOIN productos$periodoActual p ON ps.MENU = p.Orden_Ciclo WHERE ps.MES = \"$mes\" AND ps.SEMANA = \"$semana\" AND p.Cod_Tipo_complemento = \"$tipoComplemento\" AND p.Cod_Grupo_Etario = \"$grupoEtario\" AND p.Codigo LIKE \"01%\" AND p.Nivel = 3 AND p.cod_variacion_menu = \"$variacion\" ";
 $query .= " union SELECT 0 AS tipo, \"$nuevoId\" as novedad, p2.Codigo, p2.Orden_Ciclo FROM productos$periodoActual p2 where p2.Codigo IN ($menusConsulta)  ";
 // echo $query; exit();
 $result = $Link->query($query) or die ('Error al cargar los registros originales.'. mysqli_error($Link));

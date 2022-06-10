@@ -173,7 +173,7 @@ class PDF extends FPDF
 		    $cy2 = $this->getY();
 		    $cx = $this->getX();
 		    $cx2 = $this->getX();
-			$maxLength = 30;
+			$maxLength = 27;
 
 		    foreach ($this->productos as $id => $producto) {
 
@@ -370,11 +370,12 @@ $alturaRenglon = 6;
 			foreach ($productos as $id => $producto) {
 				if (isset($productos_sede[$cod_sede][$id])) {
 
+					
 					$cantidad = 0;
-
 					foreach ($productos_sede[$cod_sede][$id] as $complemento => $mes) {
 
 						foreach ($mes as $detalles) {
+							
 							$cantidad += number_format($detalles['NombreUnidad1'] == 'u' ?
 								ceil($detalles['CanTotalPresentacion']) :
 								strpos($detalles['NombreUnidad2'], 'kg') || strpos($detalles['NombreUnidad2'], 'lt') ?
@@ -382,7 +383,7 @@ $alturaRenglon = 6;
 							$uP = " (".str_replace(" ", "", $detalles['Umedida']).")";
 						}
 
-						$cantidad.=$uP;
+						// $cantidad.=$uP;
 
 					}
 
@@ -405,7 +406,9 @@ $alturaRenglon = 6;
 		$pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
 		$pdf->SetFont('Arial','',8);
 		$pdf->Cell(0,5,$paginasObservaciones,'B',5,'L',False);
-		$pdf->Ln(2);
+		$pdf->Cell(0,5,'','B',5,'L',False);
+		$pdf->Cell(0,5,'','B',5,'L',False);
+		$pdf->Ln(4);
 
 
 

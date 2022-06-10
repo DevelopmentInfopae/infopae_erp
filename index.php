@@ -63,7 +63,8 @@
 
 
 <?php
-	// Bitacora / Actividades de usuarios
+	// Bitacora / Actividades de usuarios 
+    // exit(var_dump($_SESSION));
     $resultado = null;
 	$consulta = " SELECT b.*, ba.descripciones, u.nombre, u.foto 
                     FROM bitacora b 

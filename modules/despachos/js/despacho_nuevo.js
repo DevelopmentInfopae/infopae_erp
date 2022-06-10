@@ -39,9 +39,32 @@ $(document).ready(function(){
     buscar_bodegas(usuario);
   });
 
-  $('#semana').change(function(){
-    buscar_dias($(this).val());
+  $('#mes').change(function(){
+    var mes = $('#mes').val();
+    var semana = $('#semana').val();
 
+    buscar_semanas(mes);
+    buscar_dias(mes, semana);
+
+    $('#tipoRacion').val('');
+    $('#municipio').html('<option value="">Seleccione uno</option>');
+    $('#institucion').html('<option value="">Todos</option>');
+    $('#sede').html('<option value="">Todos</option>');
+
+    dataset1.clear();
+    dataset1.destroy();
+    $('#box-table-a tbody').html('<tr class="odd"> <td class=" sorting_1"></td> <td></td> <td></td> <td></td> </tr>');
+
+    reiniciarTabla();
+
+  });
+
+  $('#semana').change(function(){
+    var mes = $('#mes').val();
+    var semana = $('#semana').val();
+
+    buscar_dias(mes, semana);
+ 
     $('#tipoRacion').val('');
     $('#municipio').html('<option value="">Seleccione uno</option>');
     $('#institucion').html('<option value="">Todos</option>');
@@ -89,6 +112,9 @@ $(document).ready(function(){
   $('#btnAgregar').click(function(){
     itemsActuales = [];
     $('#selectVarios').prop( "checked", false );
+
+    var dias = new Array();
+    var mes = $('#mes').val();
     var semana = $('#semana').val();
     var tipo = $('#tipoRacion').val();
     var municipio = $('#municipio').val();
@@ -97,6 +123,10 @@ $(document).ready(function(){
     var sede = $('#sede').val();
     var consecutivo = $('#box-table-a tbody input[type=checkbox]').length;
 
+    $('#dias .dia:checked').each(function() {
+      var aux = $(this).val();
+      dias.push(aux);
+    });
 
     var bandera=0;
     if(tipo == ''){
@@ -111,13 +141,18 @@ $(document).ready(function(){
       $('#municipio').focus();
     }
 
+    if (dias.length == 0) {
+      bandera++;
+      alert('Debe seleccionar al menos un día'); 
+    }
+
     if(bandera == 0){
       $( "#box-table-a tbody input[type=checkbox]" ).each(function(){
         itemsActuales.push($(this).val());
         console.log($(this).val());
       });
 
-      var datos = {"semana":semana, "municipio":municipio, "ruta":ruta, "tipo":tipo,"institucion":institucion,"sede":sede,"consecutivo":consecutivo,"itemsActuales":itemsActuales};
+      var datos = { "dias" : dias, "mes" : mes, "semana":semana, "municipio":municipio, "ruta":ruta, "tipo":tipo,"institucion":institucion,"sede":sede,"consecutivo":consecutivo,"itemsActuales":itemsActuales};
       $.ajax({
         type: "POST",
         url: "functions/fn_despacho_agregar_items.php",
@@ -193,6 +228,7 @@ function generarDespacho(){
   var itemsDespacho = [];
   var dias = new Array();
   var placa = $('#placa').val();
+  var mes = $('#mes').val();
   var semana = $('#semana').val();
   var subtipo = $('#subtipo').val();
   var tipo = $('#tipoRacion').val();
@@ -223,10 +259,12 @@ function generarDespacho(){
   } else if (proveedorEmpleado == '') {
     Command: toastr.warning('El campo <strong>Proveedor / Empleado</strong> es obligatorio.', 'Advertencia');
     bandera++;
-  } else if (semana == '') {
-    Command: toastr.warning('El campo <strong>semana</strong> es obligatorio.', 'Advertencia');
+  } 
+  else if (mes == '') {
+    Command: toastr.warning('El campo <strong>mes</strong> es obligatorio.', 'Advertencia');
     bandera++;
-  } else if (dias.length == 0) {
+  } 
+  else if (dias.length == 0) {
     Command: toastr.warning('Debe seleccionar al menos un <strong>día</strong> para el despacho.', 'Advertencia');
     bandera++;
   } else if (itemsDespacho.length == 0) {
@@ -250,6 +288,7 @@ function generarDespacho(){
         "subtipoNm":subtipoNm,
         "proveedorEmpleado":proveedorEmpleado,
         "proveedorEmpleadoNm":proveedorEmpleadoNm,
+        "mes" : mes,
         "semana":semana,
         "dias":dias,
         "tipo":tipo,
@@ -334,8 +373,21 @@ function buscar_bodegas(usuario){
   });
 }
 
-function buscar_dias(semana){
-  var datos = {"semana":semana};
+function buscar_semanas(mes){
+  var datos = {"mes":mes};
+  $.ajax({
+    type: "POST",
+    url: "functions/fn_despacho_buscar_semanas_despacho_nuevo.php",
+    data: datos,
+    beforeSend: function(){},
+    success: function(data){
+      $('#semana').html(data);
+    }
+  });
+}
+
+function buscar_dias(mes,semana){
+  var datos = {"mes" : mes,  "semana":semana };
   $.ajax({
     type: "POST",
     url: "functions/fn_despacho_buscar_dias_semana_check.php",

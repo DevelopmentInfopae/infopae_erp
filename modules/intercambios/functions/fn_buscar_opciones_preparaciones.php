@@ -5,7 +5,7 @@ require_once '../../../config.php';
 $periodoActual = $_SESSION['periodoActual'];
 $grupoEtario = '';
 $tipoComplemento = '';
-
+// exit(var_dump($_POST));
 if(isset($_POST['grupoEtario']) && $_POST['grupoEtario'] != ''){
 	$grupoEtario = mysqli_real_escape_string($Link, $_POST['grupoEtario']);
 }

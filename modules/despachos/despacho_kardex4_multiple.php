@@ -376,11 +376,11 @@ foreach ($codesedes as $sedecod => $isset)
         $alimento['cantu4'] = $row['CantU4'];
         $alimento['cantu5'] = $row['CantU5'];
 
-        $alimento['d1'] = $row['D1'];
-        $alimento['d2'] = $row['D2'];
-        $alimento['d3'] = $row['D3'];
-        $alimento['d4'] = $row['D4'];
-        $alimento['d5'] = $row['D5'];
+        $alimento['d1'] = $row['D1'] + $row['D6'] + $row['D11'] + $row['D16'] + $row['D21'];
+        $alimento['d2'] = $row['D2'] + $row['D7'] + $row['D12'] + $row['D17'] + $row['D22'];
+        $alimento['d3'] = $row['D3'] + $row['D8'] + $row['D13'] + $row['D18'] + $row['D23'];
+        $alimento['d4'] = $row['D4'] + $row['D9'] + $row['D14'] + $row['D19'] + $row['D24'];
+        $alimento['d5'] = $row['D5'] + $row['D10'] + $row['D15'] + $row['D20'] + $row['D25'];
 
         // Guardamos el numero de documento para discriminar la unidades de cada despacho
         $alimento['Num_Doc'] = $row['Num_Doc'];
