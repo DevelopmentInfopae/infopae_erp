@@ -748,7 +748,8 @@
 		  u.Ciudad,
 		  b.NOMBRE AS bodegaOrigen,
 		  s.nom_inst AS nom_inst,
-		  s.nom_sede AS bodegaDestino
+		  s.nom_sede AS bodegaDestino,
+		  vm.descripcion AS descVariacion
 		  FROM
 		  despachos_enc$tablaMes$tablaAnno de
 		  LEFT JOIN
@@ -762,6 +763,7 @@
 		  bodegas b ON b.ID = pm.BodegaOrigen
 
 		  LEFT JOIN tipo_despacho td ON td.Id = de.tipodespacho
+		  LEFT JOIN variacion_menu vm on vm.id = s.cod_variacion_menu
 
 		  where 1=1
 		   ";
@@ -946,6 +948,7 @@
 				  <th>Semana</th>
 				  <th>Dias</th>
 				  <th>Tipo Ración</th>
+				  <th>Variación</th>
 				  <th>Tipo Despacho</th>
 				  <th> Municipio </th>
 				  <th>Bodega Origen</th>
@@ -994,6 +997,11 @@
 					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" >
 					  <?php echo $row['Tipo_Complem']; ?>
 					  <input class="soloJs" type="hidden" name="tipo_<?php echo $row['Num_doc']; ?>" id="tipo_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['Tipo_Complem']; ?>">
+					</td>
+
+					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" >
+					  <?php if($row['descVariacion'] == ''){ echo "Normal"; } else { echo $row['descVariacion']; } ?>
+					  <input class="soloJs" type="hidden" name="tipo_<?php echo $row['Num_doc']; ?>" id="tipo_<?php echo $row['Num_doc']; ?>" value="<?php if($row['descVariacion'] == ''){ echo "Normal"; } else { echo $row['descVariacion']; } ?>">
 					</td>
 
 					<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" >
@@ -1048,6 +1056,7 @@
 				  <th>Semana</th>
 				  <th>Dias</th>
 				  <th>Tipo Ración</th>
+				  <th>Variación</th>
 				  <th>Tipo Despacho</th>
 				  <th> Municipio </th>
 				  <th>Bodega Origen</th>
@@ -1121,23 +1130,26 @@
 				var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
 					botonAcciones += '<li><a href="#" onclick="despachos_por_sede()">Individual</a></li>';
 					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-						// botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
-					botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
+						botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()">Individual Vertical</a></li>';
+						botonAcciones += '<li><a href="#" onclick="despachos_kardex()">Kardex</a></li>';
 					<?php endif ?>
 					botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()">Kardex Múltiple</a></li>';
 					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
 						botonAcciones += '<li><a href="#" onclick="despachos_consolidado()">Consolidado</a></li>';
 					<?php endif ?>
-					// botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
 					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-						// botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
+						botonAcciones += '<li><a href="#" onclick="despachos_consolidado2()">Consolidado 2</a></li>';
+					<?php endif ?>
+					botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()">Consolidado x Sedes</a></li>';
+					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+						botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()">Consolidado Vertical</a></li>';
 					<?php endif ?>
 			
 					// Menu para COVID
-					// botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()">Entrega Raciones COVID-19 RI</a></li>';
-					// botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
+					botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()">Entrega Raciones COVID-19 RI</a></li>';
+					botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()">Entrega Raciones COVID-19</a></li>';
 					<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-						// botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
+						botonAcciones += '<li><a href="#" onclick="despachos_agrupados()">Agrupado</a></li>';
 					<?php endif ?>
 					<?php if($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"){ ?>
 						botonAcciones += '<li><a href="#" onclick="editar_despacho()">Editar Despacho</a></li>';

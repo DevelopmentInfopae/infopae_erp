@@ -34,11 +34,6 @@ if ($respuesta == 1) { ?>
     $tipoComplemento = 0;
   }
 
-  if ($variacionMenu == '1') {
-
-    $tipoPreparacion = " Codigo like '0203%' ";
-
-  } else {
 
     if ($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI" || $tipoComplemento == "APS") {
 
@@ -52,7 +47,7 @@ if ($respuesta == 1) { ?>
 
     }
 
-  }
+  
 
 
   if ($tipoProducto == "01") {
