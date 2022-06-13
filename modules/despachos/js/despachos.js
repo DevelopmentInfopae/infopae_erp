@@ -652,14 +652,46 @@ function despachos_consolidado(){
 }
 
 
-
-
-
-
-
-
-
-
+// consolidado 2
+function despachos_consolidado2(){
+	var cant = 0;
+	var complementoActual = '';
+	var semana = 0;
+	var bandera = 0;
+	var despacho = 0;
+	// Ciclo para contar los despachos seleccionados.
+	$('tbody input:checked').each(function(){
+		if(bandera == 0){
+			cant++;
+			despacho = $(this).val();
+			var complemento =  $(this).attr("complemento");
+			if(bandera == 0){
+				if(complementoActual == ''){
+					complementoActual = complemento;
+				}
+				else{
+					if(complementoActual != complemento){
+						bandera++;
+						Command: toastr.warning('Los despachos seleccionados deben ser del mismo <strong>tipo de ración</strong>', 'Advertencia');
+					}
+				}
+			}
+		}
+	});
+	if(cant == 0){
+		Command: toastr.warning('Debe seleccionar al menos un despacho para continuar', 'Advertencia');
+		bandera++;
+	}
+	if(bandera == 0){
+		$( ".soloJs" ).remove();
+		var rutaSeleccionada = $('#ruta option:selected').text();
+		$('#rutaNm').val(rutaSeleccionada);
+		$('#formDespachos').attr('action', 'despacho_consolidado2.php');
+		$('#formDespachos').attr('method', 'post');
+		$('#formDespachos').submit();
+		$('#formDespachos').attr('method', 'get');
+	}
+}
 
 
 
