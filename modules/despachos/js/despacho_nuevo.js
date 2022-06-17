@@ -305,13 +305,14 @@ function generarDespacho(){
       }
     })
     .done(function(data) {
-      $('#debug').html(data);
+      // $('#debug').html(data);
 
       if (data == 1) {
-        Command: toastr.error('El despacho se ha registrado con éxito.', '¡Proceso exitoso!');
-        $(window).unbind('beforeunload');
+        Command: toastr.success('El despacho se ha registrado con éxito.','¡Proceso exitoso!',{onHidden : function(){ location.href='despachos.php';}});
+        // Command: toastr.error('El despacho se ha registrado con éxito.', '¡Proceso exitoso!');
+        // $(window).unbind('beforeunload');
 
-        window.location.href = 'despachos.php';
+        // window.location.href = 'despachos.php';
       } else {
         Command: toastr.error(data, '¡Error en el proceso!');
       }

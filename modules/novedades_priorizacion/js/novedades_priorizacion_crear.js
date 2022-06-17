@@ -50,10 +50,19 @@ $(document).ready(function(){
 
 	$('.tablaNuevasCantidades input').change(function() {
 		if ($(this).val() == "") { $(this).val('0'); }
-
-		totalizar();
+		$.ajax({
+			type : "POST",
+			url : "functions/fn_buscar_complementos.php"
+		}).done(function(data){
+			var obj = JSON.parse(data);
+			totalizar(obj.complementos, obj.cantGruposEtarios);
+			$('.priorizacionAction').fadeIn();		
+		})
+		.fail(function(){ })
+		.always(function(){
+			$('#loader').fadeOut();
+		});
 	});
-
 	$('.guaradarNovedad').click(function(){ guardar_priorizacion(); });
 });
 
@@ -197,7 +206,7 @@ function validar_semanas_cantidades(){
 	var semanas = new Array();
 
 	// Recogemos todas las semanas chequeadas
-	$('#semana .semana:checked').each(function () { console.log($(this).val());
+	$('#semana .semana:checked').each(function () { 
 		semanas.push($(this).val());
 	});
 
@@ -309,104 +318,24 @@ function buscar_priorizacion(semanas){
 	.done(function(data){
 		try {
 			var obj = JSON.parse(data);
-
 			if(obj.registros > 0){
-				var aps = obj.aps;
-				var aps1 = obj.aps1;
-				var aps2 = obj.aps2;
-				var aps3 = obj.aps3;
-				var cajmri = obj.cajmri;
-				var cajmri1 = obj.cajmri1;
-				var cajmri2 = obj.cajmri2;
-				var cajmri3 = obj.cajmri3;
-				var cajtri = obj.cajtri;
-				var cajtri1 = obj.cajtri1;
-				var cajtri2 = obj.cajtri2;
-				var cajtri3 = obj.cajtri3;
-				var cajmps = obj.cajmps;
-				var cajmps1 = obj.cajmps1;
-				var cajmps2 = obj.cajmps2;
-				var cajmps3 = obj.cajmps3;
-				var cajtps = obj.cajtps;
-				var cajtps1 = obj.cajtps1;
-				var cajtps2 = obj.cajtps2;
-				var cajtps3 = obj.cajtps3;
-				var rpc = obj.rpc;
-				var rpc1 = obj.rpc1;
-				var rpc2 = obj.rpc2;
-				var rpc3 = obj.rpc3;
-				var cantEstudiantes = obj.cantEstudiantes;
-				var numEstFocalizados = obj.numEstFocalizados;
-
-				if(aps == 0) {
-					$('.APSactual').hide('fast');
-				} else {
-					$('#APSactualTotal').val(aps);
-					$('#APSactual1').val(aps1); $('#APS1').val(aps1);
-					$('#APSactual2').val(aps2); $('#APS2').val(aps2);
-					$('#APSactual3').val(aps3); $('#APS3').val(aps3);
-					$('#APSTotal').val(aps);
-
-					$('.APSactual').show('fast');
+				for (let i = 0; i < obj.complementos.length; i++) {
+    				if(obj.complementos[i] == 0) {
+						$('.'+obj.complementos[i]+'actual').hide('fast');
+					} else {
+						aux = obj.complementos[i];
+						$('#'+obj.complementos[i]+'actualTotal').val(obj[aux]);
+						for (let x = 1; x <= obj.cantGruposEtarios; x++) {
+							aux2 = obj.complementos[i]+x;
+							$('#'+obj.complementos[i]+'actual'+x).val(obj[aux2]); 
+							$('#'+obj.complementos[i]+x).val(obj[aux2]);
+						}
+						$('#'+obj.complementos[i]+'Total').val(obj[aux]);
+						$('.'+obj.complementos[i]+'actual').show('fast');
+					}
 				}
 
-				if(cajmri == 0){
-					$('.CAJMRIactual').hide('fast');
-				}else{
-					$('#CAJMRIactualTotal').val(cajmri);
-					$('#CAJMRIactual1').val(cajmri1); $('#CAJMRI1').val(cajmri1);
-					$('#CAJMRIactual2').val(cajmri2); $('#CAJMRI2').val(cajmri2);
-					$('#CAJMRIactual3').val(cajmri3); $('#CAJMRI3').val(cajmri3);
-
-					$('.CAJMRIactual').show('fast');
-				}
-
-				if(cajtri == 0){
-					$('.CAJTRIactual').hide('fast');
-				}else{
-					$('#CAJTRIactualTotal').val(cajtri);
-					$('#CAJTRIactual1').val(cajtri1); $('#CAJTRI1').val(cajtri1);
-					$('#CAJTRIactual2').val(cajtri2); $('#CAJTRI2').val(cajtri2);
-					$('#CAJTRIactual3').val(cajtri3); $('#CAJTRI3').val(cajtri3);
-
-					$('.CAJTRIactual').show('fast');
-				}
-
-				if(cajmps == 0){
-					$('.CAJMPSactual').hide('fast');
-				}else{
-					$('#CAJMPSactualTotal').val(cajmps);
-					$('#CAJMPSactual1').val(cajmps1); $('#CAJMPS1').val(cajmps1);
-					$('#CAJMPSactual2').val(cajmps2); $('#CAJMPS2').val(cajmps2)
-					$('#CAJMPSactual3').val(cajmps3); $('#CAJMPS3').val(cajmps3)
-
-					$('.CAJMPSactual').show('fast');
-				}
-
-				if(cajtps == 0){
-					$('.CAJTPSactual').hide('fast');
-				}else{
-					$('#CAJTPSactualTotal').val(cajtps);
-					$('#CAJTPSactual1').val(cajtps1); $('#CAJTPS1').val(cajtps1);
-					$('#CAJTPSactual2').val(cajtps2); $('#CAJTPS2').val(cajtps2)
-					$('#CAJTPSactual3').val(cajtps3); $('#CAJTPS3').val(cajtps3)
-
-					$('.CAJTPSactual').show('fast');
-				}
-
-				if(rpc == 0){
-					$('.RPCactual').hide('fast');
-				}else{
-					$('#RPCactualTotal').val(rpc);
-					$('#RPCactual1').val(rpc1); $('#RPC1').val(rpc1);
-					$('#RPCactual2').val(rpc2); $('#RPC2').val(rpc2)
-					$('#RPCactual3').val(rpc3); $('#RPC3').val(rpc3)
-
-					$('.RPCactual').show('fast');
-				}
-
-
-				totalizar();
+				totalizar(obj.complementos, obj.cantGruposEtarios);
 				$('.priorizacionAction').fadeIn();
 			}
 	    } catch(err) {
@@ -421,38 +350,32 @@ function buscar_priorizacion(semanas){
 	});
 }
 
-function totalizar(){
+function totalizar(complementos, cantGruposEtarios){
+
 	// Se va a calcular las cantidades totales para cada complemento.
-	var aux = 0;
-	aux = parseInt($('#APS1').val()) + parseInt($('#APS2').val()) + parseInt($('#APS3').val());
-	$('#APSTotal').val(aux);
+	arraycomplementos = complementos;
+	// console.log(arraycomplementos)
+	for (var i = 0; i < complementos.length; i++) {
+		var aux = 0;
+		for (var x =  1; x <= cantGruposEtarios; x++) {
+			aux += parseInt($('#'+complementos[i]+x).val());
+		}
+		$('#'+complementos[i]+'Total').val(aux);
+	}
 
-	aux = parseInt($('#CAJMRI1').val()) + parseInt($('#CAJMRI2').val()) + parseInt($('#CAJMRI3').val());
-	$('#CAJMRITotal').val(aux);
-
-	aux = parseInt($('#CAJTRI1').val()) + parseInt($('#CAJTRI2').val()) + parseInt($('#CAJTRI3').val());
-	$('#CAJTRITotal').val(aux);
-
-	aux = parseInt($('#CAJMPS1').val()) + parseInt($('#CAJMPS2').val()) + parseInt($('#CAJMPS3').val());
-	$('#CAJMPSTotal').val(aux);
-
-	aux = parseInt($('#CAJTPS1').val()) + parseInt($('#CAJTPS2').val()) + parseInt($('#CAJTPS3').val());
-	$('#CAJTPSTotal').val(aux);
-
-	aux = parseInt($('#RPC1').val()) + parseInt($('#RPC2').val()) + parseInt($('#RPC3').val());
-	$('#RPCTotal').val(aux);
-
-	aux = parseInt($('#APSTotal').val()) + parseInt($('#CAJMRITotal').val()) + parseInt($('#CAJTRITotal').val()) + parseInt($('#CAJMPSTotal').val()) + parseInt($('#CAJTPSTotal').val()) + parseInt($('#RPCTotal').val());
+	aux = 0;
+	for (var i =  0; i < complementos.length; i++) {
+		aux += parseInt($('#'+complementos[i]+'Total').val());
+	}
 	$('#totalTotal').val(aux);
 
-	aux = parseInt($('#APS1').val()) + parseInt($('#CAJMRI1').val()) + parseInt($('#CAJTRI1').val()) + parseInt($('#CAJMPS1').val()) + parseInt($('#CAJTPS1').val()) + parseInt($('#RPC1').val());
-	$('#total1').val(aux);
-
-	aux = parseInt($('#APS2').val()) + parseInt($('#CAJMRI2').val()) + parseInt($('#CAJTRI2').val()) + parseInt($('#CAJMPS2').val()) + parseInt($('#CAJTPS2').val()) + parseInt($('#RPC2').val());
-	$('#total2').val(aux);
-
-	aux = parseInt($('#APS3').val()) + parseInt($('#CAJMRI3').val()) + parseInt($('#CAJTRI3').val()) + parseInt($('#CAJMPS3').val()) + parseInt($('#CAJTPS3').val()) + parseInt($('#RPC3').val());
-	$('#total3').val(aux);
+	for (var x =  1; x <= cantGruposEtarios; x++) {
+		aux = 0;
+		for (var i = 0; i < complementos.length; i++) {
+			aux += parseInt($('#'+complementos[i]+x).val());
+		}
+		$('#total'+x).val(aux);	
+	}
 }
 
 function guardar_priorizacion(){
