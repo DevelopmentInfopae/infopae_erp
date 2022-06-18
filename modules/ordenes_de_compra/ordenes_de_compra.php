@@ -249,64 +249,63 @@
 							<div class="col-sm-4 col-md-3 form-group">
 								<label for="sede">sede</label>
 								<select class="form-control" name="sede" id="sede">
-							  <option value="">Todas</option>
-							  <?php
-								$institucion = '';
-								if( isset($_GET['pb_institucion']) && $_GET['pb_institucion'] != '' ){
-								  $institucion = $_GET['pb_institucion'];
-								  $consulta = " select distinct s.cod_sede, s.nom_sede from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
-								  $consulta = $consulta."  and s.cod_inst = '$institucion' ";
-								  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-								  if($resultado->num_rows >= 1){
-									while($row = $resultado->fetch_assoc()) {
-							  ?>
-									<option value="<?= $row['cod_sede']; ?>" <?php if(isset($_GET["pb_sede"]) && $_GET["pb_sede"] == $row['cod_sede'] ){ echo " selected "; }  ?> ><?= $row['nom_sede']; ?></option>
-							  <?php
-									}
-								  }
-								}
-							  ?>
+								  	<option value="">Todas</option>
+								  	<?php
+										$institucion = '';
+										if( isset($_GET['pb_institucion']) && $_GET['pb_institucion'] != '' ){
+									  		$institucion = $_GET['pb_institucion'];
+									  		$consulta = " select distinct s.cod_sede, s.nom_sede from sedes$periodoActual s left join sedes_cobertura sc on s.cod_sede = sc.cod_sede where 1=1 ";
+									  		$consulta = $consulta."  and s.cod_inst = '$institucion' ";
+									  		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+									  		if($resultado->num_rows >= 1){
+												while($row = $resultado->fetch_assoc()) {
+								  	?>
+										<option value="<?= $row['cod_sede']; ?>" <?php if(isset($_GET["pb_sede"]) && $_GET["pb_sede"] == $row['cod_sede'] ){ echo " selected "; }  ?> ><?= $row['nom_sede']; ?></option>
+								  <?php
+												}
+									  		}
+										}
+								  ?>
 								</select>
 							</div>
 
 							<div class="col-sm-4 col-md-2 form-group">
 								<label for="tipoDespacho">Tipo Alimento</label>
 								<select class="form-control" name="tipoDespacho" id="tipoDespacho">
-							  <option value="">Todos</option>
-							  <?php
-								$consulta = " select * from tipo_despacho where id != 4 order by Descripcion asc ";
-								$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-								if($resultado->num_rows >= 1){
-								  while($row = $resultado->fetch_assoc()) {
-							  ?>
-								  <option value="<?= $row["Id"]; ?>"  <?php  if(isset($_GET["pb_tipoDespacho"]) && $_GET["pb_tipoDespacho"] == $row["Id"] ){ echo " selected "; } ?> ><?= $row["Descripcion"]; ?></option>
-							  <?php
-								  }
-								}
-							  ?>
+								  	<option value="">Todos</option>
+								  	<?php
+										$consulta = " select * from tipo_despacho where id != 4 order by Descripcion asc ";
+										$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+										if($resultado->num_rows >= 1){
+									  		while($row = $resultado->fetch_assoc()) {
+								  	?>
+									  <option value="<?= $row["Id"]; ?>"  <?php  if(isset($_GET["pb_tipoDespacho"]) && $_GET["pb_tipoDespacho"] == $row["Id"] ){ echo " selected "; } ?> ><?= $row["Descripcion"]; ?></option>
+								  	<?php
+									  		}
+										}
+								  	?>
 								</select>
 							</div>
 
 							<div class="col-sm-4 col-md-2 form-group">
 								<label for="ruta">Ruta</label>
 								<select class="form-control" name="ruta" id="ruta">
-								<option value="">Todos</option>
-								<?php
-								$consulta = "SELECT * FROM rutas ORDER BY nombre ASC";
-								$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-								if($resultado->num_rows >= 1){
-									while($row = $resultado->fetch_assoc()) {
-								?>
-									<option value="<?= $row["ID"]; ?>" <?php if(isset($_GET["pb_ruta"]) && $_GET["pb_ruta"] == $row["ID"] ){ echo " selected ";} ?> ><?= $row["Nombre"]; ?></option>
-								<?php
-									}
-								}
-								?>
+									<option value="">Todos</option>
+									<?php
+										$consulta = "SELECT * FROM rutas ORDER BY nombre ASC";
+										$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+										if($resultado->num_rows >= 1){
+											while($row = $resultado->fetch_assoc()) {
+									?>
+										<option value="<?= $row["ID"]; ?>" <?php if(isset($_GET["pb_ruta"]) && $_GET["pb_ruta"] == $row["ID"] ){ echo " selected ";} ?> ><?= $row["Nombre"]; ?></option>
+									<?php
+											}
+										}
+									?>
 								</select>
 								<input type="hidden" name="rutaNm" id="rutaNm" value="">
 							</div>
 						</div>
-
 
 						<div class="row">
 							<div class="col-sm-4   form-group">
@@ -315,7 +314,6 @@
 							</div>
 						</div>
 
-
 						<div class="row">
 						  <div class="col-sm-3 form-group">
 							<input type="hidden" id="consultar" name="consultar" value="<?php if (isset($_GET['consultar']) && $_GET['consultar'] != '') {echo $_GET['consultar']; } ?>" >
@@ -323,331 +321,208 @@
 						  </div>
 						</div>
 
-
-
-
-
-
-
-
-
-
-
-
-				  <?php
-	$tablaMes = '';
-	if(isset($_GET["pb_btnBuscar"]) && $_GET["pb_btnBuscar"] == 1){
-	  if(isset($_GET["pb_mesi"]) && $_GET["pb_mesi"] != "" ){
-
-
-		// Ajustado formato del mes inicial para hacer el llamado de la tabla con los registros para ese més.
-		$mesinicial = $_GET["pb_mesi"];
-
-		if($mesinicial < 10){
-		  $tablaMes = '0'.$mesinicial;
-		}else{
-		  $tablaMes = $mesinicial;
-		}
-	  }
-	  $bandera = 0;
-	  if($tablaMes == ''){
-		$bandera++;
-		echo "<br> <h3>Debe seleccionar el mes inicial.</h3> ";
-	  }else{
-		$tablaAnno = $_SESSION['periodoActual'];
-		  $consulta = " show tables like 'orden_compra_det$tablaMes$tablaAnno' ";
-		  $result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-		  $existe = $result->num_rows;
-		  if($existe <= 0){
-			$bandera++;
-			echo "<br> <h3>No se encontraron registros para este periodo.</h3> ";
-		  }
-
-		  
-	  }
-	  if($bandera == 0){
-		?>
-
-
-
-<?php
-		//   $consulta = " SELECT
-		//   de.Num_OCO,
-		//   s.cod_mun_sede,
-		//   s.cod_inst,
-		//   s.cod_sede,
-		//   de.Num_doc,
-		//   de.FechaHora_Elab,
-		//   de.Semana,
-		//   de.Dias,
-		//   de.Tipo_Complem,
-		//   de.tipodespacho,
-		//   td.Descripcion as tipodespacho_nm,
-		//   de.estado,
-		//   u.Ciudad,
-		//   b.NOMBRE AS bodegaOrigen,
-		//   s.nom_sede AS bodegaDestino
-		//   FROM
-		//   orden_compra_enc$tablaMes$tablaAnno de
-		//   LEFT JOIN
-		//   sedes$tablaAnno s ON s.cod_sede = de.cod_Sede
-		//   LEFT JOIN
-		//   ubicacion u ON u.codigoDANE = s.cod_mun_sede and u.ETC = 0
-		//   LEFT JOIN
-		//   productosmov$tablaMes$tablaAnno pm ON pm.Numero = de.Num_doc
-		//   AND pm.Documento = 'DES'
-		//   LEFT JOIN
-		//   bodegas b ON b.ID = pm.BodegaOrigen
-
-		//   LEFT JOIN tipo_despacho td ON td.Id = de.tipodespacho
-
-		//   where 1=1
-
-
-
-
-
-
-		//    ";
-
-		$consulta = " SELECT de.Num_OCO, s.cod_mun_sede, s.cod_inst, s.cod_sede, de.Num_doc, de.FechaHora_Elab, de.Semana, de.Dias, de.Tipo_Complem, de.tipodespacho, td.Descripcion AS tipodespacho_nm, de.estado, u.Ciudad, s.nom_sede AS bodegaDestino, p.* FROM orden_compra_enc$tablaMes$tablaAnno de LEFT JOIN sedes$tablaAnno s ON s.cod_sede = de.cod_Sede LEFT JOIN ubicacion u ON u.codigoDANE = s.cod_mun_sede AND u.ETC = 0 LEFT JOIN tipo_despacho td ON td.Id = de.tipodespacho LEFT JOIN proveedores p on p.Nitcc = de.proveedor WHERE 1=1 ";
-
-
-
-
-
-
-
-
-
-
-
-			if (isset($_GET["pb_semana"]) && $_GET["pb_semana"] == "") {
-				if(isset($_GET["pb_diai"]) && $_GET["pb_diai"] != "" ){
-					$diainicial = $_GET["pb_diai"];
-					$consulta = $consulta." and DAYOFMONTH(de.FechaHora_Elab) >= ".$diainicial." ";
-				}
-
-				if(isset($_GET["pb_diaf"]) && $_GET["pb_diaf"] != "" ){
-					$diafinal = $_GET["pb_diaf"];
-					$consulta = $consulta." and DAYOFMONTH(de.FechaHora_Elab) <= ".$diafinal." ";
-				}
-			} else {
-				$semana = $_GET["pb_semana"];
-				$consulta .= " AND semana = '$semana'";
-			}
-
-
-		  if(isset($_GET["pb_tipo"]) && $_GET["pb_tipo"] != "" ){
-			$tipo = $_GET["pb_tipo"];
-			$consulta = $consulta." and Tipo_Complem = '".$tipo."' ";
-		  }
-
-		  if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ){
-			$municipio = $_GET["pb_municipio"];
-			$consulta = $consulta." and s.cod_mun_sede = '".$municipio."' ";
-		  }
-
-		  if(isset($_GET["pb_institucion"]) && $_GET["pb_institucion"] != "" ){
-			$institucion = $_GET["pb_institucion"];
-			$consulta = $consulta." and cod_inst = '".$institucion."' ";
-		  }
-
-		  if(isset($_GET["pb_sede"]) && $_GET["pb_sede"] != "" ){
-			$sede = $_GET["pb_sede"];
-			$consulta = $consulta." and s.cod_sede = '".$sede."' ";
-		  }
-
-
-
-
-
-
-		  if(isset($_GET["pb_tipoDespacho"]) && $_GET["pb_tipoDespacho"] != "" ){
-			$tipoDespacho = $_GET["pb_tipoDespacho"];
-			$consulta = $consulta." and TipoDespacho = ".$tipoDespacho." ";
-		  }
-
-		  if(isset($_GET["pb_ruta"]) && $_GET["pb_ruta"] != "" ){
-			$ruta = $_GET["pb_ruta"];
-			$consulta = $consulta." and s.cod_sede in (select cod_sede from rutasedes where IDRUTA = $ruta)";
-		  }
-
-		  $consulta = $consulta."GROUP BY(de.Num_OCO)";
-		  //echo "<br><br>$consulta<br><br>";
-
-		  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-?>
-
-<div class="table-responsive">
-	<table class="table table-striped table-bordered table-hover selectableRows" id="box-table-movimientos" >
-		<thead>
-			<tr>
-				<th class="text-center">
-				<label for="seleccionarVarios">Todos</label>
-				<input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios">
-				</th>
-				<th>Número</th>
-				<th>Fecha</th>
-				<th>Semana</th>
-				<th>Dias</th>
-				<th>Tipo Ración</th>
-				<th>Tipo Alimento</th>
-				<!-- <th> Municipio </th> -->
-				<th>Documento Proveedor</th>
-				<th>Nombre Proveedor</th>
-				<!-- <th> Bodega Destino </th> -->
-				<!-- <th>Estado</th> -->
-			</tr>
-		</thead>
-		<tbody>
-			<?php if($resultado->num_rows >= 1){ while($row = $resultado->fetch_assoc()) { ?>
-				<tr>
-					<td class="text-center">
-
-						<input type="checkbox" class="i-checks despachos" value="<?php echo $row['Num_OCO']; ?>" name="<?php echo $row['Num_doc']; ?>"id="<?php echo $row['Num_doc']; ?>"<?php if($row['estado'] == 0){echo " disabled "; } ?> semana="<?php echo $row['Semana']; ?>" complemento="<?php echo $row['Tipo_Complem'];?>" tipo="<?php echo $row['tipodespacho'];?>" sede="<?php echo $row['cod_sede'];?>" estado="<?php echo $row['estado'];?>"/>
-
-
-
-
-
-					  
-
-					</td>
-
-
-
-
-
-
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Num_OCO']; ?></td>
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['FechaHora_Elab']; ?></td>
-
-
-
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" >
-					  <?php echo $row['Semana']; ?>
-					  <input class="soloJs" type="hidden" name="semana_<?php echo $row['Num_doc']; ?>" id="semana_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['Semana']; ?>">
-					</td>
-
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" >
-					  <?php echo $row['Dias']; ?>
-					</td>
-
-
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" >
-					  <?php echo $row['Tipo_Complem']; ?>
-					  <input class="soloJs" type="hidden" name="tipo_<?php echo $row['Num_doc']; ?>" id="tipo_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['Tipo_Complem']; ?>">
-					</td>
-
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" >
-					  <?php echo $row['tipodespacho_nm']; ?>
-					  <input class="soloJs" type="hidden" name="tipodespacho_<?php echo $row['Num_doc']; ?>" id="tipodespacho_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['tipodespacho']; ?>">
-
-					  <input class="soloJs" type="hidden" name="cod_sede_<?php echo $row['Num_doc']; ?>" id="cod_sede_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['cod_sede']; ?>">
-
-					</td>
-
-
-					<!-- <td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Ciudad']; ?></td> -->
-					<!-- <td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['bodegaDestino']; ?></td> -->
-
-
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Nitcc']; ?></td>
-					<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Nombrecomercial']; ?></td>
-
-				  </tr>
-				  <?php } } ?>
-
-
-
-				</tbody>
-
-				<tfoot>
-						  <tr>
-				  <th></th>
-				  <th>Número</th>
-				  <th>Fecha</th>
-				  <th>Semana</th>
-				  <th>Dias</th>
-				  <th>Tipo Ración</th>
-				  <th>Tipo Alimento</th>
-				  <!-- <th> Municipio </th> -->
-				  <th>Documento Proveedor</th>
-				  <th>Nombre Proveedor</th>
-				  <!-- <th> Bodega Destino </th> -->
-				  <!-- <th>Estado</th> -->
-				</tr>
-				</tfoot>
-							</table>
-						</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<?php
-	}// Termina el if que valida si la bandera continua igual a cero
-}// Termina el if que valida si se recibió el boton de busqueda del form de parametros.
-?>
-
-
-
-
-
-
-		  </form>
-		</div><!-- /.ibox-content -->
-	  </div><!-- /.ibox float-e-margins -->
-	</div><!-- /.col-lg-12 -->
-  </div><!-- /.row -->
+				  		<?php
+							$tablaMes = '';
+							if(isset($_GET["pb_btnBuscar"]) && $_GET["pb_btnBuscar"] == 1){
+	  							if(isset($_GET["pb_mesi"]) && $_GET["pb_mesi"] != "" ){
+
+									// Ajustado formato del mes inicial para hacer el llamado de la tabla con los registros para ese més.
+									$mesinicial = $_GET["pb_mesi"];
+									if($mesinicial < 10){
+		  								$tablaMes = '0'.$mesinicial;
+									}else{
+		  								$tablaMes = $mesinicial;
+									}
+	  							}
+	  							$bandera = 0;
+	  							if($tablaMes == ''){
+									$bandera++;
+									echo "<br> <h3>Debe seleccionar el mes inicial.</h3> ";
+	  							}else{
+									$tablaAnno = $_SESSION['periodoActual'];
+		  							$consulta = " show tables like 'orden_compra_det$tablaMes$tablaAnno' ";
+		  							$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+		  							$existe = $result->num_rows;
+		  							if($existe <= 0){
+										$bandera++;
+									echo "<br> <h3>No se encontraron registros para este periodo.</h3> ";
+		  							}
+	  							}
+	  							if($bandera == 0){
+						?>
+						<?php
+
+								$consulta = " SELECT de.Num_OCO, 
+															s.cod_mun_sede, 
+															s.cod_inst, 
+															s.cod_sede, 
+															de.Num_doc, 
+															de.FechaHora_Elab, 
+															de.Semana, 
+															de.Dias, 
+															de.Tipo_Complem, 
+															de.tipodespacho, 
+															td.Descripcion AS tipodespacho_nm, 
+															de.estado, 
+															u.Ciudad, 
+															s.nom_sede AS bodegaDestino, 
+															vm.descripcion AS descVariacion,
+															p.* 
+														FROM orden_compra_enc$tablaMes$tablaAnno de 
+														LEFT JOIN sedes$tablaAnno s ON s.cod_sede = de.cod_Sede 
+														LEFT JOIN ubicacion u ON u.codigoDANE = s.cod_mun_sede AND u.ETC = 0 
+														LEFT JOIN tipo_despacho td ON td.Id = de.tipodespacho 
+														LEFT JOIN variacion_menu vm on vm.id = s.cod_variacion_menu
+														LEFT JOIN proveedores p on p.Nitcc = de.proveedor WHERE 1=1 ";
+
+								if (isset($_GET["pb_semana"]) && $_GET["pb_semana"] == "") {
+									if(isset($_GET["pb_diai"]) && $_GET["pb_diai"] != "" ){
+										$diainicial = $_GET["pb_diai"];
+										$consulta = $consulta." and DAYOFMONTH(de.FechaHora_Elab) >= ".$diainicial." ";
+									}
+
+									if(isset($_GET["pb_diaf"]) && $_GET["pb_diaf"] != "" ){
+										$diafinal = $_GET["pb_diaf"];
+										$consulta = $consulta." and DAYOFMONTH(de.FechaHora_Elab) <= ".$diafinal." ";
+									}
+								} else {
+									$semana = $_GET["pb_semana"];
+									$consulta .= " AND semana = '$semana'";
+								}
+
+				  				if(isset($_GET["pb_tipo"]) && $_GET["pb_tipo"] != "" ){
+									$tipo = $_GET["pb_tipo"];
+									$consulta = $consulta." and Tipo_Complem = '".$tipo."' ";
+				  				}
+
+				  				if(isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ){
+									$municipio = $_GET["pb_municipio"];
+									$consulta = $consulta." and s.cod_mun_sede = '".$municipio."' ";
+				  				}
+
+				  				if(isset($_GET["pb_institucion"]) && $_GET["pb_institucion"] != "" ){
+									$institucion = $_GET["pb_institucion"];
+									$consulta = $consulta." and cod_inst = '".$institucion."' ";
+				  				}
+
+				  				if(isset($_GET["pb_sede"]) && $_GET["pb_sede"] != "" ){
+									$sede = $_GET["pb_sede"];
+									$consulta = $consulta." and s.cod_sede = '".$sede."' ";
+				  				}
+
+				  				if(isset($_GET["pb_tipoDespacho"]) && $_GET["pb_tipoDespacho"] != "" ){
+									$tipoDespacho = $_GET["pb_tipoDespacho"];
+									$consulta = $consulta." and TipoDespacho = ".$tipoDespacho." ";
+				  				}
+
+				  				if(isset($_GET["pb_ruta"]) && $_GET["pb_ruta"] != "" ){
+									$ruta = $_GET["pb_ruta"];
+									$consulta = $consulta." and s.cod_sede in (select cod_sede from rutasedes where IDRUTA = $ruta)";
+				  				}
+
+				 	 			$consulta = $consulta."GROUP BY(de.Num_OCO)";
+				  				$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+							?>
+
+								<div class="table-responsive">
+									<table class="table table-striped table-bordered table-hover selectableRows" id="box-table-movimientos" >
+										<thead>
+											<tr>
+												<th class="text-center">
+												<label for="seleccionarVarios">Todos</label>
+												<input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios">
+												</th>
+												<th>Número</th>
+												<th>Fecha</th>
+												<th>Semana</th>
+												<th>Dias</th>
+												<th>Tipo Ración</th>
+												<th>Variación</th>
+												<th>Tipo Alimento</th>
+												<th>Documento Proveedor</th>
+												<th>Nombre Proveedor</th>
+											</tr>
+										</thead>
+										<tbody>
+										<?php if($resultado->num_rows >= 1){ while($row = $resultado->fetch_assoc()) { ?>
+											<tr>
+												<td class="text-center">
+													<input type="checkbox" class="i-checks despachos" value="<?php echo $row['Num_OCO']; ?>" name="<?php echo $row['Num_doc']; ?>"id="<?php echo $row['Num_doc']; ?>"<?php if($row['estado'] == 0){echo " disabled "; } ?> semana="<?php echo $row['Semana']; ?>" complemento="<?php echo $row['Tipo_Complem'];?>" tipo="<?php echo $row['tipodespacho'];?>" sede="<?php echo $row['cod_sede'];?>" estado="<?php echo $row['estado'];?>"/>
+												</td>
+												<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Num_OCO']; ?></td>
+												<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['FechaHora_Elab']; ?></td>
+												<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" > 
+													<?php echo $row['Semana']; ?> <input class="soloJs" type="hidden" name="semana_<?php echo $row['Num_doc']; ?>" id="semana_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['Semana']; ?>">
+												</td>
+												<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" > <?php echo $row['Dias']; ?> </td>
+												<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" > <?php echo $row['Tipo_Complem']; ?> 
+													<input class="soloJs" type="hidden" name="tipo_<?php echo $row['Num_doc']; ?>" id="tipo_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['Tipo_Complem']; ?>">
+												</td>
+												<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" > <?php if($row['descVariacion'] == ''){ echo "Normal"; } else { echo $row['descVariacion']; } ?>
+													<input class="soloJs" type="hidden" name="tipo_<?php echo $row['Num_doc']; ?>" id="tipo_<?php echo $row['Num_doc']; ?>" value="<?php if($row['descVariacion'] == ''){ echo "Normal"; } else { echo $row['descVariacion']; } ?>">
+												</td>
+												<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" > <?php echo $row['tipodespacho_nm']; ?>
+							  						<input class="soloJs" type="hidden" name="tipodespacho_<?php echo $row['Num_doc']; ?>" id="tipodespacho_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['tipodespacho']; ?>">					  						
+							  						<input class="soloJs" type="hidden" name="cod_sede_<?php echo $row['Num_doc']; ?>" id="cod_sede_<?php echo $row['Num_doc']; ?>" value="<?php echo $row['cod_sede']; ?>">
+												</td>
+												<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Nitcc']; ?></td>
+												<td onclick="despachoPorSede('<?php echo $row['Num_OCO']; ?>');" ><?php echo $row['Nombrecomercial']; ?></td>
+						  					</tr>
+						  				<?php } } ?>
+										</tbody>
+										<tfoot>
+								  			<tr>
+						  						<th></th>
+											  	<th>Número</th>
+											  	<th>Fecha</th>
+											  	<th>Semana</th>
+											  	<th>Dias</th>
+											  	<th>Tipo Ración</th>
+											  	<th>Variación</th>
+											  	<th>Tipo Alimento</th>
+											  	<th>Documento Proveedor</th>
+											  	<th>Nombre Proveedor</th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+
+							<?php
+								}// Termina el if que valida si la bandera continua igual a cero
+							}// Termina el if que valida si se recibió el boton de busqueda del form de parametros.
+							?>
+		  			</form>
+				</div><!-- /.ibox-content -->
+	  		</div><!-- /.ibox float-e-margins -->
+		</div><!-- /.col-lg-12 -->
+  	</div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
 
 <?php include '../../footer.php'; ?>
 
-	<!-- Mainly scripts -->
-	<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
-	<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
-	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- Mainly scripts -->
+<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
 
-	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
+<!-- Custom and plugin javascript -->
+<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 
-	<!-- Custom and plugin javascript -->
-	<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
-	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
-	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-
-
-	<script src="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/js/ordenes_de_compra.js?v=20200423"></script>
-	<script>
-		$(document).ready(function(){
-			<?php if ($_SESSION['perfil'] == "0" || $permisos['orden_compra'] == "1" || $permisos['orden_compra'] == "2"): ?>
-				var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
-				botonAcciones += '<li> <a href="#" onclick="ordenesConsolidado()">Consolidado</a> </li>';
-				<?php if ($_SESSION['perfil'] == "0" || $permisos['orden_compra'] == "2"): ?>
-					botonAcciones += '<li> <a href="#" onclick="eliminar_orden()">Eliminar Orden</a> </li>';
-				<?php endif ?>
-				botonAcciones += '</ul></div>';
-
+<script src="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/js/ordenes_de_compra.js?v=20200423"></script>
+<script>
+	$(document).ready(function(){
+		<?php if ($_SESSION['perfil'] == "0" || $permisos['orden_compra'] == "1" || $permisos['orden_compra'] == "2"): ?>
+			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
+			botonAcciones += '<li> <a href="#" onclick="ordenesConsolidado()">Consolidado</a> </li>';
+			<?php if ($_SESSION['perfil'] == "0" || $permisos['orden_compra'] == "2"): ?>
+				botonAcciones += '<li> <a href="#" onclick="eliminar_orden()">Eliminar Orden</a> </li>';
+			<?php endif ?>
+			botonAcciones += '</ul></div>';
 			$('.containerBtn').html(botonAcciones);
 			<?php endif ?>
 		});

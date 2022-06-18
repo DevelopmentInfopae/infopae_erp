@@ -2,7 +2,14 @@
   require_once '../../../db/conexion.php';
 
   $semana = $_POST['semana'];
-  $consulta = "SELECT * FROM planilla_semanas WHERE SEMANA = '$semana'";
+  $mes = $_POST['mes'];
+  
+  $semanaParametro = '';
+  if ($semana != '') {
+    $semanaParametro = " AND SEMANA = '$semana' ";
+  }
+
+  $consulta = "SELECT * FROM planilla_semanas WHERE MES = '$mes' $semanaParametro";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $aux = 0;

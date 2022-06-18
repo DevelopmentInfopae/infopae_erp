@@ -30,6 +30,16 @@
 		$row = $resultado->fetch_assoc();
 		$datosPriorizacion = $row;
 	}
+
+	$cantGruposEtarios = $_SESSION['cant_gruposEtarios'];
+	$consultaComplementos = "SELECT CODIGO, ID FROM tipo_complemento ORDER BY CODIGO ";
+	$respuestaComplementos = $Link->query($consultaComplementos) or die (mysqli_error($Link));
+	if ($respuestaComplementos->num_rows > 0) {
+		while ($dataComplementos = $respuestaComplementos->fetch_assoc()) {
+			$complementos[$dataComplementos['CODIGO']] = $dataComplementos['CODIGO'];
+		}
+	}
+	$auxTotalComplemento = 0;
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -94,71 +104,31 @@
 										<tr>
 											<th>Complemento Inicial</th>
 											<th>Cant Total Inicial</th>
-											<th>Grupo Etario 1</th>
-											<th>Grupo Etario 2</th>
-											<th>Grupo Etario 3</th>
+											<?php 
+												for ($i=1; $i <= $cantGruposEtarios; $i++) { 
+											?>
+													<th>Grupo Etario <?= $i ?></th>
+											<?php 
+												}
+											?>
 										</tr>
 									</thead>
 									<tbody>
-										<?php if($datosPriorizacion['APS'] > 0 ){ ?>
-											<tr class="APSactual">
-												<td> <input type="text" class="form-control" name="APSnm" id="APSnm" value="APS" readonly> </td>
-												<td> <input type="text" class="form-control" name="APSactualTotal" id="APSactualTotal" value="<?php echo $datosPriorizacion['APS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="APSactual1" id="APSactual1" value="<?php echo $datosPriorizacion['Etario1_APS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="APSactual2" id="APSactual2" value="<?php echo $datosPriorizacion['Etario2_APS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="APSactual3" id="APSactual3" value="<?php echo $datosPriorizacion['Etario3_APS']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php	} ?>
-
-										<?php if($datosPriorizacion['CAJMPS'] > 0 ){ ?>
-											<tr class="CAJMPSactual">
-												<td> <input type="text" class="form-control" name="CAJMPSnm" id="CAJMPSnm" value="CAJMPS" readonly> </td>
-												<td> <input type="text" class="form-control" name="CAJMPSactualTotal" id="CAJMPSactualTotal" value="<?php echo $datosPriorizacion['CAJMPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMPSactual1" id="CAJMPSactual1" value="<?php echo $datosPriorizacion['Etario1_CAJMPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMPSactual2" id="CAJMPSactual2" value="<?php echo $datosPriorizacion['Etario2_CAJMPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMPSactual3" id="CAJMPSactual3" value="<?php echo $datosPriorizacion['Etario3_CAJMPS']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php	} ?>
-
-										<?php if($datosPriorizacion['CAJTPS'] > 0 ){ ?>
-											<tr class="CAJTPSactual">
-												<td> <input type="text" class="form-control" name="CAJTPSnm" id="CAJTPSnm" value="CAJTPS" readonly> </td>
-												<td> <input type="text" class="form-control" name="CAJTPSactualTotal" id="CAJTPSactualTotal" value="<?php echo $datosPriorizacion['CAJTPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTPSactual1" id="CAJTPSactual1" value="<?php echo $datosPriorizacion['Etario1_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTPSactual2" id="CAJTPSactual2" value="<?php echo $datosPriorizacion['Etario2_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTPSactual3" id="CAJTPSactual3" value="<?php echo $datosPriorizacion['Etario3_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php	} ?>
-
-										<?php if($datosPriorizacion['CAJMRI'] > 0 ){ ?>
-											<tr class="CAJMRIactual">
-												<td> <input type="text" class="form-control" name="CAJMRInm" id="CAJMRInm" value="CAJMRI" readonly> </td>
-												<td> <input type="text" class="form-control" name="CAJMRIactualTotal" id="CAJMRIactualTotal" value="<?php echo $datosPriorizacion['CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMRIactual1" id="CAJMRIactual1" value="<?php echo $datosPriorizacion['Etario1_CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMRIactual2" id="CAJMRIactual2" value="<?php echo $datosPriorizacion['Etario2_CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMRIactual3" id="CAJMRIactual3" value="<?php echo $datosPriorizacion['Etario3_CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php	} ?>
-
-										<?php if($datosPriorizacion['CAJTRI'] > 0 ){ ?>
-											<tr class="CAJTRIactual">
-												<td> <input type="text" class="form-control" name="CAJTRInm" id="CAJTRInm" value="CAJTRI" readonly> </td>
-												<td> <input type="text" class="form-control" name="CAJTRIactualTotal" id="CAJTRIactualTotal" value="<?php echo $datosPriorizacion['CAJTRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTRIactual1" id="CAJTRIactual1" value="<?php echo $datosPriorizacion['Etario1_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTRIactual2" id="CAJTRIactual2" value="<?php echo $datosPriorizacion['Etario2_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTRIactual3" id="CAJTRIactual3" value="<?php echo $datosPriorizacion['Etario3_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php	} ?>
-
-										<?php if($datosPriorizacion['RPC'] > 0 ){ ?>
-											<tr class="RPCactual">
-												<td> <input type="text" class="form-control" name="RPCnm" id="RPCnm" value="RPC" readonly> </td>
-												<td> <input type="text" class="form-control" name="RPCactualTotal" id="RPCactualTotal" value="<?php echo $datosPriorizacion['RPC']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="RPCactual1" id="RPCactual1" value="<?php echo $datosPriorizacion['Etario1_RPC']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="RPCactual2" id="RPCactual2" value="<?php echo $datosPriorizacion['Etario2_RPC']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="RPCactual3" id="RPCactual3" value="<?php echo $datosPriorizacion['Etario3_RPC']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php	} ?>
+										<?php foreach ($complementos as $key => $value): ?>
+											<?php if ($datosPriorizacion[$value] > 0): ?>
+												<tr class="<?= $key ?>actual">
+													<td> <input type="text" class="form-control" name="<?= $key ?>nm" id="<?= $key ?>nm" value="<?= $key ?>" readonly> </td>
+													<td> <input type="text" class="form-control" name="<?= $key ?>actualTotal" id="<?= $key ?>actualTotal" value="<?= $datosPriorizacion[$key]?> " readonly style="text-align:center;"> </td>
+													<?php 
+														for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+													?>
+															<td> <input type="text" class="form-control" name="<?= $key ?>actual<?= $i ?>" id="<?= $key ?>actual<?= $i ?>" value="<?= $datosPriorizacion['Etario'.$i.'_'.$key]; ?>" readonly style="text-align:center;"> </td>
+													<?php 		
+														}
+													?>
+												</tr>
+											<?php endif ?>
+										<?php endforeach ?>
 									</tbody>
 								</table>
 							</div><!-- /.table-responsive -->
@@ -173,84 +143,56 @@
 										<tr>
 											<th>Nuevo Complemento</th>
 											<th>Nueva Cant Total</th>
-											<th>Grupo Etario 1</th>
-											<th>Grupo Etario 2</th>
-											<th>Grupo Etario 3</th>
+											<?php 
+												for ($i=1; $i <= $cantGruposEtarios; $i++) { 
+											?>
+													<th>Grupo Etario <?= $i ?></th>
+											<?php 
+												}
+											?>
 										</tr>
 									</thead>
 									<tbody>
-
-										<?php if($datosNovedad['APS'] > 0 ){ ?>
-											<tr class="APS">
-												<td> <input type="text" class="form-control" name="APSnm" id="APSnm" value="APS" readonly> </td>
-												<td> <input type="text" class="form-control" name="APSTotal" id="APSTotal" value="<?php echo $datosNovedad['APS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="APS1" id="APS1" value="<?php echo $datosNovedad['Etario1_APS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="APS2" id="APS2" value="<?php echo $datosNovedad['Etario2_APS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="APS3" id="APS3" value="<?php echo $datosNovedad['Etario3_APS']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php } ?>
-
-										<?php if($datosNovedad['CAJMPS'] > 0 ){ ?>
-											<tr class="CAJMPS">
-												<td> <input type="text" class="form-control" name="CAJMPSnm" id="CAJMPSnm" value="CAJMPS" readonly> </td>
-												<td> <input type="text" class="form-control" name="CAJMPSTotal" id="CAJMPSTotal" value="<?php echo $datosNovedad['CAJMPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMPS1" id="CAJMPS1" value="<?php echo $datosNovedad['Etario1_CAJMPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMPS2" id="CAJMPS2" value="<?php echo $datosNovedad['Etario2_CAJMPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMPS3" id="CAJMPS3" value="<?php echo $datosNovedad['Etario3_CAJMPS']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php } ?>
-
-										<?php if($datosNovedad['CAJTPS'] > 0 ){ ?>
-											<tr class="CAJTPS">
-												<td> <input type="text" class="form-control" name="CAJTPSnm" id="CAJTPSnm" value="CAJTPS" readonly> </td>
-												<td> <input type="text" class="form-control" name="CAJTPSTotal" id="CAJTPSTotal" value="<?php echo $datosNovedad['CAJTPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTPS1" id="CAJTPS1" value="<?php echo $datosNovedad['Etario1_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTPS2" id="CAJTPS2" value="<?php echo $datosNovedad['Etario2_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTPS3" id="CAJTPS3" value="<?php echo $datosNovedad['Etario3_CAJTPS']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php } ?>
-
-										<?php if($datosNovedad['CAJMRI'] > 0 ){ ?>
-											<tr class="CAJMRI">
-												<td> <input type="text" class="form-control" name="CAJMRInm" id="CAJMRInm" value="CAJMRI" readonly> </td>
-												<td> <input type="text" class="form-control" name="CAJMRITotal" id="CAJMRITotal" value="<?php echo $datosNovedad['CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMRI1" id="CAJMRI1" value="<?php echo $datosNovedad['Etario1_CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMRI2" id="CAJMRI2" value="<?php echo $datosNovedad['Etario2_CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJMRI3" id="CAJMRI3" value="<?php echo $datosNovedad['Etario3_CAJMRI']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php } ?>
-
-										<?php if($datosNovedad['CAJTRI'] > 0 ){ ?>
-											<tr class="CAJTRI">
-												<td> <input type="text" class="form-control" name="CAJTRInm" id="CAJTRInm" value="CAJTRI" readonly> </td>
-												<td> <input type="text" class="form-control" name="CAJTRITotal" id="CAJTRITotal" value="<?php echo $datosNovedad['CAJTRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTRI1" id="CAJTRI1" value="<?php echo $datosNovedad['Etario1_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTRI2" id="CAJTRI2" value="<?php echo $datosNovedad['Etario2_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="CAJTRI3" id="CAJTRI3" value="<?php echo $datosNovedad['Etario3_CAJTRI']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php } ?>
-
-										<?php if($datosNovedad['RPC'] > 0 ){ ?>
-											<tr class="RPC">
-												<td> <input type="text" class="form-control" name="RPCnm" id="RPCnm" value="RPC" readonly> </td>
-												<td> <input type="text" class="form-control" name="RPCTotal" id="RPCTotal" value="<?php echo $datosNovedad['RPC']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="RPC1" id="RPC1" value="<?php echo $datosNovedad['Etario1_RPC']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="RPC2" id="RPC2" value="<?php echo $datosNovedad['Etario2_RPC']; ?>" readonly style="text-align:center;"> </td>
-												<td> <input type="text" class="form-control" name="RPC3" id="RPC3" value="<?php echo $datosNovedad['Etario3_RPC']; ?>" readonly style="text-align:center;"> </td>
-											</tr>
-										<?php } ?>
+										<?php foreach ($complementos as $key => $value): ?>
+											<?php if ($datosPriorizacion[$value]): ?>
+												<tr class="<?= $key ?>">
+													<td> <input type="text" class="form-control" name="<?= $key ?>nm" id="<?= $key ?>nm" value="<?= $key ?>" readonly> </td>
+													<td> <input type="text" class="form-control" name="<?= $key ?>actualTotal" id="<?= $key ?>actualTotal" value="<?= $datosNovedad[$key]?> " readonly style="text-align:center;"> </td>
+													<?php 
+														for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+													?>
+															<td> <input type="text" class="form-control" name="<?= $key ?>actual<?= $i ?>" id="<?= $key ?>actual<?= $i ?>" value="<?= $datosNovedad['Etario'.$i.'_'.$key]; ?>" readonly style="text-align:center;"> </td>
+													<?php 		
+														}
+													?>
+												</tr>
+											<?php endif ?>
+										<?php endforeach ?>
 
 										<tr class="total">
 											<td>
 												<input type="text" class="form-control" name="totalNm" id="totalNm" value="TOTAL" readonly>
 											</td>
+											<?php foreach ($complementos as $key => $value): ?>
+												<?php 
+													$auxTotalComplemento += $datosNovedad[$value]; 
+												?>
+											<?php endforeach ?>
 											<td>
-												<input type="text" class="form-control" name="totalTotal" id="totalTotal" value="<?= $datosNovedad['APS'] + $datosNovedad['CAJMPS'] + $datosNovedad['CAJTPS'] + $datosNovedad['CAJMRI'] + $datosNovedad['CAJTRI'] + $datosNovedad['RPC']; ?>" readonly style="text-align:center;"> </td>
-											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total1" id="total1" value="<?= $datosNovedad['Etario1_APS'] + $datosNovedad['Etario1_CAJMPS'] + $datosNovedad['Etario1_CAJTPS'] + $datosNovedad['Etario1_CAJMRI'] + $datosNovedad['Etario1_CAJTRI'] + $datosNovedad['Etario1_RPC']; ?>" readonly  style="text-align:center;"> </td>
-											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total2" id="total2" value="<?= $datosNovedad['Etario2_APS'] + $datosNovedad['Etario2_CAJMPS'] + $datosNovedad['Etario2_CAJTPS'] + $datosNovedad['Etario2_CAJMPS'] + $datosNovedad['Etario2_CAJTPS'] + $datosNovedad['Etario2_RPC']; ?>" readonly  style="text-align:center;"> </td>
-											<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total3" id="total3" value="<?= $datosNovedad['Etario3_APS'] + $datosNovedad['Etario3_CAJMPS'] + $datosNovedad['Etario3_CAJTPS'] + $datosNovedad['Etario3_CAJMRI'] + $datosNovedad['Etario3_CAJTRI'] + $datosNovedad['Etario3_RPC']; ?>" readonly  style="text-align:center;"> </td>
+												<input type="text" class="form-control" name="totalTotal" id="totalTotal" value="<?= $auxTotalComplemento ?>" readonly style="text-align:center;"> 
+											</td>
+											<?php 
+												for ($i=1; $i <= $cantGruposEtarios; $i++) {
+												$aux = 0; 
+											?>
+												<?php foreach ($complementos as $key => $value): ?>
+													<?= $aux += $datosNovedad['Etario'.$i.'_'.$value] ?>
+												<?php endforeach ?>
+												<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total<?= $i ?>" id="total<?= $i ?>" value="<?= $aux ?>" readonly  style="text-align:center;"> </td>
+											<?php 
+												}
+											?>
 										</tr>
-
 									</tbody>
 								</table>
 							</div><!-- /.table-responsive -->

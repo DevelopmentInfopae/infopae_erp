@@ -23,6 +23,25 @@ if (!file_exists($carpetaFisica)) {
     mkdir($carpetaFisica, 0777);
 }
 
+$cantGruposEtarios = $_SESSION['cant_gruposEtarios'];
+$consultaComplementos = "SELECT CODIGO, ID FROM tipo_complemento ORDER BY CODIGO ";
+$respuestaComplementos = $Link->query($consultaComplementos) or die (mysqli_error($Link));
+if ($respuestaComplementos->num_rows > 0) {
+	while ($dataComplementos = $respuestaComplementos->fetch_assoc()) {
+		$complementos[$dataComplementos['CODIGO']] = $dataComplementos['CODIGO'];
+	}
+}
+$concatComplementos = ''; 
+foreach ($complementos as $key => $value) {
+	$concatComplementos .= $value.',';
+}
+
+for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+	foreach ($complementos as $key => $value) {
+		$concatComplementos .= 'Etario'.$i.'_'.$value.',';
+	}
+}
+
 if ( $_FILES['foto']['size'][0] > 0 ) {
    $reporte = null;
    for($x=0; $x<count($_FILES["foto"]["name"]); $x++) {
@@ -50,162 +69,64 @@ if ( $_FILES['foto']['size'][0] > 0 ) {
 	   }
 		if($bandera == 0) {
 			$consulta = "INSERT INTO novedades_priorizacion (
-								num_novedad,
-								id_usuario,
-								fecha_hora,
-								cod_sede,
-								APS,
-								CAJMRI,
-								CAJTRI,
-								CAJMPS,
-								CAJTPS,
-								RPC,
-								Etario1_APS,
-								Etario1_CAJMRI,
-								Etario1_CAJTRI,
-								Etario1_CAJMPS,
-								Etario1_CAJTPS,
-								Etario1_RPC,
-								Etario2_APS,
-								Etario2_CAJMRI,
-								Etario2_CAJTRI,
-								Etario2_CAJMPS,
-								Etario2_CAJTPS,
-								Etario2_RPC,
-								Etario3_APS,
-								Etario3_CAJMRI,
-								Etario3_CAJTRI,
-								Etario3_CAJMPS,
-								Etario3_CAJTPS,
-								Etario3_RPC,
-								Semana,
-								observaciones,
-								arch_adjunto,
-								estado)
-							VALUES ( 1, ";
-
+									num_novedad,
+									id_usuario,
+									fecha_hora,
+									cod_sede,
+									$concatComplementos
+									Semana,
+									observaciones,
+									arch_adjunto,
+									estado)
+									VALUES ( 1, ";
 			$aux = $_SESSION['id_usuario'];
 			$consulta .= " $aux, ";
 			$consulta .= " '$fecha', ";
 			$aux = $_POST['sede'];
 			$consulta .= " $aux, ";
-			$aux = $_POST['APSTotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMRITotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTRITotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMPSTotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTPSTotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['RPCTotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['APS1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMRI1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTRI1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMPS1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTPS1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['RPC1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['APS2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMRI2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTRI2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMPS2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTPS2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['RPC2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['APS3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMRI3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTRI3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMPS3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTPS3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['RPC3'];
-			$consulta .= " $aux, ";
-			$aux = $semanas[0];
+			foreach ($complementos as $key => $value) {
+				$aux = $_POST[$value.'Total'];
+				$consulta .= " $aux, ";
+			}
+			for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+				foreach ($complementos as $key => $value) {
+					$aux = $_POST[$value.$i];
+					$consulta .= " $aux, ";
+				}
+			}
+			$aux = $_POST['semana'];
 			$consulta .= " '$aux', ";
 			$aux = $_POST['observaciones'];
 			$consulta .= " '$aux', ";
 			$consulta .= " '$carpeta', ";
 			$consulta .= " 1 ) ";
-
 			$Link->query($consulta) or die ('Error insertando la novedad de priorización.'. mysqli_error($Link));
 			$nuevoId = $Link->insert_id;
 
 			//Actualizando sedes coberturas
 			$sede = $_POST['sede'];
 			$mes = $_POST['mes'];
-			$semanaSC = $semanas[0];
+			$semanaSC = $_POST['semana'];
 
-			$consulta = " update sedes_cobertura set ";
+			$consulta = " UPDATE sedes_cobertura SET ";
 			$aux = $_POST['totalTotal'];
-			$consulta .= " cant_Estudiantes = $aux , ";
-			$consulta .= " num_est_focalizados = $aux , ";
-			$consulta .= " num_est_activos = $aux , ";
-			$aux = $_POST['APSTotal'];
-			$consulta .= " APS = $aux , ";
-			$aux = $_POST['CAJMRITotal'];
-			$consulta .= " CAJMRI = $aux , ";
-			$aux = $_POST['CAJTRITotal'];
-			$consulta .= " CAJTRI = $aux , ";
-			$aux = $_POST['CAJMPSTotal'];
-			$consulta .= " CAJMPS = $aux , ";
-			$aux = $_POST['CAJTPSTotal'];
-			$consulta .= " CAJTPS = $aux , ";
-			$aux = $_POST['RPCTotal'];
-			$consulta .= " RPC = $aux , ";
-			$aux = $_POST['APS1'];
-			$consulta .= " Etario1_APS = $aux , ";
-			$aux = $_POST['CAJMRI1'];
-			$consulta .= " Etario1_CAJMRI = $aux , ";
-			$aux = $_POST['CAJTRI1'];
-			$consulta .= " Etario1_CAJTRI = $aux , ";
-			$aux = $_POST['CAJMPS1'];
-			$consulta .= " Etario1_CAJMPS = $aux , ";
-			$aux = $_POST['CAJTPS1'];
-			$consulta .= " Etario1_CAJTPS = $aux , ";
-			$aux = $_POST['RPC1'];
-			$consulta .= " Etario1_RPC = $aux , ";
-			$aux = $_POST['APS2'];
-			$consulta .= " Etario2_APS = $aux , ";
-			$aux = $_POST['CAJMRI2'];
-			$consulta .= " Etario2_CAJMRI = $aux , ";
-			$aux = $_POST['CAJTRI2'];
-			$consulta .= " Etario2_CAJTRI = $aux , ";
-			$aux = $_POST['CAJMPS2'];
-			$consulta .= " Etario2_CAJMPS = $aux , ";
-			$aux = $_POST['CAJTPS2'];
-			$consulta .= " Etario2_CAJTPS = $aux , ";
-			$aux = $_POST['RPC2'];
-			$consulta .= " Etario2_RPC = $aux , ";
-			$aux = $_POST['APS3'];
-			$consulta .= " Etario3_APS = $aux , ";
-			$aux = $_POST['CAJMRI3'];
-			$consulta .= " Etario3_CAJMRI = $aux , ";
-			$aux = $_POST['CAJTRI3'];
-			$consulta .= " Etario3_CAJTRI = $aux , ";
-			$aux = $_POST['CAJMPS3'];
-			$consulta .= " Etario3_CAJMPS = $aux, ";
-			$aux = $_POST['CAJTPS3'];
-			$consulta .= " Etario3_CAJTPS = $aux, ";
-			$aux = $_POST['RPC3'];
-			$consulta .= " Etario3_RPC = $aux ";
-			$consulta .= " where cod_sede = $sede and mes = '$mes' and semana = '$semanaSC' ";
+			$consulta .= " cant_Estudiantes = $aux, ";
+			$consulta .= " num_est_focalizados = $aux, ";
+			$consulta .= " num_est_activos = $aux, ";
+
+			foreach ($complementos as $key => $value) {
+				$aux = $_POST[$value.'Total'];
+				$consulta .= $value . "= $aux, ";
+			}
+
+			for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+				foreach ($complementos as $key => $value) {
+					$aux = $_POST[$value.$i];
+					$consulta .= " Etario".$i."_".$value. " = $aux, ";
+				}
+			}
+
+			$consulta .= " WHERE cod_sede = $sede AND mes = '$mes' AND semana = '$semanaSC' ";
 			$Link->query($consulta) or die ('Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede '. mysqli_error($Link));
 
 			if($nuevoId > 0){
@@ -224,167 +145,7 @@ if ( $_FILES['foto']['size'][0] > 0 ) {
 			}
 
 			// Cuando hay más de una semana se hancen las inserciones con la misma información y el mismo archivo adjunto
-			$indiceSemana = 0;
-			foreach ($semanas as $semana) {
-				if($indiceSemana > 0){
-					$consulta = "INSERT INTO novedades_priorizacion (
-											num_novedad,
-											id_usuario,
-											fecha_hora,
-											cod_sede,
-											APS,
-											CAJMRI,
-											CAJTRI,
-											CAJMPS,
-											CAJTPS,
-											RPC,
-											Etario1_APS,
-											Etario1_CAJMRI,
-											Etario1_CAJTRI,
-											Etario1_CAJMPS,
-											Etario1_CAJTPS,
-											Etario1_RPC,
-											Etario2_APS,
-											Etario2_CAJMRI,
-											Etario2_CAJTRI,
-											Etario2_CAJMPS,
-											Etario2_CAJTPS,
-											Etario2_RPC,
-											Etario3_APS,
-											Etario3_CAJMRI,
-											Etario3_CAJTRI,
-											Etario3_CAJMPS,
-											Etario3_CAJTPS,
-											Etario3_RPC,
-											Semana,
-											observaciones,
-											arch_adjunto,
-											estado
-									)
-									VALUES
-									( 1, ";
-
-					$aux = $_SESSION['id_usuario'];
-					$consulta .= " $aux, ";
-					$consulta .= " '$fecha', ";
-					$aux = $_POST['sede'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['APSTotal'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJMRITotal'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJTRITotal'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJMPSTotal'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJTPSTotal'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['RPCTotal'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['APS1'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJMRI1'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJTRI1'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJMPS1'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJTPS1'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['RPC1'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['APS2'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJMRI2'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJTRI2'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJMPS2'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJTPS2'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['RPC2'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['APS3'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJMRI3'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJTRI3'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJMPS3'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['CAJTPS3'];
-					$consulta .= " $aux, ";
-					$aux = $_POST['RPC3'];
-					$consulta .= " $aux, ";
-					$aux = $semana;
-					$consulta .= " '$aux', ";
-					$aux = $_POST['observaciones'];
-					$consulta .= " '$aux', ";
-					$consulta .= " '$srcw', ";
-					$consulta .= " 1 ) ";
-					$Link->query($consulta) or die ('Error insertando la novedad de priorización.'. mysqli_error($Link));
-
-					// Actualización de sedes cobertura
-					$semanaSC = $semana;
-					$consulta = " update sedes_cobertura set ";
-					$aux = $_POST['totalTotal'];
-					$consulta .= " cant_Estudiantes = $aux , ";
-					$consulta .= " num_est_focalizados = $aux , ";
-					$consulta .= " num_est_activos = $aux , ";
-					$aux = $_POST['APSTotal'];
-					$consulta .= " APS = $aux , ";
-					$aux = $_POST['CAJMRITotal'];
-					$consulta .= " CAJMRI = $aux , ";
-					$aux = $_POST['CAJTRITotal'];
-					$consulta .= " CAJTRI = $aux , ";
-					$aux = $_POST['CAJMPSTotal'];
-					$consulta .= " CAJMPS = $aux , ";
-					$aux = $_POST['CAJTPSTotal'];
-					$consulta .= " CAJTPS = $aux , ";
-					$aux = $_POST['RPCTotal'];
-					$consulta .= " RPC = $aux , ";
-					$aux = $_POST['APS1'];
-					$consulta .= " Etario1_APS = $aux , ";
-					$aux = $_POST['CAJMRI1'];
-					$consulta .= " Etario1_CAJMRI = $aux , ";
-					$aux = $_POST['CAJTRI1'];
-					$consulta .= " Etario1_CAJTRI = $aux , ";
-					$aux = $_POST['CAJMPS1'];
-					$consulta .= " Etario1_CAJMPS = $aux , ";
-					$aux = $_POST['CAJTPS1'];
-					$consulta .= " Etario1_CAJTPS = $aux , ";
-					$aux = $_POST['RPC1'];
-					$consulta .= " Etario1_RPC = $aux , ";
-					$aux = $_POST['APS2'];
-					$consulta .= " Etario2_APS = $aux , ";
-					$aux = $_POST['CAJMRI2'];
-					$consulta .= " Etario2_CAJMRI = $aux , ";
-					$aux = $_POST['CAJTRI2'];
-					$consulta .= " Etario2_CAJTRI = $aux , ";
-					$aux = $_POST['CAJMPS2'];
-					$consulta .= " Etario2_CAJMPS = $aux , ";
-					$aux = $_POST['CAJTPS2'];
-					$consulta .= " Etario2_CAJTPS = $aux , ";
-					$aux = $_POST['RPC2'];
-					$consulta .= " Etario2_RPC = $aux , ";
-					$aux = $_POST['APS3'];
-					$consulta .= " Etario3_APS = $aux , ";
-					$aux = $_POST['CAJMRI3'];
-					$consulta .= " Etario3_CAJMRI = $aux , ";
-					$aux = $_POST['CAJTRI3'];
-					$consulta .= " Etario3_CAJTRI = $aux , ";
-					$aux = $_POST['CAJMPS3'];
-					$consulta .= " Etario3_CAJMPS = $aux, ";
-					$aux = $_POST['CAJTPS3'];
-					$consulta .= " Etario3_CAJTPS = $aux, ";
-					$aux = $_POST['RPC3'];
-					$consulta .= " Etario3_RPC = $aux ";
-					$consulta .= " where cod_sede = $sede and mes = '$mes' and semana = '$semanaSC' ";
-					$Link->query($consulta) or die ('Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede '. mysqli_error($Link));
-				}
-				$indiceSemana++;
-			}
+			$indiceSemana = 0;		
 		}else{
 			$respuesta++;
 		}
@@ -395,323 +156,65 @@ if ( $_FILES['foto']['size'][0] > 0 ) {
 else {
 	$carpeta = '';
 	$consulta = "INSERT INTO novedades_priorizacion (
-								num_novedad,
-								id_usuario,
-								fecha_hora,
-								cod_sede,
-								APS,
-								CAJMRI,
-								CAJTRI,
-								CAJMPS,
-								CAJTPS,
-								RPC,
-								Etario1_APS,
-								Etario1_CAJMRI,
-								Etario1_CAJTRI,
-								Etario1_CAJMPS,
-								Etario1_CAJTPS,
-								Etario1_RPC,
-								Etario2_APS,
-								Etario2_CAJMRI,
-								Etario2_CAJTRI,
-								Etario2_CAJMPS,
-								Etario2_CAJTPS,
-								Etario2_RPC,
-								Etario3_APS,
-								Etario3_CAJMRI,
-								Etario3_CAJTRI,
-								Etario3_CAJMPS,
-								Etario3_CAJTPS,
-								Etario3_RPC,
-								Semana,
-								observaciones,
-								arch_adjunto,
-								estado)
+									num_novedad,
+									id_usuario,
+									fecha_hora,
+									cod_sede,
+									$concatComplementos
+									Semana,
+									observaciones,
+									arch_adjunto,
+									estado)
 							VALUES ( 1, ";
-
 	$aux = $_SESSION['id_usuario'];
 	$consulta .= " $aux, ";
 	$consulta .= " '$fecha', ";
 	$aux = $_POST['sede'];
 	$consulta .= " $aux, ";
-	$aux = $_POST['APSTotal'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJMRITotal'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJTRITotal'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJMPSTotal'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJTPSTotal'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['RPCTotal'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['APS1'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJMRI1'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJTRI1'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJMPS1'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJTPS1'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['RPC1'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['APS2'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJMRI2'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJTRI2'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJMPS2'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJTPS2'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['RPC2'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['APS3'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJMRI3'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJTRI3'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJMPS3'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['CAJTPS3'];
-	$consulta .= " $aux, ";
-	$aux = $_POST['RPC3'];
-	$consulta .= " $aux, ";
-	$aux = $semanas[0];
+	foreach ($complementos as $key => $value) {
+		$aux = $_POST[$value.'Total'];
+		$consulta .= " $aux, ";
+	}
+	for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+		foreach ($complementos as $key => $value) {
+			$aux = $_POST[$value.$i];
+			$consulta .= " $aux, ";
+		}
+	}
+	$aux = $_POST['semana'];
 	$consulta .= " '$aux', ";
 	$aux = $_POST['observaciones'];
 	$consulta .= " '$aux', ";
 	$consulta .= " '$carpeta', ";
-	$consulta .= " 1 ) ";
+	$consulta .= " 1 ) "; 
 	$Link->query($consulta) or die ('Error insertando la novedad de priorización.'. mysqli_error($Link));
 	$nuevoId = $Link->insert_id;
 
 	//Actualizando sedes coberturas
 	$sede = $_POST['sede'];
 	$mes = $_POST['mes'];
-	$semanaSC = $semanas[0];
-	$consulta = " update sedes_cobertura set ";
+	$semanaSC = $_POST['semana'];
+
+	$consulta = " UPDATE sedes_cobertura SET ";
 	$aux = $_POST['totalTotal'];
-	$consulta .= " cant_Estudiantes = $aux , ";
-	$consulta .= " num_est_focalizados = $aux , ";
-	$consulta .= " num_est_activos = $aux , ";
-	$aux = $_POST['APSTotal'];
-	$consulta .= " APS = $aux , ";
-	$aux = $_POST['CAJMRITotal'];
-	$consulta .= " CAJMRI = $aux , ";
-	$aux = $_POST['CAJTRITotal'];
-	$consulta .= " CAJTRI = $aux , ";
-	$aux = $_POST['CAJMPSTotal'];
-	$consulta .= " CAJMPS = $aux , ";
-	$aux = $_POST['CAJTPSTotal'];
-	$consulta .= " CAJTPS = $aux , ";
-	$aux = $_POST['RPCTotal'];
-	$consulta .= " RPC = $aux , ";
-	$aux = $_POST['APS1'];
-	$consulta .= " Etario1_APS = $aux , ";
-	$aux = $_POST['CAJMRI1'];
-	$consulta .= " Etario1_CAJMRI = $aux , ";
-	$aux = $_POST['CAJTRI1'];
-	$consulta .= " Etario1_CAJTRI = $aux , ";
-	$aux = $_POST['CAJMPS1'];
-	$consulta .= " Etario1_CAJMPS = $aux , ";
-	$aux = $_POST['CAJTPS1'];
-	$consulta .= " Etario1_CAJTPS = $aux , ";
-	$aux = $_POST['RPC1'];
-	$consulta .= " Etario1_RPC = $aux , ";
-	$aux = $_POST['APS2'];
-	$consulta .= " Etario2_APS = $aux , ";
-	$aux = $_POST['CAJMRI2'];
-	$consulta .= " Etario2_CAJMRI = $aux , ";
-	$aux = $_POST['CAJTRI2'];
-	$consulta .= " Etario2_CAJTRI = $aux , ";
-	$aux = $_POST['CAJMPS2'];
-	$consulta .= " Etario2_CAJMPS = $aux , ";
-	$aux = $_POST['CAJTPS2'];
-	$consulta .= " Etario2_CAJTPS = $aux , ";
-	$aux = $_POST['RPC2'];
-	$consulta .= " Etario2_RPC = $aux , ";
-	$aux = $_POST['APS3'];
-	$consulta .= " Etario3_APS = $aux , ";
-	$aux = $_POST['CAJMRI3'];
-	$consulta .= " Etario3_CAJMRI = $aux , ";
-	$aux = $_POST['CAJTRI3'];
-	$consulta .= " Etario3_CAJTRI = $aux , ";
-	$aux = $_POST['CAJMPS3'];
-	$consulta .= " Etario3_CAJMPS = $aux, ";
-	$aux = $_POST['CAJTPS3'];
-	$consulta .= " Etario3_CAJTPS = $aux, ";
-	$aux = $_POST['RPC3'];
-	$consulta .= " Etario3_RPC = $aux ";
-	$consulta .= " where cod_sede = $sede and mes = '$mes' and semana = '$semanaSC' ";
-	$Link->query($consulta) or die ('Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede '. mysqli_error($Link));
+	$consulta .= " cant_Estudiantes = $aux, ";
+	$consulta .= " num_est_focalizados = $aux, ";
+	$consulta .= " num_est_activos = $aux, ";
 
-	// Cuando hay más de una semana se hancen las inserciones con la misma información y el mismo archivo adjunto
-	$indiceSemana = 0;
-	foreach ($semanas as $semana) {
-		if($indiceSemana > 0){
-			$consulta = "INSERT INTO novedades_priorizacion (
-											num_novedad,
-											id_usuario,
-											fecha_hora,
-											cod_sede,
-											APS,
-											CAJMRI,
-											CAJTRI,
-											CAJMPS,
-											CAJTPS,
-											RPC,
-											Etario1_APS,
-											Etario1_CAJMRI,
-											Etario1_CAJTRI,
-											Etario1_CAJMPS,
-											Etario1_CAJTPS,
-											Etario1_RPC,
-											Etario2_APS,
-											Etario2_CAJMRI,
-											Etario2_CAJTRI,
-											Etario2_CAJMPS,
-											Etario2_CAJTPS,
-											Etario2_RPC,
-											Etario3_APS,
-											Etario3_CAJMRI,
-											Etario3_CAJTRI,
-											Etario3_CAJMPS,
-											Etario3_CAJTPS,
-											Etario3_RPC,
-											Semana,
-											observaciones,
-											arch_adjunto,
-											estado)
-									VALUES
-									( 1, ";
+	foreach ($complementos as $key => $value) {
+		$aux = $_POST[$value.'Total'];
+		$consulta .= $value . "= $aux, ";
+	}
 
-			$aux = $_SESSION['id_usuario'];
-			$consulta .= " $aux, ";
-			$consulta .= " '$fecha', ";
-			$aux = $_POST['sede'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['APSTotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMRITotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTRITotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMPSTotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTPSTotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['RPCTotal'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['APS1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMRI1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTRI1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMPS1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTPS1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['RPC1'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['APS2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMRI2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTRI2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMPS2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTPS2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['RPC2'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['APS3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMRI3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTRI3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJMPS3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['CAJTPS3'];
-			$consulta .= " $aux, ";
-			$aux = $_POST['RPC3'];
-			$consulta .= " $aux, ";
-			$aux = $semana;
-			$consulta .= " '$aux', ";
-			$aux = $_POST['observaciones'];
-			$consulta .= " '$aux', ";
-			$consulta .= " '$srcw', ";
-			$consulta .= " 1 ) ";
-			$Link->query($consulta) or die ('Error insertando la novedad de priorización.'. mysqli_error($Link));
-
-			// Actualización de sedes cobertura
-			$semanaSC = $semana;
-			$consulta = " update sedes_cobertura set ";
-			$aux = $_POST['totalTotal'];
-			$consulta .= " cant_Estudiantes = $aux , ";
-			$consulta .= " num_est_focalizados = $aux , ";
-			$consulta .= " num_est_activos = $aux , ";
-			$aux = $_POST['APSTotal'];
-			$consulta .= " APS = $aux , ";
-			$aux = $_POST['CAJMRITotal'];
-			$consulta .= " CAJMRI = $aux , ";
-			$aux = $_POST['CAJTRITotal'];
-			$consulta .= " CAJTRI = $aux , ";
-			$aux = $_POST['CAJMPSTotal'];
-			$consulta .= " CAJMPS = $aux , ";
-			$aux = $_POST['CAJTPSTotal'];
-			$consulta .= " CAJTPS = $aux , ";
-			$aux = $_POST['RPCTotal'];
-			$consulta .= " RPC = $aux , ";
-			$aux = $_POST['APS1'];
-			$consulta .= " Etario1_APS = $aux , ";
-			$aux = $_POST['CAJMRI1'];
-			$consulta .= " Etario1_CAJMRI = $aux , ";
-			$aux = $_POST['CAJTRI1'];
-			$consulta .= " Etario1_CAJTRI = $aux , ";
-			$aux = $_POST['CAJMPS1'];
-			$consulta .= " Etario1_CAJMPS = $aux , ";
-			$aux = $_POST['CAJTPS1'];
-			$consulta .= " Etario1_CAJTPS = $aux , ";
-			$aux = $_POST['RPC1'];
-			$consulta .= " Etario1_RPC = $aux , ";
-			$aux = $_POST['APS2'];
-			$consulta .= " Etario2_APS = $aux , ";
-			$aux = $_POST['CAJMRI2'];
-			$consulta .= " Etario2_CAJMRI = $aux , ";
-			$aux = $_POST['CAJTRI2'];
-			$consulta .= " Etario2_CAJTRI = $aux , ";
-			$aux = $_POST['CAJMPS2'];
-			$consulta .= " Etario2_CAJMPS = $aux , ";
-			$aux = $_POST['CAJTPS2'];
-			$consulta .= " Etario2_CAJTPS = $aux , ";
-			$aux = $_POST['RPC2'];
-			$consulta .= " Etario2_RPC = $aux , ";
-			$aux = $_POST['APS3'];
-			$consulta .= " Etario3_APS = $aux , ";
-			$aux = $_POST['CAJMRI3'];
-			$consulta .= " Etario3_CAJMRI = $aux , ";
-			$aux = $_POST['CAJTRI3'];
-			$consulta .= " Etario3_CAJTRI = $aux , ";
-			$aux = $_POST['CAJMPS3'];
-			$consulta .= " Etario3_CAJMPS = $aux, ";
-			$aux = $_POST['CAJTPS3'];
-			$consulta .= " Etario3_CAJTPS = $aux, ";
-			$aux = $_POST['RPC3'];
-			$consulta .= " Etario3_RPC = $aux ";
-			$consulta .= " where cod_sede = $sede and mes = '$mes' and semana = '$semanaSC' ";
-			$Link->query($consulta) or die ('Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede '. mysqli_error($Link));
-			$indiceSemana++;
-		} // if
-	} // foreach
+	for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+		foreach ($complementos as $key => $value) {
+			$aux = $_POST[$value.$i];
+			$consulta .= " Etario".$i."_".$value. " = $aux, ";
+		}
+	}
+	$consulta = trim($consulta,', ');
+	$consulta .= " WHERE cod_sede = $sede AND mes = '$mes' AND semana = '$semanaSC' "; 
+	$Link->query($consulta) or die ("Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede ". mysqli_error($Link));
 }
 
 echo json_encode(array("log"=>$log, "respuesta"=>$respuesta, "reporte"=>$reporte));

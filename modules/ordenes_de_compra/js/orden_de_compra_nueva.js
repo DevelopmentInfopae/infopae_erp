@@ -48,18 +48,31 @@ $(document).ready(function(){
 	});
 
 
+  	$('#mes').change(function(){
+    	var mes = $('#mes').val();
+    	var semana = $('#semana').val();
 
+    	buscar_semanas(mes);
+    	buscar_dias(mes, semana);
 
-	
+    	$('#tipoRacion').val('');
+    	$('#municipio').html('<option value="">Seleccione uno</option>');
+    	$('#institucion').html('<option value="">Todos</option>');
+    	$('#sede').html('<option value="">Todos</option>');
 
+    	dataset1.clear();
+    	dataset1.destroy();
+    	$('#box-table-a tbody').html('<tr class="odd"> <td class=" sorting_1"></td> <td></td> <td></td> <td></td> </tr>');
 
+    	reiniciarTabla();
 
-
-
+  });
 
 
 	$('#semana').change(function(){
-		buscar_dias($(this).val());
+		var mes = $('#mes').val();
+    	var semana = $('#semana').val();
+		buscar_dias(mes, semana);
 
 		$('#tipoRacion').val('');
 		$('#municipio').html('<option value="">Seleccione uno</option>');
@@ -226,10 +239,10 @@ $(document).ready(function(){
 		"preventDuplicates": false,
 		"positionClass": "toast-top-right",
 		"onclick": null,
-		"showDuration": "400",
-		"hideDuration": "1000",
+		"showDuration": "2000",
+		"hideDuration": "2000",
 		"timeOut": "2000",
-		"extendedTimeOut": "1000",
+		"extendedTimeOut": "2000",
 		"showEasing": "swing",
 		"hideEasing": "linear",
 		"showMethod": "fadeIn",
@@ -243,6 +256,7 @@ function generarDespacho(){
 	var itemsDespacho = [];
 	var dias = new Array();
 	var placa = $('#placa').val();
+  	var mes = $('#mes').val();
 	var semana = $('#semana').val();
 	var subtipo = $('#subtipo').val();
 	var tipo = $('#tipoRacion').val();
@@ -273,8 +287,8 @@ function generarDespacho(){
 	} else if (proveedorEmpleado == '') {
 		Command: toastr.warning('El campo <strong>Proveedor / Empleado</strong> es obligatorio.', 'Advertencia');
 		bandera++;
-	} else if (semana == '') {
-		Command: toastr.warning('El campo <strong>semana</strong> es obligatorio.', 'Advertencia');
+	} else if (mes == '') {
+		Command: toastr.warning('El campo <strong>mes</strong> es obligatorio.', 'Advertencia');
 		bandera++;
 	} else if (dias.length == 0) {
 		Command: toastr.warning('Debe seleccionar al menos un <strong>día</strong> para el despacho.', 'Advertencia');
@@ -315,6 +329,7 @@ function generarDespacho(){
 				"subtipoNm":subtipoNm,
 				"proveedorEmpleado":proveedorEmpleado,
 				"proveedorEmpleadoNm":proveedorEmpleadoNm,
+        		"mes" : mes,
 				"semana":semana,
 				"dias":dias,
 				"tipo":tipo,
@@ -332,13 +347,11 @@ function generarDespacho(){
 			}
 		})
 		.done(function(data) {
-			$('#debug').html(data);
+			console.log(data);
+			// $('#debug').html(data);
 
 			if (data == 1) {
-				Command: toastr.error('El despacho se ha registrado con éxito.', '¡Proceso exitoso!');
-				$(window).unbind('beforeunload');
-
-				window.location.href = 'ordenes_de_compra.php';
+				Command: toastr.success('La Orden de compra se ha registrado con éxito.','¡Proceso exitoso!',{onHidden : function(){ location.href='ordenes_de_compra.php';}});
 			} else {
 				Command: toastr.error(data, '¡Error en el proceso!');
 			}
@@ -400,8 +413,21 @@ function buscar_bodegas(usuario){
 	});
 }
 
-function buscar_dias(semana){
-	var datos = {"semana":semana};
+function buscar_semanas(mes){
+  	var datos = {"mes":mes};
+  	$.ajax({
+    	type: "POST",
+    	url: "functions/fn_buscar_semanas_orden_compra_nueva.php",
+    	data: datos,
+    	beforeSend: function(){},
+    	success: function(data){
+      		$('#semana').html(data);
+    	}
+  	});
+}
+
+function buscar_dias(mes, semana){
+	var datos = {"mes" : mes,  "semana":semana};
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_dias_semana_check.php",
