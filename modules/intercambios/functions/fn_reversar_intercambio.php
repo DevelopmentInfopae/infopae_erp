@@ -23,6 +23,29 @@ if(isset($_POST['codigoIntercambio']) && $_POST['codigoIntercambio'] != ''){
 	$codigoIntercambio = mysqli_real_escape_string($Link, $_POST['codigoIntercambio']);
 }
 
+// validacion para que no se pueda devolver un intercambio si ya existe uno creado
+$consultaValidacion = " SELECT id, mes, semana, fecha_registro FROM novedades_menu WHERE id = '".$idIntercambio."' ";
+$respuestaValidacion = $Link->query($consultaValidacion) or die ('Error al consultar la novedad'. mysqli_error($Link));
+if ($respuestaValidacion->num_rows > 0) {
+	$dataValidacion = $respuestaValidacion->fetch_assoc();
+	$fecha_registro = $dataValidacion['fecha_registro'];
+	$id_registro = $dataValidacion['id'];
+	$consultaSegundaValidacion = " SELECT id, mes, semana, fecha_registro FROM novedades_menu WHERE cod_producto = '".$codigoIntercambio."' AND id != '".$id_registro."' AND estado = '1' AND fecha_registro > '".$fecha_registro."' ORDER BY fecha_registro DESC  LIMIT 1 "; 
+	$respuestaSegundaValidacion = $Link->query($consultaSegundaValidacion) or die ('Error en la validacion ln 34' . mysqli_error($Link));
+	if ($respuestaSegundaValidacion->num_rows > 0) {
+		$dataSegundaValidacion = $respuestaSegundaValidacion->fetch_assoc();
+		$numeroExistente = $dataSegundaValidacion['id'];
+		$mesExistente = $dataSegundaValidacion['mes'];
+		$semanaExistente = $dataSegundaValidacion['semana'];
+		$resultadoAJAX = array(
+			"steate" => 2,
+			"message" => "Existe una novedad de orden superior en el mes : $mesExistente, semana : $semanaExistente, número : $numeroExistente ",
+		);
+		echo json_encode($resultadoAJAX);
+		exit();
+	}
+}
+
 // Cosulta del Id de la ficha técnica
 $consultaFichaTecnica = " select * from fichatecnica where Codigo = \"$codigoIntercambio\" ";
 $resultadoFichaTecnica = $Link->query($consultaFichaTecnica);

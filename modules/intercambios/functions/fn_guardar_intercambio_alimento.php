@@ -1,6 +1,7 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
+date_default_timezone_set('America/Bogota');
 
 $fecha = date('Y-m-d H:i:s');
 $carpeta = 'upload/novedades/menu/';

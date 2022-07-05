@@ -3,6 +3,7 @@ require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
 $periodoActual = $_SESSION['periodoActual'];
+date_default_timezone_set('America/Bogota');
 
 $fecha = date('Y-m-d H:i:s');
 $carpeta = 'upload/novedades/menu/';
