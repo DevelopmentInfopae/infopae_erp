@@ -442,9 +442,9 @@ if ($cantGruposEtarios == '5') {
    $jt = '';
 
    if($jornada == 2){
-      $jm = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3;
+      $jm = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3 + $sedeGrupo4 + $sedeGrupo5;
    }else if($jornada == 3){
-      $jt = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3;
+      $jt = $sedeGrupo1 + $sedeGrupo2 + $sedeGrupo3 + $sedeGrupo4 + $sedeGrupo5;
    }
 
    if($modalidad == 'APS'){

@@ -22,119 +22,79 @@ function obtenerNumDoc($tabla, $Link) {
 function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 	$cupos = [];
 	$coberturas = [];
+	$cantGruposEtarios = $_SESSION['cant_gruposEtarios'];
+	$consultaComplementos = " SELECT CODIGO FROM tipo_complemento ";
+	$respuestaComplementos = $Link->query($consultaComplementos);
+	if ($respuestaComplementos->num_rows > 0) {
+		while ($dataComplementos = $respuestaComplementos->fetch_assoc()) {
+			$complementos[] = $dataComplementos['CODIGO'];
+		}
+	}
 
-	if ($complemento == 'APS') {
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
-							(Etario1_APS) AS Cobertura_G1,
-							(Etario2_APS) AS Cobertura_G2,
-							(Etario3_APS) AS Cobertura_G3,
-							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
-							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
-							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
-							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
-							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
-							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
-							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC";
+	if ($complemento !== 'ALL') {
+		$concatEtarios = '';
+		$concatCobertura = '';
+		for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+			$concatEtarios .= " Etario".$i."_".$complemento." AS Cobertura_G".$i.",";
+		}
 
-	}else if ($complemento == 'CAJMRI') {
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
-							(Etario1_CAJMRI) AS Cobertura_G1,
-							(Etario2_CAJMRI) AS Cobertura_G2,
-							(Etario3_CAJMRI) AS Cobertura_G3,
-							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
-							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
-							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
-							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
-							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
-							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
-							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC";
+		foreach ($complementos as $key => $value) {
+			$concatCobertura .= '(';
+			for ($i=1; $i<=$cantGruposEtarios ; $i++) { 
+				$concatCobertura .= " Etario".$i."_".$value." + ";
+			}
+			$concatCobertura = trim($concatCobertura, " + ");
+			$concatCobertura .= " ) AS Cobertura_".$value.", ";
+		}
 
-	}else if ($complemento == 'CAJTRI') {
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
-							(Etario1_CAJTRI) AS Cobertura_G1,
-							(Etario2_CAJTRI) AS Cobertura_G2,
-							(Etario3_CAJTRI) AS Cobertura_G3,
-							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
-							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
-							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
-							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
-							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
-							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
-							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC";
-
-	}else if ($complemento == 'CAJMPS') {
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
-							(Etario1_CAJMPS) AS Cobertura_G1,
-							(Etario2_CAJMPS) AS Cobertura_G2,
-							(Etario3_CAJMPS) AS Cobertura_G3,
-							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
-							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
-							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
-							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
-							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
-							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
-							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC";
-
-	}else if ($complemento == 'CAJTPS') {
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
-							(Etario1_CAJTPS) AS Cobertura_G1,
-							(Etario2_CAJTPS) AS Cobertura_G2,
-							(Etario3_CAJTPS) AS Cobertura_G3,
-							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
-							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
-							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
-							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
-							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
-							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
-							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC"; 
-
-	}else if ($complemento == 'RPC') {
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
-							(Etario1_RPC) AS Cobertura_G1,
-							(Etario2_RPC) AS Cobertura_G2,
-							(Etario3_RPC) AS Cobertura_G3,
-							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
-							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
-							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
-							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
-							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
-							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
-							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' AND $complemento != 0 GROUP BY mes ORDER BY SEMANA DESC"; 
+		$consultaCupos = " SELECT 	cant_Estudiantes AS Cupos,
+											$concatEtarios
+											$concatCobertura
+											mes
+									FROM sedes_cobertura WHERE cod_sede = '$sede' AND $complemento != 0 
+									GROUP BY mes 
+									ORDER BY SEMANA DESC ";
 
 	}else if ($complemento == 'ALL') {
-		$consultaCupos = "SELECT MAX(cant_Estudiantes) AS Cupos,
-							(Etario1_APS + Etario1_CAJMRI + Etario1_CAJTRI + Etario1_CAJMPS + Etario1_CAJTPS + Etario1_RPC) AS Cobertura_G1,
-							(Etario2_APS + Etario2_CAJMRI + Etario2_CAJTRI + Etario2_CAJMPS + Etario2_CAJTPS + Etario2_RPC) AS Cobertura_G2,
-							(Etario3_APS + Etario3_CAJMRI + Etario3_CAJTRI + Etario3_CAJMPS + Etario3_CAJTPS + Etario3_RPC) AS Cobertura_G3,
-							(Etario1_APS + Etario2_APS + Etario3_APS) AS Cobertura_APS,
-							(Etario1_CAJMRI + Etario2_CAJMRI + Etario3_CAJMRI) AS Cobertura_CAJMRI,
-							(Etario1_CAJTRI + Etario2_CAJTRI + Etario3_CAJTRI) AS Cobertura_CAJTRI,
-							(Etario1_CAJMPS + Etario2_CAJMPS + Etario3_CAJMPS) AS Cobertura_CAJMPS,
-							(Etario1_CAJTPS + Etario2_CAJTPS + Etario3_CAJTPS) AS Cobertura_CAJTPS,
-							(Etario1_RPC + Etario2_RPC + Etario3_RPC) AS Cobertura_RPC,
-							mes
-						FROM sedes_cobertura WHERE cod_sede = '".$sede."' GROUP BY mes ORDER BY SEMANA DESC";
+		$concatEtarios = '';
+		$concatCobertura = '';
 
+		for ($i=1; $i<=$cantGruposEtarios ; $i++) { 
+			$concatEtarios .= '(';
+			foreach ($complementos as $key => $value) {
+				$concatEtarios .= " Etario".$i."_".$value." + ";
+			}
+			$concatEtarios = trim($concatEtarios, " + ");
+			$concatEtarios .= " ) AS Cobertura_G".$i.", ";
+		}
+
+		foreach ($complementos as $key => $value) {
+			$concatCobertura .= '(';
+			for ($i=1; $i<=$cantGruposEtarios ; $i++) { 
+				$concatCobertura .= " Etario".$i."_".$value." + ";
+			}
+			$concatCobertura = trim($concatCobertura, " + ");
+			$concatCobertura .= " ) AS Cobertura_".$value.", ";
+		}
+
+		$consultaCupos = "SELECT 	cant_Estudiantes AS Cupos,
+											$concatEtarios
+											$concatCobertura	
+											mes
+										FROM sedes_cobertura 
+										WHERE cod_sede = '".$sede."' GROUP BY mes ORDER BY SEMANA DESC";
 	}
+
 	$resultadoCupos = $Link->query($consultaCupos); 
 	if ($resultadoCupos->num_rows > 0) {
 		while ($cps = $resultadoCupos->fetch_assoc()) {
 			$cupos[$cps['mes']]['Cobertura'] = $cps['Cupos'];
-			$cupos[$cps['mes']]['Cobertura_G1'] = $cps['Cobertura_G1'];
-			$cupos[$cps['mes']]['Cobertura_G2'] = $cps['Cobertura_G2'];
-			$cupos[$cps['mes']]['Cobertura_G3'] = $cps['Cobertura_G3'];
-			$cupos[$cps['mes']]['Cobertura_APS'] = $cps['Cobertura_APS'];
-			$cupos[$cps['mes']]['Cobertura_CAJMRI'] = $cps['Cobertura_CAJMRI'];
-			$cupos[$cps['mes']]['Cobertura_CAJTRI'] = $cps['Cobertura_CAJTRI'];
-			$cupos[$cps['mes']]['Cobertura_CAJMPS'] = $cps['Cobertura_CAJMPS'];
-			$cupos[$cps['mes']]['Cobertura_CAJTPS'] = $cps['Cobertura_CAJTPS'];
-			$cupos[$cps['mes']]['Cobertura_RPC'] = $cps['Cobertura_RPC'];
+			for ($i=1; $i<=$cantGruposEtarios ; $i++) { 
+				$cupos[$cps['mes']]['Cobertura_G'.$i] = $cps['Cobertura_G'.$i];
+			}
+			foreach ($complementos as $key => $value) {
+				$cupos[$cps['mes']]['Cobertura_'.$value] = $cps['Cobertura_'.$value];
+			}
 		}
 	}
 
@@ -154,15 +114,12 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 		} else if ($complemento == 'ALL') {
 			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura'];
 		}
-		$coberturas['Cobertura_G1'] = $cupos[$mes]['Cobertura_G1'];
-		$coberturas['Cobertura_G2'] = $cupos[$mes]['Cobertura_G2'];
-		$coberturas['Cobertura_G3'] = $cupos[$mes]['Cobertura_G3'];
-		$coberturas['Cobertura_APS'] = $cupos[$mes]['Cobertura_APS'];
-		$coberturas['Cobertura_CAJMRI'] = $cupos[$mes]['Cobertura_CAJMRI'];
-		$coberturas['Cobertura_CAJTRI'] = $cupos[$mes]['Cobertura_CAJTRI'];
-		$coberturas['Cobertura_CAJMPS'] = $cupos[$mes]['Cobertura_CAJMPS'];
-		$coberturas['Cobertura_CAJMPS'] = $cupos[$mes]['Cobertura_CAJTPS'];
-		$coberturas['Cobertura_CAJMPS'] = $cupos[$mes]['Cobertura_RPC'];
+		for ($i=1; $i<=$cantGruposEtarios; $i++) { 
+			$coberturas['Cobertura_G'.$i] =  $cupos[$mes]['Cobertura_G'.$i];
+		}
+		foreach ($complementos as $key => $value) {
+			$coberturas['Cobertura_'.$value] = $cupos[$mes]['Cobertura_'.$value];
+		}
 	} else {
 		if (count($cupos) > 0) {
 			$consultaMes = " SELECT mes FROM sedes_cobertura WHERE mes = '$mes'";
@@ -305,19 +262,14 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 			}
 			$cupos_duplicar = ($cupos[$mesA]); 
 			$coberturas['Cobertura'] = $cupos_duplicar['Cobertura'];
-			$coberturas['Cobertura_G1'] = $cupos_duplicar['Cobertura_G1'];
-			$coberturas['Cobertura_G2'] = $cupos_duplicar['Cobertura_G2'];
-			$coberturas['Cobertura_G3'] = $cupos_duplicar['Cobertura_G3'];
-			$coberturas['Cobertura_APS'] = $cupos_duplicar['Cobertura_APS'];
-			$coberturas['Cobertura_CAJMRI'] = $cupos_duplicar['Cobertura_CAJMRI'];
-			$coberturas['Cobertura_CAJTRI'] = $cupos_duplicar['Cobertura_CAJTRI'];
-			$coberturas['Cobertura_CAJMPS'] = $cupos_duplicar['Cobertura_CAJMPS'];
-			$coberturas['Cobertura_CAJTPS'] = $cupos_duplicar['Cobertura_CAJTPS'];
-			$coberturas['Cobertura_RPC'] = $cupos_duplicar['Cobertura_RPC'];
-
+			for ($i=1; $i<=$cantGruposEtarios ; $i++) { 
+				$coberturas['Cobertura_G'.$i] = $cupos_duplicar['Cobertura_G'.$i];
+			}
+			foreach ($complementos as $key => $value) {
+				$coberturas['Cobertura_'.$value] = $cupos_duplicar['Cobertura_'.$value];	
+			}
 		}
 	}
-	// exit(var_dump($cupos_duplicar));
 	return $coberturas;					
 }
 
@@ -432,16 +384,12 @@ function obterNomProveedor($tipo_despacho, $proveedor, $Link){
 	return $nomProveedor;
 }
 
-function obtenerCantDias ($cobertura){
-	$cantDias = 1;
-	if ($cobertura >= 100 && $cobertura <=200) {
-		$cantDias = 2;
-	}else if ($cobertura >= 201 && $cobertura <= 600) {
-		$cantDias = 3;
-	}else if ($cobertura >= 601 && $cobertura <=1000) {
-		$cantDias = 3;
-	}else if ($cobertura >= 1001) {
-		$cantDias = 4;
+function obtenerCantDias ($cobertura, $Link, $mes){
+	$consultaCantDias = "SELECT COUNT(DIA) as numero FROM planilla_semanas WHERE MES = '$mes'";
+	$respuestaCantDias = $Link->query($consultaCantDias) or die ('Error al consultar el numero de dias' . mysqli_error($Link));
+	if ($respuestaCantDias->num_rows > 0) {
+		$dataCantDias = $respuestaCantDias->fetch_assoc();
+		$cantDias = $dataCantDias['numero'];
 	}
 	return $cantDias;
 }
@@ -524,6 +472,15 @@ if (isset($_POST['conductor'])) {
 	$conductor = "";
 }
 
+$cantGruposEtarios = $_SESSION['cant_gruposEtarios'];
+$consultaComplementos = " SELECT CODIGO FROM tipo_complemento ";
+$respuestaComplementos = $Link->query($consultaComplementos);
+if ($respuestaComplementos->num_rows > 0) {
+	while ($dataComplementos = $respuestaComplementos->fetch_assoc()) {
+		$complementos[] = $dataComplementos['CODIGO'];
+	}
+}
+
 $productos_por_despacho = [];
 
 $consultarResponsable = "SELECT * FROM usuarios WHERE id = ".$_SESSION['idUsuario'];
@@ -541,37 +498,41 @@ $validaTablas = 0;
 $validaProductos = 0;
 $insumosmov = "insumosmov".$mes.$periodoActual;
 
+$Coberturas = '';
+$coberturasInsert = '';
+for ($i=1; $i<=$cantGruposEtarios ; $i++) { 
+	$Coberturas .=  " Cobertura_G$i int(10) DEFAULT 0, ";
+	$coberturasInsert .= "Cobertura_G".$i.", ";
+}
 
 $sedesNumDoc = [];
 $queryinsumosmov = "CREATE TABLE IF NOT EXISTS `$insumosmov` (
-	  `Documento` varchar(10) DEFAULT '',
-	  `Numero` int(10) UNSIGNED DEFAULT '0',
-	  `Tipo` varchar(100) DEFAULT '',
-	  `FechaDoc` varchar(45) DEFAULT '',
-	  `BodegaOrigen` bigint(20) UNSIGNED DEFAULT '0',
-	  `BodegaDestino` bigint(20) UNSIGNED DEFAULT '0',
-	  `Nombre` varchar(200) DEFAULT '',
-	  `Nitcc` varchar(20) DEFAULT '',
-	  `Aprobado` tinyint(1) DEFAULT '0',
-	  `NombreResponsable` varchar(60) DEFAULT '',
-	  `LoginResponsable` varchar(30) DEFAULT '',
-	  `DocOrigen` varchar(10) DEFAULT '',
-	  `NumDocOrigen` int(10) UNSIGNED DEFAULT '0',
-	  `Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	  `FechaMYSQL` datetime DEFAULT NULL,
-	  `Anulado` tinyint(1) DEFAULT '0',
-	  `TipoTransporte` varchar(50) NOT NULL DEFAULT '',
-	  `Placa` varchar(10) NOT NULL DEFAULT '',
-	  `ResponsableRecibe` varchar(45) NOT NULL DEFAULT '',
-	  `Cobertura` int(10) DEFAULT 0,
-	  `Cobertura_G1` int(10) DEFAULT 0,
-	  `Cobertura_G2` int(10) DEFAULT 0,
-	  `Cobertura_G3` int(10) DEFAULT 0,
-	  `Complemento` varchar(20) DEFAULT '',
-	  `CantDias` tinyint(4) DEFAULT 1,
-	  `NumManipuladoras` varchar(20) DEFAULT 1,
-	  PRIMARY KEY (`Id`)
-	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;";
+								  `Documento` varchar(10) DEFAULT '',
+								  `Numero` int(10) UNSIGNED DEFAULT '0',
+								  `Tipo` varchar(100) DEFAULT '',
+								  `FechaDoc` varchar(45) DEFAULT '',
+								  `BodegaOrigen` bigint(20) UNSIGNED DEFAULT '0',
+								  `BodegaDestino` bigint(20) UNSIGNED DEFAULT '0',
+								  `Nombre` varchar(200) DEFAULT '',
+								  `Nitcc` varchar(20) DEFAULT '',
+								  `Aprobado` tinyint(1) DEFAULT '0',
+								  `NombreResponsable` varchar(60) DEFAULT '',
+								  `LoginResponsable` varchar(30) DEFAULT '',
+								  `DocOrigen` varchar(10) DEFAULT '',
+								  `NumDocOrigen` int(10) UNSIGNED DEFAULT '0',
+								  `Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+								  `FechaMYSQL` datetime DEFAULT NULL,
+								  `Anulado` tinyint(1) DEFAULT '0',
+								  `TipoTransporte` varchar(50) NOT NULL DEFAULT '',
+								  `Placa` varchar(10) NOT NULL DEFAULT '',
+								  `ResponsableRecibe` varchar(45) NOT NULL DEFAULT '',
+								  `Cobertura` int(10) DEFAULT 0,
+								  $Coberturas
+								  `Complemento` varchar(20) DEFAULT '',
+								  `CantDias` tinyint(4) DEFAULT 1,
+								  `NumManipuladoras` varchar(20) DEFAULT 1,
+								  PRIMARY KEY (`Id`)
+								) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;";
 
 if ($Link->query($queryinsumosmov)===true) {
 	$validaTablas++;
@@ -596,8 +557,27 @@ foreach ($sedes as $key => $sede) {
 	}
 }
 
-
-$insertinsumosmov = "INSERT INTO $insumosmov (Documento, Numero, Tipo, BodegaOrigen, BodegaDestino, Nombre, Nitcc, Aprobado, NombreResponsable, LoginResponsable, FechaMYSQL, Anulado, TipoTransporte, Placa, ResponsableRecibe, Cobertura, Cobertura_G1, Cobertura_G2, Cobertura_G3, Complemento, CantDias, NumManipuladoras) VALUES ";
+$insertinsumosmov = "INSERT INTO $insumosmov (	Documento, 
+																Numero, 
+																Tipo, 
+																BodegaOrigen, 
+																BodegaDestino, 
+																Nombre, 
+																Nitcc, 
+																Aprobado, 
+																NombreResponsable, 
+																LoginResponsable, 
+																FechaMYSQL, 
+																Anulado, 
+																TipoTransporte, 
+																Placa, 
+																ResponsableRecibe, 
+																Cobertura, 
+																$coberturasInsert 
+																Complemento, 
+																CantDias, 
+																NumManipuladoras) 
+														VALUES ";
 	
 $numDoc = obtenerNumDoc($insumosmov, $Link);
 foreach ($sedes as $key => $sede) {
@@ -607,30 +587,30 @@ foreach ($sedes as $key => $sede) {
 	$nombre_proveedor = obterNomProveedor($tipo_despacho, $proveedor, $Link);
 	$sedesNumDoc[$sede] = $numDoc;
 	$numerosDespachos.=$numDoc.", ";
-	$cantDias = obtenerCantDias($coberturas_sedes['Cobertura']);
+	$cantDias = obtenerCantDias($coberturas_sedes['Cobertura'], $Link, $mes);
 	$insertinsumosmov.="('DESI', 
-						'".$sedesNumDoc[$sede]."', 
-						'".$nomTipoMov."', 
-						'".$bodegaOrigen."', 
-						'".$sede."', 
-						'".$nombre_proveedor."', 
-						'".$proveedor."', 
-						'0', 
-						'".$nombreResp."', 
-						'".$loginResp."', 
-						'".date('Y-m-d H:i:s')."', 
-						'0', 
-						'".$tipoTransporte."', 
-						'".$placa."', 
-						'".$conductor."', 
-						'".$coberturas_sedes['Cobertura']."', 
-						'".$coberturas_sedes['Cobertura_G1']."', 
-						'".$coberturas_sedes['Cobertura_G2']."', 
-						'".$coberturas_sedes['Cobertura_G3']."', 
-						'".($complemento == "ALL" ? "Total cobertura" : $complemento)."', 
-						'".$cantDias."',
-						'".$manipuladoras."'), ";
-		$numDoc++;
+								'".$sedesNumDoc[$sede]."', 
+								'".$nomTipoMov."', 
+								'".$bodegaOrigen."', 
+								'".$sede."', 
+								'".$nombre_proveedor."', 
+								'".$proveedor."', 
+								'0', 
+								'".$nombreResp."', 
+								'".$loginResp."', 
+								'".date('Y-m-d H:i:s')."', 
+								'0', 
+								'".$tipoTransporte."', 
+								'".$placa."', 
+								'".$conductor."', 
+								'".$coberturas_sedes['Cobertura']."', ";
+								for ($i=1; $i<=$cantGruposEtarios ; $i++) { 
+									$insertinsumosmov .= "'".$coberturas_sedes['Cobertura_G'.$i]."',"; 
+								}
+								$insertinsumosmov .= "'".($complemento == "ALL" ? "Total cobertura" : $complemento)."', 
+								'".$cantDias."',
+								'".$manipuladoras."'), ";
+	$numDoc++;
 }
 
 $insertinsumosmov = trim($insertinsumosmov, ", ");
@@ -642,37 +622,56 @@ if ($Link->query($insertinsumosmov)===true) {
 
 $insumosmovdet = "insumosmovdet".$mes.$_SESSION['periodoActual'];
 $queryinsumosmovdet = "CREATE TABLE IF NOT EXISTS `$insumosmovdet` (
-	`Documento` varchar(10) DEFAULT '',
-	`Numero` int(10) DEFAULT '0',
-	`Item` int(10) UNSIGNED DEFAULT '0',
-	`CodigoProducto` varchar(20) DEFAULT '',
-	`Descripcion` text NOT NULL,
-	`Cantidad` decimal(28,8) DEFAULT '0.00000000',
-	`BodegaOrigen` bigint(20) UNSIGNED DEFAULT '0',
-	`BodegaDestino` bigint(20) UNSIGNED DEFAULT '0',
-	`Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`Umedida` varchar(255) DEFAULT '',
-	`CantUmedida` decimal(20,4) DEFAULT '0.0000',
-	`Factor` decimal(28,8) DEFAULT '0.00000000',
-	`Id_Usuario` int(10) UNSIGNED DEFAULT '0',
-	`Lote` varchar(45) NOT NULL DEFAULT '',
-	`FechaVencimiento` date DEFAULT NULL,
-	`CantU1` decimal(28,8) DEFAULT '0.00000000',
-	`CantU2` decimal(28,8) DEFAULT '0.00000000',
-	`CantU3` decimal(28,8) DEFAULT '0.00000000',
-	`CantU4` decimal(28,8) DEFAULT '0.00000000',
-	`CantU5` decimal(28,8) DEFAULT '0.00000000',
-	`CanTotalPresentacion` decimal(28,8) DEFAULT '0.00000000',
-	`Complemento` varchar(20) DEFAULT '',
-	PRIMARY KEY (`Id`)
-	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-	";
+										`Documento` varchar(10) DEFAULT '',
+										`Numero` int(10) DEFAULT '0',
+										`Item` int(10) UNSIGNED DEFAULT '0',
+										`CodigoProducto` varchar(20) DEFAULT '',
+										`Descripcion` text NOT NULL,
+										`Cantidad` decimal(28,8) DEFAULT '0.00000000',
+										`BodegaOrigen` bigint(20) UNSIGNED DEFAULT '0',
+										`BodegaDestino` bigint(20) UNSIGNED DEFAULT '0',
+										`Id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+										`Umedida` varchar(255) DEFAULT '',
+										`CantUmedida` decimal(20,4) DEFAULT '0.0000',
+										`Factor` decimal(28,8) DEFAULT '0.00000000',
+										`Id_Usuario` int(10) UNSIGNED DEFAULT '0',
+										`Lote` varchar(45) NOT NULL DEFAULT '',
+										`FechaVencimiento` date DEFAULT NULL,
+										`CantU1` decimal(28,8) DEFAULT '0.00000000',
+										`CantU2` decimal(28,8) DEFAULT '0.00000000',
+										`CantU3` decimal(28,8) DEFAULT '0.00000000',
+										`CantU4` decimal(28,8) DEFAULT '0.00000000',
+										`CantU5` decimal(28,8) DEFAULT '0.00000000',
+										`CanTotalPresentacion` decimal(28,8) DEFAULT '0.00000000',
+										`Complemento` varchar(20) DEFAULT '',
+										PRIMARY KEY (`Id`)
+										) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+										";
 if ($Link->query($queryinsumosmovdet)===true) {
 	$validaTablas++;
 } else {
 	exit(" Error ".$queryinsumosmovdet);
 }
-$insertinsumosmovdet = "INSERT INTO $insumosmovdet (Documento, Numero, Item, CodigoProducto, Descripcion, Cantidad, BodegaOrigen, BodegaDestino, Umedida, CantUmedida, Factor, Id_Usuario, CantU2, CantU3, CantU4, CantU5, CanTotalPresentacion, Complemento) VALUES ";
+
+$insertinsumosmovdet = "INSERT INTO $insumosmovdet (	Documento, 
+																		Numero, 
+																		Item,
+																		CodigoProducto, 
+																		Descripcion, 
+																		Cantidad, 
+																		BodegaOrigen, 
+																		BodegaDestino, 
+																		Umedida, 
+																		CantUmedida, 
+																		Factor, 
+																		Id_Usuario, 
+																		CantU2, 
+																		CantU3, 
+																		CantU4, 
+																		CantU5, 
+																		CanTotalPresentacion, 
+																		Complemento) 
+																VALUES ";
 foreach ($sedes as $key => $sede) {
 	$numItem = 0;
 	foreach ($productoDespacho as $keyIns => $producto) {
@@ -689,7 +688,24 @@ foreach ($sedes as $key => $sede) {
 			continue;
 		}
 		$numItem++;
-		$insertinsumosmovdet.="('DESI', '".$sedesNumDoc[$sede]."', '".$numItem."', '".$producto."', '".$DescInsumo[$keyIns]."', '".$presentaciones[6]."', '".$bodegaOrigen."', '".$sede."', '".$datos['uMedida2']."', '".$datos['cantUMedida']."', '1', '".$_SESSION['idUsuario']."', '".$presentaciones[1]."', '".$presentaciones[2]."', '".$presentaciones[3]."', '".$presentaciones[4]."', '".$presentaciones[5]."', '".($complemento == "ALL" ? "Total cobertura" : $complemento)."'), ";
+		$insertinsumosmovdet.="(	'DESI', 
+											'".$sedesNumDoc[$sede]."', 
+											'".$numItem."', 
+											'".$producto."', 
+											'".$DescInsumo[$keyIns]."', 
+											'".$presentaciones[6]."', 
+											'".$bodegaOrigen."', 
+											'".$sede."', 
+											'".$datos['uMedida2']."', 
+											'".$datos['cantUMedida']."', 
+											'1', 
+											'".$_SESSION['idUsuario']."', 
+											'".$presentaciones[1]."', 
+											'".$presentaciones[2]."', 
+											'".$presentaciones[3]."', 
+											'".$presentaciones[4]."', 
+											'".$presentaciones[5]."', 
+											'".($complemento == "ALL" ? "Total cobertura" : $complemento)."'), ";
 	}
 }
 

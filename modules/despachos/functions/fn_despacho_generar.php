@@ -477,7 +477,14 @@ foreach ($variaciones as $id => $variacion) {
 		$auxSede = $auxSede['cod_sede'];
 
 		if ($semana == '') {
-			$consultaSemanasMes = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES = $mes ";
+			$diasIn = '';
+			$arrayDiasSemanas = explode(",",$diasDespacho);
+			foreach ($arrayDiasSemanas as $key => $value) {
+				$diasIn .= "'" .$value. "', ";	
+			}
+			$diasIn = trim($diasIn,", "); 
+
+			$consultaSemanasMes = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes AND DIA IN ($diasIn)";
 			$respuestaSemanasMes = $Link->query($consultaSemanasMes) or die ('Error al consultar las semanas del mes ');
 			if ($respuestaSemanasMes->num_rows > 0) {
 				while ($dataSemanasMes = $respuestaSemanasMes->fetch_assoc()) {
@@ -500,7 +507,7 @@ foreach ($variaciones as $id => $variacion) {
 			$consulta = $consulta." and ( ";
 			for ($j=0; $j < count($semanas) ; $j++) {
 				if($j > 0){
-					$consulta = $consulta." or ";
+					$consulta = $consulta." AND ";
 				}
 				$aux = $semanas[$j];
 				$consulta = $consulta." FIND_IN_SET('$aux', de.Semana) ";
@@ -520,7 +527,7 @@ foreach ($variaciones as $id => $variacion) {
 			$consulta = $consulta." ) "; 
 			$consulta .= " AND de.semana = '$semana' "; 
 		}
-
+		// exit(var_dump($consulta));
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		if($resultado->num_rows >= 1){
 			$bandera++;
@@ -1120,9 +1127,9 @@ foreach ($variaciones as $id => $variacion) {
 			$respuestaSemanasString = $Link->query($consultaSemanaString) or die ('Error al consultar las semanas relacionadas' . mysqli_error($Link));
 			if ($respuestaSemanasString->num_rows > 0) {
 				while($dataSemanasString = $respuestaSemanasString->fetch_assoc()){
-					$semanaString .= $dataSemanasString['semana']. ", ";
+					$semanaString .= $dataSemanasString['semana']. ",";
 				}
-				$semanaString = trim($semanaString, ", "); 
+				$semanaString = trim($semanaString, ","); 
 			} 
 
 		}else if($semana !== ""){

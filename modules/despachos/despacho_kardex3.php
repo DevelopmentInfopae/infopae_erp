@@ -939,8 +939,8 @@ if ($cantGruposEtarios == '5') {
          include 'despacho_kardex3_header.php';
       }
       include 'despacho_firma_planilla_kardex3.php';
-      
-      mysqli_close ( $Link );
-      $pdf->Output();
-   }
+
+   }    
+   mysqli_close ( $Link );
+   $pdf->Output();
 }

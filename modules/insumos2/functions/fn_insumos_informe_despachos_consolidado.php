@@ -237,17 +237,15 @@ for ($i=$tablaMesInicio; $i <= $tablaMesFin ; $i++) {
 	$insumosmovdet = "insumosmovdet".($i < 10 ? "0".$i : $i).$_SESSION['periodoActual'];
 
 	foreach ($sedes as $key => $sede) {
-
-		$consultaSede = "SELECT
-						    ubicacion.Ciudad, instituciones.nom_inst, sede.*
-						FROM
-						    $sedeTabla AS sede
-						        INNER JOIN
-						    ubicacion ON ubicacion.CodigoDANE = sede.cod_mun_sede
-								INNER JOIN
-							instituciones ON instituciones.codigo_inst = sede.cod_inst
-						WHERE
-						    sede.cod_sede = '".$sede."';";
+		$consultaSede = "SELECT ubicacion.Ciudad, 
+										instituciones.nom_inst, 
+										sede.*,
+										( select sum(NumManipuladoras) from $insumosmov where BodegaDestino = '$sede' ) AS cantidad_Manipuladora
+									FROM  $sedeTabla AS sede
+						        	INNER JOIN ubicacion ON ubicacion.CodigoDANE = sede.cod_mun_sede
+									INNER JOIN instituciones ON instituciones.codigo_inst = sede.cod_inst
+									WHERE sede.cod_sede = '".$sede."';";
+									
 		$resultadoSede = $Link->query($consultaSede);
 		if ($resultadoSede->num_rows > 0) {
 			$ds = $resultadoSede->fetch_assoc();

@@ -103,7 +103,7 @@ if ($tipoProducto == "01") {
   $nuevoCodigo = obtenerUltimoCodigo($subtipoProducto);
   $tipo_complemento = "";
 }
-
+// exit(var_dump($nuevoCodigo));
 $NombreUnidad = array();
 $CantidadUnd = array();
 

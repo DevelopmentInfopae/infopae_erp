@@ -38,9 +38,13 @@ $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
 // array para nombre de los meses
-$nombreMeses = array('1' => 'Enero', '2' => 'Febrero', '3' => 'Marzo', '4' => 'Abril', '5' => 'Mayo', '6' => 'Junio', '7' => 'Julio', '8' => 'Agosto', '9' => 'Septiembre', '10' => 'Octubre', '11' => 'Noviembre', '12' => 'Diciembre');
-$letrasAbecedario = array('1' => 'A','2' => 'B','3' => 'C','4' => 'D','5' => 'E','6' => 'F','7' => 'G','8' => 'H','9' => 'I','10' => 'J','11' => 'K',
-'12' => 'L','13' => 'M','14' => 'N','15' => '0','16' => 'P','17' => 'Q','18' => 'R','19' => 'S', '20' => 'T','21' => 'U','22' => 'V','23' => 'W','24' => 'X','25' => 'Y','26' => 'Z',);
+$nombreMeses = array('01' => 'Enero', '02' => 'Febrero', '03' => 'Marzo', '04' => 'Abril', '05' => 'Mayo', '06' => 'Junio', '07' => 'Julio', '08' => 'Agosto', '09' => 'Septiembre', '10' => 'Octubre', '11' => 'Noviembre', '12' => 'Diciembre');
+
+// array para agregar letras del abecedario si crece alguna tabla o grafica agregar las letras en el siguiente array
+$letrasAbecedario = array(  '1'=>'A', '2'=>'B', '3'=>'C', '4'=>'D', '5'=>'E', '6'=>'F', '7'=>'G', '8'=>'H', '9'=>'I', '10'=>'J', '11'=>'K', '12'=>'L', '13'=>'M',
+                            '14'=>'N', '15'=>'0', '16'=>'P', '17'=>'Q', '18'=>'R', '19'=>'S', '20'=>'T', '21'=>'U', '22'=>'V', '23'=>'W', '24'=>'X', '25'=>'Y', 
+                            '26'=>'Z', '27'=>'AA', '28'=>'AB', '29'=>'AC', '30'=>'AD', '31'=>'AE', '32'=>'AF', '33'=>'AG', '34'=>'AH', '35'=>'AI', '36'=>'AJ', '37'=>'AK', 
+                            '38'=>'AL', '39'=>'AM', '40'=>'AN', '41'=>'A0', '42'=>'AP', '43'=>'AQ', '44'=>'AR', '45'=>'AS', '46'=>'AT', '47'=>'AU', '48'=>'AV', '49'=>'AW', '50'=>'AX', '51'=>'AY', '52'=>'AZ',);
 
 $sheet->setCellValue('D2', 'Sistema de Información Tecnológico InfoPAE');
 $sheet->mergeCells('D2:P4');
@@ -206,16 +210,12 @@ $periodo = 1;
     $sem=0;
     $tabla="entregas_res_$mes$periodoActual"; //tabla donde se busca, según mes(obtenido de consulta anterior) y año
     foreach ($semanas as $semana => $dias) { //recorremos las semanas del mes en turno
-      if ($semana == $sem.'b') {
-        $mismaSemanaB = "SELECT COUNT(dia) as numero FROM planilla_semanas WHERE semana IN ('$semana','$sem') GROUP BY dia LIMIT 1";
-        $respuestaSemanaB = $Link->query($mismaSemanaB) or die('Error al consultar los días de la misma semana' . mysqli_error($Link));
-        if ($respuestaSemanaB->num_rows > 0) {
-          $dataSemanaB = $respuestaSemanaB->fetch_assoc();
-          $numeroDiasRepetidos = $dataSemanaB['numero'];
-          if ($numeroDiasRepetidos == 2) {
-            $diaD = 1;
-          }
-        }
+      $stringSemana = $semana;
+      $find = 'b';
+      $busquedaB = strrchr ($stringSemana, $find);
+      // echo $busquedaB; 
+      if ($busquedaB == 'b' || $busquedaB == 'B') {
+        $diaD = 1;
       }  
       foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
         // echo $mes." - ".$semana." - ".$D." - ".$dia."</br>";
@@ -266,7 +266,7 @@ $periodo = 1;
   }
 
 $numFila=11;
-
+// exit(var_dump($sumTotalesSemanas));
 $sheet->setCellValue("B".$numFila, "Mes");
 // letra en la que empiza la los valores de la tabla
 $Letra='C';
@@ -322,27 +322,20 @@ foreach ($totales as $key => $total) {
 }
 
  $sheet->setCellValue(($letraFinal).$filaI, $totalTotales); 
-
+// exit(var_dump($letraInicial));
 // letras para recorrer la tabla completa y validar que valores estan en nulos para colocarlos en 0
 $letraFinal = $Letra;
 $filaFinal = $numFila;
 $pValue   = 1;
-
 $ultimaF = 0;
 $ultimaL = 0;
-// ciclo para recorrer la tabla creada y colocar en 0 los valores que estan vacios ademas se guarda y la ultima letra y fila
-for ($i = $filaInicial; $i <= $filaFinal; $i++) { 
-    for ($j=$letraInicial; $j <= $letraFinal ; $j++) {       
-        if ($sheet->getCell("$j$i", false) != null ) {
-          continue;
-        }else{
-            $sheet->setCellValue("$j$i",'');
-            $ultimaLF = $j.($i-1);
-            $ultimaL = $j;
-            $ultimaF = $i;
-        }
-    }
-}
+
+$bandera = 0;
+
+$clave = array_search($letraFinal, $letrasAbecedario); 
+$ultimaL = $letrasAbecedario[$clave-1];
+$ultimaF = $filaFinal;
+$ultimaLF = $ultimaL.$ultimaF;
 
 // fila en la que termina la tabla 
 $finGrafica = $numFila;
@@ -372,7 +365,7 @@ $filaLabelsGrafica = $numFila; //Número de fila donde están los labels para la
 
 // letra donde empiezan los datos
 $Letra = 'C'; 
- 
+// exit(var_dump($ultimaF));
 for ($j=$filaInicial; $j < $ultimaF; $j++) { 
     // valores con los que se van a llenar la grafica en las barras
     $dataSeriesValues[] = new DataSeriesValues(DataSeriesValues::DATASERIES_TYPE_NUMBER, '(Worksheet!$'.$Letra.'$'.$j.':'.'$'.$ultimaL.'$'.$j.')', null, 4);
@@ -382,7 +375,7 @@ for ($j=$filaInicial; $j < $ultimaF; $j++) {
     // valores con los que se van a agrupar los datos para este caso los meses 
     $dataSeriesLabels[] = new DataSeriesValues(DataSeriesValues::DATASERIES_TYPE_STRING, '(Worksheet!$B'.'$'.$j.':'.'$B'.'$'.$j.')', null, 4);
 }
-
+// exit(var_dump($dataSeriesValues));
 // valores  los datos para este caso las semanas va a ir en el pie de la grafica señalando el nombre de cada barra
 $xAxisTickValues = [
     new DataSeriesValues(DataSeriesValues::DATASERIES_TYPE_STRING, 'Worksheet!$'.$Letra.'$'.'11'.':$'.$ultimaL.'$'.'11', null, 4),
@@ -660,10 +653,10 @@ foreach ($diasSemanas as $mes => $semanas) {
         }
       }    
     $respuesta2[$mes] = $respuesta;
-    $mesesRecorridos .= $mes; 
+    $mesesRecorridos .= $mes."+"; 
 }
 
-$arrayMes = explode("0", $mesesRecorridos);
+$arrayMes = explode("+", $mesesRecorridos);
 
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
@@ -884,11 +877,11 @@ foreach ($diasSemanas as $mes => $semanas) {
       }
     
     $respuesta2[$mes] = $respuesta;
-    $mesesRecorridos .= $mes; 
+    $mesesRecorridos .= $mes."+"; 
 }
 
 // convertirmos el string en un array 
-$arrayMes = explode("0", $mesesRecorridos);
+$arrayMes = explode("+", $mesesRecorridos);
 
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
@@ -1107,10 +1100,10 @@ foreach ($diasSemanas as $mes => $semanas) {
     } 
   }
   $respuesta2[$mes] = $respuesta;
-  $mesesRecorridos .= $mes;   
+  $mesesRecorridos .= $mes."+";   
 }
 
-$arrayMes = explode("0", $mesesRecorridos);
+$arrayMes = explode("+", $mesesRecorridos);
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
   if($link === '') 
@@ -1332,10 +1325,10 @@ foreach ($diasSemanas as $mes => $semanas) {
     }
   }
   $respuesta2[$mes] = $respuesta;
-  $mesesRecorridos .= $mes;   
+  $mesesRecorridos .= $mes."+";   
 }
 
-$arrayMes = explode("0", $mesesRecorridos);
+$arrayMes = explode("+", $mesesRecorridos);
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
   if($link === '') 
@@ -1575,10 +1568,10 @@ foreach ($diasSemanas as $mes => $semanas) {
     }
   }
   $respuesta2[$mes] = $respuesta;
-  $mesesRecorridos .= $mes;   
+  $mesesRecorridos .= $mes."+";   
 }
 
-$arrayMes = explode("0", $mesesRecorridos);
+$arrayMes = explode("+", $mesesRecorridos);
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
   if($link === '') 
@@ -1812,10 +1805,10 @@ foreach ($diasSemanas as $mes => $semanas) {
     }
   }
   $respuesta2[$mes] = $respuesta;
-  $mesesRecorridos .= $mes;   
+  $mesesRecorridos .= $mes."+";   
 }
 
-$arrayMes = explode("0", $mesesRecorridos);
+$arrayMes = explode("+", $mesesRecorridos);
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
   if($link === '') 
@@ -2051,10 +2044,10 @@ if ($codigoMunicipio == '0') {
       }
     }
     $respuesta2[$mes] = $respuesta;
-    $mesesRecorridos .= $mes;
+    $mesesRecorridos .= $mes."+";
     }
 
-    $arrayMes = explode("0", $mesesRecorridos);
+    $arrayMes = explode("+", $mesesRecorridos);
 
     // funcion para quitar espacios vacios de un array
     foreach ($arrayMes as $key => $link) {
@@ -2251,7 +2244,7 @@ if ($codigoMunicipio == '0') {
         }
       }
     $respuesta2[$mes] = $respuesta;
-    $mesesRecorridos .= $mes;
+    $mesesRecorridos .= $mes."+";
 
     // consulta en la que vamos a almacenar las sedes que se van a mostrar en la tabla 
     $consultaSedes = "SELECT cod_sede, nom_sede FROM sedes$periodoActual";
@@ -2264,7 +2257,7 @@ if ($codigoMunicipio == '0') {
     }
   }
 
-  $arrayMes = explode("0", $mesesRecorridos);
+  $arrayMes = explode("+", $mesesRecorridos);
   // funcion para quitar espacios vacios de un array
   foreach ($arrayMes as $key => $link) {
     if($link === '') 
@@ -2489,9 +2482,9 @@ foreach ($diasSemanas as $mes => $semanas) {
       }
     }
     $respuesta2[$mes] = $respuesta;
-    $mesesRecorridos .= $mes;
+    $mesesRecorridos .= $mes."+";
 }
-$arrayMes = explode("0", $mesesRecorridos);
+$arrayMes = explode("+", $mesesRecorridos);
 
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
@@ -2722,10 +2715,10 @@ foreach ($diasSemanas as $mes => $semanas) {
       }
     }
     $respuesta2[$mes] = $respuesta;
-    $mesesRecorridos .= $mes;
+    $mesesRecorridos .= $mes."+";
   }
 
-$arrayMes = explode("0", $mesesRecorridos);
+$arrayMes = explode("+", $mesesRecorridos);
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
   if($link === '') 
@@ -2950,10 +2943,10 @@ foreach ($diasSemanas as $mes => $semanas) {
       }
     }
     $respuesta2[$mes] = $respuesta;
-    $mesesRecorridos .= $mes;
+    $mesesRecorridos .= $mes."+";
 }
 
-$arrayMes = explode("0", $mesesRecorridos);
+$arrayMes = explode("+", $mesesRecorridos);
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {
   if($link === '') 
