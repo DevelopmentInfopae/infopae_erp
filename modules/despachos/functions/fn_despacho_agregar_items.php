@@ -60,7 +60,7 @@ if($municipio != ''){
 
 if($tipo != ''){
    $consulta = $consulta." AND sc.$tipo > 0 ";
-   $consulta = $consulta." AND (sc.Etario1_$tipo > 0 || sc.Etario2_$tipo > 0 || sc.Etario3_$tipo > 0 ) ";
+   $consulta = $consulta." AND (sc.Etario1_$tipo > 0 || sc.Etario2_$tipo > 0 || sc.Etario3_$tipo > 0 || sc.Etario4_$tipo > 0 || sc.Etario5_$tipo > 0 ) ";
 }
 
 if($institucion != ''){

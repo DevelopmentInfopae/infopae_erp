@@ -982,7 +982,7 @@ function graficaTotalesDiscapacidad(json, titulo, subtitulo, legendPos, multiCol
     var options = {
     	title: titulo,
         width: "100%",
-        height: 500,
+        height: 600,
         bar: {groupWidth: "60%"},
         chart: {
           title: titulo,

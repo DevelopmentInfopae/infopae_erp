@@ -475,9 +475,9 @@ if ($cantGruposEtarios == '5') {
    // 2 es la jornada de la mañana
    // 3 es la jornada de la tarde
    if($jornada == 2){
-      $jm = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
+      $jm = $totalGrupo1 + $totalGrupo2 + $totalGrupo3 + $totalGrupo4 + $totalGrupo5;
    }else if($jornada == 3){
-      $jt = $totalGrupo1 + $totalGrupo2 + $totalGrupo3;
+      $jt = $totalGrupo1 + $totalGrupo2 + $totalGrupo3 + $totalGrupo4 + $totalGrupo5;
    }
 
    if($modalidad == 'APS'){

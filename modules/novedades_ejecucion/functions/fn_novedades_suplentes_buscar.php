@@ -90,6 +90,7 @@
 															    suplentes$semana sup
 																WHERE
 															    sup.cod_sede = '$sede'
+															    AND sup.tipo_complem = '$tipo_complemento'
 													    ) AS TG
 															GROUP BY TG.numero_documento
 															ORDER BY TG.grado ASC, TG.grupo ASC, TG.nombre ASC";

@@ -74,7 +74,7 @@
                       if($_SESSION['p_Municipio'] != '0') { $consulta = $consulta." and CodigoDANE = '".$_SESSION['p_Municipio']."' "; }
                       else if ($_SESSION['p_Municipio'] == 0) { $consulta = $consulta. " and CodigoDANE like '" .$_SESSION['p_CodDepartamento']. "%'"; }
                       $consulta = $consulta." order by ciudad asc $limit ";
-                      // var_dump($consulta);
+                      exit(var_dump($consulta));
                       // exit(var_dump($_SESSION));
                       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
                       if($resultado->num_rows > 0){
