@@ -53,9 +53,10 @@
 									(SELECT descripcion FROM variacion_menu vm WHERE vm.id = nm.variacion_menu ) AS variacion
 								FROM novedades_menu nm
 								left join grupo_etario ge ON ge.ID = nm.cod_grupo_etario
-								LEFT JOIN productos$periodoActual p ON p.Codigo = nm.cod_producto";
+								LEFT JOIN productos$periodoActual p ON p.Codigo = nm.cod_producto 
+								WHERE 1 = 1 ";
 					
-	if (isset($_POST["mes"]) && !empty($_POST["mes"])) { $consultaNovedad.=" WHERE nm.mes = '".$_POST["mes"]."'"; }
+	if (isset($_POST["mes"]) && !empty($_POST["mes"])) { $consultaNovedad.=" AND nm.mes = '".$_POST["mes"]."'"; }
 	if (isset($_POST["semana"]) && !empty($_POST["semana"])) { $consultaNovedad.=" AND nm.semana = '".$_POST["semana"]."'"; }
 	if (isset($_POST["estado"])) { $consultaNovedad.=" AND nm.estado = '".$_POST["estado"]."'"; }
 	if (isset($_POST["complemento"]) && !empty($_POST["complemento"])) { $consultaNovedad.=" AND nm.tipo_complem = '".$_POST["complemento"]."'"; }
@@ -67,7 +68,7 @@
 			$respuestas[] = $dataRespuestaNovedad;
 		}
 	}
-
+	// exit(var_dump($consultaNovedad));
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -116,8 +117,7 @@
 									<div class="col-sm-6 col-md-2 form-group">
 										<label for="estado">Estado</label>
 										<select class="form-control" id="estado" name="estado">
-											<option value="">Seleccione Uno</option>
-											<option value="1">Activo</option>
+											<option value="1" selected >Activo</option>
 											<option value="0">Reversado</option>
 										</select>
 									</div>

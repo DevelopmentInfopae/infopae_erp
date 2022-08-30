@@ -164,7 +164,7 @@
 															<td> <input type="text" class="form-control" name="<?= $key ?>actual<?= $i ?>" id="<?= $key ?>actual<?= $i ?>" value="<?= $datosNovedad['Etario'.$i.'_'.$key]; ?>" readonly style="text-align:center;"> </td>
 													<?php 		
 														}
-													?>
+													?> 
 												</tr>
 											<?php endif ?>
 										<?php endforeach ?>
@@ -183,12 +183,12 @@
 											</td>
 											<?php 
 												for ($i=1; $i <= $cantGruposEtarios; $i++) {
-												$aux = 0; 
+													$aux = 0; 
 											?>
-												<?php foreach ($complementos as $key => $value): ?>
-													<?= $aux += $datosNovedad['Etario'.$i.'_'.$value] ?>
-												<?php endforeach ?>
-												<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total<?= $i ?>" id="total<?= $i ?>" value="<?= $aux ?>" readonly  style="text-align:center;"> </td>
+													<?php foreach ($complementos as $key => $value): ?>
+														<?php $aux += $datosNovedad['Etario'.$i.'_'.$value] ?>
+													<?php endforeach ?>
+													<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total<?= $i ?>" id="total<?= $i ?>" value="<?= $aux ?>" readonly  style="text-align:center;"> </td>
 											<?php 
 												}
 											?>

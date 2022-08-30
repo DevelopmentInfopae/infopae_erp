@@ -106,6 +106,25 @@ $paginasObservaciones = 1;
       }
    }
 
+   // manejo variacion 
+   if ($tipo == 'CAJMPS') {
+      $auxConsulta = "SELECT cod_variacion_menu_cajmps as variacion FROM sedes22 WHERE cod_sede = $sede "; 
+   }
+
+   if ($tipo == 'CAJMRI') {
+      $auxConsulta = "SELECT cod_variacion_menu_cajmri as variacion FROM sedes22 WHERE cod_sede = $sede "; 
+   }
+
+   else if($tipo !== 'CAJMPS' && $tipo !== "CAJMRI") {
+      $auxConsulta = "SELECT cod_variacion_menu as variacion FROM sedes22 WHERE cod_sede = $sede ";
+   }
+
+   $respuestaAuxConsulta = $Link->query($auxConsulta);
+   if ($respuestaAuxConsulta->num_rows > 0) {
+      $dataAuxConsulta = $respuestaAuxConsulta->fetch_assoc();
+      $variacionActual = $dataAuxConsulta['variacion'];
+   }
+
    // Segunda consulta para traer los datos almacenados en productosmov 16 que complementan los
    // parametros del despacho
    $consulta = " SELECT * FROM productosmov$mesAnno pm WHERE pm.Numero = $despacho and pm.Documento='DES' ";
@@ -298,7 +317,7 @@ $paginasObservaciones = 1;
                         </thead>
                         <tbody>
                            <tr>
-                              <td><input type="checkbox" value="<?php echo $sede; ?>" data-variacion="<?= $data_sede['cod_variacion_menu'] ?>"></td>
+                              <td><input type="checkbox" value="<?php echo $sede; ?>" data-variacion="<?= $variacionActual ?>"></td>
                               <td><input type="hidden" name="sede1" id="sede1" value="<?php echo $sede; ?>"><?php echo $municipioNm; ?></td>
                               <td><?php echo $institucionNm; ?></td>
                               <td><?php echo $sedeNm; ?></td>

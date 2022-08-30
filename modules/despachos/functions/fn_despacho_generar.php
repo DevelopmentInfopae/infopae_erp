@@ -92,31 +92,34 @@ $result = $Link->query($consulta) or die ('Error al consultar existencia de tabl
 $existe = $result->num_rows;
 if($existe <= 0){
 	$consulta = " CREATE TABLE `productosmov$annoMes` ( 
-						`Documento` varchar(10) DEFAULT '', 
-						`Numero` int(10) unsigned DEFAULT '0', 
-						`Tipo` varchar(100) DEFAULT '', 
-						`FechaDoc` varchar(45) DEFAULT '', 
-						`BodegaOrigen` bigint(20) unsigned DEFAULT '0', 
-						`BodegaDestino` bigint(20) unsigned DEFAULT '0', 
-						`Nombre` varchar(200) DEFAULT '', 
-						`Nitcc` varchar(20) DEFAULT '', 
-						`Concepto` text, 
-						`ValorTotal` decimal(20,2) DEFAULT '0.00', 
-						`Aprobado` tinyint(1) DEFAULT '0', 
-						`NombreResponsable` varchar(60) DEFAULT '', 
-						`LoginResponsable` varchar(30) DEFAULT '', 
-						`GeneraCompra` tinyint(1) DEFAULT '0', 
-						`DocOrigen` varchar(10) DEFAULT '', 
-						`NumDocOrigen` int(10) unsigned DEFAULT '0', 
-						`NombreRED` varchar(45) DEFAULT '', 
-						`Id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
-						`FechaMYSQL` datetime DEFAULT NULL, 
-						`Anulado` tinyint(1) DEFAULT '0', 
-						`TipoTransporte` varchar(50) NOT NULL DEFAULT '', 
-						`Placa` varchar(10) NOT NULL DEFAULT '', 
-						`ResponsableRecibe` varchar(45) NOT NULL DEFAULT '', 
-						`NumCompra` int(10) unsigned DEFAULT '0', 
-						`fecha_despacho` date, PRIMARY KEY (`Id`) ) ";
+									`Documento` varchar(10) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Numero` int(10) DEFAULT '0', 
+									`Tipo` varchar(100) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`FechaDoc` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`BodegaOrigen` bigint(20) unsigned DEFAULT '0', 
+									`BodegaDestino` bigint(20) unsigned DEFAULT '0', 
+									`Nombre` varchar(200) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Nitcc` varchar(20) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Concepto` text DEFAULT'' COLLATE 'utf8_general_ci', 
+									`ValorTotal` decimal(20,2) DEFAULT '0.00', 
+									`Aprobado` tinyint(1) DEFAULT '0', 
+									`NombreResponsable` varchar(60) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`LoginResponsable` varchar(30) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`GeneraCompra` tinyint(1) DEFAULT '0', 
+									`DocOrigen` varchar(10) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`NumDocOrigen` int(10) unsigned DEFAULT '0', 
+									`NombreRED` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+									`FechaMYSQL` datetime DEFAULT NULL, 
+									`Anulado` tinyint(1) DEFAULT '0', 
+									`TipoTransporte` varchar(50) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Placa` varchar(10) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci', 
+									`ResponsableRecibe` varchar(45) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci', 
+									`NumCompra` int(10) unsigned DEFAULT '0', 
+									`fecha_despacho` varchar(150), 
+								INDEX `Documento` (`Documento`, `Numero`),	
+								PRIMARY KEY (`Id`) 
+								)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci  ";
 	$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 }
 
@@ -126,42 +129,49 @@ $result = $Link->query($consulta) or die ('Error al consultar existencia de tabl
 $existe = $result->num_rows;
 if($existe <= 0){
 	$consulta = " CREATE TABLE `productosmovdet$annoMes` ( 
-						`Documento` varchar(10) DEFAULT '', 
-						`Numero` int(10) DEFAULT '0', 
-						`Item` int(10) unsigned DEFAULT '0', 
-						`CodigoProducto` varchar(20) DEFAULT '', 
-						`Descripcion` text NOT NULL, 
-						`Cantidad` decimal(28,8) DEFAULT '0.00000000', 
-						`CantFacturada` decimal(28,8) DEFAULT '0.00000000', 
-						`ValorUnitario` decimal(18,2) DEFAULT '0.00', 
-						`CuentaInventario` varchar(30) DEFAULT '', 
-						`CuentaContraPartida` varchar(30) DEFAULT '', 
-						`Facturado` tinyint(1) DEFAULT '0', 
-						`CentroCosto` varchar(10) DEFAULT '', 
-						`BodegaOrigen` bigint(20) unsigned DEFAULT '0', 
-						`BodegaDestino` bigint(20) unsigned DEFAULT '0', 
-						`CantBodOrg` decimal(28,8) DEFAULT '0.00000000', 
-						`CantBodDest` decimal(28,8) DEFAULT '0.00000000', 
-						`Id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
-						`Talla` varchar(5) DEFAULT '', 
-						`Color` varchar(45) DEFAULT '', 
-						`CostoUnitario` decimal(10,2) DEFAULT '0.00', 
-						`NombreRED` varchar(45) DEFAULT '', 
-						`Umedida` varchar(255) DEFAULT '', 
-						`CantUmedida` decimal(20,4) DEFAULT '0.0000', 
-						`Factor` decimal(28,8) DEFAULT '0.00000000', 
-						`Id_Usuario` int(10) unsigned DEFAULT '0',
-						`CostoTotal` decimal(20,2) DEFAULT '0.00',
-						`Lote` varchar(45) NOT NULL DEFAULT '',
-						`FechaVencimiento` date DEFAULT NULL,
-						`CantU1` decimal(28,8) DEFAULT '0.00000000',
-						`CantU2` decimal(28,8) DEFAULT '0.00000000',
-						`CantU3` decimal(28,8) DEFAULT '0.00000000',
-						`CantU4` decimal(28,8) DEFAULT '0.00000000',
-						`CantU5` decimal(28,8) DEFAULT '0.00000000',
-						`CanTotalPresentacion` decimal(28,8) DEFAULT '0.00000000',
-						`Marca` VARCHAR(100) DEFAULT NULL,
-				PRIMARY KEY (`Id`) ) ";
+									`Documento` varchar(10) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Numero` int(10) DEFAULT '0', 
+									`Item` int(10) unsigned DEFAULT '0', 
+									`CodigoProducto` varchar(20) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Descripcion` text NOT NULL COLLATE 'utf8_general_ci', 
+									`Cantidad` decimal(28,8) DEFAULT '0.00000000', 
+									`CantFacturada` decimal(28,8) DEFAULT '0.00000000', 
+									`ValorUnitario` decimal(18,2) DEFAULT '0.00', 
+									`CuentaInventario` varchar(30) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`CuentaContraPartida` varchar(30) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Facturado` tinyint(1) DEFAULT '0', 
+									`CentroCosto` varchar(10) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`BodegaOrigen` bigint(20) unsigned DEFAULT '0', 
+									`BodegaDestino` bigint(20) unsigned DEFAULT '0', 
+									`CantBodOrg` decimal(28,8) DEFAULT '0.00000000', 
+									`CantBodDest` decimal(28,8) DEFAULT '0.00000000', 
+									`Id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+									`Talla` varchar(5) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Color` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`CostoUnitario` decimal(10,2) DEFAULT '0.00', 
+									`NombreRED` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Umedida` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`CantUmedida` decimal(20,4) DEFAULT '0.0000', 
+									`Factor` decimal(28,8) DEFAULT '0.00000000', 
+									`Id_Usuario` int(10) unsigned DEFAULT '0',
+									`CostoTotal` decimal(20,2) DEFAULT '0.00',
+									`Lote` varchar(300) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+									`FechaVencimiento` varchar(300) DEFAULT NULL,
+									`CantU1` decimal(28,8) DEFAULT '0.00000000',
+									`CantU2` decimal(28,8) DEFAULT '0.00000000',
+									`CantU3` decimal(28,8) DEFAULT '0.00000000',
+									`CantU4` decimal(28,8) DEFAULT '0.00000000',
+									`CantU5` decimal(28,8) DEFAULT '0.00000000',
+									`CanTotalPresentacion` decimal(28,8) DEFAULT '0.00000000',
+									`Marca` VARCHAR(150) DEFAULT NULL,
+									`fecha_sacrificio` VARCHAR(300) NOT NULL DEFAULT '',
+									`fecha_empaque` VARCHAR(300) NOT NULL DEFAULT '',
+									`codigo_interno` VARCHAR(300) NOT NULL DEFAULT '',
+									`observacion` VARCHAR(300) NOT NULL DEFAULT '',
+								INDEX `Documento` (`Documento`, `Numero`),
+								PRIMARY KEY (`Id`),
+								CONSTRAINT FK_productosmovdet".$annoMes."_productosmov".$annoMes." FOREIGN KEY (`Documento`, `Numero`) REFERENCES `productosmov$annoMes` (`Documento`, `Numero`) ON UPDATE CASCADE ON DELETE CASCADE
+								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ";						
 	$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 }
 
@@ -183,25 +193,27 @@ if($existe == 0) {
 	// Consulta para crear la tabla despachos_encMESAÑO.
 	$consulta = "CREATE TABLE `despachos_enc$annoMes` (
 								`ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-								`Tipo_Doc` varchar(10) NOT NULL DEFAULT '',
-								`Num_Doc` int(10) unsigned NOT NULL,
-								`Tipo` varchar(100) NOT NULL DEFAULT '',
-								`Nombre` varchar(200) NOT NULL DEFAULT '',
-								`Nit` varchar(20) NOT NULL DEFAULT '',
-								`Concepto` varchar(500) NOT NULL,
+								`Tipo_Doc` varchar(10) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+								`Num_Doc` int(10)  NOT NULL,
+								`Tipo` varchar(100) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+								`Nombre` varchar(200) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+								`Nit` varchar(20) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+								`Concepto` varchar(500) NOT NULL COLLATE 'utf8_general_ci',
 								`FechaHora_Elab` datetime NOT NULL,
 								`Id_Usuario` int(10) unsigned NOT NULL,
 								`cod_Sede` bigint(20) unsigned NOT NULL,
-								`Tipo_Complem` varchar(10) NOT NULL,
-								`Semana` varchar(20) NOT NULL DEFAULT '0',
-								`Dias` varchar(100) NOT NULL DEFAULT '',
-								`Menus` varchar(100) NOT NULL DEFAULT '',
+								`Tipo_Complem` varchar(10) NOT NULL COLLATE 'utf8_general_ci',
+								`cod_variacion_menu` SMALLINT(1) unsigned zerofill NOT NULL DEFAULT'0',
+								`Semana` varchar(50) NOT NULL DEFAULT '0' COLLATE 'utf8_general_ci',
+								`Dias` varchar(150) NOT NULL DEFAULT ''  COLLATE 'utf8_general_ci',
+								`Menus` varchar(150) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci', 
 								`Cobertura` int(10) unsigned DEFAULT '0',
 								`Estado` smallint(1) unsigned zerofill NOT NULL DEFAULT '1' COMMENT '1= DESPACHADO  0=ELIMINADO   2=PENDIENTE',
 								`TipoDespacho` smallint(1) unsigned NOT NULL DEFAULT '5',
 								$concatGruposEtarios
-								PRIMARY KEY (`ID`)
-							)";
+							INDEX `Tipo_Doc` (`Tipo_Doc`, `Num_Doc`),
+							PRIMARY KEY (`ID`)
+							) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ";
 	$result = $Link->query($consulta) or die ('Unable to execute query: Crear tabla despachos_enc '. mysqli_error($Link)); 
 }
 
@@ -211,38 +223,41 @@ $result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_er
 $existe = $result->num_rows;
 if($existe <= 0){
 	$consulta = " CREATE TABLE `despachos_det$annoMes` ( 
-								`id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
-								`Tipo_Doc` varchar(10) NOT NULL DEFAULT '', 
-								`Num_Doc` int(10) unsigned NOT NULL, 
-								`cod_Alimento` varchar(20) NOT NULL, 
-								`Id_GrupoEtario` int(10) unsigned NOT NULL, 
-								`Cantidad` decimal(28,8) NOT NULL DEFAULT '0.00000000', 
-								`D1` decimal(28,8) DEFAULT '0.00000000', 
-								`D2` decimal(28,8) DEFAULT '0.00000000', 
-								`D3` decimal(28,8) DEFAULT '0.00000000',
-								`D4` decimal(28,8) DEFAULT '0.00000000',
-								`D5` decimal(28,8) DEFAULT '0.00000000',
-								`D6` decimal(28,8) DEFAULT '0.00000000',
-								`D7` decimal(28,8) DEFAULT '0.00000000',
-								`D8` decimal(28,8) DEFAULT '0.00000000',
-								`D9` decimal(28,8) DEFAULT '0.00000000',
-								`D10` decimal(28,8) DEFAULT '0.00000000',
-								`D11` decimal(28,8) DEFAULT '0.00000000',
-								`D12` decimal(28,8) DEFAULT '0.00000000',
-								`D13` decimal(28,8) DEFAULT '0.00000000',
-								`D14` decimal(28,8) DEFAULT '0.00000000',
-								`D15` decimal(28,8) DEFAULT '0.00000000',
-								`D16` decimal(28,8) DEFAULT '0.00000000',
-								`D17` decimal(28,8) DEFAULT '0.00000000',
-								`D18` decimal(28,8) DEFAULT '0.00000000',
-								`D19` decimal(28,8) DEFAULT '0.00000000',
-								`D20` decimal(28,8) DEFAULT '0.00000000',
-								`D21` decimal(28,8) DEFAULT '0.00000000',
-								`D22` decimal(28,8) DEFAULT '0.00000000',
-								`D23` decimal(28,8) DEFAULT '0.00000000',
-								`D24` decimal(28,8) DEFAULT '0.00000000',
-								`D25` decimal(28,8) DEFAULT '0.00000000',
-								PRIMARY KEY (`id`) ) ";
+									`id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+									`Tipo_Doc` varchar(10) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Num_Doc` int(10)  NOT NULL, 
+									`cod_Alimento` varchar(20) NOT NULL COLLATE 'utf8_general_ci',  
+									`Id_GrupoEtario` int(10) unsigned NOT NULL, 
+									`Cantidad` decimal(28,8) NOT NULL DEFAULT '0.00000000', 
+									`D1` decimal(28,8) DEFAULT '0.00000000', 
+									`D2` decimal(28,8) DEFAULT '0.00000000', 
+									`D3` decimal(28,8) DEFAULT '0.00000000',
+									`D4` decimal(28,8) DEFAULT '0.00000000',
+									`D5` decimal(28,8) DEFAULT '0.00000000',
+									`D6` decimal(28,8) DEFAULT '0.00000000',
+									`D7` decimal(28,8) DEFAULT '0.00000000',
+									`D8` decimal(28,8) DEFAULT '0.00000000',
+									`D9` decimal(28,8) DEFAULT '0.00000000',
+									`D10` decimal(28,8) DEFAULT '0.00000000',
+									`D11` decimal(28,8) DEFAULT '0.00000000',
+									`D12` decimal(28,8) DEFAULT '0.00000000',
+									`D13` decimal(28,8) DEFAULT '0.00000000',
+									`D14` decimal(28,8) DEFAULT '0.00000000',
+									`D15` decimal(28,8) DEFAULT '0.00000000',
+									`D16` decimal(28,8) DEFAULT '0.00000000',
+									`D17` decimal(28,8) DEFAULT '0.00000000',
+									`D18` decimal(28,8) DEFAULT '0.00000000',
+									`D19` decimal(28,8) DEFAULT '0.00000000',
+									`D20` decimal(28,8) DEFAULT '0.00000000',
+									`D21` decimal(28,8) DEFAULT '0.00000000',
+									`D22` decimal(28,8) DEFAULT '0.00000000',
+									`D23` decimal(28,8) DEFAULT '0.00000000',
+									`D24` decimal(28,8) DEFAULT '0.00000000',
+									`D25` decimal(28,8) DEFAULT '0.00000000',
+								INDEX `Tipo_Doc` (`Tipo_Doc`, `Num_Doc`),
+								PRIMARY KEY (`id`),
+								CONSTRAINT FK_despachos_det".$annoMes."_despachos_enc".$annoMes." FOREIGN KEY (`Tipo_Doc`, `Num_Doc`) REFERENCES `despachos_enc$annoMes` (`Tipo_Doc`, `Num_Doc`) ON UPDATE CASCADE ON DELETE CASCADE
+								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ";
 	$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 }
 
@@ -1137,7 +1152,7 @@ foreach ($variaciones as $id => $variacion) {
 		}
 
 		$concatCobertura_G = trim($concatCobertura_G, ", ");
-		$consulta = " INSERT INTO despachos_enc$annoMes (Tipo_Doc, Num_Doc, FechaHora_Elab, Id_usuario, cod_Sede, Tipo_Complem, Semana, Cobertura, estado, concepto, Dias,Menus, TipoDespacho, $concatCobertura_G ) VALUES ";
+		$consulta = " INSERT INTO despachos_enc$annoMes (Tipo_Doc, Num_Doc, FechaHora_Elab, Id_usuario, cod_Sede, Tipo_Complem, cod_variacion_menu, Semana, Cobertura, estado, concepto, Dias,Menus, TipoDespacho, $concatCobertura_G ) VALUES ";
 
 		for ($i=0; $i < count($sedesCobertura); $i++) {
 			if($i > 0){$consulta = $consulta." , "; }
@@ -1181,7 +1196,7 @@ foreach ($variaciones as $id => $variacion) {
 			$cobertura = $sede['total'];
 			$sede = $sede['cod_sede'];
 
-			$consulta = $consulta." 'DES',$consecutivo,'$fecha',$idUsuario,$sede,'$tipo','$semanaString', $cobertura,2,'', '$diasDespacho', '$menusReg', '$tipoDespacho', $valoresGrupos ";
+			$consulta = $consulta." 'DES',$consecutivo,'$fecha',$idUsuario,$sede,'$tipo', $variacion_menu, '$semanaString', $cobertura,2,'', '$diasDespacho', '$menusReg', '$tipoDespacho', $valoresGrupos ";
 			$consulta = $consulta." ) ";
 		}
 		$resultado = $Link->query($consulta) or die ('Unable to execute query: Insertando datos tabla: despachos_enc$annoMes '. mysqli_error($Link));
