@@ -466,7 +466,9 @@ if ($cantGruposEtarios == 5) {
   $auxDias = "X ".$cantDias." DIAS ".strtoupper($dias);
 
   $pdf->MultiCell(45, 4.7, $auxDias, 0, 'C', False);
-  $pdf->SetXY($current_x, $current_y+9.4);
+  
+  $auxaltodias = (strlen($semana)>6) ? 16 : 9.4;
+  $pdf->SetXY($current_x, $current_y+$auxaltodias);
   $pdf->MultiCell(45, 4.7, 'SEMANA: '.$semana, 0, 'C', False);
   $pdf->SetXY($current_x+45, $current_y);
 

@@ -109,7 +109,7 @@ $Link->set_charset("utf8");
 
           <?php
 
-            for ($k=0; $k < count($_POST) ; $k++) {
+            for ($k=1; $k < count($_POST) ; $k++) {
               // Borrando variables array para usarlas en cada uno de los despachos
               unset($sedes);
               unset($items);

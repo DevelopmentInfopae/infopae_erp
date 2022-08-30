@@ -421,7 +421,14 @@ foreach ($variaciones as $id => $variacion) {
 		$auxSede = $auxSede['cod_sede'];
 
 		if ($semana == '') {
-			$consultaSemanasMes = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES = $mes ";
+			$diasIn = '';
+			$arrayDiasSemanas = explode(",",$diasDespacho);
+			foreach ($arrayDiasSemanas as $key => $value) {
+				$diasIn .= "'" .$value. "', ";	
+			}
+			$diasIn = trim($diasIn,", "); 
+
+			$consultaSemanasMes = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes AND DIA IN ($diasIn)";
 			$respuestaSemanasMes = $Link->query($consultaSemanasMes) or die ('Error al consultar las semanas del mes ');
 			if ($respuestaSemanasMes->num_rows > 0) {
 				while ($dataSemanasMes = $respuestaSemanasMes->fetch_assoc()) {
@@ -431,12 +438,12 @@ foreach ($variaciones as $id => $variacion) {
 		}
 
 		$consulta = " 	SELECT 	de.*,
-										s.nom_sede, 
-										td.Descripcion as tipoDespachoNm
-			 				FROM orden_compra_enc$annoMes de
-			 				LEFT JOIN sedes$tablaAnno s on s.cod_sede = de.cod_Sede
-			 				LEFT JOIN tipo_despacho td on de.TipoDespacho = td.Id
-			 				WHERE  de.cod_sede = '$auxSede' AND de.Tipo_Complem = '$tipo' AND (de.Estado = 1 OR de.Estado = 2) ";
+								s.nom_sede, 
+								td.Descripcion as tipoDespachoNm
+			 			FROM orden_compra_enc$annoMes de
+			 			LEFT JOIN sedes$tablaAnno s on s.cod_sede = de.cod_Sede
+			 			LEFT JOIN tipo_despacho td on de.TipoDespacho = td.Id
+			 			WHERE  de.cod_sede = '$auxSede' AND de.Tipo_Complem = '$tipo' AND (de.Estado = 1 OR de.Estado = 2) ";
 		$consulta = $consulta." and (TipoDespacho = $tipoDespacho) ";
 
 		// en caso que solo se envie un mes vamos a buscar en el campo det semanas que no exista un despacho con esa semana ya creada
@@ -444,7 +451,7 @@ foreach ($variaciones as $id => $variacion) {
 			$consulta = $consulta." and ( ";
 			for ($j=0; $j < count($semanas) ; $j++) {
 				if($j > 0){
-					$consulta = $consulta." or ";
+					$consulta = $consulta." AND ";
 				}
 				$aux = $semanas[$j];
 				$consulta = $consulta." FIND_IN_SET('$aux', de.Semana) ";
@@ -464,15 +471,16 @@ foreach ($variaciones as $id => $variacion) {
 			$consulta = $consulta." ) "; 
 			$consulta .= " AND de.semana = '$semana' "; 
 		}
-
+		// exit(var_dump($consulta));
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		if($resultado->num_rows >= 1){
 			$bandera++;
 			$row = $resultado->fetch_assoc();
 			$nomSede = $row['nom_sede'];
 			$diasEncontrados = $row['Dias'];
+			$semanasNom = $row['Semana'];
 			$tipoDespachoNm = $row['tipoDespachoNm'];
-			echo "Se ha encontrado un despacho para la sede: $nomSede en la semana: $semana de tipo de ración: $tipo de tipo de despacho: $tipoDespachoNm para los días: $diasEncontrados";
+			echo "Se ha encontrado un despacho para la sede: $nomSede en la semana: $semanasNom de tipo de ración: $tipo de tipo de despacho: $tipoDespachoNm para los días: $diasEncontrados";
 			break;
 		}
 	}
@@ -973,16 +981,16 @@ foreach ($variaciones as $id => $variacion) {
 			$semanaString = '';
 			$arrayDiasSemanas = explode(",",$diasDespacho);
 			foreach ($arrayDiasSemanas as $key => $value) {
-				$diasIn .= "'" .$value. "', ";	
+				$diasIn .= "'" .$value. "',";	
 			}
-			$diasIn = trim($diasIn,", "); 
+			$diasIn = trim($diasIn,","); 
 			$consultaSemanaString = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes AND DIA IN ($diasIn)"; 
 			$respuestaSemanasString = $Link->query($consultaSemanaString) or die ('Error al consultar las semanas relacionadas' . mysqli_error($Link));
 			if ($respuestaSemanasString->num_rows > 0) {
 				while($dataSemanasString = $respuestaSemanasString->fetch_assoc()){
-					$semanaString .= $dataSemanasString['semana']. ", ";
+					$semanaString .= $dataSemanasString['semana']. ",";
 				}
-				$semanaString = trim($semanaString, ", "); 
+				$semanaString = trim($semanaString, ","); 
 			} 
 
 		}else if($semana !== ""){

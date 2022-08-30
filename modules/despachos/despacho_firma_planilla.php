@@ -4,7 +4,7 @@ $pdf->SetFont('Arial','B',8);
 $pdf->Cell(0,5,'C: Cumple  NC: No Cumple',0,5,'L',False);
 $pdf->Cell(0,5,'OBSERVACIONES:','B',5,'L',False);
 $pdf->SetFont('Arial','',8);
-$pdf->Cell(0,5,$_SESSION['observacionesDespachos'],'B',5,'L',False);
+$pdf->Cell(0,5, isset($_SESSION['observacionesDespachos']) == true ? $_SESSION['observacionesDespachos'] : '', 'B', 5, 'L', False);
 $pdf->Ln(2);
 
 $pdf->SetFont('Arial','B',8);

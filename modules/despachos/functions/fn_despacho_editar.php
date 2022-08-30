@@ -87,6 +87,7 @@ $consulta = "SELECT  ps.MENU,
 							AND ft.Nombre IS NOT NULL
 							AND p.Cod_Tipo_complemento = '$tipo' 
 							AND p.cod_variacion_menu = '$sedes_variacion'";
+
 $diasDespacho = '';
 for ($i=0; $i < count($dias) ; $i++) {
 	if($i == 0){ $consulta = $consulta." AND ( "; }
@@ -101,7 +102,7 @@ if(count($dias) > 0){
 	$consulta = $consulta." ) ";
 }
 $consulta = $consulta." ORDER BY ftd.codigo ASC ";
-
+// exit(var_dump($consulta));
 $resultado = $Link->query($consulta) or die ('Unable to execute query - Line 104 <br> '. mysqli_error($Link)." consulta : ".$consulta);
 if($resultado->num_rows >= 1){
 	$aux = 0;
