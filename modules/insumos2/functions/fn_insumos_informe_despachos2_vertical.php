@@ -98,7 +98,7 @@ if ($cantGruposEtarios == '3') {
 	}
 
 	class PDF extends FPDF{
-		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes, $tipoComplemento, $entrega, $Rpc, $contrato){
+		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes, $tipoComplemento, $entrega, $Rpc, $contrato,$numeroDias, $numeroManipuladoras){
 			$this->fecha = $fecha;
 			$this->mes = mesNombre($mes);
 			$this->dpto = $dpto;
@@ -113,6 +113,8 @@ if ($cantGruposEtarios == '3') {
 			$this->entrega = $entrega;
 			$this->Rpc = $Rpc;
 			$this->contrato = $contrato;
+			$this->dias = $numDias;
+			$this->manipuladoras = $numManipuladoras;
 		}
 
 		function Header() {
@@ -212,19 +214,9 @@ if ($cantGruposEtarios == '3') {
 				$this->Cell(35,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BL',1,'C');//SEDES COBERTURA POR GRUPO ETARIO
 			}
 			$this->setXY($cx+(35*2+40), $cy);
-			if ($this->tipoComplemento == 'APS') {
-				$manipuladoras = $this->dataSede['Manipuladora_APS'];
-			} else if ($this->tipoComplemento == 'CAJMPS') {
-				$manipuladoras = $this->dataSede['Manipuladora_CAJMPS'];
-			} else if ($this->tipoComplemento == 'CAJMRI') {
-				$manipuladoras = $this->dataSede['Manipuladora_CAJMRI'];
-			} else if ($this->tipoComplemento == 'CAJTRI') {
-				$manipuladoras = $this->dataSede['Manipuladora_CAJTRI'];
-			} else {
-				$manipuladoras = $this->dataSede['cantidad_Manipuladora'];
-			}
 
-			$this->Cell(33,18,utf8_decode($manipuladoras),'TBLR',0,'C');//MANIPULADORAS DE LA SEDE
+
+			$this->Cell(33,18,utf8_decode($this->manipuladoras),'TBLR',0,'C');//MANIPULADORAS DE LA SEDE
 			$this->Cell(33,18,utf8_decode($this->maxEstudiantes),'TBR',0,'C');//CANTIDAD COBERTURA
 			$this->Cell(0,18,utf8_decode($this->tipoComplemento),'TBR',0,'C');//CANTIDAD COBERTURA
 
@@ -313,7 +305,23 @@ if ($cantGruposEtarios == '3') {
 					}
 					// FIN CODIGO JERSON
 
-					$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mesImprimir, $tipoComplemento, $entrega, $tipoComplementoDespacho, $contrato);
+
+					$consultaNumeroDias = "SELECT CantDias FROM $insumosmov WHERE id = " .$Despacho['Id'].";";
+					$respuestaNumeroDias = $Link->query($consultaNumeroDias) or die ('Error al consultar el numero de dias' . mysqli_error($Link));
+					if ($respuestaNumeroDias->num_rows > 0) {
+						$dataRespuestaDias = $respuestaNumeroDias->fetch_assoc();
+						$numeroDias = $dataRespuestaDias['CantDias'];
+					}
+
+					// consulta numero manipuladoras desde la tabla insumosmov
+					$consultaNumeroManipuladoras = "SELECT NumManipuladoras FROM $insumosmov WHERE id = " .$Despacho['Id'].";";
+					$respuestaNumeroManipuladoras = $Link->query($consultaNumeroManipuladoras) or die ('Error al consultar el numero de manipuladoras' . mysqli_error($Link));
+					if ($respuestaNumeroManipuladoras->num_rows > 0) {
+						$dataRespuestaManipuladoras = $respuestaNumeroManipuladoras->fetch_assoc();
+						$numeroManipuladoras = $dataRespuestaManipuladoras['NumManipuladoras'];
+					}
+
+					$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mesImprimir, $tipoComplemento, $entrega, $tipoComplementoDespacho, $contrato, $numeroDias, $numeroManipuladoras);
 					$pdf->AddPage();
 					$pdf->SetFont('Arial','',$fuenteFilasItems);
 
@@ -507,7 +515,7 @@ if ($cantGruposEtarios == '5') {
 	}
 
 	class PDF extends FPDF{
-		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes, $tipoComplemento, $entrega, $Rpc, $contrato){
+		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes, $tipoComplemento, $entrega, $Rpc, $contrato, $numDias, $numManipuladoras){
 			$this->fecha = $fecha;
 			$this->mes = mesNombre($mes);
 			$this->dpto = $dpto;
@@ -522,6 +530,8 @@ if ($cantGruposEtarios == '5') {
 			$this->entrega = $entrega;
 			$this->Rpc = $Rpc;
 			$this->contrato = $contrato;
+			$this->dias = $numDias;
+			$this->manipuladoras = $numManipuladoras;
 		}
 
 		function Header() {
@@ -621,19 +631,9 @@ if ($cantGruposEtarios == '5') {
 				$this->Cell(35,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BL',1,'C');//SEDES COBERTURA POR GRUPO ETARIO
 			}
 			$this->setXY($cx+(35*2+40), $cy);
-			if ($this->tipoComplemento == 'APS') {
-				$manipuladoras = $this->dataSede['Manipuladora_APS'];
-			} else if ($this->tipoComplemento == 'CAJMPS') {
-				$manipuladoras = $this->dataSede['Manipuladora_CAJMPS'];
-			} else if ($this->tipoComplemento == 'CAJMRI') {
-				$manipuladoras = $this->dataSede['Manipuladora_CAJMRI'];
-			} else if ($this->tipoComplemento == 'CAJTRI') {
-				$manipuladoras = $this->dataSede['Manipuladora_CAJTRI'];
-			} else {
-				$manipuladoras = $this->dataSede['cantidad_Manipuladora'];
-			}
 
-			$this->Cell(33,30,utf8_decode($manipuladoras),'TBLR',0,'C');//MANIPULADORAS DE LA SEDE
+
+			$this->Cell(33,30,utf8_decode($this->manipuladoras),'TBLR',0,'C');//MANIPULADORAS DE LA SEDE
 			$this->Cell(33,30,utf8_decode($this->maxEstudiantes),'TBR',0,'C');//CANTIDAD COBERTURA
 			$this->Cell(0,30,utf8_decode($this->tipoComplemento),'TBR',0,'C');//CANTIDAD COBERTURA
 
@@ -724,7 +724,23 @@ if ($cantGruposEtarios == '5') {
 					}
 					// FIN CODIGO JERSON
 
-					$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mesImprimir, $tipoComplemento, $entrega, $tipoComplementoDespacho, $contrato);
+
+					$consultaNumeroDias = "SELECT CantDias FROM $insumosmov WHERE id = " .$Despacho['Id'].";";
+					$respuestaNumeroDias = $Link->query($consultaNumeroDias) or die ('Error al consultar el numero de dias' . mysqli_error($Link));
+					if ($respuestaNumeroDias->num_rows > 0) {
+						$dataRespuestaDias = $respuestaNumeroDias->fetch_assoc();
+						$numeroDias = $dataRespuestaDias['CantDias'];
+					}
+
+					// consulta numero manipuladoras desde la tabla insumosmov
+					$consultaNumeroManipuladoras = "SELECT NumManipuladoras FROM $insumosmov WHERE id = " .$Despacho['Id'].";";
+					$respuestaNumeroManipuladoras = $Link->query($consultaNumeroManipuladoras) or die ('Error al consultar el numero de manipuladoras' . mysqli_error($Link));
+					if ($respuestaNumeroManipuladoras->num_rows > 0) {
+						$dataRespuestaManipuladoras = $respuestaNumeroManipuladoras->fetch_assoc();
+						$numeroManipuladoras = $dataRespuestaManipuladoras['NumManipuladoras'];
+					}
+
+					$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mesImprimir, $tipoComplemento, $entrega, $tipoComplementoDespacho, $contrato,$numeroDias, $numeroManipuladoras);
 					$pdf->AddPage();
 					$pdf->SetFont('Arial','',$fuenteFilasItems);
 
