@@ -3,7 +3,7 @@ include '../../config.php';
 require_once '../../autentication.php';
 require('../../fpdf181/fpdf.php');
 require_once '../../db/conexion.php';
-
+// exit(var_dump($_POST));
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
@@ -29,6 +29,14 @@ if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
 	$anno = substr($anno, -2);
 	$anno = trim($anno);
 	$mesAnno = $mes.$anno;
+
+	$_SESSION['observacionesDespachos'] = "";
+	if(isset($_POST['observaciones'])){
+		if($_POST['observaciones'] != ""){
+			$_SESSION['observacionesDespachos'] = $_POST['observaciones'];
+		}
+	}
+
 	$_POST = array_slice($_POST, 3);
 	$_POST = array_values($_POST);
 } else {

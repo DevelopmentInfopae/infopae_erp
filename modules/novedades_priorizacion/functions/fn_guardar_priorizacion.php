@@ -125,7 +125,7 @@ if ( $_FILES['foto']['size'][0] > 0 ) {
 					$consulta .= " Etario".$i."_".$value. " = $aux, ";
 				}
 			}
-
+			$consulta = trim($consulta,', ');
 			$consulta .= " WHERE cod_sede = $sede AND mes = '$mes' AND semana = '$semanaSC' ";
 			$Link->query($consulta) or die ('Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede '. mysqli_error($Link));
 
