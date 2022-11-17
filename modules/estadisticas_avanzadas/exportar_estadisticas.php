@@ -44,7 +44,7 @@ $nombreMeses = array('01' => 'Enero', '02' => 'Febrero', '03' => 'Marzo', '04' =
 $letrasAbecedario = array(  '1'=>'A', '2'=>'B', '3'=>'C', '4'=>'D', '5'=>'E', '6'=>'F', '7'=>'G', '8'=>'H', '9'=>'I', '10'=>'J', '11'=>'K', '12'=>'L', '13'=>'M',
                             '14'=>'N', '15'=>'0', '16'=>'P', '17'=>'Q', '18'=>'R', '19'=>'S', '20'=>'T', '21'=>'U', '22'=>'V', '23'=>'W', '24'=>'X', '25'=>'Y', 
                             '26'=>'Z', '27'=>'AA', '28'=>'AB', '29'=>'AC', '30'=>'AD', '31'=>'AE', '32'=>'AF', '33'=>'AG', '34'=>'AH', '35'=>'AI', '36'=>'AJ', '37'=>'AK', 
-                            '38'=>'AL', '39'=>'AM', '40'=>'AN', '41'=>'A0', '42'=>'AP', '43'=>'AQ', '44'=>'AR', '45'=>'AS', '46'=>'AT', '47'=>'AU', '48'=>'AV', '49'=>'AW', '50'=>'AX', '51'=>'AY', '52'=>'AZ',);
+                            '38'=>'AL', '39'=>'AM', '40'=>'AN', '41'=>'AO', '42'=>'AP', '43'=>'AQ', '44'=>'AR', '45'=>'AS', '46'=>'AT', '47'=>'AU', '48'=>'AV', '49'=>'AW', '50'=>'AX', '51'=>'AY', '52'=>'AZ',);
 
 $sheet->setCellValue('D2', 'Sistema de Información Tecnológico InfoPAE');
 $sheet->mergeCells('D2:P4');
@@ -375,12 +375,11 @@ for ($j=$filaInicial; $j < $ultimaF; $j++) {
     // valores con los que se van a agrupar los datos para este caso los meses 
     $dataSeriesLabels[] = new DataSeriesValues(DataSeriesValues::DATASERIES_TYPE_STRING, '(Worksheet!$B'.'$'.$j.':'.'$B'.'$'.$j.')', null, 4);
 }
-// exit(var_dump($dataSeriesValues));
+
 // valores  los datos para este caso las semanas va a ir en el pie de la grafica señalando el nombre de cada barra
 $xAxisTickValues = [
     new DataSeriesValues(DataSeriesValues::DATASERIES_TYPE_STRING, 'Worksheet!$'.$Letra.'$'.'11'.':$'.$ultimaL.'$'.'11', null, 4),
 ];
-
 
 // constructor de los datos 
 $series = new DataSeries(
@@ -2080,6 +2079,7 @@ if ($codigoMunicipio == '0') {
     // terminamos de llenar el encabezado
 
     // empezamos a llenar el body de la tabla 
+
     foreach ($respuesta2 as $mes => $valoresMes) {
         foreach ($valoresMes as $valorMes => $valor) {
           // convertimos la respuesta a un array asociativo con la clave primaria edad mes
@@ -2087,6 +2087,21 @@ if ($codigoMunicipio == '0') {
           $codigos[$valor['codigoDane']][$mes] = $valor['TOTAL'];
       }
     }
+
+    // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+    foreach ($respuesta2 as $mes => $valoresMes) {
+        foreach ($municipios as $municipio => $valorJornada) {
+            if (isset($municipios[$municipio][$mes])) {
+                continue;
+            }else{
+                $municipios[$municipio][$mes] = '0';
+            }
+        }
+        foreach ($valoresMes as $valorMes => $valor) {
+            ksort($municipios[$valor['Ciudad']]);
+        }
+    } 
+    // exit(var_dump($municipios));
     $filaInicialTabla = $numFila;
     foreach ($municipios as $municipio => $valorMunicipio) {
         $Letra = "B";
@@ -3470,7 +3485,7 @@ $color = [
      ],
     ];
 
-$sheet->getStyle("A1:Z1000")->applyFromArray($color);
+$sheet->getStyle("A1:AZ1000")->applyFromArray($color);
 
 $sheet->getStyle('B9:P9')->applyFromArray($titulos);
 $sheet->getStyle($titulosTablaTotalesSemanas)->applyFromArray($titulos);

@@ -6,18 +6,12 @@ $periodoActual = $_SESSION['periodoActual'];
 $semana = $_POST['semana'];
 $diasSemanas = $_POST['diasSemanas'];
 $tipoComplementos = $_POST['tipoComplementos'];
-
-// echo $semana."\n";
-// print_r($diasSemanas);
-
 $totalesComplementos = [];
-
 
 foreach ($diasSemanas as $mes => $SemanasArray) {
 	$datos = "";
 	$diaD = 0;
 	foreach ($SemanasArray as $semanaF => $dia) {
-		// echo $semanaF."\n";
 		foreach ($dia as $id => $diaR) {
 			$diaD++;
 			if ($semanaF == $semana) {
@@ -26,11 +20,9 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 		}
 	}
 
-
 	if ($datos != "") {
 		$datos = trim($datos, "+ ");
 		$consComplementos ="SELECT tipo_complem , $datos  AS totalSemana FROM entregas_res_$mes$periodoActual GROUP BY tipo_complem;";
-
 		$resComplementos = $Link->query($consComplementos);
 		if ($resComplementos->num_rows > 0) {
 			while ($Complementos = $resComplementos->fetch_assoc()) {
@@ -48,9 +40,7 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 }
 
 $sumTotal=0;
-
 $tabla = "";
-
 $tabla.="<thead><tr><th>Tipo Complemento</th><th>Total</th></tr></thead>";
 $tabla.="<tbody>";
 foreach ($totalesComplementos as $complemento => $total) {

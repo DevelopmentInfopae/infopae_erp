@@ -48,10 +48,18 @@
          }
       }
    }
+   $bandera = 0;
+   
 ?>
 
+<style type="text/css">
+   .select2-container--open {
+      z-index: 9999999
+  }
+</style>
+
 <!-- Ventana de formulario de exportación para la plantilla de trazabilidad -->
-<div class="modal inmodal fade" id="ventana_formulario_exportar_plantilla_trazabilidad" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+<div class="modal inmodal fade" id="ventana_formulario_exportar_plantilla_trazabilidad"  role="dialog" style="display: none;" aria-hidden="true">
    <div class="modal-dialog">
       <div class="modal-content">
          <div class="modal-header text-info" style="padding: 15px;">
@@ -61,11 +69,11 @@
          <div class="modal-body">
             <form action="" name="formulario_exportar_plantilla_trazabilidad" id="formulario_exportar_plantilla_trazabilidad">
                <div class="row">
-                  <div class="col-md-6 col-sm-12">
+                  <div class="col-md-4 col-sm-12">
                      <div class="form-group">
                         <input type="hidden" name="tipoFormato" id="tipoFormato">
                         <label for="mes_exportar">Mes</label>
-                        <select class="form-control" name="mes_exportar" id="mes_exportar" required>
+                        <select class="form-control selectMesExportar" name="mes_exportar" id="mes_exportar" required style="width: 100%;">
                            <option value="">Selección</option>
                            <?php
                               $consultaMes = "SHOW TABLES LIKE 'despachos_enc%'";
@@ -79,16 +87,25 @@
                            <?php foreach ($dataRegistros as $key => $value): 
                               $mesesNumero = substr($value[0], 13, -2); 
                            ?>
-                              <option value="<?= $mesesNumero; ?>"><?= $meses[$mesesNumero]; ?></option>
+                              <option id="<?= $mesesNumero ?>" value="<?= $mesesNumero; ?>"><?= $meses[$mesesNumero]; ?></option>
                            <?php endforeach ?>    
                         </select>
                      </div>
                   </div> <!-- col -->
-                  <div class="col-md-6 col-sm-12">
+                  <div class="col-md-4 col-sm-12">
                      <div class="form-group">
-                        <label for="semana_exportar">Semana <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="right" title=" Semana en la que se generará la plantilla o el informe, en el caso del informe es opcional "></i> 
+                        <label for="semana_exportar">Semana inicial 
+                           <!-- <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="right" title=" Semana en la que se generará la plantilla o el informe, en el caso del informe es opcional "></i>  -->
                         </label>
-                        <select class="form-control" name="semana_exportar" id="semana_exportar" required>
+                        <select class="form-control selectSemanaExportar" name="semana_exportar" id="semana_exportar" required style="width: 100%;">
+                           <option value="">Selección</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-md-4 col-sm-12">
+                     <div class="form-group">
+                        <label for="semana_exportar_final">Semana final</label>
+                        <select class="form-control selectSemanaExportarFinal" name="semana_exportar_final" id="semana_exportar_final" required style="width: 100%;">
                            <option value="">Selección</option>
                         </select>
                      </div>
@@ -133,25 +150,25 @@
                                       table_schema = DATABASE() AND table_name like 'despachos_enc%'";
                   $resultadoTablas = $Link->query($consultaTablas);
                   if ($resultadoTablas->num_rows > 0) {
-                     $cnt=0;
                      while ($tabla = $resultadoTablas->fetch_assoc()) {
                         $mes = str_replace("despachos_enc", "", $tabla['tabla']);
                         $mes = str_replace($_SESSION['periodoActual'], "", $mes);
                         $nomMes = $meses[$mes];
                         $opciones.= '<option value="'.$mes.'">'.$nomMes.'</option>';
-                        if ($cnt == 0) {
-                           $cnt++;
-                           $mesTablaInicio = $mes;
-                        }
+                        $mesTablaInicio = $mes;
                      }
                   }
+                  // echo $mesTablaInicio;
+                  $month     = $_SESSION['periodoActualCompleto'].'-'.$mesTablaInicio ;
+                  $aux         = date('Y-m-d', strtotime("{$month} + 1 month"));
+                  $last_day = date('Y-m-d', strtotime("{$aux} - 1 day"));
                ?>
                <form class="form row" id="formBuscar" method="POST">
                   <?php if ($tipoBusqueda == 1): ?>
                      <div class="form-group col-md-3 col-sm-6">
                         <label>Fecha de </label>
                         <div class="row compositeDate">
-                           <select name="fecha_de" id="fecha_de" class="form-control ">
+                           <select name="fecha_de" id="fecha_de" class="form-control selectFechaDe " style="width: 100%;">
                               <option value="1">Elaboración documento</option>
                               <option value="2">Días despachados</option>
                            </select>
@@ -162,12 +179,17 @@
                            <label>Desde</label>
                            <div class="row compositeDate">
                               <div class="col-sm-8 nopadding">
-                                 <select name="mes_inicio" id="mes_inicio" class="form-control ">
-                                    <?php echo $opciones; ?>
+                                 <select name="mes_inicio" id="mes_inicio" class="form-control selectMesInicio " style="width: 100%;">
+                                    <?php foreach ($meses as $keyMeses => $valueMeses): ?>
+                                       <?php if (isset($meses[$mes]) && $bandera == 0): ?>
+                                          <?= ( $mes == $keyMeses ) ? $bandera = 1 : $bandera = 0 ?>
+                                          <option value="<?= $keyMeses ?>" <?= ($keyMeses == $mes) ? 'selected' : ''?> > <?= $valueMeses ?> </option>
+                                       <?php endif ?>
+                                    <?php endforeach ?>
                                  </select>
                               </div>
                               <div class="col-sm-4 nopadding">
-                                 <select name="dia_inicio" id="dia_inicio" class="form-control">
+                                 <select name="dia_inicio" id="dia_inicio" class="form-control selectDiaInicio">
                                     <option value="">dd</option>
                                     <?php for ($i=1; $i <= 31; $i++) { ?>
                                        <option value="<?php echo $i ?>"><?php echo $i ?></option>
@@ -184,7 +206,7 @@
                                  <input type="hidden" name="mes_fin" id="mes_fin" value="01">
                               </div>
                               <div class="col-sm-4 nopadding">
-                                 <select name="dia_fin" id="dia_fin" class="form-control">
+                                 <select name="dia_fin" id="dia_fin" class="form-control selectDiaFin" style="width: 100%;">
                                     <option value="">dd</option>
                                     <?php for ($i=1; $i <= 31; $i++) { ?>
                                        <option value="<?php echo $i ?>"><?php echo $i ?></option>
@@ -198,19 +220,19 @@
                      <div id="fechaElaboracion">
                         <div class="form-group col-md-3 col-sm-6">
                            <label>Desde</label>
-                           <input type="text" name="fecha_inicio_elaboracion" id="fecha_inicio_elaboracion" value="<?php echo date('Y-m')."-01" ?>"data-date-format="yyyy-mm-dd"  class="form-control datepicker">
+                           <input type="text" name="fecha_inicio_elaboracion" id="fecha_inicio_elaboracion" value="<?php echo date('Y-m')."-01" ?>"data-date-format="yyyy-mm-dd"  class="form-control datepicker_inicio" max = "<?= $last_day ?>">
                         </div>
                         <div class="form-group col-md-3 col-sm-6">
                            <label>Hasta</label>
                            <?php $mesSiguiente = date('m')+1; ?>
-                           <input type="text" name="fecha_fin_elaboracion" id="fecha_fin_elaboracion" data-date-format="yyyy-mm-dd" value="" class="form-control datepicker">
+                           <input type="text" name="fecha_fin_elaboracion" id="fecha_fin_elaboracion" data-date-format="yyyy-mm-dd" value="" class="form-control datepicker_fin" >
                         </div>
                      </div>
                   <?php endif ?>
                   <?php if ($tipoBusqueda == "2"): ?>
                      <div class="col-md-3 col-sm-6 ">
                         <label for="numeroEntrega">Número Entrega</label>
-                        <select id="numeroEntrega" name="numeroEntrega" class="form-control">
+                        <select id="numeroEntrega" name="numeroEntrega" class="form-control" style="width: 100%;">
                            <?php foreach ($numeroEntrega as $mes => $entrega): ?>
                               <option value="<?= $mes; ?>"><?= $entregaNom[$entrega]; ?></option>
                            <?php endforeach ?>
@@ -220,7 +242,7 @@
 
                   <div class="form-group col-md-3 col-sm-6">
                      <label>Municipio</label>
-                     <select class="form-control" name="municipio" id="municipio">
+                     <select class="form-control selectMunicipio" name="municipio" id="municipio" style="width: 100%;">
                         <option value="">Seleccionar</option>
                         <?php
                            $codigo_departamento = $_SESSION['p_CodDepartamento'];
@@ -246,7 +268,7 @@
 
                   <div class="form-group col-md-3 col-sm-6">
                      <label>Tipo documento</label>
-                     <select name="tipo_documento" id="tipo_documento" class="form-control">
+                     <select name="tipo_documento" id="tipo_documento" class="form-control selectTipoDocumento" style="width: 100%;">
                         <option value="">Seleccione...</option>
                         <?php
                            $consultarTipoDocumento = "SELECT * FROM tipomovimiento";
@@ -262,28 +284,28 @@
 
                   <div class="form-group col-md-3 col-sm-6">
                      <label>Proveedor/Responsable</label>
-                     <select name="proveedor" id="proveedor" class="form-control">
+                     <select name="proveedor" id="proveedor" class="form-control selectProveedor" style="width: 100%;">
                         <option value="">Seleccione tipo documento</option>
                      </select>
                   </div>
             
                   <div class="form-group col-md-3 col-sm-6">
                      <label>Filtrar por  </label>
-                     <select name="tipo_filtro" id="tipo_filtro" class="form-control">
-                        <option value="">Seleccione...</option>
+                     <select name="tipo_filtro" id="tipo_filtro" class="form-control selectTipoFiltro " style="width: 100%;">
+                        <option value="" >Seleccione...</option>
                         <option value="1">Bodega</option>
                         <option value="2">Conductor</option>
                         <option value="3">Producto</option>
                         <option value="4">Grupo etario</option>
                         <option value="5">Tipo complemento</option>
-                        <option value="6">Fecha vencimiento</option>
+                        <!-- <option value="6">Fecha vencimiento</option> -->
                      </select>
                   </div>
 
                   <div id="divBodegas" style="display: none;">
                      <div class="form-group col-md-3 col-sm-6">
                         <label>Tipo bodega  </label>
-                        <select name="tipo_bodega" id="tipo_bodega" class="form-control">
+                        <select name="tipo_bodega" id="tipo_bodega" class="form-control selectTipoBodega" style="width: 100%;">
                            <option value="">Todas</option>
                            <option value="1">Bodega origen</option>
                            <option value="2">Bodega destino</option>
@@ -291,38 +313,38 @@
                      </div>
                      <div class="form-group col-md-3 col-sm-6">
                         <label>Bodegas  </label>
-                        <select name="bodegas" id="bodegas" class="form-control"> </select>
+                        <select name="bodegas" id="bodegas" class="form-control selectBodegas" style="width: 100%;"> </select>
                      </div>
                   </div>
 
                   <div class="form-group col-md-3 col-sm-6" id="divConductores" style="display: none;">
                      <label>Conductor </label>
-                     <select name="conductor" id="conductor" class="form-control"> </select>
+                     <select name="conductor" id="conductor" class="form-control selectCoductores" style="width: 100%;"> </select>
                   </div>
 
                   <div id="divProductos" style="display: none;">
                      <div class="form-group col-md-3 col-sm-6">
                         <label>Producto </label>
-                        <select name="producto" id="producto" class="form-control">
+                        <select name="producto" id="producto" class="form-control selectProductos" style="width: 100%;">
                            <option value="">Cargando...</option>
                         </select>
                      </div>
-                     <div class="form-group col-sm-3">
+                     <div class="form-group col-sm-3 radio">
                         <label>Ver por </label>
-                        <div class="radio">
-                           <label><input type="checkbox" name="totales" id="totales" value="1" <?php if(isset($_POST['totales']) && $_POST['totales'] = "1") { ?> checked <?php } ?> required> Totales</label>
+                        <div class="radio" >
+                           <label><input type="checkbox" name="totales" id="totales" value="1" > Totales</label>
                         </div>
                      </div>
                   </div>
 
                   <div class="form-group col-md-3 col-sm-6" id="divGrupoEtario" style="display: none;">
                      <label>Grupo Etario</label>
-                     <select name="grupo_etario" id="grupo_etario" class="form-control"> </select>
+                     <select name="grupo_etario" id="grupo_etario" class="form-control selectGrupoEtario" style="width: 100%;"> </select>
                   </div>
 
                   <div class="form-group col-md-3 col-sm-6" id="divTipoComplemento" style="display: none;">
                      <label>Tipo de complemento</label>
-                     <select name="tipo_complemento" id="tipo_complemento" class="form-control">
+                     <select name="tipo_complemento" id="tipo_complemento" class="form-control selectTipoComplemento" style="width: 100%;">
                         <?php
                            $consultaTipoComplemento = "SELECT * FROM tipo_complemento";
                            $resultadoTipoComplemento = $Link->query($consultaTipoComplemento);
@@ -351,7 +373,7 @@
                   <div class="col-sm-12">
                      <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
                      <?php if (isset($_POST['buscar'])): ?>
-                        <button class="btn btn-primary" onclick="location.href='index.php';" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
+                        <button class="btn btn-primary" onclick="limpiarFormulario()" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
                      <?php endif ?>
                   </div>
                </div>
@@ -461,9 +483,9 @@
                               pmov.fecha_despacho, 
                               pmov.Nombre as Proveedor, 
                               pmovdet.Descripcion, 
-                              pmovdet.Umedida, 
-                              FORMAT(pmovdet.Cantidad, 4) as Cantidad, 
-                              bodegas.NOMBRE as nomBodegaOrigen, 
+                              pmovdet.Umedida, ";
+                              ($_POST['tipo_filtro'] == 4 ) ? $datos.= " FORMAT(dent.Cantidad, 4) as Cantidad, " : $datos.= " FORMAT(pmovdet.Cantidad, 4) as Cantidad, ";
+                     $datos.= "bodegas.NOMBRE as nomBodegaOrigen, 
                               b2.NOMBRE as nomBodegaDestino, 
                               tipovehiculo.Nombre as TipoTransporte, 
                               pmov.Placa, 
@@ -499,7 +521,7 @@
                            }
                         }
                      }
-
+                     // echo "$condiciones";
                      if ($tipoBusqueda == "2" && $_POST['numeroEntrega'] != "") {
                         $numtabla = $_POST['numeroEntrega'].$_SESSION['periodoActual'];
                         $mesEntrega = $_POST['numeroEntrega'];
@@ -547,22 +569,27 @@
                               if (isset($_POST['totales'])) { //Si especificó ver por totales, suma las cantidades despachadas
                                  if ($condiciones == "") { //Si no hay otros criterios especificados, muestra sólo valores Nombre de producto, Factor, Unidad medida y Cantidad
                                     $txtTotales = "--";
-                                    $datos ="   '".$txtTotales."' as Tipo, 
-                                                '".$txtTotales."' as Numero, 
-                                                '".$txtTotales."' as FechaMYSQL, 
-                                                '".$txtTotales."' as FechaHora_Elab, 
-                                                '".$txtTotales."' as Proveedor, 
+                                    $datos ="   '".$txtTotales."' AS Tipo, 
+                                                '".$txtTotales."' AS Numero, 
+                                                '".$txtTotales."' AS FechaMYSQL, 
+                                                '".$txtTotales."' AS FechaHora_Elab, 
+                                                '".$txtTotales."' AS fecha_despacho,
+                                                '".$txtTotales."' AS Proveedor, 
                                                 pmovdet.Descripcion, 
                                                 pmovdet.Umedida, 
-                                                FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad,  
-                                                '".$txtTotales."' as nomBodegaOrigen, 
-                                                '".$txtTotales."' as nomBodegaDestino,  
-                                                '".$txtTotales."' as TipoTransporte, 
-                                                '".$txtTotales."' as Placa, 
-                                                '".$txtTotales."' as ResponsableRecibe, 
-                                                pmovdet.Lote, 
-                                                pmovdet.FechaVencimiento, 
-                                                pmovdet.Marca ";
+                                                SUM(pmovdet.Cantidad) AS Cantidad,  
+                                                '".$txtTotales."' AS nomBodegaOrigen, 
+                                                '".$txtTotales."' AS nomBodegaDestino,  
+                                                '".$txtTotales."' AS TipoTransporte, 
+                                                '".$txtTotales."' AS Placa, 
+                                                '".$txtTotales."' AS ResponsableRecibe, 
+                                                '".$txtTotales."' AS Lote, 
+                                                '".$txtTotales."' AS FechaVencimiento, 
+                                                '".$txtTotales."' AS Marca,
+                                                '".$txtTotales."' AS fecha_sacrificio, 
+                                                '".$txtTotales."' AS fecha_empaque, 
+                                                '".$txtTotales."' AS codigo_interno, 
+                                                '".$txtTotales."' AS observacion  ";
                                  } else { //Si hay criterios, muestra los resultados agrupados
                                     $datos=" pmov.Tipo, 
                                              pmov.Numero, 
@@ -590,7 +617,8 @@
                               } else { // Si no se especificó ver por totales, muestra cada uno de los despachos del producto
                                  $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' ";
                               }
-                           }
+                              // exit(var_dump($condiciones));
+                           } 
                         } else if ($filtro == 4) {
                            if (isset($_POST['grupo_etario']) && $_POST['grupo_etario'] != "") {
                               $inners.= " INNER JOIN despachos_det$numtabla as dent ON dent.Num_Doc = pmov.Numero AND dent.cod_Alimento = pmovdet.CodigoProducto";
@@ -624,6 +652,7 @@
                                     $inners 
                                     WHERE 1 = 1 $condiciones
                                     LIMIT 2000;";
+                     // echo "$consulta";       
                   }
                ?>
                <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
@@ -635,27 +664,42 @@
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
-<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
 
 <!-- Custom and plugin javascript -->
-<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/inspinia.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/steps/jquery.steps.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 
 <!-- Section Scripts -->
-<script src="<?php echo $baseUrl; ?>/modules/trazabilidad/js/trazabilidad.js"></script>
+<script src="<?= $baseUrl; ?>/modules/trazabilidad/js/trazabilidad.js"></script>
 
 <script type="text/javascript">
+
+   var buttonCommon = {
+      exportOptions: {
+         format: {
+            body: function ( data, row, column, node ) {
+               console.log(data)
+               return column === 7 ?
+               data.replace( ',', '.' ) :
+               data;
+            }
+         }
+      }
+   };
+
    dataset1 = $('#tablaTrazabilidad').DataTable({
       ajax: {
          method: 'POST',
@@ -689,7 +733,21 @@
       pageLength: 25,
       responsive: true,
       dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-      buttons : [{extend:'excel', title:'Trazabilidad_alimentos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}}],
+      // buttons : [{extend:'excel', title:'Trazabilidad_alimentos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}}],
+      buttons : [
+         $.extend( true, {}, buttonCommon, {
+            extend: 'excel',
+            title:'Trazabilidad_alimentos', 
+            className:'btnExportarExcel', 
+            exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}
+         } ),
+         $.extend( true, {}, buttonCommon, {
+            extend: 'excelHtml5'
+         } ),
+         $.extend( true, {}, buttonCommon, {
+            extend: 'pdfHtml5'
+         } )
+      ],
       oLanguage: {
          sLengthMenu: 'Mostrando _MENU_ registros por página',
          sZeroRecords: 'No se encontraron registros',
@@ -716,80 +774,14 @@
                               '</ul>'+
                            '</div>';
          $('.containerBtn').html(btnAcciones);
-         $('#loader').fadeOut();
+         // $('#loader').fadeOut();
       },
       preDrawCallback: function( settings ) {
          $('#loader').fadeIn();
       }
-   }).on("draw", function(){ $('#loader').fadeOut();});
-
-   <?php if (isset($_POST['buscar'])): ?>
-      $('#btnBuscar').prop('disabled', true);
-      $('#totales').attr('disabled', true);
-      $('#formBuscar').find('input, textarea, button, select').prop('disabled',true);
-
-      <?php if ($tipoBusqueda == "1"): ?>
-         $('#fecha_de').val('<?php echo $_POST['fecha_de']; ?>').change();
-         $('#mes_inicio').val('<?php echo $_POST['mes_inicio']; ?>').change();
-         $('#mes_fin').val('<?php echo $_POST['mes_fin']; ?>').change();
-      <?php endif ?>
-
-      <?php if ($tipoBusqueda == "2"): ?>
-         $('#numeroEntrega').val('<?= $_POST['numeroEntrega']; ?>')
-      <?php endif ?>
-
-      <?php if ($_POST['tipo_documento'] != ""): ?>
-         $('#tipo_documento').val('<?php echo $_POST['tipo_documento']; ?>').change();
-      <?php endif ?>
-
-      <?php if ($_POST['tipo_filtro'] != ""): ?>
-         $('#tipo_filtro').val('<?php echo $_POST['tipo_filtro']; ?>').change();
-      <?php endif ?>
-    
-      <?php if (isset($_POST['dia_inicio']) && $_POST['dia_inicio'] != ""): ?>
-         $('#dia_inicio').val('<?php echo $_POST['dia_inicio']; ?>').change();
-      <?php endif ?>
-
-      <?php if (isset($_POST['dia_fin']) && $_POST['dia_fin'] != ""): ?>
-         $('#dia_fin').val('<?php echo $_POST['dia_fin']; ?>').change();
-      <?php endif ?>
-      
-      setTimeout(function() {
-         <?php if ($_POST['municipio'] != ""): ?>
-            $('#municipio').val('<?php echo $_POST['municipio']; ?>').change();
-         <?php endif ?>
-         
-         <?php if ($_POST['proveedor'] != ""): ?>
-            $('#proveedor').val('<?php echo $_POST['proveedor']; ?>').change();;
-         <?php endif ?>
-
-         <?php if (isset($_POST['conductor']) && $_POST['conductor'] != ""): ?>
-            $('#conductor').val('<?php echo $_POST['conductor']; ?>').change();
-         <?php endif ?>
-
-         <?php if ($_POST['tipo_bodega'] != ""): ?>
-            $('#tipo_bodega').val('<?php echo $_POST['tipo_bodega']; ?>').change();
-         <?php endif ?>
-
-         <?php if (isset($_POST['bodegas']) && $_POST['bodegas'] != ""): ?>
-            $('#bodegas').val('<?php echo $_POST['bodegas']; ?>').change();
-         <?php endif ?>
-
-         <?php if ($_POST['producto'] != ""): ?>
-            $('#producto').val('<?php echo $_POST['producto']; ?>').change();
-         <?php endif ?>
-
-         <?php if (isset($_POST['grupo_etario']) && $_POST['grupo_etario'] != ""): ?>
-            $('#grupo_etario').val('<?php echo $_POST['grupo_etario']; ?>').change();
-         <?php endif ?>
-
-         <?php if ($_POST['tipo_complemento'] != ""): ?>
-            $('#tipo_complemento').val('<?php echo $_POST['tipo_complemento']; ?>').change();
-         <?php endif ?>
-         $('#btnBuscar').prop('disabled', false);
-         // $('#formBuscar').find('input, textarea, button, select').prop('disabled',false);
-      }, 3500);
-   <?php endif ?>
+   }).on("draw", function(){ 
+      $('#loader').fadeOut();
+   });
 
 </script>
 

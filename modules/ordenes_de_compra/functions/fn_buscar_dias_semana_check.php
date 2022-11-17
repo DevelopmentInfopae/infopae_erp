@@ -15,10 +15,12 @@
     $aux = 0;
     while($row = $resultado->fetch_assoc()) {
       $dia = $row['DIA'];
+      $semana = $row['SEMANA'];
       $mes = $row['MES'];
 ?>
     <div class="dia">
       <label>
+        <input type="hidden" name="semanaDia" id="semanaDia" value="<?= $semana.",".$dia ?>">
         <input type="checkbox" class="dia i-checks" id="dia<?= $aux; ?>" name="dia<?= $aux; ?>" value="<?= $dia; ?>" style="margin-bottom: 5px;" checked>
         <?= $dia." de ". mesEnLetras($mes); ?>
       </label>

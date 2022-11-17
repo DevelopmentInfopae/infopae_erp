@@ -121,7 +121,7 @@
 
 		$consulta_actualizar_focalizacion = trim($consulta_actualizar_focalizacion, ', ');
 		$consulta_actualizar_focalizacion .= " ON DUPLICATE KEY UPDATE d1 =  VALUES(d1), d2 =  VALUES(d2), d3 =  VALUES(d3), d4 =  VALUES(d4), d5 =  VALUES(d5)";
-
+		// exit(var_dump($consulta_actualizar_focalizacion));
 		$respuesta_actualizar_focalizacion = $Link->query($consulta_actualizar_focalizacion) or die("Error al actualizar novedades_focalizacion: ". $Link->error);
 	} else {
 		$consulta_nueva_focalizacion = "INSERT INTO novedades_focalizacion(id_usuario, fecha_hora, cod_sede, tipo_doc_titular, num_doc_titular, tipo_complem, semana, d1, d2, d3, d4, d5, observaciones ) VALUES ";
@@ -185,6 +185,7 @@
 	// Consulta que retorna los estudiantes registrados en entregas_res de acuerdo a los filtros ingresados.
 	$titulares_entregas_res = [];
 	$consulta_titulares_entregas = "SELECT * FROM entregas_res_$mes$periodo_actual WHERE cod_sede = '".$sede."' AND tipo_complem = '".$tipo_complemento."' AND tipo = 'F';";
+	exit(var_dump($consulta_titulares_entregas));
 	$respuesta_titulares_entregas_res = $Link->query($consulta_titulares_entregas) or die('Error al consultar entregas_res_$mes$periodo_actual: '. $Link->error);
 	if ($respuesta_titulares_entregas_res->num_rows > 0) {
 		while ($registros_titulares_entregas_res = $respuesta_titulares_entregas_res->fetch_assoc()) {
@@ -218,8 +219,9 @@
 		$consulta_actualizar_titulares = trim($consulta_actualizar_titulares, ', ');
 		$consulta_actualizar_titulares .= " ON DUPLICATE KEY UPDATE ". $campos_actualizar_duplicados;
 	}
-
-	$respuesta_actualizar_titulares = $Link->query($consulta_actualizar_titulares) or die('Error al actualizar entregas_res_$mes$periodo_actual: '. $Link->error);
+	
+	$respuesta_actualizar_titulares = $Link->query($consulta_actualizar_titulares) or die('Error al actualizar entregas_res_$mes$periodo_actual ln 222: '. $Link->error);
+	// exit(var_dump($consulta_actualizar_titulares));
 	if ($respuesta_actualizar_titulares === FALSE)
 	{
 		$respuesta_ajax = [

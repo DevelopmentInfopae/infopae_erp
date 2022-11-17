@@ -1,19 +1,17 @@
 <?php 
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
+// require_once 'fn_estadisticas_functions.php';
 
 $periodoActual = $_SESSION['periodoActual'];
 $semana = $_POST['semana'];
 $diasSemanas = $_POST['diasSemanas'];
-
-// echo $semana."\n";
-// print_r($diasSemanas);
-
 $totalesEtarios = [];
 $etarios = [];
-
+$cantGruposEtarios = $_SESSION['cant_gruposEtarios'];
 $edadInicial = 0;
 $edadFinal=0;
+$complementos = $_POST['tipoComplementos'];
 
 $consGrupoEtario = "SELECT * FROM grupo_etario ORDER BY EDADINICIAL ASC";
 $resGrupoEtario = $Link->query($consGrupoEtario);
@@ -25,19 +23,23 @@ if ($resGrupoEtario->num_rows > 0) {
 	}
 }
 
+foreach ($etarios as $key => $etario) {
+	foreach ($complementos as $key => $value) {
+		$totalesEtarios[$etario['DESC']][$value] = 0;
+	}
+}
+
 foreach ($diasSemanas as $mes => $SemanasArray) {
 	$datos = "";
 	$diaD = 0;
 	foreach ($SemanasArray as $semanaF => $dia) {
-		// echo $semanaF."\n";
-		foreach ($dia as $id => $diaR) {
+			foreach ($dia as $id => $diaR) {
 			$diaD++;
 			if ($semanaF == $semana) {
-			 $datos.="SUM(D$diaD) + ";
+			 	$datos.="SUM(D$diaD) + ";
 			}
 		}
 	}
-
 	if ($datos != "") {
 		$datos = trim($datos, "+ ");
 		$cntGE = 1;
@@ -51,7 +53,6 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 			}
 
 			$consComplementos ="SELECT tipo_complem , $datos AS totalSemana FROM entregas_res_$mes$periodoActual WHERE $condicional GROUP BY tipo_complem;";
-			// echo $consComplementos."\n";
 			$resComplementos = $Link->query($consComplementos);
 			if ($resComplementos->num_rows > 0) {
 				while ($Complementos = $resComplementos->fetch_assoc()) {

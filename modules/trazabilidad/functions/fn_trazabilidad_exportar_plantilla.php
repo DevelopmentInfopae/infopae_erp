@@ -1,8 +1,10 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
-require '../../../vendor/autoload.php';
-ini_set('memory_limit','6000M');
+require_once '../../../vendor/autoload.php';
+set_time_limit (0);
+ini_set('memory_limit', '-1');
+
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -21,6 +23,7 @@ use PhpOffice\PhpSpreadsheet\Style\Supervisor;
 $periodo_actual = $_SESSION["periodoActual"];
 $mes = ($_GET["mes"] != "") ? $Link->real_escape_string($_GET["mes"]) : "";
 $semana = ($_GET["semana"] != "") ? $Link->real_escape_string($_GET["semana"]) : "";
+$semanaFinal = ($_GET["semanaFinal"] != "") ? $Link->real_escape_string($_GET["semanaFinal"]) : "";
 $tipo = ($_GET["tipo"] != "") ? $Link->real_escape_string($_GET["tipo"]) : "";
 $nombreMes = [	"01" => "ENERO",
 					"02" => "FEBRERO",
@@ -35,22 +38,37 @@ $nombreMes = [	"01" => "ENERO",
 					"11" => "NOVIEMBRE",
 					"12" => "DICIEMBRE" ];
 
-if ($tipo == 1 || $tipo == 3) {
-	// exit(var_dump($semana));
-	$condicionTipo = '';
-	$fileName = '';
-	if ($tipo == 1) {
-		$condicionTipo = " WHERE d.semana = '$semana' ";
-		$fileName = " Plantilla de trazabilidad RUTAS semana $semana.xlsx ";
-	}elseif ($tipo == 3) {
-		$condicionTipo = ($semana != '') ? " WHERE d.semana = '$semana' " : "";
-		if ($semana != '') {
-			$fileName = " Informe Trazabilidad Ruta semana " .$semana. " de ". $nombreMes[$mes]. ".xlsx";
-		}else{
-			$fileName = " Informe Trazabilidad Ruta " .$nombreMes[$mes].".xlsx ";
+$condicionTipo = " WHERE 1 = 1 AND ( ";
+$consultaConsecutivoInicial = " SELECT min(CONSECUTIVO) AS minConsecutivo FROM planilla_semanas WHERE SEMANA = '$semana' ";
+$respuestaConsecutivoInicial = $Link->query($consultaConsecutivoInicial) OR die ('Error al consultar el primer consecutivo LN 46');
+if ($respuestaConsecutivoInicial->num_rows > 0) {
+	$dataConsecutivoInicial = $respuestaConsecutivoInicial->fetch_assoc();
+	$minConsecutivo = $dataConsecutivoInicial['minConsecutivo'];
+	$consultaConsecutivoFinal = " SELECT max(CONSECUTIVO) AS maxConsecutivo FROM planilla_semanas WHERE SEMANA = '$semanaFinal' "; 
+	$respuestaConsecutivoFinal = $Link->query($consultaConsecutivoFinal) OR die ('Error al consultar el segundo consecutivo LN 51');
+	if ($respuestaConsecutivoFinal->num_rows > 0) {
+		$dataConsecutivoFinal = $respuestaConsecutivoFinal->fetch_assoc();
+		$maxConsecutivo = $dataConsecutivoFinal['maxConsecutivo'];
+		$consultaSemanasInvolucradas = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE CONSECUTIVO BETWEEN $minConsecutivo AND $maxConsecutivo "; 
+		$resSemanasInvolucradas = $Link->query($consultaSemanasInvolucradas) OR die ('Error al consultar las semanas involucradas Ln 56');
+		if ($resSemanasInvolucradas->num_rows > 0) {
+			while ($dataSemanas = $resSemanasInvolucradas->fetch_assoc()) {
+				$condicionTipo .= "   ( d.semana LIKE '%" .$dataSemanas['semana']. "%' )  OR";
+			}
 		}
 	}
-	$titulos_columnas = [
+}
+$condicionTipo = trim($condicionTipo, 'OR');
+$condicionTipo .= ' )';					
+
+if ($tipo == 1 || $tipo == 3) { // rutas 
+	$fileName = '';
+	if ($tipo == 1) { // Plantilla
+		$fileName = " Plantilla de trazabilidad RUTAS de semana $semana a semana $semanaFinal.xlsx ";
+	}elseif ($tipo == 3) { // Informe
+		$fileName = " Informe Trazabilidad Ruta " .$nombreMes[$mes]." de semana $semana a semana $semanaFinal.xlsx ";
+	}
+	$titulos_columnas = 	[
 								"Id", 
 								"Documento", 
 								"Número", 
@@ -68,27 +86,26 @@ if ($tipo == 1 || $tipo == 3) {
 							];
 
 	$consultaProductos = " SELECT p.Id, 
-										p.Documento, 
-										p.Numero, 
-										p.BodegaDestino, 
-										p.TipoTransporte, 
-										p.Placa, 
-										p.ResponsableRecibe, 
-										d.Semana, 
-										d.Tipo_Complem, 
-										s.cod_inst, 
-										s.nom_inst, 
-										s.nom_sede, 
-										u.Ciudad,
-										p.fecha_despacho
+											p.Documento, 
+											p.Numero, 
+											d.Semana, 
+											d.Tipo_Complem, 
+											u.Ciudad,
+											s.cod_inst,
+											s.nom_inst,
+											p.BodegaDestino, 
+											s.nom_sede,
+											p.TipoTransporte,
+											p.Placa,
+											p.ResponsableRecibe, 
+											p.fecha_despacho							
 									FROM productosmov$mes$periodo_actual p 
 									INNER JOIN despachos_enc$mes$periodo_actual d on (p.numero=d.Num_Doc) 
 									INNER JOIN sedes$periodo_actual s on (p.BodegaDestino=s.cod_sede) 
 									INNER JOIN ubicacion u on (s.cod_mun_sede=u.CodigoDANE) 
 									$condicionTipo
-									ORDER BY p.Id
-									";
-
+									ORDER BY u.Ciudad
+									"; 					
 	$respuestaProductos = $Link->query($consultaProductos) or die("Error al consultar: ". $Link->error);	
 	if ($respuestaProductos->num_rows > 0){
 		$excel = new Spreadsheet();
@@ -114,42 +131,16 @@ if ($tipo == 1 || $tipo == 3) {
 
 		$fila = 2;
 		while($dataProductos = $respuestaProductos->fetch_assoc()){
+			if ($tipo == 1) {
+				$dataProductos['Placa'] = '';
+				$dataProductos['ResponsableRecibe'] = '';
+				$dataProductos['fecha_despacho'] = '';
+			}
 			$productos[] = $dataProductos;
 		}
 
-		foreach ($productos as $key => $value) {
-			$columna = 'A';
-			$archivo->setCellValue($columna.$fila, $value['Id']);
-			$columna++;
-			$archivo->setCellValue($columna.$fila, $value['Documento']);
-			$columna++;
-			$archivo->setCellValue($columna.$fila, $value['Numero']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['Semana']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['Tipo_Complem']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['Ciudad']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['cod_inst']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['nom_inst']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['BodegaDestino']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['nom_sede']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, ($tipo == 1) ? "" : $value['TipoTransporte']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, ($tipo == 1) ? "" : $value['Placa']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, ($tipo == 1) ? "" : $value['ResponsableRecibe']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, ($tipo == 1) ? "" : $value['fecha_despacho']);		
-			$columna++;
-			$fila++;
-		}
-
+		$archivo->fromArray($productos, null, 'A2');
+		
 		foreach(range("A", "Z") as $columna2) {
     		$archivo->getColumnDimension($columna2)->setAutoSize(true);
 		}
@@ -164,18 +155,11 @@ if ($tipo == 1 || $tipo == 3) {
 }
 
 else if ($tipo == 2 || $tipo == 4) {
-	$condicionTipo = '';
 	$fileName = "";
-	if ($tipo == 2) {
-		$condicionTipo = " WHERE d.semana = '$semana' ";
-		$fileName = " Plantilla de trazabilidad DETALLE semana $semana.xlsx";
-	}elseif ($tipo == 4) {
-		$condicionTipo = ($semana != '') ? " WHERE d.semana = '$semana' " : "";
-		if ($semana != '') {
-			$fileName = " Informe Trazabilidad semana " .$semana. " de " .$nombreMes[$mes]. ".xlsx";
-		}else{
-			$fileName = " Informe Trazabilidad " .$nombreMes[$mes]. ".xlsx";
-		}
+	if ($tipo == 2) { // Plantilla
+		$fileName = " Plantilla de trazabilidad DETALLE de semana $semana a semana $semanaFinal.xlsx";
+	}elseif ($tipo == 4) { // Informe
+		$fileName = " Informe Trazabilidad de semana " .$semana. " a semana " .$semanaFinal. " mes " .$nombreMes[$mes]. ".xlsx";
 	}
 	$titulos_columnas = [
 								"Id", 
@@ -201,9 +185,16 @@ else if ($tipo == 2 || $tipo == 4) {
 								"Observación"
 							];
 
-	$consultaProductos = " SELECT p.Id, 
+	$consultaProductos = " SELECT 			p.Id, 
 											p.Documento, 
 											p.Numero, 
+											d.Semana,
+											d.Tipo_Complem,
+											u.Ciudad, 
+											s.cod_inst, 
+											s.nom_inst, 
+											p.BodegaDestino,
+											s.nom_sede, 
 											p.CodigoProducto,
 											p.Descripcion, 
 											p.Cantidad, 
@@ -214,21 +205,14 @@ else if ($tipo == 2 || $tipo == 4) {
 											p.fecha_sacrificio, 
 											p.fecha_empaque,  
 											p.codigo_interno, 
-											p.observacion, 
-											p.BodegaDestino, 
-											d.Semana, 
-											d.Tipo_Complem, 
-											s.cod_inst, 
-											s.nom_inst, 
-											s.nom_sede, 
-											u.Ciudad 
+											p.observacion										
 										FROM productosmovdet$mes$periodo_actual p 
 										INNER JOIN despachos_enc$mes$periodo_actual d on (p.numero=d.Num_Doc) 
 										INNER JOIN sedes$periodo_actual s on (p.BodegaDestino=s.cod_sede) 
 										INNER JOIN ubicacion u on (s.cod_mun_sede=u.CodigoDANE) 
 										$condicionTipo
-										ORDER BY p.Id
-										";
+										ORDER BY u.Ciudad
+										"; 
 
 	$respuestaProductos = $Link->query($consultaProductos) or die("Error al consultar: ". $Link->error);	
 	if ($respuestaProductos->num_rows > 0){
@@ -255,55 +239,18 @@ else if ($tipo == 2 || $tipo == 4) {
 
 		$fila = 2;
 		while($dataProductos = $respuestaProductos->fetch_assoc()){
+			if ($tipo == 2) {
+				$dataProductos['Lote'] = '';
+				$dataProductos['FechaVencimiento'] = '';
+				$dataProductos['marca'] = '';
+				$dataProductos['fecha_sacrificio'] = '';
+				$dataProductos['fecha_empaque'] = '';
+				$dataProductos['codigo_interno'] = '';
+				$dataProductos['observacion'] = '';
+			}
 			$productos[] = $dataProductos;
 		}
-
-		foreach ($productos as $key => $value) {
-			$columna = 'A';
-			$archivo->setCellValue($columna.$fila, $value['Id']);
-			$columna++;
-			$archivo->setCellValue($columna.$fila, $value['Documento']);
-			$columna++;
-			$archivo->setCellValue($columna.$fila, $value['Numero']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['Semana']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['Tipo_Complem']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['Ciudad']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['cod_inst']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['nom_inst']);
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['BodegaDestino']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['nom_sede']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['CodigoProducto']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['Descripcion']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['Cantidad']);		
-			$columna++;		
-			$archivo->setCellValue($columna.$fila, $value['Umedida']);		
-			$columna++;			
-			$archivo->setCellValue($columna.$fila, ($tipo == 2 ) ? "" : $value['Lote']);		
-			$columna++;			
-			$archivo->setCellValue($columna.$fila, ($tipo == 2 ) ? "" : $value['FechaVencimiento']);		
-			$columna++;			
-			$archivo->setCellValue($columna.$fila, ($tipo == 2 ) ? "" : $value['marca']);		
-			$columna++;			
-			$archivo->setCellValue($columna.$fila, ($tipo == 2 ) ? "" : $value['fecha_sacrificio']);		
-			$columna++;			
-			$archivo->setCellValue($columna.$fila, ($tipo == 2 ) ? "" : $value['fecha_empaque']);		
-			$columna++;			
-			$archivo->setCellValue($columna.$fila, ($tipo == 2 ) ? "" : $value['codigo_interno']);		
-			$columna++;			
-			$archivo->setCellValue($columna.$fila, ($tipo == 2 ) ? "" : $value['observacion']);		
-			$columna++;
-			$fila++;
-		}
+		$archivo->fromArray($productos, null, 'A2');
 
 		foreach(range("A", "Z") as $columna2) {
     		$archivo->getColumnDimension($columna2)->setAutoSize(true);

@@ -79,7 +79,15 @@
 	$novedades = array();
 
 	// Novedades de Priorización 1
-	$consulta = " SELECT 1 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_priorizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
+	$consulta = " SELECT    1 as tipo, 
+                            n.fecha_hora, 
+                            n.observaciones, 
+                            u.nombre, 
+                            u.foto 
+                        FROM novedades_priorizacion n 
+                        LEFT JOIN usuarios u ON u.id = n.id_usuario
+                        LIMIT 50
+                        ";
 	$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	$indice = 0;
 	$aux = '';
@@ -105,7 +113,15 @@
 	}
 
 	// Novedades de Focalización 2
-	$consulta = " SELECT 2 as tipo, n.fecha_hora, n.observaciones, u.nombre, u.foto FROM novedades_focalizacion n LEFT JOIN usuarios u ON u.id = n.id_usuario";
+	$consulta = " SELECT    2 as tipo,
+                            n.fecha_hora, 
+                            n.observaciones, 
+                            u.nombre, 
+                            u.foto 
+                        FROM novedades_focalizacion n 
+                        LEFT JOIN usuarios u ON u.id = n.id_usuario
+                        LIMIT 50
+                        ";
 	$resultado2 = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	$indice = 0;
 	$aux = '';

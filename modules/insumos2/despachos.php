@@ -399,7 +399,7 @@ if (isset($_POST['buscar']) && ($_POST['buscar'] != "")) {
 	  		}
 		},
 		"preDrawCallback": function( settings ) {
-			$('#loader').fadeIn();
+			// $('#loader').fadeIn();
 	  	},
 		'fnRowCallback': function (nRow, aData, iDisplayIndex) {
 			return nRow;

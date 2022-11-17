@@ -3,7 +3,20 @@
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
 $periodoActual = $_SESSION['periodoActual'];
-$mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
+
+$mesesNom = array('01' => "Enero", 
+                  "02" => "Febrero", 
+                  "03" => "Marzo", 
+                  "04" => "Abril", 
+                  "05" => "Mayo", 
+                  "06" => "Junio", 
+                  "07" => "Julio", 
+                  "08" => "Agosto", 
+                  "09" => "Septiembre", 
+                  "10" => "Octubre", 
+                  "11" => "Noviembre", 
+                  "12" => "Diciembre"
+                );
 
 $diasSemanas = [];
   $consDiasSemanas = "SELECT GROUP_CONCAT(DIA) AS Dias, MES, SEMANA FROM planilla_semanas WHERE CONCAT(ANO, '-', MES, '-', DIA) <= '".date('Y-m-d')."' GROUP BY SEMANA";
@@ -30,7 +43,7 @@ $diasSemanas = [];
   }
 
   // $diasSemanas = $_POST['diasSemanas'];
-
+  // exit(var_dump($diasSemanas));
   foreach ($diasSemanas as $mes => $semanas) { //recorremos los meses
     $datos = "";
     $diaD = 1;

@@ -447,7 +447,7 @@ if ($cantGruposEtarios == '5') {
    $current_y = $pdf->GetY();
    $current_x = $pdf->GetX();
    $pdf->Cell(35, 23.5, '', 1, 0, 'L', False);
-   $pdf->SetXY($current_x, $current_y+4.7);
+   $pdf->SetXY($current_x, $current_y+8);
    $pdf->MultiCell(35, 4.7, utf8_decode($auxDias), 0, 'C', False);
 
    $pdf->SetXY($current_x, $current_y+9.4);
@@ -457,10 +457,10 @@ if ($cantGruposEtarios == '5') {
    $current_y = $pdf->GetY();
    $current_x = $pdf->GetX();
    $pdf->Cell(75, 23.5, '', 1, 0, 'L', False);
-   $pdf->SetXY($current_x, $current_y+4.7);
+   $pdf->SetXY($current_x, $current_y+8);
    $pdf->Cell(75, 4.7, 'SEMANA: '.$auxCiclos, 0, 0, 'C', False);
    $pdf->SetFont('Arial', '', $tamannoFuente);
-   $pdf->SetXY($current_x, $current_y+9.4);
+   $pdf->SetXY($current_x, $current_y+12);
    $pdf->Cell(75, 4.7, utf8_decode('MENÚS: '.$auxMenus), 0, 0, 'C', False);
 
    $pdf->SetXY($current_x+75, $current_y);
@@ -485,11 +485,11 @@ if ($cantGruposEtarios == '5') {
       $pdf->Cell(0,8,utf8_decode($jt),0,0,'C',False);
       $pdf->SetFont('Arial','',$tamannoFuente);
    }else{
-      $pdf->Cell(5,4.7,'JM:',0,0,'L',False);
-      $pdf->Cell(10,4.7,$jm,'B',0,'L',False);
-      $pdf->SetXY($current_x+2, $current_y+7.05);
-      $pdf->Cell(5,4.7,'JT:',0,0,'L',False);
-      $pdf->Cell(10,4.7,$jt,'B',0,'L',False);
+      $pdf->Cell(5,7,'JM:',0,0,'L',False);
+      $pdf->Cell(10,7,$jm,'B',0,'L',False);
+      $pdf->SetXY($current_x+2, $current_y+11);
+      $pdf->Cell(5,7,'JT:',0,0,'L',False);
+      $pdf->Cell(10,7,$jt,'B',0,'L',False);
    }
 
    $pdf->SetXY($current_x, $current_y+23.5);

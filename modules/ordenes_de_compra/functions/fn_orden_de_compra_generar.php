@@ -2,17 +2,11 @@
 include '../../../config.php';
 require_once '../../../db/conexion.php';
 include 'fn_funciones.php';
-
-$annoActual = $_SESSION['periodoActual'];
-date_default_timezone_set('America/Bogota');
-$fecha = date("Y-m-d H:i:s");
-
+set_time_limit (0);
 
 // Vamos a usar una veriable bandera para determinar si finalmente se pueden hacer las inserciónes.
 $tipo = '';
 $dias = '';
-$items = [];
-$menus = [];
 $nombre = '';
 $semana = '';
 $bandera = 0;
@@ -21,6 +15,7 @@ $tipoDespacho = '';
 $tipoDocumento = '';
 $tablaAnno = $_SESSION['periodoActual'];
 $annoActual = $_SESSION['periodoActualCompleto'];
+$fecha = date("Y-m-d H:i:s");
 
 // Son los menus que se van a mostrar en la planilla x,x,x,x,
 $sedes = [];
@@ -43,6 +38,7 @@ if(isset($_POST['tipoDespacho']) && $_POST['tipoDespacho'] != '') { $tipoDespach
 if($tipoDespacho == '') { $tipoDespacho = 99; }
 if (isset($_POST['mes']) && $_POST['mes'] != "") { $mes = $_POST['mes']; }
 if(isset($_POST['semana']) && $_POST['semana'] != '') { $semana = $_POST['semana']; $_SESSION['semana'] = $semana; }
+if(isset($_POST['semanaDias']) && $_POST['semanaDias'] != ''){ $semanasDias = $_POST['semanaDias']; }
 if(isset($_POST['dias']) && $_POST['dias'] != '') { $dias = $_POST['dias']; }
 if(isset($_POST['bodegaOrigen']) && $_POST['bodegaOrigen'] != '') { $bodegaOrigen = $_POST['bodegaOrigen']; }
 if(isset($_POST['tipoTransporte']) && $_POST['tipoTransporte'] != '') { $tipoTransporte = $_POST['tipoTransporte']; }
@@ -74,6 +70,22 @@ if($resultado->num_rows >= 1){
 	}
 }
 
+
+// aca le vamos a dar el manejo a las semanas implictas
+foreach ($semanasDias as $semanasDiaskey => $semanaDiasvalue) {
+	$porciones = explode(",", $semanaDiasvalue);
+	$semanasImplicitasCompleta[] = $porciones[0];
+	$diasImplicitos[] = $porciones[1]; 
+}
+
+$semanasImplicitas = array_unique($semanasImplicitasCompleta);
+
+// contar el numero de dias para posteriores operaciones 
+$cantidadDias = count($dias); 
+
+// variable importante para saber la cantidad de grupos etarios con la que esta trabajando la plataforma
+$cantGruposEtarios = $_SESSION['cant_gruposEtarios']; 
+
 // Se van a buscar el mes y el año a partir de la tabla de planilla semana y se va a verificar la existencia de las tablas.
 $consulta = " SELECT ano, mes, semana FROM planilla_semanas WHERE MES = '$mes' limit 1 ";
 $resultado = $Link->query($consulta) or die ('Error al cosultar planillas_semanas: '. mysqli_error($Link));
@@ -86,11 +98,7 @@ if($resultado->num_rows >= 1){
 $semanaAnno = substr($semanaAnno, -2);
 $annoMes = $semanaMes.$semanaAnno;
 
-// variable importante para saber la cantidad de grupos etarios con la que esta trabajando la plataforma
-$cantGruposEtarios = $_SESSION['cant_gruposEtarios']; 
-
-/***************************************** CREACION TABLAS ORDENES DE COMPRA **************************************/
-// Consulta que valida si existe la tabla orden_compra_encMESAÑO NO existe para crearla.
+/***************************************** CREACION TABLAS ORDENES DE COMPRA ***********************************/
 $consulta = "SHOW TABLES LIKE 'orden_compra_enc$annoMes'";
 $result = $Link->query($consulta) or die ('Error al consultar las tablas orden_compra_enc: '. mysqli_error($Link));
 $existe = $result->num_rows;
@@ -119,6 +127,7 @@ if($existe == 0) {
 										`Id_Usuario` int(10) unsigned NOT NULL,
 										`cod_Sede` bigint(20) unsigned NOT NULL,
 										`Tipo_Complem` varchar(10) NOT NULL,
+										`cod_variacion_menu` SMALLINT(1) unsigned zerofill NOT NULL DEFAULT'0',
 										`Semana` varchar(150) NOT NULL DEFAULT '0',
 										`Dias` varchar(200) NOT NULL DEFAULT '',
 										`Menus` varchar(200) NOT NULL DEFAULT '',
@@ -203,6 +212,23 @@ if ($tipo == "APS") {
 $sedes_POST = $sedes;
 $despachado = false;
 foreach ($variaciones as $id => $variacion) {
+	$items = [];
+	$menus = [];
+	$semanaString = '';	
+	$semanas = []; 
+	$annoActual = $_SESSION['periodoActualCompleto'];
+	unset($sedes);
+	$sedes = [];
+	foreach ($sedes_POST as $id_sede => $sede) {
+		if ($sedes_variaciones[$sede] == $variacion) {
+			$sedes[] = $sede;
+		}
+	}
+
+	if (count($sedes) == 0) {
+		continue;
+	}
+
 	/* Consecutivo orden de compra general */
 	$consecutivoGeneral = '';
 	$consulta = " SELECT Consecutivo FROM documentos WHERE Tipo = 'OCO' ";
@@ -216,25 +242,17 @@ foreach ($variaciones as $id => $variacion) {
 	$consulta = " UPDATE documentos SET consecutivo = $aux WHERE Tipo = 'OCO' ";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 
-	$items = [];
-	$menus = [];
-	$semanaString = '';	
-	$semanas = []; 
-	$annoActual = $_SESSION['periodoActualCompleto'];
-	unset($sedes);
-	$sedes = [];
-	foreach ($sedes_POST as $id_sede => $sede) {
-		if ($sedes_variaciones[$sede] == $variacion) {
-			$sedes[] = $sede;
-		}
-	}
-	if (count($sedes) == 0) {
-		continue;
-	}
-
 	$parametroSemana = '';
 	if ($semana !== '') {
 		$parametroSemana = " AND ps.SEMANA = '$semana' ";
+	}else if ($semana == '') {
+		$auxSemanaImplicita = "(";
+		foreach ($semanasImplicitas as $semanasImplicitasKey => $semanasImplicitasValue) {
+			$auxSemanaImplicita .= "'".$semanasImplicitasValue."',";
+		}
+		$auxSemanaImplicita = trim($auxSemanaImplicita,",");
+		$auxSemanaImplicita .= ")";
+		$parametroSemana = " AND ps.SEMANA IN $auxSemanaImplicita ";
 	}
 	
 	// 1. Armar array con los componentes Primera consulta, la que trae los diferentes alimentos de los menu.
@@ -261,12 +279,9 @@ foreach ($variaciones as $id => $variacion) {
 	$diasDespacho = '';
 	for ($i=0; $i < count($dias) ; $i++) {
 		if($i == 0){ $consulta = $consulta." AND ( "; }
-		else{ 
-			$consulta = $consulta." OR ";
-			$diasDespacho = $diasDespacho.',';
-		}
+		else{ $consulta = $consulta." OR "; $diasDespacho = $diasDespacho.','; }
+		$consulta .= " (ps.SEMANA = " .$semanasImplicitasCompleta[$i]. " AND ps.DIA =  " .$diasImplicitos[$i]. ") ";
 		$diasDespacho = $diasDespacho.$dias[$i];
-		$consulta = $consulta." ps.DIA = ".$dias[$i]." ";
 	}
 	if(count($dias) > 0){
 		$consulta = $consulta." ) ";
@@ -288,7 +303,7 @@ foreach ($variaciones as $id => $variacion) {
 	// Consulta que retorna los menus de los días seleccionados.
 	$condicionDias = $menus = "";
 	for ($i=0; $i < count($dias) ; $i++) {
-		$condicionDias .= "dia = '". $dias[$i] ."' OR ";
+		$condicionDias .= " ( SEMANA = " .$semanasImplicitasCompleta[$i]. " AND DIA =  " .$diasImplicitos[$i]. ") OR ";
 	}
 	$consultaMenusDias = "SELECT * FROM planilla_semanas ps WHERE ps.MES = '$mes' $parametroSemana AND (". trim($condicionDias, " OR ") .");";
 	$resultadoMenusDias = $Link->query($consultaMenusDias) or die("Error al consultar planilla_semanas. Linea 292: ". $Link->error);
@@ -297,7 +312,7 @@ foreach ($variaciones as $id => $variacion) {
 			$menus .= $resgistroMenusDias["MENU"] .", ";
 		}
 	}
-	$menusReg = $menus;
+	$menusReg = trim($menus,',');
 
 	/*****************************************************************************/
 	// Debemos buscar el codigo del alimento sin preparar para obtener el codigo que es y las unidades que le afectan
@@ -390,6 +405,14 @@ foreach ($variaciones as $id => $variacion) {
 	$parametroSemana2 = '';
 	if ($semana !== '') {
 		$parametroSemana2 = " AND semana = '$semana' ";
+	}else if ($semana == '') {
+		$auxSemanaImplicita = "(";
+		foreach ($semanasImplicitas as $semanasImplicitasKey => $semanasImplicitasValue) {
+			$auxSemanaImplicita .= "'".$semanasImplicitasValue."',";
+		}
+		$auxSemanaImplicita = trim($auxSemanaImplicita,",");
+		$auxSemanaImplicita .= ")";
+		$parametroSemana2 = " AND semana IN $auxSemanaImplicita ";
 	}
 
 	$concatGruposEtarios = trim($concatGruposEtarios, ", "); 
@@ -398,7 +421,8 @@ foreach ($variaciones as $id => $variacion) {
 	$sedes_variacion = [];
 	for ($i=0; $i < count($sedes) ; $i++) {
 		$auxSede = $sedes[$i];
-		$consulta = "SELECT distinct cod_sede, $concatGruposEtarios from sedes_cobertura where mes = '$mes' $parametroSemana2 and cod_sede = $auxSede and Ano = $annoActual ORDER BY SEMANA DESC LIMIT 1 ";
+		$consulta = "SELECT distinct cod_sede, $concatGruposEtarios from sedes_cobertura where mes = '$mes' $parametroSemana2 and cod_sede = $auxSede and Ano = $annoActual ORDER BY SEMANA DESC LIMIT 1 "; 
+
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		if($resultado->num_rows >= 1){
 			while($row = $resultado->fetch_assoc()) {
@@ -412,6 +436,16 @@ foreach ($variaciones as $id => $variacion) {
 				}
 				$sedesCobertura[] = $sedeCobertura;
 			}
+		}
+	}
+
+	// vamos a validar que la sede cobertura en el despacho mensual no salga con valores en 0 en todos los grupos etarios
+	foreach ($sedesCobertura as $key => $value) {
+		if ($value['total'] == 0) {
+			$bandera++;
+			$auxCodigoSede = $value['cod_sede'];
+			echo " La sede $auxCodigoSede tiene cobertura 0 en alguno de los días seleccionados ";
+			break;
 		}
 	}
 
@@ -480,7 +514,7 @@ foreach ($variaciones as $id => $variacion) {
 			$diasEncontrados = $row['Dias'];
 			$semanasNom = $row['Semana'];
 			$tipoDespachoNm = $row['tipoDespachoNm'];
-			echo "Se ha encontrado un despacho para la sede: $nomSede en la semana: $semanasNom de tipo de ración: $tipo de tipo de despacho: $tipoDespachoNm para los días: $diasEncontrados";
+			echo "Se ha encontrado una orden para la sede: $nomSede en la semana: $semanasNom de tipo de ración: $tipo de tipo de despacho: $tipoDespachoNm para los días: $diasEncontrados";
 			break;
 		}
 	}
@@ -981,10 +1015,10 @@ foreach ($variaciones as $id => $variacion) {
 			$semanaString = '';
 			$arrayDiasSemanas = explode(",",$diasDespacho);
 			foreach ($arrayDiasSemanas as $key => $value) {
-				$diasIn .= "'" .$value. "',";	
+				$diasIn .= "'" .$value. "', ";	
 			}
-			$diasIn = trim($diasIn,","); 
-			$consultaSemanaString = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes AND DIA IN ($diasIn)"; 
+			$diasIn = trim($diasIn,", "); 
+			$consultaSemanaString = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes AND SEMANA IN $auxSemanaImplicita"; 
 			$respuestaSemanasString = $Link->query($consultaSemanaString) or die ('Error al consultar las semanas relacionadas' . mysqli_error($Link));
 			if ($respuestaSemanasString->num_rows > 0) {
 				while($dataSemanasString = $respuestaSemanasString->fetch_assoc()){
@@ -1006,6 +1040,7 @@ foreach ($variaciones as $id => $variacion) {
 											Id_usuario, 
 											cod_Sede, 
 											Tipo_Complem, 
+											cod_variacion_menu,
 											Semana, Cobertura, 
 											estado, concepto, 
 											Dias,Menus, 
@@ -1050,7 +1085,7 @@ foreach ($variaciones as $id => $variacion) {
 			$cobertura = $sede['total'];
 			$sede = $sede['cod_sede'];
 
-			$consulta = $consulta." 'OCOS',$consecutivo, $consecutivoGeneral, $documento ,'$fecha',$idUsuario,$sede,'$tipo','$semanaString',$cobertura,2,'', '$diasDespacho', '$menusReg', '$tipoDespacho', $valoresGrupos, '$rutaMunicipio'";
+			$consulta = $consulta." 'OCOS',$consecutivo, $consecutivoGeneral, $documento ,'$fecha',$idUsuario,$sede,'$tipo', $variacion_menu, '$semanaString',$cobertura,2,'', '$diasDespacho', '$menusReg', '$tipoDespacho', $valoresGrupos, '$rutaMunicipio'";
 				$consulta = $consulta." ) ";
 		}
 		// exit(var_dump($consulta));

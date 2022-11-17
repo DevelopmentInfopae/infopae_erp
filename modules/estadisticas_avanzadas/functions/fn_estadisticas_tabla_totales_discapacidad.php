@@ -4,8 +4,19 @@ require_once '../../../db/conexion.php';
 
 $periodoActual = $_SESSION['periodoActual'];
 
-$mesesNom = array('1' => "Enero", "2" => "Febrero", "3" => "Marzo", "4" => "Abril", "5" => "Mayo", "6" => "Junio", "7" => "Julio", "8" => "Agosto", "9" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
-
+$mesesNom = array('01' => "Enero", 
+                  "02" => "Febrero", 
+                  "03" => "Marzo", 
+                  "04" => "Abril", 
+                  "05" => "Mayo", 
+                  "06" => "Junio", 
+                  "07" => "Julio", 
+                  "08" => "Agosto", 
+                  "09" => "Septiembre", 
+                  "10" => "Octubre", 
+                  "11" => "Noviembre", 
+                  "12" => "Diciembre"
+                );
 // $diasSemanas = $_POST['diasSemanas'];
 
 $diasSemanas = [];
@@ -77,12 +88,10 @@ foreach ($diasSemanas as $mes => $semanas) {
         }
       }
     $respuesta2[$mes] = $respuesta;
-	  $mesesRecorridos .= $mes;
+	  $mesesRecorridos .= $mes .' ';
 }
-
-// exit(var_dump($respuesta2));
-
-$arrayMes = explode("0", $mesesRecorridos);
+$mesesRecorridos = trim($mesesRecorridos, ' ');
+$arrayMes = explode(" ", $mesesRecorridos);
 
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {

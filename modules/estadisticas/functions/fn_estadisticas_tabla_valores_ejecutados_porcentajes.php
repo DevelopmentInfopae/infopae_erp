@@ -1,13 +1,12 @@
 <?php 
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
+require_once 'fn_estadisticas_functions.php';
 
 $periodoActual = $_SESSION['periodoActual'];
-$diasSemanas = $_POST['diasSemanas'];
-$mesesNom = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 
+$diasSemanas = buscar_dias_semanas($Link, $periodoActual);
 $ejecutado = 0;
-
 $consTipoComplemento = "SELECT * FROM tipo_complemento";
 $resTipoComplemento = $Link->query($consTipoComplemento);
 if ($resTipoComplemento->num_rows > 0) {
@@ -21,16 +20,13 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 	$diaD = 1;
 	foreach ($SemanasArray as $semana => $dias) { //recorremos las semanas del mes en turno
       foreach ($dias as $D => $dia) { //recorremos los días de la semana en turno
-        // echo $mes." - ".$semana." - ".$D." - ".$dia."</br>";
         $datos.="SUM(D$diaD) + ";
         $diaD++;
       }
     }
-
 	if ($datos != "") {
 		$datos = trim($datos, "+ ");
 		$consComplementos ="SELECT tipo_complem , $datos  AS total FROM entregas_res_$mes$periodoActual GROUP BY tipo_complem;";
-		// echo $consComplementos."\n";
 		$resComplementos = $Link->query($consComplementos);
 		if ($resComplementos->num_rows > 0) {
 			while ($Complementos = $resComplementos->fetch_assoc()) {
@@ -77,5 +73,3 @@ $data['tabla'] = $tabla;
 $data['info'] = $porcs;
 
 echo json_encode($data);
-
-// print_r($totalesComplementos);

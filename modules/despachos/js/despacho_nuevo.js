@@ -227,6 +227,8 @@ function generarDespacho(){
   var bandera = 0;
   var itemsDespacho = [];
   var dias = new Array();
+  var semanasImplicitas = new Array();
+  var semanaDias = new Array();
   var placa = $('#placa').val();
   var mes = $('#mes').val();
   var semana = $('#semana').val();
@@ -240,9 +242,19 @@ function generarDespacho(){
   var proveedorEmpleado = $('#proveedorEmpleado').val();
   var proveedorEmpleadoNm = $('#proveedorEmpleadoNm').val();
 
+  var auxSemanaImplicita = '';
+  var auxTemporal = '';
+
+  var auxSemanaDia = '';
+  var auxTemporalDia = '';
   $('#dias .dia:checked').each(function() {
     var aux = $(this).val();
     dias.push(aux);
+    auxSemanaImplicita = $(this).parent().prev().val();
+    if (auxSemanaImplicita !== auxTemporal) {
+      semanasImplicitas.push(auxSemanaImplicita);
+      auxTemporal = auxSemanaImplicita;
+    }
   });
 
   var string_variaciones = '';
@@ -291,6 +303,7 @@ function generarDespacho(){
         "mes" : mes,
         "semana":semana,
         "dias":dias,
+        "semanaDias":semanasImplicitas,
         "tipo":tipo,
         "tipoDespacho":tipoDespacho,
         "itemsDespacho":itemsDespacho,

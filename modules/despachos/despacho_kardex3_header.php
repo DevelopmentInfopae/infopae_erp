@@ -417,7 +417,7 @@ if ($cantGruposEtarios == '5') {
    $current_y = $pdf->GetY();
    $current_x = $pdf->GetX();
    $pdf->Cell(45, 23.5, '', 1, 0, 'L', False);
-   $pdf->SetXY($current_x, $current_y+4.7);
+   $pdf->SetXY($current_x, $current_y+9.4);
    $auxDias = "X ";
    $cantDias = explode(',', $dias);
    $cantDias = count($cantDias);
@@ -428,9 +428,9 @@ if ($cantGruposEtarios == '5') {
    $current_y = $pdf->GetY();
    $current_x = $pdf->GetX();
    $pdf->Cell(90, 23.5, '', 1, 0, 'L', False);
-   $pdf->SetXY($current_x, $current_y+4.7);
+   $pdf->SetXY($current_x, $current_y+8);
    $pdf->Cell(85, 4.7, 'SEMANA: '.$ciclo, 0, 0, 'C', False);
-   $pdf->SetXY($current_x, $current_y+9.4);
+   $pdf->SetXY($current_x, $current_y+12);
    $pdf->Cell(85, 4.7, 'MENUS: '.$auxMenus, 0, 0, 'C', False);
    $pdf->SetXY($current_x+90, $current_y);
    $current_y = $pdf->GetY();
@@ -454,7 +454,7 @@ if ($cantGruposEtarios == '5') {
    }else{
       $pdf->Cell(7,4.7,'JM:',0,0,'L',False);
       $pdf->Cell(33,4.7,$jm,'B',0,'L',False);
-      $pdf->SetXY($current_x+2, $current_y+7.05);
+      $pdf->SetXY($current_x+2, $current_y+11);
       $pdf->Cell(7,4.7,'JT:',0,0,'L',False);
       $pdf->Cell(33,4.7,$jt,'B',0,'L',False);
    }

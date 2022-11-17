@@ -64,8 +64,8 @@
 		</ul>
 	</li>
 	<li>
-		<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
-		<ul class="nav nav-second-level">
+		<a href="#"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
+		<ul class="nav nav-second-level collapse">
 			<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
 			<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
 			<li> <a href="<?php echo $baseUrl; ?>/modules/insumos2/despachos.php">Insumos</a> </li>
@@ -148,6 +148,7 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
+				<li> <a href="<?= $baseUrl; ?>/modules/inejecuciones/index.php">Informe Inejecuciones</a></li>
 			<?php } ?>
 		</ul>
 	</li>
@@ -300,8 +301,8 @@
 	<?php endif ?>
 	<?php if ($permisos['despachos'] == "1" || $permisos['despachos'] == "2"): ?>
 		<li>
-			<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
-			<ul class="nav nav-second-level">
+			<a href="#"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
+			<ul class="nav nav-second-level collapse">
 				<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
 				<?php if ($permisos['despachos'] == "2"): ?>
 					<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
@@ -399,6 +400,7 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
+				<li> <a href="<?= $baseUrl; ?>/modules/inejecuciones/index.php">Informe Inejecuciones</a></li>
 			<?php } ?>
 			</ul>
 		</li>
@@ -559,8 +561,8 @@
 	<?php if ($permisos['despachos'] == "1" || $permisos['despachos'] == "2"): ?>
 		<li>
 			<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
-			<ul class="nav nav-second-level">
-				<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
+			<ul class="nav nav-second-level collapse">
+				<li><a href="#">Alimentos</a></li>
 				<?php if ($permisos['despachos'] == "2"): ?>
 					<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
 				<?php endif ?>
@@ -657,6 +659,7 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
+				<li> <a href="<?= $baseUrl; ?>/modules/inejecuciones/index.php">Informe Inejecuciones</a></li>
 			<?php } ?>
 			</ul>
 		</li>
@@ -770,8 +773,8 @@
 	<?php endif ?>
 	<?php if ($permisos['despachos'] == "1" || $permisos['despachos'] == "2"): ?>
 		<li>
-			<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
-			<ul class="nav nav-second-level">
+			<a href="#"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
+			<ul class="nav nav-second-level collapse">
 				<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
 				<?php if ($permisos['despachos'] == "2"): ?>
 					<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
@@ -869,6 +872,7 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
+				<li> <a href="<?= $baseUrl; ?>/modules/inejecuciones/index.php">Informe Inejecuciones</a></li>
 			<?php } ?>
 			</ul>
 		</li>
@@ -981,8 +985,8 @@
 	<?php endif ?>
 	<?php if ($permisos['despachos'] == "1" || $permisos['despachos'] == "2"): ?>
 		<li>
-			<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
-			<ul class="nav nav-second-level">
+			<a href="#"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
+			<ul class="nav nav-second-level collapse">
 				<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
 				<?php if ($permisos['despachos'] == "2"): ?>
 					<li><a href="<?php echo $baseUrl; ?>/modules/despachos/editar.php">Edición alimentos</a></li>
@@ -1080,6 +1084,7 @@
 				<li> <a href="<?php echo $baseUrl; ?>/modules/informes/informe_alimentos.php">Informe de alimentos</a></li>
 				<li> <a href="<?php echo $baseUrl; ?>/modules/insumos/insumos_proveedor.php">Informe de Insumos ordenados por proveedores</a> </li>
 				<li> <a href="<?= $baseUrl; ?>/modules/informes/ordenes_compra.php">Ordenes de compra</a></li>
+				<li> <a href="<?= $baseUrl; ?>/modules/inejecuciones/index.php">Informe Inejecuciones</a></li>
 			<?php } ?>
 			</ul>
 		</li>
@@ -1169,8 +1174,8 @@
 	<?php endif ?>
 	<?php if ($permisos['despachos'] == "1" || $permisos['despachos'] == "2"): ?>
 		<li>
-			<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
-			<ul class="nav nav-second-level">
+			<a href="#"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
+			<ul class="nav nav-second-level collapse">
 				<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
 			</ul>
 		</li>
@@ -1248,8 +1253,8 @@
 	<?php endif ?>
 	<?php if ($permisos['despachos'] == "1" || $permisos['despachos'] == "2"): ?>
 		<li>
-			<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
-			<ul class="nav nav-second-level">
+			<a href="#"><i class="fa fa-truck"></i> <span class="nav-label">Despachos</span> <span class="fa arrow"></span></a>
+			<ul class="nav nav-second-level collapse">
 				<li><a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php">Alimentos</a></li>
 			</ul>
 		</li>

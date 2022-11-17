@@ -770,7 +770,7 @@ if ($cantGruposEtarios == 5) {
   							LEFT JOIN ubicacion u on s.cod_mun_sede = u.CodigoDANE
   							LEFT JOIN tipo_complemento tc on de.Tipo_Complem = tc.CODIGO
   							LEFT JOIN tipo_despacho td on de.TipoDespacho = td.Id
-  							WHERE de.Num_Doc = $despacho ";
+  							WHERE de.Num_Doc = $despacho "; 
 
 	  	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	  	if($resultado->num_rows >= 1){
@@ -805,9 +805,30 @@ if ($cantGruposEtarios == 5) {
 	  	$semanaIn = trim($semanaIn,','); 
 
 	 	// Iniciando la busqueda de los días que corresponden a esta semana de contrato.
-	 	$arrayDiasDespacho = explode(',', $diasDespacho);
-	 	$dias = '';
-	 	$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($semanaIn) "; 
+	  	$arrayDiasDespacho2 = explode(',', $diasDespacho);
+	  	$arraySemana = explode(',', $semana);
+
+	  	$concatConsecutivo = '';
+	  	$consecutivoActual = 0;
+	  	foreach ($arraySemana as $arraySemanaKey => $arraySemanaValue) {
+	  		foreach ($arrayDiasDespacho2 as $arrayDiasDespachoKey => $arrayDiasDespachoValue) {
+	  			$consultaConsecutivo = "SELECT CONSECUTIVO FROM planilla_semanas WHERE SEMANA = '" .$arraySemanaValue. "' AND DIA = '" .$arrayDiasDespachoValue. "'";
+	 			$respuestaConsecutivo = $Link->query($consultaConsecutivo) or die ('Error al consultar los consetivo LN 825' . mysqli_error());
+	 			if ($respuestaConsecutivo->num_rows > 0 ) {
+	 				$dataConsetivo = $respuestaConsecutivo->fetch_assoc();
+	 				if ($dataConsetivo['CONSECUTIVO'] > $consecutivoActual) {
+	 					unset($arrayDiasDespacho2[$arrayDiasDespachoKey]);
+	 					$concatConsecutivo .= "'" .$dataConsetivo['CONSECUTIVO']. "',";
+	 					$consecutivoActual = $dataConsetivo['CONSECUTIVO'];
+	 				}
+	 			}
+	  		}
+	  	}
+	  	$concatConsecutivo = trim($concatConsecutivo, ',');
+
+	  	$arrayDiasDespacho = explode(',', $diasDespacho);
+	 	$dias = ''; 
+	 	$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($semanaIn) AND CONSECUTIVO IN ( $concatConsecutivo ) ";  
 	 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	 	$cantDias = $resultado->num_rows;
 	 	if($resultado->num_rows >= 1){
@@ -815,26 +836,28 @@ if ($cantGruposEtarios == 5) {
 	   	$mesesIniciales = 0;
 	   	$bandera = 0;
 	   	while($row = $resultado->fetch_assoc()){
-		 		$clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
-		 		if($clave !== false){
-		 			if($bandera != $row['CICLO']){
-		 				$ciclo .= $row['CICLO'] .', ';
-		 				$bandera = $row['CICLO'];
-		 			}
+		 	$clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
+		 	if($clave !== false){
+		 		$key = array_search($row['DIA'] , $arrayDiasDespacho); 
+		 		unset($arrayDiasDespacho[$key]);
+		 		if($bandera != $row['CICLO']){
+		 			$ciclo .= $row['CICLO'] .', ';
+		 			$bandera = $row['CICLO'];
+		 		}
 		   		if($mesInicial != $row['MES']){
-			 			$mesesIniciales++;
+			 		$mesesIniciales++;
 			 		if($mesesIniciales > 1){
-			   		$dias .= " de  $mes ";
+			   			$dias .= " de  $mes ";
 			 		}
 			 		$mesInicial = $row['MES'];
 			 		$mes = $row['MES'];
 			 		$mes = mesEnLetras($mes);
 		   		}else{
-			 			if($dias != ''){
+			 		if($dias != ''){
 			   			$dias .= ', ';
-			 			}
+			 		}
 		   		}
-		   	$dias = $dias.intval($row['DIA']);
+		   		$dias = $dias.intval($row['DIA']);
 		 		}// Termina el if de la Clave
 	  		}//Termina el while
 	  		$ciclo = trim($ciclo, ', ');

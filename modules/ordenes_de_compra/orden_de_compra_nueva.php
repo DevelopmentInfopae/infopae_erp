@@ -22,8 +22,8 @@
       "07" => "Julio",
       "08" => "Agosto",
       "09" => "Septiembre",
-      "10" => "Octobre",
-      "11" => "Novienmbre",
+      "10" => "Octubre",
+      "11" => "Noviembre",
       "12" => "Diciembre"
 	]
 ?>
@@ -33,12 +33,13 @@
 		<h2>Nueva Orden de Compra</h2>
 		<ol class="breadcrumb">
 			<li> <a href="<?php echo $baseUrl; ?>">Inicio</a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/ordenes_de_compra.php">Ordenes de Compra</a> </li>
 			<li class="active"> <strong>Nueva Orden de Compra</strong> </li>
 		</ol>
 	</div>
 	<div class="col-lg-4">
 		<div class="title-action">
-			<a href="#" onclick="generarDespacho()" target="_self" class="btn btn-primary"><i class="fa fa-truck"></i> Generar orden de compra </a>
+			<a href="#" onclick="generarDespacho()" target="_self" id="generar" class="btn btn-primary"><i class="fa fa-truck"></i> Generar orden de compra </a>
 		</div>
 	</div>	
 </div>
@@ -54,7 +55,7 @@
 
 							<div class="col-sm-6 col-md-3 form-group">
 								<label for="mes">Mes</label>
-								<select class="form-control" name="mes" id="mes">
+								<select class="form-control mes" name="mes" id="mes">
 									<option value="">Seleccione una</option>
 									<?php
 										$consulta = " SELECT DISTINCT MES from planilla_semanas ";
@@ -71,18 +72,8 @@
 
 							<div class="col-sm-6 col-md-3 form-group">
 								<label for="semana">Semana</label>
-								<select class="form-control" name="semana" id="semana">
+								<select class="form-control semana" name="semana" id="semana">
 									<option value="">Seleccione una</option>
-									<?php
-									$consulta = " SELECT DISTINCT SEMANA FROM planilla_semanas ";
-									$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-									if($resultado->num_rows >= 1){
-										while($row = $resultado->fetch_assoc()) { ?>
-											<option value="<?php echo $row["SEMANA"]; ?>" <?php  if (isset($_POST['semana']) && ($_POST['semana'] == $row["SEMANA"]) ) { echo ' selected '; } ?>   ><?php echo $row["SEMANA"]; ?></option>
-											<?php
-										}
-									}
-									?>
 								</select>
 							</div>
 
@@ -95,17 +86,17 @@
 
 							<div class="col-sm-6 col-md-3 form-group">
 								<label for="tipoRacion">Tipo Ración</label>
-								<select class="form-control" name="tipoRacion" id="tipoRacion">
+								<select class="form-control tipoRacion" name="tipoRacion" id="tipoRacion">
 									<option value="">Seleccione una</option>
 									<?php
-									$consulta = " SELECT DISTINCT CODIGO FROM tipo_complemento ";
-									$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-									if($resultado->num_rows >= 1){
-										while($row = $resultado->fetch_assoc()) { ?>
-											<option value="<?php echo $row["CODIGO"]; ?>" <?php  if (isset($_POST['tipoRacion']) && ($_POST['tipoRacion'] == $row["CODIGO"]) ) { echo ' selected '; } ?>   ><?php echo $row["CODIGO"]; ?></option>
-											<?php
-										}// Termina el while
-									}//Termina el if que valida que si existan resultados
+										$consulta = " SELECT DISTINCT CODIGO FROM tipo_complemento ";
+										$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+										if($resultado->num_rows >= 1){
+											while($row = $resultado->fetch_assoc()) { ?>
+												<option value="<?php echo $row["CODIGO"]; ?>" <?php  if (isset($_POST['tipoRacion']) && ($_POST['tipoRacion'] == $row["CODIGO"]) ) { echo ' selected '; } ?>   ><?php echo $row["CODIGO"]; ?></option>
+												<?php
+											}// Termina el while
+										}//Termina el if que valida que si existan resultados
 									?>
 								</select>
 							</div>
@@ -115,7 +106,7 @@
 
 							<div class="col-sm-6 col-md-3 form-group">
 								<label for="tipoDespacho">Tipo de Alimento</label>
-								<select class="form-control" name="tipoDespacho" id="tipoDespacho">
+								<select class="form-control tipoAlimento" name="tipoDespacho" id="tipoDespacho">
 									<option value="">Seleccione una</option>
 									<?php
 										$consulta = " SELECT * FROM tipo_despacho WHERE 1=1 ORDER BY Descripcion ASC ";
@@ -131,8 +122,8 @@
 							</div>
 
 							<div class="col-sm-6 col-md-3 form-group">
-								<label for="subtipo">Proveedor</label>
-								<select class="form-control" name="proveedorEmpleado" id="proveedorEmpleado" required>
+								<label for="proveedorEmpleado">Proveedor</label>
+								<select class="form-control proveedor" name="proveedorEmpleado" id="proveedorEmpleado" required>
 									<option value="">Seleccione uno</option>
 								</select>
 								<input type="hidden" id="proveedorEmpleadoNm" name="proveedorEmpleadoNm" value="">
@@ -157,7 +148,7 @@
 
 							<div class="col-sm-6 col-md-3 form-group">
 								<label for="municipio">Municipio</label>
-								<select class="form-control" name="municipio" id="municipio">
+								<select class="form-control municipio" name="municipio" id="municipio">
 									<option value="">Seleccione uno</option>
 								</select>
 							</div>
@@ -188,12 +179,12 @@
 								<button type="button" id="btnQuitar" class="botonParametro btn btn-primary">-</button>
 							</div><!-- /.col -->
 						</div><!-- -/.row -->
-
-						<hr>
-						<div class="row">
+						
+						<div class="row" id="rowTable" style="display: none;">
+							<hr>						
 							<div class="col-sm-12">
 								<div class="table-responsive">
-									<table width="100%" id="box-table-a" class="table table-striped table-bordered table-hover selectableRows" >
+									<table width="100%" id="table" class="table table-striped table-bordered table-hover selectableRows" >
 										<thead>
 											<tr>
 												<th class="col-sm-1 text-center">
@@ -204,19 +195,15 @@
 												<th>Sede</th>
 											</tr>
 										</thead>
-										<tbody>
-											<tr>
-												<td></td>
-												<td></td>
-												<td></td>
-												<td></td>
-											</tr>
+										<tbody id="bodyTable">
+
 										</tbody>
 									</table>
 								</div><!-- /.table-responsive -->
-							</div>
+								<label id="mostrando" ></label>
+							</div>						
+							<hr>
 						</div>
-						<hr>
 					</form>
 					<div class="listadoFondo">
 						<div class="listadoContenedor">
@@ -237,19 +224,20 @@
 
 <?php include '../../footer.php'; ?>
 <!-- Mainly scripts -->
-<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
 
 <!-- Custom and plugin javascript -->
-<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/js/orden_de_compra_nueva.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/inspinia.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="<?= $baseUrl; ?>/modules/ordenes_de_compra/js/orden_de_compra_nueva.js"></script>
 
 <?php mysqli_close($Link); ?>
 

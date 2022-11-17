@@ -503,6 +503,7 @@ foreach ($grupos_alimentarios as $nombre_grupo => $grupo_alimentario){
 		$altura_celda_grupo_alimenticio = count($grupo_alimentario) * 4;
 		if (($altura_celda_grupo_alimenticio + (isset($posicion_Y_celda_alimento) ? $posicion_Y_celda_alimento : 0)) > 210.9) {
 			$pdf->AddPage();
+			$pdf->SetFont('Arial','',$tamannoFuente);
 			include 'despacho_consolidado_header.php';
 		}
 		$posicion_Y_celda_grupo_alimenticio = $pdf->GetY();
@@ -1175,6 +1176,7 @@ if ($cantGruposEtarios == '5') {
 		if (($altura_celda_grupo_alimenticio + (isset($posicion_Y_celda_alimento) ? $posicion_Y_celda_alimento : 0)) > 210.9) {
 			$pdf->AddPage();
 			include 'despacho_consolidado_header.php';
+			$pdf->SetFont('Arial','',$tamannoFuente);
 		}
 		$posicion_Y_celda_grupo_alimenticio = $pdf->GetY();
 		foreach ($grupo_alimentario as $alimento){

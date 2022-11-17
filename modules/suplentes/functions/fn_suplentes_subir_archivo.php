@@ -162,15 +162,6 @@ while(($registro = fgetcsv($archivo_suplentes, null, $separador_registros)) == T
 		exit();
 	}
 
-	if(empty($registro[16]))
-	{
-		$respuesta_ajax = [
-			'success' => 0,
-			'message' => 'El campo étnia no puede estar <strong>vacío</strong>.<br><strong>Registro número: '. $fila
-		];
-		echo json_encode($respuesta_ajax);
-		exit();
-	}
 
 	if(empty($registro[17]))
 	{
@@ -293,7 +284,7 @@ if ($fila > 1) {
 	`cod_mun_nac` INT(11) NULL DEFAULT '0',
 	`fecha_nac` DATE NULL DEFAULT NULL,
 	`cod_estrato` INT(11) NULL DEFAULT '0',
-	`sisben` DECIMAL(5,3) NULL DEFAULT '0.000',
+	`sisben` VARCHAR(4) NULL DEFAULT '0',
 	`cod_discap` INT(11) NULL DEFAULT '0',
 	`etnia` INT(11) NULL DEFAULT '0',
 	`resguardo` INT(11) NULL DEFAULT '0',

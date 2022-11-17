@@ -572,9 +572,9 @@ if ($cantGruposEtarios == 3) {
       if($current_y > 171) {
          $pdf->AddPage();
          include 'despacho_kardex4_multiple_header.php';
-         include 'despacho_firma_planilla_kardex3.php';
+         include 'despacho_firma_planilla_kardex4.php';
       } else {
-         include 'despacho_firma_planilla_kardex3.php';
+         include 'despacho_firma_planilla_kardex4.php';
       }
    }
    mysqli_close ( $Link );
@@ -1068,7 +1068,7 @@ if ($cantGruposEtarios == 5) {
          $pdf->MultiCell(42.4, $altura_celda_grupo_alimenticio, "", 1);
       }
 
-      for ($s=1; $s <=5 ; $s++) {
+      for ($s=1; $s <=3 ; $s++) {
          $current_y = $pdf->GetY();
          if($current_y > 204.5) {
             $filas = 0;
@@ -1094,9 +1094,9 @@ if ($cantGruposEtarios == 5) {
       if($current_y > 171) {
          $pdf->AddPage();
          include 'despacho_kardex4_multiple_header.php';
-         include 'despacho_firma_planilla_kardex3.php';
+         include 'despacho_firma_planilla_kardex4.php';
       } else {
-         include 'despacho_firma_planilla_kardex3.php';
+         include 'despacho_firma_planilla_kardex4.php';
       }
    }
    mysqli_close ( $Link );

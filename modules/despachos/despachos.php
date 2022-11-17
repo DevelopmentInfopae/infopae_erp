@@ -964,13 +964,7 @@
 			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
 				botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()"> <i class="fa fa-file-pdf-o"></i> Consolidado Vertical.pdf </a></li>';
 			<?php endif ?>
-			
-			// Menu para COVID
-			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado_ri()"> <i class="fa fa-file-pdf-o"></i> Entrega Raciones COVID-19 RI.pdf </a></li>';
-			botonAcciones += '<li><a href="#" onclick="covid19_despachos_consolidado()"> <i class="fa fa-file-pdf-o"></i> Entrega Raciones COVID-19.pdf </a></li>';
-			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-				botonAcciones += '<li><a href="#" onclick="despachos_agrupados()"> <i class="fa fa-file-pdf-o"></i> Agrupado.pdf </a></li>';
-			<?php endif ?>
+		
 			<?php if($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"){ ?>
 				botonAcciones += '<li><a href="#" onclick="editar_despacho()"><i class="fas fa-pencil-alt"></i> Editar Despacho </a></li>';
 				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()"><i class="fas fa-pencil-alt"></i> Ingresar Lotes y Fechas de vencimiento </a></li>';

@@ -1,11 +1,22 @@
 <?php 
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';
-$mesesNom = array('01' => "Ene", "02" => "Feb", "03" => "Mar", "04" => "Abr", "05" => "Mayo", "06" => "Jun", "07" => "Jul", "08" => "Ago", "09" => "Sep", "10" => "Oct", "11" => "Nov", "12" => "Dic");
+$mesesNom = array('01' => "Ene",
+						"02" => "Feb", 
+						"03" => "Mar", 
+						"04" => "Abr", 
+						"05" => "Mayo", 
+						"06" => "Jun", 
+						"07" => "Jul", 
+						"08" => "Ago", 
+						"09" => "Sep", 
+						"10" => "Oct", 
+						"11" => "Nov", 
+						"12" => "Dic");
+
 $periodoActual = $_SESSION['periodoActual'];
 $semana = $_POST['semana'];
 $diasSemanas = $_POST['diasSemanas'];
-
 $dias = [];
 $diasComplementos = [];
 $mesDeDia = [];
@@ -14,13 +25,12 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 	$datos = "";
 	$diaD = 0;
 	foreach ($SemanasArray as $semanaF => $dia) {
-		// echo $semanaF."\n";
 		foreach ($dia as $id => $diaR) {
 			$diaD++;
 			if ($semanaF == $semana) {
-			 $datos.="SUM(D$diaD) AS '".$diaR."', ";
-			 $dias[] = $diaR;
-			 $mesDeDia[$diaR] = $mes;
+			 	$datos.="SUM(D$diaD) AS '".$diaR."', ";
+			 	$dias[] = $diaR;
+				$mesDeDia[$diaR] = $mes;
 			}
 		}
 	}
@@ -34,10 +44,8 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 			while ($Complementos = $resComplementos->fetch_assoc()) {
 				if (is_null($Complementos['tipo_complem'])) {
 						continue;
-					}
-				// print_r($Complementos);
+				}
 				foreach ($dias as $id => $diaFecha) {
-					// echo "Dia : ".$diaFecha."- Mes :".$mes;
 					if (!isset($diasComplementos[$diaFecha."-".$mesesNom[$mesDeDia[$diaFecha]]][$Complementos['tipo_complem']]) && isset($Complementos[$diaFecha])) {
 						$diasComplementos[$diaFecha."-".$mesesNom[$mesDeDia[$diaFecha]]][$Complementos['tipo_complem']] = $Complementos[$diaFecha];
 					} else if (!isset($diasComplementos[$diaFecha."-".$mesesNom[$mesDeDia[$diaFecha]]][$Complementos['tipo_complem']])) {
@@ -46,12 +54,8 @@ foreach ($diasSemanas as $mes => $SemanasArray) {
 				}
 			}
 		}
-		// echo $consComplementos."\n";
 	}
 }
-
-// print_r($diasComplementos);
-
 
 $sumtotales = [];
 $totalitario = 0;

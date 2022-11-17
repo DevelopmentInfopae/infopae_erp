@@ -4,7 +4,19 @@ require_once '../../../db/conexion.php';
 
 $periodoActual = $_SESSION['periodoActual'];
 
-$mesesNom = array('1' => "Enero", "2" => "Febrero", "3" => "Marzo", "4" => "Abril", "5" => "Mayo", "6" => "Junio", "7" => "Julio", "8" => "Agosto", "9" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
+$mesesNom = array('01' => "Enero", 
+                  "02" => "Febrero", 
+                  "03" => "Marzo", 
+                  "04" => "Abril", 
+                  "05" => "Mayo", 
+                  "06" => "Junio", 
+                  "07" => "Julio", 
+                  "08" => "Agosto", 
+                  "09" => "Septiembre", 
+                  "10" => "Octubre", 
+                  "11" => "Noviembre", 
+                  "12" => "Diciembre"
+                );
 
 $codigoMunicipio = '';
 $consCodigoMunicipio = "SELECT codMunicipio FROM parametros";
@@ -84,10 +96,10 @@ if ($codigoMunicipio == '0') {
  
       }
     $respuesta2[$mes] = $respuesta;
-    $mesesRecorridos .= $mes;
+    $mesesRecorridos .= $mes. " ";
     }
-
-    $arrayMes = explode("0", $mesesRecorridos);
+    $mesesRecorridos = trim($mesesRecorridos);
+    $arrayMes = explode(" ", $mesesRecorridos);
 
     // funcion para quitar espacios vacios de un array
     foreach ($arrayMes as $key => $link) {
@@ -128,17 +140,19 @@ if ($codigoMunicipio == '0') {
         }
       }
 
-        // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
-      foreach ($respuesta2 as $mes => $valoresMes) {
-        foreach ($municipios as $municipio => $valorMunicipio) {
-          if (isset($municipios[$municipio][$mes])) {
-            continue;
-          }else{
-            $municipios[$municipio][$mes] = '0';
-          }
-            asort($municipios[$municipio]);
+    // funcion para llenar campos cuando haya  un dato en un mes y en otro no 
+    foreach ($respuesta2 as $mes => $valoresMes) {
+        foreach ($municipios as $municipio => $valorJornada) {
+            if (isset($municipios[$municipio][$mes])) {
+                continue;
+            }else{
+                $municipios[$municipio][$mes] = '0';
+            }
         }
-      } 
+        foreach ($valoresMes as $valorMes => $valor) {
+            ksort($municipios[$valor['Ciudad']]);
+        }
+    } 
       // var_dump($municipios);
 
       foreach ($municipios as $municipio => $valorMunicipio) {
@@ -267,7 +281,7 @@ foreach ($diasSemanas as $mes => $semanas) {
  
       }
     $respuesta2[$mes] = $respuesta;
-  $mesesRecorridos .= $mes;
+  $mesesRecorridos .= $mes . ' ';
 
   // consulta en la que vamos a almacenar las sedes que se van a mostrar en la tabla 
   // $periodo2 = 0;
@@ -280,8 +294,8 @@ foreach ($diasSemanas as $mes => $semanas) {
      }
   }
 }
-
-$arrayMes = explode("0", $mesesRecorridos);
+$mesesRecorridos = trim($mesesRecorridos, ' ');
+$arrayMes = explode(" ", $mesesRecorridos);
 
 // funcion para quitar espacios vacios de un array
 foreach ($arrayMes as $key => $link) {

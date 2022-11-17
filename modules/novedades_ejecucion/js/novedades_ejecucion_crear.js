@@ -1,5 +1,4 @@
 $(document).ready(function() {
-	// Configuración inicial del plugin select2.
 	$('select').select2();
 
 	// Configuración inicial del plugin toastr.
@@ -54,7 +53,7 @@ $(document).ready(function() {
 
 	$('#btnBuscar').click(function(){ validar_campos_filtros(); });
 	$('.guaradarNovedad').click(function(){ guardarNovedad(); });
-	$('#sede').change(function(){ buscarMeses($(this).val()); });
+	$('#institucion').change(function(){ buscarMeses($(this).val()); });
 	$('#mes').change(function(){ buscarSemanas($(this).val()); });
 	$('#institucion').change(function(){ buscarSede($(this).val()); });
 	$('#semana').change(function(){ buscarComplementos($(this).val()); });
@@ -101,6 +100,18 @@ $(document).ready(function() {
 		else {
 			restarCantidadDias($(this));
 		}
+	});
+
+	$('select#rango').on('change',function(){
+    	var rango = $(this).val();
+    	if (rango == 0) {
+    		$('#sede').select2('val','');
+    		$('#sede').prop('required', false);
+    		$('#sede').prop('disabled', true);
+    	}else{
+    		$('#sede').prop('disabled', false);
+    		$('#sede').prop('required', true);
+    	}
 	});
 });
 
@@ -175,12 +186,13 @@ function buscarSede(institucion) {
 }
 
 // ajax para buscar los meses
-function buscarMeses(sede) {
+function buscarMeses(institucion) {
+	// console.log(institucion)
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_meses.php",
 		dataType: 'JSON',
-    	data: { 'sede': sede },
+    	data: { 'institucion': institucion },
 		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
 			if(data.estado == 1){
@@ -253,12 +265,17 @@ function buscar_dias_semanas() {
 		url: 'functions/fn_novedades_ejecucion_buscar_dias_semana.php',
 		type: 'POST',
 		dataType: 'HTML',
-		data: { mes: $('#mes').val(), semana: $('#semana').val() },
+		data: { mes: $('#mes').val(), semana: $('#semana').val(), rango : $('#rango').val() },
 		beforeSend: function() {
 			$('#loader').fadeIn();
 		}
 	}).done(function(data) {
 		$('#contenedor_tabla_focalizados').fadeIn();
+		if( $('.tabla_focalizacion thead tr th').text() !== '' ){
+			$('.tabla_focalizacion thead tr th, .tabla_focalizacion tfoot tr th').remove();
+			$('.tabla_focalizacion tbody').remove();
+			$('.tabla_focalizacion').DataTable().destroy();
+		}
 		$('.tabla_focalizacion thead tr, .tabla_focalizacion tfoot tr').html(data);
 		buscar_priorizacion();
 	}).fail(function(data) {
@@ -277,7 +294,9 @@ function buscar_priorizacion() {
 			mes: $('#mes').val(),
 			sede: $('#sede').val(),
 			semana: $('#semana').val(),
-			tipo_complemento: $('#tipoComplemento').val()
+			tipo_complemento: $('#tipoComplemento').val(),
+			rango : $('#rango').val(),
+			institucion : $('#institucion').val()
 		}
 	}).done(function(data) {
 		if (data == 0) {
@@ -295,80 +314,155 @@ function buscar_priorizacion() {
 
 // despues de buscar la priorizacion, se busca la focalizacion el detalle de los niños
 function buscar_focalizacion() {
-	total_suma_dias = 0;
-	$('.tabla_focalizacion').DataTable({
-		ajax: {
-			method: 'POST',
-			url: 'functions/fn_novedades_ejecucion_buscar_focalizacion.php',
-			data:{
-				municipio: $('#municipio').val(),
-				institucion: $('#institucion').val(),
-				sede: $('#sede').val(),
-				mes: $('#mes').val(),
-				semana: $('#semana').val(),
-				tipoComplemento: $('#tipoComplemento').val()
-			}
-		},
-		columns:[
-			{ data: 'abreviatura_documento'},
-			{ data: 'numero_documento'},
-			{ data: 'nombre'},
-			{ data: 'grado'},
-			{ data: 'grupo'},
-			{ data: 'complemento'},
-			{ data: 'D1', className: 'text-center', orderable: false},
-			{ data: 'D2', className: 'text-center', orderable: false},
-			{ data: 'D3', className: 'text-center', orderable: false},
-			{ data: 'D4', className: 'text-center', orderable: false},
-			{ data: 'D5', className: 'text-center', orderable: false}
-		],
-		order: false,
-		oLanguage: {
-			sLengthMenu: 'Mostrando _MENU_ registros',
-			sZeroRecords: 'No se encontraron registros',
-			sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
-			sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-			sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-			sSearch:         'Buscar: ',
-			oPaginate:{
-				sFirst:    'Primero',
-				sLast:     'Último',
-				sNext:     'Siguiente',
-				sPrevious: 'Anterior'
-			}
-		},
-		dom: 'r<"containerBtn"><"inputFiltro"f>tip',
-		MenuLength: [[-1], ['Todo']],
-		destroy: true,
-		responsive: true,
-		pageLength: -1,
-		rowCallback: function(row, data) {
-  			total_suma_dias += parseInt(data.suma_dias);
-    	},
-		initComplete: function(settings, json) {
-			$('#loader').fadeOut();
-			$('#boton_guardar_novedades').removeClass('disabled');
+	// $('.tabla_focalizacion').DataTable().destroy();
+	rango = $('#rango').val();
+	if (rango == 1) {
+		total_suma_dias = 0;
+		$('.tabla_focalizacion').DataTable({
+			ajax: {
+				method: 'POST',
+				url: 'functions/fn_novedades_ejecucion_buscar_focalizacion.php',
+				data:{
+					municipio: $('#municipio').val(),
+					institucion: $('#institucion').val(),
+					sede: $('#sede').val(),
+					mes: $('#mes').val(),
+					semana: $('#semana').val(),
+					tipoComplemento: $('#tipoComplemento').val()
+				}
+			},
+			columns:[
+				{ data: 'abreviatura_documento'},
+				{ data: 'numero_documento'},
+				{ data: 'nombre'},
+				{ data: 'grado'},
+				{ data: 'grupo'},
+				{ data: 'complemento'},
+				{ data: 'D1', className: 'text-center', orderable: false},
+				{ data: 'D2', className: 'text-center', orderable: false},
+				{ data: 'D3', className: 'text-center', orderable: false},
+				{ data: 'D4', className: 'text-center', orderable: false},
+				{ data: 'D5', className: 'text-center', orderable: false}
+			],
+			order: false,
+			oLanguage: {
+				sLengthMenu: 'Mostrando _MENU_ registros',
+				sZeroRecords: 'No se encontraron registros',
+				sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+				sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+				sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+				sSearch:         'Buscar: ',
+				oPaginate:{
+					sFirst:    'Primero',
+					sLast:     'Último',
+					sNext:     'Siguiente',
+					sPrevious: 'Anterior'
+				}
+			},
+			dom: 'r<"containerBtn"><"inputFiltro"f>tip',
+			MenuLength: [[-1], ['Todo']],
+			destroy: true,
+			responsive: true,
+			pageLength: -1,
+			rowCallback: function(row, data) { 
+  				total_suma_dias += parseInt(data.suma_dias);
+    		},
+			initComplete: function(settings, json) {
+				$('#loader').fadeOut();
+				$('#boton_guardar_novedades').removeClass('disabled');
 
-			// Iteración para habilitar el check principal del encabezado de tabla
-			$('.checkbox-header').each(function() {
-				var contador = 0;
-				$('.checkbox'+ $(this).data('columna')).each(function() {
-					if ($(this).is(':checked')) {
-						contador++;
+				// Iteración para habilitar el check principal del encabezado de tabla
+				$('.checkbox-header').each(function() {
+					var contador = 0;
+					$('.checkbox'+ $(this).data('columna')).each(function() {
+						if ($(this).is(':checked')) {
+							contador++;
+						}
+					});
+					if (contador > 0) {
+						$(this).prop('checked', true);
+					}
+					else {
+						$(this).prop('checked', false);
 					}
 				});
-				if (contador > 0) {
-					$(this).prop('checked', true);
+				_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
+				$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
+			}
+		});
+	}
+	if (rango == 0) {
+		total_suma_dias = 0;
+		$('.tabla_focalizacion').DataTable({
+			ajax: {
+				method: 'POST',
+				url: 'functions/fn_novedades_ejecucion_buscar_focalizacion_por_sedes.php',
+				data:{
+					municipio: $('#municipio').val(),
+					institucion: $('#institucion').val(),
+					sede: $('#sede').val(),
+					mes: $('#mes').val(),
+					semana: $('#semana').val(),
+					tipoComplemento: $('#tipoComplemento').val()
 				}
-				else {
-					$(this).prop('checked', false);
+			},
+			columns:[
+				{ data: 'codigo_sede'},
+				{ data: 'nombre_sede'},
+				{ data: 'D1', className: 'text-center', orderable: false},
+				{ data: 'D2', className: 'text-center', orderable: false},
+				{ data: 'D3', className: 'text-center', orderable: false},
+				{ data: 'D4', className: 'text-center', orderable: false},
+				{ data: 'D5', className: 'text-center', orderable: false}
+			],
+			order: false,
+			oLanguage: {
+				sLengthMenu: 'Mostrando _MENU_ registros',
+				sZeroRecords: 'No se encontraron registros',
+				sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+				sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+				sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+				sSearch:         'Buscar: ',
+				oPaginate:{
+					sFirst:    'Primero',
+					sLast:     'Último',
+					sNext:     'Siguiente',
+					sPrevious: 'Anterior'
 				}
-			});
+			},
+			dom: 'r<"containerBtn"><"inputFiltro"f>tip',
+			MenuLength: [[-1], ['Todo']],
+			destroy: true,
+			responsive: true,
+			pageLength: -1,
+			rowCallback: function(row, data) {
+				console.log(data)
+  				total_suma_dias += parseInt(data.suma_dias);
+    		},
+			initComplete: function(settings, json) {
+				$('#loader').fadeOut();
+				$('#boton_guardar_novedades').removeClass('disabled');
 
-			_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
-			$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
-		}
-	});
+				// Iteración para habilitar el check principal del encabezado de tabla
+				$('.checkbox-header').each(function() {
+					var contador = 0;
+					$('.checkbox'+ $(this).data('columna')).each(function() {
+						if ($(this).is(':checked')) {
+							contador++;
+						}
+					});
+					if (contador > 0) {
+						$(this).prop('checked', true);
+					}
+					else {
+						$(this).prop('checked', false);
+					}
+				});
+				_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
+				$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
+			}
+		});
+	}
 }
 
 // funcion para sumar las cantidades que esten checkeadas

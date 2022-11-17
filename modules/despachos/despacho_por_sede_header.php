@@ -461,6 +461,7 @@ if ($cantGruposEtarios == 5) {
   $current_x = $pdf->GetX();
   $pdf->Cell(45, 23.5, '', 1, 0, 'L', False);
   $pdf->SetXY($current_x, $current_y+2.35);
+
   $cantDias = explode(',', $diasDespacho);
   $cantDias = count($cantDias);
   $auxDias = "X ".$cantDias." DIAS ".strtoupper($dias);
@@ -562,7 +563,7 @@ if ($cantGruposEtarios == 5) {
   $pdf->SetXY($current_x2+13, $current_y2);
   $current_y2 = $pdf->GetY();
   $current_x2 = $pdf->GetX();
-  $pdf->Cell(13, 15, '', 1, 0, 'L', False);
+  $pdf->Cell(13, 7, '', 1, 0, 'L', False);
   $pdf->SetXY($current_x2, $current_y2);
 
   $pdf->Cell(13, 3.5, utf8_decode($etario_4), 0, 3.5, 'C', False);
@@ -570,7 +571,7 @@ if ($cantGruposEtarios == 5) {
   $pdf->SetXY($current_x2+13, $current_y2);
   $current_y2 = $pdf->GetY();
   $current_x2 = $pdf->GetX();
-  $pdf->Cell(13, 15, '', 1, 0, 'L', False);
+  $pdf->Cell(13, 7, '', 1, 0, 'L', False);
   $pdf->SetXY($current_x2, $current_y2);
 
   $pdf->Cell(13, 3.5, utf8_decode($etario_5), 0, 3.5, 'C', False);

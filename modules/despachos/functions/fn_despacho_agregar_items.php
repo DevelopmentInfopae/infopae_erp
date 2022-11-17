@@ -84,7 +84,7 @@ if(count($itemsActuales) > 0){
 
 if ($semana == '') {
    $ultimo_dia = end($dias);
-   $consultaNumeroPriorizacion = " SELECT SEMANA FROM planilla_semanas WHERE MES = '$mes' AND DIA = '$ultimo_dia' ";
+   $consultaNumeroPriorizacion = " SELECT SEMANA FROM planilla_semanas WHERE MES = '$mes' AND DIA = '$ultimo_dia' ORDER BY id DESC LIMIT 1 ";
    $respuestaNumeroPriorizacion = $Link->query($consultaNumeroPriorizacion) or die ('Error al consultar la ultima semana priorizada');
    if ($respuestaNumeroPriorizacion->num_rows > 0) {
       $dataNumeroPriorizacion = $respuestaNumeroPriorizacion->fetch_assoc();
@@ -93,7 +93,7 @@ if ($semana == '') {
    }
 }
 
-// exit(var_dump($consulta)); 
+// exit(var_dump($consultaNumeroPriorizacion));    
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
    while($row = $resultado->fetch_assoc()) {
