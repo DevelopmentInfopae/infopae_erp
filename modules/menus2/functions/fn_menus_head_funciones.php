@@ -29,7 +29,7 @@ function consultarVariacionMenu($variacionMenu){
 
 function obtenerUltimoCodigo($codigoPrefijo){
   global $Link;
-  $consultUltimoCodigo = "select Codigo from productos".$_SESSION['periodoActual']." where Codigo like '".$codigoPrefijo."%' AND Nivel = 3 order by id desc limit 1";
+  $consultUltimoCodigo = "select Codigo from productos".$_SESSION['periodoActual']." where Codigo like '".$codigoPrefijo."%' AND Nivel = 3 order by CAST(Codigo AS SIGNED) Desc limit 1";
   $resultadoUltimoCodigo = $Link->query($consultUltimoCodigo) or die('Unable to execute query. '. mysqli_error($Link).$consultUltimoCodigo);
   if ($resultadoUltimoCodigo->num_rows > 0) {
     while ($row = $resultadoUltimoCodigo->fetch_assoc()) {

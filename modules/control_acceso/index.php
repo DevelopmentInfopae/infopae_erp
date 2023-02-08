@@ -8,6 +8,13 @@ if ($permisos['control_acceso'] == "0" || $permisos['control_acceso'] == "1") {
      	window.open('<?= $baseUrl ?>', '_self');
     </script>
 <?php exit(); }
+	  else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_control_acceso");
+		  list.className += " active ";
+		</script>
+	  <?php
+	  }
 
 ?>
 <!DOCTYPE html>

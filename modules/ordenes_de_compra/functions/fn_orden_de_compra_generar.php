@@ -70,7 +70,7 @@ if($resultado->num_rows >= 1){
 	}
 }
 
-
+// exit(var_dump($semanasDias));
 // aca le vamos a dar el manejo a las semanas implictas
 foreach ($semanasDias as $semanasDiaskey => $semanaDiasvalue) {
 	$porciones = explode(",", $semanaDiasvalue);
@@ -87,12 +87,12 @@ $cantidadDias = count($dias);
 $cantGruposEtarios = $_SESSION['cant_gruposEtarios']; 
 
 // Se van a buscar el mes y el año a partir de la tabla de planilla semana y se va a verificar la existencia de las tablas.
-$consulta = " SELECT ano, mes, semana FROM planilla_semanas WHERE MES = '$mes' limit 1 ";
+$consulta = " SELECT ANO, MES_DESPACHO, SEMANA_DESPACHO FROM planilla_semanas WHERE MES_DESPACHO = '$mes' limit 1 ";
 $resultado = $Link->query($consulta) or die ('Error al cosultar planillas_semanas: '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
-		$semanaMes = $row['mes'];
-		$semanaAnno = $row['ano'];
+		$semanaMes = $row['MES_DESPACHO'];
+		$semanaAnno = $row['ANO'];
 	}
 }
 $semanaAnno = substr($semanaAnno, -2);
@@ -244,7 +244,7 @@ foreach ($variaciones as $id => $variacion) {
 
 	$parametroSemana = '';
 	if ($semana !== '') {
-		$parametroSemana = " AND ps.SEMANA = '$semana' ";
+		$parametroSemana = " AND ps.SEMANA_DESPACHO = '$semana' ";
 	}else if ($semana == '') {
 		$auxSemanaImplicita = "(";
 		foreach ($semanasImplicitas as $semanasImplicitasKey => $semanasImplicitasValue) {
@@ -252,7 +252,7 @@ foreach ($variaciones as $id => $variacion) {
 		}
 		$auxSemanaImplicita = trim($auxSemanaImplicita,",");
 		$auxSemanaImplicita .= ")";
-		$parametroSemana = " AND ps.SEMANA IN $auxSemanaImplicita ";
+		$parametroSemana = " AND ps.SEMANA_DESPACHO IN $auxSemanaImplicita ";
 	}
 	
 	// 1. Armar array con los componentes Primera consulta, la que trae los diferentes alimentos de los menu.
@@ -271,7 +271,7 @@ foreach ($variaciones as $id => $variacion) {
 							INNER JOIN productos$tablaAnno p ON ps.menu = p.orden_ciclo
 							INNER JOIN fichatecnica ft ON p.Codigo = ft.Codigo
 							INNER JOIN fichatecnicadet ftd ON ftd.IdFT = ft.Id 
-			 				WHERE ps.MES = '$mes' $parametroSemana
+			 				WHERE ps.MES_DESPACHO = '$mes' $parametroSemana
 							AND ft.Nombre IS NOT NULL
 							AND p.Cod_Tipo_complemento = '$tipo' 
 							AND p.cod_variacion_menu = '$variacion'";
@@ -280,7 +280,7 @@ foreach ($variaciones as $id => $variacion) {
 	for ($i=0; $i < count($dias) ; $i++) {
 		if($i == 0){ $consulta = $consulta." AND ( "; }
 		else{ $consulta = $consulta." OR "; $diasDespacho = $diasDespacho.','; }
-		$consulta .= " (ps.SEMANA = " .$semanasImplicitasCompleta[$i]. " AND ps.DIA =  " .$diasImplicitos[$i]. ") ";
+		$consulta .= " (ps.SEMANA_DESPACHO = '" .$semanasImplicitasCompleta[$i]. "' AND ps.DIA =  '" .$diasImplicitos[$i]. "') ";
 		$diasDespacho = $diasDespacho.$dias[$i];
 	}
 	if(count($dias) > 0){
@@ -303,9 +303,10 @@ foreach ($variaciones as $id => $variacion) {
 	// Consulta que retorna los menus de los días seleccionados.
 	$condicionDias = $menus = "";
 	for ($i=0; $i < count($dias) ; $i++) {
-		$condicionDias .= " ( SEMANA = " .$semanasImplicitasCompleta[$i]. " AND DIA =  " .$diasImplicitos[$i]. ") OR ";
+		$condicionDias .= " ( SEMANA_DESPACHO = '" .$semanasImplicitasCompleta[$i]. "' AND DIA =  '" .$diasImplicitos[$i]. "') OR ";
 	}
-	$consultaMenusDias = "SELECT * FROM planilla_semanas ps WHERE ps.MES = '$mes' $parametroSemana AND (". trim($condicionDias, " OR ") .");";
+	$consultaMenusDias = "SELECT * FROM planilla_semanas ps WHERE ps.MES_DESPACHO = '$mes' $parametroSemana AND (". trim($condicionDias, " OR ") .");";
+	// exit(var_dump($consultaMenusDias));
 	$resultadoMenusDias = $Link->query($consultaMenusDias) or die("Error al consultar planilla_semanas. Linea 292: ". $Link->error);
 	if ($resultadoMenusDias->num_rows > 0) {
 		while ($resgistroMenusDias = $resultadoMenusDias->fetch_assoc()) {
@@ -421,7 +422,7 @@ foreach ($variaciones as $id => $variacion) {
 	$sedes_variacion = [];
 	for ($i=0; $i < count($sedes) ; $i++) {
 		$auxSede = $sedes[$i];
-		$consulta = "SELECT distinct cod_sede, $concatGruposEtarios from sedes_cobertura where mes = '$mes' $parametroSemana2 and cod_sede = $auxSede and Ano = $annoActual ORDER BY SEMANA DESC LIMIT 1 "; 
+		$consulta = "SELECT distinct cod_sede, $concatGruposEtarios from sedes_cobertura where 1=1 $parametroSemana2 and cod_sede = $auxSede and Ano = '$annoActual' ORDER BY SEMANA DESC LIMIT 1 "; 
 
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		if($resultado->num_rows >= 1){
@@ -462,7 +463,7 @@ foreach ($variaciones as $id => $variacion) {
 			}
 			$diasIn = trim($diasIn,", "); 
 
-			$consultaSemanasMes = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes AND DIA IN ($diasIn)";
+			$consultaSemanasMes = " SELECT DISTINCT(SEMANA_DESPACHO) AS semana FROM planilla_semanas WHERE MES_DESPACHO = '$mes' AND DIA IN ($diasIn)";
 			$respuestaSemanasMes = $Link->query($consultaSemanasMes) or die ('Error al consultar las semanas del mes ');
 			if ($respuestaSemanasMes->num_rows > 0) {
 				while ($dataSemanasMes = $respuestaSemanasMes->fetch_assoc()) {
@@ -1018,7 +1019,7 @@ foreach ($variaciones as $id => $variacion) {
 				$diasIn .= "'" .$value. "', ";	
 			}
 			$diasIn = trim($diasIn,", "); 
-			$consultaSemanaString = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes AND SEMANA IN $auxSemanaImplicita"; 
+			$consultaSemanaString = " SELECT DISTINCT(SEMANA_DESPACHO) AS semana FROM planilla_semanas WHERE MES_DESPACHO = $mes AND SEMANA_DESPACHO IN $auxSemanaImplicita"; 
 			$respuestaSemanasString = $Link->query($consultaSemanaString) or die ('Error al consultar las semanas relacionadas' . mysqli_error($Link));
 			if ($respuestaSemanasString->num_rows > 0) {
 				while($dataSemanasString = $respuestaSemanasString->fetch_assoc()){

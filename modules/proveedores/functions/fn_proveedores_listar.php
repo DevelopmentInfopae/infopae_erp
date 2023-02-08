@@ -34,7 +34,7 @@
                                     Acciones <span class="caret"></span>
                                   </button>
                                   <ul class="dropdown-menu pull-right" aria-labelledby="dLabel">
-                                    <li><a href="#" class="editarProveedores" data-idProveedor="'. $registros["idProveedor"] .'"><i class="fa fa-pencil fa-lg"></i> Editar</a></li>
+                                    <li><a href="#" class="editarProveedores" data-idProveedor="'. $registros["idProveedor"] .'"><i class="fas fa-pencil-alt"></i> Editar</a></li>
                                   </ul>
                                 </div>
                               </div>';

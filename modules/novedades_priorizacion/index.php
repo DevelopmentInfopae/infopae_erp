@@ -6,19 +6,27 @@
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   <?php exit();}
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_novedades");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 
+  $nameLabel = get_titles('novedades', 'priorizacion', $labels); 
   $titulo = 'Usuarios';
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-    <h2>Novedades de priorización</h2>
+    <h2><?= $nameLabel ?></h2>
     <ol class="breadcrumb">
       <li>
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li class="active">
-        <strong>Novedades de priorización</strong>
+        <strong><?= $nameLabel ?></strong>
       </li>
     </ol>
   </div>

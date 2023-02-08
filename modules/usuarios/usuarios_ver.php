@@ -54,7 +54,7 @@
 	          <span class="caret"></span>
 	        </button>
 	        <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-	          <li><a href="#" class="btnEditarUsuario" data-idusuario="<?php echo $idUsuario; ?>"><i class="fa fa-pencil"></i> Editar </a></li>
+	          <li><a href="#" class="btnEditarUsuario" data-idusuario="<?php echo $idUsuario; ?>"><i class="fas fa-pencil-alt"></i> Editar </a></li>
 	          <li><a onclick="restaurarContrasena(<?php echo $idUsuario; ?>);"><i class="fa fa-retweet"></i> Restaurar contraseña</a></li>
 			    	<li><a onclick="confirmarEliminarUsuario(<?php echo $idUsuario; ?>);"><i class="fa fa-trash"></i> Eliminar </a></li>
 	        </ul>
@@ -219,7 +219,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/usuarios/js/usuarios.js"></script>
 <script type="text/javascript">

@@ -129,18 +129,18 @@ $x1 = $pdf->GetX();
 $y1 = $pdf->GetY();
 $pdf->Cell(0,8,utf8_decode(''),'B',0,'L',true);
 $pdf->SetXY($x1, $y1);
-$pdf->Cell(85,8,utf8_decode("NOMBRE DEL ESTABLECIMIENTO U CENTRO EDUCATIVO"),0,'C',false);
-$x1 = $x1 + 85;
+$pdf->MultiCell(49,4,utf8_decode("NOMBRE DEL ESTABLECIMIENTO U CENTRO EDUCATIVO"),0,'C',false);
+$x1 = $x1 + 49;
 $pdf->SetXY($x1, $y1);
 $pdf->MultiCell(14,4,utf8_decode("TIPO RACIÓN"),0,'C',false);
 $x1 = $x1 + 14;
 $pdf->SetXY($x1, $y1);
-$pdf->Cell(165,4,utf8_decode('N° DE RACIONES POR DÍA'),'B',0,'C',false);
+$pdf->Cell(232.5,4,utf8_decode('N° DE RACIONES POR DÍA'),'B',0,'C',false);
 $y2 = $y1 + 4;
 $pdf->SetXY($x1, $y2);
 
 $auxIndice = 1;
-for ($i=0; $i < 22 ; $i++) {
+for ($i=0; $i < 31 ; $i++) {
 	$dia = '';
 	$aux = $auxIndice;
 	if($aux < 10){
@@ -164,18 +164,13 @@ $pdf->SetXY($x1, $y1);
 $pdf->MultiCell(16,4,utf8_decode("TOTAL RACIONES"),0,'C',false);
 $x1 = $x1 + 16;
 $pdf->SetXY($x1, $y1);
-$pdf->MultiCell(16,4,utf8_decode("TOTAL DIAS "),0,'C',false);
-$x1 = $x1 + 16;
-$pdf->SetXY($x1, $y1);
-$pdf->Cell(0,8,utf8_decode("NOVEDADES "),'R',0,'C',false);
-
+$pdf->MultiCell(0,4,utf8_decode("TOTAL DIAS "),0,'C',false);
 
 $pdf->SetXY($x, $y);
-$pdf->Cell(85,8,utf8_decode(''),'R',0,'L',false);
+$pdf->Cell(49,8,utf8_decode(''),'R',0,'L',false);
 $pdf->Cell(14,8,utf8_decode(''),'R',0,'L',false);
-$pdf->Cell(165,8,utf8_decode(''),'R',0,'L',false);
+$pdf->Cell(232.5,8,utf8_decode(''),'R',0,'L',false);
 $pdf->Cell(16,8,utf8_decode(''),'R',0,'L',false);
-$pdf->Cell(16,8,utf8_decode(''),'R',0,'L',false);
-$pdf->Cell(0,8,utf8_decode(''),'R',1,'L',false);
+$pdf->Cell(0,8,utf8_decode(''),0,1,'L',false);
 // Termina impresión de cantidades, día con día
 $pdf->SetFont('Arial','',$tamannoFuente-1);

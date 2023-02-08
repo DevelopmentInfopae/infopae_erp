@@ -64,6 +64,10 @@ function guardarParametros(){
     formData.append('facebook', $('#facebook').val());
     formData.append('twitter', $('#twitter').val());
     formData.append('tipoBusqueda', $('#tipoBusqueda').val());
+    formData.append('diasAtencion', $('#diasAtencion').val());
+    formData.append('sideBar', $('#sideBar').val());
+    formData.append('formatoPlanillas', $('#formatoPlanillas').val());
+    formData.append('formatos', $('#assistance_format').val());
 
     $.ajax({
       type: "POST",
@@ -82,7 +86,8 @@ function guardarParametros(){
             {
               onHidden : function(){
                 $('#loader').fadeOut();
-                ruta = $('#inputBaseUrl').val();
+                // ruta = $('#inputBaseUrl').val();
+                ruta = "index.php";
                 window.open(ruta, "_self");
               }
             }

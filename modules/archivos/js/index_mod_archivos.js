@@ -1,42 +1,42 @@
 $( document ).ready(function() {
+	toastr.options = {
+	    "closeButton": true,
+	    "debug": false,
+	    "progressBar": true,
+	    "preventDuplicates": false,
+	    "positionClass": "toast-top-right",
+	    "onclick": null,
+	    "showDuration": "400",
+	    "hideDuration": "1000",
+	    "timeOut": "2000",
+	    "extendedTimeOut": "1000",
+	    "showEasing": "swing",
+	   	"hideEasing": "linear",
+	    "showMethod": "fadeIn",
+	    "hideMethod": "fadeOut"
+    }
 	buscar_municipios();
 	buscar_municipios_lateral();
-	
-
 	$('html,body').animate({scrollTop: 0}, 1000);
 
 	$('.nueva-categoria').click(function(event){
-		//alert($('#nuevaCategoria').val());
 		nuevaCategoria($('#nuevaCategoria').val());
 	});
 
 	$('.categoria-editar').click(function(event){
 		var id = $(this).val();
 		var text = $('#categoria-editar-'+id).val();
-		//alert(text);
 		editarCategoria(id,text);
 	});
 
 	$('.categoria-eliminar').click(function(event){
 		var id = $(this).val();
-		var text = $('#categoria-editar-'+id).val();
-		//alert(text);
 		eliminarCategoria(id);
 	});
-
-	
-	
-
-
-
-
-
-
 
 	$('.file-control').click(function(event){
 		event.preventDefault();
 		var aux = $(this).attr('value');
-		console.log(aux);
 		$('#tipo').val(aux);
 		$('#mostrarArchivos').submit();
 	});
@@ -44,29 +44,19 @@ $( document ).ready(function() {
 	$('.category-control').click(function(event){
 		event.preventDefault();
 		var aux = $(this).attr('value');
-		console.log(aux);
 		$('#categoriaFnd').val(aux);
 		$('#mostrarArchivos').submit();
 	});
 
 	$('.btnBorrar').click(function(event){
+		// console.log($(this));
 		event.preventDefault();
 		var aux = $(this).attr('value');
-		console.log(aux);
 		borrarArchivo(aux);
 	});
 
 	$('#municipio').change(function(){
-		var municipio = $(this).val();
-
-
-
-
-		
-		
-		
-		
-		
+		var municipio = $(this).val();	
 		$('#institucion').html("<option value=\"\">Todas</option>");
 		$('#institucion').select2('val', '');
 		$('#sede').html("<option value=\"\">Todas</option>");
@@ -104,377 +94,8 @@ $( document ).ready(function() {
 			$('#mostrarArchivos').submit();
 		}
 	});
-
-	
-
-
 });
 
-function buscar_municipios(){
-	console.log('Actualizando lista de municipios.');
-	//var datos = {"municipio":municipio,"tipo":tipo};
-	var datos = {};
-	$.ajax({
-		type: "POST",
-		url: "functions/fn_archivos_buscar_municipios.php",
-		data: datos,
-		beforeSend: function(){
-			$('#loader').fadeIn();
-		},
-		success: function(data){
-			//$('#debug').html(data);
-			$('#municipio').html(data);
-		}
-	})
-	.done(function(){ })
-	.fail(function(){ })
-	.always(function(){
-		$('#loader').fadeOut();
-	});
-}
-
-function buscar_municipios_lateral(){
-	console.log('Actualizando lista de municipios.');
-	//var datos = {"municipio":municipio,"tipo":tipo};
-	var datos = {};
-	$.ajax({
-		type: "POST",
-		url: "functions/fn_archivos_buscar_municipios.php",
-		data: datos,
-		beforeSend: function(){
-			//$('#loader').fadeIn();
-		},
-		success: function(data){
-			//$('#debug').html(data);
-			$('#municipioLateral').html(data);
-			//$('#municipioLateral').val($('#municipioFnd').val());
-			$('#municipioLateral').select2('val', $('#municipioFnd').val());
-			buscar_instituciones_lateral($('#municipioFnd').val());
-		}
-	})
-	.done(function(){ })
-	.fail(function(){ })
-	.always(function(){
-		//$('#loader').fadeOut();
-	});
-}
-
-function buscar_instituciones_lateral(municipio){
-	console.log('Actualizando lista de instituciones.');
-	console.log(municipio);
-	var datos = {"municipio":municipio};
-	$.ajax({
-		type: "POST",
-		url: "functions/fn_archivos_buscar_instituciones.php",
-		data: datos,
-		beforeSend: function(){
-			$('#loader').fadeIn();
-		},
-		success: function(data){
-			//$('#debug').html(data);
-			$('#institucionLateral').html(data);
-			//$('#institucionLateral').val($('#institucionFnd').val());
-			$('#institucionLateral').select2('val', $('#institucionFnd').val());
-			buscar_sedes_lateral($('#institucionFnd').val());
-		}
-	})
-	.done(function(){ })
-	.fail(function(){ })
-	.always(function(){
-		$('#loader').fadeOut();
-	});
-}
-
-function buscar_sedes_lateral(institucion){
-	console.log('Actualizando lista de sedes.');
-	console.log(institucion);
-	var datos = {"institucion":institucion};
-	$.ajax({
-		type: "POST",
-		url: "functions/fn_archivos_buscar_sedes.php",
-		data: datos,
-		beforeSend: function(){
-			$('#loader').fadeIn();
-		},
-		success: function(data){
-			//$('#debug').html(data);
-			$('#sedeLateral').html(data);
-			//$('#sedeLateral').val($('#sedeFnd').val());
-			$('#sedeLateral').select2('val', $('#sedeFnd').val());
-			
-		}
-	})
-	.done(function(){ })
-	.fail(function(){ })
-	.always(function(){
-		$('#loader').fadeOut();
-	});
-}
-
-
-
-
-
-function buscar_instituciones(municipio){
-	console.log('Actualizando lista de instituciones.');
-	console.log(municipio);
-	var datos = {"municipio":municipio};
-	$.ajax({
-		type: "POST",
-		url: "functions/fn_archivos_buscar_instituciones.php",
-		data: datos,
-		beforeSend: function(){
-			$('#loader').fadeIn();
-		},
-		success: function(data){
-			//$('#debug').html(data);
-			$('#institucion').html(data);
-		}
-	})
-	.done(function(){ })
-	.fail(function(){ })
-	.always(function(){
-		$('#loader').fadeOut();
-	});
-}
-
-function buscar_sedes(institucion){
-	console.log('Actualizando lista de sedes.');
-	console.log(institucion);
-	var datos = {"institucion":institucion};
-	$.ajax({
-		type: "POST",
-		url: "functions/fn_archivos_buscar_sedes.php",
-		data: datos,
-		beforeSend: function(){
-			$('#loader').fadeIn();
-		},
-		success: function(data){
-			//$('#debug').html(data);
-			$('#sede').html(data);
-		}
-	})
-	.done(function(){ })
-	.fail(function(){ })
-	.always(function(){
-		$('#loader').fadeOut();
-	});
-}
-
-function borrarArchivo(id){
-	var idBorrar = id;
-	var r = confirm("¿Está seguro de que desea eliminar este archivo?");
-	if (r == true) {
-	    txt = "You pressed OK!";
-		var ruta = "functions/fn_archivo_eliminar.php";
-		var datos = {
-			"id":idBorrar
-		};
-		$.ajax({
-			url: ruta,
-			type:'post',
-			dataType:'html',
-			data:datos,
-			beforeSend: function(){
-				$('#loader').fadeIn();
-			},
-			success: function(datos){
-				console.log('Terminado Ajax');
-				//auxContenido = $('.fotografias').html();
-				//$('.fotografias').html(auxContenido);
-				//$('.fotografias').append(datos);
-				//$('.fotosReporte').appendTo('#reporteCargas');
-				if(datos == 1){
-					alert('El archivo se ha eliminado con exito.');
-					location.reload();
-				}
-				else{
-					alert('No se ha conseguido eliminar el archivo.');
-					console.log(datos);
-					$('.debug').html(datos);
-				}
-			}
-		})
-		.done(function(){ })
-		.fail(function(){ })
-		.always(function(){
-			$('#loader').fadeOut();
-			// $('.cargador').fadeOut();
-			// $('#foto').val(function() { return this.defaultValue; });
-		});
-	}
-}
-
-// RUTINA PARA SUBIR EL ARCHIVO
-var fotos = "0";
-$(function(){
-	$('#btnSubirArchivo').click(function(event){
-		var bandera = 0;
-		if($('#nombre').val() == ''){
-			alert('El nombre del archivo es un campo obligatorio.');
-			$('#nombre').focus();
-			bandera++;
-		} else if($('#categoria').val() == ''){
-			alert('Debe seleccionar una categoria.');
-			$('#categoria').focus();
-			bandera++;
-		} else if($('#foto').val() == ''){
-			alert('Debe seleccionar un archivo.');
-			$('#foto').focus();
-			bandera++;
-		}
-
-
-		if(bandera == 0){
-			console.log('Se ha escogido un archivo.');
-			var formData = new FormData($("#formArchivos")[0]);
-			console.log(formData);
-			var ruta = "functions/fn_archivo_guardar.php";
-			var auxContenido = '';
-			$.ajax({
-				url: ruta,
-				type: "POST",
-				data: formData,
-				contentType: false,
-				processData: false,
-				beforeSend: function(){
-					$('#loader').fadeIn();
-					$("input[name='foto']").val('');
-				},
-				success: function(datos){
-					console.log('Terminado Ajax');
-					//auxContenido = $('.fotografias').html();
-					//$('.fotografias').html(auxContenido);
-					//$('.fotografias').append(datos);
-					//$('.fotosReporte').appendTo('#reporteCargas');
-					if(datos == 1){
-						alert('El archivo se ha cargado con exito.');
-						location.reload();
-					}
-					if(datos == 2){
-						alert('Solo se permiten fotografías en formato JPG.');
-					}
-					else if(datos == 3){
-						alert('El archivo pesa más de 1MB.');
-					}
-					else if(datos == 4){
-						alert('La Fotografía debe ser horizontal.');
-					}else{
-						$('.debugCarga').html(datos);
-					}
-				}
-			})
-			.done(function(){ })
-			.fail(function(){ })
-			.always(function(){
-				$('#loader').fadeOut();
-				// $('.cargador').fadeOut();
-				// $('#foto').val(function() { return this.defaultValue; });
-			});
-			// Termina el ajax
-		}
-
-	});
-});
-
-// TERMINA LA RUTINA PARA SUBIR EL ARCHIVO
-
-
-
-function borrarFoto(nombre){
-	console.log('Se va a borrar la foto '+nombre);
-	var datos = {
-		"nombre":nombre
-	};
-
-
-  var ruta = "fn_borrar_foto.php";
-	var auxContenido = '';
-
-	$.ajax({
-		url: ruta,
-		type:'post',
-		dataType:'html',
-		data:datos,
-		beforeSend: function(){
-			$('#loader').fadeIn();
-		},
-		success:function(response){
-			console.log(response);
-			$('#foto_'+nombre).remove();
-		}
-	})
-	.done(function(){})
-	.fail(function(){})
-	.always(function(){
-		$('#loader').fadeOut();
-	});
-	// Termina el ajax
-}
-
-function borrarFotoGuardada(nombre, url){
-	var r = confirm("Confirma que desea eliminar esta foto, una vez eliminada no se podrá recuperar.");
-	if (r == true) {
-		console.log('se va a borrar la foto '+nombre+' que se encuentra en9: '+url);
-		var datos = {
-			"nombre":nombre,
-			"url":url
-		};
-
-
-		var ruta = "fn_borrar_foto_guardada.php";
-		var auxContenido = '';
-
-		$.ajax({
-			url: ruta,
-			type:'post',
-			dataType:'html',
-			data:datos,
-			beforeSend: function(){
-				$('#loader').fadeIn();
-			},
-			success:function(response){
-				//$('#debug').html(response);
-				console.log(response);
-				if(response == 1){
-					//alert('Se ha eliminado la foto con éxito.');
-					//alert(nombre);
-					$('#'+nombre).remove();
-				}
-			}
-		})
-		.done(function(){})
-		.fail(function(){})
-		.always(function(){
-			$('#loader').fadeOut();
-		});
-		// Termina el ajax
-	}
-}
-
-
-//  Codigo para suvizar anclas
-$(function(){
-  //$('a[href*=#]').click(function() {
-  $('a[href*=\\#]').click(function() {
-    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-      var $target = $(this.hash);
-      try {
-        $target = $target.length && $target || $('[name=' + this.hash.slice(1) +']');
-      }
-      catch(err) {
-        console.log(err.message);
-      }
-
-      if ($target.length) {
-        var targetOffset = $target.offset().top;
-        $('html,body').animate({scrollTop: targetOffset-500}, 1000);
-        return false;
-      }
-    }
-  });
-});
-// Final Codigo para suavizar anclas
 
 function nuevaCategoria(categoria){
 	var ruta = "functions/fn_nueva_categoria.php";
@@ -490,20 +111,10 @@ function nuevaCategoria(categoria){
 			$('#loader').fadeIn();
 		},
 		success: function(datos){
-			console.log('Terminado Ajax');
-			//auxContenido = $('.fotografias').html();
-			//$('.fotografias').html(auxContenido);
-			//$('.fotografias').append(datos);
-			//$('.fotosReporte').appendTo('#reporteCargas');
 			if(datos == 1){
-				alert('El registro se ha realizado con éxito.');
-				location.reload();
-			}
-			else{
-				// alert('No se ha conseguido eliminar el archivo.');
-				// console.log(datos);
-				// $('.debug').html(datos);
-				//location.reload();
+				if(datos == 1){
+					Command: toastr.success('Creado con éxito.','El registro se ha creado con éxito.',{onHidden : function(){ location.href='index.php';}});
+				}
 			}
 		}
 	})
@@ -511,8 +122,6 @@ function nuevaCategoria(categoria){
 	.fail(function(){ })
 	.always(function(){
 		$('#loader').fadeOut();
-		// $('.cargador').fadeOut();
-		// $('#foto').val(function() { return this.defaultValue; });
 	});
 }
 
@@ -531,20 +140,10 @@ function editarCategoria(id,text){
 			$('#loader').fadeIn();
 		},
 		success: function(datos){
-			console.log('Terminado Ajax');
-			//auxContenido = $('.fotografias').html();
-			//$('.fotografias').html(auxContenido);
-			//$('.fotografias').append(datos);
-			//$('.fotosReporte').appendTo('#reporteCargas');
 			if(datos == 1){
-				alert('El registro se ha actualizado con éxito.');
-				location.reload();
-			}
-			else{
-				// alert('No se ha conseguido eliminar el archivo.');
-				// console.log(datos);
-				// $('.debug').html(datos);
-				//location.reload();
+				if(datos == 1){
+					Command: toastr.success('Actualizado con éxito.','El registro se ha actualizado con éxito.',{onHidden : function(){ location.href='index.php';}});
+				}
 			}
 		}
 	})
@@ -552,8 +151,6 @@ function editarCategoria(id,text){
 	.fail(function(){ })
 	.always(function(){
 		$('#loader').fadeOut();
-		// $('.cargador').fadeOut();
-		// $('#foto').val(function() { return this.defaultValue; });
 	});
 }
 
@@ -573,20 +170,8 @@ function eliminarCategoria(id){
 				$('#loader').fadeIn();
 			},
 			success: function(datos){
-				console.log('Terminado Ajax');
-				//auxContenido = $('.fotografias').html();
-				//$('.fotografias').html(auxContenido);
-				//$('.fotografias').append(datos);
-				//$('.fotosReporte').appendTo('#reporteCargas');
 				if(datos == 1){
-					alert('El registro se ha eliminado con éxito.');
-					location.reload();
-				}
-				else{
-					// alert('No se ha conseguido eliminar el archivo.');
-					// console.log(datos);
-					// $('.debug').html(datos);
-					//location.reload();
+					Command: toastr.success('Eliminado con éxito.','El registro se ha eliminado con éxito.',{onHidden : function(){ location.href='index.php';}});
 				}
 			}
 		})
@@ -594,8 +179,242 @@ function eliminarCategoria(id){
 		.fail(function(){ })
 		.always(function(){
 			$('#loader').fadeOut();
-			// $('.cargador').fadeOut();
-			// $('#foto').val(function() { return this.defaultValue; });
 		});
 	}
 }
+
+function buscar_municipios(){
+	var datos = {};
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_archivos_buscar_municipios.php",
+		data: datos,
+		beforeSend: function(){
+		},
+		success: function(data){
+			$('#municipio').html(data);
+		}
+	})
+	.done(function(){ })
+	.fail(function(){ })
+	.always(function(){
+	});
+}
+function buscar_municipios_lateral(){
+	var datos = {};
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_archivos_buscar_municipios.php",
+		data: datos,
+		beforeSend: function(){
+		},
+		success: function(data){
+			$('#municipioLateral').html(data);
+			$('#municipioLateral').select2('val', $('#municipioFnd').val());
+			buscar_instituciones_lateral($('#municipioFnd').val());
+		}
+	})
+	.done(function(){ })
+	.fail(function(){ })
+	.always(function(){
+	});
+}
+
+// INSTITUCIONES
+function buscar_instituciones(municipio){
+	var datos = {"municipio":municipio};
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_archivos_buscar_instituciones.php",
+		data: datos,
+		beforeSend: function(){
+			$('#loader').fadeIn();
+		},
+		success: function(data){
+			$('#institucion').html(data);
+		}
+	})
+	.done(function(){ })
+	.fail(function(){ })
+	.always(function(){
+		$('#loader').fadeOut();
+	});
+}
+
+function buscar_instituciones_lateral(municipio){
+	var datos = {"municipio":municipio};
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_archivos_buscar_instituciones.php",
+		data: datos,
+		beforeSend: function(){
+			$('#loader').fadeOut();
+		},
+		success: function(data){
+			$('#institucionLateral').html(data);
+			$('#institucionLateral').select2('val', $('#institucionFnd').val());
+			buscar_sedes_lateral($('#institucionFnd').val());
+		}
+	})
+	.done(function(){ })
+	.fail(function(){ })
+	.always(function(){
+		$('#loader').fadeOut();
+	});
+}
+
+// SEDES 
+function buscar_sedes(institucion){
+	var datos = {"institucion":institucion};
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_archivos_buscar_sedes.php",
+		data: datos,
+		beforeSend: function(){
+			$('#loader').fadeIn();
+		},
+		success: function(data){
+			$('#sede').html(data);
+		}
+	})
+	.done(function(){ })
+	.fail(function(){ })
+	.always(function(){
+		$('#loader').fadeOut();
+	});
+}
+
+function buscar_sedes_lateral(institucion){
+	var datos = {"institucion":institucion};
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_archivos_buscar_sedes.php",
+		data: datos,
+		beforeSend: function(){
+			$('#loader').fadeOut();
+		},
+		success: function(data){
+			$('#sedeLateral').html(data);
+			$('#sedeLateral').select2('val', $('#sedeFnd').val());
+		}
+	})
+	.done(function(){ })
+	.fail(function(){ })
+	.always(function(){
+		$('#loader').fadeOut();
+	});
+}
+
+// RUTINA PARA SUBIR EL ARCHIVO
+var fotos = "0";
+$(function(){
+	$('#btnSubirArchivo').click(function(event){
+		var bandera = 0;
+		if($('#nombre').val() == ''){
+			Command: toastr.warning('Campo Obligatorio','El nombre del archivo es un campo obligatorio.',{onHidden : function(){}});
+			$('#nombre').focus();
+			bandera++;
+		} else if($('#categoria').val() == ''){
+			Command: toastr.warning('Campo Obligatorio','Debe seleccionar una categoria.',{onHidden : function(){ }});
+			$('#categoria').select2('open').select2('close');
+			bandera++;
+		} else if($('#foto').val() == ''){
+			Command: toastr.warning('Campo Obligatorio','Debe seleccionar un archivo.',{onHidden : function(){ }});
+			$('#foto').focus();
+			bandera++;
+		}
+		if(bandera == 0){
+			var formData = new FormData($("#formArchivos")[0]);
+			var ruta = "functions/fn_archivo_guardar.php";
+			var auxContenido = '';
+			$.ajax({
+				url: ruta,
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+				beforeSend: function(){
+					$('#loader').fadeIn();
+					$("input[name='foto']").val('');
+				},
+				success: function(datos){
+					if(datos == 1){
+						Command: toastr.success('Exito','El archivo se ha cargado con exito.',{onHidden : function(){ location.href='index.php'; }});
+					}
+					if(datos == 2){
+						Command: toastr.warning('Alerta','Solo se permiten fotografías en formato JPG.',{onHidden : function(){ }});
+					}
+					else if(datos == 3){
+						Command: toastr.warning('Alerta','El archivo pesa más de 1MB.',{onHidden : function(){ }});
+					}
+					else if(datos == 4){
+						Command: toastr.warning('Alerta','La Fotografía debe ser horizontal.',{onHidden : function(){ }});
+					}else{
+						$('.debugCarga').html(datos);
+					}
+				}
+			})
+			.done(function(){ })
+			.fail(function(){ })
+			.always(function(){
+				$('#loader').fadeOut();
+			});
+		}
+	});
+});
+// TERMINA LA RUTINA PARA SUBIR EL ARCHIVO
+
+function borrarArchivo(id){
+	var idBorrar = id;
+	var r = confirm("¿Está seguro de que desea eliminar este archivo?");
+	if (r == true) {
+		var ruta = "functions/fn_archivo_eliminar.php";
+		var datos = {
+			"id":idBorrar
+		};
+		$.ajax({
+			url: ruta,
+			type:'post',
+			dataType:'html',
+			data:datos,
+			beforeSend: function(){
+				$('#loader').fadeIn();
+			},
+			success: function(datos){
+				if(datos == 1){
+					Command: toastr.success('Exito','El archivo se ha eliminado con exito.',{onHidden : function(){ location.href='index.php'; }});
+				}
+				else{
+					Command: toastr.success('Error','No se ha conseguido eliminar el archivo.',{onHidden : function(){ location.href='index.php'; }});
+					$('.debug').html(datos);
+				}
+			}
+		})
+		.done(function(){ })
+		.fail(function(){ })
+		.always(function(){
+			$('#loader').fadeOut();
+		});
+	}
+}
+
+//  Codigo para suvizar anclas
+$(function(){
+  	$('a[href*=\\#]').click(function() {
+    	if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+      		var $target = $(this.hash);
+      		try {
+        		$target = $target.length && $target || $('[name=' + this.hash.slice(1) +']');
+      		}
+      		catch(err) {
+        		console.log(err.message);
+      		}
+      		if ($target.length) {
+        		var targetOffset = $target.offset().top;
+        		$('html,body').animate({scrollTop: targetOffset-500}, 1000);
+        		return false;
+      		}
+    	}
+  	});
+});
+// Final Codigo para suavizar anclas

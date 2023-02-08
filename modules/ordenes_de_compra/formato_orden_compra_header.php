@@ -411,7 +411,7 @@ if ($cantGruposEtarios == '5') {
 			$pdf->MultiCell(37,4.7,mb_strtoupper($mes),0,'C',False);
 		}
 	}else{
-		$pdf->MultiCell(37, 3.5, $auxDias, 0, 'C', False);
+		$pdf->MultiCell(37, 3.5, mb_strtoupper($dias), 0, 'C', False);
 		if(strpos($semana, ',') !== false){
 			$aux = "SEMANAS: $semana";
 		}else{

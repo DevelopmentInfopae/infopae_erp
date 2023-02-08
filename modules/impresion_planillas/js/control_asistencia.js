@@ -1,15 +1,32 @@
+
 $( document ).ready(function() {
-    $(document).on('change', '#mes', function () { cargarSemanas($(this).val()); });
-    $(document).on('change', '#semana_inicial', function () { cargarSemanas($('#mes').val(), $("#semana_inicial option:selected").data("diainicial"));});
+
+	$('select').select2();
+    $(document).on('change', '#mes', function () { 
+		cargarSemanas($(this).val()); 
+		$('#institucion').select2('val','');
+	});
+
+	$(document).on('change','#mes', function(){
+		$('#semana_inicial').select2('val','');
+	})
+
+    $(document).on('change', '#semana_inicial', function () { 
+		$('#semana_final').select2('val', '');
+		cargarSemanas($('#mes').val(), 
+		$("#semana_inicial option:selected").data("diainicial"));
+	});
+
     $(document).on('change', '#semana_final', function () { actualizarDiasCampo(); });
 
 	$('#municipio').change(function() {
-		console.log('Cambio de municipio');
 		var tipo = $('#tipoRacion').val();
 		var municipio = $(this).val();
 		$('#municipioNm').val($("#municipio option:selected").text());
+		$('#institucion').select2('val','');
 		buscar_institucion(municipio,tipo);
 	});
+	
     $('#municipio').trigger('change');
 
 	$('#institucion').change(function(){
@@ -17,6 +34,7 @@ $( document ).ready(function() {
 		var municipio = $('#municipio').val();
 		var sede = $('#sede').val();
 		var mes = $('#mes').val();
+		$('#sede').select2('val','');
 		buscar_sede(municipio, institucion);
 		buscar_complemento(institucion, sede, mes);
 	});
@@ -25,74 +43,43 @@ $( document ).ready(function() {
 		var institucion = $('#institucion').val();
 		var sede = $('#sede').val();
 		var mes = $('#mes').val();
+		$('#tipo').select2('val','');
 		buscar_complemento(institucion, sede, mes);
 	});
 
-	$('#btnBuscar').click(function()
-	{
+	$('#btnBuscar').click(function(){
 		imprimir_planilla();
-		// var bandera = 0;
-		// if( $('#municipio').val() == '' )
-		// {
-		// 	bandera++;
-		// 	alert('Debe seleccionar un municipio');
-		// 	$('#municipio').focus();
-		// }
-		// else if($('#mes').val() == '')
-		// {
-		// 	bandera++;
-		// 	alert('Debe seleccionar un mes');
-		// 	$('#mes').focus();
-		// }
-		// else if ($('#semana_inicial').val() == '')
-		// {
-		// 	bandera++;
-		// 	alert('Debe seleccionar la semana Inicial');
-		// 	$('#semana_inicial').focus();
-		// }
-		// else if ($('#semana_final').val() == '')
-		// {
-		// 	bandera++;
-		// 	alert('Debe seleccionar la semana final');
-		// 	$('#semana_final').focus();
-		// }
-		// else if( $('#institucion').val() == '' )
-		// {
-		// 	bandera++;
-		// 	alert('Debe seleccionar una institucion');
-		// 	$('#institucion').focus();
-		// }
-		// else if($('#tipo').val() == '')
-		// {
-		// 	bandera++;
-		// 	alert('Debe seleccionar un tipo de complemento');
-		// 	$('#tipo').focus();
-		// }
-		// else
-		// {
-		// 	var tipoPlanilla = $('input[name="tipoPlanilla"]:checked').val();
-		// 	if (tipoPlanilla == null){
-		// 		bandera++;
-		// 		alert('Debe seleccionar un tipo de planilla');
-		// 		$('input[name="tipoPlanilla"]').focus();
-		// 	}
-		// }
-
-		// if(bandera == 0) { $('#form_planillas').submit(); }
 	});
 
-  jQuery.extend(jQuery.validator.messages, { required: "Campo obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
+  	jQuery.extend(jQuery.validator.messages, { 
+  		step : "Por favor, escribe multiplos de 1 ",
+  		required: "Campo obligatorio.", 
+  		remote: "Por favor, rellena este campo.", 
+  		email: "Por favor, escribe una dirección de correo válida", 
+  		url: "Por favor, escribe una URL válida.", 
+  		date: "Por favor, escribe una fecha válida.", 
+  		dateISO: "Por favor, escribe una fecha (ISO) válida.", 
+  		number: "Por favor, escribe un número entero válido.", 
+  		digits: "Por favor, escribe sólo dígitos.", 
+  		creditcard: "Por favor, escribe un número de tarjeta válido.", 
+  		equalTo: "Por favor, escribe el mismo valor de nuevo.", 
+  		accept: "Por favor, escribe un valor con una extensión aceptada.", 
+  		maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), 
+  		minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), 
+  		rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), 
+  		range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), 
+  		max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), 
+  		min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 });
 
-function imprimir_planilla()
-{
+function imprimir_planilla(){
 	var SUPLENTE = 6;
 	var vacia = 1;
-	var blanco = 2;
-	var programada = 3;
-	var diligenciada = 4;
+	var blanco = 2; 
+	var programada = 3; 
+	var diligenciada = 4; 
 	tipo_complemento = $('input[name="tipoPlanilla"]:checked').val();
-	if (tipo_complemento == SUPLENTE || tipo_complemento == vacia || tipo_complemento == blanco || tipo_complemento == programada || tipo_complemento == diligenciada)
+	if (tipo_complemento == SUPLENTE || tipo_complemento == vacia || tipo_complemento == blanco || tipo_complemento == programada || tipo_complemento == diligenciada) 
 	{
 		$('#tipo').removeAttr('required');
 	}
@@ -156,9 +143,6 @@ function actualizarDiasCampo() {
 }
 
 function buscar_institucion(municipio,tipo){
-  console.log('Actualizando lista de instituciones.');
-  console.log(municipio);
-  console.log(tipo);
   var datos = {"municipio":municipio,"tipo":tipo};
     $.ajax({
       type: "POST",
@@ -211,3 +195,4 @@ function buscar_complemento(institucion, sede, mes) {
     .always(function() { $('#loader').fadeOut(); });
     //se añade el valor del mes escogido, para buscar en tabla entregas_res correspondiente al mes
 }
+

@@ -172,7 +172,7 @@ if ($cantGruposEtarios == 3) {
 		$dias = '';
 		$consulta = " SELECT * 
 							FROM planilla_semanas 
-							WHERE SEMANA = '$semana' ";
+							WHERE SEMANA_DESPACHO = '$semana' ";
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		$cantDias = $resultado->num_rows;
 		if($resultado->num_rows >= 1){
@@ -769,7 +769,7 @@ if ($cantGruposEtarios == 5) {
 		$dias = '';
 		$consulta = " SELECT * 
 							FROM planilla_semanas 
-							WHERE SEMANA = '$semana' ";
+							WHERE SEMANA_DESPACHO = '$semana' ";
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 		$cantDias = $resultado->num_rows;
 		if($resultado->num_rows >= 1){

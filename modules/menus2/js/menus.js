@@ -274,7 +274,10 @@ function validar_existe_producto(input){
     $.ajax({
       type: "POST",
       url: "functions/fn_menus_validar_nombre_producto.php",
-      data: {"descripcion" : $(input).val(), "tipoProducto" : $("#tipoProducto").val(), "grupoEtario" : $("#Cod_Grupo_Etario").val()},
+      data: {"descripcion" : $(input).val(), 
+            "tipoProducto" : $("#tipoProducto").val(), 
+            "subTipoProducto" : $("#subtipoProducto").val(), 
+            "grupoEtario" : $("#Cod_Grupo_Etario").val()},
       beforeSend: function(){},
       success: function(data){
         console.log("Valida nombre : "+data);

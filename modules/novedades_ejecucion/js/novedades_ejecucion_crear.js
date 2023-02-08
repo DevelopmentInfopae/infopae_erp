@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).ready(function()
+{
+	// Configuración inicial del plugin select2.
 	$('select').select2();
 
 	// Configuración inicial del plugin toastr.
@@ -20,25 +22,7 @@ $(document).ready(function() {
 	}
 
 	// Configuración inicial del plugin jquery validator.
-	jQuery.extend(jQuery.validator.messages, { 
-		required: "Este campo es obligatorio.", 
-		remote: "Por favor, rellena este campo.", 
-		email: "Por favor, escribe una dirección de correo válida", 
-		url: "Por favor, escribe una URL válida.", 
-		date: "Por favor, escribe una fecha válida.", 
-		dateISO: "Por favor, escribe una fecha (ISO) válida.", 
-		number: "Por favor, escribe un número entero válido.", 
-		digits: "Por favor, escribe sólo dígitos.", 
-		creditcard: "Por favor, escribe un número de tarjeta válido.", 
-		equalTo: "Por favor, escribe el mismo valor de nuevo.", 
-		accept: "Por favor, escribe un valor con una extensión aceptada.", 
-		maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), 
-		minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), 
-		rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), 
-		range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), 
-		max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), 
-		min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") 
-	});
+	jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 
 
 	$('#municipio_hidden').val($('#municipio').val());
@@ -53,71 +37,71 @@ $(document).ready(function() {
 
 	$('#btnBuscar').click(function(){ validar_campos_filtros(); });
 	$('.guaradarNovedad').click(function(){ guardarNovedad(); });
-	$('#institucion').change(function(){ buscarMeses($(this).val()); });
+	$('#sede').change(function(){ buscarMeses($(this).val()); });
 	$('#mes').change(function(){ buscarSemanas($(this).val()); });
 	$('#institucion').change(function(){ buscarSede($(this).val()); });
 	$('#semana').change(function(){ buscarComplementos($(this).val()); });
 	$('#municipio').change(function(){ buscarInstituciones($(this).val()); });
 	$('#tipoComplemento').change(function() { $('#tipoComplemento_hidden').val($(this).val()); });
 
-	// evento cuando se marcan o desmarcan todos 
-	$(document).on('click', '.checkbox-header', function() {
+	$(document).on('click', '.checkbox-header', function()
+	{
 		_parent = $(this);
-		if(_parent.is(':checked')) {
-			$('.checkbox'+ $(this).data('columna')).each(function() {
-				if (! $(this).is(':checked')) {
+		if(_parent.is(':checked'))
+		{
+			$('.checkbox'+ $(this).data('columna')).each(function()
+			{
+				if (! $(this).is(':checked'))
+				{
 					sumarCantidadDias($(this));
 				}
 			});
-    	}
-    	else {
-    		$('.checkbox'+ _parent.data('columna')).each(function() {
-    			if ($(this).is(':checked')) {
-    				restarCantidadDias($(this));
-    			}
+    }
+    else
+    {
+    	$('.checkbox'+ _parent.data('columna')).each(function()
+    	{
+    		if ($(this).is(':checked'))
+    		{
+    			restarCantidadDias($(this));
+    		}
 			});
-    	}
-		var contador = 0;
-    	$('.checkbox'+ _parent.data('columna')).each(function() {
-  			if ($(this).is(':checked')) {
-  				contador++;
-  			}
-  		});
+    }
 
-    	if (contador > 0) {
-    		$('input[name="checkbox-header_'+$(this).data('columna')+'"]').prop('checked', true);
-    	}
-    	else {
-    		$('input[name="checkbox-header_'+$(this).data('columna')+'"]').prop('checked', false);
-    	}
+		var contador = 0;
+    $('.checkbox'+ _parent.data('columna')).each(function()
+  	{
+  		if ($(this).is(':checked'))
+  		{
+  			contador++;
+  		}
+  	});
+
+    if (contador > 0)
+    {
+    	$('input[name="checkbox-header_'+$(this).data('columna')+'"]').prop('checked', true);
+    }
+    else
+    {
+    	$('input[name="checkbox-header_'+$(this).data('columna')+'"]').prop('checked', false);
+    }
 	});
 
-	// evento para capturar cambio en los checkbox 
-	$(document).on('change', '.checkbox1, .checkbox2, .checkbox3, .checkbox4, .checkbox5', function() {
-		if($(this).is(':checked')) {
+	$(document).on('change', '.checkbox1, .checkbox2, .checkbox3, .checkbox4, .checkbox5', function()
+	{
+		if($(this).is(':checked'))
+		{
 			sumarCantidadDias($(this));
 		}
-		else {
+		else
+		{
 			restarCantidadDias($(this));
 		}
 	});
-
-	$('select#rango').on('change',function(){
-    	var rango = $(this).val();
-    	if (rango == 0) {
-    		$('#sede').select2('val','');
-    		$('#sede').prop('required', false);
-    		$('#sede').prop('disabled', true);
-    	}else{
-    		$('#sede').prop('disabled', false);
-    		$('#sede').prop('required', true);
-    	}
-	});
 });
 
-
-// ajax para buscar los municipios
-function buscarMunicipios() {
+function buscarMunicipios()
+{
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_municipios.php",
@@ -139,13 +123,15 @@ function buscarMunicipios() {
 	});
 }
 
-// ajax para buscar las instituciones, se necesita el municipio para buscar la institucion
-function buscarInstituciones(municipio) {
+function buscarInstituciones(municipio)
+{
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_instituciones.php",
 		dataType: 'JSON',
-    	data: { 'municipio': municipio },
+    data: {
+    	'municipio': municipio
+    },
 		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data) {
 			if(data.estado == 1){
@@ -160,39 +146,46 @@ function buscarInstituciones(municipio) {
 			$('#loader').fadeOut();
 		}
 	});
+
 	$('#institucion').select2('val', '');
 	$('#municipio_hidden').val(municipio);
 }
 
-// ajax para buscar las sedes educativas, se necesita que este seleccionada una institucion
-function buscarSede(institucion) {
+function buscarSede(institucion)
+{
 	$.ajax({
 		type: 'POST',
 		url: 'functions/fn_buscar_sedes.php',
 		dataType: 'HTML',
-    	data: { 'institucion': institucion },
+    data: {
+    	'institucion': institucion
+    },
 		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data) {
+		success: function(data)
+		{
 			$('#sede').html(data);
 			$('#loader').fadeOut();
 		},
-		error: function(data) {
+		error: function(data)
+		{
 			$('#loader').fadeOut();
 			console.log(data.responseText);
 		}
 	});
+
 	$('#sede').select2('val', '');
 	$('#institucion_hidden').val(institucion);
 }
 
-// ajax para buscar los meses
-function buscarMeses(institucion) {
-	// console.log(institucion)
+function buscarMeses(sede)
+{
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_meses.php",
 		dataType: 'JSON',
-    	data: { 'institucion': institucion },
+    data: {
+    	'sede': sede
+    },
 		beforeSend: function(){ $('#loader').fadeIn(); },
 		success: function(data){
 			if(data.estado == 1){
@@ -206,86 +199,104 @@ function buscarMeses(institucion) {
 			$('#loader').fadeOut();
 		}
 	});
+
 	$('#mes').select2('val', '');
 	$('#sede_hidden').val(sede);
 }
 
-// ajax para buscar las semanas 
-function buscarSemanas(mes) {
+function buscarSemanas(mes)
+{
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_semanas.php",
 		dataType: 'HTML',
-    	data: { 'mes': mes },
+    data: {
+    	'mes': mes
+    },
 		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data) {
+		success: function(data)
+		{
 			$('#semana').html(data);
 			$('#loader').fadeOut();
 		},
-		error: function(data) {
+		error: function(data)
+		{
 			console.log(data.responseText);
 			$('#loader').fadeOut();
 		}
 	});
+
 	$('#semana').select2('val', '');
 	$('#mes_hidden').val(mes);
 }
 
-// ajax para buscar los complementos que estan relacionados en ese mes, semana, institucion y sede 
-function buscarComplementos(semana) {
+function buscarComplementos(semana)
+{
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_complementos.php",
 		dataType: 'HTML',
-    	data: { 'semana': semana, 'mes': $('#mes').val(), 'institucion': $('#institucion').val() },
+    data: {
+    	'semana': semana,
+    	'mes': $('#mes').val(),
+    	'institucion': $('#institucion').val()
+    },
 		beforeSend: function(){ $('#loader').fadeIn(); },
-		success: function(data) {
+		success: function(data)
+		{
 			$('#tipoComplemento').html(data);
 			$('#loader').fadeOut();
 		},
-		error: function(data) {
+		error: function(data)
+		{
 			console.log(data.responseText);
 			$('#loader').fadeOut();
 		}
 	});
+
 	$('#tipoComplemento').select2('val', '');
 	$('#semana_hidden').val(semana);
 }
 
-// valdacion para que los campos se encuentren diligenciados correctamente 
-function validar_campos_filtros() {
-	if ($('#formulario_buscar_focalizacion').valid()) {
+function validar_campos_filtros()
+{
+	if ($('#formulario_buscar_focalizacion').valid())
+	{
 		buscar_dias_semanas();
 	}
 }
 
-// si los campos se encuentran correctamente diligenciados se buscan los dias de la semana que se parametrizo
-function buscar_dias_semanas() {
+function buscar_dias_semanas()
+{
 	$.ajax({
 		url: 'functions/fn_novedades_ejecucion_buscar_dias_semana.php',
 		type: 'POST',
 		dataType: 'HTML',
-		data: { mes: $('#mes').val(), semana: $('#semana').val(), rango : $('#rango').val() },
-		beforeSend: function() {
+		data: {
+			mes: $('#mes').val(),
+			semana: $('#semana').val()
+		},
+		beforeSend: function()
+		{
 			$('#loader').fadeIn();
 		}
-	}).done(function(data) {
+	})
+	.done(function(data)
+	{
 		$('#contenedor_tabla_focalizados').fadeIn();
-		if( $('.tabla_focalizacion thead tr th').text() !== '' ){
-			$('.tabla_focalizacion thead tr th, .tabla_focalizacion tfoot tr th').remove();
-			$('.tabla_focalizacion tbody').remove();
-			$('.tabla_focalizacion').DataTable().destroy();
-		}
 		$('.tabla_focalizacion thead tr, .tabla_focalizacion tfoot tr').html(data);
+
 		buscar_priorizacion();
-	}).fail(function(data) {
+	})
+	.fail(function(data)
+	{
 		$('#loader').fadeOut()
 		console.log(data);
 	});
 }
 
-// despues de ser encontrados los dias se busca la priorizacion de la sede 
-function buscar_priorizacion() {
+function buscar_priorizacion()
+{
 	$.ajax({
 		url: 'functions/fn_novedades_ejecucion_buscar_priorizacion.php',
 		type: 'POST',
@@ -294,231 +305,178 @@ function buscar_priorizacion() {
 			mes: $('#mes').val(),
 			sede: $('#sede').val(),
 			semana: $('#semana').val(),
-			tipo_complemento: $('#tipoComplemento').val(),
-			rango : $('#rango').val(),
-			institucion : $('#institucion').val()
+			tipo_complemento: $('#tipoComplemento').val()
 		}
-	}).done(function(data) {
-		if (data == 0) {
+	})
+	.done(function(data) {
+		if (data == 0)
+		{
 			Command: toastr.error('No existe priorización según los filtros seleccionados.', 'Error de proceso', { onHidden: function() { location.reload(); } });
 		}
-		else {
+		else
+		{
 			_cantidadDiasFocalizados = parseInt(data);
 			$('#total_priorizacion').html(_cantidadDiasFocalizados);
+
 			buscar_focalizacion();
 		}
-	}).fail(function(data) {
+	})
+	.fail(function(data) {
 		Command: toastr.error('Al parecer existe un problema. Por favor comuníquese con el administrador del sistema.', 'Error de proceso', { onHidden: function() { console.log(data.responseText); $('#loader').fadeOut(); } });
 	});
 }
 
-// despues de buscar la priorizacion, se busca la focalizacion el detalle de los niños
-function buscar_focalizacion() {
-	// $('.tabla_focalizacion').DataTable().destroy();
-	rango = $('#rango').val();
-	if (rango == 1) {
-		total_suma_dias = 0;
-		$('.tabla_focalizacion').DataTable({
-			ajax: {
-				method: 'POST',
-				url: 'functions/fn_novedades_ejecucion_buscar_focalizacion.php',
-				data:{
-					municipio: $('#municipio').val(),
-					institucion: $('#institucion').val(),
-					sede: $('#sede').val(),
-					mes: $('#mes').val(),
-					semana: $('#semana').val(),
-					tipoComplemento: $('#tipoComplemento').val()
-				}
-			},
-			columns:[
-				{ data: 'abreviatura_documento'},
-				{ data: 'numero_documento'},
-				{ data: 'nombre'},
-				{ data: 'grado'},
-				{ data: 'grupo'},
-				{ data: 'complemento'},
-				{ data: 'D1', className: 'text-center', orderable: false},
-				{ data: 'D2', className: 'text-center', orderable: false},
-				{ data: 'D3', className: 'text-center', orderable: false},
-				{ data: 'D4', className: 'text-center', orderable: false},
-				{ data: 'D5', className: 'text-center', orderable: false}
-			],
-			order: false,
-			oLanguage: {
-				sLengthMenu: 'Mostrando _MENU_ registros',
-				sZeroRecords: 'No se encontraron registros',
-				sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
-				sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-				sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-				sSearch:         'Buscar: ',
-				oPaginate:{
-					sFirst:    'Primero',
-					sLast:     'Último',
-					sNext:     'Siguiente',
-					sPrevious: 'Anterior'
-				}
-			},
-			dom: 'r<"containerBtn"><"inputFiltro"f>tip',
-			MenuLength: [[-1], ['Todo']],
-			destroy: true,
-			responsive: true,
-			pageLength: -1,
-			rowCallback: function(row, data) { 
-  				total_suma_dias += parseInt(data.suma_dias);
-    		},
-			initComplete: function(settings, json) {
-				$('#loader').fadeOut();
-				$('#boton_guardar_novedades').removeClass('disabled');
+function buscar_focalizacion()
+{
+	total_suma_dias = 0;
 
-				// Iteración para habilitar el check principal del encabezado de tabla
-				$('.checkbox-header').each(function() {
-					var contador = 0;
-					$('.checkbox'+ $(this).data('columna')).each(function() {
-						if ($(this).is(':checked')) {
-							contador++;
-						}
-					});
-					if (contador > 0) {
-						$(this).prop('checked', true);
-					}
-					else {
-						$(this).prop('checked', false);
+	$('.tabla_focalizacion').DataTable({
+		ajax: {
+			method: 'POST',
+			url: 'functions/fn_novedades_ejecucion_buscar_focalizacion.php',
+			data:{
+				municipio: $('#municipio').val(),
+				institucion: $('#institucion').val(),
+				sede: $('#sede').val(),
+				mes: $('#mes').val(),
+				semana: $('#semana').val(),
+				tipoComplemento: $('#tipoComplemento').val()
+			}
+		},
+		columns:[
+			{ data: 'abreviatura_documento'},
+			{ data: 'numero_documento'},
+			{ data: 'nombre'},
+			{ data: 'grado'},
+			{ data: 'grupo'},
+			{ data: 'complemento'},
+			{ data: 'D1', className: 'text-center', orderable: false},
+			{ data: 'D2', className: 'text-center', orderable: false},
+			{ data: 'D3', className: 'text-center', orderable: false},
+			{ data: 'D4', className: 'text-center', orderable: false},
+			{ data: 'D5', className: 'text-center', orderable: false}
+		],
+		order: [[3, 'asc'], [4, 'asc'], [2, 'asc']],
+		oLanguage: {
+			sLengthMenu: 'Mostrando _MENU_ registros',
+			sZeroRecords: 'No se encontraron registros',
+			sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+			sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+			sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+			sSearch:         'Buscar: ',
+			oPaginate:{
+				sFirst:    'Primero',
+				sLast:     'Último',
+				sNext:     'Siguiente',
+				sPrevious: 'Anterior'
+			}
+		},
+		dom: 'r<"containerBtn"><"inputFiltro"f>tip',
+		MenuLength: [[-1], ['Todo']],
+		destroy: true,
+		responsive: true,
+		pageLength: -1,
+		rowCallback: function(row, data)
+		{
+  		total_suma_dias += parseInt(data.suma_dias);
+    },
+		initComplete: function(settings, json)
+		{
+			$('#loader').fadeOut();
+			$('#boton_guardar_novedades').removeClass('disabled');
+
+			// Iteración para habilitar el check principal del encabezado de tabla
+			$('.checkbox-header').each(function()
+			{
+				var contador = 0;
+
+				$('.checkbox'+ $(this).data('columna')).each(function() {
+					if ($(this).is(':checked'))
+					{
+						contador++;
 					}
 				});
-				_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
-				$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
-			}
-		});
-	}
-	if (rango == 0) {
-		total_suma_dias = 0;
-		$('.tabla_focalizacion').DataTable({
-			ajax: {
-				method: 'POST',
-				url: 'functions/fn_novedades_ejecucion_buscar_focalizacion_por_sedes.php',
-				data:{
-					municipio: $('#municipio').val(),
-					institucion: $('#institucion').val(),
-					sede: $('#sede').val(),
-					mes: $('#mes').val(),
-					semana: $('#semana').val(),
-					tipoComplemento: $('#tipoComplemento').val()
-				}
-			},
-			columns:[
-				{ data: 'codigo_sede'},
-				{ data: 'nombre_sede'},
-				{ data: 'D1', className: 'text-center', orderable: false},
-				{ data: 'D2', className: 'text-center', orderable: false},
-				{ data: 'D3', className: 'text-center', orderable: false},
-				{ data: 'D4', className: 'text-center', orderable: false},
-				{ data: 'D5', className: 'text-center', orderable: false}
-			],
-			order: false,
-			oLanguage: {
-				sLengthMenu: 'Mostrando _MENU_ registros',
-				sZeroRecords: 'No se encontraron registros',
-				sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
-				sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-				sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-				sSearch:         'Buscar: ',
-				oPaginate:{
-					sFirst:    'Primero',
-					sLast:     'Último',
-					sNext:     'Siguiente',
-					sPrevious: 'Anterior'
-				}
-			},
-			dom: 'r<"containerBtn"><"inputFiltro"f>tip',
-			MenuLength: [[-1], ['Todo']],
-			destroy: true,
-			responsive: true,
-			pageLength: -1,
-			rowCallback: function(row, data) {
-				console.log(data)
-  				total_suma_dias += parseInt(data.suma_dias);
-    		},
-			initComplete: function(settings, json) {
-				$('#loader').fadeOut();
-				$('#boton_guardar_novedades').removeClass('disabled');
 
-				// Iteración para habilitar el check principal del encabezado de tabla
-				$('.checkbox-header').each(function() {
-					var contador = 0;
-					$('.checkbox'+ $(this).data('columna')).each(function() {
-						if ($(this).is(':checked')) {
-							contador++;
-						}
-					});
-					if (contador > 0) {
-						$(this).prop('checked', true);
-					}
-					else {
-						$(this).prop('checked', false);
-					}
-				});
-				_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
-				$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
-			}
-		});
-	}
+				if (contador > 0)
+				{
+					$(this).prop('checked', true);
+				}
+				else
+				{
+					$(this).prop('checked', false);
+				}
+			});
+
+			_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
+			$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
+		}
+	});
 }
 
-// funcion para sumar las cantidades que esten checkeadas
-function sumarCantidadDias(checkbox) {
-	if (_cantidadDiasFocalizadosActual < _cantidadDiasFocalizados) {
+function sumarCantidadDias(checkbox)
+{
+	if (_cantidadDiasFocalizadosActual < _cantidadDiasFocalizados)
+	{
 		_cantidadDiasFocalizadosActual += 1;
 		checkbox.prop('checked', true);
+
 	}
-	else {
+	else
+	{
 		checkbox.prop('checked', false);
 	}
+
 	$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 }
 
-// funcion para restar las cantidades que esten checkeadas
-function restarCantidadDias(checkbox) {
-	if (_cantidadDiasFocalizadosActual > 0) {
+function restarCantidadDias(checkbox)
+{
+	if (_cantidadDiasFocalizadosActual > 0)
+	{
 		_cantidadDiasFocalizadosActual -= 1;
 		checkbox.prop('checked', false);
 	}
-	else {
+	else
+	{
 		checkbox.prop('checked', true);
 	}
+
 	$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 }
 
-// funcion donde se envian los datos por una ajax para guardar la novedad
-function guardarNovedad() {
-  	if($('#formulario_guardar_novedades_focalizacion').valid()) {
+function guardarNovedad()
+{
+  	if($('#formulario_guardar_novedades_focalizacion').valid())
+  	{
 		var formData = new FormData($("#formulario_guardar_novedades_focalizacion")[0]);
 		$.ajax({
 			type: "POST",
 			url: "functions/fn_guardar_novedad_ejecucion.php",
 			dataType: 'JSON',
 		    data: formData,
-			contentType: false,
-			processData: false,
-			beforeSend: function() { $('#loader').fadeIn(); },
-			success: function(data) {
-				if(data.estado == 1) {
-					Command: toastr.success( data.mensaje, "Proceso exitoso.", {
-						onHidden : function(){ $('#loader').fadeOut(); location.href="index.php"; }
-					});
-				} else {
-					Command: toastr.error( data.mensaje, "Error de proceso.", {
-						onHidden : function(){ $('#loader').fadeOut(); }
-					});
-				}
-			},
-			error: function(data) {
-		      	Command: toastr.error("Al parecer existe un error. Por favor comuníquese con el administrador del sistema.", "Error de proceso.", {
-		        	onHidden : function(){ 
-		        		$('#loader').fadeOut(); 
-		        		console.log(data.responseText); }
-		      		}
-		      	);
+				contentType: false,
+				processData: false,
+				beforeSend: function() { $('#loader').fadeIn(); },
+				success: function(data)
+				{
+					console.log(data);
+					if(data.estado == 1)
+					{
+						Command: toastr.success( data.mensaje, "Proceso exitoso.", {
+							onHidden : function(){ $('#loader').fadeOut(); location.href="index.php"; }
+						});
+					} else {
+						Command: toastr.error( data.mensaje, "Error de proceso.", {
+							onHidden : function(){ $('#loader').fadeOut(); }
+						});
+					}
+				},
+				error: function(data)
+				{
+		      		Command: toastr.error("Al parecer existe un error. Por favor comuníquese con el administrador del sistema.", "Error de proceso.", {
+		        	onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText); }
+		      	}
+		      );
 		    }
 		});
   	}

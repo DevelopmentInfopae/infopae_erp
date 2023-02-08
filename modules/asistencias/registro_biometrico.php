@@ -12,13 +12,16 @@ $dia = $diaAsistencia;
 $mes = $mesAsistencia;
 $anno = $annoasistencia;
 $semanaActual = null;
+
+$nameLabel = get_titles('asistencia', 'registroBiometrico', $labels);
+$titulo = $nameLabel;
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
-		<h2>Registro Biometrico</h2>
+		<h2><?= $titulo ?></h2>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?php echo $baseUrl; ?>">Inicio</a>

@@ -3,6 +3,7 @@
 	require_once '../../db/conexion.php';
 	$dato_municipio = $Link->query("SELECT CodMunicipio FROM parametros") or die(mysqli_error($Link));
     if ($dato_municipio->num_rows > 0) { $municipio_defecto = $dato_municipio->fetch_array(); }
+
 ?>
 <style type="text/css">
 	.select2-container--open {
@@ -15,7 +16,7 @@
 		<form action="" method="post" id="formCrearInstitucion"> 
 			<div class="modal-content">
 				<div class="modal-header">
-		        	<h4 class="modal-title">Creación Institución</h4>
+		        	<h4 class="modal-title">Creación </h4>
 		      	</div> <!-- modal-header -->
 		      	<div class="modal-body">
 		      		<div class="row">
@@ -27,7 +28,7 @@
 		      			</div> <!-- col -->
 		      			<div class="col-lg-4 col-md-6 col-sm-8">
 		      				<div class="form-group">
-		      					<label for="nombre">Nombre Institución *</label>
+		      					<label for="nombre">Nombre *</label>
 		                		<input type="text" class="form-control" name="nombre" id="nombre" required>
 		      				</div> <!-- form-group -->
 		      			</div> <!-- col -->

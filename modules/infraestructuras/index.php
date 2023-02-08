@@ -1,5 +1,4 @@
 <?php 
-$titulo = 'Infraestructuras';
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
@@ -9,6 +8,16 @@ if ($permisos['diagnostico_infraestructura'] == "0") {
   </script>
 <?php exit(); }
 
+else {
+  ?><script type="text/javascript">
+    const list = document.querySelector(".li_diagnostico_infraestructura");
+    list.className += " active ";
+  </script>
+<?php
+}
+
+$nameLabel = get_titles('infraestructura', 'infraestructura', $labels);
+$titulo = 'Infraestructuras';
 ?>
 
 <style type="text/css">
@@ -16,13 +25,13 @@ if ($permisos['diagnostico_infraestructura'] == "0") {
 </style>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-    <h2><?php echo $titulo; ?></h2>
+    <h2><?php echo $nameLabel; ?></h2>
     <ol class="breadcrumb">
       <li>
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li class="active">
-        <strong><?php echo $titulo; ?></strong>
+        <strong><?php echo $nameLabel; ?></strong>
       </li>
     </ol>
   </div><!-- /.col -->

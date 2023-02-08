@@ -7,6 +7,13 @@ if ($permisos['despachos'] == "0") {
     window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_despachos");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 
 $periodoActual = $_SESSION['periodoActual'];
 $codigoMunicipio = $_SESSION['p_Municipio'];
@@ -131,17 +138,19 @@ if (isset($_POST['buscar']) && ($_POST['buscar'] != "")) {
 				";
 }
 // exit(var_dump($consulta));
+$nameLabel = get_titles('despachos', 'insumos', $labels);
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-lg-8">
-		<h2><?= $titulo?></h2>
+		<h2><?= $nameLabel?></h2>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?= $baseUrl; ?>">Inicio</a>
 			</li>
 			<li class="active">
-				<strong><?= $titulo; ?></strong>
+				<strong><?= $nameLabel; ?></strong>
 			</li>
 		</ol>
 	</div> <!-- col-lg-8 -->
@@ -427,13 +436,13 @@ if (isset($_POST['buscar']) && ($_POST['buscar'] != "")) {
 	var btnAcciones = 	'<div class="dropdown pull-right" id="">'+
 					  		'<button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button>'+
 							'<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">'+
-						  		'<li><a onclick="informeDespachos(1);"><span class="fa fa-file-excel-o"></span> Individual </a></li>'+
-						  		'<li><a onclick="informeDespachos2(1);"><span class="fa fa-file-excel-o"></span> Individual 2 </a></li>'+
-						  		'<li><a onclick="informeDespachos2Vertical(1);"><span class="fa fa-file-excel-o"></span> Individual Vertical </a></li>'+
+						  		// '<li><a onclick="informeDespachos(1);"><span class="fa fa-file-excel-o"></span> Individual </a></li>'+
+						  		// '<li><a onclick="informeDespachos2(1);"><span class="fa fa-file-excel-o"></span> Individual 2 </a></li>'+
+						  		// '<li><a onclick="informeDespachos2Vertical(1);"><span class="fa fa-file-excel-o"></span> Individual Vertical </a></li>'+
 						  		'<li><a onclick="informeDespachosVertical2(1);"><span class="fa fa-file-excel-o"></span> Individual Vertical 2</a></li>'+
 						  		'<li><a onclick="informeDespachosInstitucion(1);"><span class="fa fa-file-excel-o"></span> Institución </a></li>'+
 						  		'<li><a onclick="informeConsolidadoVertical(1);"><span class="fa fa-file-excel-o"></span> Consolidado Vertical </a></li>'+
-						  		'<li><a onclick="informeDespachosConsolidado(1);"><span class="fa fa-file-excel-o"></span> Consolidado </a></li>'+
+						  		// '<li><a onclick="informeDespachosConsolidado(1);"><span class="fa fa-file-excel-o"></span> Consolidado </a></li>'+
 						  		<?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
 						  			'<li><a onclick="editarDespacho();"><span class="fas fa-pencil-alt"></span> Editar </a></li>'+
 						  			'<li><a data-toggle="modal" data-target="#modalEliminarDespachos"><span class="fa fa-trash"></span> Eliminar </a></li>'+

@@ -1,86 +1,92 @@
 <?php
 	include '../../header.php';
+	$dash = $_SESSION['rutaDashboard'];
 
-  if ($permisos['nomina'] == "0") {
+  	if ($permisos['nomina'] == "0") {
     ?><script type="text/javascript">
-      window.open('<?= $baseUrl ?>', '_self');
-    </script>
-  <?php exit(); }
+      	window.open('<?= $baseUrl.$dash ?>', '_self');
+    	</script>
+  	<?php exit(); }
+    	  else {
+          ?><script type="text/javascript">
+            const list = document.querySelector(".li_nomina");
+            list.className += " active ";
+          </script>
+          <?php
+          }
 
-	$titulo = 'Nómina';
+  $nameLabel = get_titles('nomina', 'nomina', $labels);
+	$titulo = $nameLabel;
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-  <div class="col-lg-8">
-    <h2><?php echo $titulo; ?></h2>
-    <ol class="breadcrumb">
-      <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
-      </li>
-      <li>
-      	<a href="<?php echo $baseUrl . '/modules/nomina'; ?>">Empleados</a>
-      </li>
-      <li class="active">
-        <strong><?php echo $titulo; ?></strong>
-      </li>
-    </ol>
-  </div>
-  <div class="col-lg-4">
-    <?php if ($_SESSION['perfil'] == "0" || $permisos['nomina'] == "2"): ?>
-      <div class="title-action">
-        <a href="nueva_nomina.php" class="btn btn-primary"><i class="fa fa-plus"></i> Nueva </a>
-      </div>
-    <?php endif ?>
-  </div>
+  	<div class="col-lg-8">
+    	<h2><?php echo $titulo; ?></h2>
+    	<ol class="breadcrumb">
+      		<li>
+        		<a href="<?php echo $baseUrl.$dash; ?>">Home</a>
+      		</li>
+      		<li class="active">
+        		<strong><?php echo $titulo; ?></strong>
+      		</li>
+    	</ol>
+  	</div>
+  	<div class="col-lg-4">
+    	<?php if ($_SESSION['perfil'] == "0" || $permisos['nomina'] == "2"): ?>
+      		<div class="title-action">
+        		<a href="nueva_nomina.php" class="btn btn-primary"><i class="fa fa-plus"></i> Nueva </a>
+      		</div>
+    	<?php endif ?>
+  	</div>
 </div>
 
 <!-- Table de nominas -->
 <div class="wrapper wrapper-content animated fadeInRight">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="ibox float-e-margins">
-        <div class="ibox-content contentBackground">
-          <table id="tablaNomina" class="table table-striped table-hover selectableRows">
-            <thead>
-              <tr>
-                <th style="width: 7.69%">Fecha</th>
-                <th style="width: 7.69%">Número</th>
-                <th style="width: 7.69%">Mes</th>
-                <th style="width: 7.69%">Periodo</th>
-                <th style="width: 7.69%">Empleado</th>
-                <th style="width: 7.69%">Documento</th>
-                <th style="width: 7.69%">Tipo</th>
-                <th style="width: 7.69%">Municipio</th>
-                <th style="width: 7.69%">Sede</th>
-                <th style="width: 7.69%">Complemento</th>
-                <th style="width: 7.69%">Total devengado</th>
-                <th style="width: 7.69%">Total deducido</th>
-                <th style="width: 7.69%">Valor pagado</th>
-              </tr>
-            </thead>
-            <tbody>
+  	<div class="row">
+    	<div class="col-lg-12">
+      		<div class="ibox float-e-margins">
+        		<div class="ibox-content contentBackground">
+          			<table id="tablaNomina" class="table table-striped table-hover selectableRows">
+            			<thead>
+              				<tr>
+                				<th style="width: 7.69%">Fecha</th>
+                				<th style="width: 7.69%">Número</th>
+                				<th style="width: 7.69%">Mes</th>
+                				<th style="width: 7.69%">Periodo</th>
+                				<th style="width: 7.69%">Empleado</th>
+                				<th style="width: 7.69%">Documento</th>
+                				<th style="width: 7.69%">Tipo</th>
+                				<th style="width: 7.69%">Municipio</th>
+                				<th style="width: 7.69%">Sede</th>
+                				<th style="width: 7.69%">Complemento</th>
+                				<th style="width: 7.69%">Total devengado</th>
+                				<th style="width: 7.69%">Total deducido</th>
+                				<th style="width: 7.69%">Valor pagado</th>
+              				</tr>
+            			</thead>	
+            			<tbody>
 
-            </tbody>
-            <tfoot>
-                <th style="width: 7.69%">Fecha</th>
-                <th style="width: 7.69%">Número</th>
-                <th style="width: 7.69%">Mes</th>
-                <th style="width: 7.69%">Periodo</th>
-                <th style="width: 7.69%">Empleado</th>
-                <th style="width: 7.69%">Documento</th>
-                <th style="width: 7.69%">Tipo</th>
-                <th style="width: 7.69%">Municipio</th>
-                <th style="width: 7.69%">Sede</th>
-                <th style="width: 7.69%">Complemento</th>
-                <th style="width: 7.69%">Total devengado</th>
-                <th style="width: 7.69%">Total deducido</th>
-                <th style="width: 7.69%">Valor pagado</th>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+            			</tbody>
+            			<tfoot>
+                			<th style="width: 7.69%">Fecha</th>
+                			<th style="width: 7.69%">Número</th>
+                			<th style="width: 7.69%">Mes</th>
+                			<th style="width: 7.69%">Periodo</th>
+                			<th style="width: 7.69%">Empleado</th>
+                			<th style="width: 7.69%">Documento</th>
+                			<th style="width: 7.69%">Tipo</th>
+                			<th style="width: 7.69%">Municipio</th>
+                			<th style="width: 7.69%">Sede</th>
+                			<th style="width: 7.69%">Complemento</th>
+                			<th style="width: 7.69%">Total devengado</th>
+                			<th style="width: 7.69%">Total deducido</th>
+                			<th style="width: 7.69%">Valor pagado</th>
+            			</tfoot>
+          			</table>
+        		</div>
+      		</div>
+    	</div>
+  	</div>
 </div>
 
 <?php include '../../footer.php'; ?>

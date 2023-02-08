@@ -7,6 +7,13 @@ if ($permisos['menus'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+  ?><script type="text/javascript">
+      const list = document.querySelector(".li_menus");
+      list.className += " active ";
+  </script>
+  <?php
+  }
 
 $periodoActual = $_SESSION['periodoActual'];
 

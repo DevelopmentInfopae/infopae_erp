@@ -1,6 +1,13 @@
 <?php 
 include "header.php"; 
 require_once 'db/conexion.php';
+
+?><script type="text/javascript">
+const list = document.querySelector(".li_inicio");
+list.className += " active ";
+</script>
+<?php
+
 ?>
 <div class="wrapper wrapper-content">
 	<div class="row">

@@ -132,12 +132,43 @@ function consultarInforme(){
 			$('#tBody').html(data['tbody']);
 			$('#tFoot').html(data['tfoot']);
 
+			var buttonCommon = {
+				exportOptions: {
+				   format: {
+					  	body: function ( data, row, column ) {
+							if(data.substr(0,1) == '$'){
+								dataA = data.replace('$','')
+								dataA = dataA.replaceAll('.','');
+								dataA = parseFloat(dataA);
+								return dataA
+							}
+							else {
+								return data
+							}
+					  	}
+				   }
+				}
+			};
+
 			dataset1 = $('#box-table-movimientos').DataTable({
 				order : [[ 0, 'asc' ], [ 3, 'asc' ], [ 5, 'asc' ]],
 				pageLength: 25,
 				responsive: true,
 				dom : 'lr<"containerBtn"><"inputFiltro"f>tip<"clear"><"html5buttons"B>',
-				buttons : [ {extend: 'excel', title: 'Inejecuciones', className: 'btnExportarExcel'}],
+				buttons : [
+					$.extend( true, {}, buttonCommon, {
+					   extend: 'excel',
+					   title:'Inejecuciones', 
+					   className:'btnExportarExcel', 
+					   exportOptions: {}
+					} ),
+					$.extend( true, {}, buttonCommon, {
+					   extend: 'excelHtml5'
+					} ),
+					$.extend( true, {}, buttonCommon, {
+					   extend: 'pdfHtml5'
+					} )
+				 ],
 				oLanguage: {
 					sLengthMenu: 'Mostrando _MENU_ registros por página',
 					sZeroRecords: 'No se encontraron registros',

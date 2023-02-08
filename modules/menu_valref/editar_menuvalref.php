@@ -1,5 +1,5 @@
 <?php 
-$titulo = 'Editar aportes calóricos y nutricionales';
+
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
@@ -21,7 +21,8 @@ if ($resultado->num_rows > 0) {
   echo "<script>alert('Error al obtener datos de aportes calóricos y nutricionales');location.href='index.php';";
 }
 
-
+$nameLabel = get_titles('menus', 'aportesCaloricos', $labels);
+$titulo = $nameLabel.' - Editar';
 ?>
 
 <style type="text/css">

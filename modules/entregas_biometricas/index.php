@@ -16,6 +16,14 @@
 		</script>
 	<?php exit();}
 
+	else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_entregas_biometricas");
+      list.className += " active ";
+    </script>
+  <?php
+  }
+
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 
@@ -58,21 +66,22 @@
 		$row = $resultado->fetch_assoc();
 		$semanaActual = $row["semana"];
 	}
-	// var_dump($_SESSION);
-	// var_dump($semanaActual);				
+
+	$nameLabel = get_titles('entregasBiometricas', 'registroBiometricoBarcode', $labels);
+	
 ?>
 
 <!-- <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>"> -->
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
-			<h2>Registro de entregas vía QR - BarCode</h2>
+			<h2><?= $nameLabel ?></h2>
 			<ol class="breadcrumb">
 				<li>
 					<a href="<?php echo $baseUrl; ?>">Inicio</a>
 				</li>
 				<li class="active">
-					<strong><?php echo $titulo; ?></strong>
+					<strong> <?= $nameLabel ?> </strong>
 				</li>
 			</ol>
 	</div>

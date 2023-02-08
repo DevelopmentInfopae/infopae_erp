@@ -6,16 +6,16 @@
   
   $semanaParametro = '';
   if ($semana != '') {
-    $semanaParametro = " AND SEMANA = '$semana' ";
+    $semanaParametro = " AND SEMANA_DESPACHO = '$semana' ";
   }
 
-  $consulta = "SELECT * FROM planilla_semanas WHERE MES = '$mes' $semanaParametro";
+  $consulta = "SELECT * FROM planilla_semanas WHERE MES_DESPACHO = '$mes' $semanaParametro";
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     $aux = 0;
     while($row = $resultado->fetch_assoc()) {
       $dia = $row['DIA'];
-      $semana = $row['SEMANA'];
+      $semana = $row['SEMANA_DESPACHO'];
       $mes = $row['MES'];
 ?>
     <div class="dia">

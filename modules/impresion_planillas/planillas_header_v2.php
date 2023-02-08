@@ -1,4 +1,25 @@
 <?php
+
+
+if ($tipoPlanilla == 7 || $tipoPlanilla == 8 ) {
+	$tipo = $suplente_repitente_sede->tipo;
+	$tipoString = ($tipo == 'R') ? "Repitentes" : "Suplentes";
+	$tamannoFuente = 10;
+	$logoInfopae = $_SESSION['p_Logo ETC'];
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Image($logoInfopae, 3 ,3, 100, 18,'jpg', '');
+	$pdf->SetTextColor(0,0,0);
+	$pdf->Cell(100, 18);
+	$pdf->Cell(0,18.1,utf8_decode(strtoupper("Registro de novedades - $tipoString del programa de alimentaciÓn escolar - pae")),0,0,'C',False);
+	$pdf->Ln(10);
+	$pdf->SetLineWidth(0.8);
+	$pdf->Cell(0,10,'','B',0,'C',False);
+	$pdf->Ln(10);
+	$tamannoFuente = 7;
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->SetLineWidth(.05);
+}
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(30,$tamannoFuente,utf8_decode('DEPARTAMENTO:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
@@ -7,6 +28,7 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(26,$tamannoFuente,utf8_decode('CÓDIGO DANE:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(40,$tamannoFuente,utf8_decode($_SESSION['p_CodDepartamento']),0,0,'L',False);
+// var_dump($codigoSede);
 if($codigoSede){ 	
 	if(isset($sedes[$codigoSede])){ 
 		$nombre_sede = $sedes[$codigoSede]['nom_sede'];
@@ -42,18 +64,20 @@ $diasCubiertos = 0;
 $tpm = 0;
 $diasSemana = 0;
 // exit(var_dump($tipoPlanilla));
-if ($tipoPlanilla != 6 && $tipoPlanilla != 1){	
-	//recorremos el array de las semanas obtenidas para cambiar la tabla de priorización, ej : priorizacion01, priorizacion02, etc
-	foreach ($semanasMes as $semana => $set) { 
+if ($tipoPlanilla != 6 && $tipoPlanilla != 1)
+{	
+	foreach ($semanasMes as $semana => $set) { //recorremos el array de las semanas obtenidas para cambiar la tabla de priorización, ej : priorizacion01, priorizacion02, etc
 		//obtenemos el total de priorizaciones por complemento seleccionado de la semana en turno, luego lo multiplicamos por el número de días que tiene la semana en turno.
 		$consTotalEntregado = "SELECT DISTINCT SEMANA AS SM, MES AS MS, COUNT(DIA) AS dias_semana,
 							(
 								(SELECT SUM(".$tipoComplemento.") FROM priorizacion".$semana." WHERE cod_sede = '".$codigoSede."') *
 							    (SELECT COUNT(DIA) FROM planilla_semanas WHERE SEMANA = SM AND MES = MS)
 							) AS total_entregas
-							FROM planilla_semanas WHERE SEMANA = '".$semana."' AND MES = '".$mes."';";	
+							FROM planilla_semanas WHERE SEMANA = '".$semana."' AND MES = '".$mes."';";
+							// echo $consTotalEntregado ."<br>";	
+
 		$resTotalEntregado = $Link->query($consTotalEntregado);
-		// var_dump($consTotalEntregado);
+
 		//Si el SQL se ejecuta correctamente y hay datos, es decir si encuentra la tabla priorización$semana (priorizacion03, priorizacion03b, etc)
 		if ($resTotalEntregado !== FALSE && $resTotalEntregado->num_rows > 0) {
 		  $te = $resTotalEntregado->fetch_assoc();
@@ -65,6 +89,7 @@ if ($tipoPlanilla != 6 && $tipoPlanilla != 1){
 		} else { //En caso de no encontrar datos para la semana en turno o la tabla para dicha semana, multiplicamos la priorización de la semana del mes seleccionado que si tiene tabla de priorización, por el número de dias de dicho mes, la priorización mencionada ya se guardó en la variable $totalProgramadoMes en el turno de la semana anterior.
 
 		// Esto sucede cuando sólo hay priorización del primer día o primera semana en el Mes seleccionado.
+
 			//consultamos los días que tiene el mes seleccionado
 			$consDiasMes = "SELECT * FROM planilla_dias WHERE mes = '".$mes."'";
 			$resDiasMes = $Link->query($consDiasMes);
@@ -136,7 +161,7 @@ if($mesAdicional > 0) {
 	}
 	$mesNm.=' - '.$mesAdicional;
 }
-$pdf->Cell(30,$tamannoFuente,utf8_decode($mesNm),0,0,'L',False);
+$pdf->Cell(30,$tamannoFuente,utf8_decode(strtoupper($mesNm)),0,0,'L',False);
 
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(10,$tamannoFuente,utf8_decode('AÑO:'),0,0,'L',False);
@@ -229,9 +254,10 @@ $pdf->SetXY($x, $y+1.6);
 $pdf->Cell($anchoDatosNombre,14,utf8_decode('del Titular'),0,0,'C',False);
 $pdf->SetXY($x, $y);
 $pdf->Cell($anchoDatosNombre,14,utf8_decode(''),'R',0,'C',False);
+
+
 $x = $pdf->GetX();
 $y = $pdf->GetY();
-
 $pdf->SetXY($x, $y);
 $pdf->RotatedText($x+3.5,$y+10,utf8_decode("Edad"),90);
 $pdf->Cell(10,14,utf8_decode(''),0,0,'C',False);
@@ -242,17 +268,17 @@ $y = $pdf->GetY();
 
 // Condición que oculta o muestra las columnas de sexo y grado.
 if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4 || $tipoPlanilla == 5) {
-	// $x = $pdf->GetX();
-	// $y = $pdf->GetY();
+	$x = $pdf->GetX();
+	$y = $pdf->GetY();
 	$pdf->SetXY($x, $y);
-	$pdf->Cell($x-148,$y-34,utf8_decode("          P. Étnica"),0,0,'C',false);
-	$pdf->Cell(7,14,utf8_decode(''),'R',0,'C',False);
+	$pdf->RotatedText($x+4.5,$y+12,utf8_decode("P. Étnica"),90);
+	$pdf->Cell(7,14,utf8_decode(''),'RB',0,'C',False);
 
 	$x = $pdf->GetX();
 	$y = $pdf->GetY();
 	$pdf->SetXY($x, $y);
 	$pdf->RotatedText($x+3.5,$y+10,'Sexo',90);
-	$pdf->Cell(5,14,utf8_decode(''),'R',0,'C',False);
+	$pdf->Cell(5,14,utf8_decode(''),'RB',0,'C',False);
 }
 
 $x = $pdf->GetX();
@@ -288,7 +314,7 @@ $pdf->SetXY($x, $y+7);
 
 if($tipoPlanilla != 1){
 	$dia = (int)$primer_dia;
-	for($i = 0 ; $i < 22 ; $i++){
+	for($i = 0 ; $i < 24 ; $i++){
 			// if($dia < 10) {
 				// $auxDia = 'D0'.$dia;
 			// } else {
@@ -303,7 +329,7 @@ if($tipoPlanilla != 1){
 		$dia++;
 	}
 }else{
-	for($i = 0 ; $i < 22 ; $i++){
+	for($i = 0 ; $i < 24 ; $i++){
 	  $pdf->Cell(6,7,"",'R',0,'C',False);
 	}
 }

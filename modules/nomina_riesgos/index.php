@@ -7,7 +7,17 @@
     </script>
   <?php exit(); }
 
+else {
+  ?><script type="text/javascript">
+    const list = document.querySelector(".li_configuracion");
+    list.className += " active ";
+  </script>
+  <?php
+  }
+
   $titulo = 'Nómina Riesgos';
+  $nameLabel = get_titles('configuracion', 'nominaRiesgos', $labels);
+  $titulo = $nameLabel;
 ?>
 
 <!-- header -->

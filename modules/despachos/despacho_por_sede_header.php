@@ -385,7 +385,7 @@ if ($cantGruposEtarios == 5) {
   $pdf->Ln(0.8);
 
   $pdf->SetFont('Arial', 'B', $tamannoFuente);
-  $pdf->Cell(42.5, 8, 'RANGO DE EDAD', 1, 0, 'C', False);
+  $pdf->Cell(42.5, 8, 'RANGO DE GRADO', 1, 0, 'C', False);
   $current_y = $pdf->GetY();
   $current_x = $pdf->GetX();
   $pdf->Cell(36.7, 8, '', 1, 0, 'L', False);
@@ -423,7 +423,7 @@ if ($cantGruposEtarios == 5) {
   $resGrupoEtario = $Link->query($consGrupoEtario);
   if ($resGrupoEtario->num_rows > 0) {
     while ($ge = $resGrupoEtario->fetch_assoc()) {
-      $get[] = $ge['DESCRIPCION'];
+      $get[] = $ge['equivalencia_grado'];
     }
   }
 
@@ -461,6 +461,7 @@ if ($cantGruposEtarios == 5) {
   $current_x = $pdf->GetX();
   $pdf->Cell(45, 23.5, '', 1, 0, 'L', False);
   $pdf->SetXY($current_x, $current_y+2.35);
+
 
   $cantDias = explode(',', $diasDespacho);
   $cantDias = count($cantDias);
@@ -542,42 +543,46 @@ if ($cantGruposEtarios == 5) {
   $etario_4 = str_replace(" años", "", $etario_4);
   $etario_5 = str_replace(" años", "", $etario_5);
 
-  $pdf->Cell(13, 3.5, utf8_decode($etario_1), 0, 3.5, 'C', False);
-  $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
+
+  $pdf->SetFont('Arial', 'B', 5);
+  $pdf->Cell(13, 7, utf8_decode("preescolar"), 0, 3.5, 'C', False);
+  // $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
   $pdf->SetXY($current_x2+13, $current_y2);
   $current_y2 = $pdf->GetY();
   $current_x2 = $pdf->GetX();
   $pdf->Cell(13, 7, utf8_decode(''), 1, 0, 'C', False);
   $pdf->SetXY($current_x2, $current_y2);
 
-  $pdf->Cell(13, 3.5, utf8_decode($etario_2), 0, 3.5, 'C', False);
-  $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
+  $pdf->Cell(13, 3.5, utf8_decode("primero,segu-"), 0, 3.5, 'C', False);
+  $pdf->Cell(13, 3.5, utf8_decode("ndo,tercero"), 0, 3.5, 'C', False);
+  // $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
   $pdf->SetXY($current_x2+13, $current_y2);
   $current_y2 = $pdf->GetY();
   $current_x2 = $pdf->GetX();
   $pdf->Cell(13, 7, utf8_decode(''), 1, 0, 'C', False);
   $pdf->SetXY($current_x2, $current_y2);
 
-  $pdf->Cell(13, 3.5, utf8_decode($etario_3), 0, 3.5, 'C', False);
-  $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
+  $pdf->Cell(13, 7, utf8_decode("cuarto,quinto"), 0, 3.5, 'C', False);
+  // $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
   $pdf->SetXY($current_x2+13, $current_y2);
   $current_y2 = $pdf->GetY();
   $current_x2 = $pdf->GetX();
   $pdf->Cell(13, 7, '', 1, 0, 'L', False);
   $pdf->SetXY($current_x2, $current_y2);
 
-  $pdf->Cell(13, 3.5, utf8_decode($etario_4), 0, 3.5, 'C', False);
-  $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
+  $pdf->Cell(13, 7, utf8_decode("secundaria"), 0, 3.5, 'C', False);
+  // $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
   $pdf->SetXY($current_x2+13, $current_y2);
   $current_y2 = $pdf->GetY();
   $current_x2 = $pdf->GetX();
   $pdf->Cell(13, 7, '', 1, 0, 'L', False);
   $pdf->SetXY($current_x2, $current_y2);
 
-  $pdf->Cell(13, 3.5, utf8_decode($etario_5), 0, 3.5, 'C', False);
-  $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
+  $pdf->Cell(13, 7, utf8_decode("media"), 0, 3.5, 'C', False);
+  // $pdf->Cell(13, 3.5, utf8_decode('AÑOS'), 0, 3.5, 'C', False);
   $pdf->SetXY($current_x+65, $current_y);
 
+  $pdf->SetFont('Arial', 'B', $tamannoFuente); 
   $current_y = $pdf->GetY();
   $current_x = $pdf->GetX();
   $pdf->Cell(12, 15, '', 1, 0, 'L', False);

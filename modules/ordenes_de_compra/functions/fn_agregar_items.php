@@ -3,6 +3,7 @@ include '../../../config.php';
 require_once '../../../autentication.php';
 require_once '../../../db/conexion.php';
 
+$dias = $_POST['dias'];
 $municipio = '';
 $ruta = '';
 $tipo = '';
@@ -30,12 +31,12 @@ $consulta=" SELECT  DISTINCT s.cod_sede, u.Ciudad, s.nom_inst, s.nom_sede, s.cod
                     LEFT JOIN ubicacion u on s.cod_mun_sede = u.CodigoDANE and u.ETC = 0
                     LEFT JOIN sedes_cobertura sc on s.cod_sede = sc.cod_sede
                     WHERE 1=1 ";
-if($mes != ''){
-  $consulta = $consulta." AND sc.mes = '$mes' ";
-}
-if($semana != ''){
-  $consulta = $consulta." AND sc.semana = '$semana' ";
-}
+// if($mes != ''){
+//   $consulta = $consulta." AND sc.mes = '$mes' ";
+// }
+// if($semana != ''){
+//   $consulta = $consulta." AND sc.semana = '$semana' ";
+// }
 if($municipio != ''){
   $consulta = $consulta." AND s.cod_mun_sede = '$municipio' ";
 }
@@ -57,6 +58,25 @@ if(count($itemsActuales) > 0){
     $aux = $itemsActuales[$i];
     $consulta = $consulta." and s.cod_sede != '$aux' ";
   }
+}
+
+if ($semana == '') {
+  $diasIn = '( ';
+  foreach ($dias as $key => $value) {
+     $diasIn .= "'"."$value"."'".',';
+  }
+  $diasIn = trim($diasIn, ',');
+  $diasIn .= " )";
+  
+  $consultaNumeroPriorizacion = " SELECT SEMANA_DESPACHO FROM planilla_semanas WHERE MES = '$mes' AND DIA IN $diasIn ORDER BY id DESC LIMIT 1 ";
+  $respuestaNumeroPriorizacion = $Link->query($consultaNumeroPriorizacion) or die ('Error al consultar la ultima semana priorizada');
+  if ($respuestaNumeroPriorizacion->num_rows > 0) {
+     $dataNumeroPriorizacion = $respuestaNumeroPriorizacion->fetch_assoc();
+     $semanaBuscada = $dataNumeroPriorizacion['SEMANA_DESPACHO'];
+     $consulta = $consulta." AND sc.semana = '$semanaBuscada' ";
+  }
+}else if($semana != ''){
+  $consulta .= " AND sc.semana = '$semana' ";
 }
 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));

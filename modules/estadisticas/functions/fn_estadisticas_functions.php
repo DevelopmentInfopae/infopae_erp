@@ -35,9 +35,9 @@ function buscar_tipo_complementos($Link){
 	$consComplemento="SELECT * FROM tipo_complemento";
 	$resComplemento = $Link->query($consComplemento);
 	if ($resComplemento->num_rows > 0) {
-   	while ($Complemento = $resComplemento->fetch_assoc()) {
-      	$tipoComplementos[] = $Complemento['CODIGO'];
-   	}
+		while ($Complemento = $resComplemento->fetch_assoc()) {
+			$tipoComplementos[] = $Complemento['CODIGO'];
+		}
 	}
 	return $tipoComplementos;
 }

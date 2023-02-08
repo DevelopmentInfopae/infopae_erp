@@ -30,7 +30,7 @@
   </div>
   <div class="col-lg-4">
     <div class="title-action">
-      <a href="#" class="btn btn-primary" id="guardarProveedor"><i class="fa fa-check "></i> Guardar </a>
+      <a href="#" class="btn btn-primary" id="guardarProveedorContinuar"><i class="fa fa-check "></i> Guardar </a>
     </div>
   </div>
 </div>

@@ -6,11 +6,21 @@
           window.open('<?= $baseUrl ?>', '_self');
       </script>
     <?php exit(); }
+    	  else {
+            ?><script type="text/javascript">
+              const list = document.querySelector(".li_configuracion");
+              list.className += " active ";
+            </script>
+          <?php
+          }
 
     set_time_limit (0);
     ini_set('memory_limit','6000M');
     $periodoActual = $_SESSION['periodoActual'];
     $titulo = "Rutas";
+
+    $nameLabel = get_titles('configuracion', 'rutas', $labels);
+    $titulo = $nameLabel;
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">

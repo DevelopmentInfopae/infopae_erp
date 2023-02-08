@@ -117,7 +117,7 @@ if ($cantGruposEtarios == '3') {
 			if (!in_array($row['Semana'], $semanasMostrar, true)) {
 				$semanasMostrar[] =  $row['Semana'];
 				$semana = $row['Semana'];
-				$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($semana) ";
+				$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($semana) ";
 				$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 				$cantDias = $resultado->num_rows;
 				if($resultado->num_rows >= 1) {
@@ -702,32 +702,70 @@ if ($cantGruposEtarios == '5') {
 			if (!in_array($row['Semana'], $semanasMostrar, true)) {
 				$semanasMostrar[] =  $row['Semana'];
 				$semana = $row['Semana'];
-				$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($semanaIn) ";
+				$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($semanaIn) ";
 				$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 				$cantDias = $resultado->num_rows;
-				if($resultado->num_rows >= 1) {
+
+				if($resultado->num_rows >= 1){
 					$mesInicial = '';
 					$mesesIniciales = 0;
+					$bandera = 0;
 					while($row = $resultado->fetch_assoc()){
-						$clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
-						if($clave !== FALSE) {
-							$ciclo = $row['CICLO'];
-							$ciclos[] = $ciclo;
-							if($mesInicial != $row['MES']) {
-								$mesesIniciales++;
-								if($mesesIniciales > 1) { $dias .= " de  $mes "; }
-								$mesInicial = $row['MES'];
-								$mes = $row['MES'];
-								$mes = mesEnLetras($mes);
+						  $clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
+						  if($clave !== false){
+							  if($bandera != $row['CICLO']){
+								  $ciclo .= $row['CICLO'] .', ';
+								  $bandera = $row['CICLO'];
+							  }
+							if($mesInicial != $row['MES']){
+								  $mesesIniciales++;
+							  if($mesesIniciales > 1){
+								$dias .= " de  $mes ";
+							  }
+							  $mesInicial = $row['MES'];
+							  $mes = $row['MES'];
+							  $mes = mesEnLetras($mes);
+							}else{
+								  if($dias != ''){
+									$dias .= ', ';
+								  }
 							}
-							else {
-								if($dias != '') { $dias .= ', '; }
-							}
-							$dias = $dias.intval($row['DIA']);
-						}
-					}
+						$dias = $dias.intval($row['DIA']);
+						  }// Termina el if de la Clave
+					   }//Termina el while
+					   $ciclo = trim($ciclo, ', ');
 					$dias .= " de  $mes";
-				}
+				  }else {
+					  $dias = $diasDespacho;
+					  $nombreTabla = 'despachos_enc'.$mesAnno;
+					  $mesTabla = substr($nombreTabla,13,-2); 
+					  $arrayMeseNombre = ["01" => "ENERO", "02" => "FEBRERO", "03" => "MARZO", "04" => "ABRIL", "05" => "MAYO", "06" => "JUNIO", "07" => "JULIO", "08" => "AGOSTO", "09" => "SEPTIEMBRE", "10" => "OCTUBRE", "11" => "NOVIEMBRE", "12" => "DICIEMBRE"];
+					  $dias .= " DE " . $arrayMeseNombre[$mesTabla];
+				  }
+				  
+				// if($resultado->num_rows >= 1) {
+				// 	$mesInicial = '';
+				// 	$mesesIniciales = 0;
+				// 	while($row = $resultado->fetch_assoc()){
+				// 		$clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
+				// 		if($clave !== FALSE) {
+				// 			$ciclo = $row['CICLO'];
+				// 			$ciclos[] = $ciclo;
+				// 			if($mesInicial != $row['MES']) {
+				// 				$mesesIniciales++;
+				// 				if($mesesIniciales > 1) { $dias .= " de  $mes "; }
+				// 				$mesInicial = $row['MES'];
+				// 				$mes = $row['MES'];
+				// 				$mes = mesEnLetras($mes);
+				// 			}
+				// 			else {
+				// 				if($dias != '') { $dias .= ', '; }
+				// 			}
+				// 			$dias = $dias.intval($row['DIA']);
+				// 		}
+				// 	}
+				// 	$dias .= " de  $mes";
+				// }
 			}
 		}
 		$despachos[] = $despacho;

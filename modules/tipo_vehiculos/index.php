@@ -7,7 +7,18 @@
     </script>
   <?php exit(); }
 
+else {
+  ?><script type="text/javascript">
+    const list = document.querySelector(".li_configuracion");
+    list.className += " active ";
+  </script>
+  <?php
+  }
+
   $titulo = 'Tipo Vehículos';
+
+  $nameLabel = get_titles('configuracion', 'tipoVehiculos', $labels);
+  $titulo = $nameLabel;
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">

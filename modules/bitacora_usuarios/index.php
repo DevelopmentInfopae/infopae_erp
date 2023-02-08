@@ -6,6 +6,13 @@ if ($permisos['informes'] == "0") {
     window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+	?><script type="text/javascript">
+	  const list = document.querySelector(".li_informes");
+	  list.className += " active ";
+	</script>
+	<?php
+	}
 
 set_time_limit (0);
 ini_set('memory_limit','6000M');
@@ -53,6 +60,9 @@ if ($respuestaBitacora->num_rows > 0) {
 		$respuestas[] = $dataRespuestaBitacora;
 	}
 }
+
+$nameLabel = get_titles('informes', 'bitacoraUsuarios', $labels);
+$titulo = $nameLabel;
 // exit(var_dump($consultaBitacora));
 ?>
 

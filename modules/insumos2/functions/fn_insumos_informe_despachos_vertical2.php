@@ -94,7 +94,7 @@ if ($cantGruposEtarios == '3') {
 	$resultadoGruposEtarios = $Link->query($consultaGruposEtarios);
 	if ($resultadoGruposEtarios->num_rows > 0) {
 		while ($grupoEta = $resultadoGruposEtarios->fetch_assoc()) {
-			$gruposEtarios[$grupoEta['ID']] = $grupoEta['DESCRIPCION'];
+			$gruposEtarios[$grupoEta['ID']] = $grupoEta['equivalencia_grado'];
 		}
 	}
 
@@ -181,7 +181,7 @@ if ($cantGruposEtarios == '3') {
 			// Salto de línea
 			$this->Ln(1);
 			$this->SetFont('Arial','B',8);
-			$this->Cell(40,10,utf8_decode('RANGO DE EDAD'),'TBL',0,'C');
+			$this->Cell(40,10,utf8_decode('RANGO DE GRADOS'),'TBL',0,'C');
 
 			$cx = $this->getX();
 			$cy = $this->getY();
@@ -494,6 +494,13 @@ if ($cantGruposEtarios == '5') {
 		$mesEntrega = trim($mesEntrega);
 	}
 
+	// $consultaMesEntrega = "SELECT NombreMes FROM planilla_dias WHERE mes = '$mesEntrega'";
+	// $respuestaMesEntrega = $Link->query($consultaMesEntrega);
+	// if ($respuestaMesEntrega->num_rows > 0) {
+	// 	$nombreMes
+	// }
+
+
 	// validacion para saber si los despachos que se seleccionaron son todos de tipo RPC
 	$mesImprimir = "";
 	$tipoComplementoDespacho = [];
@@ -524,10 +531,12 @@ if ($cantGruposEtarios == '5') {
 	$resultadoGruposEtarios = $Link->query($consultaGruposEtarios);
 	if ($resultadoGruposEtarios->num_rows > 0) {
 		while ($grupoEta = $resultadoGruposEtarios->fetch_assoc()) {
-			$gruposEtarios[$grupoEta['ID']] = $grupoEta['DESCRIPCION'];
+			// var_dump($grupoEta);
+			$gruposEtarios[$grupoEta['ID']] = $grupoEta['equivalencia_grado'];
+			// var_dump($gruposEtarios);
 		}
 	}
-
+// exit(var_dump($gruposEtarios));
 	class PDF extends FPDF {
 		function setData($fecha, $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mes, $tipoComplemento, $entrega, $Rpc, $contrato, $numDias, $numManipuladoras){
 			$this->fecha = $fecha;
@@ -610,7 +619,7 @@ if ($cantGruposEtarios == '5') {
 			// Salto de línea
 			$this->Ln(1);
 			$this->SetFont('Arial','B',8);
-			$this->Cell(40,10,utf8_decode('RANGO DE EDAD'),'TBL',0,'C');
+			$this->Cell(40,10,utf8_decode('RANGO DE GRADOS'),'TBL',0,'C');
 
 			$cx = $this->getX();
 			$cy = $this->getY();
@@ -653,7 +662,7 @@ if ($cantGruposEtarios == '5') {
 			$cx = $this->getX();
 			$cy = $this->getY();
 			foreach ($this->gruposEtarios as $ID => $DESCRIPCION) {
-				$this->Cell(40,6,utf8_decode($DESCRIPCION),'BL',0,'C');
+				$this->Cell(40,6,utf8_decode(strtolower($DESCRIPCION)),'BL',0,'C');
 				$this->Cell(35,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BL',0,'C');//SEDES COBERTURA POR GRUPO ETARIO
 				$this->Cell(35,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BL',1,'C');//SEDES COBERTURA POR GRUPO ETARIO
 			}
@@ -721,7 +730,7 @@ if ($cantGruposEtarios == '5') {
 							$tipoComplementoDespacho = $dataComplemento['Complemento'];
 						}
 					}
-					if ($tipoComplementoDespacho == 'RPC') {				
+				
 						// vamos a buscar el numero de la entrega que va a estar junto al mes 
 						$consultaEntrega = "SELECT NumeroEntrega FROM planilla_dias WHERE mes = $mesEntrega;";
 						$respuestaEntrega = $Link->query($consultaEntrega) or die('Error al consultar el numero de la entrega' . mysqli_error($Link));
@@ -737,10 +746,7 @@ if ($cantGruposEtarios == '5') {
 							$dataNombreMes = $respuestaNombreMes->fetch_assoc();
 							$nombreMesEntrega = $dataNombreMes['NombreMes'];
 						}
-					}
-					else {
-						$nombreMesEntrega = $tablaMes;
-					}
+
 
 					if ($boleanMes == "true" ) {
 						$mesImprimir = $nombreMesEntrega;

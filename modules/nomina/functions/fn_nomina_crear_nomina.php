@@ -2,7 +2,7 @@
 
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
-
+// exit(var_dump($_POST));
 $periodoActual = $_SESSION['periodoActual'];
 $key = isset($_POST['key']) ? $_POST['key'] : [];
 $documento = isset($_POST['doc_empleado']) ? $_POST['doc_empleado'] : null;
@@ -63,6 +63,7 @@ $liquida_por_arr = [
 // exit(json_encode($valor_base));
 $nit = 0;
 if (count($key) > 0) {
+	// exit(var_dump($key));
 	foreach ($key as $id_row => $row) {
 
 		if ($tipo == 1 || $tipo == 3) {

@@ -5,6 +5,14 @@
       	window.open('<?= $baseUrl ?>', '_self');
     	</script>
 <?php exit();}
+	else {
+			?><script type="text/javascript">
+			  const list = document.querySelector(".li_novedades");
+			  list.className += " active ";
+			</script>
+		  <?php
+		  }
+
 	$titulo = 'Usuarios';
 	$periodoActual = $_SESSION['periodoActual'];
 
@@ -27,7 +35,7 @@
       "08" => "Agosto",
       "09" => "Septiembre",
       "10" => "Octobre",
-      "11" => "Novienmbre",
+      "11" => "Noviembre",
       "12" => "Diciembre"
 	];
 
@@ -69,17 +77,18 @@
 		}
 	}
 	// exit(var_dump($consultaNovedad));
+	$nameLabel = get_titles('novedades', 'menu', $labels);
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-lg-8">
-		<h2>Novedades de menú</h2>
+		<h2><?= $nameLabel ?></h2>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?php echo $baseUrl; ?>">Inicio</a>
 			</li>
 			<li class="active">
-				<strong>Novedades de menú</strong>
+				<strong><?= $nameLabel ?></strong>
 			</li>
 		</ol>
 	</div>

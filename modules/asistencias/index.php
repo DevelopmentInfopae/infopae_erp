@@ -32,20 +32,20 @@ if($resultado->num_rows >= 1){
 		}
 	}
 }
-
+$nameLabel = get_titles('asistencia', 'asistencia', $labels);
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
 <div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
-		<h2>Asistencias</h2>
+		<h2><?= $nameLabel ?></h2>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?php echo $baseUrl; ?>">Inicio</a>
 			</li>
 			<li class="active">
-				<strong><?php echo $titulo; ?></strong>
+				<strong><?php echo $nameLabel; ?></strong>
 			</li>
 		</ol>
 	</div>

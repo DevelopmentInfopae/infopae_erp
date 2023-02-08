@@ -7,6 +7,14 @@ if ($permisos['orden_compra'] == "0") {
   </script>
 <?php exit(); }
 
+else {
+	?><script type="text/javascript">
+	  const list = document.querySelector(".li_informes");
+	  list.className += " active ";
+	</script>
+	<?php
+	}
+
 // consulta meses existentes en entregas
 $consultaMeses = " SHOW TABLES LIKE 'entregas_res_%' ";
 $respuestaMeses = $Link->query($consultaMeses) or die ('Error al consultar los meses ln 12');
@@ -64,22 +72,22 @@ if ($respuestaComplementos->num_rows > 0) {
 		$complementos[$dataComplementos['CODIGO']] = $dataComplementos['CODIGO'];
 	}
 }
-
+$nameLabel = get_titles('informes', 'informeInejecuciones', $labels);
+$titulo = $nameLabel;
 ?>
 
 <style type="text/css">
    .select2-container--open {
       z-index: 9999999
   }
-}
 </style>
 
 <div class="row wrapper wrapper-content	white-bg page-heading">
 	<div class="col-md-6 col-sm-12">
-		<h2>Informe Inejecuciones</h2>
+		<h2><?= $titulo ?></h2>
 		<ol class="breadcrumb">
 			<li> <a href="<?= $baseUrl ?>">Home </a></li>
-			<li class="active"><strong>Informe Inejecuciones</strong></li>
+			<li class="active"><strong><?= $titulo ?></strong></li>
 		</ol>
 	</div>
 </div>

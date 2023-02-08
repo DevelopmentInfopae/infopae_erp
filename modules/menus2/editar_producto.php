@@ -1,5 +1,5 @@
 <?php 
-$titulo = 'Editar';
+
 require_once '../../header.php'; 
 
 if ($permisos['menus'] == "0") {
@@ -7,11 +7,19 @@ if ($permisos['menus'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+  ?><script type="text/javascript">
+      const list = document.querySelector(".li_menus");
+      list.className += " active ";
+  </script>
+  <?php
+  }
 
 if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<script>location.href='$baseUrl';</script>"; } 
 $periodoActual = $_SESSION['periodoActual'];
 
 $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Libra', 'g' => 'Gramos'), 'cc' => array('u' => 'Unidad', 'lt' => 'Litro', 'cc' => 'Centímetros cúbicos'), 'u' => array('u' => 'Unidad'));
+
 ?>
 <?php if (isset($_REQUEST['idProducto'])) { 
   $idProducto = $_REQUEST['idProducto'];
@@ -21,31 +29,37 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
     $Producto = $resultadoDatosProducto->fetch_assoc();
 
     if (substr($Producto['Codigo'], 0, 2) == "01") {
+          $nameLabel = get_titles('menus', 'menus', $labels);
+          $titulo = $nameLabel. ' - Editar';
           $link = "index.php";
           $title = "Menú";
           $breadCumb = "menús";
         } else if (substr($Producto['Codigo'], 0, 2) == "02") {
+          $nameLabel = get_titles('menus', 'preparaciones', $labels);
+          $titulo = $nameLabel. ' - Editar';
           $link = "ver_preparaciones.php";
           $title = "Preparación";
           $breadCumb = "preparaciones";
         } else if (substr($Producto['Codigo'], 0, 2) == "03" || substr($Producto['Codigo'], 0, 2) == "04") {
+          $nameLabel = get_titles('menus', 'alimentos', $labels);
+          $titulo = $nameLabel. ' - Editar';
           $link = "ver_alimentos.php";
-          $title = "Alimento";
+          $title = $titulo;
           $breadCumb = "alimentos";
         }
   ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-    <h2>Editar <?php echo $title; ?></h2>
+    <h2> <?php echo $titulo; ?></h2>
     <ol class="breadcrumb">
       <li>
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="<?php echo $baseUrl.'/modules/menus2/'.$link; ?>">Ver <?php echo $breadCumb; ?></a>
+        <a href="<?php echo $baseUrl.'/modules/menus2/'.$link; ?>">Ver <?php echo $nameLabel; ?></a>
       </li>
       <li class="active">
-        <strong> Editar <?php echo $title; ?></strong>
+        <strong> <?php echo $titulo; ?></strong>
       </li>
     </ol>
   </div><!-- /.col -->

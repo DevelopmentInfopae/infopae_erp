@@ -5,6 +5,13 @@ if ($permisos['novedades'] == "0") {
       	window.open('<?= $baseUrl ?>', '_self');
     </script>
 <?php exit();}
+	else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_novedades");
+		  list.className += " active ";
+		</script>
+	  <?php
+	  }
 
 $periodoActual = $_SESSION['periodoActual'];
 set_time_limit (0);
@@ -74,21 +81,23 @@ $fechaVencimiento = $datosNovedad['fecha_vencimiento'];
 $archivo = $datosNovedad['archivo'];
 $observaciones = $datosNovedad['observaciones'];
 $variacion = $datosNovedad['variacion'];
+
+$nameLabel = get_titles('novedades', 'menu', $labels);
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-lg-8">
-		<h2>Ver Novedad en Menu <?= $tipoIntercambioNm ?></h2>
+		<h2><?= $nameLabel ?> - <?= $tipoIntercambioNm ?></h2>
 		<div class="debug"></div>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?php echo $baseUrl; ?>">Inicio</a>
 			</li>
 			<li> 
-				<a href="<?php echo $baseUrl; ?>/modules/intercambios">Novedades de Menú</a> 
+				<a href="<?php echo $baseUrl; ?>/modules/intercambios"><?= $nameLabel ?></a> 
 			</li>
 			<li class="active">
-				<strong>Novedad de Menú</strong>
+				<strong>Novedad de <?= $tipoIntercambioNm ?></strong>
 			</li>
 		</ol>
 	</div>

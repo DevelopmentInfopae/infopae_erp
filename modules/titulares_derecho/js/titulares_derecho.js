@@ -280,8 +280,10 @@ function validaNumDoc(input){
     });
 }
 
-function editarTitular(num_doc){
+function editarTitular(num_doc, semana){
+  console.log(semana);
   $('#num_doc_editar').val(num_doc);
+  $('#semana_editar').val(semana);
   $('#editar_titular').submit();
 }
 

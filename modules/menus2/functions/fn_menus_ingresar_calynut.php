@@ -163,7 +163,22 @@ if ($resultadoGrupoAlimento->num_rows > 0) {
 	$grupo_alim = "Error :".$consultaGrupoAlimento;
 }
 
-$sql = "insert into menu_aportes_calynut (id, cod_prod, nom_prod, grupo_alim, kcalxg, kcaldgrasa, Grasa_Sat, Grasa_poliins, Grasa_Monoins, Grasa_Trans, Fibra_dietaria, Azucares, Proteinas, Colesterol, Sodio, Zinc, Calcio, Hierro, Vit_A, Vit_C, Vit_B1, Vit_B2, Vit_B3, Acido_Fol, Referencia, cod_Referencia) values (NULL, '".$idProducto."', '".$Descripcion."', '".$grupo_alim."', '".$kcalxg."', '".$kcaldgrasa."', '".$Grasa_Sat."', '".$Grasa_poliins."', '".$Grasa_Monoins."', '".$Grasa_Trans."', '".$Fibra_dietaria."', '".$Azucares."', '".$Proteinas."', '".$Colesterol."', '".$Sodio."', '".$Zinc."', '".$Calcio."', '".$Hierro."', '".$Vit_A."', '".$Vit_C."', '".$Vit_B1."', '".$Vit_B2."', '".$Vit_B3."', '".$Acido_Fol."', '".$Referencia."', '".$cod_Referencia."')";
+$ordenGrupoAlim = substr($idProducto,2,2);
+
+$sql = "insert into menu_aportes_calynut (id, cod_prod, nom_prod, 
+										grupo_alim, orden_grupo_alim, kcalxg, kcaldgrasa, Grasa_Sat, 
+										Grasa_poliins, Grasa_Monoins, Grasa_Trans, 
+										Fibra_dietaria, Azucares, Proteinas, 
+										Colesterol, Sodio, Zinc, Calcio, Hierro, 
+										Vit_A, Vit_C, Vit_B1, Vit_B2, Vit_B3, 
+										Acido_Fol, Referencia, cod_Referencia) 
+									values (NULL, '".$idProducto."', '".$Descripcion."', '".$grupo_alim."', 
+									'".$ordenGrupoAlim."', '".$kcalxg."', '".$kcaldgrasa."', '".$Grasa_Sat."', 
+									'".$Grasa_poliins."', '".$Grasa_Monoins."', '".$Grasa_Trans."', 
+									'".$Fibra_dietaria."', '".$Azucares."', '".$Proteinas."', '".$Colesterol."', 
+									'".$Sodio."', '".$Zinc."', '".$Calcio."', '".$Hierro."', '".$Vit_A."', 
+									'".$Vit_C."', '".$Vit_B1."', '".$Vit_B2."', '".$Vit_B3."', '".$Acido_Fol."', 
+									'".$Referencia."', '".$cod_Referencia."')";
 
 if ($Link->query($sql) === true) {
 	echo "1";

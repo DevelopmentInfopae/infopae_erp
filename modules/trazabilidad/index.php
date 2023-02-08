@@ -5,8 +5,15 @@
          window.open('<?= $baseUrl ?>', '_self');
       </script>
 <?php exit(); }
+	  else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_informes");
+		  list.className += " active ";
+		</script>
+	  <?php
+	  }
    $periodoActual = $_SESSION['periodoActual'];
-   $titulo = 'Trazabilidad de alimentos';
+   // $titulo = 'Trazabilidad de alimentos';
    $meses = array('01' => "Enero", 
                   "02" => "Febrero", 
                   "03" => "Marzo", 
@@ -50,6 +57,8 @@
    }
    $bandera = 0;
    
+   $nameLabel = get_titles('informes', 'trazabilidad', $labels);
+   $titulo = $nameLabel;
 ?>
 
 <style type="text/css">

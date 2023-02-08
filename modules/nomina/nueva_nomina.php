@@ -6,30 +6,38 @@
       		window.open('<?= $baseUrl ?>', '_self');
     	</script>
   	<?php exit(); }
+	    	  else {
+				?><script type="text/javascript">
+				  const list = document.querySelector(".li_nomina");
+				  list.className += " active ";
+				</script>
+				<?php
+				}
 
-	$titulo = 'Nueva nómina';
+	$nameLabel = get_titles('nomina', 'nomina', $labels);
+	$titulo = $nameLabel. ' - Nueva';
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-  <div class="col-lg-8">
-    <h2><?php echo $titulo; ?></h2>
-    <ol class="breadcrumb">
-      <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
-      </li>
-      <li>
-      	<a href="<?php echo $baseUrl . '/modules/nomina'; ?>">Nomina</a>
-      </li>
-      <li class="active">
-        <strong><?php echo $titulo; ?></strong>
-      </li>
-    </ol>
-  </div>
-  <div class="col-lg-4">
-    <div class="title-action">
-      <a href="#" class="btn btn-primary" id="crear_nomina"><i class="fa fa-check "></i> Guardar </a>
-    </div>
-  </div>
+  	<div class="col-lg-8">
+    	<h2><?php echo $titulo; ?></h2>
+    	<ol class="breadcrumb">
+      		<li>
+        		<a href="<?php echo $baseUrl; ?>">Home</a>
+      		</li>
+      		<li>
+      			<a href="<?php echo $baseUrl . '/modules/nomina'; ?>">Nomina</a>
+      		</li>
+      		<li class="active">
+        		<strong><?php echo $titulo; ?></strong>
+      		</li>
+    	</ol>
+  	</div>
+  	<div class="col-lg-4">
+    	<div class="title-action">
+      		<a href="#" class="btn btn-primary" id="crear_nomina"><i class="fa fa-check "></i> Guardar </a>
+    	</div>
+  	</div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -52,21 +60,21 @@
 							<div class="form-group col-sm-6 col-md-3">
 								<label>Mes</label>
 								<select name="mes" id="mes" class="form-control" required>
-									<option value="">Seleccione primero tipo empleado</option>
+									<option value="">Seleccione...</option>
 								</select>
 							</div>
 							<div class="form-group col-sm-6 col-md-3">
 								<label class="manipuladora_mostrar transportador_mostrar">Semana Inicial</label>
 								<label class="manipuladora_ocultar transportador_ocultar" style="display: none;">Quincena Inicial</label>
 								<select name="semana_inicial" id="semana_inicial" class="form-control" required>
-									<option value="">Seleccione primero el mes</option>
+									<option value="">Seleccione...</option>
 								</select>
 							</div>
 							<div class="form-group col-sm-6 col-md-3">
 								<label class="manipuladora_mostrar transportador_mostrar">Semana Final</label>
 								<label class="manipuladora_ocultar transportador_ocultar" style="display: none;">Quincena Final</label>
 								<select name="semana_final" id="semana_final" class="form-control" required>
-									<option value="">Seleccione primero el mes</option>
+									<option value="">Seleccione...</option>
 								</select>
 							</div>
 						</div>
@@ -75,11 +83,11 @@
 								<label>Municipio</label>
 								<select name="municipio" id="municipio" class="form-control">
 									<option value="">Todos los municipios</option>
-									<?php 
-										if (is_null($parametros['CodMunicipio'])) {
-											$consulta_municipio = "SELECT * FROM ubicacion WHERE CodigoDANE LIKE '".$parametros['CodDepartamento']."%'";
+									<?php
+										if ($_SESSION['p_Municipio'] == 0) {
+											$consulta_municipio = "SELECT * FROM ubicacion WHERE ETC != 1 AND CodigoDANE LIKE '".$_SESSION['p_CodDepartamento']."%'";
 										} else {
-											$consulta_municipio = "SELECT * FROM ubicacion WHERE CodigoDANE LIKE '".$parametros['CodMunicipio']."%'";
+											$consulta_municipio = "SELECT * FROM ubicacion WHERE CodigoDANE LIKE '".$_SESSION['p_Municipio']."%'";
 										}
 										$result_municipio = $Link->query($consulta_municipio);
 										if ($result_municipio->num_rows > 0) {

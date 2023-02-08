@@ -149,9 +149,7 @@ $informacion = [];
 $periodoActual = $_SESSION['periodoActual'];
 $semana = $_POST['semana'];
 $documentoTitular = $_POST['num_doc_exportar'];
-if ($semana < 10) {
-	$semana = "0".$semana;
-}
+
 
 $consultaInformacionBasica = "SELECT 
 								f.num_doc AS documento, 
@@ -182,7 +180,7 @@ $consultaInformacionBasica = "SELECT
 							INNER JOIN discapacidades d ON f.cod_discap = d.id
 							INNER JOIN etnia e ON f.etnia = e.ID
 							INNER JOIN pobvictima p ON f.cod_pob_victima = p.id
-							INNER JOIN sedes21 s ON f.cod_sede = s.cod_sede
+							INNER JOIN sedes$periodoActual s ON f.cod_sede = s.cod_sede
 							INNER JOIN jornada j ON f.cod_jorn_est = j.id
 							INNER JOIN ubicacion u ON f.cod_mun_res = u.CodigoDANE
 							WHERE f.num_doc = '".$documentoTitular."'";
@@ -342,12 +340,12 @@ $subtitulosInformacionBasica = "B11:B33";
 $tablaInformacionBasica = "C11:F33";
 
 $meses;
-$consultaNumMes = " SELECT mes FROM planilla_semanas WHERE semana = $semana ";
+$consultaNumMes = " SELECT mes FROM planilla_semanas WHERE semana = '$semana' ";
 $respuestaNumMes = $Link->query($consultaNumMes) or die ('Error al consultar el numero de mes ' . mysqli_error($Link));
 if ($respuestaNumMes->num_rows > 0) {
 	$dataNumMes = $respuestaNumMes->fetch_assoc();
 	$mesActual = $dataNumMes['mes'];
-	$consultaMeses = "SELECT DISTINCT(mes) FROM planilla_semanas WHERE mes <= $mesActual ;";
+	$consultaMeses = "SELECT DISTINCT(mes) FROM planilla_semanas WHERE mes <= '$mesActual' ;";
 	$respuestaMeses = $Link->query($consultaMeses) or die ('Error al consultar planilla semanas');
 	if ($respuestaMeses->num_rows > 0) {
 		while ($dataMeses = $respuestaMeses->fetch_assoc()) {
@@ -470,9 +468,7 @@ foreach ($meses as $key => $mes) {
 				$sheet->setCellValue($letra.$numFila, $D);
 				$numeroFilaFinal = $numFila;
 			}
-			$numeroDia ++;
-			// $numeroFilaFinal ++;
-			
+			$numeroDia ++;		
  		}
  		$numFila ++;
  		$semanaComplemento ++;
@@ -480,7 +476,6 @@ foreach ($meses as $key => $mes) {
 }
 $sheet->setCellValue("I".($numeroFilaFinal+1), "Blanco : No Actividad,    X : Consumio,    - : No Consumio");
 $sheet->mergeCells("I".($numeroFilaFinal+1). ":" ."P".($numeroFilaFinal+1));
-// $numeroFilaFinal = ++$numFila;
 $tablaConsumos = "I".$filaInicial .":". "P".($numeroFilaFinal+1);
 
 $sheet->getColumnDimension("I")->setWidth(18); 
@@ -501,7 +496,6 @@ $sheet->getStyle($tituloConsumos)->applyFromArray($titulos);
 $sheet->getStyle($subtitulosConsumos)->applyFromArray($titulos2);
 $sheet->getStyle($tablaConsumos)->applyFromArray($infor);
 
-// exit();
 $writer = new Xlsx($spreadsheet);
 $writer->setIncludeCharts(TRUE);
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

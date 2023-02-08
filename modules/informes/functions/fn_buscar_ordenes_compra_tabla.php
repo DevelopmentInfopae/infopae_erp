@@ -70,11 +70,11 @@
                     INNER JOIN
                   orden_compra_det$mes$periodo_actual ocd ON ocd.Num_Doc = oce.Num_Doc
                     INNER JOIN
-                  productos20 p ON p.Codigo = ocd.cod_Alimento
+                  productos$periodo_actual p ON p.Codigo = ocd.cod_Alimento
                     INNER JOIN
                   proveedores pv ON pv.Nitcc = oce.proveedor
                     INNER JOIN
-                  sedes20 s ON s.cod_sede = oce.cod_Sede
+                  sedes$periodo_actual s ON s.cod_sede = oce.cod_Sede
                     INNER JOIN
                   ubicacion u ON u.CodigoDANE = s.cod_mun_sede
                     $join_rutas

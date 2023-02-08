@@ -460,7 +460,7 @@ if ($cantGruposEtarios == '5') {
 	$resultadoGruposEtarios = $Link->query($consultaGruposEtarios);
 	if ($resultadoGruposEtarios->num_rows > 0) {
 		while ($grupoEta = $resultadoGruposEtarios->fetch_assoc()) {
-			$gruposEtarios[$grupoEta['ID']] = $grupoEta['DESCRIPCION'];
+			$gruposEtarios[$grupoEta['ID']] = $grupoEta['equivalencia_grado'];
 		}
 	}
 
@@ -742,7 +742,7 @@ if ($cantGruposEtarios == '5') {
 				    	}
 					}
 					$cy = $pdf->GetY();
-					if($cy > 155){
+					if($cy > 140){
 						$pdf->AddPage();
 					}
 					$pdf->ln();

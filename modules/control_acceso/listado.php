@@ -6,11 +6,21 @@
      	 	window.open('<?= $baseUrl ?>', '_self');
     	</script>
 	<?php exit(); }
+		  else {
+			?><script type="text/javascript">
+			  const list = document.querySelector(".li_control_acceso");
+			  list.className += " active ";
+			</script>
+		  <?php
+		  }
 
   set_time_limit (0);
   ini_set('memory_limit','6000M');
   $periodoActual = $_SESSION['periodoActual'];
   require_once '../../db/conexion.php';
+
+  $nameLabel = get_titles('control_acceso', 'control', $labels);
+  $titulo = $nameLabel;
 ?>
 
 <style>
@@ -49,13 +59,13 @@
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-md-6 col-lg-8">
-		<h2>Listado de control de acceso</h2>
+		<h2><?= $titulo ?></h2>
 		<ol class="breadcrumb">
 		  <li>
 			<a href="<?php echo $baseUrl; ?>">Home</a>
 		  </li>
 		  <li class="active">
-			<strong>Listado de control de accesso</strong>
+			<strong><?= $titulo ?></strong>
 		  </li>
 		</ol>
 	</div>

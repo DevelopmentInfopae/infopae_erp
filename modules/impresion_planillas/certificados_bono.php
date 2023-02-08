@@ -6,6 +6,13 @@
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   <?php exit(); }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_entrega_complementos");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 
   require_once '../../db/conexion.php';
 
@@ -19,17 +26,19 @@
   if ($res_minicipio->num_rows > 0) {
   $codigoDANE = $res_minicipio->fetch_array();
   }
+
+  $nameLabel = get_titles('entregaComplementos', 'certificadoBono', $labels);
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-  <h2>Certificados Bono Alimentario</h2>
+  <h2><?= $nameLabel ?></h2>
     <ol class="breadcrumb">
       <li>
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li class="active">
-        <strong>Certificados Bono Alimentario</strong>
+        <strong><?= $nameLabel ?></strong>
       </li>
     </ol>
   </div>

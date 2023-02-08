@@ -6,6 +6,13 @@
       		window.open('<?= $baseUrl ?>', '_self');
     	</script>
   	<?php exit();}
+	  else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_novedades");
+		  list.className += " active ";
+		</script>
+	  <?php
+	  }
 
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
@@ -40,19 +47,21 @@
 		}
 	}
 	$auxTotalComplemento = 0;
+	$nameLabel = get_titles('novedades', 'priorizacion', $labels); 
+	$titulo = $nameLabel . ' - Ver';
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-lg-8">
-		<h2>Ver Novedad en Priorización</h2>
+		<h2><?= $titulo ?></h2>
 		<div class="debug"></div>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?php echo $baseUrl; ?>">Inicio</a>
 			</li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion">Novedades de Priorización</a> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion"><?= $nameLabel ?></a> </li>
 			<li class="active">
-				<strong>Novedad de Priorización</strong>
+				<strong><?= $titulo ?></strong>
 			</li>
 		</ol>
 	</div>

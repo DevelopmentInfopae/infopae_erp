@@ -1,4 +1,12 @@
-<?php include 'header.php'; ?>
+<?php include 'header.php'; 
+ ?><script type="text/javascript">
+        const list = document.querySelector(".li_inicio");
+        list.className += " active ";
+    </script>
+    <?php
+    
+
+?>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -63,7 +71,11 @@
 		$Link->set_charset("utf8");
 			// var_dump($_SESSION);
 			// Bitacora / Actividades de usuarios
-			$consulta = " SELECT b.*, ba.descripciones, u.nombre, u.foto FROM bitacora b left join bitacora_acciones ba on ba.id = b.tipo_accion left join usuarios u on b.usuario = u.id WHERE b.usuario = ".$_SESSION['id_usuario']." ORDER BY b.fecha DESC LIMIT 20 ";
+			$consulta = " SELECT b.*, ba.descripciones, u.nombre, u.foto 
+							FROM bitacora b 
+							left join bitacora_acciones ba on ba.id = b.tipo_accion 
+							left join usuarios u on b.usuario = u.id 
+							WHERE b.usuario = ".$_SESSION['id_usuario']." ORDER BY b.fecha DESC LIMIT 20 ";
 			// echo $consulta;
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 

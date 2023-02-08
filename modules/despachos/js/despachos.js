@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+	$('.select2').select2({ width: "resolve" });
 	var municipioRector = $('#municipio').val();
 	if (municipioRector != "" && municipioRector != "0") {
 		var tipo = $('#tipoRacion').val();
@@ -14,11 +14,26 @@ $(document).ready(function(){
 		}
 	}
 
+	$('#diai').change(function(){
+		diaInicial = parseInt($('#diai').val());
+		diaFinal = parseInt($('#diaf').val());
+		if (diaFinal < diaInicial ) { $('#diaf').select2('val',diaInicial); }
+		$('#semana').select2('val', '');
+		$('#tipo').select2('val','');
+	})
+
+	$('#diaf').change(function(){
+		diaInicial = parseInt($('#diai').val());
+		diaFinal = parseInt($('#diaf').val());
+		if (diaFinal < diaInicial ) { $('#diaf').select2('val',diaInicial); }
+	})
+
 	var cantidadDetallados = 0;
-	var mes = $('#mesi').val();
+	var mes = $('#mesi').val(); 
 	var mesText = $("#mesi option[value='"+mes+"']").text()
 	$('#mesfText').val(mesText);
 	$('#mesf').val(mes);
+	// console.log($('#mesf').val())
 	$('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green' });
 	$(document).on('ifChecked', '#seleccionarVarios', function () {
 		$('tbody input[type=checkbox]').each(function(){
@@ -30,12 +45,14 @@ $(document).ready(function(){
 	$(document).on('ifUnchecked', '#seleccionarVarios', function () { $('tbody input[type=checkbox]').iCheck('uncheck'); });
 
 	$('#municipio').change(function(){
+		$('#institucion').select2('val','');
 		var tipo = $('#tipoRacion').val();
 		var municipio = $(this).val();
 		buscar_institucion(municipio,tipo);
 	});
 
 	$('#institucion').change(function(){
+		$('#sede').select2('val', '');
 		var institucion = $(this).val();
 		var tipo = $('#tipoRacion').val();
 		var municipio = $('#municipio').val();
@@ -124,7 +141,7 @@ function buscar_institucion(municipio,tipo){
 }
 
 function buscar_sede(semana, municipio, tipo, institucion){
-	var datos = {"semana":semana,"municipio":municipio,"tipo":tipo,"institucion":institucion};
+	var datos = {"semana":semana, "municipio":municipio, "tipo":tipo, "institucion":institucion};
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_despacho_buscar_sede.php",
@@ -333,10 +350,10 @@ function despachos_por_sede(){
 					semana = $(this).attr('semana');
 				}
 				else{
-					if(semana != $(this).attr('semana')){
-						bandera++;
-						Command: toastr.warning('Los despachos seleccionados deben ser de la misma <strong>semana</strong>', 'Advertencia');
-					}
+					// if(semana != $(this).attr('semana')){
+					// 	bandera++;
+					// 	Command: toastr.warning('Los despachos seleccionados deben ser de la misma <strong>semana</strong>', 'Advertencia');
+					// }
 				}
 			}
 		}

@@ -56,12 +56,12 @@ foreach ($semanas as $key => $value) {
 $auxSemana = trim($auxSemana,',');
 
 // Se van a buscar el mes y el año a partir de la tabla de planilla semana
-$consulta = " SELECT ano, mes, semana FROM planilla_semanas WHERE semana IN ($auxSemana) LIMIT 1 ";
+$consulta = " SELECT ANO, MES_DESPACHO, SEMANA_DESPACHO FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($auxSemana) LIMIT 1 ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link)." consulta : ".$consulta);
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
-		$semanaMes = $row['mes'];
-		$semanaAnno = $row['ano'];
+		$semanaMes = $row['MES_DESPACHO'];
+		$semanaAnno = $row['ANO'];
 	}
 }
 $semanaAnno = substr($semanaAnno, -2);
@@ -83,7 +83,7 @@ $consulta = "SELECT  ps.MENU,
 						INNER JOIN productos$tablaAnno p ON ps.menu = p.orden_ciclo 
 						INNER JOIN fichatecnica ft ON p.Codigo = ft.Codigo 
 						INNER JOIN fichatecnicadet ftd ON ftd.IdFT = ft.Id 
-	 					WHERE ps.SEMANA IN ($auxSemana)
+	 					WHERE ps.SEMANA_DESPACHO IN ($auxSemana)
 							AND ft.Nombre IS NOT NULL
 							AND p.Cod_Tipo_complemento = '$tipo' 
 							AND p.cod_variacion_menu = '$sedes_variacion'";
@@ -221,32 +221,16 @@ for ($i=0; $i < count($sedes) ; $i++) {
 	}
 }
 
-// $totalesSedeCobertura  = array(
-// 		"grupo1" => $total1,
-// 		"grupo2" => $total2,
-// 		"grupo3" => $total3,
-// 		"total"  => $totalTotal
-// );
-
-
-// $_SESSION['sedesCobertura'] = $sedesCobertura;
-// $_SESSION['totalesSedeCobertura'] = $totalesSedeCobertura;
-// //echo "<br><br>SEDES COBERTURA<br><br>";
-// //var_dump($sedesCobertura);
-// //echo "<br><br>TOTAL SEDES COBERTURA<br><br>";
-// //var_dump($totalesSedeCobertura);
-// //echo "<br><br><br>";
-
 // Se va a revisar que no ewxistan despachos despachados (1) o pendiente (2) para el mismo complemento, semana sede
 $bandera = 0;
 for ($i=0; $i < count($sedesCobertura) ; $i++) {
 	$auxSede = $sedesCobertura[$i];
 	$auxSede = $auxSede['cod_sede'];
 	$consulta = " SELECT de.*,s.nom_sede
-	FROM despachos_enc$annoMes de
-	inner join sedes$tablaAnno s on s.cod_sede = de.cod_Sede
-	INNER JOIN tipo_despacho td on de.TipoDespacho = td.Id
-	WHERE de.Semana = '$semana' AND Dias = '$diasDespacho' AND de.cod_sede = '$auxSede' AND de.Tipo_Complem = '$tipo' AND (de.Estado = 1 OR de.Estado = 2) AND de.Tipo_Doc = 'DES' AND de.Num_Doc != '$despacho' ";
+					FROM despachos_enc$annoMes de
+					INNER JOIN sedes$tablaAnno s on s.cod_sede = de.cod_Sede
+					INNER JOIN tipo_despacho td on de.TipoDespacho = td.Id
+					WHERE de.Semana = '$semana' AND Dias = '$diasDespacho' AND de.cod_sede = '$auxSede' AND de.Tipo_Complem = '$tipo' AND (de.Estado = 1 OR de.Estado = 2) AND de.Tipo_Doc = 'DES' AND de.Num_Doc != '$despacho' ";
 
 	if($tipoDespacho != 99){
 			$consulta = $consulta." and TipoDespacho = $tipoDespacho ";
@@ -793,6 +777,7 @@ if($bandera == 0){
 			} 
 		}
 	}
+	// exit(var_dump($consulta));
 	$resultado = $Link->query($consulta) or die ('Unable to execute query - Inserción en productosmovdet '. mysqli_error($Link));
 
 	/**************************************************** FIN TABLAS PRODUCTOS MOV *********************************************/

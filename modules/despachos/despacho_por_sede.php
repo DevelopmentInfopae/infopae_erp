@@ -185,7 +185,7 @@ if ($cantGruposEtarios == 3) {
 	 	// Iniciando la busqueda de los días que corresponden a esta semana de contrato.
 	 	$arrayDiasDespacho = explode(',', $diasDespacho);
 	 	$dias = '';
-	 	$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($semanaIn) "; 
+	 	$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($semanaIn) "; 
 	 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	 	$cantDias = $resultado->num_rows;
 	 	if($resultado->num_rows >= 1){
@@ -746,7 +746,7 @@ if ($cantGruposEtarios == 5) {
 	$pdf->SetAutoPageBreak(FALSE, 5); 
 	$pdf->AliasNbPages();
 	include '../../php/funciones.php';
-
+	// exit(var_dump($_POST));
 	for ($k=0; $k < count($_POST) ; $k++){ 
   		// Borrando variables array para usarlas en cada uno de los despachos
   		unset($sedes);
@@ -812,7 +812,7 @@ if ($cantGruposEtarios == 5) {
 	  	$consecutivoActual = 0;
 	  	foreach ($arraySemana as $arraySemanaKey => $arraySemanaValue) {
 	  		foreach ($arrayDiasDespacho2 as $arrayDiasDespachoKey => $arrayDiasDespachoValue) {
-	  			$consultaConsecutivo = "SELECT CONSECUTIVO FROM planilla_semanas WHERE SEMANA = '" .$arraySemanaValue. "' AND DIA = '" .$arrayDiasDespachoValue. "'";
+	  			$consultaConsecutivo = "SELECT CONSECUTIVO FROM planilla_semanas WHERE SEMANA_DESPACHO = '" .$arraySemanaValue. "' AND DIA = '" .$arrayDiasDespachoValue. "'";
 	 			$respuestaConsecutivo = $Link->query($consultaConsecutivo) or die ('Error al consultar los consetivo LN 825' . mysqli_error());
 	 			if ($respuestaConsecutivo->num_rows > 0 ) {
 	 				$dataConsetivo = $respuestaConsecutivo->fetch_assoc();
@@ -828,7 +828,8 @@ if ($cantGruposEtarios == 5) {
 
 	  	$arrayDiasDespacho = explode(',', $diasDespacho);
 	 	$dias = ''; 
-	 	$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($semanaIn) AND CONSECUTIVO IN ( $concatConsecutivo ) ";  
+	 	$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($semanaIn) AND CONSECUTIVO IN ( $concatConsecutivo ) ";  
+		// exit(var_dump($consulta));
 	 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 	 	$cantDias = $resultado->num_rows;
 	 	if($resultado->num_rows >= 1){
@@ -1077,6 +1078,7 @@ if ($cantGruposEtarios == 5) {
 				if($alimento['grupo_alim'] != $grupoAlimActual){
 					$grupoAlimActual = $alimento['grupo_alim'];
 					$filas = array_count_values($grupo)[$grupoAlimActual];
+					// echo $filas;
 					$cantAlimentosGrupo = $filas;
 					
 					// Se va a realizar una busqueda por si hay filas adicionales debido a presentaciones.
@@ -1097,8 +1099,9 @@ if ($cantGruposEtarios == 5) {
 		  				if($aux['cantu2'] > 0 || $aux['cantu3'] > 0 || $aux['cantu4'] > 0 || $aux['cantu5'] > 0){ }
 					}
 					//Termina la busqueda de las filas adicionales debido a presetaciones,
-
-					if(($current_y + (4*$filas)) > 177){
+					// echo $current_y + (4*$filas) ."<BR>";	
+					// echo + (4*$filas). "<BR>";
+					if(($current_y + (4*$filas)) > 170){
 			  			$pdf->AddPage();
 			  			include 'despacho_por_sede_footer.php';
 			  			include 'despacho_por_sede_header.php';

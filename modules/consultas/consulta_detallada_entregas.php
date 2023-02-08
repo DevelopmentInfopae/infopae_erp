@@ -10,19 +10,31 @@ if ($Link->connect_errno) {
     echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
 $Link->set_charset("utf8");
+if ($permisos['entrega_complementos'] == "0") {
+  ?><script type="text/javascript">
+        window.open('<?= $baseUrl ?>', '_self');
+     </script>
+<?php exit(); }
+ else {
+  ?><script type="text/javascript">
+    const list = document.querySelector(".li_entrega_complementos");
+    list.className += " active ";
+  </script>
+<?php
+}
+$nameLabel = get_titles('entregaComplementos', 'consultaResumida', $labels);
+
 ?>
-
-
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-    <h2>Consulta detallada de entregas</h2>
+    <h2><?= $nameLabel ?></h2>
     <ol class="breadcrumb">
       <li>
         <a href="<?php echo $baseUrl; ?>">Home</a>
       </li>
       <li class="active">
-        <strong>Consulta detallada de entregas</strong>
+        <strong><?= $nameLabel ?></strong>
       </li>
     </ol>
   </div><!-- /.col -->

@@ -6,6 +6,13 @@
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   <?php exit(); }
+  	  else {
+        ?><script type="text/javascript">
+          const list = document.querySelector(".li_configuracion");
+          list.className += " active ";
+        </script>
+        <?php
+        }
   
   $titulo = 'Noticias';
 
@@ -16,6 +23,8 @@
       $noticias[] = $noticia;
     }
   }
+  $nameLabel = get_titles('configuracion', 'noticias', $labels);
+  $titulo = $nameLabel;
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">

@@ -10,8 +10,16 @@
       		window.open('<?= $baseUrl ?>', '_self');
     	</script>
   	<?php exit(); }
+	  else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_sedes");
+		  list.className += " active ";
+		  </script>
+		<?php
+	  }
+	
 
-	$titulo = "Sede";
+	
 	$periodoActual = $_SESSION['periodoActual'];
 	$nomSede = (isset($_POST['nomSede'])) ? mysqli_real_escape_string($Link, $_POST['nomSede']) : '';
 	$codSede = (isset($_POST['codSede'])) ? mysqli_real_escape_string($Link, $_POST['codSede']) : '';
@@ -69,24 +77,25 @@
 			$complementos[] = $dataComplementos['CODIGO']; 
 		}
 	}
-
+	$nameLabel = get_titles('sedes', 'sedes', $labels);
+	$titulo = $nameLabel;
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
     <h1><?php echo $nomInst; ?></h1>
-    <h2><?php echo $titulo. ": " .$nomSede; ?></h2>
+    <h2><?php echo $nameLabel. ": " .$nomSede; ?></h2>
     <ol class="breadcrumb">
       <li>
           <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <?php if ($_SESSION['perfil'] != 6 && $_SESSION['perfil'] != 7): ?> 
       <li>
-      	<a href="<?php echo $baseUrl . '/modules/instituciones/sedes.php'; ?>">Sedes</a>
+      	<a href="<?php echo $baseUrl . '/modules/instituciones/sedes.php'; ?>"><?= $titulo ?></a>
       </li>
       <?php endif ?>
       <li class="active">
-          <strong><?php echo $titulo; ?></strong>
+          <strong><?php echo $nameLabel; ?></strong>
       </li>
     </ol>
   </div>
@@ -414,13 +423,13 @@
 
 <!-- FOCALIZACIÓN -->
 <div class="wrapper wrapper-content  animated fadeInRight">
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="ibox">
-        <div class="ibox-content">
-		  <h2>Focalización</h2>
-          <div class="clients-list">
-            <ul class="nav nav-tabs">
+  	<div class="row">
+    	<div class="col-sm-12">
+      		<div class="ibox">
+        		<div class="ibox-content">
+		  			<h2>Focalización</h2>
+          			<div class="clients-list">
+            			<ul class="nav nav-tabs">
 							<?php
 								$auxIndice = 1;
 								foreach ($semanas as $semana){
@@ -430,31 +439,30 @@
 									$auxIndice++;
 								}
 							?>
-            </ul>
-	          <div class="tab-content">
-						<?php
-							$auxIndice = 1;
-							foreach ($semanas as $semana){ ?>
-								<div id="tab-<?= $semana; ?>" class="tab-pane <?php if($auxIndice == 1){ echo ' active '; } ?>">
-								<!-- <div style="overflow : hidden; height: 100%;"> -->
-									<div class="table-responsive">
-										<br>
-										<table class="table table-striped table-hover dataTable-focalizacion" style="width: 100;">
-											<thead>
-												<tr>
-													<th>Num doc</th>
-													<th>Tipo doc</th>
-													<th>Nombre</th>
-													<th>Zona</th>
-													<th>Genero</th>
-													<th>Grado</th>
-													<th>Grupo</th>
-													<th>Jornada</th>
-													<th>Edad</th>
-													<th>Tipo COMP</th>
-														</tr>
-													</thead>
-													<tbody>
+            			</ul>
+	          			<div class="tab-content">
+							<?php
+								$auxIndice = 1;
+								foreach ($semanas as $semana){ ?>
+									<div id="tab-<?= $semana; ?>" class="tab-pane <?php if($auxIndice == 1){ echo ' active '; } ?>">
+										<div class="table-responsive">
+											<br>
+											<table class="table table-striped table-hover dataTable-focalizacion" style="width: 100;">
+												<thead>
+													<tr>
+														<th>Num doc</th>
+														<th>Tipo doc</th>
+														<th>Nombre</th>
+														<th>Zona</th>
+														<th>Genero</th>
+														<th>Grado</th>
+														<th>Grupo</th>
+														<th>Jornada</th>
+														<th>Edad</th>
+														<th>Tipo COMP</th>
+													</tr>
+												</thead>
+												<tbody>
 													<?php
 														$consulta = "SELECT
 																			f.num_doc,
@@ -476,50 +484,49 @@
 														$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 														if($resultado->num_rows >= 1){
 															while($row = $resultado->fetch_assoc()){ ?>
-															<tr class="titular" numDoc="<?php echo $row['num_doc']; ?>" tipoDoc="<?php echo $row['tipo_doc']; ?>" semana="<?php echo $semana; ?>" style="cursor:pointer" >
-																<td><?php echo $row['num_doc']; ?></td>
-																<td><?php echo $row['tipo_doc']; ?></td>
-																<td><?php echo $row['nombre']; ?></td>
-																<td><?php echo $row['zona_res_est'] == 1 ? 'Rural' : 'Urbana'; ?></td>
-																<td style="text-align_center;"><?php echo $row['genero']; ?></td>
-																<td><?php echo $row['grado']; ?></td>
-																<td style="text-align:center;"><?php echo $row['nom_grupo']; ?></td>
-																<td><?php echo $row['jornada']; ?></td>
-																<td style="text-align:center;"><?php echo $row['edad']; ?></td>
-																<td style="text-align:center;"><?php echo $row['Tipo_complemento']; ?></td>
-															</tr>
+																<tr class="titular" numDoc="<?php echo $row['num_doc']; ?>" tipoDoc="<?php echo $row['tipo_doc']; ?>" semana="<?php echo $semana; ?>" style="cursor:pointer" >
+																	<td><?php echo $row['num_doc']; ?></td>
+																	<td><?php echo $row['tipo_doc']; ?></td>
+																	<td><?php echo $row['nombre']; ?></td>
+																	<td><?php echo $row['zona_res_est'] == 1 ? 'Rural' : 'Urbana'; ?></td>
+																	<td style="text-align_center;"><?php echo $row['genero']; ?></td>
+																	<td><?php echo $row['grado']; ?></td>
+																	<td style="text-align:center;"><?php echo $row['nom_grupo']; ?></td>
+																	<td><?php echo $row['jornada']; ?></td>
+																	<td style="text-align:center;"><?php echo $row['edad']; ?></td>
+																	<td style="text-align:center;"><?php echo $row['Tipo_complemento']; ?></td>
+																</tr>
 													<?php
+																}
 															}
-														}
 													?>
-													</tbody>
-													<tfoot>
-														<tr>
-															<th>Num doc</th>
-															<th>Tipo doc</th>
-															<th>Nombre</th>
-															<th>Zona</th>
-															<th>Genero</th>
-															<th>Grado</th>
-															<th>Grupo</th>
-															<th>Jornada</th>
-															<th>Edad</th>
-															<th>Tipo COMP</th>
-														</tr>
-													</tfoot>
-												</table>
-											</div>
+												</tbody>
+												<tfoot>
+													<tr>
+														<th>Num doc</th>
+														<th>Tipo doc</th>
+														<th>Nombre</th>
+														<th>Zona</th>
+														<th>Genero</th>
+														<th>Grado</th>
+														<th>Grupo</th>
+														<th>Jornada</th>
+														<th>Edad</th>
+														<th>Tipo COMP</th>
+													</tr>
+												</tfoot>
+											</table>
 										</div>
-									<!-- </div> -->
-						<?php
+									</div>
+							<?php
 								$auxIndice++;
-							}
-						?>
-	          </div>
-					</div>
-      	</div>
-    	</div>
-  	</div>
+								}
+							?>
+	          			</div><!--  tab-content -->
+					</div><!--  client-list -->
+      			</div>
+    		</div>
+  		</div>
 	</div>
 </div>
 

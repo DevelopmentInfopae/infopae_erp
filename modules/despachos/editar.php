@@ -7,6 +7,13 @@
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   <?php exit(); }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_despachos");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 
   $titulo = "Editar despachos";
   $fecha_despacho = "";
@@ -114,6 +121,9 @@
     $consulta_tipo_vehiculos = "SELECT Id as id, Nombre AS nombre FROM tipovehiculo;";
     $respuesta_tipo_vehiculos = $Link->query($consulta_tipo_vehiculos) or die("Error al consultar los tipo de vehiculos: ". $Link->error);
   }
+  
+  $nameLabel = get_titles('despachos', 'alimentos', $labels);
+  $titulo = $nameLabel . ' - Editar ';
 ?>
 
 <?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
@@ -126,7 +136,7 @@
         <a href="<?= $baseUrl; ?>">Home</a>
       </li>
       <li>
-        <a href="<?= $baseUrl . '/modules/despachos/despachos.php'; ?>">Despachos</a>
+        <a href="<?= $baseUrl . '/modules/despachos/despachos.php'; ?>"><?= $nameLabel ?></a>
       </li>
       <li class="active">
         <strong><?= $titulo; ?></strong>

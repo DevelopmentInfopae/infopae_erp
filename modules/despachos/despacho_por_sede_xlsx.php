@@ -281,7 +281,7 @@ if ($cantGruposEtarios == 5) {
       // Iniciando la busqueda de los días que corresponden a esta semana de contrato.
       $arrayDiasDespacho = explode(',', $diasDespacho);
       $dias = '';
-      $consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($semanaIn) "; 
+      $consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($semanaIn) "; 
       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
       if($resultado->num_rows >= 1){
          $mesInicial = '';

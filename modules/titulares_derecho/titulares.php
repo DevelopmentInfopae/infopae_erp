@@ -1,13 +1,24 @@
 <?php
 include '../../header.php';
+require_once '../../db/conexion.php';
+
+if ($permisos['titulares_derecho'] == "0") {
+    ?><script type="text/javascript">
+      window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php exit(); }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_titulares_derecho");
+      list.className += " active ";
+    </script>
+  <?php
+  }
+  
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
-require_once '../../db/conexion.php';
 $Link = new mysqli($Hostname, $Username, $Password, $Database);
-if ($Link->connect_errno) {
-    echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-}
 $Link->set_charset("utf8");
 ?>
 
@@ -25,7 +36,6 @@ $Link->set_charset("utf8");
   	</div>
 </div>
 
-
 <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
         <div class="col-sm-12">
@@ -33,19 +43,18 @@ $Link->set_charset("utf8");
                 <div class="ibox-content">
 					<h3>Seleccione la semana de focalización</h3>
 					<?php
-					$consulta = " select distinct semana from planilla_semanas ";
-					$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-					if($resultado->num_rows >= 1){
-						while($row = $resultado->fetch_assoc()){
-							$aux = $row['semana'];
-							$consulta2 = " show tables like 'focalizacion$aux' ";
-							$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
-							if($resultado2->num_rows >= 1){
-							 $semanas[] = $aux;
+						$consulta = " select distinct semana from planilla_semanas ";
+						$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+						if($resultado->num_rows >= 1){
+							while($row = $resultado->fetch_assoc()){
+								$aux = $row['semana'];
+								$consulta2 = " show tables like 'focalizacion$aux' ";
+								$resultado2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
+								if($resultado2->num_rows >= 1){
+								$semanas[] = $aux;
+								}
 							}
 						}
-					}
-					//var_dump($semanas);
 					?>
 					<div class="row">
 						<div class="col-sm-12">
@@ -60,8 +69,7 @@ $Link->set_charset("utf8");
 											<?php } ?>
 										</select>
 									</div>
-									<div class="col-sm-3">
-									</div>
+									<div class="col-sm-3"> </div>
 								</div>
 								<div class="row">
 									<div class="col-sm-3 form-group">
@@ -76,10 +84,6 @@ $Link->set_charset("utf8");
 		</div>
 	</div>
 </div>
-
-
-
-
 
 
 <?php

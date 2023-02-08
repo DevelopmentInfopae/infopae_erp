@@ -1,6 +1,5 @@
 <?php 
 
-$titulo = 'Editar Despacho';
 require_once '../../header.php';
 
 if ($permisos['despachos'] == "0") {
@@ -8,7 +7,13 @@ if ($permisos['despachos'] == "0") {
     window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
-
+else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_despachos");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 
 $periodoActual = $_SESSION['periodoActual'];
@@ -105,7 +110,9 @@ if ($respuestaUsuarios->num_rows > 0) {
 		}
 	}
 }
-// exit(var_dump($productosDespachados));
+
+$nameLabel = get_titles('despachos', 'insumos', $labels);
+$titulo = $nameLabel . ' - Editar';
 ?>
 
 <?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
@@ -117,7 +124,7 @@ if ($respuestaUsuarios->num_rows > 0) {
 			       	<a href="<?php echo $baseUrl; ?>">Inicio</a>
 			    </li>
 			    <li>
-			        <a href="despachos.php">Ver despachos de insumos</a>
+			        <a href="despachos.php"><?= $nameLabel ?></a>
 			    </li>
 			    <li class="active">
 			        <strong><?php echo $titulo; ?></strong>

@@ -16,18 +16,8 @@ var mesesNom = {'01' : "Enero", "02" : "Febrero", "03" : "Marzo", "04" : "Abril"
 var generoNom = {'F' : "Femenino", 'M' : "Masculino"};
 colors = ['#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D','#0B4337','#19AB8D'];
 
-function arreglarDivs(){
-	var heights = $(".col-sm-4").map(function() {
-        return $(this).height();
-    }).get(),
-    maxHeight = Math.max.apply(null, heights);
-    $(".col-sm-4").height(maxHeight);
-    $(".col-sm-8").height(maxHeight);
-}
-
 function CargarTablas() {
 	$('#loader').fadeIn();
-
 	$.ajax({  // ajax totales semanas
 		type:"POST",
 		url:"functions/fn_estadisticas_tabla_totales_semana.php",
@@ -36,20 +26,6 @@ function CargarTablas() {
 			$('#tHeadSemana').html(data['thead']);
 			$('#tBodySemana').html(data['tbody']);
 			$('#tFootSemana').html(data['tfoot']);
-			$('td').mouseover(function(){
-				if ($(this).prop('class') != "") {
-					clase = $(this).prop('class');
-					clase = clase.replace(" verGraficas", "");
-					$("."+clase).css('background-color', '#f3f3f3');
-				}
-			});
-			$('td').mouseout(function(){
-				if ($(this).prop('class') != "") {
-					clase = $(this).prop('class');
-					clase = clase.replace(" verGraficas", "");
-					$("."+clase).css('background-color', '');
-				}
-			});
 			info = data['info'];
 			json = [];
 			json[0] = ['Semana', 'Total',{ role: 'style' },{ role: 'annotation' }];
@@ -74,7 +50,6 @@ function CargarTablas() {
 	      }
 	   }
 	});
-
 
 	$.ajax({  // ajax totales por complemento
 		type:"POST",

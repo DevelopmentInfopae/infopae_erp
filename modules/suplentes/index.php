@@ -47,16 +47,18 @@
 		}
 	}
 
+	$nameLabel = get_titles('titulares', 'suplentes', $labels);
+
 ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-lg-8">
-    	<h2><?= $titulo; ?></h2>
+    	<h2><?= $nameLabel; ?></h2>
 		<ol class="breadcrumb">
 			<li>
 			 	<a href="<?php echo $baseUrl; ?>">Inicio</a>
 			</li>
 			<li class="active">
-		  		<strong><?= $titulo; ?></strong>
+		  		<strong><?= $nameLabel; ?></strong>
 			</li>
 		</ol>
 	</div>
@@ -182,7 +184,7 @@
 													$dataInstitucion = $respuestaInstitucion->fetch_assoc();
 													$codigoInstitucion = $dataInstitucion['codigo_inst'];
 												}
-												$condicionRector = " codigo_inst = $codigoInstitucion ";
+												$condicionRector = " AND codigo_inst = $codigoInstitucion ";
 											}
 											else if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != ""){
 												$documentoCoordinador = $_SESSION['num_doc'];
@@ -192,11 +194,11 @@
 													$dataInstitucion = $respuestaInstitucion->fetch_assoc();
 													$codigoInstitucion = $dataInstitucion['codigo_inst'];
 												}
-												$condicionRector = " codigo_inst = $codigoInstitucion ";
+												$condicionRector = " AND codigo_inst = $codigoInstitucion ";
  											}
 
 											$consulta_instituciones = "SELECT codigo_inst AS codigo, nom_inst AS nombre FROM instituciones WHERE 1=1 $condicionRector ORDER BY nom_inst";
-											// var_dump($consulta_instituciones);
+											var_dump($consulta_instituciones);
 											$respuesta_instituciones = $Link->query($consulta_instituciones) or die("Error al consultar las instituciones: ". $Link->error);
 											if ($respuesta_instituciones->num_rows > 0){
 												while ($institucion = $respuesta_instituciones->fetch_assoc()){
@@ -374,6 +376,8 @@
 </div>
 <?php endif ?>
 
+<?php include '../../footer.php'; ?>
+
 <div class="modal inmodal fade" id="ventana_subir_suplentes" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
   	<div class="modal-dialog modal-sm">
     	<div class="modal-content">
@@ -439,7 +443,7 @@
   	</div>
 </div>
 
-<?php include '../../footer.php'; ?>
+
 
 <!-- Mainly scripts -->
 <script src="<?= $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>

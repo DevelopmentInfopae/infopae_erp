@@ -1,17 +1,8 @@
 <?php
-/**
- * Buscar Instituciones.
- * Rutina que busca las instituciones
- * Rutina desarrollada originalmente para el modulo de asistencias
- * @author Ricardo Farfán <ricardo@xlogam.com>
- */
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
 
 $periodoActual = $_SESSION['periodoActual']; 
-
-//var_dump($_SESSION);
-
 $institucionRector = "";
 // Si es ususario de tipo rector buscar la institución del rector.
 if($_SESSION["perfil"] == 6){
@@ -49,22 +40,11 @@ if($validacion == 'Tablet'){
 }
 $consulta.= " and cod_mun_sede = \"$municipio\") ";
 
-
-
-
-
-
-//$consulta = " select * from instituciones where cod_mun = \"$municipio\" and codigo_inst in (select cod_inst from sedes$periodoActual where (tipo_validacion = \"$validacion\" or tipo_validacion = \"Lector de Huella\" ) and cod_mun_sede = \"$municipio\") ";
-
 if($institucionRector != ""){
 	$consulta.= " and codigo_inst = \"$institucionRector\" ";
 }
 
 $consulta = $consulta." order by nom_inst asc ";
-
-
-
-//echo "<br><br>$consulta<br><br>";
 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){

@@ -1,11 +1,11 @@
 <?php
-	include '../../header.php';
+include '../../header.php';
 
-  if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
-    ?><script type="text/javascript">
-      window.open('<?= $baseUrl ?>', '_self');
+if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
+?>	<script type="text/javascript">
+      	window.open('<?= $baseUrl ?>', '_self');
     </script>
-  <?php exit(); }
+<?php exit(); }
 
 	$titulo = 'Actualizar Grupo etario';
 
@@ -26,7 +26,7 @@
     <h2><?php echo $titulo; ?></h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
+        <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
       	<a href="<?php echo $baseUrl . '/modules/grupos_etarios'; ?>">Grupos Etarios</a>
@@ -60,12 +60,12 @@
 
 	              <div class="form-group col-sm-6 col-md-4">
 	                <label for="edadInicial">Edad inicial</label>
-	                <input type="number" class="form-control" name="edadInicial" id="edadInicial" min="4" max="17" value="<?php echo $edadInicial; ?>" required>
+	                <input type="number" class="form-control" name="edadInicial" id="edadInicial" min="3" max="17" value="<?php echo $edadInicial; ?>" required>
 	              </div>
 
 								<div class="form-group col-sm-6 col-md-4">
 	                <label for="edadFinal">Edad final</label>
-	                <input type="number" class="form-control" name="edadFinal" id="edadFinal" min="4" max="17" value="<?php echo $edadFinal; ?>" required>
+	                <input type="number" class="form-control" name="edadFinal" id="edadFinal" min="3" max="17" value="<?php echo $edadFinal; ?>" required>
 	              </div>
 
               </div>
@@ -74,7 +74,7 @@
           		<div class="col-sm-12">
           			<div class="row-">
           				<div class="col-sm-3 col-lg-2 text-center">
-      							<a href="#" class="btn btn-primary" id="actualizarGrupoEtarioContinuar"><i class="fa fa-check "></i> Guardar y Continuar </a>
+      							<a href="#" class="btn btn-primary" id="actualizarGrupoEtario"><i class="fa fa-check "></i> Guardar y Continuar </a>
           				</div>
           			</div>
           		</div>

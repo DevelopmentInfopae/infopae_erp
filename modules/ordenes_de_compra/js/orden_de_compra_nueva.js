@@ -206,7 +206,7 @@ $(document).ready(function(){
 				}
 			});
 
-			var datos = {"mes":mes, "semana":semana, "municipio":municipio, "ruta":ruta, "tipo":tipo, "institucion":institucion, "sede":sede, "consecutivo":consecutivo, "itemsActuales":itemsActuales};
+			var datos = { "dias" : diasActuales, "mes":mes, "semana":semana, "municipio":municipio, "ruta":ruta, "tipo":tipo, "institucion":institucion, "sede":sede, "consecutivo":consecutivo, "itemsActuales":itemsActuales};
 			$.ajax({
 				type: "POST",
 				url: "functions/fn_agregar_items.php",

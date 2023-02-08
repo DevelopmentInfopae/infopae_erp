@@ -31,14 +31,16 @@ if($resultado->num_rows >= 1){
 			$semanas[] = $aux;
 		}
 	}
-}			
+}	
+$nameLabel = get_titles('asistencia', 'suplentes', $labels);
+$titulo = $nameLabel;		
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
 <div class="flagFaltantes">Faltan <span class="asistenciaFaltantes">0</span> de <span class="asistenciaTotal">0</span> </div>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading"> <!-- page-heading -->
 	<div class="col-xs-8"> <!-- col -->
-		<h2>Seleccionar Suplentes</h2>
+		<h2><?= $nameLabel ?></h2>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?php echo $baseUrl; ?>">Inicio</a>

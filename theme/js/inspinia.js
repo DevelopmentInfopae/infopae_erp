@@ -7,18 +7,14 @@
 
 $(document).ready(function () {
 
-
-    // Add body-small class if window less than 768px
     if ($(this).width() < 769) {
         $('body').addClass('body-small')
-    } else {
-        $('body').removeClass('body-small')
     }
 
-    // MetisMenu
+    // MetisMenu para los ul o los li sean dinamicos en el sidebar
     $('#side-menu').metisMenu();
 
-    // Collapse ibox function
+    // Collapse ibox function contrae o muestra la informacion en las tablas del index como por ejemplo la de coordinador o rector 
     $('.collapse-link').on('click', function () {
         var ibox = $(this).closest('div.ibox');
         var button = $(this).find('i');
@@ -32,13 +28,13 @@ $(document).ready(function () {
         }, 50);
     });
 
-    // Close ibox function
+    // Close ibox cierra el contenedor de las tablas como por ejemplo el de coordinar o rector las actividades de usuarios
     $('.close-link').on('click', function () {
         var content = $(this).closest('div.ibox');
         content.remove();
     });
 
-    // Fullscreen ibox function
+    // Fullscreen ibox function sin utilizar en el proyecto puede tener utilidad en futuros desarrollos
     $('.fullscreen-link').on('click', function () {
         var ibox = $(this).closest('div.ibox');
         var button = $(this).find('i');
@@ -50,42 +46,38 @@ $(document).ready(function () {
         }, 100);
     });
 
+    // canvas mode  */////////
     // Close menu in canvas mode
     $('.close-canvas-menu').on('click', function () {
+        // console.log('im here');
         $("body").toggleClass("mini-navbar");
         SmoothlyMenu();
     });
-
     // Run menu of canvas
     $('body.canvas-menu .sidebar-collapse').slimScroll({
         height: '100%',
         railOpacity: 0.9
     });
+    /////////////////////////////
+ 
 
-    // Open close right sidebar
-    $('.right-sidebar-toggle').on('click', function () {
-        $('#right-sidebar').toggleClass('sidebar-open');
-    });
-
-    // Initialize slimscroll for right sidebar
+    // Initialize slimscroll for right sidebar configuracion del scroll
     $('.sidebar-container').slimScroll({
         height: '100%',
         railOpacity: 0.4,
         wheelStep: 10
     });
 
-    // Open close small chat
+    // Open close small chat sin uso actual  /////////////////
     $('.open-small-chat').on('click', function () {
         $(this).children().toggleClass('fa-comments').toggleClass('fa-remove');
         $('.small-chat-box').toggleClass('active');
     });
-
     // Initialize slimscroll for small chat
     $('.small-chat-box .content').slimScroll({
         height: '234px',
         railOpacity: 0.4
     });
-
     // Small todo handler
     $('.check-link').on('click', function () {
         var button = $(this).find('i');
@@ -95,30 +87,26 @@ $(document).ready(function () {
         return false;
     });
 
-    // Append config box / Only for demo purpose
-    // Uncomment on server mode to enable XHR calls
-    //$.get("skin-config.html", function (data) {
-    //    if (!$('body').hasClass('no-skin-config'))
-    //        $('body').append(data);
-    //});
 
-    // Minimalize menu
+    // Minimalize menu funcionalidad minimizacion y expacion de menu sidebar
+    // cuando damos click en la clase que esta en header nos activa el siguiente evento
     $('.navbar-minimalize').on('click', function (event) {
+        // console.log('click en maximizar o minimizar');
         event.preventDefault();
         $("body").toggleClass("mini-navbar");
         SmoothlyMenu();
-
     });
 
-    // Tooltips demo
+    // Tooltips demo sin uso actual podria ser de uso en un futuro
     $('.tooltip-demo').tooltip({
         selector: "[data-toggle=tooltip]",
         container: "body"
     });
 
 
-    // Full height of sidebar
+    // Full height of sidebar fijar altura de la pag
     function fix_height() {
+        // console.log('im here');
         var heightWithoutNavbar = $("body > #wrapper").height() - 61;
         $(".sidebar-panel").css("min-height", heightWithoutNavbar + "px");
 
@@ -146,7 +134,7 @@ $(document).ready(function () {
     fix_height();
 
     // Fixed Sidebar
-    $(window).bind("load", function () {
+    $(window).bind("load", function () {     
         if ($("body").hasClass('fixed-sidebar')) {
             $('.sidebar-collapse').slimScroll({
                 height: '100%',
@@ -203,7 +191,7 @@ $(document).ready(function () {
         var fixednavbar = localStorage.getItem("fixednavbar");
         var boxedlayout = localStorage.getItem("boxedlayout");
         var fixedfooter = localStorage.getItem("fixedfooter");
-
+        // console.log(collapse)
         var body = $('body');
 
         if (fixedsidebar == 'on') {
@@ -262,9 +250,11 @@ function animationHover(element, animation) {
         });
 }
 
+// funcion para mostrar los menus despues de comprimir o descomprir el acordion 
 function SmoothlyMenu() {
     if (!$('body').hasClass('mini-navbar') || $('body').hasClass('body-small')) {
         // Hide menu in order to smoothly turn on when maximize menu
+        // ampiliacion
         $('#side-menu').hide();
         // For smoothly turn on menu
         setTimeout(
@@ -272,13 +262,15 @@ function SmoothlyMenu() {
                 $('#side-menu').fadeIn(400);
             }, 200);
     } else if ($('body').hasClass('fixed-sidebar')) {
+        // no entra a este if por el momento
         $('#side-menu').hide();
         setTimeout(
             function () {
                 $('#side-menu').fadeIn(400);
-            }, 100);
+            }, 200);
     } else {
         // Remove all inline style from jquery fadeIn function to reset menu state
+        // reduccion
         $('#side-menu').removeAttr('style');
     }
 }

@@ -35,8 +35,9 @@ $(document).ready(function()
 
 	$('#municipio_hidden').val($('#municipio').val());
 
+	// 
 	$(document).on('change', '#mes', function() { buscar_semana_mes($(this).val()); });
-	$(document).on('change', '#sede', function() { buscar_meses_sede($(this).val()); });
+	$(document).on('change', '#sede', function() {  buscar_meses_sede($(this).val()); });
 	$(document).on('change', '#institucion', function() { buscar_sedes_institucion(); });
 	$(document).on('change', '#semana', function() { buscar_complementos($(this).val()); });
 	$(document).on('change', '#municipio', function(){ buscar_instituciones($(this).val()); });

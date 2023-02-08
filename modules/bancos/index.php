@@ -8,7 +8,18 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
     </script>
 <?php exit(); }
 
+else {
+	?><script type="text/javascript">
+	  const list = document.querySelector(".li_configuracion");
+	  list.className += " active ";
+	</script>
+  <?php
+  }
+
 $periodoActual = $_SESSION['periodoActual'];
+
+$nameLabel = get_titles('configuracion', 'bancos', $labels);
+$titulo = $nameLabel;
 ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   	<div class="col-md-12">

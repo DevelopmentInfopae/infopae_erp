@@ -1,12 +1,20 @@
 <?php
 	require_once '../../header.php';
-	$titulo = "Nueva sede";
+	
 
 	if ($permisos['instituciones'] == "0" || $permisos['instituciones'] == "1") {
     ?><script type="text/javascript">
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   	<?php exit(); }
+	  else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_sedes");
+		  list.className += " active ";
+		  </script>
+		<?php
+	  }
+	
 
 	$codigoInstitucion = (isset($_POST["codigoInstitucion"]) && $_POST["codigoInstitucion"] != "") ? mysqli_real_escape_string($Link, $_POST["codigoInstitucion"]) : "";
 	if($codigoInstitucion != ""){
@@ -16,6 +24,9 @@
 			$registrosIntitucion = $resultadoInstitucion->fetch_assoc();
 		}
 	}
+
+	$nameLabel = get_titles('sedes', 'sedes', $labels);
+	$titulo = "Nueva ".$nameLabel;
 	// exit(var_dump($_POST));
 ?>
 
@@ -27,7 +38,7 @@
         <a href="<?php echo $baseUrl; ?>">Home</a>
       </li>
       <li class="active">
-      	<a href="<?php echo $baseUrl . '/modules/instituciones/sedes.php'; ?>">Sedes</a>
+      	<a href="<?php echo $baseUrl . '/modules/instituciones/sedes.php'; ?>"><?= $nameLabel ?></a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>

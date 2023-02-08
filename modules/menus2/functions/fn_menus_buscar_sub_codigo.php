@@ -7,7 +7,7 @@
     $tipoProducto = $_POST['tipoProducto'];
 
   $consulta = " select * from productos".$_SESSION['periodoActual']." WHERE nivel = '2' AND Codigo like '".$tipoProducto."%' AND inactivo = '0'";
-
+  // exit(var_dump($consulta));
   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
   if($resultado->num_rows >= 1){
     while($row = $resultado->fetch_assoc()) { ?>

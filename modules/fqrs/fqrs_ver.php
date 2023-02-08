@@ -6,6 +6,13 @@
             window.open('<?= $baseUrl ?>', '_self');
         </script>
     <?php exit(); }
+	      	  else {
+				?><script type="text/javascript">
+				  const list = document.querySelector(".li_fqrs");
+				  list.className += " active ";
+				</script>
+				<?php
+				}
 
 	$titulo = 'Ver Fqrs';
 

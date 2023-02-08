@@ -1,5 +1,5 @@
 <?php
-$titulo = 'Editar titular de derecho';
+
 require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 
@@ -8,9 +8,18 @@ if ($permisos['titulares_derecho'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
     </script>
 <?php exit(); }
+ else {
+  ?><script type="text/javascript">
+    const list = document.querySelector(".li_titulares_derecho");
+    list.className += " active ";
+  </script>
+<?php
+}
 
 if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") {
-
+  $nameLabel = get_titles('titulares', 'titulares', $labels);
+  $titulo = $nameLabel. ' - Editar';
+  // exit(var_dump($_POST));
 ?>
 <style type="text/css">
   .wizard .content{
@@ -30,7 +39,7 @@ if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") {
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="index.php">Ver titulares de derecho</a>
+        <a href="index.php">Ver <?= $nameLabel ?></a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>
@@ -56,7 +65,8 @@ if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") {
             $semanaEditar = $_POST['semana_editar'];
             $num_doc = $_POST['num_doc_editar'];
             $semanas = [];
-            $consultarSemanas = "SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES = (SELECT DISTINCT(MES) FROM planilla_semanas WHERE SEMANA = $semanaEditar)";
+            $consultarSemanas = "SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES = (SELECT DISTINCT(MES) FROM planilla_semanas WHERE SEMANA = '$semanaEditar')";
+            // exit(var_dump($consultarSemanas));
             $resultadoSemanas = $Link->query($consultarSemanas);
             if ($resultadoSemanas->num_rows > 0) {
                 while ($dataSemanas = $resultadoSemanas->fetch_assoc()) {
@@ -68,7 +78,15 @@ if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") {
             $complemento_semana = [];
             $datosTitular;
             foreach ($semanas as $id => $tabla) {
-              $consultarTitular = "SELECT  tipodocumento.nombre as nom_tdoc, instituciones.nom_inst, sedes.nom_sede, F.* FROM ".$tabla." as F INNER JOIN tipodocumento ON tipodocumento.id = F.tipo_doc INNER JOIN instituciones ON instituciones.codigo_inst = F.cod_inst INNER JOIN sedes".$_SESSION['periodoActual']." as sedes ON sedes.cod_sede = F.cod_sede WHERE num_doc = ".$num_doc;
+              $consultarTitular = "SELECT   tipodocumento.nombre as nom_tdoc, 
+                                            instituciones.nom_inst, 
+                                            sedes.nom_sede, 
+                                            F.* 
+                                          FROM ".$tabla." as F 
+                                          INNER JOIN tipodocumento ON tipodocumento.id = F.tipo_doc 
+                                          INNER JOIN instituciones ON instituciones.codigo_inst = F.cod_inst 
+                                          INNER JOIN sedes".$_SESSION['periodoActual']." as sedes ON sedes.cod_sede = F.cod_sede 
+                                          WHERE num_doc = ".$num_doc;
               $resultadoTitular = $Link->query($consultarTitular);
               if ($resultadoTitular->num_rows > 0) {
                 while ($titular = $resultadoTitular->fetch_assoc()) {
@@ -81,7 +99,8 @@ if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") {
                 }
               }
             }
-
+            // exit(var_dump($consultarTitular));
+            // echo "$consultarTitular";
             ?>
 
           <form class="form row" id="formTitularEditar">

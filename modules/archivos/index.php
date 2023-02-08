@@ -6,6 +6,13 @@ if ($permisos['archivos_globales'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
     </script>
 <?php exit(); }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_archivos_globales");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 
 set_time_limit (0);
 ini_set('memory_limit','6000M');
@@ -16,43 +23,21 @@ if ($Link->connect_errno) {
 	echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
 $Link->set_charset("utf8");
+$nameLabel = get_titles('archivosGlobales', 'archivosGlobales', $labels);
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-lg-8">
-		<h1>Módulo de Archivos</h1>
+		<h1><?= $nameLabel ?></h1>
 		<ol class="breadcrumb">
 			<li>
-				<a href="<?php echo $baseUrl; ?>">Home</a>
+				<a href="<?php echo $baseUrl; ?>">Inicio</a>
 			</li>
-			<li><a href="index.php">Módulo de Archivos</a></li>
+			<li><a href="index.php"><?= $nameLabel ?></a></li>
 		</ol>
 	</div>
-  <div class="col-lg-4">
-	  <div class="title-action">
-		 <!--
-		  <a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
-		  <a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a>
-		-->
-		  <!-- <a href="<?php echo $baseUrl; ?>/modules/despachos/despacho_nuevo.php" target="_self" class="btn btn-primary"><i class="fa fa-truck"></i> Nuevo despacho </a> -->
-	  </div>
-  </div>
-  	<div class="col-lg-12 debug">
-  	</div>
 </div>
-<!-- /.row wrapper de la cabecera de la seccion -->
-
-
-
-
-
-
-
-
-
-
-
-
 
 <div class="wrapper wrapper-content">
 	<div class="row">
@@ -65,23 +50,15 @@ $Link->set_charset("utf8");
 						<a href="#" class="file-control <?php if(isset($_GET['tipo']) && $_GET['tipo'] == 2){ echo " active "; } ?>" value="2" >Imagenes</a>
 						<a href="#" class="file-control <?php if(isset($_GET['tipo']) && $_GET['tipo'] == 3){ echo " active "; } ?>" value="3">PDF</a>
 						<div class="hr-line-dashed"></div>
-						
-						
 						<?php if( $_SESSION['perfil'] == "0" || $permisos['archivos_globales'] == "2"){ ?>
 							<a class="btn btn-primary btn-block" href="#subirArchivos">Adjuntar Archivos</a>
 							<div class="hr-line-dashed"></div>
 						<?php } ?>
-
-
-
-
-						
 						<h5>Categoría</h5>
 						<ul class="folder-list" style="padding: 0">
 							<li><a href="#" class="category-control <?php if((isset($_GET['categoriaFnd']) && $_GET['categoriaFnd'] == 0) || !isset($_GET['categoriaFnd'])){ echo " active "; } ?>" value="0"><i class="fa fa-folder"></i> Todos</a></li>
-
 							<?php
-								$consulta2 = "select * from mod_archivos_categorias";
+								$consulta2 = "SELECT * FROM mod_archivos_categorias";
 								$resultado2 = $Link->query($consulta2) or die ("No se puede realizar la consulta para mostrar el listado de las categorias. <br><br> $consulta2 <br><br> ". mysqli_error($Link));
 								if($resultado2->num_rows >= 1){
 									while($row2 = $resultado2->fetch_assoc()) { ?>
@@ -90,15 +67,9 @@ $Link->set_charset("utf8");
 									}
 								}
 							?>
-
-
 							<?php if( $_SESSION['perfil'] == 0 || $permisos['archivos_globales'] == "2"){ ?>
 								<li><a href="#editar-categorias"><i class="fa fa-pencil-square-o"></i> Editar Categorías</a></li>
 							<?php } ?>
-
-
-
-
 						</ul>
 						<div class="row">
 							<div class="col-sm-12 form-group">
@@ -113,7 +84,6 @@ $Link->set_charset("utf8");
 									<option value="">Todas</option>
 								</select>
 							</div>
-
 							<div class="col-sm-12 form-group">
 								<label for="sede">Sede</label>
 								<select class="form-control" name="sedeLateral" id="sedeLateral">
@@ -127,61 +97,41 @@ $Link->set_charset("utf8");
 			</div>
 		</div>
 
-				<!-- AREA DONDE SE MUESTRAN LOS ARCHIVOS -->
-				<div class="col-lg-9 animated fadeInRight">
-					<div class="row">
-						<div class="col-lg-12">
-
-
-							<?php
-							$periodoActual = $_SESSION['periodoActual'];
-							$consulta = " select * from mod_archivos where 1 = 1";
-							if(isset($_GET['tipo']) && $_GET['tipo'] == 2){
-								$consulta .= " and extension != 'pdf' ";
-							}
-							else if(isset($_GET['tipo']) && $_GET['tipo'] == 3){
-								$consulta .= " and extension = 'pdf' ";
-							}
-							
-							if(isset($_GET['categoriaFnd']) && $_GET['categoriaFnd'] != 0){
-								$aux = $_GET['categoriaFnd'];
-								$consulta .= " and categoria = $aux ";
-							}
-
-							if(isset($_GET['municipioFnd']) && $_GET['municipioFnd'] != ""){
-								$aux = $_GET['municipioFnd'];
-								$consulta .= " and cod_municipio = $aux ";
-							}
-
-							if(isset($_GET['institucionFnd']) && $_GET['institucionFnd'] != ""){
-								$aux = $_GET['institucionFnd'];
-								$consulta .= " and cod_inst = $aux ";
-							}
-
-							if(isset($_GET['sedeFnd']) && $_GET['sedeFnd'] != ""){
-								$aux = $_GET['sedeFnd'];
-								$consulta .= " and cod_sede = $aux ";
-							}
-
-
-							$consulta .= " order by fecha_carga desc ";
-
-							$resultado = $Link->query($consulta) or die ("No se puede realizar la consulta para mostrar archivos. <br><br> $consulta <br><br> ". mysqli_error($Link));
-
-
-						
-
-							// var_dump($infopaeData);
-							// foto_loader.php?file=gumball.pdf
-
-
-
-
-
-							if($resultado->num_rows >= 1){
-								while($row = $resultado->fetch_assoc()) { ?>
-									<div class="file-box">
-										<div class="file">
+		<!-- AREA DONDE SE MUESTRAN LOS ARCHIVOS -->
+		<div class="col-lg-9 animated fadeInRight">
+			<div class="row">
+				<div class="col-lg-12">
+					<?php
+						$periodoActual = $_SESSION['periodoActual'];
+						$consulta = " SELECT * FROM mod_archivos WHERE 1 = 1 ";
+						if(isset($_GET['tipo']) && $_GET['tipo'] == 2){
+							$consulta .= " and extension != 'pdf' ";
+						}
+						else if(isset($_GET['tipo']) && $_GET['tipo'] == 3){
+							$consulta .= " and extension = 'pdf' ";
+						}	
+						if(isset($_GET['categoriaFnd']) && $_GET['categoriaFnd'] != 0){
+							$aux = $_GET['categoriaFnd'];
+							$consulta .= " and categoria = $aux ";
+						}
+						if(isset($_GET['municipioFnd']) && $_GET['municipioFnd'] != ""){
+							$aux = $_GET['municipioFnd'];
+							$consulta .= " and cod_municipio = $aux ";
+						}
+						if(isset($_GET['institucionFnd']) && $_GET['institucionFnd'] != ""){
+							$aux = $_GET['institucionFnd'];
+							$consulta .= " and cod_inst = $aux ";
+						}
+						if(isset($_GET['sedeFnd']) && $_GET['sedeFnd'] != ""){
+							$aux = $_GET['sedeFnd'];
+							$consulta .= " and cod_sede = $aux ";
+						}
+						$consulta .= " order by fecha_carga desc ";
+						$resultado = $Link->query($consulta) or die ("No se puede realizar la consulta para mostrar archivos. <br><br> $consulta <br><br> ". mysqli_error($Link));
+						if($resultado->num_rows >= 1){
+							while($row = $resultado->fetch_assoc()) { ?>
+								<div class="file-box">
+									<div class="file">
 										<a href="file_loader.php?file=<?= $row['ruta']; ?>" target="_blank">
 											<span class="corner"></span>
 											<?php if($row['extension'] == 'pdf'){ ?>
@@ -193,8 +143,6 @@ $Link->set_charset("utf8");
 													<img alt="image" class="img-responsive" src="file_loader.php?file=<?= $row['ruta']; ?>">
 												</div>
 											<?php } ?>
-
-
 											<div class="file-name">
 												<?php echo $row['nombre']; ?>.<?php echo $row['extension']; ?>
 												<br/>
@@ -204,45 +152,20 @@ $Link->set_charset("utf8");
 												?>
 												<small>Agregado: <?php echo $aux1 ?></small>
 												<?php if( $_SESSION['perfil'] == 0 || $permisos['archivos_globales'] == "2"){ ?>
-													<br><a href="" value="<?php echo $row['id']; ?>" class="btnBorrar"><small style="color: #ff7a7a;">Borrar</small></a>
+													<br><a href="" name="<?= $row['ruta'] ?>" value="<?php echo $row['id']; ?>" class="btnBorrar"><small style="color: #ff7a7a;">Borrar</small></a>
 												<?php } ?>
 											</div>
 										</a>
-										</div>
 									</div>
-								<?php
+								</div>
+					<?php
 								}// Termina el while
 							}//Termina el if que valida que si existan resultados
-							?>
-
-
-
-
-					</div><!--/.col -->
-					</div>
-				</div>
-				</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+					?>
+				</div><!--/.col -->
+			</div>
+		</div>
+	</div>
 
 <?php if( $_SESSION['perfil'] == 0 || $permisos['archivos_globales'] == "2"){ ?>
 	<div class="wrapper wrapper-content">
@@ -257,8 +180,6 @@ $Link->set_charset("utf8");
 					</div>
 					<div class="ibox-content">
 						<form class="" action="" method="post" name="formArchivos" id="formArchivos" enctype="multipart/form-data">
-							<!-- <h2>Subir Archivo</h2> -->
-							<!-- <input type="file" name="foto[]" id="foto" accept="image/jpeg" multiple > -->
 							<div class="row" name="subirArchivos">
 
 								<div class="col-sm-3 form-group">
@@ -288,12 +209,6 @@ $Link->set_charset("utf8");
 									</select>
 								</div>
 
-
-
-
-
-
-
 								<div class="col-sm-3 form-group">
 									<label for="categoria">Categoría</label>
 									<select class="form-control" name="categoria" id="categoria">
@@ -310,9 +225,6 @@ $Link->set_charset("utf8");
 										?>
 									</select>
 								</div>
-
-
-
 
 								<div class="col-sm-9 form-group">
 									<label for="departamento">Archivo</label>
@@ -338,12 +250,6 @@ $Link->set_charset("utf8");
 		</div>
 	</div>
 
-
-
-
-
-
-
 	<div class="wrapper wrapper-content" id="editar-categorias">
 		<div class="row">
 			<div class="col-lg-12">
@@ -355,92 +261,50 @@ $Link->set_charset("utf8");
 						</div>
 					</div>
 					<div class="ibox-content">
-
-
-
-					<table class="table table-striped">
-	<thead>
-		<tr>
-		<th scope="col">Categorías</th>
-		<th scope="col">Acciones</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>
-				<input type="text" name="nuevaCategoria" value="" id="nuevaCategoria" placeholder="Digite el nombre para la nueva categoría" class="form-control">
-			</td>
-			<td>
-				<button type="button" class="btn btn-primary nueva-categoria"><i class="fa fa-fw fa-check"></i></button>
-			</td>
-		</tr>
-		
-		<?php
-			$consulta2 = "select * from mod_archivos_categorias where id > 1";
-			$resultado2 = $Link->query($consulta2) or die ("No se puede realizar la consulta para mostrar el listado de las categorias. <br><br> $consulta2 <br><br> ". mysqli_error($Link));
-			if($resultado2->num_rows >= 1){
-				while($row2 = $resultado2->fetch_assoc()) { ?>
-					<tr>
-						<td>
-							<input type="text" name="categoria-editar-<?= $row2['id'] ?>" value="<?= $row2['categoria'] ?>" id="categoria-editar-<?= $row2['id'] ?>" placeholder="Nueva Categoría" class="form-control">
-						</td>
-						<td>
-							<button type="button" class="btn btn-primary categoria-editar" value="<?= $row2['id'] ?>"><i class="fa fa-fw fa-check"></i></button>
-							<button type="button" class="btn btn-danger categoria-eliminar" value="<?= $row2['id'] ?>"><i class="fa fa-fw fa-trash"></i></button>
-						</td>
-					</tr>
-				<?php
-				}
-			}
-		?>
-
-
-
-
-
-
-
-
-		
-		
-
-
-
-
-
-
-	</tbody>
-	</table>
-
-
-
-
-
-
-
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th scope="col">Categorías</th>
+									<th scope="col">Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" name="nuevaCategoria" value="" id="nuevaCategoria" placeholder="Digite el nombre para la nueva categoría" class="form-control">
+									</td>
+									<td>
+										<button type="button" class="btn btn-primary nueva-categoria"><i class="fa fa-fw fa-check"></i></button>
+									</td>
+								</tr>
+								<?php
+									$consulta2 = "SELECT * FROM mod_archivos_categorias WHERE id >= 1";
+									$resultado2 = $Link->query($consulta2) or die ("No se puede realizar la consulta para mostrar el listado de las categorias. <br><br> $consulta2 <br><br> ". mysqli_error($Link));
+									if($resultado2->num_rows >= 1){	
+										while($row2 = $resultado2->fetch_assoc()) { ?>
+											<tr>
+												<td>
+													<input type="text" name="categoria-editar-<?= $row2['id'] ?>" value="<?= $row2['categoria'] ?>" id="categoria-editar-<?= $row2['id'] ?>" placeholder="Nueva Categoría" class="form-control">
+												</td>
+												<td>
+													<button type="button" class="btn btn-primary categoria-editar" value="<?= $row2['id'] ?>"><i class="fa fa-fw fa-check"></i></button>
+													<button type="button" class="btn btn-danger categoria-eliminar" value="<?= $row2['id'] ?>"><i class="fa fa-fw fa-trash"></i></button>
+												</td>
+											</tr>
+								<?php
+										}
+									}
+								?>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<div style="height:40px;"></div>
 
 <?php } ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <?php include '../../footer.php'; ?>
 
 	<!-- Mainly scripts -->
@@ -448,39 +312,27 @@ $Link->set_charset("utf8");
 	<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
-
 	<!-- Custom and plugin javascript -->
 	<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
-
 	<!-- Jasny -->
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/jasny/jasny-bootstrap.min.js"></script>
-
 	<!-- DROPZONE -->
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dropzone/dropzone.js"></script>
-
 	<!-- CodeMirror -->
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/codemirror.js"></script>
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/mode/xml/xml.js"></script>
-
-	<script src="<?php echo $baseUrl; ?>/modules/archivos/js/index_mod_archivos.js"></script>
+	<script src="<?= $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 	<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
-
+	<script src="<?php echo $baseUrl; ?>/modules/archivos/js/index_mod_archivos.js"></script>
 	<!-- Page-Level Scripts -->
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('select').select2({width: "100%"});
 		});
 	</script>
-
-
-
-
-
 <?php mysqli_close($Link); ?>
-
 <form action="index.php" name="mostrarArchivos" id="mostrarArchivos">
 	<input type="hidden" name="municipioFnd" id="municipioFnd" value="<?php if(isset($_GET['municipioFnd'])){echo $_GET['municipioFnd'];} ?>">
 	<input type="hidden" name="institucionFnd" id="institucionFnd" value="<?php if(isset($_GET['institucionFnd'])){echo $_GET['institucionFnd'];} ?>">

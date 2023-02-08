@@ -2,7 +2,7 @@
 require_once 'fn_menus_head_funciones.php';
 
 $usuario = $_SESSION['idUsuario'];
-
+// exit(var_dump($_POST));
 if (isset($_POST['descripcion'])) {
   $descripcion = mysqli_real_escape_string($Link, $_POST['descripcion']);
   $descripcion = strtoupper($descripcion);
@@ -97,6 +97,7 @@ if ($tipoProducto == "01") {
   } else if (strlen($IDComplemento) > 1) {
     $codigoPrefijo = "01".$IDComplemento;
   }
+  // exit(var_dump($codigoPrefijo));
   $nuevoCodigo = obtenerUltimoCodigo($codigoPrefijo);
   $tipo_complemento = $tipoComplemento;
 } else {  

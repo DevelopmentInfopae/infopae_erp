@@ -510,7 +510,7 @@ if ($cantGruposEtarios == '5') {
 	$resultadoGruposEtarios = $Link->query($consultaGruposEtarios);
 	if ($resultadoGruposEtarios->num_rows > 0) {
 		while ($grupoEta = $resultadoGruposEtarios->fetch_assoc()) {
-			$gruposEtarios[$grupoEta['ID']] = $grupoEta['DESCRIPCION'];
+			$gruposEtarios[$grupoEta['ID']] = $grupoEta['equivalencia_grado'];
 		}
 	}
 
@@ -568,7 +568,8 @@ if ($cantGruposEtarios == '5') {
 					$entregaString = "0".$this->entrega;
 				}else{$entregaString = $this->entrega;}
 					$this->Cell(0,4,utf8_decode($entregaString),'BR',1,'L'); //Entregas
-			}else if($this->Rpc != 'RPC'){
+			}
+			else if($this->Rpc != 'RPC'){
 				$this->SetFont('Arial','B',8);
 				$this->Cell(9,4,utf8_decode('MES:'),'B',0,'L');
 				$this->SetFont('Arial','',8);
@@ -626,7 +627,7 @@ if ($cantGruposEtarios == '5') {
 			$cx = $this->getX();
 			$cy = $this->getY();
 			foreach ($this->gruposEtarios as $ID => $DESCRIPCION) {
-				$this->Cell(40,6,utf8_decode($DESCRIPCION),'BL',0,'C');
+				$this->Cell(40,6,utf8_decode(strtolower($DESCRIPCION)),'BL',0,'C');
 				$this->Cell(35,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BL',0,'C');//SEDES COBERTURA POR GRUPO ETARIO
 				$this->Cell(35,6,utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0),'BL',1,'C');//SEDES COBERTURA POR GRUPO ETARIO
 			}
@@ -696,7 +697,7 @@ if ($cantGruposEtarios == '5') {
 							$tipoComplementoDespacho = $dataComplemento['Complemento'];
 						}
 					}
-					if ($tipoComplementoDespacho == 'RPC') {				
+					// if ($tipoComplementoDespacho == 'RPC') {				
 						// vamos a buscar el numero de la entrega que va a estar junto al mes 
 						$consultaEntrega = "SELECT NumeroEntrega FROM planilla_dias WHERE mes = $mesEntrega;";
 						$respuestaEntrega = $Link->query($consultaEntrega) or die('Error al consultar el numero de la entrega' . mysqli_error($Link));
@@ -712,10 +713,10 @@ if ($cantGruposEtarios == '5') {
 							$dataNombreMes = $respuestaNombreMes->fetch_assoc();
 							$nombreMesEntrega = $dataNombreMes['NombreMes'];
 						}
-					}
-					else {
-						$nombreMesEntrega = $tablaMes;
-					}
+					// }
+					// else {
+					// 	$nombreMesEntrega = $tablaMes;
+					// }
 
 					if ($boleanMes == "true" ) {
 						$mesImprimir = $nombreMesEntrega;
@@ -739,6 +740,8 @@ if ($cantGruposEtarios == '5') {
 						$dataRespuestaManipuladoras = $respuestaNumeroManipuladoras->fetch_assoc();
 						$numeroManipuladoras = $dataRespuestaManipuladoras['NumManipuladoras'];
 					}
+
+					// $consultaNombreMes
 
 					$pdf->setData($Despacho['FechaMYSQL'], $dpto, $dataSede, $coberturaEtarios, $maxEstudiantes, $gruposEtarios, $mesImprimir, $tipoComplemento, $entrega, $tipoComplementoDespacho, $contrato,$numeroDias, $numeroManipuladoras);
 					$pdf->AddPage();

@@ -6,6 +6,13 @@
       	window.open('<?= $baseUrl ?>', '_self');
     	</script>
   	<?php exit(); }
+	else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_orden_compra");
+		  list.className += " active ";
+		</script>
+	  <?php
+	  }
 
 	include '../../db/conexion.php';
 	set_time_limit (0);
@@ -25,16 +32,19 @@
       "10" => "Octubre",
       "11" => "Noviembre",
       "12" => "Diciembre"
-	]
+	];
+
+	$nameLabel = get_titles('ordenCompra', 'ordenCompra', $labels);
+	$titulo = $nameLabel . " - Nueva";
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-lg-8">
-		<h2>Nueva Orden de Compra</h2>
+		<h2><?= $titulo ?></h2>
 		<ol class="breadcrumb">
 			<li> <a href="<?php echo $baseUrl; ?>">Inicio</a> </li>
-			<li> <a href="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/ordenes_de_compra.php">Ordenes de Compra</a> </li>
-			<li class="active"> <strong>Nueva Orden de Compra</strong> </li>
+			<li> <a href="<?php echo $baseUrl; ?>/modules/ordenes_de_compra/ordenes_de_compra.php"><?= $nameLabel ?></a> </li>
+			<li class="active"> <strong><?= $titulo ?></strong> </li>
 		</ol>
 	</div>
 	<div class="col-lg-4">

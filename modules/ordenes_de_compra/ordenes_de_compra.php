@@ -6,6 +6,14 @@
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+
+else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_orden_compra");
+      list.className += " active ";
+    </script>
+  <?php
+  }
   	set_time_limit (0);
   	ini_set('memory_limit','6000M');
   	$periodoActual = $_SESSION['periodoActual'];
@@ -16,25 +24,27 @@
   							'lunes_3' => 'D11', 'martes_3' => 'D12', 'miércoles_3' => 'D13', 'jueves_3' => 'D14', 'viernes_3' => 'D15',
   							'lunes_4' => 'D16', 'martes_4' => 'D17', 'miércoles_4' => 'D18', 'jueves_4' => 'D19', 'viernes_4' => 'D20',
   							'lunes_5' => 'D21', 'martes_5' => 'D22', 'miércoles_5' => 'D23', 'jueves_5' => 'D24', 'viernes_5' => 'D25'
-  ]
+  ];
+
+  $nameLabel = get_titles('ordenCompra', 'ordenCompra', $labels);
+
 ?>
 
 <style type="text/css">
    .select2-container--open {
       z-index: 9999999
   }
-}
 </style>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-md-6 col-lg-8">
-		<h2>Ordenes de Compra</h2>
+		<h2><?= $nameLabel; ?></h2>
 		<ol class="breadcrumb">
 		  	<li>
 				<a href="<?php echo $baseUrl; ?>">Home</a>
 		  	</li>
 		  	<li class="active">
-				<strong>Ordenes de Compra</strong>
+				<strong><?= $nameLabel ?></strong>
 		  	</li>
 		</ol>
 	</div>

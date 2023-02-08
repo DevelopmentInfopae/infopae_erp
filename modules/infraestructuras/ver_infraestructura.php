@@ -1,5 +1,5 @@
 <?php 
-$titulo = 'Ver infraestructura';
+
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
@@ -8,6 +8,13 @@ if ($permisos['diagnostico_infraestructura'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+  ?><script type="text/javascript">
+    const list = document.querySelector(".li_diagnostico_infraestructura");
+    list.className += " active ";
+  </script>
+<?php
+}
 
 $Infraestructura;
 
@@ -79,6 +86,9 @@ if ($resultadoDotaciones->num_rows > 0) {
     $infoDotaciones[$datosDotaciones['id_parametroInf']][$datosDotaciones['idDotacion']] = $datosDotaciones;
   }
 }
+
+$nameLabel = get_titles('infraestructura', 'infraestructura', $labels);
+$titulo = $nameLabel . ' - Ver';
 ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
@@ -88,7 +98,7 @@ if ($resultadoDotaciones->num_rows > 0) {
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="index.php">Ver infraestructuras</a>
+        <a href="index.php"><?= $nameLabel ?></a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>

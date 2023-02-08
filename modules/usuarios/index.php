@@ -6,19 +6,36 @@
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   <?php exit(); }
+  	  else {
+        ?><script type="text/javascript">
+          const list = document.querySelector(".li_configuracion");
+          list.className += " active ";
+        </script>
+        <?php
+        }
 
   $titulo = 'Usuarios';
-?>
 
+  $nameLabel = get_titles('configuracion', 'usuarios', $labels);
+  $titulo = $nameLabel;
+?>
+<style>
+	.fa-check {
+ 	 	color : green;
+	}
+	.fa-circle {
+		color : gray;
+	}
+</style>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-    <h2>Usuarios</h2>
+    <h2><?= $titulo ?></h2>
     <ol class="breadcrumb">
       <li>
         <a href="<?php echo $baseUrl; ?>">Home</a>
       </li>
       <li class="active">
-        <strong>Usuarios</strong>
+        <strong><?= $titulo ?></strong>
       </li>
     </ol>
   </div><!-- /.col -->
@@ -44,6 +61,7 @@
                 <th>Perfil</th>
                 <th>Tipo de usuario</th>
                 <th>Municipio</th>
+                <th>Estado</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </thead>
@@ -76,6 +94,11 @@
                 if($resultado){
                   while($row = $resultado->fetch_assoc()){
                     $estado = ($row["estado"] == 1) ? "Activo" : "Inactivo";
+                    if ($estado == 'Activo') {
+                      $icon = "<i class='fas fa-check'></i>";
+                    }elseif($estado == 'Inactivo'){
+                      $icon = "<i class='fas fa-circle'></i>";
+                    }
                     $eliminar = (is_null($row["usuarioAsociado"])) ? '<li><a onclick="confirmarEliminarUsuario(' . $row["idUsuario"] . ')"><i class="fa fa-trash fa-lg"></i> Eliminar</a></li>' : '';
                     echo '<tr data-idusuario="' . $row["idUsuario"] . '">
                             <td align="left">' . $row["num_doc"] . '</td>
@@ -84,6 +107,7 @@
                             <td align="left">' . $row["nombrePerfil"] . '</td>
                             <td align="left">' . $row["Tipo_Usuario"] . '</td>
                             <td align="left">' . $row["ciudad"] . '</td>
+                            <td align="center">' . $icon . '</td>
                             <td align="center">
                               <div class="btn-group">
                                 <div class="dropdown">
@@ -94,7 +118,7 @@
                                     <li><a href="#" class="btnEditarUsuario" data-idusuario="' . $row["idUsuario"] . '"><i class="fas fa-pencil-alt fa-lg"></i> Editar</a></li>'.
                                     $eliminar .
                                     '<li><a href="#" onclick="restaurarContrasenaLista(' . $row["idUsuario"] . ');"><i class="fa fa-retweet fa-lg"></i> Restaurar password</a></li>
-                                    <li><a style="cursor: default"><i class="fa fa-check fa-lg"></i> Estado: <strong>'.$estado.'</strong></a></li>
+      
                                   </ul>
                                 </div>
                               </div>
@@ -112,6 +136,7 @@
                 <th>Perfil</th>
                 <th>Tipo de usuario</th>
                 <th>Municipio</th>
+                <th>Estado</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </tfoot>
@@ -157,7 +182,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/usuarios/js/usuarios.js"></script>
 <script>

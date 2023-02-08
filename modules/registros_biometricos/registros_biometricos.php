@@ -16,6 +16,8 @@ if ($Link->connect_errno) {
     echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
 $Link->set_charset("utf8");
+
+$nameLabel = get_titles('entregaComplementos', 'registrosBiometricos', $labels);
 ?>
 
 
@@ -23,13 +25,13 @@ $Link->set_charset("utf8");
   <div class="col-lg-8">
       <!-- <h2><?php echo $institucionNombre; ?></h2> -->
       <!-- <h4><?php echo $institucionCodigo; ?></h4> -->
-      <h2>Ver registros biométricos</h2>
+      <h2><?= $nameLabel ?></h2>
       <ol class="breadcrumb">
           <li>
               <a href="<?php echo $baseUrl; ?>">Home</a>
           </li>
           <li class="active">
-              <strong>Ver registros biométricos</strong>
+              <strong>Ver <?= $nameLabel ?></strong>
           </li>
       </ol>
   </div>

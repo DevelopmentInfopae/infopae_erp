@@ -2,7 +2,10 @@
 include '../../../config.php';
 require_once '../../../db/conexion.php';
 include 'fn_funciones.php';
+// phpinfo();
 set_time_limit (0);
+ini_set('memory_limit','6000M');
+// phpinfo();
 // exit(var_dump($_POST));
 // Vamos a usar una veriable bandera para determinar si finalmente se pueden hacer las inserciónes.
 $tipo = '';
@@ -85,12 +88,12 @@ $cantidadDias = count($dias);
 $cantGruposEtarios = $_SESSION['cant_gruposEtarios']; 
 
 // Se van a buscar el mes y el año a partir de la tabla de planilla semana y se va a verificar la existencia de las tablas.
-$consulta = " select ano, mes, semana from planilla_semanas where MES = '$mes' limit 1 ";
+$consulta = " SELECT ANO, MES_DESPACHO, SEMANA_DESPACHO FROM planilla_semanas WHERE MES_DESPACHO = '$mes' limit 1 ";
 $resultado = $Link->query($consulta) or die ('Error al cosultar planillas_semanas: '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
-		$semanaMes = $row['mes'];
-		$semanaAnno = $row['ano'];
+		$semanaMes = $row['MES_DESPACHO'];
+		$semanaAnno = $row['ANO'];
 	}
 }
 $semanaAnno = substr($semanaAnno, -2);
@@ -161,7 +164,7 @@ if($existe <= 0){
 									`CostoUnitario` decimal(10,2) DEFAULT '0.00', 
 									`NombreRED` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
 									`Umedida` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
-									`CantUmedida` decimal(20,4) DEFAULT '0.0000', 
+									`CantUmedida` decimal(28,8) DEFAULT '0.0000', 
 									`Factor` decimal(28,8) DEFAULT '0.00000000', 
 									`Id_Usuario` int(10) unsigned DEFAULT '0',
 									`CostoTotal` decimal(20,2) DEFAULT '0.00',
@@ -185,7 +188,7 @@ if($existe <= 0){
 	$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 }
 
-// ***********************************AJUSTES PARA QUE SE PUEDAN CREAR LOS DESPACHOS SEGUN EL NUMERO DE GRUPOS CREADOS ACTUALMENTE *********************************************
+// *********AJUSTES PARA QUE SE PUEDAN CREAR LOS DESPACHOS SEGUN EL NUMERO DE GRUPOS CREADOS ACTUALMENTE******************
 
 $n = 1;
 $concatGruposEtarios = '';
@@ -321,7 +324,7 @@ foreach ($variaciones as $id => $variacion) {
 
 	$parametroSemana = '';
 	if ($semana !== '') {
-		$parametroSemana = " AND ps.SEMANA = '$semana' ";
+		$parametroSemana = " AND ps.SEMANA_DESPACHO = '$semana' ";
 	}else if ($semana == '') {
 		$auxSemanaImplicita = "(";
 		foreach ($semanasImplicitas as $semanasImplicitasKey => $semanasImplicitasValue) {
@@ -329,7 +332,7 @@ foreach ($variaciones as $id => $variacion) {
 		}
 		$auxSemanaImplicita = trim($auxSemanaImplicita,",");
 		$auxSemanaImplicita .= ")";
-		$parametroSemana = " AND ps.SEMANA IN $auxSemanaImplicita ";
+		$parametroSemana = " AND ps.SEMANA_DESPACHO IN $auxSemanaImplicita ";
 	}
 
 	// 1. Armar array con los componentes  Primera consulta, la que trae los diferentes alimentos de los menu.
@@ -348,7 +351,7 @@ foreach ($variaciones as $id => $variacion) {
 					INNER JOIN productos$tablaAnno p ON ps.menu = p.orden_ciclo
 					INNER JOIN fichatecnica ft ON p.Codigo = ft.Codigo
 					INNER JOIN fichatecnicadet ftd ON ftd.IdFT = ft.Id 
-	 				WHERE ps.MES = '$mes' $parametroSemana
+	 				WHERE ps.MES_DESPACHO = '$mes' $parametroSemana
 					AND ft.Nombre IS NOT NULL
 					AND p.Cod_Tipo_complemento = '$tipo' 
 					AND p.cod_variacion_menu = '$variacion'"; 
@@ -356,17 +359,10 @@ foreach ($variaciones as $id => $variacion) {
 	for ($i=0; $i < count($dias) ; $i++) {
 		if($i == 0){ $consulta = $consulta." AND ( "; }
 		else{ $consulta = $consulta." OR "; $diasDespacho = $diasDespacho.','; }
-
-		$consulta .= " (ps.SEMANA = " .$semanasImplicitasCompleta[$i]. " AND ps.DIA =  " .$diasImplicitos[$i]. ") ";
-
+		$consulta .= " (ps.SEMANA_DESPACHO = '" .$semanasImplicitasCompleta[$i]. "' AND ps.DIA =  " .$diasImplicitos[$i]. ") ";
 		$diasDespacho = $diasDespacho.$dias[$i];
-		// $consulta = $consulta." ps.DIA = ".$dias[$i]." ";
-
-
-
 	} 
 	if(count($dias) > 0){ $consulta = $consulta." ) "; } 
-	// exit(var_dump($consulta));
 	$consulta = $consulta." order by ftd.codigo asc, ft.Codigo ASC ";  
 	$resultado = $Link->query($consulta) or die ('Error al consultar las preparaciones LN 371. '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
@@ -378,15 +374,13 @@ foreach ($variaciones as $id => $variacion) {
 	} 
 	$resultado->close(); 
 	
-
-	/***************************************************************************************************************************************************/
+	//************************************************************************************************/
 	// Consulta que retorna los menus de los días seleccionados.
 	$condicionDias = $menus = "";
 	for ($i=0; $i < count($dias) ; $i++) {
-		$condicionDias .= " ( SEMANA = " .$semanasImplicitasCompleta[$i]. " AND DIA =  " .$diasImplicitos[$i]. ") OR ";
-		// $condicionDias .= "dia = '". $dias[$i] ."' OR ";
+		$condicionDias .= " ( SEMANA_DESPACHO = '" .$semanasImplicitasCompleta[$i]. "' AND DIA =  " .$diasImplicitos[$i]. ") OR ";
 	}
-	$consultaMenusDias = "SELECT * FROM planilla_semanas ps WHERE ps.MES = '$mes' $parametroSemana AND (". trim($condicionDias, " OR ") .");"; 
+	$consultaMenusDias = "SELECT * FROM planilla_semanas ps WHERE ps.MES_DESPACHO = '$mes' $parametroSemana AND (". trim($condicionDias, " OR ") .");"; 
 	$resultadoMenusDias = $Link->query($consultaMenusDias) or die("Error al consultar planilla_semanas. Linea 248: ". $Link->error);
 	if ($resultadoMenusDias->num_rows > 0) {
 		while ($resgistroMenusDias = $resultadoMenusDias->fetch_assoc()) {
@@ -395,7 +389,7 @@ foreach ($variaciones as $id => $variacion) {
 	}
 	$menusReg = $menus;
 
-	/**********************************************************************************************************************************************/
+	/****************************************************************************************************/
 	// Debemos buscar el codigo del alimento sin preparar para obtener el codigo que es y las unidades que le afectan
 	
 	$itemsIngredientes = array(); 
@@ -500,9 +494,10 @@ foreach ($variaciones as $id => $variacion) {
 	$totalTotal = 0; 
 	$sedesCobertura = array();
 	$sedes_variacion = [];
+	// exit(var_dump($sedes));
 	for ($i=0; $i < count($sedes) ; $i++) {
 		$auxSede = $sedes[$i];
-		$consulta = " SELECT distinct cod_sede, $concatGruposEtarios from sedes_cobertura where mes = '$mes' $parametroSemana2 and cod_sede = $auxSede and Ano = $annoActual ORDER BY SEMANA DESC LIMIT 1 "; 
+		$consulta = " SELECT distinct cod_sede, $concatGruposEtarios from sedes_cobertura where 1 = 1 $parametroSemana2 and cod_sede = $auxSede and Ano = $annoActual ORDER BY SEMANA DESC LIMIT 1 "; 
 		$resultado = $Link->query($consulta) or die ('Error al consultar las coberturas'. mysqli_error($Link));
 		if($resultado->num_rows >= 1){
 			while($row = $resultado->fetch_assoc()) { 
@@ -533,7 +528,7 @@ foreach ($variaciones as $id => $variacion) {
 			}
 			$diasIn = trim($diasIn,", "); 
 
-			$consultaSemanasMes = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes AND DIA IN ($diasIn)";
+			$consultaSemanasMes = " SELECT DISTINCT(SEMANA_DESPACHO) AS semana FROM planilla_semanas WHERE MES_DESPACHO = '$mes' AND DIA IN ($diasIn)";
 			$respuestaSemanasMes = $Link->query($consultaSemanasMes) or die ('Error al consultar las semanas del mes ');
 			if ($respuestaSemanasMes->num_rows > 0) {
 				while ($dataSemanasMes = $respuestaSemanasMes->fetch_assoc()) {
@@ -1066,6 +1061,7 @@ foreach ($variaciones as $id => $variacion) {
 		/* Se va a armar un array con los consecutivos de los movimientos, luego se actualizara el consecutivo */
 		$consecutivos = array();
 		$aux = (int)$consecutivo;
+		// exit(var_dump($sedesCobertura));
 		for ($i=0; $i < count($sedesCobertura); $i++){
 			$consecutivos[$i] = $aux;
 			$aux = $aux + 1;
@@ -1080,8 +1076,8 @@ foreach ($variaciones as $id => $variacion) {
 		date_default_timezone_set('America/Bogota');
 		$fecha = date("Y-m-d H:i:s");
 
-// ************************************* INSERCIONES TABLAS PRODUCTOS MOV   **************************************************************************//
-		
+// *************************** INSERCIONES TABLAS PRODUCTOS MOV ***********************************************************//
+		// exit(var_dump($consecutivos));
 		for ($i=0; $i < count($sedes); $i++){
 			$bodegaDestino = $sedes[$i];
 			$consecutivo = $consecutivos[$i];
@@ -1136,7 +1132,8 @@ foreach ($variaciones as $id => $variacion) {
 				// se hacen movimientos tambien en este archivo para generar las remisiones con cualquier cantidad de grupos etarios
 				include 'fn_despacho_generar_presentaciones.php';
 
-				$auxConsulta = $auxConsulta." 'DES', $consecutivo, $auxItem, '$codigo', '$componente', $cantidad, $bodegaOrigen, $bodegaDestino, '$presentacion', $cantidad, $factor, $necesario2, $necesario3, $necesario4, $necesario5, $tomadoTotal ";
+				$cantidadAuxiliar = number_format($cantidad,8, '.' , '' );
+				$auxConsulta = $auxConsulta." 'DES', $consecutivo, $auxItem, '$codigo', '$componente', $cantidadAuxiliar, $bodegaOrigen, $bodegaDestino, '$presentacion', $cantidadAuxiliar, $factor, $necesario2, $necesario3, $necesario4, $necesario5, $tomadoTotal ";
 				$auxItem++;
 				$auxConsulta = $auxConsulta." ) ";
 
@@ -1150,6 +1147,7 @@ foreach ($variaciones as $id => $variacion) {
 				} 
 			}
 		}
+		// echo $consulta;
 		$resultado = $Link->query($consulta) or die ('Unable to execute query - Inserción en productosmovdet '. mysqli_error($Link));
 
 // ***************************************************** FIN INSERCIONES TABLAS PRODUCTOS *********************************************************//
@@ -1172,7 +1170,7 @@ foreach ($variaciones as $id => $variacion) {
 				$diasIn .= "'" .$value. "', ";	
 			}
 			$diasIn = trim($diasIn,", "); 
-			$consultaSemanaString = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE mes = $mes AND SEMANA IN $auxSemanaImplicita"; 
+			$consultaSemanaString = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES_DESPACHO = $mes AND SEMANA_DESPACHO IN $auxSemanaImplicita"; 
 			$respuestaSemanasString = $Link->query($consultaSemanaString) or die ('Error al consultar las semanas relacionadas' . mysqli_error($Link));
 			if ($respuestaSemanasString->num_rows > 0) {
 				while($dataSemanasString = $respuestaSemanasString->fetch_assoc()){

@@ -49,7 +49,7 @@ if ($respuestaSemanas->num_rows > 0) {
 					if (intval($valueD) == intval($dataDiasSemana['dia'])) {
 						$concatenada_1 .= " SUM($keyD) + ";
 						$concatenada_2 .= " SUM($keyD) AS $keyD, ";
-						$concatenada_3 .= " $keyD + ";
+						$concatenada_3 .= " IF(SUM($keyD)>0, 1, 0) + ";
 						$concatenada_4 .= " SUM($keyD) + ";
 					}
 				}
@@ -115,7 +115,8 @@ $tHead  = 		"<tr style='height: 4em;''>
 					<th> Código Sede </th>
 					<th> Nombre Sede </th>
 					<th> Tipo Complemento </th>
-					<th> Valor Ración </th> ";
+					<th> Valor Ración </th> 
+					";
 
 foreach ($auxiliarSemanaDist as $keyA => $valueA) {
 	$diasB = [];
@@ -124,15 +125,16 @@ foreach ($auxiliarSemanaDist as $keyA => $valueA) {
 			$diasB[] = $keyS;
 		}
 	}
-	$tHead .= " <th> Semana" .$valueA['semana']. "</th> ";
+	$tHead .= "	<th> Priorización S".$valueA['semana']." </th>";
+	$tHead .= "	<th> Total Priorización S ".$valueA['semana']."</th>";
 	foreach ($diasB as $keyB => $valueB) {
 		$tHead .= " <th> D$valueB </th> ";
 	}
-	$tHead .= " <th> total días" .$valueA['semana']. "</th> 
-				<th> Priorización </th>
-				<th> Días </th>
-				<th> Inejecución </th>
-				<th> Valor Semana" .$valueA['semana']. "</th>"; 
+	$tHead .= " <th> total días S " .$valueA['semana']. "</th> ";
+	$tHead .= " <th> Semana" .$valueA['semana']. "</th> ";
+	$tHead .= " <th> Inejecución </th>
+					<th> Valor Semana" .$valueA['semana']. "</th> 
+					<th> Valor Inejecutado Semana" .$valueA['semana']. "</th>"; 
 }
 $tHead .= "</tr>";
 $tFoot = $tHead;
@@ -147,8 +149,28 @@ foreach ($general as $keyG => $valueG) {
 	$tBody .= "<td>" .$valueG['nom_sede']. "</td>";
 	$tBody .= "<td>" .$valueG['tipo_complem']. "</td>";
 	$tBody .= "<td class='text-center'>" .'$'.number_format($valueG['ValorRacion'], 2, ',', '.') . "</td>";
-
+	
 	foreach ($auxiliarSemanaDist as $keyA => $valueA) {
+		$complemento = $valueG['tipo_complem'];
+		$semanaEnCurso = $valueA['semana'];
+		$sede = $valueG['cod_sede'];
+		$validacionExistencia = " SHOW TABLES LIKE 'priorizacion$semanaEnCurso' ";
+		$respuestaValidacion = $Link->query($validacionExistencia) or die ('Error consultado las priorizacion ln 171');
+		if ($respuestaValidacion->num_rows > 0) {
+			$consultaPriorizacion = " SELECT $complemento AS comp FROM priorizacion$semanaEnCurso WHERE cod_sede = '$sede' ";
+			$respuestaPriorizacion = $Link->query($consultaPriorizacion) or die ('Error consultando coberturas ln 161');
+			if ($respuestaPriorizacion->num_rows > 0) {
+				$dataPriorizacion = $respuestaPriorizacion->fetch_assoc();
+				$comp = $dataPriorizacion['comp'];
+			}else{
+				$comp = 0;
+			}	
+		}else{
+			$comp = 0;
+		}
+
+		$tBody .= "<td class='text-center'>" .$comp. "</td>" ;	
+
 		$diasB = [];
 		$contadorDias = 0;
 		foreach ($auxiliarSemana as $keyS => $valueS) { 
@@ -156,41 +178,27 @@ foreach ($general as $keyG => $valueG) {
 				$diasB[] = $keyS;
 			}
 		}
-		$tBody .= " <td class='text-center'>" .$valueG['Semana'.$valueA['semana']]. "</td> ";
+		foreach ($diasB as $keyB => $valueB) {
+			$contadorDias ++;
+		}
+		$tBody .= "<td class='text-center'>" .$comp*$contadorDias. "</td> ";	
 		foreach ($diasB as $keyB => $valueB) {
 			$indice = array_keys($dias, strval($valueB));
 			$tBody .= " <td>" .$valueG[$indice[0]]. "</td> ";
-			$contadorDias ++;
 		}
-		$tBody .= " <td class='text-center'>" .$valueG['TotalDias'.$valueA['semana']]. "</td>" ;
-							$complemento = $valueG['tipo_complem'];
-							$semanaEnCurso = $valueA['semana'];
-							$sede = $valueG['cod_sede'];
-							$validacionExistencia = " SHOW TABLES LIKE 'priorizacion$semanaEnCurso' ";
-							$respuestaValidacion = $Link->query($validacionExistencia) or die ('Error consultado las priorizacion ln 171');
-							if ($respuestaValidacion->num_rows > 0) {
-								$consultaPriorizacion = " SELECT $complemento AS comp FROM priorizacion$semanaEnCurso WHERE cod_sede = '$sede' ";
-								$respuestaPriorizacion = $Link->query($consultaPriorizacion) or die ('Error consultando coberturas ln 161');
-								if ($respuestaPriorizacion->num_rows > 0) {
-									$dataPriorizacion = $respuestaPriorizacion->fetch_assoc();
-									$comp = $dataPriorizacion['comp'];
-								}else{
-									$comp = 0;
-								}	
-							}else{
-								$comp = 0;
-							}
-		  	
-		$tBody .= "<td class='text-center'>" .$comp. "</td>" ;				  	
-		$tBody .= "<td class='text-center'>" .$comp*$contadorDias. "</td> ";
+		$tBody .= "<td class='text-center'>" .$valueG['TotalDias'.$valueA['semana']]. "</td>" ;
+		$tBody .= " <td class='text-center'>" .$valueG['Semana'.$valueA['semana']]. "</td> ";
+
 		$valorSemana = floatval($valueG['Semana'.$valueA['semana']]);
 		$valorPriorizado = floatval($comp*$contadorDias);
-		$diferencia = $valorSemana - $valorPriorizado; 
+		$diferencia =  $valorPriorizado - $valorSemana; 
 		$tBody .= "<td class='text-center'>" .$diferencia. "</td>";
 		$tBody .= "<td class='text-center'>" .'$'.number_format($valueG['Vsemana'.$valueA['semana']], 2, ',', '.'). "</td>"; 
+		$tBody .= "<td class='text-center'>" .'$'.number_format($valueG['ValorRacion']*abs($diferencia), 2, ',', '.'). "</td>"; 
 	}
 	$tBody .= "</tr>";
 }					
+// exit(var_dump($tBody));
 
 $data['thead'] = $tHead;
 $data['tfoot'] = $tFoot;	

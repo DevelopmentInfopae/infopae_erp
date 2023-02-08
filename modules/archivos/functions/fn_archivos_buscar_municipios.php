@@ -7,7 +7,7 @@ require_once '../../../db/conexion.php';
 $CodDepartamento = "";
 $CodMunicipio = "";
 
-$consulta = " select * from parametros ";
+$consulta = " SELECT CodDepartamento, CodMunicipio FROM parametros ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()) { 
@@ -16,21 +16,18 @@ if($resultado->num_rows >= 1){
 	}
 }
 
-$consulta = " SELECT * FROM ubicacion WHERE 1 = 1 ";
-
+$consulta = " SELECT * FROM ubicacion WHERE 1 = 1";
 if($CodDepartamento != 0){
-	$consulta .= " AND CodigoDANE LIKE '$CodDepartamento%' ";
+	$consulta .= " AND ETC != 1 AND CodigoDANE LIKE '$CodDepartamento%' ";
 }
-
 if($CodMunicipio != 0){
 	$consulta .= " AND  CodigoDANE = $CodMunicipio ";
 }
 
-//echo "<br>$consulta<br>";
-
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()) { ?>
-	  <option value="<?php echo $row['CodigoDANE']; ?>"><?php echo $row['Ciudad']; ?></option>
-	<?php }
-  }
+	  	<option value="<?php echo $row['CodigoDANE']; ?>"><?php echo $row['Ciudad']; ?></option>
+	<?php 
+	}
+}

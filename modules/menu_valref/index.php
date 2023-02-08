@@ -8,6 +8,8 @@ if ($permisos['menus'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+	
+$nameLabel = get_titles('menus', 'aportesCaloricos', $labels);
 
 ?>
 
@@ -16,13 +18,13 @@ if ($permisos['menus'] == "0") {
 </style>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-    <h2><?php echo $titulo; ?></h2>
+    <h2><?php echo $nameLabel; ?></h2>
     <ol class="breadcrumb">
       <li>
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li class="active">
-        <strong><?php echo $titulo; ?></strong>
+        <strong><?php echo $nameLabel; ?></strong>
       </li>
     </ol>
   </div><!-- /.col -->

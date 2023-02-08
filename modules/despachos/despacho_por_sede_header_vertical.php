@@ -22,7 +22,7 @@ if ($cantGruposEtarios == 3) {
 	$pdf->SetXY($current_x+92.5, $current_y+0.5);
 
 	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->MultiCell(0,2.3,utf8_decode("PROGRAMA DE ALIMENTACIÓN ESCOLAR\nREMISIÓN ENTREGA DE VÍVERES EN INSTITUCIÓN EDUCATIVA\nAlmuerzo preparado en sitio población vulnerable\nTodos"),0,'C',false);
+	$pdf->MultiCell(0,2.3,utf8_decode("PROGRAMA DE ALIMENTACIÓN ESCOLAR\nREMISIÓN ENTREGA DE VÍVERES EN INSTITUCIÓN EDUCATIVA\n$modalidad\nTodos"),0,'C',false);
 	$pdf->SetFont('Arial','',$tamannoFuente);
 
 	$pdf->SetXY($current_x, $current_y);

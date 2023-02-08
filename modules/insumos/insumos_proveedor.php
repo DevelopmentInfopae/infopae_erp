@@ -1,5 +1,5 @@
 <?php
-$titulo = 'Informes de insumos ordenados por proveedor.';
+// $titulo = 'Informes de insumos ordenados por proveedor.';
 $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
 require_once '../../header.php';
 
@@ -8,8 +8,19 @@ if ($permisos['informes'] == "0") {
     window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+	  else {
+      ?><script type="text/javascript">
+        const list = document.querySelector(".li_informes");
+        list.className += " active ";
+      </script>
+      <?php
+      }
 
 $periodoActual = $_SESSION['periodoActual'];
+
+$nameLabel = get_titles('informes', 'informeInsumos', $labels);
+$titulo = $nameLabel;
+
 ?>
 
 <style type="text/css">

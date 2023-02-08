@@ -143,7 +143,7 @@ if ($cantGruposEtarios == '3') {
    $pdf->Cell(45,14.1,'',1,0,'L',False);
    $pdf->SetXY($current_x, $current_y+2.35);
    $auxDias = "X ";
-   $cantDias = explode(',', $dias);
+   $cantDias = explode(',', $diasDespacho);
    $cantDias = count($cantDias);
    $auxDias = "X ".$cantDias." DIAS ".strtoupper($dias);
    $pdf->MultiCell(45,4.7,$auxDias,0,'C',False);
@@ -419,7 +419,7 @@ if ($cantGruposEtarios == '5') {
    $pdf->Cell(45, 23.5, '', 1, 0, 'L', False);
    $pdf->SetXY($current_x, $current_y+9.4);
    $auxDias = "X ";
-   $cantDias = explode(',', $dias);
+   $cantDias = explode(',', $diasDespacho);
    $cantDias = count($cantDias);
    $auxDias = "X ".$cantDias." DIAS ".strtoupper($dias);
    $pdf->MultiCell(45, 4.7, $auxDias, 0, 'C', False);

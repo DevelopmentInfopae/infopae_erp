@@ -6,6 +6,13 @@
       	window.open('<?= $baseUrl ?>', '_self');
     	</script>
   	<?php exit();}
+	  else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_novedades");
+		  list.className += " active ";
+		</script>
+	  <?php
+	  }
 
 	require_once '../../db/conexion.php';
 	set_time_limit (0);
@@ -23,23 +30,26 @@
 			$complementos[$dataComplementos['CODIGO']] = $dataComplementos['CODIGO'];
 		}
 	}
+
+	$nameLabel = get_titles('novedades', 'priorizacion', $labels); 
+	$titulo = $nameLabel . ' - Nueva';
 ?>
 
 <?php if ($_SESSION['perfil'] == "0" || $permisos['novedades'] == "2"): ?>
 
 	<div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	   <div class="col-lg-8">
-		   <h2>Nueva Novedad de Priorización</h2>
+		   <h2><?= $titulo ?></h2>
 			<div class="debug"></div>
 	      <ol class="breadcrumb">
 	         <li>
 	               <a href="<?php echo $baseUrl; ?>">Inicio</a>
 	         </li>
 	         <li>
-	            <a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion">Novedades de Priorización</a>
+	            <a href="<?php echo $baseUrl; ?>/modules/novedades_priorizacion"><?= $nameLabel ?></a>
 	         </li>
 	         <li class="active">
-	            <strong>Novedad en Priorización crear</strong>
+	            <strong><?= $titulo ?></strong>
 	         </li>
 	      </ol>
 	   </div>

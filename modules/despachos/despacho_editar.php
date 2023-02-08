@@ -7,29 +7,43 @@ if ($permisos['despachos'] == "0") {
 </script>
 <?php exit(); }
 
+else {
+   ?><script type="text/javascript">
+     const list = document.querySelector(".li_despachos");
+     list.className += " active ";
+   </script>
+ <?php
+ }
+
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';
 $paginasObservaciones = 1;
+
+$nameLabel = get_titles('despachos', 'alimentos', $labels);
+$titulo = $nameLabel . ' - Editar ';
 ?>
 
 <?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
    <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
       <div class="col-lg-8">
-         <h2>Editar Despacho</h2>
+         <h2><?= $titulo ?></h2>
          <ol class="breadcrumb">
             <li>
                <a href="<?php echo $baseUrl; ?>">Inicio</a>
             </li>
+            <li>
+              	<a href="<?php echo $baseUrl; ?>/modules/despachos/despachos.php"><?= $nameLabel ?></a>
+          	</li>
             <li class="active">
-               <strong>Editar Despacho</strong>
+               <strong> <?= $titulo ?></strong>
             </li>
          </ol>
       </div>
       <div class="col-lg-4">
          <div class="title-action">
-            <a href="#" onclick="actualizarDespacho()" target="_self" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"></i> Guardar Cambios </a>
+            <a href="#" id="btnGuardar" onclick="actualizarDespacho()" target="_self" class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"></i> Guardar Cambios </a>
          </div>
       </div>
    </div>
@@ -108,15 +122,15 @@ $paginasObservaciones = 1;
 
    // manejo variacion 
    if ($tipo == 'CAJMPS') {
-      $auxConsulta = "SELECT cod_variacion_menu_cajmps as variacion FROM sedes22 WHERE cod_sede = $sede "; 
+      $auxConsulta = "SELECT cod_variacion_menu_cajmps as variacion FROM sedes$periodoActual WHERE cod_sede = $sede "; 
    }
 
    if ($tipo == 'CAJMRI') {
-      $auxConsulta = "SELECT cod_variacion_menu_cajmri as variacion FROM sedes22 WHERE cod_sede = $sede "; 
+      $auxConsulta = "SELECT cod_variacion_menu_cajmri as variacion FROM sedes$periodoActual WHERE cod_sede = $sede "; 
    }
 
    else if($tipo !== 'CAJMPS' && $tipo !== "CAJMRI") {
-      $auxConsulta = "SELECT cod_variacion_menu as variacion FROM sedes22 WHERE cod_sede = $sede ";
+      $auxConsulta = "SELECT cod_variacion_menu as variacion FROM sedes$periodoActual WHERE cod_sede = $sede ";
    }
 
    $respuestaAuxConsulta = $Link->query($auxConsulta);
@@ -161,8 +175,19 @@ $paginasObservaciones = 1;
       $institucionNm = $row['nom_inst'];
       $sedeNm = $row['nom_sede'];
    }
-
-   $mesesNombre = ["01" => "ENERO", "02" => "FEBRERO", "03" => "MARZO", "04" => "ABRIL", "05" => "MAYO", "06" => "JUNIO", "07" => "JULIO", "08" => "AGOSTO", "09" => "SEPTIEMBRE", "10" => "OCTUBRE", "11" => "NOVIEMBRE", "12" => "DICIEMBRE"];
+   
+   $mesesNombre = [  "01" => "ENERO", 
+                     "02" => "FEBRERO", 
+                     "03" => "MARZO", 
+                     "04" => "ABRIL", 
+                     "05" => "MAYO", 
+                     "06" => "JUNIO", 
+                     "07" => "JULIO", 
+                     "08" => "AGOSTO", 
+                     "09" => "SEPTIEMBRE", 
+                     "10" => "OCTUBRE", 
+                     "11" => "NOVIEMBRE", 
+                     "12" => "DICIEMBRE"];
 ?>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -254,26 +279,26 @@ $paginasObservaciones = 1;
 
                      <div class="col-sm-3 form-group">
                         <label for="municipio">Municipio</label>
-                        <select class="form-control" name="municipio" id="municipio">
-                           <option value="">Seleccione uno</option>
+                        <select class="form-control" name="municipio" id="municipio" disabled='true'>
+                           <option value=""><?= $municipioNm ?></option>
                         </select>
                      </div><!-- /.col -->
 
                      <div class="col-sm-3 form-group">
                         <label for="institucion">Institución</label>
-                        <select class="form-control" name="institucion" id="institucion">
-                           <option value="">Todos</option>
+                        <select class="form-control" name="institucion" id="institucion" disabled = 'true'>
+                           <option value=""><?= $institucionNm ?></option>
                         </select>
                      </div><!-- /.col -->
 
                      <div class="col-sm-3 form-group">
                         <label for="sede">Sede</label>
-                        <select class="form-control" name="sede" id="sede">
-                           <option value="">Todos</option>
+                        <select class="form-control" name="sede" id="sede" disabled = 'true'>
+                           <option value=""><?= $sedeNm ?></option>
                         </select>
                      </div><!-- /.col -->
 
-                     <div class="col-sm-3 form-group">
+                     <!-- <div class="col-sm-3 form-group">
                         <label for="ruta">Buscar Sedes x Ruta</label>
                         <select class="form-control" name="ruta" id="ruta">
                            <option value="">Seleccione una</option>
@@ -288,22 +313,22 @@ $paginasObservaciones = 1;
                               }//Termina el if que valida que si existan resultados
                            ?>
                         </select>
-                     </div><!-- /.col -->
+                     </div>/.col -->
                   </div><!-- -/.row -->
 
                   <div class="row">
                      <div class="col-sm-3 form-group">
-                        <button type="button" id="btnAgregar" class="botonParametro btn btn-primary">+</button>
-                        <button type="button" id="btnQuitar" class="botonParametro btn btn-primary">-</button>
-                     </div><!-- /.col -->
-                  </div><!-- -/.row -->
+                        <button type="button" id="btnAgregar" class="botonParametro btn btn-primary" disabled = 'true'>+</button>
+                        <button type="button" id="btnQuitar" class="botonParametro btn btn-primary" disabled = 'true'>-</button>
+                     </div> <!--/.col -->
+                  </div> <!---/.row -->
 
-                  <div class="row">
-                     <div class="col-sm-6 form-group">
-                        <input type="checkbox" name="selectVarios" id="selectVarios" value="">
-                        <label for="selectVarios">Seleccionar Todos</label>
-                     </div><!-- /.col -->
-                  </div>
+                  <!-- <div class="row"> -->
+                     <!-- <div class="col-sm-6 form-group"> -->
+                        <!-- <input type="checkbox" name="selectVarios" id="selectVarios" value=""> -->
+                        <!-- <label for="selectVarios">Seleccionar Todos</label> -->
+                     <!-- </div>/.col -->
+                  <!-- </div> -->
 
                   <div class="table-responsive">
                      <table width="100%" id="box-table-a" class="table table-striped table-bordered table-hover selectableRows" >
@@ -317,7 +342,7 @@ $paginasObservaciones = 1;
                         </thead>
                         <tbody>
                            <tr>
-                              <td><input type="checkbox" value="<?php echo $sede; ?>" data-variacion="<?= $variacionActual ?>"></td>
+                              <td class="text-center"><input type="checkbox" class="i-checks" value="<?php echo $sede; ?>" data-variacion="<?= $variacionActual ?>"></td>
                               <td><input type="hidden" name="sede1" id="sede1" value="<?php echo $sede; ?>"><?php echo $municipioNm; ?></td>
                               <td><?php echo $institucionNm; ?></td>
                               <td><?php echo $sedeNm; ?></td>
@@ -402,21 +427,21 @@ $paginasObservaciones = 1;
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
-<script src="<?php echo $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/bootstrap.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/dataTables/datatables.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 
 <!-- Custom and plugin javascript -->
-<script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
-<script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/despachos/js/despacho_nuevo.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/despachos/js/despacho_editar.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/inspinia.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
+<!-- <script src="<?= $baseUrl; ?>/modules/despachos/js/despacho_nuevo.js"></script> -->
+<script src="<?= $baseUrl; ?>/modules/despachos/js/despacho_editar.js"></script>
 
 </body>
 </html>

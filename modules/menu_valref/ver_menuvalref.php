@@ -1,5 +1,5 @@
 <?php 
-$titulo = 'Ver aportes calóricos y nutricionales';
+
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
@@ -19,7 +19,8 @@ if ($resultado->num_rows > 0) {
   echo "<script>alert('Error al obtener datos de aportes calóricos y nutricionales');location.href='index.php';";
 }
 
-
+$nameLabel = get_titles('menus', 'aportesCaloricos', $labels);
+$titulo = $nameLabel. ' - Ver';
 ?>
 
 <style type="text/css">
@@ -33,7 +34,7 @@ if ($resultado->num_rows > 0) {
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="index.php">Aportes calóricos y nutricionales</a>
+        <a href="index.php"><?= $nameLabel ?></a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>

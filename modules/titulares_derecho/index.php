@@ -9,18 +9,26 @@ if ($permisos['titulares_derecho'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
     </script>
 <?php exit(); }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_titulares_derecho");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 
+$nameLabel = get_titles('titulares', 'titulares', $labels);
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   	<div class="col-lg-8">
-      <h2>Titulares de derecho</h2>
+      <h2><?= $nameLabel ?></h2>
 		<ol class="breadcrumb">
 			<li>
 			 	<a href="<?php echo $baseUrl; ?>">Home</a>
 			</li>
 			<li class="active">
-			  	<strong>Titulares de derecho</strong>
+			  	<strong><?= $nameLabel ?></strong>
 			</li>
 		</ol>
   	</div>
@@ -225,7 +233,7 @@ if( isset($_POST['semana']) && $_POST['semana'] !='' ){
 				                            		</button>
 				                            		<ul class="dropdown-menu pull-right" aria-labelledby="accionesProducto">
 				                           				<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2"): ?>
-				                           					<li><a onclick="editarTitular(<?php echo $row['num_doc']; ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
+				                           					<li><a onclick="editarTitular(<?php echo $row['num_doc']; ?>, <?php echo "'$semana'" ?>)"><span class="fas fa-pencil-alt"></span>  Editar</a></li>
 				                           				<?php endif ?>	
 				                           				<li><a onclick="exportarTitular(<?php echo $row['num_doc'];?>, <?php echo $semana; ?>)"><span class="fa fa-file-excel-o"></span> Exportar</a></li>
 				                           				<?php if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2"): ?>

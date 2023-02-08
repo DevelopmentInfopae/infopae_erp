@@ -37,6 +37,14 @@
     $institucionCodigoDane = $row['cod_mun'];
     $institucionMunicipio = $row['municipio'];
   }
+  $nameLabel = get_titles('instituciones', 'instituciones', $labels);
+
+  ?><script type="text/javascript">
+      const list = document.querySelector(".li_instituciones");
+      list.className += " active ";
+    </script>
+  <?php
+  
 
 ?>
 
@@ -49,11 +57,11 @@
           </li>
 					<?php   if($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7"){ ?>
           <li>
-            <a href="<?php echo $baseUrl . '/modules/instituciones/instituciones.php'; ?>">Instituciones</a>
+            <a href="<?php echo $baseUrl . '/modules/instituciones/instituciones.php'; ?>"><?= $nameLabel ?></a>
           </li>
 				<?php } ?>
           <li class="active">
-            <strong>Ver institución </strong>
+            <strong>Ver <?= $nameLabel?> </strong>
           </li>
       </ol>
   </div>
@@ -219,10 +227,10 @@
 							    <?php if($institucionRector != ''){ ?>
                     <div class="row m-b-lg">
                       <div class="col-lg-12 text-center">
-                        <h2><strong>Rector:</strong> <?php echo $rectorNombre; ?></h2>
+                        <h2><strong>Rector:</strong> <?php isset($rectorNombre) ? $rectorNombre : '' ?></h2>
                         <div class="m-b-sm">
 													<?php
-													$aux = $rectorFoto;
+													$aux = isset($rectorFoto) ? $rectorFoto : '';
 													$aux = substr( $aux, 5);
 													$foto = $baseUrl.$aux;
 													if(!is_url_exist($foto)){
@@ -231,7 +239,7 @@
 													?>
 	                        <img alt="image" class="img-circle" src="<?php echo $foto; ?>" style="width: 62px">
                         </div>
-                        <a href="mailto<?php echo $rectorCorreo; ?>"><?php echo $rectorCorreo; ?></a>
+                        <a href="mailto<?php isset($rectorCorreo) ? $rectorCorreo : '' ?>"><?php isset($rectorCorreo) ? $rectorCorreo : '' ?></a>
                       </div>
                     </div>
 						  	  <?php } ?>
@@ -242,6 +250,7 @@
                         <ul class="list-group clear-list">
                         <?php
       										// Consulta para buscar los ultimos accesos del Rector
+                          $rectorUsuario = isset($rectorUsuario) ? $rectorUsuario : "''";
       										$consulta = " SELECT * FROM bitacora WHERE usuario = $rectorUsuario AND tipo_accion = 1 order by fecha desc limit 5  ";
       										$resultado = $Link->query($consulta);
       										if($resultado->num_rows >= 1){

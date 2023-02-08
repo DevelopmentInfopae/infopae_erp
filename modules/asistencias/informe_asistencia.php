@@ -13,12 +13,15 @@
 	$mes = $mesAsistencia;
 	$anno = $annoasistencia;
 	$semanaActual = null;
+
+	$nameLabel = get_titles('asistencia', 'informeAsistencia', $labels);
+	$titulo = $nameLabel;
 ?>
 
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
-		<h2>Informe de asistencias</h2>
+		<h2><?= $nameLabel ?></h2>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?php echo $baseUrl; ?>">Inicio</a>

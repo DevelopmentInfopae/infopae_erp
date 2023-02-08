@@ -40,7 +40,7 @@ $pdf->SetXY($x, $y);
 $pdf->Ln(8);
 
 $totalEstudiantesEntregas = 0; //Variable para sacar el total de estudiantes contados en todas las características.
-$totalComplementos1 = $totalComplementos2 = $totalComplementos3 = 0;
+$totalComplementos1 = $totalComplementos2 = $totalComplementos3 = $totalComplementos4 = $totalComplementos5 = $totalComplementos6 = $totalComplementosT = 0;
 $condicionInstitucion = (isset($institucion['cod_inst']) && $institucion['cod_inst'] != "") ? " AND cod_inst = '".$institucion['cod_inst']."'" : "";
 for ($i=0; $i < count($prioridades); $i++) {
 	$pdf->SetFont('Arial','',$tamannoFuente-1);
@@ -68,20 +68,29 @@ for ($i=0; $i < count($prioridades); $i++) {
 		} else {
 			$cantidadComplemento = 0;
 		}
-
+		// var_dump($cantidadComplemento);
 		$pdf->Cell((104/count($complementos)),4,$cantidadComplemento,'LB',0,'C',false);
 
 		if ($j == 1) {
 			$totalComplementos1 += $cantidadComplemento;
 		} else if ($j == 2) {
 			$totalComplementos2 += $cantidadComplemento;
-		} else {
+		} else if ($j == 3) {
 			$totalComplementos3 += $cantidadComplemento;
+		} else if ($j == 4) {
+			$totalComplementos4 += $cantidadComplemento;
+		}else if ($j == 5) {
+			$totalComplementos5 += $cantidadComplemento;
+		}else if ($j == 6) {
+			$totalComplementos6 += $cantidadComplemento;
+		}
+		else {
+			$totalComplementosT += $cantidadComplemento;
 		}
 
 		$j++;
 	}
-
+	// var_dump($totalComplementos1);
 	$con_can_est_com = "SELECT COUNT(DISTINCT num_doc) cantidad FROM entregas_res_" . $mes.$_SESSION['periodoActual'] . " WHERE 1 " . $condicionInstitucion . " AND " . $prioridades[$i]["campo_entregas_res"] . " != " . $prioridades[$i]["valor_NA"] . $condicion ." AND ". trim($sumaCamposEntregasDias, "+ ") ." > 0"; //Se añade condición para no contar los estudiantes que ya se contaron en la prioridad anterior.
 	$res_can_est_com = $Link->query($con_can_est_com) or die (mysql_error($Link));
 	if ($res_can_est_com->num_rows > 0) {
@@ -91,12 +100,11 @@ for ($i=0; $i < count($prioridades); $i++) {
 	} else {
 		$can_est_com = 0;
 	}
-
+	// var_dump($can_est_com);
 	$pdf->Cell(100,4,$can_est_com,'LBR',0,'C',false);
 	$totalEstudiantesEntregas += $can_est_com;
 	$pdf->Ln(4);
 }
-
 
 // Se dibuja la fila para la POBLACIÓN MAYORITARIA.
 $aux_x = $pdf->GetX();
@@ -124,8 +132,17 @@ foreach ($complementos as $complemento) {
 		$totalComplementos1 += $cantidadMayoritaria;
 	} else if ($columna == 2) {
 		$totalComplementos2 += $cantidadMayoritaria;
-	} else {
+	} else if ($columna == 3) {
 		$totalComplementos3 += $cantidadMayoritaria;
+	}else if ($columna == 4) {
+		$totalComplementos4 += $cantidadMayoritaria;
+	}else if ($columna == 5) {
+		$totalComplementos5 += $cantidadMayoritaria;
+	}else if ($columna == 6) {
+		$totalComplementos6 += $cantidadMayoritaria;
+	}
+	else {
+		$totalComplementosT += $cantidadMayoritaria;
 	}
 
 	$pdf->Cell((104/count($complementos)),4,$cantidadMayoritaria,'LB',0,'C',false);
@@ -160,8 +177,17 @@ $pdf->Ln(4);
 				$pdf->Cell((104/count($complementos)),4,$totalComplementos1,'LB',0,'C',false);
 			} else if ($columna == 2) {
 				$pdf->Cell((104/count($complementos)),4,$totalComplementos2,'LB',0,'C',false);
-			} else {
+			} else if ($columna == 3) {
 				$pdf->Cell((104/count($complementos)),4,$totalComplementos3,'LB',0,'C',false);
+			} else if ($columna == 4) {
+				$pdf->Cell((104/count($complementos)),4,$totalComplementos4,'LB',0,'C',false);
+			} else if ($columna == 5) {
+				$pdf->Cell((104/count($complementos)),4,$totalComplementos5,'LB',0,'C',false);
+			} else if ($columna == 6) {
+				$pdf->Cell((104/count($complementos)),4,$totalComplementos6,'LB',0,'C',false);
+			}
+			else {
+				$pdf->Cell((104/count($complementos)),4,$totalComplementosT,'LB',0,'C',false);
 			}
 			$columna++;
 		}

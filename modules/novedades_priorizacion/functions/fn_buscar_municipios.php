@@ -12,7 +12,9 @@ $opciones = "<option value=\"\">Seleccione uno</option>";
 $periodoActual = $_SESSION['periodoActual'];
 
 
-$consulta = " SELECT DISTINCT s.cod_mun_sede, u.Ciudad, u.CodigoDANE FROM sedes_cobertura sc LEFT JOIN sedes$periodoActual s ON sc.cod_sede = s.cod_sede LEFT JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE and u.ETC = 0 ORDER BY u.Ciudad ASC ";
+$consulta = "   SELECT DISTINCT s.cod_mun_sede, u.Ciudad, u.CodigoDANE FROM sedes_cobertura sc 
+                LEFT JOIN sedes$periodoActual s ON sc.cod_sede = s.cod_sede 
+                LEFT JOIN ubicacion u ON s.cod_mun_sede = u.CodigoDANE and u.ETC = 0 ORDER BY u.Ciudad ASC ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query - Buscando Municipios '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
     $aux = 0;

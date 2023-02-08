@@ -14,9 +14,9 @@ class PDF extends FPDF
     function Header()
     {
         // $this->RoundedRect(13, 7, 117, 29, 3, '1234', '');
-        $this->SetTitle(utf8_decode('Factura de venta'));
+        $this->SetTitle(utf8_decode('Comprobante de pago'));
         //izquierda
-  		  $this->Image($this->parametros["LogoOperador"], 13 ,7, 90, 25,'png', '');
+  		  $this->Image($this->parametros["LogoOperador"], 13 ,7, 90, 25,'jpg', '');
         $cx = 110;
         $cy = 9;
         $this->setXY($cx, $cy);
@@ -171,7 +171,8 @@ class PDF extends FPDF
 $pdf = new PDF('P', 'mm', array(216, 279));
 $pdf->AliasNbPages();
 $pdf->SetMargins(13, 7);
-$cc = isset($_POST['cc_empleado']) ? $_POST['cc_empleado'] : '1100959620';
+// exit(var_dump($_POST));
+$cc = isset($_POST['nitEmpleado']) ? $_POST['nitEmpleado'] : '1100959620';
 $num_liq = isset($_POST['num_liq']) ? $_POST['num_liq'] : NULL;
 $periodoActual = $_SESSION['periodoActual'];
 $tipo_empleado = [

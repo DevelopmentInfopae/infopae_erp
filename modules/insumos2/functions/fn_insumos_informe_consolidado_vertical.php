@@ -435,7 +435,7 @@ if ($cantGruposEtarios == 5) {
 	$resultadoGruposEtarios = $Link->query($consultaGruposEtarios);
 	if ($resultadoGruposEtarios->num_rows > 0) {
 		while ($grupoEta = $resultadoGruposEtarios->fetch_assoc()) {
-			$gruposEtarios[$grupoEta['ID']] = $grupoEta['DESCRIPCION'];
+			$gruposEtarios[$grupoEta['ID']] = $grupoEta['equivalencia_grado'];
 		}
 	}
 
@@ -531,7 +531,7 @@ if ($cantGruposEtarios == 5) {
 			$cx = $this->getX();
 			$cy = $this->getY();
 			foreach ($this->gruposEtarios as $ID => $DESCRIPCION) {
-				$this->Cell(40, 6, utf8_decode($DESCRIPCION), 'BL', 0, 'C');
+				$this->Cell(40, 6, utf8_decode(strtolower($DESCRIPCION)), 'BL', 0, 'C');
 				$this->Cell(35, 6, utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0), 'BL', 0, 'C');//SEDES COBERTURA POR GRUPO ETARIO
 				$this->Cell(35, 6, utf8_decode(isset($this->coberturaEtarios['Etario'.$ID]) ? $this->coberturaEtarios['Etario'.$ID] : 0), 'BL', 1, 'C');//SEDES COBERTURA POR GRUPO ETARIO
 			}

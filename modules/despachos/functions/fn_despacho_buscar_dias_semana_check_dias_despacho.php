@@ -19,35 +19,34 @@ foreach ($semanas as $key => $value) {
 }
 $auxSemana = trim($auxSemana,',');
 
-$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($auxSemana) "; 
-   $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-   if($resultado->num_rows >= 1){
-      $aux = 0;
-      while($row = $resultado->fetch_assoc()) {
-         $dia = $row['DIA'];
-         $mes = $row['MES'];
+$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($auxSemana) "; 
+$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+if($resultado->num_rows >= 1){
+   $aux = 0;
+   while($row = $resultado->fetch_assoc()) {
+      $dia = $row['DIA'];
+      $mes = $row['MES'];
 ?>
-         <div class="dia">
-            <input type="checkbox" class="dia" id="dia<?php echo $aux; ?>" name="dia<?php echo $aux; ?>" value="<?php echo $dia; ?>"
-               <?php
-                  if(isset($_POST['diasDespacho'])){
-                     $pos = strpos($diasDespacho, $dia);
-                     if ($pos === false) {}else{echo 'checked ';}
-                  }
-                  else{
-                     echo 'checked';
-                  }
-               ?>
-            >
-            <label><?php $mes = mesEnLetras($mes); echo $dia." de ".$mes; ?></label>
-         </div>
+      <div class="dia">
+         <input type="checkbox" class="dia i-checks" id="dia<?php echo $aux; ?>" name="dia<?php echo $aux; ?>" value="<?php echo $dia; ?>"
+            <?php
+               if(isset($_POST['diasDespacho'])){
+                  $pos = strpos($diasDespacho, $dia);
+                  if ($pos === false) {}else{echo 'checked ';}
+               }
+               else{
+                  echo 'checked';
+               }
+            ?>
+         >
+         <label><?php $mes = mesEnLetras($mes); echo  $dia." de ".$mes; ?></label>
+      </div>
 <?php
-         $aux++;
+      $aux++;
+   }// Termina el while
+}//Termina el if que valida que si existan resultados
 
-      }// Termina el while
-   }//Termina el if que valida que si existan resultados
-
-function mesEnLetras($mes){
+   function mesEnLetras($mes){
    switch ($mes) {
       case '01':
          return 'Enero';

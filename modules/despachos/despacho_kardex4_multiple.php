@@ -20,7 +20,7 @@ $consGrupoEtario = "SELECT * FROM grupo_etario ";
 $resGrupoEtario = $Link->query($consGrupoEtario);
 if ($resGrupoEtario->num_rows > 0) {
    while ($ge = $resGrupoEtario->fetch_assoc()) {
-      $get[] = $ge['DESCRIPCION'];
+      $get[] = $ge['equivalencia_grado'];
    }
 }
 

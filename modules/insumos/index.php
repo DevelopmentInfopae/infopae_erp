@@ -7,6 +7,13 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
     window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+	  else {
+      ?><script type="text/javascript">
+        const list = document.querySelector(".li_configuracion");
+        list.className += " active ";
+      </script>
+      <?php
+      }
 
 $periodoActual = $_SESSION['periodoActual'];
 
@@ -19,7 +26,9 @@ if ($resultadoTipoInsumo->num_rows > 0) {
     $tiposInsumos[$tipoInsumo['Codigo']] = $tipoInsumo['Descripcion'];
   }
 }
-// var_dump($tipoInsumo);
+
+$nameLabel = get_titles('configuracion', 'insumos', $labels);
+$titulo = $nameLabel;
 ?>
 
 <style type="text/css">

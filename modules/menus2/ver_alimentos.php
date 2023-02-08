@@ -7,19 +7,29 @@ if ($permisos['menus'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+  ?><script type="text/javascript">
+      const list = document.querySelector(".li_menus");
+      list.className += " active ";
+  </script>
+  <?php
+  }
 
 $periodoActual = $_SESSION['periodoActual'];
+
+$nameLabel = get_titles('menus', 'alimentos', $labels);
+
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-    <h2><?php echo $titulo; ?></h2>
+    <h2><?php echo $nameLabel; ?></h2>
     <ol class="breadcrumb">
       <li>
         <a href="<?php echo $baseUrl; ?>">Home</a>
       </li>
       <li class="active">
-        <strong><?php echo $titulo; ?></strong>
+        <strong><?php echo $nameLabel; ?></strong>
       </li>
     </ol>
   </div><!-- /.col -->

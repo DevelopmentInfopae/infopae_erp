@@ -388,13 +388,14 @@ function guardar_priorizacion(){
 	});
 
 	if($('#observaciones').val() == '') {
+		bandera++;
 		Command: toastr.error(
 			'El campo observaciones es obligatorio.',
 			'Validación de formulario',
 			{
 				onHidden: function() {
 					$('#observaciones').focus();
-					bandera++;
+					
 				}
 			}
 		);

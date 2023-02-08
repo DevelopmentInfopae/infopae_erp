@@ -3,9 +3,10 @@
 	require_once '../../../db/conexion.php';
 	require_once '../../../php/funciones.php';
 
-	$institucion = (isset($_POST['institucion']) && $_POST['institucion'] != '') ? mysqli_real_escape_string($Link, $_POST["institucion"]) : "";
+	$institucion = (isset($_POST['sede']) && $_POST['sede'] != '') ? mysqli_real_escape_string($Link, $_POST["sede"]) : "";
 	$opciones = '<option value="">seleccione</option>';
-  	$consulta = "SELECT DISTINCT sc.mes FROM sedes_cobertura sc WHERE sc.cod_inst = '$institucion' ORDER BY sc.mes ASC";
+  	$consulta = "SELECT DISTINCT sc.mes FROM sedes_cobertura sc WHERE sc.cod_sede = '$institucion' ORDER BY sc.mes ASC";
+	// exit(var_dump($consulta));
   	$resultado = $Link->query($consulta);
   	if($resultado->num_rows > 0){
 	  	while($row = $resultado->fetch_assoc()) {

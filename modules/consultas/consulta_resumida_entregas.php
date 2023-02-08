@@ -6,22 +6,30 @@
          window.open('<?= $baseUrl ?>', '_self');
       </script>
 <?php exit(); }
-
+  else {
+   ?><script type="text/javascript">
+     const list = document.querySelector(".li_entrega_complementos");
+     list.className += " active ";
+   </script>
+ <?php
+ }
    set_time_limit (0);
    ini_set('memory_limit','6000M');
    $periodoActual = $_SESSION['periodoActual'];
    $titulo = 'Consulta resumida de entregas';
+
+   $nameLabel = get_titles('entregaComplementos', 'consultaResumida', $labels);
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
    <div class="col-lg-8">
-      <h2>Consulta resumida de entregas</h2>
+      <h2><?= $nameLabel ?></h2>
       <ol class="breadcrumb">
          <li>
             <a href="<?php echo $baseUrl; ?>">Inicio</a>
          </li>
          <li class="active">
-            <strong><?= $titulo; ?></strong>
+            <strong><?= $nameLabel; ?></strong>
          </li>
       </ol>
    </div>

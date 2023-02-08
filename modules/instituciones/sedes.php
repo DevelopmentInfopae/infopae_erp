@@ -8,9 +8,16 @@
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   <?php exit(); }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_sedes");
+      list.className += " active ";
+      </script>
+    <?php
+  }
 
   $periodoActual = $_SESSION["periodoActual"];
-  $titulo = "Sedes Educativas";
+  // $titulo = "Sedes Educativas";
   $institucionNombre = "";
 
   // Declaración de variables.
@@ -51,17 +58,19 @@
     while($registrosSedes = $resultadoSedes->fetch_assoc()) {
       $dataSedes[] = $registrosSedes;
     }
-  } 
+  }
+  
+  $nameLabel = get_titles('sedes', 'sedes', $labels);
 ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-      <h2>Sedes Educativas</h2>
+      <h2><?= $nameLabel ?></h2>
       <ol class="breadcrumb">
           <li>
               <a href="<?php echo $baseUrl; ?>">Inicio</a>
           </li>
           <li class="active">
-              <strong><?php echo $titulo; ?></strong>
+              <strong><?php echo $nameLabel; ?></strong>
           </li>
       </ol>
   </div>
@@ -148,7 +157,7 @@
     <div class="col-sm-12">
       <div class="ibox">
         <div class="ibox-content">
-          <h2>Sedes</h2>
+          <h2><?= $nameLabel ?></h2>
             <table class="table table-striped table-hover selectableRows dataTablesSedes" >
               <thead>
                 <tr>

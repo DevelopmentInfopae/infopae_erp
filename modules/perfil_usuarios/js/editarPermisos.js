@@ -14,8 +14,61 @@ $(document).ready(function(){
     "hideEasing": "linear",
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
-  }
+  	}
+
+  	$('input').iCheck({
+    	checkboxClass: 'icheckbox_square',
+    	radioClass: "iradio_square-green"
+  	});
+
+  	$(".i-checks").on('ifChanged', function (e) {
+    	if ($(this).prop('checked') == true) {
+      		changeDashboard($(this).val());
+    	}
+  	});
+	
 });
+
+function changeDashboard(d){
+	var id_perfil = $('#id_perfil').val();
+  	$.ajax({
+  		url: 'functions/fn_editar_dashboard.php',
+  		type: 'POST',
+  		data: {
+      		dashboard: d, 
+			id_perfil : id_perfil
+    	},
+		dataType: 'json',
+  		beforeSend: function(){ $('#loader').fadeIn(); }
+  	})
+  	.done(function(data) {
+    	if(data.estado == 1){
+      		Command: toastr.success(
+									data.mensaje,
+									"Actualizado", {
+										onHidden : function(){
+											$('#loader').fadeOut();
+											location.reload();                                    
+										}
+									}  
+								);
+    						}
+   	 	else{
+      		Command: toastr.warning(
+        						data.mensaje,
+        						"Error al actualizar", {
+            						onHidden : function(){ $('#loader').fadeOut(); }
+          						}
+      						);
+    	}
+  	})
+  	.fail(function() {
+  		console.log("error");
+  	})
+  	.always(function() {
+	  	$('#loader').fadeOut();
+  	});
+}
 
 function confirmarCambio (id, opcion, modulo){
 	$('#id').val(id);

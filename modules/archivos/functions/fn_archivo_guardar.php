@@ -3,11 +3,8 @@ include '../../../config.php';
 require_once '../../../db/conexion.php';
 include_once 'funciones.php';
 
-//var_dump($_POST);
-
 date_default_timezone_set('America/Bogota');
 $fecha = date('Y-m-d H:i:s');
-$sede = $_POST['sede'];
 $nombreRegistro = $_POST['nombre'];
 $categoria = $_POST['categoria'];
 
@@ -15,10 +12,8 @@ $municipio = $_POST['municipio'];
 $institucion = $_POST['institucion'];
 $sede = $_POST['sede'];
 
-// $carpetaFisica = $rootUrl.'/upload/sedes/'.$sede.'/';
 $carpetaFisica = $infopaeData;
-//$carpeta = 'upload/modulo_archivos/';
-
+// exit(var_dump($carpetaFisica));
 //Verificando la existencia del directorio
 if (!file_exists($carpetaFisica)) {
     mkdir($carpetaFisica, 0755);

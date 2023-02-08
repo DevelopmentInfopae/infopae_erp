@@ -6,11 +6,21 @@ if ($permisos['informes'] == "0") {
     window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+	  else {
+      ?><script type="text/javascript">
+        const list = document.querySelector(".li_informes");
+        list.className += " active ";
+      </script>
+      <?php
+      }
 
 $titulo = 'Informes de alimentos.';
 
 $periodoActual = $_SESSION['periodoActual'];
 $meses = array('01' => "Enero", "02" => "Febrero", "03" => "Marzo", "04" => "Abril", "05" => "Mayo", "06" => "Junio", "07" => "Julio", "08" => "Agosto", "09" => "Septiembre", "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre");
+
+$nameLabel = get_titles('informes', 'informeAlimentos', $labels);
+$titulo = $nameLabel;
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">

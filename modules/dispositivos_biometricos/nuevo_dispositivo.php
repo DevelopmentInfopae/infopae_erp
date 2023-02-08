@@ -1,5 +1,5 @@
 <?php 
-$titulo = 'Nuevo dispositivo biométrico';
+
 require_once '../../header.php'; 
 $periodoActual = $_SESSION['periodoActual'];
 
@@ -8,8 +8,18 @@ if ($permisos['dispositivos_biometricos'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
     </script>
 <?php exit(); }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_dispositivos_biometricos");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 
 if ($_SESSION['perfil'] == "0" || $permisos['dispositivos_biometricos'] == "2") { 
+
+  $nameLabel = get_titles('dispositivosBiometricos', 'dispositivosBiometricos', $labels);
+  $titulo = $nameLabel.' - Nuevo';
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -20,7 +30,7 @@ if ($_SESSION['perfil'] == "0" || $permisos['dispositivos_biometricos'] == "2") 
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="index.php">Ver dispositivos biométricos</a>
+        <a href="index.php"><?= $nameLabel ?></a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>

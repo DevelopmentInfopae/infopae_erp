@@ -1,5 +1,5 @@
 <?php
-$titulo = 'Nuevo titular de derecho';
+
 require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 
@@ -8,8 +8,17 @@ if ($permisos['titulares_derecho'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
     </script>
 <?php exit(); }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_titulares_derecho");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 
 if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") {
+  $nameLabel = get_titles('titulares', 'titulares', $labels);
+  $titulo = $nameLabel. ' - Nuevo ';
 ?>
 
 <style type="text/css">
@@ -30,7 +39,7 @@ if ($_SESSION['perfil'] == "0" || $permisos['titulares_derecho'] == "2") {
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="index.php">Ver titulares de derecho</a>
+        <a href="index.php">Ver <?= $nameLabel ?></a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>

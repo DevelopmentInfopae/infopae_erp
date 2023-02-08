@@ -124,6 +124,7 @@ function guardarProveedor(continuar)
                   				$("#formCrearProveedor")[0].reset();
                   				$('#tipoalimento').select2([]);
                   				$('#loader').fadeOut();
+								location.href='index.php';
                 			} else {
                   				window.open('index.php', '_self');
                 			}

@@ -94,7 +94,7 @@ if ($cantGruposEtarios == '3') {
    $pdf->Ln(4.76);
    $pdf->Ln(0.8);
    $pdf->SetFont('Arial','B',$tamannoFuente);
-   $pdf->Cell(42.5,8,'RANGO DE EDAD',1,0,'C',False);
+   $pdf->Cell(42.5,8,'RANGO DE GRADO',1,0,'C',False);
 
    $current_y = $pdf->GetY();
    $current_x = $pdf->GetX();
@@ -382,7 +382,7 @@ if ($cantGruposEtarios == '5') {
    $pdf->Ln(4.76);
    $pdf->Ln(0.8);
    $pdf->SetFont('Arial','B',$tamannoFuente);
-   $pdf->Cell(42.5,8,'RANGO DE EDAD',1,0,'C',False);
+   $pdf->Cell(42.5,8,'RANGO DE GRADO',1,0,'C',False);
 
    $current_y = $pdf->GetY();
    $current_x = $pdf->GetX();

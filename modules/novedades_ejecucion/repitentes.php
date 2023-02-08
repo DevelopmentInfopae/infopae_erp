@@ -6,12 +6,21 @@
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   <?php exit();}
+  	  else {
+        ?><script type="text/javascript">
+          const list = document.querySelector(".li_novedades");
+          list.className += " active ";
+        </script>
+        <?php
+        }
 
-  $titulo = 'Novedades de repitentes';
+  // $titulo = 'Novedades de repitentes';
 
   $codigo_municipio = $_SESSION['p_Municipio'];
   $codigo_departamento = $_SESSION['p_CodDepartamento'];
 
+  $nameLabel = get_titles('novedades', 'repitentes', $labels);
+  $titulo = $nameLabel;
 ?>
 <link rel="stylesheet" href="css/custom.css">
 <div class="flagFaltantes"><span id="complementos_faltantes">0</span> de <span id="total_complementos">0</span> </div>

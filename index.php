@@ -1,6 +1,19 @@
 <?php
     $index = 1;
     include 'header.php';
+    if ($_SESSION['dashboard'] != "1") {
+        ?><script type="text/javascript">
+              window.open('<?= $baseUrl.$_SESSION['rutaDashboard'] ?>', '_self');
+        </script>
+        <?php exit(); }
+
+    else {
+    ?><script type="text/javascript">
+        const list = document.querySelector(".li_inicio");
+        list.className += " active ";
+    </script>
+    <?php
+    }
 ?>
 
 <div class="wrapper wrapper-content">
@@ -280,5 +293,6 @@
     <!-- <script src="theme/js/plugins/d3/d3.min.js"></script> -->
     <script src="theme/js/plugins/c3/c3.min.js"></script>
     <script src="js/index.js"></script>
+
 </body>
 </html>

@@ -8,8 +8,18 @@ if ($permisos['informes'] == "0") {
     window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+	  else {
+      ?><script type="text/javascript">
+        const list = document.querySelector(".li_informes");
+        list.className += " active ";
+      </script>
+      <?php
+      }
 
 $periodoActual = $_SESSION['periodoActual'];
+
+$nameLabel = get_titles('informes', 'trazabilidadInsumos', $labels);
+$titulo = $nameLabel;
 ?>
 
 <style type="text/css">

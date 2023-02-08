@@ -52,7 +52,7 @@ if ($valoresnomina_result->num_rows > 0) {
 		$valoresnomina_datos[$valoresnomina_data['tipo_complem']][$valoresnomina_data['tipo']]['valor'] = $valoresnomina_data['Valor'];
 	}
 }
-
+// exit(var_dump($valoresnomina_datos));
 $planilla_dias = [];
 
 $planillas_dias_consulta = "SELECT * FROM planilla_dias WHERE mes >= '".$mes."';";
@@ -113,6 +113,7 @@ if ($tipo == 2) {
 				".($sede ? "AND sedes.cod_sede = '".$sede."'" : "")."
 				".($tipo_complemento ? "AND manipuladoras_sedes.tipo_complem = '".$tipo_complemento."'" : "")."
 				;";
+	// exit(var_dump($consulta));			
 	$resultado = $Link->query($consulta);
 	if ($resultado->num_rows > 0) {
 		$cnt = 0;
@@ -155,6 +156,7 @@ if ($tipo == 2) {
 												OR 
 												(semquin_inicial <= '".$semana_final."' AND semquin_final >= '".$semana_final."')
 											)";
+					// exit(var_dump($consulta_existe));						
 					$resulta_existe = $Link->query($consulta_existe);
 					if ($resulta_existe->num_rows > 0) {
 						continue;

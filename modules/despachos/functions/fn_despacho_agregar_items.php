@@ -46,13 +46,13 @@ $consulta.= " FROM sedes$periodoActual s
               LEFT JOIN sedes_cobertura sc on s.cod_sede = sc.cod_sede
               WHERE 1=1 ";
 
-if ($mes  != '') {
-   $consulta = $consulta." AND sc.mes = '$mes' ";
-}
-
-if ($semana != '') {
-   $consulta = $consulta." AND sc.semana = '$semana' ";
-}
+// if ($semana == '') {
+//    if ($mes  != '') {
+//       $consulta = $consulta." AND sc.mes = '$mes' ";
+//    }
+// }else if($semana != ''){
+//    $consulta .= " AND sc.semana = '$semana' ";
+// }
 
 if($municipio != ''){
    $consulta = $consulta." AND s.cod_mun_sede = '$municipio' ";
@@ -60,7 +60,7 @@ if($municipio != ''){
 
 if($tipo != ''){
    $consulta = $consulta." AND sc.$tipo > 0 ";
-   $consulta = $consulta." AND (sc.Etario1_$tipo > 0 || sc.Etario2_$tipo > 0 || sc.Etario3_$tipo > 0 || sc.Etario4_$tipo > 0 || sc.Etario5_$tipo > 0 ) ";
+   // $consulta = $consulta." AND (sc.Etario1_$tipo > 0 || sc.Etario2_$tipo > 0 || sc.Etario3_$tipo > 0 || sc.Etario4_$tipo > 0 || sc.Etario5_$tipo > 0 ) ";
 }
 
 if($institucion != ''){
@@ -83,17 +83,26 @@ if(count($itemsActuales) > 0){
 }
 
 if ($semana == '') {
-   $ultimo_dia = end($dias);
-   $consultaNumeroPriorizacion = " SELECT SEMANA FROM planilla_semanas WHERE MES = '$mes' AND DIA = '$ultimo_dia' ORDER BY id DESC LIMIT 1 ";
+   $diasIn = '( ';
+   foreach ($dias as $key => $value) {
+      $diasIn .= "'"."$value"."'".',';
+   }
+   $diasIn = trim($diasIn, ',');
+   $diasIn .= " )";
+   
+   $consultaNumeroPriorizacion = " SELECT SEMANA_DESPACHO FROM planilla_semanas WHERE MES = '$mes' AND DIA IN $diasIn ORDER BY id DESC LIMIT 1 ";
    $respuestaNumeroPriorizacion = $Link->query($consultaNumeroPriorizacion) or die ('Error al consultar la ultima semana priorizada');
    if ($respuestaNumeroPriorizacion->num_rows > 0) {
       $dataNumeroPriorizacion = $respuestaNumeroPriorizacion->fetch_assoc();
-      $semanaBuscada = $dataNumeroPriorizacion['SEMANA'];
+      $semanaBuscada = $dataNumeroPriorizacion['SEMANA_DESPACHO'];
       $consulta = $consulta." AND sc.semana = '$semanaBuscada' ";
    }
+}else if($semana != ''){
+   $consulta .= " AND sc.semana = '$semana' ";
 }
 
-// exit(var_dump($consultaNumeroPriorizacion));    
+
+// exit(var_dump($consulta));    
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
    while($row = $resultado->fetch_assoc()) {

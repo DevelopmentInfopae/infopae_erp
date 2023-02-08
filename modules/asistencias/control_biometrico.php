@@ -49,11 +49,14 @@ if(isset($_GET['sede']) && $_GET['sede'] != ''){
 $mesTablaAsistencia = $mes;
 $annoTablaAsistencia = $anno2d;
 include 'functions/fn_validar_existencias_tablas.php';
+
+$nameLabel = get_titles('asistencia', 'dispositivosBiometricos', $labels);
+$titulo = $nameLabel;
 ?>
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-xs-8">
-		<h2>Control dispositivos biométricos</h2>
+		<h2><?= $titulo ?></h2>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?php echo $baseUrl; ?>">Inicio</a>

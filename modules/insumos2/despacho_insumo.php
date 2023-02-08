@@ -1,5 +1,5 @@
 <?php
-$titulo = 'Nuevo despacho';
+
 require_once '../../header.php';
 
 if ($permisos['despachos'] == "0") {
@@ -7,6 +7,13 @@ if ($permisos['despachos'] == "0") {
     window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_despachos");
+      list.className += " active ";
+    </script>
+  <?php
+  }
 
 $periodoActual = $_SESSION['periodoActual'];
 $municipio = $_SESSION['p_Municipio'];
@@ -66,7 +73,11 @@ if ($respuestaRutas->num_rows > 0) {
  		$tipoTransporte[$dataTipoTransporte['Id']] = $dataTipoTransporte['Nombre']; 
  	}
  }
-// var_dump($consultaMunicipio);
+
+$nameLabel = get_titles('despachos', 'insumos', $labels);
+$titulo = $nameLabel.' - Nuevo';
+
+
 ?>
 
 <?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"): ?>
@@ -78,7 +89,7 @@ if ($respuestaRutas->num_rows > 0) {
 		        <a href="<?= $baseUrl; ?>">Inicio</a>
 		      </li>
 		      <li>
-		        <a href="despachos.php">Ver despachos de insumos</a>
+		        <a href="despachos.php"><?= $nameLabel ?></a>
 		      </li>
 		      <li class="active">
 		        <strong><?= $titulo; ?></strong>

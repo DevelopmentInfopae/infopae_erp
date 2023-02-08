@@ -1,7 +1,7 @@
 $(document).ready(function(){
   $(document).on('click', '#box-table tbody td:nth-child(-n+6)', function(){ verUsuario($(this)); });
   $(document).on('click', '.btnEditarUsuario', function() { editarUsuario($(this)); });
-
+  $('select').select2();
   // Configuración inicial del plugin toastr.
   toastr.options = {
     "closeButton": true,
@@ -62,6 +62,7 @@ function guardarUsuario(continuar){
                 if(continuar){
                   $("#formCrearUsuario")[0].reset();
                   $('#loader').fadeOut();
+                  location.href='index.php';
                 }else{
                   window.open('index.php', '_self');
                 }
@@ -120,7 +121,10 @@ function actualizarUsuario(){
             data.mensaje,
             "Actualizado",
             {
-              onHidden : function(){ $('#loader').fadeOut(); }
+              onHidden : function(){ $('#loader').fadeOut(); 
+                location.href='index.php';
+              }
+
             }
           );
         } else {

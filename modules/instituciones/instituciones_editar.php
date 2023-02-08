@@ -22,7 +22,7 @@
 		<form action="" method="post" id="formEditarInstitucion">
 			<div class="modal-content">
 				<div class="modal-header">
-		        	<h4 class="modal-title">Edición Institución</h4>
+		        	<h4 class="modal-title">Edición</h4>
 		      	</div> <!-- modal-header -->
 		      	<div class="modal-body">
 		      		<div class="row">
@@ -35,7 +35,7 @@
 		      			</div> <!-- col -->
 		      			<div class="col-lg-4 col-md-6 col-sm-8">
 		      				<div class="form-group">
-		      					<label for="nombre">Nombre Institución *</label>
+		      					<label for="nombre">Nombre *</label>
 		                		<input type="text" class="form-control" name="nombre" id="nombre" value="<?php echo $registros1["nom_inst"]; ?>" required>
 		      				</div> <!-- form-group -->
 		      			</div> <!-- col -->

@@ -29,11 +29,17 @@ function doLogin() {
                 pass:pass,
     			periodoActual:periodoActual
             },
-        	success: function(i){
-                // alert(i);
-          		console.log(i);
+            dataType: 'json',
+        	success: function(data){
+                i = data.perfil;
+                dash = data.dashboard;
                 if (i==0 || i==1 || i==5 || i==9) {
-                    window.location = "index.php";
+                    if (dash == 1) {
+                        window.location = "index.php";
+                    }else if (dash == 2){
+                        window.location = "index_funcional.php";
+                    }
+                    
                 } else if (i==6){
                     window.location = "index_rector.php";
                 } else if (i==4) {

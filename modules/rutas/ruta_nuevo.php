@@ -6,6 +6,13 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
         window.open('<?= $baseUrl ?>', '_self');
     </script>
 <?php exit(); }
+	  else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_configuracion");
+		  list.className += " active ";
+		</script>
+	  <?php
+	  }
 
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';
@@ -14,6 +21,9 @@ if ($Link->connect_errno) {
     echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
 $Link->set_charset("utf8");
+
+$nameLabel = get_titles('configuracion', 'rutas', $labels);
+$titulo = $nameLabel. ' - ver'
 ?>
 
 
@@ -25,7 +35,7 @@ $Link->set_charset("utf8");
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h2>Nueva Ruta</h2>
+                        <h2><?= $titulo ?></h2>
                     </div>
                     <div class="ibox-content">
                         <ol class="breadcrumb">
@@ -33,7 +43,7 @@ $Link->set_charset("utf8");
                                 <a href="<?php echo $baseUrl; ?>">Home</a>
                             </li>
                             <li class="active">
-                                <strong>Nueva Ruta</strong>
+                                <strong><?= $titulo ?></strong>
                             </li>
                         </ol>
                     </div>

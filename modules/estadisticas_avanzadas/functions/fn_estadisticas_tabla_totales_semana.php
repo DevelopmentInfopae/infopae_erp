@@ -2,6 +2,7 @@
 require_once '../../../config.php';
 require_once '../../../db/conexion.php';  
 $periodoActual = $_SESSION['periodoActual'];
+require_once 'fn_estadisticas_functions.php';
 
 $mesesNom = array('01' => "Enero", 
                   "02" => "Febrero", 

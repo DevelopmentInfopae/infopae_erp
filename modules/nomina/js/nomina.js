@@ -264,9 +264,11 @@ function verNomina(control){
   nitempleado = control.parent().data('nitempleado');
   numnomina = control.parent().data('numnomina');
   tipo = control.parent().data('tipo');
+
   if (tipo == 2) {
 	  $('#formVerNomina #nitEmpleado').val(nitempleado);
 	  $('#formVerNomina #num_liq').val(numnomina);
+	//   console.log(numnomina);
 	  $('#formVerNomina').submit();
   } else {
   	Command: toastr.warning(

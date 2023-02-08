@@ -1,12 +1,19 @@
 <?php
 	require_once '../../header.php';
-	$titulo = "Editar sede";
 
 	if ($permisos['instituciones'] == "0" || $permisos['instituciones'] == "1") {
     ?><script type="text/javascript">
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   	<?php exit(); }
+	  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_sedes");
+      list.className += " active ";
+      </script>
+    <?php
+  }
+
 	
 	$periodoActual = $_SESSION["periodoActual"];
 	$indicadorDepartamento = $_SESSION['p_CodDepartamento'];
@@ -17,17 +24,20 @@
 	if ($resultadoSede->num_rows > 0){
 		$registrosSede = $resultadoSede->fetch_assoc();
 	}
+
+	$nameLabel = get_titles('sedes', 'sedes', $labels);
+	$titulo = "Editar ".$nameLabel ;
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   	<div class="col-lg-8">
-    	<h2><?php echo $titulo; ?></h2>
+    	<h2><?php echo $nameLabel; ?></h2>
     	<ol class="breadcrumb">
       		<li>
         		<a href="<?php echo $baseUrl; ?>">Home</a>
       		</li>
       		<li class="active">
-      			<a href="<?php echo $baseUrl . '/modules/instituciones/sedes.php'; ?>">Sedes</a>
+      			<a href="<?php echo $baseUrl . '/modules/instituciones/sedes.php'; ?>"><?= $nameLabel ?></a>
       		</li>
       		<li class="active">
         		<strong><?php echo $titulo; ?></strong>

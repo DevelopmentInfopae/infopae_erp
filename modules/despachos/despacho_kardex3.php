@@ -159,7 +159,7 @@ if ($cantGruposEtarios == '3') {
          $semanaIn .= "'".trim($value)."',";
       }
       $semanaIn = trim($semanaIn,','); 
-      $consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($semanaIn) ";
+      $consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($semanaIn) ";
       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
       $cantDias = $resultado->num_rows;
       if($resultado->num_rows >= 1){
@@ -591,7 +591,7 @@ if ($cantGruposEtarios == '5') {
          $semanaIn .= "'".trim($value)."',";
       }
       $semanaIn = trim($semanaIn,','); 
-      $consulta = " SELECT * FROM planilla_semanas WHERE SEMANA IN ($semanaIn) ";
+      $consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($semanaIn) ";
       $resultado = $Link->query($consulta) or die ('Unable to execute query. '. $consulta . mysqli_error($Link));
       $cantDias = $resultado->num_rows;
       if($resultado->num_rows >= 1){

@@ -11,18 +11,27 @@
     ?><script type="text/javascript">
       window.open('<?= $baseUrl ?>', '_self');
     </script>
-  <?php exit(); }
+  <?php exit(); 
+  }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_instituciones");
+      list.className += " active ";
+    </script>
+  <?php
+  }
+  $nameLabel = get_titles('instituciones', 'instituciones', $labels);
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
-      <h2><?php echo $titulo; ?></h2>
+      <h2><?php echo $nameLabel; ?></h2>
       <ol class="breadcrumb">
           <li>
               <a href="<?php echo $baseUrl; ?>">Inicio</a>
           </li>
           <li class="active">
-              <strong><?php echo $titulo; ?></strong>
+              <strong><?php echo $nameLabel; ?></strong>
           </li>
       </ol>
   </div>
@@ -57,6 +66,12 @@
                       </thead>
                       <tbody>
                           <?php
+                          $condicionInstitucion = '';
+                          if ($_SESSION['perfil'] == 6 ) {
+                            $condicionInstitucion = " AND i.cc_rector = " .$_SESSION['num_doc']. " ";
+                          }elseif($_SESSION['perfil'] == 7){
+                            $condicionInstitucion = " AND s.id_coordinador = " .$_SESSION['num_doc']. " ";
+                          }
                           $periodoActual = $_SESSION['periodoActual'];
                           $consulta = " SELECT
                                               i.id,
@@ -69,6 +84,7 @@
                                         FROM instituciones i
                                             LEFT JOIN ubicacion u ON i.cod_mun = u.CodigoDANE
                                             LEFT JOIN sedes$periodoActual s ON s.cod_inst = i.codigo_inst
+                                        WHERE 1=1 $condicionInstitucion    
                                         GROUP BY i.id
                                         ORDER BY i.nom_inst ASC ";
                           $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));

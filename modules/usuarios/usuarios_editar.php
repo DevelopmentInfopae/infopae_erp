@@ -144,7 +144,7 @@
 	                <select class="form-control" name="perfil" id="perfil" required>
 	                	<option value="">Seleccione uno</option>
 	                	<?php
-	                    $consulta2= " SELECT id, nombre FROM perfiles order by nombre asc; ";
+	                    $consulta2= " SELECT id, nombre FROM perfiles order by id asc; ";
 	                    $result2 = $Link->query($consulta2) or die ('Unable to execute query. '. mysqli_error($Link));
 	                    if($result2){
 	                      while($row2 = $result2->fetch_assoc()){
@@ -218,7 +218,7 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/validate/jquery.validate.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
-
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <!-- Section Scripts -->
 <script src="<?php echo $baseUrl; ?>/modules/usuarios/js/usuarios.js"></script>
 <script type="text/javascript">

@@ -1,5 +1,5 @@
 <?php 
-$titulo = 'Nuevo alimento/alimento para ración industrializada';
+
 require_once '../../header.php'; 
 
 if ($permisos['menus'] == "0") {
@@ -7,9 +7,17 @@ if ($permisos['menus'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+  ?><script type="text/javascript">
+      const list = document.querySelector(".li_menus");
+      list.className += " active ";
+  </script>
+  <?php
+  }
 
 $periodoActual = $_SESSION['periodoActual'];
-
+$nameLabel = get_titles('menus', 'alimentos', $labels);
+$titulo = $nameLabel.' - Nuevo';
 ?>
 
 <?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2"): ?>
@@ -22,7 +30,7 @@ $periodoActual = $_SESSION['periodoActual'];
         <a href="<?php echo $baseUrl; ?>">Inicio</a>
       </li>
       <li>
-        <a href="ver_alimentos.php">Ver alimentos</a>
+        <a href="ver_alimentos.php">Ver <?= $nameLabel ?></a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>

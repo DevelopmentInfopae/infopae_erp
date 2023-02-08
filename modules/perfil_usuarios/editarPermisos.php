@@ -32,7 +32,8 @@
     						p.control_acceso AS control,
     						p.procesos AS procesos,
     						p.configuracion AS configuracion,
-    						p.escritura AS escritura
+    						p.escritura AS escritura,
+							p.dashboard As dashboard
     					FROM perfiles p
     					WHERE id = $idPerfil;
     					";
@@ -41,9 +42,22 @@
     	$dataPermisos = $respuestaPermisos->fetch_assoc();
     	$informacion = $dataPermisos;	
     }
-    // var_dump($informacion);				
 
+	$consultaDashboard = " SELECT id, descripcion FROM dashboard ";
+	$respuestaDashboard = $Link->query($consultaDashboard) or die ('Error al consultar el dashboard del perfil');
+	if ($respuestaDashboard->num_rows > 0 ) {
+		while ($dataDashboard = $respuestaDashboard->fetch_assoc()) {
+			$dashboard[$dataDashboard['id']] = $dataDashboard['descripcion'];
+		}
+	}
+	// var_dump($dashboard);
 ?>
+<style>
+	.checkbox-inline{
+		padding-left : 1px;
+		padding-right : 5px;
+	}
+</style>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   	<div class="col-lg-12">
@@ -69,10 +83,25 @@
 				<div class="ibox-content contentBackground">
 					<div class="row">
 						<div class="col-lg-12 col-sm-12">
-							<h2>Tipo Perfil : <?= $informacion['nombre']; ?></h2>
+							<div class="col-lg-6"><h2>Tipo Perfil : <?= $informacion['nombre']; ?></h2></div>
+							<input type="hidden" id='id_perfil' value=<?= $idPerfil ?>>
+							<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
+								<div class="col-lg-3">
+									<label for='dashboard'>Dashboard:</label>
+									<div class="form-group">
+										<?php
+											foreach ($dashboard as $key => $value) {
+												$checked = ($key == $informacion['dashboard']) ? 'checked' : '';
+													echo "	<input class='i-checks' type='radio' name='dashboard' id='$key' value='$key' $checked>
+													<label class='checkbox-inline' for='$key'>$value</label> ";
+											}
+										?>
+									</div>
+								</div>
+							<?php endif ?>	
 						</div>
 					</div>
-					<br><hr>
+					<hr>
 					<!-- modulo 1, 2 y 3-->
 					<div class="row">
 						<div class="col-lg-4 col-sm-12">
@@ -495,4 +524,5 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/inspinia.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/perfil_usuarios/js/editarPermisos.js"></script>

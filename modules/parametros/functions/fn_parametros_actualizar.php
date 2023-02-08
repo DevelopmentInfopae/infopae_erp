@@ -42,7 +42,10 @@
 	$facebook = (isset($_POST["facebook"]) && $_POST["facebook"] != '') ? mysqli_real_escape_string($Link, $_POST["facebook"]) : '';
 	$twitter = (isset($_POST["twitter"]) && $_POST["twitter"] != '') ? mysqli_real_escape_string($Link, $_POST["twitter"]) : '';
 	$tipoBusqueda = (isset($_POST['tipoBusqueda']) && $_POST['tipoBusqueda'] != '') ? mysqli_real_escape_string($Link, $_POST['tipoBusqueda']) : "";
-
+	$diasAtencion = (isset($_POST['diasAtencion']) && $_POST['diasAtencion'] != '') ? mysqli_real_escape_string($Link, $_POST['diasAtencion']) : "";
+	$sideBar = (isset($_POST['sideBar']) && $_POST['sideBar'] != '') ? mysqli_real_escape_string($Link, $_POST['sideBar']) : "";
+	$formatoPlanillas = (isset($_POST['formatoPlanillas']) && $_POST['formatoPlanillas'] != '') ? mysqli_real_escape_string($Link, $_POST['formatoPlanillas']) : "";
+	$formatos = (isset($_POST['formatos']) && $_POST['formatos'] != '') ? mysqli_real_escape_string($Link, $_POST['formatos']) : "";
 
 	$consulta1 = "UPDATE parametros
 				SET
@@ -77,7 +80,11 @@
 					pagina_web = '$pagina_web',
 					facebook = '$facebook',
 					twitter = '$twitter',
-					tipo_busqueda = $tipoBusqueda
+					tipo_busqueda = '$tipoBusqueda',
+					diasAtencion = '$diasAtencion',
+					side_bar = '$sideBar',
+					formatoPlanillas = '$formatoPlanillas',
+					assistance_format = '$formatos'
 				WHERE id = '$id'";
 	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". $Link->error);
 	if ($resultado1) {
