@@ -13,7 +13,12 @@
 		$diaInicial = "AND DIA >= $diainicialSemanaAnterior";
 	}
 
-	$consultaPlanillaSemanas = "SELECT ID, SEMANA, MIN(CAST(DIA AS SIGNED)) AS dia_inicial, MAX(CAST(DIA AS SIGNED)) AS dia_final FROM planilla_semanas WHERE MES = '$mes' $diaInicial GROUP BY SEMANA;";
+	$consultaPlanillaSemanas = "SELECT 	ID, 
+										SEMANA, 
+										MIN(CAST(DIA AS SIGNED)) AS dia_inicial, 
+										MAX(CAST(DIA AS SIGNED)) AS dia_final 
+										FROM planilla_semanas 
+										WHERE MES = '$mes' $diaInicial GROUP BY SEMANA;";
 	$res_sem = $Link->query($consultaPlanillaSemanas) or die(mysqli_error($Link));
 
 	if ($res_sem->num_rows > 0) {

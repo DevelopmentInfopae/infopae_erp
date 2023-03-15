@@ -22,7 +22,6 @@ $sedeParametro = (isset($_POST['sede']) && $_POST['sede'] != '') ? $_POST['sede'
 $municipio = $_POST['municipio'];
 $hojaNovedades = $_POST['hojaNovedades'];
 $formatoPlanilla = $_POST['formatoPlanilla'];
-$subtotales = $_POST['subtotales'];
 
 // Variables para el rango de fechas de búsqueda.
 if (isset($_POST["semana_inicial"]) && $_POST["semana_inicial"] != "") {
@@ -49,10 +48,7 @@ if($mes < 10){
 }
 
 //Primera consulta: los dias de la s entregas
-$consulta = "SELECT ID, ANO, MES, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10,
-					D11, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21,
-					D22, D23, D24, D25, D26, D27, D28, D29, D30, D31 
-				FROM planilla_dias where ano='$anno' AND mes='$mes'"; 
+$consulta = "SELECT ID, ANO, MES, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10,D11,D12,D13,D14,D15,D16,D17,D18,D19,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31 FROM planilla_dias where ano='$anno' AND mes='$mes'"; 
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if ($resultado->num_rows >= 1) {
 	while ($row = $resultado->fetch_assoc()) {
@@ -68,16 +64,19 @@ $totalDias = 0;
 $mesAdicional = 0;
 $dia_consulta = "";
 $dias_encabezado = [];
-
-foreach ($dias as $clave => $dia){
+// $cantidad_remplazo = 1;
+foreach ($dias as $clave => $dia)
+{
 	if($aux > 2 && $dia != ''){
 		$totalDias++;
+
 		if( $auxVal < intval($dia)){
 			$auxVal = intval($dia);
 		}
 		else{
 			$mesAdicional++;
 		}
+
 		if ($dia >= $diaInicialSemanaInicial && $dia <= $diaFinalSemanaFinal) {
 			if ($registro == 0) { $primer_dia = substr($clave, 1); }
 			$registro++;
@@ -93,6 +92,7 @@ $auxDias = trim($dia_consulta, ", ");
 $auxDias = str_replace(" ", "", $auxDias);
 $auxDias = str_replace("D", "", $auxDias);
 $auxDias = array_map('intval', explode(',', $auxDias));
+//var_dump($auxDias);
 
 $consultaPriorizacion = '';
 $consultaSemanas = " SELECT DISTINCT(SEMANA) AS semana FROM planilla_semanas WHERE MES = '$mes' ";
@@ -105,16 +105,11 @@ if ($respuestaSemanas->num_rows > 0) {
 		$result = $Link->query($consulta) or die ('Error al consultar existencia de tablas de priorizacion: '. mysqli_error($Link));
 		$existe = $result->num_rows;
 		if ($existe == 1) {
-			$consultaPriorizacion .= " SELECT 	p.cod_sede, 
-												s.cod_inst, 
-												s.nom_inst, 
-												s.nom_sede, 
-												s.cod_mun_sede, 
-												p.num_est_focalizados
-											FROM sedes$periodoActual s
-											INNER JOIN $tablaPriorizacion AS p ON s.cod_sede = p.cod_sede
-											INNER JOIN ubicacion AS u ON s.cod_mun_sede = u.codigoDANE
-											WHERE u.codigoDANE = '$municipio'  ";
+			$consultaPriorizacion .= " SELECT p.cod_sede, s.cod_inst, s.nom_inst, s.nom_sede, s.cod_mun_sede, p.num_est_focalizados
+									FROM sedes$periodoActual s
+									INNER JOIN $tablaPriorizacion AS p ON s.cod_sede = p.cod_sede
+									INNER JOIN ubicacion AS u ON s.cod_mun_sede = u.codigoDANE
+									WHERE u.codigoDANE = '$municipio'  ";
 			if ($institucion != '') { $consultaPriorizacion .= " and s.cod_inst = '$institucion' "; }									
 			if ($sedeParametro != '') { $consultaPriorizacion .= " and p.cod_sede = '$sedeParametro' "; } 
 			$consultaPriorizacion .= ' UNION ALL ';		
@@ -122,6 +117,7 @@ if ($respuestaSemanas->num_rows > 0) {
 	}
 }
 $consultaPriorizacion = trim($consultaPriorizacion, "UNION ALL ");
+
 $resultado_sedes = $Link->query($consultaPriorizacion) or die ('Unable to execute query. '. mysqli_error($Link)); 
 if($resultado_sedes->num_rows > 0) {
 	while($registros_sedes = $resultado_sedes->fetch_assoc()) {
@@ -138,37 +134,62 @@ if ($res_cod_etnia->num_rows > 0) {
 	$datos_etnia = $res_cod_etnia->fetch_assoc();
 }
 
-class PDF extends PDF_Rotate{
+class PDF extends PDF_Rotate
+{
 	function set_data($data) {
 		$this->tipoPlanilla = $data;
 	}
+
 	function Header() {
-		$tamannoFuente = 10;
-		$logoInfopae = $_SESSION['p_Logo ETC'];
-		if ($this->tipoPlanilla == 5)
-		{
-			$tituloPlanilla = "Registro de novedades - repitentes y/o suplentes del programa de alimentaciÓn escolar - pae";
+		if ($this->tipoPlanilla == 9) {
+			$tamannoFuente = 10;
+			$tituloPlanilla = "FORMATO RESUMEN DEL  REGISTRO DE ATENCIÓN MENSUAL -DILIGENCIADO POR EL OPERADOR";
+			$logo = "../../upload/logotipos/logo8.jpg";
+			$this->Image($logo, 250 ,3, 80, 18,'jpg', '');
+			$this->Ln(20);
+			$this->SetFont('Arial','B',$tamannoFuente);
+			$this->SetTextColor(250,250,250);
+			$this->SetFillColor(0,0,0);
+			$this->Cell(0,8,utf8_decode(strtoupper($tituloPlanilla)),1,1,'C',True);
+			// $this->Ln();
 		}
-		else if ($this->tipoPlanilla == 6)
-		{
-			$tituloPlanilla = "Registro de novedades - suplentes del programa de alimentaciÓn escolar - pae";
-		}
-		else if($this->tipoPlanilla != 7)
-		{
-			$tituloPlanilla = "REGISTRO Y CONTROL DIARIO DE ASISTENCIA DE TITULAR DE DERECHO DEL PROGRAMA DE ALIMENTACIÓN ESCOLAR - PAE";
+		if($this->tipoPlanilla == 1 || $this->tipoPlanilla == 2 || $this->tipoPlanilla == 3 || $this->tipoPlanilla == 4 || $this->tipoPlanilla == 5 || $this->tipoPlanilla == 6 || $this->tipoPlanilla == 7 || $this->tipoPlanilla == 8 ){
+			$tamannoFuente = 7;
+			$logoInfopae = $_SESSION['p_Logo ETC'];
+			if ($this->tipoPlanilla == 5 || $this->tipoPlanilla == 7 || $this->tipoPlanilla == 8)
+			{
+				$tituloPlanilla = "Registro de novedades y/o suplentes del programa de alimentaciÓn escolar - pae";
+			}
+			else if ($this->tipoPlanilla == 6)
+			{
+				$tituloPlanilla = "Registro de novedades - suplentes del programa de alimentaciÓn escolar - pae";
+			}
+			else
+			{
+				$tituloPlanilla = "REGISTRO Y CONTROL DIARIO DE ASISTENCIA DE TITULAR DE DERECHO DEL PROGRAMA DE ALIMENTACIÓN ESCOLAR - PAE";
+			}
+	
+			$logooperador = "../../upload/logotipos/logo_operador_planilla.jpg";
+			$this->Image($logooperador, 5 ,3, 50, 18,'jpg', '');
+	
+			$logoMinEducacion = "../../upload/logotipos/logo_min_educacion.jpg";
+			$this->Image($logoMinEducacion, 100 ,3, 75, 18,'jpg', '');
+	
+			$logoEtcMunicipio = "../../upload/logotipos/logo_etc_municipio.jpg";
+			$this->Image($logoEtcMunicipio, 210 ,3, 35, 18,'jpg', '');
+	
+			$logoEtcMunicipio2 = "../../upload/logotipos/logo_etc_municipio2.jpg";
+			$this->Image($logoEtcMunicipio2, 280 ,3, 35, 18,'jpg', '');
+	
+			$this->Ln(20);
+			$this->SetFont('Arial','B',$tamannoFuente);
+			$this->SetTextColor(250,250,250);
+			$this->SetFillColor(0,0,0);
+			$this->Cell(0,5,utf8_decode(strtoupper($tituloPlanilla)),0,0,'C',True);
+			$this->Ln();
 		}
 
-		if ($this->tipoPlanilla != 7 && $this->tipoPlanilla != 8) {
-			$this->SetFont('Arial','B',$tamannoFuente);
-			$this->Image($logoInfopae, 3 ,3, 100, 18,'jpg', '');
-			$this->SetTextColor(0,0,0);
-			$this->Cell(100, 18);
-			$this->Cell(0,18.1,utf8_decode(strtoupper($tituloPlanilla)),0,0,'C',False);
-			$this->Ln(10);
-			$this->SetLineWidth(0.8);
-			$this->Cell(0,10,'','B',0,'C',False);
-			$this->Ln(10);
-		}
+
 	}
 
 	function Footer() {
@@ -198,8 +219,10 @@ $pdf->SetAutoPageBreak(false,5);
 $pdf->AliasNbPages();
 include '../../php/funciones.php';
 
+
 $lineas = 25;
 $alturaLinea = 4;
+
 
 if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 	// modificaciones planillas para mostrar en orden con complementos
@@ -224,7 +247,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 	}else{
 		$complementos[] = $tipoComplemento;
 	}
-
+	// exit(var_dump($complementos));
 	$condicionCoordinador = '';
   	if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
   		$codigoSedes = "";
@@ -251,6 +274,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 		$condicionCoordinador = " AND cod_sede IN ($codigoSedes) ";
   	}
 
+	
   	foreach ($complementos as $key => $value) {
   		$tipoComplemento = $value;
   		$documentosOriginal =[];
@@ -267,6 +291,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 					$semanasFoca[$dataPlanillaSemanas2['semana']] = $dataPlanillaSemanas2['semana'];
 				}
 			}
+
 			// vamos a tomar como array inicial la focalizacion semanaInicial
 			$consulta = "SELECT focalizacion$semanaInicial.id, 
 								focalizacion$semanaInicial.tipo_doc, 
@@ -276,8 +301,8 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 								focalizacion$semanaInicial.nom2, 
 								focalizacion$semanaInicial.ape1, 
 								focalizacion$semanaInicial.ape2,  
-								focalizacion$semanaInicial.genero, 
-								focalizacion$semanaInicial.edad, 
+								focalizacion$semanaInicial.genero,
+								date_format(focalizacion$semanaInicial.fecha_nac, '%d-%m-%Y') as fecha, 
 								focalizacion$semanaInicial.dir_res, 
 								focalizacion$semanaInicial.cod_mun_res, 
 								focalizacion$semanaInicial.telefono, 
@@ -286,7 +311,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 								focalizacion$semanaInicial.cod_estrato, 
 								focalizacion$semanaInicial.sisben, 
 								focalizacion$semanaInicial.cod_discap, 
-								CASE WHEN et.ID = 0 THEN 'SP' WHEN et.ID != 0 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia,  
+								CASE WHEN et.ID = 99 THEN 'SP' WHEN et.ID != 99 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia,  
 								focalizacion$semanaInicial.resguardo, 
 								focalizacion$semanaInicial.cod_pob_victima, 
 								focalizacion$semanaInicial.des_dept_nom, 
@@ -331,6 +356,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 				}		
 			}
 			$documentos = trim($documentos, ",");
+			// echo "$documentos <br>";
 			foreach ($semanasFoca as $key => $value) {
 				$tablaFocalizacion = "focalizacion".$value;
 				$consulta = " show tables like '$tablaFocalizacion' "; 
@@ -347,7 +373,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 											focalizacion$value.ape1, 
 											focalizacion$value.ape2,  
 											focalizacion$value.genero, 
-											focalizacion$value.edad, 
+											date_format(focalizacion$value.fecha_nac, '%d-%m-%Y') as fecha,
 											focalizacion$value.dir_res, 
 											focalizacion$value.cod_mun_res, 
 											focalizacion$value.telefono, 
@@ -356,7 +382,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 											focalizacion$value.cod_estrato, 
 											focalizacion$value.sisben, 
 											focalizacion$value.cod_discap, 
-											CASE WHEN et.ID = 0 THEN 'SP' WHEN et.ID != 0 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia,  
+											CASE WHEN et.ID = 99 THEN 'SP' WHEN et.ID != 99 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia,  
 											focalizacion$value.resguardo, 
 											focalizacion$value.cod_pob_victima, 
 											focalizacion$value.des_dept_nom, 
@@ -382,6 +408,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 						if ($sedeParametro != ''){ $consulta .= " and focalizacion$value.cod_sede = '$sedeParametro'"; }
 						if ($condicionCoordinador != ''){ $consulta .= " $condicionCoordinador "; }
 						$consulta .= " ORDER BY s.nom_inst, s.nom_sede, cod_grado, nom_grupo, ape1, ape2, nom1, nom2 asc "; 
+						// echo "$consulta<br>";
 						$resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
 						$codigo = '';
 						if($resultado->num_rows >= 1){
@@ -397,10 +424,12 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 									$documentosOriginal[] = $value3['num_doc'];
 								}
 							}
+							// $documentos = '';
 							foreach ($documentosOriginal as $key => $value) {
 								$documentos .= "'" . $value . "',";
 							}
 							$documentos = trim($documentos, ",");
+
 
 							// se ordena el nuevo array con los niños que se agregaron en el cambio de la focalizacion y se ordena nuevamente por el grupo
 							foreach ($estudiantes as $estudianteCod_sede => $valorEstudiantes) {
@@ -418,49 +447,50 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
   		else {
   			$estudiantes = [];
   			$consulta = "SELECT e.id, 
-								e.tipo_doc, 
-								e.num_doc, 
-								e.tipo_doc_nom, 
-								e.nom1, 
-								e.nom2, 
-								e.ape1, 
-								e.ape2,  
-								e.genero, 
-								e.edad, 
-								e.dir_res, 
-								e.cod_mun_res, 
-								e.telefono, 
-								e.cod_mun_nac, 
-								e.fecha_nac, 
-								e.cod_estrato, 
-								e.sisben, 
-								e.cod_discap, 
-								CASE WHEN et.ID = 0 THEN 'SP' WHEN et.ID != 0 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia, 
-								e.resguardo, 
-								e.cod_pob_victima, 
-								e.des_dept_nom, 
-								e.nom_mun_desp, 
-								e.cod_inst, 
-								e.cod_sede, 
-								e.cod_grado, 
-								e.nom_grupo, 
-								e.cod_jorn_est, 
-								e.estado_est, 
-								e.repitente,
-								e.edad, 
-								e.zona_res_est, 
-								e.id_disp_est, 
-								e.TipoValidacion, 
-								e.activo, 
-								e.tipo_complem, 
-								". trim($dia_consulta, ", ") ."
-							FROM entregas_res_$mes$anno2d AS e
-							INNER JOIN etnia AS et ON et.ID = e.etnia
-							WHERE cod_mun_res = '$municipio' AND tipo_complem='$tipoComplemento' AND tipo = 'F' ";
+							e.tipo_doc, 
+							e.num_doc, 
+							e.tipo_doc_nom, 
+							e.nom1, 
+							e.nom2, 
+							e.ape1, 
+							e.ape2,  
+							e.genero, 
+							date_format(e.fecha_nac, '%d-%m-%Y') as fecha,
+							e.dir_res, 
+							e.cod_mun_res, 
+							e.telefono, 
+							e.cod_mun_nac, 
+							e.fecha_nac, 
+							e.cod_estrato, 
+							e.sisben, 
+							e.cod_discap, 
+							CASE WHEN et.ID = 99 THEN 'SP' WHEN et.ID != 99 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia, 
+							e.resguardo, 
+							e.cod_pob_victima, 
+							e.des_dept_nom, 
+							e.nom_mun_desp, 
+							e.cod_inst, 
+							e.cod_sede, 
+							e.cod_grado, 
+							e.nom_grupo, 
+							e.cod_jorn_est, 
+							e.estado_est, 
+							e.repitente,
+							e.edad, 
+							e.zona_res_est, 
+							e.id_disp_est, 
+							e.TipoValidacion, 
+							e.activo, 
+							e.tipo_complem, 
+							". trim($dia_consulta, ", ") ."
+						FROM entregas_res_$mes$anno2d AS e
+						INNER JOIN etnia AS et ON et.ID = e.etnia
+						WHERE cod_mun_res = '$municipio' AND tipo_complem='$tipoComplemento' AND tipo = 'F' ";
 			if ($institucion != '') { $consulta .= " and cod_inst = '$institucion'"; }			
 			if ($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro'"; }
 			if ($condicionCoordinador != ''){ $consulta .= " $condicionCoordinador "; }
 			$consulta .= " ORDER BY e.nom_inst, e.nom_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc "; 
+			// exit(var_dump($consulta));
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
 			$codigo = '';
 			if($resultado->num_rows >= 1){
@@ -518,44 +548,39 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFillColor(255,255,255);
 			$pdf->SetDrawColor(0,0,0);
-			include 'planillas_header_v2.php';
+
+			include 'planillas_header_v4.php';
 
 			$pdf->SetLineWidth(.05);
-
+			//Inicia impresión de estudiantes de la sede
 			$nEstudiante = 0;
 			$pdf->SetFont('Arial','',$tamannoFuente);
+
 			$racionesProgramadas = 0;
 			$grupoEncurso = $estudiantesSede[0]['nom_grupo'];
-			$cantidadEstudiantes = count($estudiantesSede);
-			$residuo = $cantidadEstudiantes % 25;
-			$lineaFinal = $residuo;
-			$totalX = 0;
-			$lFinal = 0;
-			// echo $lineaFinal. "<br>";
+
 			foreach ($estudiantesSede as $estudiante) {
 				$nEstudiante++;
-				if ( ($cantidadEstudiantes-$nEstudiante) < 25 ) {
-					$lFinal = $lineaFinal; 
-				}else { $lFinal = 25; }
+
 				if ($formatoPlanilla == 1){
 					if($linea > $lineas || $grupoEncurso != $estudiante['nom_grupo']) {
-						if ($tipoPlanilla == 4) {
-							if ($subtotales == 1) {
-								$pdf->SetXY($x-17, $y+4);
-								$pdf->Cell(11,$alturaLinea,$totalX,'RBTL',0,'C',False);
-							}
-						}
 
-						$totalX = 0;
+						$Y = $pdf->GetY();
+						$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+						$pdf->SetXY(63, $Y);
+						$pdf->Cell(108,10, '','BR',0,'L',False);
+						$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+						$pdf->Cell(0,10, '','BR',0,'L',False);
+
 						$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 						$alturaCuadroFilas = $alturaLinea * ($linea-1);
 						$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
-						include 'planillas_footer_v2.php';
+						include 'planillas_footer_v4.php';
 						$tipoPlanilla2 = $tipoPlanilla;
 						$pdf->set_data($tipoPlanilla2);
 						$pdf->AddPage();
 						$pagina++;
-						include 'planillas_header_v2.php';
+						include 'planillas_header_v4.php';
 						$pdf->SetFont('Arial','',$tamannoFuente);
 						$linea = 1;
 						$grupoEncurso = $estudiante['nom_grupo'];
@@ -563,49 +588,49 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 				}
 				if ($formatoPlanilla == 0) {
 					if($linea > $lineas) {
-						if ($tipoPlanilla == 4 || $tipoPlanilla == 3) {
-							if ($subtotales == 1) {
-								$pdf->SetXY($x-17, $y+4);
-								$pdf->Cell(11,$alturaLinea,$totalX,'RBTL',0,'C',False);
-							}
-						}
-						$totalX = 0;
+                        $pdf->SetFont('Arial','B',$tamannoFuente);
+						$Y = $pdf->GetY();
+						$pdf->Cell(60,8, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+						$pdf->SetXY(63, $Y);
+						$pdf->Cell(108,8, '','BR',0,'L',False);
+						$pdf->Cell(60,8,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+						$pdf->Cell(0,8, '','BR',0,'L',False);
+
 						$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 						$alturaCuadroFilas = $alturaLinea * ($linea-1);
 						$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
-						include 'planillas_footer_v2.php';
+						include 'planillas_footer_v4.php';
 						$tipoPlanilla2 = $tipoPlanilla;
 						$pdf->set_data($tipoPlanilla2);
 						$pdf->AddPage();
 						$pagina++;
-						include 'planillas_header_v2.php';
+						include 'planillas_header_v4.php';
 						$pdf->SetFont('Arial','',$tamannoFuente);
 						$linea = 1;
 					}
 				}
+
 
 				$x = $pdf->GetX();
 				$y = $pdf->GetY();
 				$pdf->Cell(8,$alturaLinea,utf8_decode($nEstudiante),'R',0,'C',False);
 				$pdf->Cell(10,$alturaLinea,utf8_decode($estudiante['tipo_doc_nom']),'R',0,'C',False);
 				$pdf->Cell(22,$alturaLinea,utf8_decode($estudiante['num_doc']),'R',0,'L',False);
-				$pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['nom1']),'R',0,'L',False);
-				$pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['nom2']),'R',0,'L',False);
-				$pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['ape1']),'R',0,'L',False);
-				$pdf->Cell(28,$alturaLinea,utf8_decode($estudiante['ape2']),'R',0,'L',False);
-				$pdf->Cell(5,$alturaLinea,utf8_decode($estudiante["edad"]),'R',0,'C',False);
+				$pdf->Cell(26.5,$alturaLinea,utf8_decode($estudiante['nom1']),'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea,utf8_decode($estudiante['nom2']),'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea,utf8_decode($estudiante['ape1']),'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea,utf8_decode($estudiante['ape2']),'R',0,'L',False);
+				$pdf->Cell(22,$alturaLinea,utf8_decode($estudiante["fecha"]),'R',0,'C',False);
 				$etniaEncurso = substr($estudiante['etnia'],0,11);
-				$pdf->Cell(7,$alturaLinea,utf8_decode(($estudiante['etnia'] == "SP") ? "" : "X"),'R',0,'C',False);
-				// $pdf->Cell(19,$alturaLinea,utf8_decode($etniaEncurso), 'R', 0, 'C', False);
+				$pdf->Cell(16,$alturaLinea,utf8_decode($etniaEncurso), 'R', 0, 'C', False);
 				$pdf->Cell(5,$alturaLinea,utf8_decode($estudiante['genero']),'R',0,'C',False);
 				$pdf->Cell(5,$alturaLinea,utf8_decode($estudiante['cod_grado']),'R',0,'C',False);
-				$pdf->Cell(8,$alturaLinea,utf8_decode($estudiante['nom_grupo']),'R',0,'C',False);
 				$pdf->Cell(13,$alturaLinea,utf8_decode($tipoComplemento),'R',0,'C',False);
 				$dia = $primer_dia;
 
 				// Aqui es donde se cambia de acuerdo a la plantilla
 				$entregasEstudiante = 0;
-				for($j = 0 ; $j < 24 ; $j++) {
+				for($j = 0 ; $j < 22 ; $j++) {
 					if($tipoPlanilla != 2) {
 						if($tipoPlanilla == 3) { $pdf->SetTextColor(120,120,120); }
 						$auxDia = 'D'.$dia;
@@ -622,32 +647,28 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 					}
 					$dia++;
 				}
-				$totalX += $entregasEstudiante;
-
-				if( $tipoPlanilla == 4 || $tipoPlanilla == 3) { 
-					$pdf->Cell(0,$alturaLinea,$entregasEstudiante,'R',0,'C',False); 
-					if ($linea == $lineaFinal) {
-						if( ($cantidadEstudiantes-$nEstudiante) < 25 ){
-							if ($subtotales == 1) {
-								$pdf->SetXY($x-17, $y+4);
-								$pdf->Cell(0,$alturaLinea,$totalX,1,0,'C',False); 
-							}
-						}
-					}
-				}
-
 				$pdf->SetTextColor(0,0,0);
+				if($tipoPlanilla == 4) { $pdf->Cell(0,$alturaLinea,$entregasEstudiante,'R',0,'C',False); }
+
+				// Termina donde se cambia de acuerdo a la plantilla
 				$pdf->SetXY($x, $y);
 				$pdf->Cell(0,$alturaLinea,'','B',1);
 				$linea++;
 				$racionesProgramadas += $entregasEstudiante;
 			}
+            $pdf->SetFont('Arial','B',$tamannoFuente);
+			$Y = $pdf->GetY();
+			$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+			$pdf->SetXY(63, $Y);
+			$pdf->Cell(108,10, '','BR',0,'L',False);
+			$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+			$pdf->Cell(0,10, '','BR',0,'L',False);
 
 			//Termina impresión de estudiantes de la sede
 			$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 			$alturaCuadroFilas = $alturaLinea * ($linea-1);
 			$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
-			include 'planillas_footer_v2.php';
+			include 'planillas_footer_v4.php';
 
 			// manejo planilla novedades al final de cada sede 
 			for ($m=0; $m < (int)$hojaNovedades ; $m++) { 
@@ -662,37 +683,44 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 				$pdf->SetFillColor(255,255,255);
 				$pdf->SetDrawColor(0,0,0);
 
-				include 'planillas_header_v2.php';
+				include 'planillas_header_v4.php';
 				$pdf->SetLineWidth(.05);
 				for($i = 0 ; $i < 25 ; $i++){
 					if($linea > $lineas){
+						$Y = $pdf->GetY();
+						$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+						$pdf->SetXY(63, $Y);
+						$pdf->Cell(108,10, '','BR',0,'L',False);
+						$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+						$pdf->Cell(0,10, '','BR',0,'L',False);
+
 						$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 						$alturaCuadroFilas = $alturaLinea * ($linea-1);
 						$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
-						include 'planillas_footer_v2.php';
+						include 'planillas_footer_v4.php';
 						$pdf->AddPage();
-						include 'planillas_header_v2.php';
+						include 'planillas_header_v4.php';
 						$pdf->SetFont('Arial','',$tamannoFuente);
 						$linea = 1;
 					}
+
 					$x = $pdf->GetX();
 					$y = $pdf->GetY();
 					$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
 					$pdf->Cell(10,$alturaLinea,"",'R',0,'C',False);
 					$pdf->Cell(22,$alturaLinea,"",'R',0,'L',False);
-					$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
-					$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
-					$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
-					$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+					$pdf->Cell(26.5,$alturaLinea,"",'R',0,'L',False);
+					$pdf->Cell(26.5,$alturaLinea,"",'R',0,'L',False);
+					$pdf->Cell(26.5,$alturaLinea,"",'R',0,'L',False);
+					$pdf->Cell(26.5,$alturaLinea,"",'R',0,'L',False);
+					$pdf->Cell(22,$alturaLinea,"",'R',0,'C',False);
+					$pdf->Cell(16,$alturaLinea,"",'R',0,'C',False);
 					$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
-					$pdf->Cell(7,$alturaLinea,"",'R',0,'C',False);
 					$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
-					$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
-					$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
 					$pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
 
 					// Aqui es donde se cambia de acuerdo a la plantilla
-					for($j = 0 ; $j < 24 ; $j++) {
+					for($j = 0 ; $j < 22 ; $j++) {
 						$pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 					}
 					// Termina donde se cambia de acuerdo a la plantilla
@@ -700,19 +728,25 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 					$pdf->Cell(0,$alturaLinea,'','B',1);
 					$linea++;
 				}
+
+				$Y = $pdf->GetY();
+				$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+				$pdf->SetXY(63, $Y);
+				$pdf->Cell(108,10, '','BR',0,'L',False);
+				$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+				$pdf->Cell(0,10, '','BR',0,'L',False);
+
 				$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 				$alturaCuadroFilas = $alturaLinea * ($linea-1);
 				$pdf->Cell(0,$alturaCuadroFilas,"",1,0,'R',False);
-				include 'planillas_footer_v2.php';
+				include 'planillas_footer_v4.php';
 			}
 		}
   	}
 }
 
-else if ($tipoPlanilla == 5)
-{ 
-	foreach ($sedes as $sede)
-	{
+else if ($tipoPlanilla == 5){ 
+	foreach ($sedes as $sede){
 			$linea = 1;
 			$lineas = 25;
 			$codigoSede = $sede['cod_sede'];
@@ -721,7 +755,7 @@ else if ($tipoPlanilla == 5)
 			$pdf->SetFillColor(255,255,255);
 			$pdf->SetDrawColor(0,0,0);
 
-			include 'planillas_header_v2.php';
+			include 'planillas_header_v4.php';
 			$pdf->SetLineWidth(.05);
 
 			for($i = 0 ; $i < 25 ; $i++)
@@ -731,9 +765,9 @@ else if ($tipoPlanilla == 5)
 					$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 					$alturaCuadroFilas = $alturaLinea * ($linea-1);
 					$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
-					include 'planillas_footer_v2.php';
+					include 'planillas_footer_v4.php';
 					$pdf->AddPage();
-					include 'planillas_header_v2.php';
+					include 'planillas_header_v4.php';
 					$pdf->SetFont('Arial','',$tamannoFuente);
 					$linea = 1;
 				}
@@ -743,19 +777,19 @@ else if ($tipoPlanilla == 5)
 				$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(10,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(22,$alturaLinea,"",'R',0,'L',False);
-				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
-				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
-				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
-				$pdf->Cell(28,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea,"",'R',0,'L',False);
+				$pdf->Cell(22,$alturaLinea,"",'R',0,'C',False);
+				$pdf->Cell(16,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
-				$pdf->Cell(7,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
-				$pdf->Cell(5,$alturaLinea,"",'R',0,'C',False);
-				$pdf->Cell(8,$alturaLinea,"",'R',0,'C',False);
 				$pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
+				// $pdf->Cell(13,$alturaLinea,"",'R',0,'C',False);
 
 				// Aqui es donde se cambia de acuerdo a la plantilla
-				for($j = 0 ; $j < 24 ; $j++)
+				for($j = 0 ; $j < 22 ; $j++)
 				{
 					$pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 				}
@@ -764,12 +798,18 @@ else if ($tipoPlanilla == 5)
 				$pdf->Cell(0,$alturaLinea,'','B',1);
 				$linea++;
 			}
+			$Y = $pdf->GetY();
+			$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+			$pdf->SetXY(63, $Y);
+			$pdf->Cell(108,10, '','BR',0,'L',False);
+			$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+			$pdf->Cell(0,10, '','BR',0,'L',False);
 
 			$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 			$alturaCuadroFilas = $alturaLinea * ($linea-1);
 			$pdf->Cell(0,$alturaCuadroFilas,"",1,0,'R',False);
 
-			include 'planillas_footer_v2.php';
+			include 'planillas_footer_v4.php';
 	}
 }
 else if ($tipoPlanilla == 6)
@@ -826,7 +866,7 @@ else if ($tipoPlanilla == 6)
 		$pdf->SetFillColor(255,255,255);
 		$pdf->SetDrawColor(0,0,0);
 
-		include 'planillas_header_v2.php';
+		include 'planillas_header_v4.php';
 
 		$pdf->SetLineWidth(.05);
 		//Inicia impresión de estudiantes de la sede
@@ -841,10 +881,10 @@ else if ($tipoPlanilla == 6)
 				$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 				$alturaCuadroFilas = $alturaLinea * ($linea-1);
 				$pdf->Cell(0,$alturaCuadroFilas, '',1,0,'R',False);
-				include 'planillas_footer_v2.php';
+				include 'planillas_footer_v4.php';
 				$pdf->AddPage();
 				$pagina++;
-				include 'planillas_header_v2.php';
+				include 'planillas_header_v4.php';
 				$pdf->SetFont('Arial','',$tamannoFuente);
 				$linea = 1;
 			}
@@ -866,7 +906,7 @@ else if ($tipoPlanilla == 6)
 
 			// Aqui es donde se cambia de acuerdo a la plantilla
 			$entregasEstudiante = 0;
-			for($j = 0 ; $j < 24 ; $j++) {
+			for($j = 0 ; $j < 22 ; $j++) {
 				$pdf->Cell(6,$alturaLinea,utf8_decode(' '),'R',0,'C',False);
 			}
 			$pdf->SetTextColor(0,0,0);
@@ -880,385 +920,452 @@ else if ($tipoPlanilla == 6)
 		$alturaCuadroFilas = $alturaLinea * ($linea-1);
 		$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
 
-		include 'planillas_footer_v2.php';
+		include 'planillas_footer_v4.php';
 	}
 }
 else if ($tipoPlanilla == 7){
 	foreach ($sedes as $sede){
 		// Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
 		$codigoSede = $sede['cod_sede'];
-		$consulta = "SELECT count(id) AS titulares, 
-							sum(". str_replace(",", "+", 
-							trim($dia_consulta, ", ")) .") AS entregas 
-					FROM entregas_res_$mes$anno2d 
-					WHERE cod_inst='$institucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
+		$codigoInstitucion = $sede['cod_inst'];
+		// var_dump($codigoSede);
+		$consulta = "SELECT count(id) AS titulares, sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS entregas FROM entregas_res_$mes$anno2d WHERE cod_inst='$codigoInstitucion' AND tipo_complem ='$tipoComplemento' AND cod_sede = '$codigoSede'";
+		// exit(var_dump($consulta));
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. <br>'.$consulta.'<br>'. mysqli_error($Link));
 		if($resultado->num_rows > 0) {
 			while($row = $resultado->fetch_assoc()) {
 				$totales = $row;
 			}
 		}
-
- 		$consulta_suplente_repitentes_sede = "	SELECT * 
- 												FROM entregas_res_$mes$anno2d 
- 												WHERE cod_inst = '$institucion' AND cod_sede = '$codigoSede' AND (tipo = 'S' OR tipo = 'R') 
- 													AND tipo_complem='$tipoComplemento' 
- 												ORDER BY cod_sede, tipo, cod_grado,  nom_grupo, ape1,ape2,nom1,nom2 ASC";
+ 		$consulta_suplente_repitentes_sede = "SELECT * FROM entregas_res_$mes$anno2d WHERE cod_inst = '$codigoInstitucion' AND cod_sede = '$codigoSede' AND (tipo = 'S' OR tipo = 'R') AND tipo_complem='$tipoComplemento' ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
+		// echo "<br><br>$consulta_suplente_repitentes_sede<br><br>";
+		// exit(var_dump($consulta_suplente_repitentes_sede));
 		$respuesta_suplente_repitentes_sede = $Link->query($consulta_suplente_repitentes_sede) or die("Error al consultar suplentes y repitentes en entregas_res_$mes$anno2d: ". $Link->error);
-
-		if ($respuesta_suplente_repitentes_sede->num_rows > 0){
+		if ($respuesta_suplente_repitentes_sede->num_rows > 0)
+		{	
 			$linea = 1;
 			$lineas = 25;
 			$pagina = 1;
-			$numeroRepitentes = 0;
-			$numeroSuplentes = 0;
-			$consultaNumeroRepitentes = "	SELECT COUNT(num_doc) AS conteo 
-											FROM entregas_res_$mes$anno2d 
-											WHERE cod_inst = '$institucion' AND cod_sede = '$codigoSede' AND tipo = 'R' AND tipo_complem='$tipoComplemento' ";
-			$respuestaNumeroRepitentes = $Link->query($consultaNumeroRepitentes) or die ('Error al contar los repitentes ' . mysqli_error($Link));
-			if ($respuestaNumeroRepitentes->num_rows > 0) {
-				$dataConteoRepitentes = $respuestaNumeroRepitentes->fetch_assoc();
-				$numeroRepitentes = $dataConteoRepitentes['conteo'];
-			}
-			$consultaNumeroSuplentes = "	SELECT COUNT(num_doc) AS conteo 
-											FROM entregas_res_$mes$anno2d 
-											WHERE cod_inst = '$institucion' AND cod_sede = '$codigoSede' AND tipo = 'S' AND tipo_complem='$tipoComplemento' ";
-			$respuestaNumeroSuplentes = $Link->query($consultaNumeroSuplentes) or die ('Error al contar los suplentes'). mysqli_error($Link);
-			if ($respuestaNumeroSuplentes->num_rows > 0) {
-				$dataConteoSuplentes = $respuestaNumeroSuplentes->fetch_assoc();
-				$numeroSuplentes = $dataConteoSuplentes['conteo'];
-			}
-
-			// modificaciones conteo x giron
-			$lineaFinalRepitentes = $lineaFinalSuplentes =0;
-			$residuoRepitentes = $numeroRepitentes % 25;
-			$lineaFinalRepitentes = $residuoRepitentes; 
-			$residuoSuplentes = $numeroSuplentes % 25; 
-			$lineaFinalSuplentes = $residuoSuplentes;
-			$lFinal = 0; 
-			$totalX = 0;
-
-			// $paginas = ceil($respuesta_suplente_repitentes_sede->num_rows / $lineas);
-			$paginas = ceil($numeroRepitentes / $lineas) + ceil($numeroSuplentes / $lineas);
+			$paginas = ceil($respuesta_suplente_repitentes_sede->num_rows / $lineas);
 			$numero_estudiantes = 0;
 			$codigoSede = $sede['cod_sede'];
 			$pdf->AddPage();
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFillColor(255,255,255);
 			$pdf->SetDrawColor(0,0,0);
-			$iteracion = 1;
 
-			while($suplente_repitente_sede = $respuesta_suplente_repitentes_sede->fetch_assoc()) {
+			include 'planillas_header_v4.php';
+			$pdf->SetLineWidth(.05);
+
+			while($suplente_repitente_sede = $respuesta_suplente_repitentes_sede->fetch_assoc())
+			{	
 				$numero_estudiantes++;
 				$suplente_repitente_sede = (object) $suplente_repitente_sede;
-				if ($iteracion == 1) {
-					include 'planillas_header_v2.php';
-					$pdf->SetLineWidth(.05);
-					$iteracion++;
-					$tipoConsumidor1 = $suplente_repitente_sede->tipo;
-				}
-				if($linea > $lineas) {
-					$totalX = 0;
+
+				if($linea > $lineas)
+				{
 					$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 					$pdf->Cell(0, $alturaLinea, '', 'T');
-					include 'planillas_footer_v2.php';
+					include 'planillas_footer_v4.php';
 					$pdf->AddPage();
 					$pagina++;
-					include 'planillas_header_v2.php';
+					include 'planillas_header_v4.php';
 					$pdf->SetFont('Arial','',$tamannoFuente);
 					$linea = 1;
 				}
 
-				$tipoConsumidor2 = $suplente_repitente_sede->tipo;
-				if ($tipoConsumidor1 == $tipoConsumidor2) {
-					if ( $suplente_repitente_sede->tipo == 'R' && $lineaFinalRepitentes != 0) {
-						if ( ($numeroRepitentes-$numero_estudiantes) < 25 ) {
-							$lFinal = $lineaFinalRepitentes; 
-						}else { $lFinal = 25; }
-					} else if ( $suplente_repitente_sede->tipo == 'S' && $lineaFinalSuplentes != 0) { 
-						if ( ($numeroSuplentes-$numero_estudiantes) < 25 ) {
-							$lFinal = $lineaFinalSuplentes; 
-						}else { $lFinal = 25; }
-					}
+				$x = $pdf->GetX();
+				$y = $pdf->GetY();
+				$pdf->SetFont('','',$tamannoFuente);
+				$pdf->Cell(8,$alturaLinea, $numero_estudiantes,'LR',0,'C',False);
+				$pdf->Cell(10,$alturaLinea, $suplente_repitente_sede->tipo_doc_nom,'R',0,'C',False);
+				$pdf->Cell(22,$alturaLinea, $suplente_repitente_sede->num_doc,'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom1)),'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom2)),'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape1)),'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape2)),'R',0,'L',False);
+				$pdf->Cell(22,$alturaLinea, $suplente_repitente_sede->fecha_nac,'R',0,'C',False);
+				$pdf->Cell(16,$alturaLinea, $suplente_repitente_sede->etnia,'R',0,'C',False);
+				$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->genero,'R',0,'C',False);
+				$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->cod_grado,'R',0,'C',False);
+				$pdf->Cell(13,$alturaLinea, utf8_decode(mb_strtoupper($tipoComplemento)),'R',0,'C',False);
 
-					$x = $pdf->GetX();
-					$y = $pdf->GetY();
-					$pdf->SetFont('','',$tamannoFuente);
-					$pdf->Cell(8,$alturaLinea, $numero_estudiantes,'LR',0,'C',False);
-					$pdf->Cell(10,$alturaLinea, $suplente_repitente_sede->tipo_doc_nom,'R',0,'C',False);
-					$pdf->Cell(22,$alturaLinea, $suplente_repitente_sede->num_doc,'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom1)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom2)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape1)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape2)),'R',0,'L',False);
-					$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->edad,'R',0,'C',False);
-					$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->cod_grado,'R',0,'C',False);
-					$pdf->Cell(8,$alturaLinea, $suplente_repitente_sede->nom_grupo,'R',0,'C',False);
-					$pdf->Cell(13,$alturaLinea, utf8_decode(mb_strtoupper($tipoComplemento)),'R',0,'C',False);
+				// Impresión de las 24 columnas para los días.
+				$total_entregas_por_estudiante = 0;
+				$auxOtrosDiasMes = 0;
+				for($j = 0 ; $j < 22 ; $j++){
+					$auxIndice = $j+1;
+					if (in_array($auxIndice, $auxDias)) {
+						$dia_entrega_estudiante = $suplente_repitente_sede->{'D'.$auxIndice};
+						$total_entregas_por_estudiante += $dia_entrega_estudiante;
+						$entrega_complemento = $dia_entrega_estudiante == 1 ? 'x' : '';
+						$pdf->Cell(6,$alturaLinea, $entrega_complemento,'R',0,'C',False);
+					}else{
+						$entrega_complemento = '';
+						$auxOtrosDiasMes++;
+					}
+				}
+				for($j = 0 ; $j < $auxOtrosDiasMes ; $j++){
+					$pdf->Cell(6,$alturaLinea, '','R',0,'C',False);
+				}
 
-					// Impresión de las 24 columnas para los días.
-					$total_entregas_por_estudiante = 0;
-					$auxOtrosDiasMes = 0;
-					for($j = 0 ; $j < 24 ; $j++){
-						$auxIndice = $j+1;
-						if (in_array($auxIndice, $auxDias)) {
-							$dia_entrega_estudiante = $suplente_repitente_sede->{'D'.$auxIndice};
-							$total_entregas_por_estudiante += $dia_entrega_estudiante;
-							$entrega_complemento = $dia_entrega_estudiante == 1 ? 'x' : '';
-							$pdf->Cell(6,$alturaLinea, $entrega_complemento,'R',0,'C',False);
-						}else{
-							$entrega_complemento = '';
-							$auxOtrosDiasMes++;
-						}
-					}
-					for($j = 0 ; $j < $auxOtrosDiasMes ; $j++){
-						$pdf->Cell(6,$alturaLinea, '','R',0,'C',False);
-					}
-					$totalX += $total_entregas_por_estudiante;
-					$pdf->Cell(0, $alturaLinea, $total_entregas_por_estudiante, 'R', 0, 'C'); 
-					if ( $linea == 25 || $linea == $lFinal ) { 
-						$pdf->SetXY($x-15.5, $y+4); 
-						$pdf->Cell(9.5,$alturaLinea,$totalX,'RBTL',0,'C',False);
-					}
-					$pdf->SetXY($x, $y);
-					$pdf->Cell(0,$alturaLinea, '','B',1);
-					$linea++;
-				}else {
-					$totalX = 0;
-					$linea = 1;
-					if($linea > $lineas) {
-						$totalX = 0;
-						$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
-						$pdf->Cell(0, $alturaLinea, '', 'T');
-						include 'planillas_footer_v2.php';
-						$pdf->AddPage();
-						$pagina++;
-						include 'planillas_header_v2.php';
-						$pdf->SetFont('Arial','',$tamannoFuente);
-						$linea = 1;
-						$totalX = 0;
-					}
+				$pdf->Cell(0, $alturaLinea, $total_entregas_por_estudiante, 'R', 0, 'C');
 
-					if ($lineaFinalSuplentes != 0) { 
-						if ( ($numeroSuplentes-$numero_estudiantes) < 25 ) {
-							$lFinal = $lineaFinalSuplentes; 
-						}else { $lFinal = 25; }
-					}
 
-					$numero_estudiantes = 1;
-					include 'planillas_footer_v2.php';
-					$pdf->AddPage();
-					$pagina++;
-					include 'planillas_header_v2.php';
-					$x = $pdf->GetX();
-					$y = $pdf->GetY();
-					$pdf->SetFont('','',$tamannoFuente);
-					$pdf->Cell(8,$alturaLinea, $numero_estudiantes,'LR',0,'C',False);
-					$pdf->Cell(10,$alturaLinea, $suplente_repitente_sede->tipo_doc_nom,'R',0,'C',False);
-					$pdf->Cell(22,$alturaLinea, $suplente_repitente_sede->num_doc,'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom1)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom2)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape1)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape2)),'R',0,'L',False);
-					$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->edad,'R',0,'C',False);
-					$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->cod_grado,'R',0,'C',False);
-					$pdf->Cell(8,$alturaLinea, $suplente_repitente_sede->nom_grupo,'R',0,'C',False);
-					$pdf->Cell(13,$alturaLinea, utf8_decode(mb_strtoupper($tipoComplemento)),'R',0,'C',False);
+				// Se utiliza pero imprimir los border del fila.
+				$pdf->SetXY($x, $y);
+				$pdf->Cell(0,$alturaLinea, '','B',1);
+				$linea++;
+			}
 
-					// Impresión de las 24 columnas para los días.
-					$total_entregas_por_estudiante = 0;
-					$auxOtrosDiasMes = 0;
-					for($j = 0 ; $j < 24 ; $j++){
-						$auxIndice = $j+1;
-						if (in_array($auxIndice, $auxDias)) {
-							$dia_entrega_estudiante = $suplente_repitente_sede->{'D'.$auxIndice};
-							$total_entregas_por_estudiante += $dia_entrega_estudiante;
-							$entrega_complemento = $dia_entrega_estudiante == 1 ? 'x' : '';
-							$pdf->Cell(6,$alturaLinea, $entrega_complemento,'R',0,'C',False);
-						}else{
-							$entrega_complemento = '';
-							$auxOtrosDiasMes++;
-						}
-					}
-					for($j = 0 ; $j < $auxOtrosDiasMes ; $j++){
-						$pdf->Cell(6,$alturaLinea, '','R',0,'C',False);
-					}
-					$totalX += $total_entregas_por_estudiante;
-					$pdf->Cell(0, $alturaLinea, $total_entregas_por_estudiante, 'R', 0, 'C');
-					if ( $linea == 25 || $linea == $lFinal ) { 
-						$pdf->SetXY($x-15.5, $y+4); 
-						$pdf->Cell(9.5,$alturaLinea,$totalX,'RBTL',0,'C',False);
-					}
-					$pdf->SetXY($x, $y);
-					$pdf->Cell(0,$alturaLinea, '','B',1);
-					$linea++;
-					$pdf->SetFont('Arial','',$tamannoFuente);
-					$linea = 2;
-					$tipoConsumidor1 = $suplente_repitente_sede->tipo;
-				}	
-			}	
 			$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 			$pdf->Cell(0,$alturaLinea, '', 'T', 0, 'R', False);
-			include 'planillas_footer_v2.php';		
+
+			include 'planillas_footer_v4.php';
 		}
 		else
 		{
-			echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
+			echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>"; 
 		}
 	}
 }
 else if ($tipoPlanilla == 8)
 {
-	foreach ($sedes as $sede) {
+	foreach ($sedes as $sede)
+	{
 		$codigoSede = $sede['cod_sede'];
-		$consulta_suplente_repitentes_sede = "	SELECT *
-												FROM entregas_res_$mes$anno2d
-												WHERE cod_inst = '$institucion' AND cod_sede = '$codigoSede' AND (tipo = 'S' OR tipo = 'R') AND tipo_complem='$tipoComplemento'
-												ORDER BY cod_sede, tipo, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
+		$codigoInstitucion = $sede['cod_inst'];
+		$consulta_suplente_repitentes_sede = "SELECT *
+		FROM entregas_res_$mes$anno2d
+		WHERE cod_inst = '$codigoInstitucion'
+			AND cod_sede = '$codigoSede'
+			AND (tipo = 'S' OR tipo = 'R')
+			AND tipo_complem='$tipoComplemento'
+		ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
 		$respuesta_suplente_repitentes_sede = $Link->query($consulta_suplente_repitentes_sede) or die("Error al consultar suplentes y repitentes en entregas_res_$mes$anno2d: ". $Link->error);
-		if ($respuesta_suplente_repitentes_sede->num_rows > 0) {
+		if ($respuesta_suplente_repitentes_sede->num_rows > 0)
+		{
 			$linea = 1;
 			$pagina = 1;
 			$lineas = 25;
-			$numeroRepitentes = 0;
-			$numeroSuplentes = 0;
-			$consultaNumeroRepitentes = "SELECT COUNT(num_doc) AS conteo FROM entregas_res_$mes$anno2d WHERE cod_inst = '$institucion' AND cod_sede = '$codigoSede' AND tipo = 'R' AND tipo_complem='$tipoComplemento' ";
-			$respuestaNumeroRepitentes = $Link->query($consultaNumeroRepitentes) or die ('Error al contar los repitentes ' . mysqli_error($Link));
-			if ($respuestaNumeroRepitentes->num_rows > 0) {
-				$dataConteoRepitentes = $respuestaNumeroRepitentes->fetch_assoc();
-				$numeroRepitentes = $dataConteoRepitentes['conteo'];
-			}
-			$consultaNumeroSuplentes = "SELECT COUNT(num_doc) AS conteo FROM entregas_res_$mes$anno2d WHERE cod_inst = '$institucion' AND cod_sede = '$codigoSede' AND tipo = 'S' AND tipo_complem='$tipoComplemento' ";
-			$respuestaNumeroSuplentes = $Link->query($consultaNumeroSuplentes) or die ('Error al contar los suplentes'). mysqli_error($Link);
-			if ($respuestaNumeroSuplentes->num_rows > 0) {
-				$dataConteoSuplentes = $respuestaNumeroSuplentes->fetch_assoc();
-				$numeroSuplentes = $dataConteoSuplentes['conteo'];
-			} 
-			$paginas = ceil($numeroRepitentes / $lineas) + ceil($numeroSuplentes / $lineas);
-			// $paginas = ceil($respuesta_suplente_repitentes_sede->num_rows / $lineas);
+			$paginas = ceil($respuesta_suplente_repitentes_sede->num_rows / $lineas);
 			$numero_estudiantes = 0;
 			$codigoSede = $sede['cod_sede'];
 			$pdf->AddPage();
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFillColor(255,255,255);
 			$pdf->SetDrawColor(0,0,0);
-			$iteracion = 1;
-			while($suplente_repitente_sede = $respuesta_suplente_repitentes_sede->fetch_assoc()) {
+
+			include 'planillas_header_v4.php';
+			$pdf->SetLineWidth(.05);
+
+			while($suplente_repitente_sede = $respuesta_suplente_repitentes_sede->fetch_assoc())
+			{
 				$numero_estudiantes++;
 				$suplente_repitente_sede = (object) $suplente_repitente_sede;
-				if ($iteracion == 1) {
-					include 'planillas_header_v2.php';
-					$pdf->SetLineWidth(.05);
-					$iteracion++;
-					$tipoConsumidor1 = $suplente_repitente_sede->tipo;
-				}
-				if($linea > $lineas) {
+
+				if($linea > $lineas)
+				{
 					$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 					$pdf->Cell(0, $alturaLinea, '', 'T');
-					include 'planillas_footer_v2.php';
+					include 'planillas_footer_v4.php';
 					$pdf->AddPage();
 					$pagina++;
-					include 'planillas_header_v2.php';
+					include 'planillas_header_v4.php';
 					$pdf->SetFont('Arial','',$tamannoFuente);
 					$linea = 1;
 				}
-				$tipoConsumidor2 = $suplente_repitente_sede->tipo;
-				if ($tipoConsumidor2 == $tipoConsumidor1) {
-					$x = $pdf->GetX();
-					$y = $pdf->GetY();
-					$pdf->SetFont('','',$tamannoFuente);
-					$pdf->Cell(8,$alturaLinea, $numero_estudiantes,'LR',0,'C',False);
-					$pdf->Cell(10,$alturaLinea, $suplente_repitente_sede->tipo_doc_nom,'R',0,'C',False);
-					$pdf->Cell(22,$alturaLinea, $suplente_repitente_sede->num_doc,'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom1)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom2)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape1)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape2)),'R',0,'L',False);
-					$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->edad,'R',0,'C',False);
-					$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->cod_grado,'R',0,'C',False);
-					$pdf->Cell(8,$alturaLinea, $suplente_repitente_sede->nom_grupo,'R',0,'C',False);
-					$pdf->Cell(13,$alturaLinea, utf8_decode(mb_strtoupper($tipoComplemento)),'R',0,'C',False);
-					$total_entregas_por_estudiante = 0;
-					$auxOtrosDiasMes = 0;
-					for($j = 0 ; $j < 24 ; $j++) {
-						$auxIndice = $j+1;
-						if (in_array($auxIndice, $auxDias)){
-							$dia_entrega_estudiante = $suplente_repitente_sede->{'D'.$auxIndice};
-							$total_entregas_por_estudiante += $dia_entrega_estudiante;	
-							$pdf->SetTextColor(190,190,190);
-							$entrega_complemento = $dia_entrega_estudiante == 1 ? 'x' : '';
-							$pdf->Cell(6,$alturaLinea, $entrega_complemento,'R',0,'C',False);
-						}else {
-							$entrega_complemento = '';
-							$auxOtrosDiasMes++;
-						}
+
+				$x = $pdf->GetX();
+				$y = $pdf->GetY();
+				$pdf->SetFont('','',$tamannoFuente);
+				$pdf->Cell(8,$alturaLinea, $numero_estudiantes,'LR',0,'C',False);
+				$pdf->Cell(10,$alturaLinea, $suplente_repitente_sede->tipo_doc_nom,'R',0,'C',False);
+				$pdf->Cell(22,$alturaLinea, $suplente_repitente_sede->num_doc,'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom1)),'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom2)),'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape1)),'R',0,'L',False);
+				$pdf->Cell(26.5,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape2)),'R',0,'L',False);
+				$pdf->Cell(22,$alturaLinea, $suplente_repitente_sede->fecha_nac,'R',0,'C',False);
+				$pdf->Cell(16,$alturaLinea, $suplente_repitente_sede->etnia,'R',0,'C',False);
+				$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->genero,'R',0,'C',False);
+				$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->cod_grado,'R',0,'C',False);
+				$pdf->Cell(13,$alturaLinea, utf8_decode(mb_strtoupper($tipoComplemento)),'R',0,'C',False);
+
+
+				// Impresión de las 24 columnas para los días.
+				$total_entregas_por_estudiante = 0;
+				$auxOtrosDiasMes = 0;
+				for($j = 0 ; $j < 22 ; $j++)
+				{
+					$auxIndice = $j+1;
+					if (in_array($auxIndice, $auxDias)){
+						$dia_entrega_estudiante = $suplente_repitente_sede->{'D'.$auxIndice};
+						$total_entregas_por_estudiante += $dia_entrega_estudiante;	
+						$pdf->SetTextColor(190,190,190);
+						$entrega_complemento = $dia_entrega_estudiante == 1 ? 'x' : '';
+						$pdf->Cell(6,$alturaLinea, $entrega_complemento,'R',0,'C',False);
+					}else{
+						$entrega_complemento = '';
+						$auxOtrosDiasMes++;
 					}
-					for($j = 0 ; $j < $auxOtrosDiasMes ; $j++) {
-						$pdf->Cell(6,$alturaLinea, '','R',0,'C',False);
-					}
-					$pdf->SetTextColor(0,0,0);
-					$pdf->Cell(0, $alturaLinea, '', 'R', 0, 'C');
-					$pdf->SetXY($x, $y);
-					$pdf->Cell(0,$alturaLinea, '','B',1);
-					$linea++;
-				}else {
-					$numero_estudiantes = 1;
-					include 'planillas_footer_v2.php';
-					$pdf->AddPage();
-					$pagina++;
-					include 'planillas_header_v2.php';
-					$x = $pdf->GetX();
-					$y = $pdf->GetY();
-					$pdf->SetFont('','',$tamannoFuente);
-					$pdf->Cell(8,$alturaLinea, $numero_estudiantes,'LR',0,'C',False);
-					$pdf->Cell(10,$alturaLinea, $suplente_repitente_sede->tipo_doc_nom,'R',0,'C',False);
-					$pdf->Cell(22,$alturaLinea, $suplente_repitente_sede->num_doc,'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom1)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->nom2)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape1)),'R',0,'L',False);
-					$pdf->Cell(31.4,$alturaLinea, utf8_decode(mb_strtoupper($suplente_repitente_sede->ape2)),'R',0,'L',False);
-					$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->edad,'R',0,'C',False);
-					$pdf->Cell(5,$alturaLinea, $suplente_repitente_sede->cod_grado,'R',0,'C',False);
-					$pdf->Cell(8,$alturaLinea, $suplente_repitente_sede->nom_grupo,'R',0,'C',False);
-					$pdf->Cell(13,$alturaLinea, utf8_decode(mb_strtoupper($tipoComplemento)),'R',0,'C',False);
-					$total_entregas_por_estudiante = 0;
-					$auxOtrosDiasMes = 0;
-					for($j = 0 ; $j < 24 ; $j++) {
-						$auxIndice = $j+1;
-						if (in_array($auxIndice, $auxDias)) {
-							$dia_entrega_estudiante = $suplente_repitente_sede->{'D'.$auxIndice};
-							$total_entregas_por_estudiante += $dia_entrega_estudiante;	
-							$pdf->SetTextColor(190,190,190);
-							$entrega_complemento = $dia_entrega_estudiante == 1 ? 'x' : '';
-							$pdf->Cell(6,$alturaLinea, $entrega_complemento,'R',0,'C',False);
-						}else{
-							$entrega_complemento = '';
-							$auxOtrosDiasMes++;
-						}
-					}
-					for($j = 0 ; $j < $auxOtrosDiasMes ; $j++) {
-						$pdf->Cell(6,$alturaLinea, '','R',0,'C',False);
-					}
-					$pdf->SetTextColor(0,0,0);
-					$pdf->Cell(0, $alturaLinea, '', 'R', 0, 'C');
-					$pdf->SetXY($x, $y);
-					$pdf->Cell(0,$alturaLinea, '','B',1);
-					$linea++;
-					$pdf->SetFont('Arial','',$tamannoFuente);
-					$linea = 2;
-					$tipoConsumidor1 = $suplente_repitente_sede->tipo;
 				}
+				for($j = 0 ; $j < $auxOtrosDiasMes ; $j++){
+					$pdf->Cell(6,$alturaLinea, '','R',0,'C',False);
+				}
+
+				$pdf->SetTextColor(0,0,0);
+				$pdf->Cell(0, $alturaLinea, '', 'R', 0, 'C');
+
+
+				// Se utiliza pero imprimir los border del fila.
+				$pdf->SetXY($x, $y);
+				$pdf->Cell(0,$alturaLinea, '','B',1);
+				$linea++;
 			}
+
 			$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 			$pdf->Cell(0,$alturaLinea, '', 'T', 0, 'R', False);
-			include 'planillas_footer_v2.php';
+
+			include 'planillas_footer_v4.php';
 		}
 		else
 		{
-			echo "<script>alert('No existen registros con los filtros seleccionados.'); window.close(); </script>";
+			echo "<script>alert('No existen registros con los filtros seleccionados.');  window.close(); </script>"; 
 		}
 	}
 }
+
+if ($tipoPlanilla == 9) {
+	// consulta numero sedes
+	$sedesAsignadas = $sedesAtendidas = 0;
+	$consultaNumeroSedes = " SELECT DISTINCT(cod_sede) AS cod_sede, id FROM sedes$periodoActual WHERE 1=1 ";
+	if (isset($institucion) && $institucion != '') {
+		$consultaNumeroSedes .= " AND s.cod_inst = '$institucion' ";
+	}
+	if (isset($sedeParametro) && $sedeParametro!= '') {
+		$consultaNumeroSedes .= " AND s.cod_sede = '$sedeParametro' ";
+	}
+	$respuestaNumeroSedes = $Link->query($consultaNumeroSedes) or die ('Error al consultar las sedes Ln 1152');
+	if ($respuestaNumeroSedes->num_rows > 0) {
+		while ($dataNumeroSedes = $respuestaNumeroSedes->fetch_assoc()) {
+			$sedesAsignadas += 1;
+			$consultaAtencion = " SELECT id, cod_sede FROM sedes_cobertura WHERE cod_sede = '" .$dataNumeroSedes['cod_sede']. "' AND mes = '".$mes."'"; 
+			$respuestaAtencion = $Link->query($consultaAtencion) or die ('Error al consultar Ln 1154');
+			if ($respuestaAtencion->num_rows > 0) {
+				$sedesAtendidas +=1;
+			}
+		}
+	}
+
+	// consultaCoberturas 
+	$coberturaComplemento = $coberturaAlmuerzo = $canDias = 0;
+	$consultaCobertura = " SELECT CODIGO, Jornada FROM tipo_complemento WHERE valorRacion > 0 ";
+	if (isset($tipoComplemento) && $tipoComplemento != '' ) {
+		$consultaCobertura .= " AND CODIGO = '" .$tipoComplemento. "'";
+	}
+	$respuestaCobertura = $Link->query($consultaCobertura) or die ('Error al consultar las cobertura Ln 1157');
+	if ($respuestaCobertura->num_rows > 0) {	
+		while ($dataCobertura = $respuestaCobertura->fetch_assoc()) {
+			$cbTotal[$dataCobertura['CODIGO']][$dataCobertura['Jornada']] = 0;
+			$complementos[$dataCobertura['CODIGO']] = $dataCobertura['Jornada'];
+		}
+	}
+
+	$consultaSemanas1 = " SELECT MIN(CONSECUTIVO) AS minConsecutivo FROM planilla_semanas WHERE SEMANA = '" .$_POST['semana_inicial']. "' ";
+	$respuestaSemanas1 = $Link->query($consultaSemanas1) or die ('Error al consultar el consecutivo Ln 1169');
+	if ($respuestaSemanas1->num_rows > 0) {
+		$dataSemanas1 = $respuestaSemanas1->fetch_assoc();
+		$minConsecutivo = $dataSemanas1['minConsecutivo'];
+		$consultaSemanas2 = " SELECT MAX(CONSECUTIVO) AS maxConsecutivo FROM planilla_semanas WHERE SEMANA = '" .$_POST['semana_final']. "' ";
+		$respuestaSemanas2 = $Link->query($consultaSemanas2) or die ('Error al consultar el consecutivo Ln 1174');
+		if ($respuestaSemanas2->num_rows > 0) {
+			$dataSemanas2 = $respuestaSemanas2->fetch_assoc();
+			$maxConsecutivo = $dataSemanas2['maxConsecutivo'];
+			$consultaSemanasImplicitas = " SELECT DISTINCT(SEMANA) AS semana 
+												FROM planilla_semanas 
+												WHERE CONSECUTIVO BETWEEN $minConsecutivo AND $maxConsecutivo ";
+			$respuestaSemanasImplicitas = $Link->query($consultaSemanasImplicitas) or die ('Error al consultar las semanas implicitas' );
+			if ($respuestaSemanasImplicitas->num_rows > 0) {
+				while ($dataSemanasImplicitas = $respuestaSemanasImplicitas->fetch_assoc()) {
+					$consultaCanDias = " SELECT COUNT(ID) AS dias FROM planilla_semanas WHERE SEMANA = '" .$dataSemanasImplicitas['semana']. "' ";
+					$respuestaCantDias = $Link->query($consultaCanDias) or die ('Error al consultar los dias 1192');
+					if ($respuestaCantDias->num_rows > 0) {
+						$dataCantDias = $respuestaCantDias->fetch_assoc();
+						$canDias = $dataCantDias['dias'];
+						foreach ($complementos as $key => $value) {
+							$consultaPriorizacion = " SELECT SUM(".$key.") FROM priorizacion".$dataSemanasImplicitas['semana'];
+						}
+					}	
+				}
+			}									
+		}
+	}
+
+	// consultaEntregasporEtnia
+	$totalIndigenas = $totalAfrocolombianos = $totalRaizal = $totalSinPertenencia = $totalRom = 0;
+	$consultaEntregasEtnia = " SELECT COUNT(ent.id) AS total, e.descripcion, e.indigena
+								FROM entregas_res_$mes$anno2d ent
+								INNER JOIN etnia e ON e.id = ent.etnia WHERE 1=1";
+	if (isset($institucion) && $institucion != '') {
+		$consultaEntregasEtnia .= " AND ent.cod_inst = '" .$institucion. "' "; 
+	}
+	if (isset($sedeParametro) && $sedeParametro != '') {
+		$consultaEntregasEtnia .= " AND ent.cod_sede = '" .$sedeParametro. "' "; 
+	}
+	if (isset($tipoComplemento) && $tipoComplemento != '') {
+		$consultaEntregasEtnia .= " AND ent.tipo_complem = '" .$tipoComplemento. "' "; 
+	}	
+	$consultaEntregasEtnia .= " GROUP BY ent.etnia ";
+
+	$respuestaEntregasEtnia = $Link->query($consultaEntregasEtnia) or die ('Error al consultar las etnias Ln 1185');
+	if ($respuestaEntregasEtnia->num_rows > 0) {
+		while ($dataRespuestaEntregasEtnia = $respuestaEntregasEtnia->fetch_assoc()) {
+			if ($dataRespuestaEntregasEtnia['indigena'] == 1) {
+				$totalIndigenas += $dataRespuestaEntregasEtnia['total'];
+			}
+			if ($dataRespuestaEntregasEtnia['indigena'] == 0) {
+				if ($dataRespuestaEntregasEtnia['descripcion'] == 'AFRODESCENDIENTE' || $dataRespuestaEntregasEtnia['descripcion'] == 'Afrodecendientes') {
+					$totalAfrocolombianos = $dataRespuestaEntregasEtnia['total'];
+				}
+				if ($dataRespuestaEntregasEtnia['descripcion'] == 'RAIZAL' || $dataRespuestaEntregasEtnia['descripcion'] == 'Razal' ) {
+					$totalRaizal = $dataRespuestaEntregasEtnia['total'];
+				}
+				if ($dataRespuestaEntregasEtnia['descripcion'] == 'ROM' || $dataRespuestaEntregasEtnia['descripcion'] == 'Rom' ) {
+					$totalRom = $dataRespuestaEntregasEtnia['total'];
+				}
+				if ($dataRespuestaEntregasEtnia['descripcion'] == 'NO APLICA' || $dataRespuestaEntregasEtnia['descripcion'] == 'No Aplica' ) {
+					$totalSinPertenencia = $dataRespuestaEntregasEtnia['total'];
+				}
+			}
+		}
+	}
+
+	$complementoAtendidoManana = $complementoAtendidoTarde = 0;
+	$consultaEntregasComplemento = " SELECT tipo_complem, 
+											sum(". str_replace(",", "+", trim($dia_consulta, ", ")) .") AS total 
+										FROM entregas_res_$mes$anno2d ent
+										WHERE 1=1 ";
+	if (isset($institucion) && $institucion != '') {
+		$consultaEntregasComplemento .= " AND ent.cod_inst = '" .$institucion. "' ";
+	}		
+	if (isset($sedeParametro) && $sedeParametro != '') {
+		$consultaEntregasComplemento .= " AND ent.cod_sede = '" .$sedeParametro. "' ";
+	}							
+	if (isset($tipoComplemento) && $tipoComplemento != '') {
+		$consultaEntregasComplemento .= " AND ent.tipo_complem = '" .$tipoComplemento. "' ";
+	}
+	$consultaEntregasComplemento .= " GROUP BY tipo_complem ";
+	$respuestaEntregasComplemento = $Link->query($consultaEntregasComplemento) or die('Error al consultar las entregas por complemento Ln 1239');
+	if ($respuestaEntregasComplemento->num_rows > 0) {
+		while ($dataEntregasComplemento = $respuestaEntregasComplemento->fetch_assoc()) {
+			// var_dump($dataEntregasComplemento);
+			foreach ($complementos as $key => $value) {
+				if ($value == 2) {
+					if ($dataEntregasComplemento['tipo_complem'] == $key) {
+						$complementoAtendidoManana += $dataEntregasComplemento['total'];
+					}
+				}
+				if ($value == 3) {
+					if ($dataEntregasComplemento['tipo_complem'] == $key) {
+						$complementoAtendidoTarde += $dataEntregasComplemento['total'];
+					}
+				}
+			}
+			
+		}
+	}
+	
+	$tamannoFuente = 7;
+	$pdf->AddPage();
+	$pdf->SetTextColor(0,0,0);
+	$pdf->SetDrawColor(0,0,0);
+	$pdf->SetFillColor(160,160,160);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+
+	// fila 1
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Cell(37, 15, utf8_decode('DEPARTAMENTO'), 1, 0, 'C', True);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(28, 15, utf8_decode($_SESSION['p_Departamento']), 'B', 0, 'C', False);
+
+	$x = $pdf->GetX();
+	$y = $pdf->GetY();
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Multicell(20, 3.75, utf8_decode(" "."\n CODIGO DANE \n"." "), 1, 'C', True);
+	$pdf->setXY($x+20, $y);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(20, 15, utf8_decode($_SESSION['p_CodDepartamento']), 'B', 0, 'C', False);
+
+	$x = $pdf->GetX();
+	$y = $pdf->GetY();
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Multicell(37, 3, utf8_decode("NÚMERO DE \n ESTABLECIMIENTOS \n EDUCATIVOS \n ASIGNADOS PARA \n ATENCIÓN "),1 , 'C', True);
+	$pdf->setXY($x+37, $y);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(18, 15, $sedesAsignadas, 'B', 0, 'C', False);
+
+	$x = $pdf->GetX();
+	$y = $pdf->GetY();
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Multicell(37, 3.75, utf8_decode("RACIONES \n PROGRAMADOS \n COMPLEMENTO \n ALIMENTARIO "),1 , 'C', True);
+	$pdf->setXY($x+37, $y);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(18, 15, $coberturaComplemento, 'B', 0, 'C', False);
+	$pdf->Cell(29, 15, '', 'TLR', 0, 'C', True);
+
+	$x = $pdf->GetX();
+	$y = $pdf->GetY();
+	$pdf->SetFillColor(225,225,225);
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Cell(35, 15, utf8_decode("INDÍGENA "),'TB',0 ,'C', True);
+	$pdf->setXY($x+35, $y);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(18, 15, $totalIndigenas, 'B', 0, 'C', False);
+	
+	$x = $pdf->GetX();
+	$y = $pdf->GetY();
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Multicell(35, 3.75, utf8_decode("\n"."AFROCOLOMBIANO / \n PALENQUEROS "."\n"." "), 'TB', 'C', True);
+	$pdf->setXY($x+35, $y);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(18, 15, $totalAfrocolombianos, 'BR', 1, 'C', False);
+
+	// fila 2
+	$pdf->SetFillColor(160,160,160);
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Cell(37, 15, utf8_decode('MUNICIPIO'), 1, 0, 'C', True);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(28, 15, utf8_decode($_POST['municipioNm']), 'B', 0, 'C', False);
+
+	$x = $pdf->GetX();
+	$y = $pdf->GetY();
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Multicell(20, 3.75, utf8_decode(" "."\n CODIGO DANE \n"." "), 1, 'C', True);
+	$pdf->setXY($x+20, $y);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(20, 15, utf8_decode($_SESSION['p_Municipio']), 'B', 0, 'C', False);
+
+	$x = $pdf->GetX();
+	$y = $pdf->GetY();
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Multicell(37, 3, utf8_decode("NÚMERO DE \n ESTABLECIMIENTOS \n EDUCATIVOS \n ATENDIDOS EFEC-\nTIVAMENTE  EN EL MES "),1 , 'C', True);
+	$pdf->setXY($x+37, $y);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(18, 15, $sedesAtendidas, 'B', 0, 'C', False);
+
+	$x = $pdf->GetX();
+	$y = $pdf->GetY();
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Multicell(37, 3, utf8_decode(" "."\n"." "."\n"." "."\n"." "."\n"." "."\n"."RACIONES \n ATENDIDAS". " "."\n"." "."\n"." "."\n"." "."\n"." " ),1 , 'C', True);
+	$pdf->setXY($x+37, $y);
+	$pdf->Cell(9, 15, 'A.M.', 'BR', 0, 'C', False);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(9, 15, $complementoAtendidoManana, 'BR', 0, 'C', False);
+	
+
+}
+
 else
 {
 	foreach ($sedes as $sede){ 
@@ -1277,7 +1384,7 @@ else
 		$alturaLinea = 4;
 		// $codigoSede = null;
 
-		include 'planillas_header_v2.php';
+		include 'planillas_header_v4.php';
 		$pdf->SetLineWidth(.05);
 		$pdf->SetFont('Arial','',$tamannoFuente);
 		//Inicia impresión de estudiantes de la sede
@@ -1289,9 +1396,9 @@ else
 				$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 				$alturaCuadroFilas = $alturaLinea * ($linea-1);
 				$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
-				include 'planillas_footer_v2.php';
+				include 'planillas_footer_v4.php';
 				$pdf->AddPage();
-				include 'planillas_header_v2.php';
+				include 'planillas_header_v4.php';
 				$pdf->SetFont('Arial','',$tamannoFuente);
 				$linea = 1;
 			}
@@ -1300,18 +1407,18 @@ else
 			$pdf->Cell(8,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			$pdf->Cell(10,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			$pdf->Cell(22,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-			$pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-			$pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-			$pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
-			$pdf->Cell(28,$alturaLinea,utf8_decode(''),'R',0,'L',False);
+			$pdf->Cell(26.5,$alturaLinea,utf8_decode(''),'R',0,'L',False);
+			$pdf->Cell(26.5,$alturaLinea,utf8_decode(''),'R',0,'L',False);
+			$pdf->Cell(26.5,$alturaLinea,utf8_decode(''),'R',0,'L',False);
+			$pdf->Cell(26.5,$alturaLinea,utf8_decode(''),'R',0,'L',False);
+			$pdf->Cell(22,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+			$pdf->Cell(16,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			$pdf->Cell(5,$alturaLinea,utf8_decode(''),'R',0,'C',False);
-			$pdf->Cell(7,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			$pdf->Cell(5,$alturaLinea,utf8_decode(''),'R',0,'C',False);
-			$pdf->Cell(5,$alturaLinea,utf8_decode(''),'R',0,'C',False);
-			$pdf->Cell(8,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			$pdf->Cell(13,$alturaLinea,utf8_decode(''),'R',0,'C',False);
+			// $pdf->Cell(13,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 
-			for($j = 0 ; $j < 24 ; $j++){
+			for($j = 0 ; $j < 22 ; $j++){
 				$pdf->Cell(6,$alturaLinea,utf8_decode(''),'R',0,'C',False);
 			}
 
@@ -1319,12 +1426,20 @@ else
 			$pdf->Cell(0,$alturaLinea,'','B',1);
 			$linea++;
 		}
+
+		$Y = $pdf->GetY();
+		$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+		$pdf->SetXY(63, $Y);
+		$pdf->Cell(108,10, '','BR',0,'L',False);
+		$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+		$pdf->Cell(0,10, '','BR',0,'L',False);
+
 		//Termina impresión de estudiantes de la sede
 		$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 		$alturaCuadroFilas = $alturaLinea * ($linea-1);
 		$pdf->Cell(0,$alturaCuadroFilas,utf8_decode(''),1,0,'R',False);
 	
-		include 'planillas_footer_v2.php';
+		include 'planillas_footer_v4.php';
 	}	
 }
 
@@ -1369,4 +1484,6 @@ function mesNombre($mes)
 		return 'Diciembre';
 	}
 }
+
+
 

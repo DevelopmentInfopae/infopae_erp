@@ -50,9 +50,10 @@ if (! empty($sedes)) {
 		$sedeNombre = '';
 		if (tieneAcentos($sede->nombreMunicipio)) {
 			$municipioNombre = eliminar_acentos($sede->nombreMunicipio);
-		} else if (tieneAcentos($sede->nombreMunicipio)) {
+		} else if (!tieneAcentos($sede->nombreMunicipio)) {
 			$municipioNombre = $sede->nombreMunicipio;
 		}
+		// echo $municipioNombre;
 		if (tieneAcentos($sede->nombreInstitucion)) {
 			$institucionNombre = eliminar_acentos($sede->nombreInstitucion);
 		} else if (!tieneAcentos($sede->nombreInstitucion)) {
@@ -96,7 +97,7 @@ function consultar_sedes($Link) {
 				    sedes$periodoActual AS sedes
 				    INNER JOIN ubicacion AS ubicacion ON ubicacion.CodigoDANE = sedes.cod_mun_sede
 				    WHERE sedes.estado = 1
-				ORDER BY nombreInstitucion, nombreSede";
+				ORDER BY ubicacion.Ciudad, cod_inst, cod_sede";
 	// exit(var_dump($consulta));			
 	$respuesta = $Link->query($consulta);
 	if ($respuesta->num_rows > 0) {

@@ -36,6 +36,14 @@
 
 	$nameLabel = get_titles('ordenCompra', 'ordenCompra', $labels);
 	$titulo = $nameLabel . " - Nueva";
+
+	$consultaBodegas = " SELECT ID, NOMBRE FROM bodegas WHERE RESPONSABLE != '' ";
+	$respuestaBodegas = $Link->query($consultaBodegas) or die('Error Ln 41');
+	if ($respuestaBodegas->num_rows > 0) {
+		while ($dataBodegas = $respuestaBodegas->fetch_assoc()) {
+			$bodegas[$dataBodegas['ID']] = $dataBodegas['NOMBRE'];
+		}
+	}
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -168,7 +176,6 @@
 
 							<div class="col-sm-6 col-md-3 form-group">
 								<label for="institucion">Institución</label>
-								<!-- Tipo Complemento - Codigo -->
 								<select class="form-control select2" name="institucion" id="institucion">
 									<option value="">Todos</option>
 								</select>
@@ -176,9 +183,22 @@
 
 							<div class="col-sm-6 col-md-3 form-group">
 								<label for="sede">Sede</label>
-								<!-- Tipo Complemento - Codigo -->
 								<select class="form-control select2" name="sede" id="sede">
 									<option value="">Todos</option>
+								</select>
+							</div>
+
+							<div class="col-sm-6 col-md-3 form-group">
+								<label for="bodega">Bodega</label>
+								<select class="form-control select2" name="bodega" id="bodega" required>
+									<option value="">Todos</option>
+									<?php
+										foreach ($bodegas as $keyB => $valueB) {
+									?>
+											<option value="<?= $keyB ?>"><?= $valueB ?></option>
+									<?php		
+										}
+									?>
 								</select>
 							</div>
 						</div><!-- -/.row -->

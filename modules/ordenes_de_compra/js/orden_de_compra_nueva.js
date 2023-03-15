@@ -268,6 +268,7 @@ function generarDespacho(){
 	var tipoDespacho = $('#tipoDespacho').val();
 	var proveedorEmpleado = $('#proveedorEmpleado').val();
 	var proveedorEmpleadoNm = $('#proveedorEmpleadoNm').val();
+	var bodega = $('#bodega').val();
 	var semanasImplicitas = new Array();
 
 	var auxSemanaImplicita = '';
@@ -313,6 +314,10 @@ function generarDespacho(){
 		Command: toastr.warning('El campo <strong>Proveedor / Empleado</strong> es obligatorio.', 'Advertencia');
 		$('#proveedorEmpleado').select2('open').select2('close');
 		bandera++;
+	}else if (bodega == '') {
+		Command: toastr.warning('El campo <strong>Bodega</strong> es obligatorio.', 'Advertencia');
+		$('#bodega').select2('open').select2('close');
+		bandera++;
 	}else if (itemsDespacho.length == 0) {
 		Command: toastr.warning('Debe agregar al menos una <strong>sede</strong> para el despacho.', 'Advertencia');
 		bandera++;
@@ -342,7 +347,8 @@ function generarDespacho(){
 				"tipoDespacho":tipoDespacho,
 				"itemsDespacho":itemsDespacho,
 				"itemsDespachoVariaciones":string_variaciones,
-				"rutaMunicipio":rutaMunicipio
+				"rutaMunicipio":rutaMunicipio,
+				"bodega":bodega
 			},
 			beforeSend: function(){
 				$('#loader').fadeIn();

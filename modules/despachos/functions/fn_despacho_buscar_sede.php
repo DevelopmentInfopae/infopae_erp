@@ -52,10 +52,10 @@
 
   $consulta = "SELECT DISTINCT s.cod_sede, s.nom_sede FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc on s.cod_sede = sc.cod_sede WHERE 1=1 $condicionCoordinador $condicionRector ";
 
-  if($semana != ''){ $consulta = $consulta." AND sc.semana = '$semana'"; }
-  if($municipio != ''){ $consulta = $consulta." AND s.cod_mun_sede = '$municipio'"; }
+  if($semana != ''){ $consulta = $consulta." AND sc.semana = '$semana'"; 
+  $consulta = $consulta." AND s.cod_mun_sede = '$municipio'"; }
   if($tipo != ''){ $consulta = $consulta."  AND sc.$tipo > 0 AND (sc.Etario1_$tipo > 0 || sc.Etario2_$tipo > 0 || sc.Etario3_$tipo > 0 || sc.Etario4_$tipo > 0 || sc.Etario5_$tipo > 0 )"; }
-  if($institucion != ''){ $consulta = $consulta."  AND s.cod_inst = '$institucion' "; }
+  $consulta = $consulta."  AND s.cod_inst = '$institucion' "; 
   $consulta .= " ORDER BY s.nom_sede ASC";
 
   // exit(var_dump($_SESSION));

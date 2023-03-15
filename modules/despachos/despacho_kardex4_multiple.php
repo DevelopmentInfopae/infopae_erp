@@ -39,7 +39,7 @@ $anno = trim($anno);
 $mesAnno = $mes.$anno;
 $ruta = '';
 
-if(isset($_POST['rutaNm']) && $_POST['rutaNm']!= ''){ $ruta = $_POST['rutaNm']; }
+// if(isset($_POST['rutaNm']) && $_POST['rutaNm']!= ''){ $ruta = $_POST['rutaNm']; }
 
 $corteDeVariables = 16;
 if(isset($_POST['seleccionarVarios'])){ $corteDeVariables++; }
@@ -572,9 +572,9 @@ if ($cantGruposEtarios == 3) {
       if($current_y > 171) {
          $pdf->AddPage();
          include 'despacho_kardex4_multiple_header.php';
-         include 'despacho_firma_planilla_kardex4.php';
+         include 'despacho_firma_planilla.php';
       } else {
-         include 'despacho_firma_planilla_kardex4.php';
+         include 'despacho_firma_planilla.php';
       }
    }
    mysqli_close ( $Link );
@@ -1021,11 +1021,9 @@ if ($cantGruposEtarios == 5) {
 
             // Existencias
             if($alimento['presentacion'] == 'u') {
-               if (strpos($alimento['componente'], "HUEVO") !== FALSE) { 
-                  $aux = ceil(0+$aux); }
-               else { 
-                  $aux = round(0+$aux); 
-               }
+
+               $aux = round(0+$aux); 
+               
             }
             else { 
                $aux = number_format($aux, 2, '.', ''); 
@@ -1094,9 +1092,9 @@ if ($cantGruposEtarios == 5) {
       if($current_y > 171) {
          $pdf->AddPage();
          include 'despacho_kardex4_multiple_header.php';
-         include 'despacho_firma_planilla_kardex4.php';
+         include 'despacho_firma_planilla.php';
       } else {
-         include 'despacho_firma_planilla_kardex4.php';
+         include 'despacho_firma_planilla.php';
       }
    }
    mysqli_close ( $Link );

@@ -22,8 +22,25 @@ $(document).ready(function()
 	}
 
 	// Configuración inicial del plugin jquery validator.
-	jQuery.extend(jQuery.validator.messages, { required: "Este campo es obligatorio.", remote: "Por favor, rellena este campo.", email: "Por favor, escribe una dirección de correo válida", url: "Por favor, escribe una URL válida.", date: "Por favor, escribe una fecha válida.", dateISO: "Por favor, escribe una fecha (ISO) válida.", number: "Por favor, escribe un número entero válido.", digits: "Por favor, escribe sólo dígitos.", creditcard: "Por favor, escribe un número de tarjeta válido.", equalTo: "Por favor, escribe el mismo valor de nuevo.", accept: "Por favor, escribe un valor con una extensión aceptada.", maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
-
+	jQuery.extend(jQuery.validator.messages, { 
+		required: "Este campo es obligatorio.", 
+		remote: "Por favor, rellena este campo.", 
+		email: "Por favor, escribe una dirección de correo válida", 
+		url: "Por favor, escribe una URL válida.", 
+		date: "Por favor, escribe una fecha válida.", 
+		dateISO: "Por favor, escribe una fecha (ISO) válida.", 
+		number: "Por favor, escribe un número entero válido.", 
+		digits: "Por favor, escribe sólo dígitos.", 
+		creditcard: "Por favor, escribe un número de tarjeta válido.", 
+		equalTo: "Por favor, escribe el mismo valor de nuevo.", 
+		accept: "Por favor, escribe un valor con una extensión aceptada.", 
+		maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."), 
+		minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."), 
+		rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."), 
+		range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."), 
+		max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), 
+		min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") 
+	});
 
 	$('#municipio_hidden').val($('#municipio').val());
 
@@ -35,66 +52,109 @@ $(document).ready(function()
 
 	_cambio_check_encabezado = false;
 
-	$('#btnBuscar').click(function(){ validar_campos_filtros(); });
+	$('#btnBuscar').click(function(){ 
+		validar_campos_filtros();  
+		$("#contenedor_tabla_focalizados .ibox-title strong").empty();
+	});
 	$('.guaradarNovedad').click(function(){ guardarNovedad(); });
-	$('#sede').change(function(){ buscarMeses($(this).val()); });
-	$('#mes').change(function(){ buscarSemanas($(this).val()); });
-	$('#institucion').change(function(){ buscarSede($(this).val()); });
-	$('#semana').change(function(){ buscarComplementos($(this).val()); });
-	$('#municipio').change(function(){ buscarInstituciones($(this).val()); });
-	$('#tipoComplemento').change(function() { $('#tipoComplemento_hidden').val($(this).val()); });
+	
+	$('#municipio').change(function(){ 
+		buscarInstituciones($(this).val()); 
+		buscarMeses($(this).val(), null, null ); 
+		$('.tabla_focalizacion thead tr, .tabla_focalizacion tfoot tr, .tabla_focalizacion tbody tr').empty();
+		if( $.fn.DataTable.isDataTable( '.tabla_focalizacion' )){
+			$('#contenedor_tabla_focalizados').fadeOut();
+		}
+		$('#boton_guardar_novedades').addClass('disabled');
+	});
 
-	$(document).on('click', '.checkbox-header', function()
-	{
+	$('#tipoNovedad').change(function(){
+		$('.tabla_focalizacion thead tr, .tabla_focalizacion tfoot tr .tabla_focalizacion tbody ').empty();
+		if( $.fn.DataTable.isDataTable( '.tabla_focalizacion' )){
+			console.log(dataset)
+			$('#contenedor_tabla_focalizados').fadeOut();
+		
+		}
+		$('#boton_guardar_novedades').addClass('disabled');
+	})
+
+	$('#institucion').change(function(){ 
+		buscarSede($(this).val()); 
+		buscarMeses( $('#municipio').val(), $(this).val(), null ); 
+		$('.tabla_focalizacion thead tr, .tabla_focalizacion tfoot tr .tabla_focalizacion tbody ').empty();
+		if( $.fn.DataTable.isDataTable( '.tabla_focalizacion' )){
+			$('#contenedor_tabla_focalizados').fadeOut();
+		}
+		$('#boton_guardar_novedades').addClass('disabled');
+	});
+
+	$('#sede').change(function(){ 
+		buscarMeses( $('#municipio').val(), $('#institucion').val(), $(this).val() ); 
+		if( $.fn.DataTable.isDataTable( '.tabla_focalizacion' )){
+			$('#contenedor_tabla_focalizados').fadeOut();
+		}
+		$('#boton_guardar_novedades').addClass('disabled');
+	});
+
+	$('#mes').change(function(){ 
+		buscarSemanas($(this).val()); 
+		if( $.fn.DataTable.isDataTable( '.tabla_focalizacion' )){
+			$('#contenedor_tabla_focalizados').fadeOut();
+		}
+		$('#boton_guardar_novedades').addClass('disabled');
+	});
+
+	$('#semana').change(function(){ 
+		buscarComplementos($(this).val()); 
+		if( $.fn.DataTable.isDataTable( '.tabla_focalizacion' )){
+			$('#contenedor_tabla_focalizados').fadeOut();
+		}
+		$('#boton_guardar_novedades').addClass('disabled');
+	});
+
+	$('#tipoComplemento').change(function() { 
+		$('#tipoComplemento_hidden').val($(this).val()); 
+		if( $.fn.DataTable.isDataTable( '.tabla_focalizacion' )){
+			$('#contenedor_tabla_focalizados').fadeOut();
+		}
+		$('#boton_guardar_novedades').addClass('disabled');
+	});
+
+	$(document).on('click', '.checkbox-header', function(){
 		_parent = $(this);
-		if(_parent.is(':checked'))
-		{
-			$('.checkbox'+ $(this).data('columna')).each(function()
-			{
-				if (! $(this).is(':checked'))
-				{
+		if(_parent.is(':checked')){
+			$('.checkbox'+ $(this).data('columna')).each(function(){
+				if (! $(this).is(':checked')){
 					sumarCantidadDias($(this));
 				}
 			});
-    }
-    else
-    {
-    	$('.checkbox'+ _parent.data('columna')).each(function()
-    	{
-    		if ($(this).is(':checked'))
-    		{
-    			restarCantidadDias($(this));
-    		}
+    	}
+    	else{
+    		$('.checkbox'+ _parent.data('columna')).each(function() {
+    			if ($(this).is(':checked')) {
+    				restarCantidadDias($(this));
+    			}
 			});
-    }
-
+    	}
 		var contador = 0;
-    $('.checkbox'+ _parent.data('columna')).each(function()
-  	{
-  		if ($(this).is(':checked'))
-  		{
-  			contador++;
-  		}
-  	});
-
-    if (contador > 0)
-    {
-    	$('input[name="checkbox-header_'+$(this).data('columna')+'"]').prop('checked', true);
-    }
-    else
-    {
-    	$('input[name="checkbox-header_'+$(this).data('columna')+'"]').prop('checked', false);
-    }
+    	$('.checkbox'+ _parent.data('columna')).each(function() {
+  			if ($(this).is(':checked')) {
+  				contador++;
+  			}
+  		});
+    	if (contador > 0) {
+    		$('input[name="checkbox-header_'+$(this).data('columna')+'"]').prop('checked', true);
+    	}
+    	else {
+    		$('input[name="checkbox-header_'+$(this).data('columna')+'"]').prop('checked', false);
+    	}
 	});
 
-	$(document).on('change', '.checkbox1, .checkbox2, .checkbox3, .checkbox4, .checkbox5', function()
-	{
-		if($(this).is(':checked'))
-		{
+	$(document).on('change', '.checkbox1, .checkbox2, .checkbox3, .checkbox4, .checkbox5', function(){
+		if($(this).is(':checked')){
 			sumarCantidadDias($(this));
 		}
-		else
-		{
+		else{
 			restarCantidadDias($(this));
 		}
 	});
@@ -177,13 +237,15 @@ function buscarSede(institucion)
 	$('#institucion_hidden').val(institucion);
 }
 
-function buscarMeses(sede)
+function buscarMeses(municipio, institucion, sede)
 {
 	$.ajax({
 		type: "POST",
 		url: "functions/fn_buscar_meses.php",
 		dataType: 'JSON',
     data: {
+    	'municipio': municipio,
+    	'institucion': institucion,
     	'sede': sede
     },
 		beforeSend: function(){ $('#loader').fadeIn(); },
@@ -192,7 +254,7 @@ function buscarMeses(sede)
 				$('#mes').html(data.opciones);
 				$('#loader').fadeOut();
 			} else {
-				Command: toastr.error( data.mensaje, "Error al cargar las instituciones.", { onHidden : function(){ $('#loader').fadeOut(); } } );
+				Command: toastr.error( data.mensaje, "Error al cargar los municipios.", { onHidden : function(){ $('#loader').fadeOut(); } } );
 			}
 		},
 		error: function (data) {
@@ -201,7 +263,8 @@ function buscarMeses(sede)
 	});
 
 	$('#mes').select2('val', '');
-	$('#sede_hidden').val(sede);
+	$('#municipio_hidden').val(municipio);
+	$('#sede_hidden').val(sede)
 }
 
 function buscarSemanas(mes)
@@ -260,9 +323,18 @@ function buscarComplementos(semana)
 
 function validar_campos_filtros()
 {
+	var tipoNovedad = $('#tipoNovedad').val();
+	if (tipoNovedad == 0) {
+		$('#institucion').prop('required',false);
+		$('#sede').prop('required',false);
+	}else{
+		$('#institucion').prop('required',true);
+		$('#sede').prop('required',true);
+	}
 	if ($('#formulario_buscar_focalizacion').valid())
 	{
 		buscar_dias_semanas();
+
 	}
 }
 
@@ -273,6 +345,7 @@ function buscar_dias_semanas()
 		type: 'POST',
 		dataType: 'HTML',
 		data: {
+			tipoNovedad : $('#tipoNovedad').val(),
 			mes: $('#mes').val(),
 			semana: $('#semana').val()
 		},
@@ -302,8 +375,10 @@ function buscar_priorizacion()
 		type: 'POST',
 		dataType: 'JSON',
 		data: {
-			mes: $('#mes').val(),
+			municipio : $('#municipio').val(),
+			institucion : $('#institucion').val(),
 			sede: $('#sede').val(),
+			mes: $('#mes').val(),
 			semana: $('#semana').val(),
 			tipo_complemento: $('#tipoComplemento').val()
 		}
@@ -318,7 +393,7 @@ function buscar_priorizacion()
 			_cantidadDiasFocalizados = parseInt(data);
 			$('#total_priorizacion').html(_cantidadDiasFocalizados);
 
-			buscar_focalizacion();
+			buscar_focalizacion($('#tipoNovedad').val());
 		}
 	})
 	.fail(function(data) {
@@ -326,121 +401,213 @@ function buscar_priorizacion()
 	});
 }
 
-function buscar_focalizacion()
-{
+function buscar_focalizacion(tipoNovedad){
 	total_suma_dias = 0;
-
-	$('.tabla_focalizacion').DataTable({
-		ajax: {
-			method: 'POST',
-			url: 'functions/fn_novedades_ejecucion_buscar_focalizacion.php',
-			data:{
-				municipio: $('#municipio').val(),
-				institucion: $('#institucion').val(),
-				sede: $('#sede').val(),
-				mes: $('#mes').val(),
-				semana: $('#semana').val(),
-				tipoComplemento: $('#tipoComplemento').val()
-			}
-		},
-		columns:[
-			{ data: 'abreviatura_documento'},
-			{ data: 'numero_documento'},
-			{ data: 'nombre'},
-			{ data: 'grado'},
-			{ data: 'grupo'},
-			{ data: 'complemento'},
-			{ data: 'D1', className: 'text-center', orderable: false},
-			{ data: 'D2', className: 'text-center', orderable: false},
-			{ data: 'D3', className: 'text-center', orderable: false},
-			{ data: 'D4', className: 'text-center', orderable: false},
-			{ data: 'D5', className: 'text-center', orderable: false}
-		],
-		order: [[3, 'asc'], [4, 'asc'], [2, 'asc']],
-		oLanguage: {
-			sLengthMenu: 'Mostrando _MENU_ registros',
-			sZeroRecords: 'No se encontraron registros',
-			sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
-			sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
-			sInfoFiltered: '(Filtrado desde _MAX_ registros)',
-			sSearch:         'Buscar: ',
-			oPaginate:{
-				sFirst:    'Primero',
-				sLast:     'Último',
-				sNext:     'Siguiente',
-				sPrevious: 'Anterior'
-			}
-		},
-		dom: 'r<"containerBtn"><"inputFiltro"f>tip',
-		MenuLength: [[-1], ['Todo']],
-		destroy: true,
-		responsive: true,
-		pageLength: -1,
-		rowCallback: function(row, data)
-		{
-  		total_suma_dias += parseInt(data.suma_dias);
-    },
-		initComplete: function(settings, json)
-		{
-			$('#loader').fadeOut();
-			$('#boton_guardar_novedades').removeClass('disabled');
-
-			// Iteración para habilitar el check principal del encabezado de tabla
-			$('.checkbox-header').each(function()
-			{
-				var contador = 0;
-
-				$('.checkbox'+ $(this).data('columna')).each(function() {
-					if ($(this).is(':checked'))
-					{
-						contador++;
+	if(tipoNovedad == 0){
+		dataset = $('.tabla_focalizacion').DataTable({
+			"destroy": true,
+			ajax: {
+				method: 'POST',
+				url: 'functions/fn_novedades_ejecucion_buscar_focalizacion.php',
+				data:{
+					municipio: $('#municipio').val(),
+					tipoNovedad : $('#tipoNovedad').val(),
+					institucion: $('#institucion').val(),
+					sede: $('#sede').val(),
+					mes: $('#mes').val(),
+					semana: $('#semana').val(),
+					tipoComplemento: $('#tipoComplemento').val()
+				}
+			},
+			columns:[
+				{ data: 'ciudad'},
+				{ data: 'cod_inst'},
+				{ data: 'nom_inst'},
+				{ data: 'cod_sede'},
+				{ data: 'nom_sede'},
+				{ data: 'complemento'},
+				{ data: 'D1', className: 'text-center', orderable: false},
+				{ data: 'D2', className: 'text-center', orderable: false},
+				{ data: 'D3', className: 'text-center', orderable: false},
+				{ data: 'D4', className: 'text-center', orderable: false},
+				{ data: 'D5', className: 'text-center', orderable: false}
+			],
+			order: [[2, 'asc']],
+			oLanguage: {
+				sLengthMenu: 'Mostrando _MENU_ registros',
+				sZeroRecords: 'No se encontraron registros',
+				sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+				sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+				sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+				sSearch:         'Buscar: ',
+				oPaginate:{
+					sFirst:    'Primero',
+					sLast:     'Último',
+					sNext:     'Siguiente',
+					sPrevious: 'Anterior'
+				}
+			},
+			dom: 'r<"containerBtn"><"inputFiltro"f>tip',
+			MenuLength: [[-1], ['Todo']],
+			destroy: true,
+			responsive: true,
+			pageLength: -1,
+			rowCallback: function(row, data) {
+			  	total_suma_dias += parseInt(data.suma_dias);
+				if (data.tiponovedad == 1) {
+			
+					$('#contenedor_tabla_focalizados .ibox-title').append( "<strong> Existen Novedades de días parciales registradas en " + data.nom_sede + "  </strong> <br>" )
+					$("#contenedor_tabla_focalizados .ibox-title strong").css('color', 'red');
+				}
+			},
+			initComplete: function(settings, json) {
+				$('#loader').fadeOut();
+				$('#boton_guardar_novedades').removeClass('disabled');
+	
+				// Iteración para habilitar el check principal del encabezado de tabla
+				$('.checkbox-header').each(function() {
+					var contador = 0;
+					$('.checkbox'+ $(this).data('columna')).each(function() {
+						if ($(this).is(':checked')){
+							contador++;
+						}
+					});
+	
+					if (contador > 0) {
+						$(this).prop('checked', true);
+					}
+					else{
+						$(this).prop('checked', false);
 					}
 				});
-
-				if (contador > 0)
-				{
-					$(this).prop('checked', true);
+				_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
+				$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
+			}
+		});
+	}
+	
+	else if (tipoNovedad == 1) {
+		dataset = $('.tabla_focalizacion').DataTable({
+			"destroy": true,
+			ajax: {
+				method: 'POST',
+				url: 'functions/fn_novedades_ejecucion_buscar_focalizacion.php',
+				data:{
+					municipio: $('#municipio').val(),
+					tipoNovedad : $('#tipoNovedad').val(),
+					institucion: $('#institucion').val(),
+					sede: $('#sede').val(),
+					mes: $('#mes').val(),
+					semana: $('#semana').val(),
+					tipoComplemento: $('#tipoComplemento').val()
 				}
-				else
-				{
-					$(this).prop('checked', false);
+			},
+			columns:[
+				{ data: 'abreviatura_documento'},
+				{ data: 'numero_documento'},
+				{ data: 'nombre'},
+				{ data: 'complemento'},
+				{ data: 'grado'},
+				{ data: 'grupo'},
+				{ data: 'D1', className: 'text-center', orderable: false},
+				{ data: 'D2', className: 'text-center', orderable: false},
+				{ data: 'D3', className: 'text-center', orderable: false},
+				{ data: 'D4', className: 'text-center', orderable: false},
+				{ data: 'D5', className: 'text-center', orderable: false}
+			],
+			order: false,
+			oLanguage: {
+				sLengthMenu: 'Mostrando _MENU_ registros',
+				sZeroRecords: 'No se encontraron registros',
+				sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros ',
+				sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+				sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+				sSearch:         'Buscar: ',
+				oPaginate:{
+					sFirst:    'Primero',
+					sLast:     'Último',
+					sNext:     'Siguiente',
+					sPrevious: 'Anterior'
 				}
-			});
-
-			_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
-			$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
-		}
-	});
+			},
+			dom: 'r<"containerBtn"><"inputFiltro"f>tip',
+			MenuLength: [[-1], ['Todo']],
+			destroy: true,
+			responsive: true,
+			pageLength: -1,
+			rowCallback: function(row, data)
+			{
+			  total_suma_dias += parseInt(data.suma_dias);
+		},
+			initComplete: function(settings, json)
+			{
+				$('#loader').fadeOut();
+				$('#boton_guardar_novedades').removeClass('disabled');
+	
+				// Iteración para habilitar el check principal del encabezado de tabla
+				$('.checkbox-header').each(function()
+				{
+					var contador = 0;
+	
+					$('.checkbox'+ $(this).data('columna')).each(function() {
+						if ($(this).is(':checked'))
+						{
+							contador++;
+						}
+					});
+	
+					if (contador > 0)
+					{
+						$(this).prop('checked', true);
+					}
+					else
+					{
+						$(this).prop('checked', false);
+					}
+				});
+	
+				_cantidadDiasFocalizadosActual = parseInt(total_suma_dias);
+				$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
+			}
+		});
+	}
 }
 
-function sumarCantidadDias(checkbox)
-{
-	if (_cantidadDiasFocalizadosActual < _cantidadDiasFocalizados)
-	{
-		_cantidadDiasFocalizadosActual += 1;
-		checkbox.prop('checked', true);
-
+function sumarCantidadDias(checkbox) {
+	if (_cantidadDiasFocalizadosActual < _cantidadDiasFocalizados) {
+		if ($('#tipoNovedad').val() == 0) {
+			totalDia = parseInt(checkbox.attr('data-faltantes'));
+			_cantidadDiasFocalizadosActual += parseInt(checkbox.attr('data-faltantes'));
+			if (totalDia != checkbox.val()) {
+				checkbox.val(totalDia)
+			}
+			checkbox.prop('checked', true);
+		}else{
+			_cantidadDiasFocalizadosActual += parseInt(checkbox.attr('data-faltantes'));	
+			checkbox.prop('checked', true);
+		}
 	}
-	else
-	{
+	else{
 		checkbox.prop('checked', false);
 	}
-
 	$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 }
 
-function restarCantidadDias(checkbox)
-{
-	if (_cantidadDiasFocalizadosActual > 0)
-	{
-		_cantidadDiasFocalizadosActual -= 1;
-		checkbox.prop('checked', false);
+function restarCantidadDias(checkbox){
+	if (_cantidadDiasFocalizadosActual > 0){
+		if ($('#tipoNovedad').val() == 0) {
+			totalDia = parseInt(checkbox.val()) + parseInt(checkbox.attr('data-faltantes'));
+			_cantidadDiasFocalizadosActual -= parseInt(checkbox.val());
+			if ( parseInt(checkbox.val()) !=  parseInt(checkbox.attr('data-faltantes')) ) {
+				checkbox.attr('data-faltantes', totalDia );
+			}
+			checkbox.prop('checked', false);
+		}else{
+			_cantidadDiasFocalizadosActual -= parseInt(checkbox.val());
+			checkbox.prop('checked', false);
+		}
 	}
-	else
-	{
-		checkbox.prop('checked', true);
-	}
-
+	console.log();
 	$('#complementos_faltantes').html(_cantidadDiasFocalizadosActual);
 }
 

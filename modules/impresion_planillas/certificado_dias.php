@@ -63,7 +63,8 @@ $consulta = " SELECT
 			INNER JOIN ubicacion u ON (s.cod_mun_sede = u.codigoDANE) and u.ETC = 0
 			INNER JOIN instituciones ins ON ins.codigo_inst = s.cod_inst
 			LEFT JOIN usuarios usu ON usu.num_doc = ins.cc_rector
-			WHERE sc.ano = '$anno' AND sc.mes = '$mes' AND s.cod_mun_sede = '$municipio'" . $con_ins;
+			WHERE sc.ano = '$anno' AND sc.mes = '$mes' AND s.cod_mun_sede = '$municipio'" . $con_ins . "
+			ORDER BY s.nom_inst ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){

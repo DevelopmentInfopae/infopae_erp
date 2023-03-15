@@ -7,6 +7,11 @@ $( document ).ready(function() {
 		$('#institucion').select2('val','');
 	});
 
+	$('input').iCheck({
+		checkboxClass: 'icheckbox_square',
+		radioClass: "iradio_square-green"
+	});
+
 	$(document).on('change','#mes', function(){
 		$('#semana_inicial').select2('val','');
 	})
@@ -78,8 +83,9 @@ function imprimir_planilla(){
 	var blanco = 2; 
 	var programada = 3; 
 	var diligenciada = 4; 
+	var resumen = 9;
 	tipo_complemento = $('input[name="tipoPlanilla"]:checked').val();
-	if (tipo_complemento == SUPLENTE || tipo_complemento == vacia || tipo_complemento == blanco || tipo_complemento == programada || tipo_complemento == diligenciada) 
+	if (tipo_complemento == SUPLENTE || tipo_complemento == vacia || tipo_complemento == blanco || tipo_complemento == programada || tipo_complemento == diligenciada || tipo_complemento == resumen ) 
 	{
 		$('#tipo').removeAttr('required');
 	}

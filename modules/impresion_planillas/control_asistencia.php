@@ -41,8 +41,12 @@ if ($respuestaFormatoPlanillas->num_rows > 0) {
     $dataFormatoPlanillas = $respuestaFormatoPlanillas->fetch_assoc();
     if ($dataFormatoPlanillas['formatoPlanillas'] == 1) {
         $formatoPlanilla = 'planillas_v2.php';
-    }else if ($dataFormatoPlanillas['formatoPlanillas'] == 2) {
+    }
+	if ($dataFormatoPlanillas['formatoPlanillas'] == 2) {
         $formatoPlanilla = 'planillas_v3.php';
+    }
+	if ($dataFormatoPlanillas['formatoPlanillas'] == 3) {
+        $formatoPlanilla = 'planillas_v4.php';
     }
 }
 
@@ -62,7 +66,8 @@ $arrayNameFormat = [
 	'5' => 'Novedades', 
 	'6' => 'Suplentes', 
 	'7' => 'Novedades diligenciada', 
-	'8' => 'Novedades programadas'
+	'8' => 'Novedades programadas',
+	'9' => 'Resumen asistencia'
 ];
 
 foreach ($arrayFormat as $keyF => $valueF) {
@@ -97,7 +102,7 @@ foreach ($arrayFormat as $keyF => $valueF) {
                	<h2>Parámetros de Consulta</h2>
                		<form class="col-lg-12" action="<?= $formatoPlanilla ?>" name="form_planillas" id="form_planillas" method="post" target="_blank">
                   		<div class="row">
-                     		<div class="col-md-3 col-sm-6 form-group">
+                     		<div class="col-md-4 col-sm-12 form-group">
                      			<label for="municipio">Municipio</label>
                         		<select class="form-control" name="municipio" id="municipio" required="required">
                            			<option value="">Seleccione uno</option>
@@ -138,12 +143,10 @@ foreach ($arrayFormat as $keyF => $valueF) {
                         		<input type="hidden" name="municipioNm" id="municipioNm" value="">
                      		</div> <!-- form-group -->
 
-                     		<div class=" col-md-3 col-sm-6 form-group">
+                     		<div class=" col-md-4 col-sm-12 form-group">
                         		<label for="mes">Mes</label>
                         		<?php 
-                           			$vsql="	SELECT TABLE_NAME as mes 
-                                    		FROM information_schema.TABLES 
-                                    		WHERE  table_schema = '$Database' AND   TABLE_NAME LIKE 'entregas_res_%'"; 
+                           			$vsql="	SELECT DISTINCT MES_ENTREGAS AS mes FROM planilla_semanas "; 
                         		?>
                         		<select class="form-control" name="mes" id="mes" required="required">
                            			<option value="">Seleccione uno</option>
@@ -151,7 +154,6 @@ foreach ($arrayFormat as $keyF => $valueF) {
                               			$result = $Link->query($vsql) or die ('Unable to execute query. '. mysqli_error($Link));
                                  			while($row = $result->fetch_assoc()) {
                                     			$aux = $row['mes'];
-                                    			$aux = substr($aux, 13, -2);
                            			?>
                                     <option value="<?php echo $aux; ?>" <?php if (isset($_POST['mesinicial']) && $_POST['mesinicial'] == $aux ) {echo " selected "; } ?>>
                            			<?php
@@ -177,7 +179,7 @@ foreach ($arrayFormat as $keyF => $valueF) {
                         		</select>
                      		</div> <!-- form-group -->
 
-                     		<div class="col-md-3 col-sm-6 form-group">
+                     		<div class="col-md-4 col-sm-12 form-group">
                         		<label for="semana_inicial">Semana Inicial</label>
                         		<select class="form-control" name="semana_inicial" id="semana_inicial" required="required">
                            			<option value="">Seleccione uno</option>
@@ -186,7 +188,7 @@ foreach ($arrayFormat as $keyF => $valueF) {
                         		<input type="hidden" name="diaFinalSemanaInicial" id="diaFinalSemanaInicial">
                      		</div> <!-- form-group -->
 
-                     		<div class="col-md-3 col-sm-6 form-group">
+                     		<div class="col-md-4 col-sm-12 form-group">
                         		<label for="semana_final">Semana Final</label>
                         		<select class="form-control" name="semana_final" id="semana_final" required="required">
                            			<option value="">seleccione</option>
@@ -194,10 +196,8 @@ foreach ($arrayFormat as $keyF => $valueF) {
                         		<input type="hidden" name="diaInicialSemanaFinal" id="diaInicialSemanaFinal">
                         		<input type="hidden" name="diaFinalSemanaFinal" id="diaFinalSemanaFinal">
                      		</div> <!-- form-group -->
-                  		</div> <!-- row -->
 
-                  		<div class="row">
-                     		<div class=" col-md-4 col-sm-6 form-group">
+                     		<div class=" col-md-4 col-sm-12 form-group">
                         		<label for="institucion">Institución</label>
                         		<select class="form-control" name="institucion" id="institucion" >
                            			<option value="">Todas</option>
@@ -228,7 +228,7 @@ foreach ($arrayFormat as $keyF => $valueF) {
                         		</select>
                      		</div>  <!-- form-group -->
 
-                     		<div class="col-md-4 col-sm-6 form-group">
+                     		<div class="col-md-4 col-sm-12 form-group">
                         		<label for="sede">Sede</label>
                         		<select class="form-control" name="sede" id="sede">
                            			<option value="">Todas</option>
@@ -255,7 +255,7 @@ foreach ($arrayFormat as $keyF => $valueF) {
                         		</select>
                      		</div> <!-- form-group -->
 
-                     		<div class="col-md-4 col-sm-6 form-group">
+                     		<div class="col-md-4 col-sm-12 form-group">
                         		<label for="tipo">Tipo Complemento</label>
                         		<select class="form-control" name="tipo" id="tipo" required>
                            			<option value="">Seleccione</option>
@@ -265,12 +265,7 @@ foreach ($arrayFormat as $keyF => $valueF) {
                         		</select>
                      		</div> <!-- form-group -->
 
-							 <div class="col-md-2 col-sm-6 form-group"> 
-                        		<label for="hoja novedades">Páginas de novedades</label>
-                        		<input class="form-control" type="number" name="hojaNovedades" id="hojaNovedades" value="1" step="1" min="0">
-                     		</div>
-
-                     		<div class="col-md-2 col-sm-6 form-group"> 
+                     		<div class="col-md-3 col-sm-12 form-group"> 
                         		<label for="formatoPlanilla">Formato de planilla</label>
                         		<select class="form-control" id="formatoPlanilla" name="formatoPlanilla">
                            			<option value="0" selected>General</option>     
@@ -278,12 +273,17 @@ foreach ($arrayFormat as $keyF => $valueF) {
                         		</select>
                      		</div>
 
-							 <div class="col-md-2 col-sm-6 form-group"> 
+							 <div class="col-md-3 col-sm-12 form-group"> 
                         		<label for="formatoPlanilla">Subtotales</label>
                         		<select class="form-control" id="subtotales" name="subtotales">
                            			<option value="0" selected>No</option>     
                            			<option value="1" >Si</option>     
                         		</select>
+                     		</div>
+
+							 <div class="col-md-2 col-sm-12 form-group"> 
+                        		<label for="hoja novedades">Páginas de novedades</label>
+                        		<input class="form-control" type="number" name="hojaNovedades" id="hojaNovedades" value="1" step="1" min="0">
                      		</div>
                   		</div> <!-- row -->
 
@@ -294,14 +294,16 @@ foreach ($arrayFormat as $keyF => $valueF) {
                   		</div>
 
                   		<div class="row">
-                     		<div class="col-sm-12 form-group">
+                     		<div class="form-group">
                         		<div class="i-checks">
 									<?php 
 										foreach ($format as $keyF => $valueF) {
 									?>	
+										<div class="col-md-2">
 											<label>
                               					<input type="radio" value="<?= $keyF ?>" name="tipoPlanilla" required="required"> <?= $valueF ?>  &nbsp;&nbsp;&nbsp;
                            					</label> 
+										</div>	
 									<?php		
 										}
 									?>
@@ -334,6 +336,8 @@ foreach ($arrayFormat as $keyF => $valueF) {
 <script src="<?= $baseUrl; ?>/theme/js/inspinia.js"></script>
 <script src="<?= $baseUrl; ?>/theme/js/plugins/pace/pace.min.js"></script>
 <script src="<?= $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?= $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
+
 <!-- Page-Level Scripts -->
 <script src="<?= $baseUrl; ?>/modules/impresion_planillas/js/control_asistencia.js"></script>
 

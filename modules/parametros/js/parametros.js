@@ -68,6 +68,7 @@ function guardarParametros(){
     formData.append('sideBar', $('#sideBar').val());
     formData.append('formatoPlanillas', $('#formatoPlanillas').val());
     formData.append('formatos', $('#assistance_format').val());
+    formData.append('inventario', $('#inventario').val());
 
     $.ajax({
       type: "POST",
@@ -86,7 +87,6 @@ function guardarParametros(){
             {
               onHidden : function(){
                 $('#loader').fadeOut();
-                // ruta = $('#inputBaseUrl').val();
                 ruta = "index.php";
                 window.open(ruta, "_self");
               }

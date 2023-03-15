@@ -12,7 +12,7 @@ $ciclo = '';
 $mesAnno = '';
 $sangria = " * ";
 $largoNombre = 30;
-$tamannoFuente = 6;
+$tamannoFuente = 5;
 $totalBeneficiarios = 0;
 $paginasObservaciones = 1;
 
@@ -292,7 +292,7 @@ if ($cantGruposEtarios == 3) {
 									INNER JOIN menu_aportes_calynut m ON p.Codigo = m.cod_prod
 									WHERE p.Codigo = $auxCodigo
 									ORDER BY m.orden_grupo_alim ASC, p.Descripcion DESC ";
-
+			
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 			if($resultado->num_rows >= 1){
 	  			$alimento['cant_total'] = 0;
@@ -1009,6 +1009,7 @@ if ($cantGruposEtarios == 5) {
 		unset($grupo);
 		$sort = array();
 		$grupo = array();
+
 		foreach($alimentos as $kOrden=>$vOrden) {
 			$sort['componente'][$kOrden] = $vOrden['componente'];
 			$sort['grupo_alim'][$kOrden] = $vOrden['orden_grupo_alim']; //Se cambia el orden de acuerdo al orden por grupo de alimento
@@ -1018,7 +1019,7 @@ if ($cantGruposEtarios == 5) {
 		array_multisort($sort['grupo_alim'], SORT_ASC,$alimentos);
 		sort($grupo);
 		/*************************************************************/
-
+		// exit(var_dump($alimentos));
   		$pdf->AddPage();
   		$pdf->SetTextColor(0, 0, 0);
   		$pdf->SetFillColor(255, 255, 255);
@@ -1033,6 +1034,7 @@ if ($cantGruposEtarios == 5) {
 
   		$filas = 0;
   		$grupoAlimActual = '';
+		// exit(var_dump($alimentos));
   		for ($i=0; $i < count($alimentos ) ; $i++) {
 			$pdf->SetFont('Arial', '', $tamannoFuente);
 			$alimento = $alimentos[$i];
@@ -1080,7 +1082,7 @@ if ($cantGruposEtarios == 5) {
 					$filas = array_count_values($grupo)[$grupoAlimActual];
 					// echo $filas;
 					$cantAlimentosGrupo = $filas;
-					
+					// exit(var_dump($alimentos));
 					// Se va a realizar una busqueda por si hay filas adicionales debido a presentaciones.
 					for ($j=$i;$j < $i+$cantAlimentosGrupo; $j++) {
 		  				$aux = $alimentos[$j];
@@ -1170,7 +1172,7 @@ if ($cantGruposEtarios == 5) {
 		  				$aux = 0+$alimento['cant_grupo1'];
 		  				$aux = number_format($aux, 2, '.', '');
 					}
-					if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
+					// if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 					$pdf->Cell(13, 4, utf8_decode($aux), 1, 0, 'C', False);
 
 					// grupo2
@@ -1180,7 +1182,7 @@ if ($cantGruposEtarios == 5) {
 		  				$aux = 0+$alimento['cant_grupo2'];
 		  				$aux = number_format($aux, 2, '.', '');
 					}
-					if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
+					// if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 					$pdf->Cell(13, 4, utf8_decode($aux), 1, 0, 'C', False);
 
 					// grupo3
@@ -1190,7 +1192,7 @@ if ($cantGruposEtarios == 5) {
 		  				$aux = 0 + $alimento['cant_grupo3'];
 		  				$aux = number_format($aux, 2, '.', '');
 					}
-					if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
+					// if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 					$pdf->Cell(13, 4, utf8_decode($aux), 1, 0, 'C', False);
 
 					// grupo4
@@ -1200,7 +1202,7 @@ if ($cantGruposEtarios == 5) {
 		  				$aux = 0 + $alimento['cant_grupo4'];
 		  				$aux = number_format($aux, 2, '.', '');
 					}
-					if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
+					// if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 					$pdf->Cell(13, 4, utf8_decode($aux), 1, 0, 'C', False);
 
 					// grupo5
@@ -1210,7 +1212,7 @@ if ($cantGruposEtarios == 5) {
 		  				$aux = 0 + $alimento['cant_grupo5'];
 		  				$aux = number_format($aux, 2, '.', '');
 					}
-					if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
+					// if($alimento['grupo_alim'] == "Contramuestra"){ $aux = "0"; }
 					$pdf->Cell(13, 4, utf8_decode($aux), 1, 0, 'C', False);
 
 					//UNIDAD DE MEDIDA
@@ -1249,23 +1251,46 @@ if ($cantGruposEtarios == 5) {
 
 					// CANTIDAD ENTREGADA TOTAL
 					if( $alimento['cantu2'] > 0 || $alimento['cantu3'] > 0 || $alimento['cantu4'] > 0 || $alimento['cantu5'] > 0 ){ $aux = ""; }
-					$pdf->Cell(12, 4, $aux, 1, 0, 'C', False);
+
+					if(stristr($alimento['grupo_alim'], 'Contramuestra') !== FALSE){ 
+
+						$pdf->Cell(12, 4, '', 0, 0, 'C', False);
+						//total entregado
+						$pdf->Cell(7.5, 4, '', 0, 0, 'C', False);
+						$pdf->Cell(7.5, 4, '', 0, 0, 'C', False);
+						// ESPECIFICACIÓN DE CALIDAD
+						$pdf->Cell(11, 4, '', 0, 0, 'C', False);
+						$pdf->Cell(11, 4, '', 0, 0, 'C', False);
+						// FALTANTES
+						$pdf->Cell(8, 4, '', 0, 0, 'C', False);
+						$pdf->Cell(8, 4, '', 0, 0, 'C', False);
+						$pdf->Cell(10, 4, '', 0, 0, 'C', False);
+						//DEVOLUCIÓN
+						$pdf->Cell(8, 4, '', 0, 0, 'C', False);
+						$pdf->Cell(8, 4, '', 0, 0, 'C', False);
+						$pdf->Cell(0, 4, '', 0, 0, 'C', False);
+						$pdf->Ln(4);
+					}
+					else{
+						//  ($alimento['grupo_alim'] != 'Contramuestra') {
+						$pdf->Cell(12, 4, $aux, 1, 0, 'C', False);
 		
-					//total entregado
-					$pdf->Cell(7.5, 4, '', 1, 0, 'C', False);
-					$pdf->Cell(7.5, 4, '', 1, 0, 'C', False);
-					// ESPECIFICACIÓN DE CALIDAD
-					$pdf->Cell(11, 4, '', 1, 0, 'C', False);
-					$pdf->Cell(11, 4, '', 1, 0, 'C', False);
-					// FALTANTES
-					$pdf->Cell(8, 4, '', 1, 0, 'C', False);
-					$pdf->Cell(8, 4, '', 1, 0, 'C', False);
-					$pdf->Cell(10, 4, '', 1, 0, 'C', False);
-					//DEVOLUCIÓN
-					$pdf->Cell(8, 4, '', 1, 0, 'C', False);
-					$pdf->Cell(8, 4, '', 1, 0, 'C', False);
-					$pdf->Cell(0, 4, '', 1, 0, 'C', False);
-					$pdf->Ln(4);
+						//total entregado
+						$pdf->Cell(7.5, 4, '', 1, 0, 'C', False);
+						$pdf->Cell(7.5, 4, '', 1, 0, 'C', False);
+						// ESPECIFICACIÓN DE CALIDAD
+						$pdf->Cell(11, 4, '', 1, 0, 'C', False);
+						$pdf->Cell(11, 4, '', 1, 0, 'C', False);
+						// FALTANTES
+						$pdf->Cell(8, 4, '', 1, 0, 'C', False);
+						$pdf->Cell(8, 4, '', 1, 0, 'C', False);
+						$pdf->Cell(10, 4, '', 1, 0, 'C', False);
+						//DEVOLUCIÓN
+						$pdf->Cell(8, 4, '', 1, 0, 'C', False);
+						$pdf->Cell(8, 4, '', 1, 0, 'C', False);
+						$pdf->Cell(0, 4, '', 1, 0, 'C', False);
+						$pdf->Ln(4);
+					}
 				}//Termina el if que validad si hay cantidades en las unidades con el fin de ocultar la fila inicial.
 
 				$pdf->SetFont('Arial','I',$tamannoFuente);

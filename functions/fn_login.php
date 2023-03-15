@@ -52,6 +52,7 @@ if (isset($_SESSION["token_seguridad"]) && $token_seguridad != $_SESSION["token_
         	$_SESSION["p_nombre_representante_legal"] = $row["nombre_representante_legal"];
         	$_SESSION["p_documento_representante_legal"] = $row["documento_representante_legal"];
         	$_SESSION["p_telefono"] = $row["telefono"];
+        	$_SESSION["p_inventory"] = $row["inventory"];
         	//Termina carga de parametros de la aplicación
 
         	$consultaGruposEtarios = " SELECT count(ID) as 'cantidad' FROM grupo_etario "; 

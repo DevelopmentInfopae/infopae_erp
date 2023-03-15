@@ -158,7 +158,7 @@
 
 		        					<div class="form-group col-sm-3">
 			                			<label for="coordinador">Coordinador </label>
-			                			<select class="form-control" name="coordinador" id="coordinador" required>
+			                			<select class="form-control" name="coordinador" id="coordinador" >
 			                				<option value="">Seleccione uno</option>
 			                				<?php
 			                    				$codigoCiudad = $_SESSION['p_CodDepartamento'];

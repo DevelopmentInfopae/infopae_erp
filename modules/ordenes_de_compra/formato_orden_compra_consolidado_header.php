@@ -322,7 +322,7 @@ if ($cantGruposEtarios == '5') {
 	$pdf->SetXY($current_x, $current_y+$alturaComplentos);
 	$pdf->Cell(15, 4.76, utf8_decode('OPERADOR:'), 'TLB', 0, 'L', False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(60, 4.76, utf8_decode( $_SESSION['p_Operador'] ), 'BT', 0, 'L', False);
+	$pdf->Cell(60, 4.76, utf8_decode( substr($_SESSION['p_Operador'], 0, 45) ), 'BT', 0, 'L', False);
 
 	$current_y = $pdf->GetY();
 	$current_x = $pdf->GetX();
@@ -493,11 +493,12 @@ if ($cantGruposEtarios == '5') {
 	$etario_4 = $get[3];
 	$etario_5 = $get[4];
 
-	$etario_1 = str_replace("Grupo ", "", $get[0]);
-	$etario_2 = str_replace("Grupo ", "", $get[1]);
-	$etario_3 = str_replace("Grupo ", "", $get[2]);
-	$etario_4 = str_replace("Grupo ", "", $get[3]);
-	$etario_5 = str_replace("Grupo ", "", $get[4]);
+	$etario_1 = substr($etario_1,0, 15);
+	$etario_2 = substr($etario_2,0, 15);
+	$etario_3 = substr($etario_3,0, 15);
+	$etario_4 = substr($etario_4,0, 15);
+	$etario_5 = substr($etario_5,0, 15);
+
 
 	$pdf->SetFont('Arial', 'B', $tamannoFuente-0.5);
 	$pdf->Cell(13.1, 7, utf8_decode(''), 'TLB', 0, 'C', True);

@@ -623,7 +623,7 @@ if ($cantGruposEtarios == '5') {
 
 	$cget = "SELECT * FROM grupo_etario";
 	$resGrupoEtario = $Link->query($cget);
-	if ($resGrupoEtario->num_rows > 0) { while ($ge = $resGrupoEtario->fetch_assoc()) { $get[] = $ge['DESCRIPCION']; } }
+	if ($resGrupoEtario->num_rows > 0) { while ($ge = $resGrupoEtario->fetch_assoc()) { $get[] = $ge['equivalencia_grado']; } }
 
 	$annoActual = $tablaAnnoCompleto;
 

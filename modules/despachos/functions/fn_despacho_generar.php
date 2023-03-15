@@ -1088,6 +1088,7 @@ foreach ($variaciones as $id => $variacion) {
 		/* Insertando en productosmovdet$annoMes */
 		$consulta = " insert into productosmovdet$annoMes (Documento, Numero, Item, CodigoProducto, Descripcion, Cantidad, BodegaOrigen,BodegaDestino ,Umedida, CantUmedida, Factor, cantu2, cantu3, cantu4, cantu5, cantotalpresentacion ) values ";
 		$banderaPrimero = 0;
+	
 		for ($i=0; $i < count($sedesCobertura) ; $i++) {
 			$auxItem = 1;
 			for ($j=0; $j < count($complementosCantidades) ; $j++){
@@ -1095,6 +1096,7 @@ foreach ($variaciones as $id => $variacion) {
 				$auxConsulta = '';
 				$auxConsulta = $auxConsulta." ( ";
 				$auxAlimento = $complementosCantidades[$j]; 
+				$cantidadGruposCobertura = 0;
 				$sede = $sedesCobertura[$i]; 
 				if ($auxAlimento['variacion_menu'] != $sedes_variaciones[$sede['cod_sede']]) {
 					continue;
@@ -1108,14 +1110,20 @@ foreach ($variaciones as $id => $variacion) {
 					if (isset($auxAlimento[$grupoIndex])) {
 						$t[$m] = $auxAlimento[$grupoIndex] * $sede[$grupoIndex];
 					}
+					if (isset($sede['grupo'.$m]) && $sede['grupo'.$m] > 0) {
+						$cantidadGruposCobertura++;
+					}
 				}
 
 				// Inicio ajuste contramuestra
-				if($auxAlimento["grupo_alim"] == "Contramuestra"){
+				if( stristr($auxAlimento['grupo_alim'], 'Contramuestra') !== FALSE ){
+					// vamos a validar cuantos grupos traen cobertura 
+					$auxContramuestra = 1 / $cantidadGruposCobertura;
 					for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
 						$grupoIndex = "grupo".$m;
-						$t[$m] = 0;
-						$t1 = $t1 + $auxAlimento[$grupoIndex];
+						if (isset($auxAlimento[$grupoIndex])) {
+							$t[$m] = $auxAlimento[$grupoIndex] * $auxContramuestra;
+						}
 					}
 				}
 					
@@ -1235,10 +1243,12 @@ foreach ($variaciones as $id => $variacion) {
 
 		$consulta = " insert into despachos_det$annoMes (tipo_doc, num_doc, cod_alimento, id_grupoetario, cantidad, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22, d23, d24, d25) values ";
 		$banderaPrimero = 0;
+		// exit(var_dump($sedesCobertura));
 		for ($i=0; $i < count($sedesCobertura) ; $i++) {  // ciclo recorrer las sedes
 			$sede = $sedesCobertura[$i];
+			
 			for ($j=0; $j < count($complementosCantidades) ; $j++){  // cilo recorre los alimentos
-
+				$cantidadGruposCobertura =0;
 				// Se toman los datos del alimento en una cadena auxiliar para despues
 				// validar si la cantidad es mayor a cero y agregar a la cadena que va
 				// a hacer la insersión
@@ -1247,63 +1257,64 @@ foreach ($variaciones as $id => $variacion) {
 					continue;
 				}
 				$gruposRegistrar = 0;
-				if($auxAlimento["grupo_alim"] == "Contramuestra"){
-					$cantidadAlimentos = 0;
-					for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
-						$grupoIndex = "grupo".$m;
-						$gruposArray[] = $sede[$grupoIndex];
-						if (isset($auxAlimento[$grupoIndex])) {
-							$cantidadAlimentos = $cantidadAlimentos + $auxAlimento[$grupoIndex];
-						}					
-					}
-					$idGrupoEtario = max($gruposArray); 
-					for ($n=1; $n <=25 ; $n++) { 
-						$d[$n] = 0;
-						for ($m=1; $ $m<= $cantGruposEtarios ; $m++) { 
-							$grupoDiaIndex = "grupo".$m."_d".$n;
-							$d[$n] = $d[$n] + $auxAlimento[$grupoDiaIndex];
+				if(stristr($auxAlimento['grupo_alim'], 'Contramuestra') !== FALSE){
+					for ($k=1; $k <= $cantGruposEtarios ; $k++) { 
+						if (isset($sede['grupo'.$k]) && $sede['grupo'.$k] > 0) {
+							$cantidadGruposCobertura++;
 						}
 					}
-					if($banderaPrimero == 0){
-						$banderaPrimero++;
-					}else{
-						$consulta = $consulta." , ";
+					$auxContramuestra = 1 / $cantidadGruposCobertura;
+					for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
+						$indexGrupo = "grupo".$m; 
+						$auxAlimentoCodicional = $auxAlimento[$indexGrupo];
+						$auxSedeCondicional = $sede[$indexGrupo];
+						if ( $auxAlimentoCodicional > 0   &&  $auxSedeCondicional > 0  ) {
+							if($banderaPrimero == 0){
+								$banderaPrimero++;
+							}else{
+								$consulta = $consulta." , ";
+							}
+							$gruposRegistrar++;
+							$idGrupoEtario = $m; 
+							$consulta = $consulta." ( ";
+							$codigo = $auxAlimento['codigo'];
+							$componente = $auxAlimento['Componente'];							
+							$unidad = $auxAlimento['unidadMedida'];
+							$consecutivo = $consecutivos[$i];
+							for ($n=1; $n <= 25 ; $n++) { 
+								$grupoDiaIndex = "grupo".$m."_d".$n;
+								$d[$n] = $auxAlimento[$grupoDiaIndex] * $auxContramuestra;
+							}
+							$d1 = $d[1];
+							$d2 = $d[2];
+							$d3 = $d[3];
+							$d4 = $d[4];
+							$d5 = $d[5];
+							$d6 = $d[6];
+							$d7 = $d[7];
+							$d8 = $d[8];
+							$d9 = $d[9];
+							$d10 = $d[10];
+							$d11 = $d[11];
+							$d12 = $d[12];
+							$d13 = $d[13];
+							$d14 = $d[14];
+							$d15 = $d[15];
+							$d16 = $d[16];
+							$d17 = $d[17];
+							$d18 = $d[18];
+							$d19 = $d[19];
+							$d20 = $d[20];
+							$d21 = $d[21];
+							$d22 = $d[22];
+							$d23 = $d[23];
+							$d24 = $d[24];
+							$d25 = $d[25];
+							$cantidad = $d1 + $d2 + $d3 + $d4 + $d5 + $d6 + $d7 + $d8 + $d9 + $d10 + $d11 + $d12 + $d13 + $d14 + $d15 + $d16 + $d17 + $d18 + $d19 + $d20 + $d21 + $d22 + $d23 + $d24 +$d25;
+							$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5, $d6, $d7, $d8, $d9, $d10, $d11, $d12, $d13, $d14, $d15, $d16, $d17, $d18, $d19, $d20, $d21, $d22, $d23, $d24, $d25";
+							$consulta = $consulta." ) ";
+						}
 					}
-					$gruposRegistrar++;
-					$consulta = $consulta." ( ";
-					$codigo = $auxAlimento['codigo'];
-					$componente = $auxAlimento['Componente'];
-					$cantidad = $cantidadAlimentos;
-					$unidad = $auxAlimento['unidadMedida'];
-					$consecutivo = $consecutivos[$i];
-					$d1 = $d[1];
-					$d2 = $d[2];
-					$d3 = $d[3];
-					$d4 = $d[4];
-					$d5 = $d[5];
-					$d6 = $d[6];
-					$d7 = $d[7];
-					$d8 = $d[8];
-					$d9 = $d[9];
-					$d10 = $d[10];
-					$d11 = $d[11];
-					$d12 = $d[12];
-					$d13 = $d[13];
-					$d14 = $d[14];
-					$d15 = $d[15];
-					$d16 = $d[16];
-					$d17 = $d[17];
-					$d18 = $d[18];
-					$d19 = $d[19];
-					$d20 = $d[20];
-					$d21 = $d[21];
-					$d22 = $d[22];
-					$d23 = $d[23];
-					$d24 = $d[24];
-					$d25 = $d[25];
-					$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5, $d6, $d7, $d8, $d9, $d10, $d11, $d12, $d13, $d14, $d15, $d16, $d17, $d18, $d19, $d20, $d21, $d22, $d23, $d24, $d25";
-					$consulta = $consulta." ) ";
-
 				}else{ 
 					for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
 						$indexGrupo = "grupo".$m; 

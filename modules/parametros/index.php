@@ -425,6 +425,7 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
               				<select id="formatoPlanillas" name="formatoPlanillas" class="form-control">
                 				<option value="1" <?= ($datos['formatoPlanillas'] == "1") ? 'selected' : '' ?> >Formato 1 (Campo Edad)</option>
                 				<option value="2" <?= ($datos['formatoPlanillas'] == "2") ? 'selected' : '' ?> >Formato 2 (Campo Fecha Nacimiento)</option>
+                				<option value="3" <?= ($datos['formatoPlanillas'] == "3") ? 'selected' : '' ?> >Formato 3 (Campo Fecha Nacimiento)</option>
               				</select>
             			</div> <!-- col -->	
 						<div class="col-lg-6 col-sm-12 col-xs-12 form-group">
@@ -438,34 +439,37 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
   								<option value="6" <?= isset($format['6']) ? 'selected' : '' ?> >Suplentes</option>
   								<option value="7" <?= isset($format['7']) ? 'selected' : '' ?> >Novedades diligenciada</option>
   								<option value="8" <?= isset($format['8']) ? 'selected' : '' ?> >Novedades programadas</option>
+  								<option value="9" <?= isset($format['9']) ? 'selected' : '' ?> >Resumen Asistencia</option>
 							</select>
 						</div>
           			</div><!-- row -->
+					<div class="row">
+						<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+							<label for="inventario"> Inventario por bodega </label>
+							<select name="inventario" id="inventario" class="form-control">
+								<option value="0" <?= ($datos['inventory'] == "0") ? 'selected' : '' ?> > No llevar registro </option>
+								<option value="1" <?= ($datos['inventory'] == "1") ? 'selected' : '' ?>  > Llevar registro por bodega </option>
+								<option value="2" <?= ($datos['inventory'] == "2") ? 'selected' : '' ?>  > LLevar registro por bodega y complemento </option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-8"> </div>
+  						<div class="col-lg-4">
+    						<?php if ($_SESSION['perfil'] == "0" || $permisos['configuracion'] == "2"): ?>
+								<div class="title-action">
+									<a href="#" class="btn btn-primary" id="boton_guardar">
+										<i class="fas fa-check"></i> Guardar
+									</a>
+								</div>
+    						<?php endif ?>
+  						</div>
+					</div>
         		</div> <!-- ibox-content -->
       		</div> <!-- float-e-margins -->      
     	</div> <!-- col-lg-12 -->
   	</div> <!-- row -->
 </div> <!-- fadeInRight -->
-
-<!-- <div class="wrapper wrapper-content animated fadeInRight">
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-content">
-					<div class="row">
-          				<div class="col-12">
-						  	<?php if($_SESSION['perfil'] == "0" || $permisos['configuracion'] == "2"): ?>
-        						<a href="#" class="btn btn-primary" id="boton_guardar">
-          							<i class="fas fa-check"></i> Guardar
-        						</a>
-    						<?php endif ?>
-						</div>	
-  					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>  -->
 
 <?php include '../../footer.php'; ?>
 

@@ -172,16 +172,6 @@ ini_set('memory_limit', '-1');
 			  		exit();
 				}
 
-				// // Valida que el campo etnia no esté vacio ni nulo.
-				// if($datos[16] == "" || is_null($datos[16])){
-				// 	$respuestaAJAX = [
-				// 		"estado" => 0,
-				// 		"mensaje" => "El estudiante con código: ". $datos[1] ." no puede tener el campo <strong>Étnia</strong> vacio o nulo. Por favor verifique el archivo e intente nuevamente."
-				// 	];
-				// 	echo json_encode($respuestaAJAX);
-			  	// 	exit();
-				// }
-
 				// Valida que el campo resguardo no esté vacio ni nulo.
 				if($datos[17] == "" || is_null($datos[17])){
 					$respuestaAJAX = [

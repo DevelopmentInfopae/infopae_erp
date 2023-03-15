@@ -44,6 +44,7 @@ if(isset($_POST['bodegaOrigen']) && $_POST['bodegaOrigen'] != '') { $bodegaOrige
 if(isset($_POST['tipoTransporte']) && $_POST['tipoTransporte'] != '') { $tipoTransporte = $_POST['tipoTransporte']; }
 if(isset($_POST['conductor']) && $_POST['conductor'] != '') { $conductor = $_POST['conductor']; }
 if(isset($_POST['placa']) && $_POST['placa'] != '') { $placa = $_POST['placa']; }
+if(isset($_POST['bodega']) && $_POST['bodega'] != '') { $bodega = $_POST['bodega']; }
 if(isset($_POST['itemsDespacho']) && $_POST['itemsDespacho'] != '') { $sedes = $_POST['itemsDespacho']; $_SESSION['sedes'] = $sedes; }
 if(isset($_POST['itemsDespachoVariaciones']) && $_POST['itemsDespachoVariaciones'] != '') {
 	$sv = $_POST['itemsDespachoVariaciones'];
@@ -55,11 +56,12 @@ if(isset($_POST['itemsDespachoVariaciones']) && $_POST['itemsDespachoVariaciones
 		$sedes_variaciones[$sedesv2[0]] = $sedesv2[1];
 	}
 }
+
 if(isset($_SESSION['usuario']) && $_SESSION['usuario'] != '') { $usuario = $_SESSION['usuario']; }
 if(isset($_SESSION['login']) && $_SESSION['login'] != '') { $login = $_SESSION['login']; }
 if(isset($_SESSION['id_usuario']) && $_SESSION['id_usuario'] != '') { $idUsuario = $_SESSION['id_usuario']; }
-$sedes = $_POST['itemsDespacho'];
 
+$sedes = $_POST['itemsDespacho'];
 // Tipos de despacho, para prevenir que despues de un despacho especifico se haga un despacho general
 $consulta = "SELECT * FROM tipo_despacho ";
 $resultado = $Link->query($consulta) or die ('Error al consultar tipos de despachos: '. mysqli_error($Link));
@@ -1071,6 +1073,7 @@ foreach ($variaciones as $id => $variacion) {
 					}
 				}
 			}
+
 			for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
 				$indexGrupo = "grupo".$m;
 				if ($auxGrupo[$m] == 0) {
@@ -1087,9 +1090,9 @@ foreach ($variaciones as $id => $variacion) {
 			$sede = $sede['cod_sede'];
 
 			$consulta = $consulta." 'OCOS',$consecutivo, $consecutivoGeneral, $documento ,'$fecha',$idUsuario,$sede,'$tipo', $variacion_menu, '$semanaString',$cobertura,2,'', '$diasDespacho', '$menusReg', '$tipoDespacho', $valoresGrupos, '$rutaMunicipio'";
-				$consulta = $consulta." ) ";
+			$consulta = $consulta." ) ";
 		}
-		// exit(var_dump($consulta));
+
 		$resultado = $Link->query($consulta) or die ('Unable to execute query: Insertando datos tabla: orden_compra_enc$annoMes '. mysqli_error($Link));
 
 		/*************************** INSERCIONES DETALLE  ****************************************/
@@ -1162,6 +1165,10 @@ foreach ($variaciones as $id => $variacion) {
 		} // Termina el for de las sedes
 		$resultado = $Link->query($consulta) or die ('Inserción orden_compra_det - Unable to execute query. '. mysqli_error($Link));
 		$despachado = true;
+
+		if ($_SESSION['p_inventory'] != 0) {
+			include 'fn_insert_inventory.php';
+		}
 	}//Termina el if de bandera igual a 0
 }
 

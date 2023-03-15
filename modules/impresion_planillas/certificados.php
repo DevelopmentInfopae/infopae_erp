@@ -1,47 +1,48 @@
 <?php
-  include '../../header.php';
-
-  if ($permisos['entrega_complementos'] == "0") {
-    ?><script type="text/javascript">
-      window.open('<?= $baseUrl ?>', '_self');
+include '../../header.php';
+// validaciones para poder entrar a este modulo 
+if ($permisos['entrega_complementos'] == "0") {
+?>	<script type="text/javascript">
+    	window.open('<?= $baseUrl ?>', '_self');
     </script>
-  <?php exit(); }
-  else {
-    ?><script type="text/javascript">
-      const list = document.querySelector(".li_entrega_complementos");
-      list.className += " active ";
+<?php 
+exit(); }
+else {
+?>	<script type="text/javascript">
+      	const list = document.querySelector(".li_entrega_complementos");
+      	list.className += " active ";
     </script>
-  <?php
-  }
+<?php
+}
 
-  require_once '../../db/conexion.php';
-  set_time_limit (0);
-  ini_set('memory_limit','6000M');
-  $periodoActual = $_SESSION['periodoActual'];
+require_once '../../db/conexion.php'; // establecemos la conexion
+set_time_limit (0); // seteamos el limite de tiempo de ejecucion en todo el recurso
+ini_set('memory_limit','6000M');
+$periodoActual = $_SESSION['periodoActual'];
 
-  $con_cod_muni = "SELECT CodMunicipio FROM parametros;";
-  $res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
-  if ($res_minicipio->num_rows > 0) {
+$con_cod_muni = "SELECT CodMunicipio FROM parametros;";
+$res_minicipio = $Link->query($con_cod_muni) or die(mysqli_error($Link));
+if ($res_minicipio->num_rows > 0) {
     $codigoDANE = $res_minicipio->fetch_array();
-  }
-  $nameLabel = get_titles('entregaComplementos', 'certificadoInstitucion', $labels);
+}
+$nameLabel = get_titles('entregaComplementos', 'certificadoInstitucion', $labels);
 ?>
 
 <!-- setion title -->
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-  <div class="col-lg-8">
-    <h2><?= $nameLabel ?></h2>
-      <ol class="breadcrumb">
-        <li>
-          <a href="<?php echo $baseUrl; ?>">Inicio</a>
-        </li>
-        <li class="active">
-          <strong><?= $nameLabel ?></strong>
-        </li>
-      </ol>
-  </div>
-  <div class="col-lg-4">
-    <div class="title-action">
+  	<div class="col-lg-8">
+    	<h2><?= $nameLabel ?></h2>
+      	<ol class="breadcrumb">
+        	<li>
+          		<a href="<?php echo $baseUrl; ?>">Inicio</a>
+        	</li>
+        	<li class="active">
+          		<strong><?= $nameLabel ?></strong>
+        	</li>
+      	</ol>
+  	</div>
+  	<div class="col-lg-4">
+    	<div class="title-action">
     </div>
   </div>
 </div>

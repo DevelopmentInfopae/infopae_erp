@@ -1358,6 +1358,6 @@ if ($cantGruposEtarios == '5') {
 		include 'despacho_consolidado_header.php';
 	}
 
-	include 'despacho_firma_planilla_consolidado.php';
+	include 'despacho_firma_planilla.php';
 	$pdf->Output();
 }

@@ -46,6 +46,7 @@
 	$sideBar = (isset($_POST['sideBar']) && $_POST['sideBar'] != '') ? mysqli_real_escape_string($Link, $_POST['sideBar']) : "";
 	$formatoPlanillas = (isset($_POST['formatoPlanillas']) && $_POST['formatoPlanillas'] != '') ? mysqli_real_escape_string($Link, $_POST['formatoPlanillas']) : "";
 	$formatos = (isset($_POST['formatos']) && $_POST['formatos'] != '') ? mysqli_real_escape_string($Link, $_POST['formatos']) : "";
+	$inventory = (isset($_POST['inventario']) && $_POST['inventario'] != '') ? mysqli_real_escape_string($Link, $_POST['inventario']) : "";
 
 	$consulta1 = "UPDATE parametros
 				SET
@@ -84,7 +85,8 @@
 					diasAtencion = '$diasAtencion',
 					side_bar = '$sideBar',
 					formatoPlanillas = '$formatoPlanillas',
-					assistance_format = '$formatos'
+					assistance_format = '$formatos',
+					inventory = '$inventory'
 				WHERE id = '$id'";
 	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". $Link->error);
 	if ($resultado1) {
