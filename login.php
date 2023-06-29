@@ -48,7 +48,7 @@
                 <a href="olvido_contrasena.php"><small>Olvidó su contraseña?</small></a>
               </form>
               <div id="debug"></div>
-            <p class="m-t"> <small>&copy; 2020</small> </p>
+            <p class="m-t"> <small>&copy; 2023</small> </p>
         </div>
     </div>
 

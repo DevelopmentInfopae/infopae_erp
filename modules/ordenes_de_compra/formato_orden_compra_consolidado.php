@@ -631,6 +631,16 @@ if ($cantGruposEtarios == '5') {
 	$ordenesCompra = $_POST['ordenesCompra']; 
 	$consulta = "SELECT Num_Doc AS ordenSede FROM orden_compra_enc$mesAnno WHERE Num_OCO IN ($ordenesCompra)";
 
+	$auxObservaciones = '';
+	$proObservaciones = explode(',',$ordenesCompra);
+	if (sizeof($proObservaciones>1)) {
+		$auxObservaciones = 'Las siguientes son las Ordenes de compra relacionadas en el actual formato consolidado:';
+		foreach ($proObservaciones as $keyP => $valueP) {
+			$auxObservaciones .= " OCO-".$valueP.", ";
+		}
+		$auxObservaciones = trim($auxObservaciones,", ");
+	}
+
 	$resultado = $Link->query($consulta);
 	while($row = $resultado->fetch_assoc()){
 		$despachosRecibidos[] = $row['ordenSede'];
@@ -899,7 +909,7 @@ if ($cantGruposEtarios == '5') {
 
 	// Vamos unificar los alimentos para que no se repitan
 	$alimento = $alimentos[0];
-
+	unset($alimento['grupo1']);
 	if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
 	if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
 	if(!isset($alimento['grupo3'])){ $alimento['grupo3'] = 0;}else{ $totalGrupo3 = $totalesSedeCobertura['grupo3']; }
@@ -908,7 +918,7 @@ if ($cantGruposEtarios == '5') {
 	$alimentosTotales = array();
 	$alimentosTotales[] = $alimento;
 	for ($i=1; $i < count($alimentos) ; $i++){
-		$alimento = $alimentos[$i];
+		$alimento = $alimentos[$i]; 
 		if(!isset($alimento['grupo1'])){ $alimento['grupo1'] = 0;}else{ $totalGrupo1 = $totalesSedeCobertura['grupo1']; }
 		if(!isset($alimento['grupo2'])){ $alimento['grupo2'] = 0;}else{ $totalGrupo2 = $totalesSedeCobertura['grupo2']; }
 		if(!isset($alimento['grupo3'])){ $alimento['grupo3'] = 0;}else{ $totalGrupo3 = $totalesSedeCobertura['grupo3']; }
@@ -1064,7 +1074,7 @@ if ($cantGruposEtarios == '5') {
 			$pdf->Cell(49,4,"".utf8_decode($aux),'LB',0,'L',FALSE);
 
 			// impresion grupo1
-			if($alimento['grupo_alim'] == "Contramuestra"){ 
+			if(stristr($alimento['grupo_alim'], 'Contramuestra') !== FALSE){ 
 				$aux = ""; 
 			}else{ 
 				$aux = $alimento['grupo1']; 
@@ -1073,7 +1083,7 @@ if ($cantGruposEtarios == '5') {
 			$pdf->Cell(13.1, 4, utf8_decode($aux), 'LB', 0, 'C', FALSE);	
 
 			// impresion grupo2	
-			if($alimento['grupo_alim'] == "Contramuestra"){ 
+			if(stristr($alimento['grupo_alim'], 'Contramuestra') !== FALSE){ 
 				$aux = ""; 
 			}else{ 
 				$aux = $alimento['grupo2']; 
@@ -1082,7 +1092,7 @@ if ($cantGruposEtarios == '5') {
 			$pdf->Cell(13.1, 4, utf8_decode($aux), 'LB', 0, 'C', FALSE);
 
 			// impresion grupo3		
-			if($alimento['grupo_alim'] == "Contramuestra"){ 
+			if(stristr($alimento['grupo_alim'], 'Contramuestra') !== FALSE){ 
 				$aux = ""; 
 			}else{ 
 				$aux = $alimento['grupo3']; 
@@ -1091,7 +1101,7 @@ if ($cantGruposEtarios == '5') {
 			$pdf->Cell(13.1, 4, utf8_decode($aux), 'LB', 0, 'C', FALSE);
 
 			// impresion grupo4		
-			if($alimento['grupo_alim'] == "Contramuestra"){ 
+			if(stristr($alimento['grupo_alim'], 'Contramuestra') !== FALSE){ 
 				$aux = ""; 
 			}else{ 
 				$aux = $alimento['grupo4']; 
@@ -1100,7 +1110,7 @@ if ($cantGruposEtarios == '5') {
 			$pdf->Cell(13.1, 4, utf8_decode($aux), 'LB', 0, 'C', FALSE);
 
 			// impresion grupo5		
-			if($alimento['grupo_alim'] == "Contramuestra"){ 
+			if(stristr($alimento['grupo_alim'], 'Contramuestra') !== FALSE){ 
 				$aux = ""; 
 			}else{ 
 				$aux = $alimento['grupo5']; 
@@ -1161,7 +1171,7 @@ if ($cantGruposEtarios == '5') {
 			$pdf->Cell(0,4,'','BLR',0,'C',FALSE);
 			$pdf->Ln(4);
 		}	
-		if($indiceLinea >= 53){
+		if($indiceLinea >= 45){
 			$pdf->AddPage();
 			include 'formato_orden_compra_consolidado_header.php';
 			$indiceLinea = 0;

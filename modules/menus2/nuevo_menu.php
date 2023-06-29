@@ -1,48 +1,47 @@
 <?php
-
 require_once '../../header.php';
 $periodoActual = $_SESSION['periodoActual'];
 
 if ($permisos['menus'] == "0") {
-  ?><script type="text/javascript">
-      window.open('<?= $baseUrl ?>', '_self');
-  </script>
+?>	<script type="text/javascript">
+      	window.open('<?= $baseUrl ?>', '_self');
+  	</script>
 <?php exit(); }
 else {
-  ?><script type="text/javascript">
-      const list = document.querySelector(".li_menus");
-      list.className += " active ";
-  </script>
-  <?php
-  }
-$nameLabel = get_titles('menus', 'menus', $labels);
-$titulo = $nameLabel. ' - Nuevo';
+?>	<script type="text/javascript">
+      	const list = document.querySelector(".li_menus");
+      	list.className += " active ";
+    	const list2 = document.querySelector(".li_menus_sub");
+      	list2.className += " active ";
+  	</script>
+<?php
+  	}
+	$nameLabel = get_titles('menus', 'menus', $labels);
+	$titulo = $nameLabel. ' - Nuevo';
 ?>
 
 <?php if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2"): ?>
-
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-  <div class="col-lg-8">
-    <h2><?php echo $titulo; ?></h2>
-    <ol class="breadcrumb">
-      <li>
-        <a href="<?php echo $baseUrl; ?>">Inicio</a>
-      </li>
-      <li>
-        <a href="index.php">Ver <?= $nameLabel ?></a>
-      </li>
-      <li class="active">
-        <strong><?php echo $titulo; ?></strong>
-      </li>
-    </ol>
-  </div><!-- /.col -->
-  <div class="col-lg-4">
-    <div class="title-action">
-      <button class="btn btn-primary" onclick="submitForm('formFichaTecnica');" id="segundoBtnSubmit" style="display: none;"><span class="fa fa-check"></span> Guardar</button>
-    </div><!-- /.title-action -->
-  </div><!-- /.col -->
+  	<div class="col-lg-8">
+    	<h2><?php echo $titulo; ?></h2>
+    	<ol class="breadcrumb">
+      		<li>
+        		<a href="<?php echo $baseUrl; ?>">Inicio</a>
+      		</li>
+      		<li>
+        		<a href="index.php">Ver <?= $nameLabel ?></a>
+      		</li>
+      		<li class="active">
+        		<strong><?php echo $titulo; ?></strong>
+      		</li>
+    	</ol>
+  	</div><!-- /.col -->
+  	<div class="col-lg-4">
+    	<div class="title-action">
+      		<button class="btn btn-primary" onclick="submitForm('formFichaTecnica');" id="segundoBtnSubmit" style="display: none;"><span class="fa fa-check"></span> Guardar</button>
+    	</div><!-- /.title-action -->
+	</div><!-- /.col -->
 </div><!-- /.row -->
-
 
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
@@ -60,13 +59,13 @@ $titulo = $nameLabel. ' - Nuevo';
                 <div class="panel-body">
                   <form class="form" id="formProducto" method="post">
                     <div class="form-group col-sm-3">
-                      <label>Tipo de producto</label>
+                      <label>Tipo de producto*</label>
                       <select class="form-control" name="tipoProducto" id="tipoProducto" required>
                         <option value="01">Menú</option>
                       </select>
                     </div>
                     <div class="form-group col-sm-3" id="divTipoComplemento" style="display: none;">
-                      <label>Tipo de Complemento</label>
+                      <label>Tipo de Complemento*</label>
                       <select class="form-control" name="tipoComplemento" id="tipoComplemento">
                         <option value="">Seleccione...</option>
                         <?php
@@ -83,7 +82,7 @@ $titulo = $nameLabel. ' - Nuevo';
                       </select>
                     </div>
                     <div class="form-group col-sm-3" id="divSubTipoProducto" style="display: none;">
-                      <label>SubTipo de producto</label>
+                      <label>SubTipo de producto*</label>
                       <select class="form-control" name="subtipoProducto" id="subtipoProducto">
                         <option value="">Escoja tipo de producto.</option>
                       </select>
@@ -94,13 +93,13 @@ $titulo = $nameLabel. ' - Nuevo';
                       <em style="color: #cc5965; font-size: 13px; display: none;" id="existeDesc">Un producto con esta descripción ya existe.</em>
                     </div>
                     <div class="form-group col-sm-3" id="divTipoDespacho" style="display: none;">
-                      <label>Tipo de despacho</label>
+                      <label>Tipo de despacho*</label>
                       <select class="form-control" name="tipo_despacho" id="tipoDespacho">
                         <option value="">Seleccione...</option>
                       </select>
                     </div>
                     <div class="form-group col-sm-3" id="divGrupoEtario"  style="display: none;">
-                      <label>Grupo Etario</label>
+                      <label>Grupo*</label>
                       <select class="form-control" name="Cod_Grupo_Etario" id="Cod_Grupo_Etario">
                         <option value="">Seleccione...</option>
                         <?php
@@ -108,14 +107,18 @@ $titulo = $nameLabel. ' - Nuevo';
                         $resultadoGrupoEtario = $Link->query($consultaGrupoEtario);
                         if ($resultadoGrupoEtario->num_rows > 0) {
                           while ($row = $resultadoGrupoEtario->fetch_assoc()) { ?>
-                            <option value="<?php echo $row['ID'] ?>"><?php echo $row['DESCRIPCION'] ?></option>
+						  	<?php if($_SESSION['p_gruposCalculos'] == 1): ?>
+								<option value="<?php echo $row['ID'] ?>"><?php echo $row['DESCRIPCION'] ?></option>
+							<?php else: ?>
+								<option value="<?php echo $row['ID'] ?>"><?php echo $row['equivalencia_grado'] ?></option>
+							<?php endif; ?>
                           <?php }
                         }
                          ?>
                       </select>
                     </div>
                     <div class="form-group col-sm-3" id="divVariacionMenu" style="display: none;">
-                      <label>Variación menú</label>
+                      <label>Variación menú*</label>
                       <select class="form-control" name="variacionMenu" id="variacionMenu">
                         <option value="">Seleccione...</option>
                         <?php

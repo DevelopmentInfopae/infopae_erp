@@ -1,5 +1,5 @@
 <?php
-//require_once '../../../autentication.php';
+	
 require_once '../../../db/conexion.php';
 // 11 Proveedor
 // 12 Empleados

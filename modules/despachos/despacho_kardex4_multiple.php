@@ -41,7 +41,7 @@ $ruta = '';
 
 // if(isset($_POST['rutaNm']) && $_POST['rutaNm']!= ''){ $ruta = $_POST['rutaNm']; }
 
-$corteDeVariables = 16;
+$corteDeVariables = 15;
 if(isset($_POST['seleccionarVarios'])){ $corteDeVariables++; }
 if(isset($_POST['informeRuta'])){ $corteDeVariables++; }
 if(isset($_POST['ruta'])){ $corteDeVariables++; }
@@ -1066,30 +1066,30 @@ if ($cantGruposEtarios == 5) {
          $pdf->MultiCell(42.4, $altura_celda_grupo_alimenticio, "", 1);
       }
 
-      for ($s=1; $s <=3 ; $s++) {
-         $current_y = $pdf->GetY();
-         if($current_y > 204.5) {
-            $filas = 0;
-            $pdf->AddPage();
-            include 'despacho_kardex4_multiple_header.php';
-         }
-         $pdf->Cell(42.4, $altura, "", 1, 0, 'C', False);//GRUPO ALIMENTO
-         $pdf->Cell(45.2, $altura, '', 1, 0, 'C', False);//ALIMENTO
-         $pdf->Cell(13.141, $altura, '', 1, 0, 'C', False);//U MEDIDA
-         $pdf->Cell(17.5, $altura, '', 1, 0, 'C', False);//CANT ENTREGADA
-         $pdf->Cell(16, $altura, '', 1, 0, 'C', False); //EXISTENCIAS
-         $pdf->Cell(22, $altura, '', 1, 0, 'C', False);
-         $pdf->Cell(22, $altura, '', 1, 0, 'C', False);
-         $pdf->Cell(22, $altura, '', 1, 0, 'C', False);
-         $pdf->Cell(22, $altura, '', 1, 0, 'C', False); 
-         $pdf->Cell(22, $altura, '', 1, 0, 'C', False);
-         $pdf->Cell(19.7, $altura, '', 1, 0, 'C', False);
-         $pdf->Ln();
-      }
+      // for ($s=1; $s <=3 ; $s++) {
+      //    $current_y = $pdf->GetY();
+      //    if($current_y > 204.5) {
+      //       $filas = 0;
+      //       $pdf->AddPage();
+      //       include 'despacho_kardex4_multiple_header.php';
+      //    }
+      //    $pdf->Cell(42.4, $altura, "", 1, 0, 'C', False);//GRUPO ALIMENTO
+      //    $pdf->Cell(45.2, $altura, '', 1, 0, 'C', False);//ALIMENTO
+      //    $pdf->Cell(13.141, $altura, '', 1, 0, 'C', False);//U MEDIDA
+      //    $pdf->Cell(17.5, $altura, '', 1, 0, 'C', False);//CANT ENTREGADA
+      //    $pdf->Cell(16, $altura, '', 1, 0, 'C', False); //EXISTENCIAS
+      //    $pdf->Cell(22, $altura, '', 1, 0, 'C', False);
+      //    $pdf->Cell(22, $altura, '', 1, 0, 'C', False);
+      //    $pdf->Cell(22, $altura, '', 1, 0, 'C', False);
+      //    $pdf->Cell(22, $altura, '', 1, 0, 'C', False); 
+      //    $pdf->Cell(22, $altura, '', 1, 0, 'C', False);
+      //    $pdf->Cell(19.7, $altura, '', 1, 0, 'C', False);
+      //    $pdf->Ln();
+      // }
 
-      $pdf->Ln(4);
+      // $pdf->Ln(4);
       $current_y = $pdf->GetY();
-      if($current_y > 171) {
+      if($current_y > 160) {
          $pdf->AddPage();
          include 'despacho_kardex4_multiple_header.php';
          include 'despacho_firma_planilla.php';

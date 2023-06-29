@@ -1,8 +1,27 @@
 <?php
-include '../../header.php';
-include 'functions/fn_fecha_asistencia.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
+  	include '../../header.php';
+	require_once 'functions/fn_fecha_asistencia.php';
+  	set_time_limit (0);
+  	ini_set('memory_limit','6000M');
+  	$periodoActual = $_SESSION['periodoActual'];
+
+  	if ($permisos['asistencia'] == "0") {
+?>		<script type="text/javascript">
+  			window.open('<?= $baseUrl ?>', '_self');
+		</script>
+<?php 
+	exit(); 
+	}
+
+	else {
+?>		<script type="text/javascript">
+      		const list = document.querySelector(".li_asistencia");
+      		list.className += " active ";
+			const list2 = document.querySelector(".li_asistenciaRepitencia");
+      		list2.className += " active ";
+    	</script>
+<?php
+  	}
 
 $periodoActual = $_SESSION["periodoActual"];
 $titulo = "Repitentes";
@@ -13,14 +32,14 @@ $anno = $annoasistencia;
 
 //Busqueda de la semana actual
 $semanaActual = "";
-$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";	
+$consulta = "SELECT semana FROM planilla_semanas WHERE ano = \"$anno\" AND mes = \"$mes\" AND dia = \"$dia\" ";	
 $resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$row = $resultado->fetch_assoc();
 	$semanaActual = $row["semana"];
 }
 
-$consulta = " select distinct semana from planilla_semanas ";
+$consulta = " SELECT DISTINCT semana FROM planilla_semanas ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
@@ -32,7 +51,7 @@ if($resultado->num_rows >= 1){
 		}
 	}
 }		
-$nameLabel = get_titles('asistencia', 'repitentes', $labels);
+$nameLabel = get_titles('asistencia', 'asistenciaRepitencia', $labels);
 $titulo = $nameLabel;
 ?>
 

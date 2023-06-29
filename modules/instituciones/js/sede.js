@@ -266,19 +266,18 @@ function cambiarEstado(){
 }
 
 function verDispositivosSede(control){
-  codigoSede = control.data('codigosede');
   $('#formDispositivosSede #cod_sede').val(codigoSede);
   $('#formDispositivosSede').submit();
 }
 
 function verInfraestructurasSede(control){
   codigoSede = control.data('codigosede');
+  // console.log(codigoSede);
   $('#formInfraestructuraSede #cod_sede').val(codigoSede);
   $('#formInfraestructuraSede').submit();
 }
 
 function verTitularesSede(control){
-  codigoSede = control.data('codigosede');
   $('#formTitularesSede #cod_sede').val(codigoSede);
   $('#formTitularesSede').submit();
 }

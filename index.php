@@ -14,6 +14,7 @@
     </script>
     <?php
     }
+    // exit(var_dump($_SESSION));
 ?>
 
 <div class="wrapper wrapper-content">

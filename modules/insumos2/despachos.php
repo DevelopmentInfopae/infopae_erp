@@ -11,6 +11,8 @@ else {
     ?><script type="text/javascript">
       const list = document.querySelector(".li_despachos");
       list.className += " active ";
+	  const list2 = document.querySelector(".li_insumos");
+      list2.className += " active ";
     </script>
   <?php
   }
@@ -134,7 +136,7 @@ if (isset($_POST['buscar']) && ($_POST['buscar'] != "")) {
 				$inners 		
 				WHERE 1 = 1	
 				$condiciones 
-				ORDER BY ubi.Ciudad, sed.nom_inst, sed.cod_sede
+				
 				";
 }
 // exit(var_dump($consulta));
@@ -387,7 +389,7 @@ $nameLabel = get_titles('despachos', 'insumos', $labels);
 			"searchable": false
 			}
 		],
-		// order: [[ 3, 'asc'], [ 4, 'asc' ], [7, 'asc']],
+		order: [[ 3, 'asc'], [ 4, 'asc' ], [7, 'asc']],
 		pageLength: 25,
 		lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "TODO"] ],
 		responsive: true,

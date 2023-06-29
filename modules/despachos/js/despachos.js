@@ -1,5 +1,8 @@
 $(document).ready(function(){
+	// $('select').select2();
 	$('.select2').select2({ width: "resolve" });
+	$('.i_checks').iCheck({     checkboxClass: 'icheckbox_square',
+    radioClass: "iradio_square-green" });
 	var municipioRector = $('#municipio').val();
 	if (municipioRector != "" && municipioRector != "0") {
 		var tipo = $('#tipoRacion').val();
@@ -31,8 +34,10 @@ $(document).ready(function(){
 	var cantidadDetallados = 0;
 	var mes = $('#mesi').val(); 
 	var mesText = $("#mesi option[value='"+mes+"']").text()
-	$('#mesfText').val(mesText);
+
 	$('#mesf').val(mes);
+	$('#mesfText').select2('val', mes); 
+	$('#mesfText').select2("enable", false);
 	// console.log($('#mesf').val())
 	$('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green' });
 	$(document).on('ifChecked', '#seleccionarVarios', function () {
@@ -85,7 +90,7 @@ $(document).ready(function(){
 		pageLength: 25,
 		lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "TODO"]],
 		responsive: true,
-		aoColumnDefs: [{ "bVisible": false, "aTargets": [9] }],
+		// aoColumnDefs: [{ "bVisible": false, "aTargets": [9] }],
 		oLanguage: {
 			sLengthMenu: 'Mostrando _MENU_ registros por página',
 			sZeroRecords: 'No se encontraron registros',
@@ -494,7 +499,7 @@ function covid19_despachos_consolidado(){
 	if(bandera == 0){
 		var rutaSeleccionada = $('#ruta option:selected').text();
 		$('#rutaNm').val(rutaSeleccionada);
-		$('#formDespachos').attr('action', 'covid19_despacho_consolidado.php');
+		$('#formDespachos').attr('action', 'canasta_despacho_consolidado.php');
 		$('#formDespachos').attr('method', 'post');
 		$('#formDespachos').submit();
 		$('#formDespachos').attr('method', 'get');
@@ -623,6 +628,46 @@ function despachos_por_sede_vertical(){
 				if(tipo == ''){
 					tipo = $(this).attr('complemento');
 				}
+			}
+		}
+	});
+	if(cant == 0){
+		Command: toastr.warning('Debe seleccionar al menos un despacho para continuar', 'Advertencia');
+		bandera++;
+	}
+	if(bandera == 0){
+		$('#formDespachos').attr('action', 'despacho_por_sede_vertical.php');
+		$('#formDespachos').attr('method', 'post');
+		$('#formDespachos').submit();
+		$('#formDespachos').attr('method', 'get');
+	}
+}
+
+// despachos por sede kardex multiple vertical
+function despachos_kardex_multiple_vertical(){
+	var cant = 0;
+	var despacho = 0;
+	var semana = 0;
+	var tipo = '';
+	var bandera = 0;
+	$("tbody input:checked").each(function(){
+		if(bandera == 0){
+			cant++;
+			if(bandera == 0){
+				if(semana == 0){
+					semana = $(this).attr('semana');
+				}
+				else{
+					if(semana != $(this).attr('semana')){
+						bandera++;
+						Command: toastr.warning('Los despachos seleccionados deben ser de la misma <strong>semana</strong>', 'Advertencia');
+					}
+				}
+			}
+			if(bandera == 0){
+				if(tipo == ''){
+					tipo = $(this).attr('complemento');
+				}
 				else{
 					if(tipo != $(this).attr('complemento')){
 						bandera++;
@@ -637,7 +682,7 @@ function despachos_por_sede_vertical(){
 		bandera++;
 	}
 	if(bandera == 0){
-		$('#formDespachos').attr('action', 'despacho_por_sede_vertical.php');
+		$('#formDespachos').attr('action', 'despacho_kardex_multiple_vertical.php');
 		$('#formDespachos').attr('method', 'post');
 		$('#formDespachos').submit();
 		$('#formDespachos').attr('method', 'get');
@@ -770,6 +815,8 @@ function despachos_por_sede_xlsx(){
 }
 
 /************************************** FORMATOS EN EXCEL *********************************************/
+
+
 function editar_despacho(){
 	var cant = 0;
 	var despacho = 0;
@@ -815,46 +862,106 @@ function eliminar_despacho(){
 		// console.log(despacho)
 		if(bandera == 0){
 			cant++;
-			estado_actual = $(this).attr('estado');
-			if(2 != estado_actual){
-				bandera++;
-				Command: toastr.warning('Solo se pueden eliminar despachos en estado <strong>Pendiente.</strong>', 'Advertencia');
-			}else {
-				despachosSeleccionados += "'" + despacho + "',";
-			}
+			despachosSeleccionados += "'" + despacho + "',";
 		}
+		annoEliminar = $('#annoi').val();
+		mesEliminar = $('#mesi').val();
+		Num_Doc = despachosSeleccionados;
 	}); // Termina de revisar cada uno de los elementos que se encuentren checkeados.
 	if(cant == 0){
 		Command: toastr.warning('Debe seleccionar al menos un despacho para eliminar', 'Advertencia');
 		bandera++;
 	}
-	if(bandera == 0){
-		var r = confirm("Confirma que desea eliminar este registro.");
-		if (r == true) {
-			// Se va agregar el año y el mes para hacer la eliminación en la tabla correspondiente
-			var annoi = $('#annoi').val();
-			var mesi = $('#mesi').val();
-			var datos = { "despachos" : despachosSeleccionados, "annoi" : annoi, "mesi" : mesi };
-			$.ajax({
-				type: "POST",
-				url: "functions/fn_despacho_eliminar.php",
-				data: datos,
-				beforeSend: function(){
-					$('#loader').fadeIn();
-				},
-				success: function(data){
-					$('#debug').html(data);
-					if(data == 1){
-						Command: toastr.success('Se ha eliminado con éxito el despacho.', 'Éxito')
-						location.reload();
-					}
-				}
-			})
-			.done(function(){ })
-			.fail(function(){ })
-			.always(function(){
-				$('#loader').fadeOut();
-			});
-		}
-	}// Termina el if si la bandera esta en cero
+	$('#mes_eliminar').val(mesEliminar);
+	$('#num_Doc_eliminar').val(Num_Doc);
+	$('#anno_eliminar').val(annoEliminar);
+	$('#ventanaConfirmar').modal();
 }// Termina la función para eliminar despachos.
+
+function deleteRemision() {
+	// Se va agregar el año y el mes para hacer la eliminación en la tabla correspondiente
+	var annoi = $('#anno_eliminar').val();
+	var mesi = $('#mes_eliminar').val();
+	var numDoc = $('#num_Doc_eliminar').val()
+	var datos = { "despachos" : numDoc, "annoi" : annoi, "mesi" : mesi };
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_despacho_eliminar.php",
+		data: datos,
+		beforeSend: function(){
+			$('#loader').fadeIn();
+		},
+		success: function(data){
+			$('#debug').html(data);
+			if(data == 1){
+				Command: toastr.success('Se ha eliminado con éxito el despacho.',
+										'Exito',{onHidden : function(){ location.reload(); }});
+			}
+		}
+	})
+	.done(function(){ })
+	.fail(function(){ })
+	.always(function(){
+		$('#loader').fadeOut();
+	});
+}
+
+
+/********** MANEJO DE INVENTARIOS ************/
+function enviar_despacho(){
+	var cant = 0;
+	var bandera = 0;
+	$("tbody input:checked").each(function(){
+		estado_actual = $(this).attr('estado');
+		if(bandera == 0){
+			cant++;
+			if(estado_actual == 1){
+				bandera++;
+				Command: toastr.warning('El despacho seleccionado esta <strong> Enviado.</strong>', 'Advertencia');
+			}
+			if(cant > 1){
+				Command: toastr.warning('Debe seleccionar solo un despacho para <strong> Enviar. </strong>', 'Advertencia');
+				bandera++;
+			}
+			despacho = $(this).val();
+			complemento = $(this).attr('complemento');
+			nom_sede = $(this).attr('nom_sede');
+		}
+	}); // Termina de revisar cada uno de los elementos que se encuentren checkeados.
+	if(cant == 0){
+		Command: toastr.warning('Debe seleccionar al menos un despacho para <strong> Enviar.</strong>', 'Advertencia');
+		bandera++;
+	}
+	if(bandera == 0){
+		var annoi = $('#annoi').val();
+		var mesi = $('#mesi').val();
+		var datos = { "despacho" : despacho, "annoi" : annoi, "mesi" : mesi, "complemento" : complemento, "nom_sede" : nom_sede };
+		$.ajax({
+			type: "POST",
+			url: "functions/fn_despacho_enviar.php",
+			data: datos,
+			beforeSend: function(){
+				$('#loader').fadeIn();
+			},
+			success: function(data){
+				$('#debug').html(data);
+				if(data == 1){
+					Command: toastr.success(
+						'Se ha enviado con éxito.',
+						"Éxito", { onHidden : function(){ location.reload(); } }
+					);		
+				}else{
+					Command: toastr.error(
+						'Existe un error, comuniquese con el administrador del sistema',
+						"Error", { onHidden : function(){ location.reload(); } }
+					);	
+				}
+			}
+		})
+		.done(function(){ })
+		.fail(function(){ })
+		.always(function(){
+			$('#loader').fadeOut();
+		});
+	}
+}

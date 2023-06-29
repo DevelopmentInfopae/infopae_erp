@@ -67,7 +67,7 @@
                                                 $href = '#';
                                             }
                                             echo "  <button onclick=location.href='$href' value='$href' data-baseurl='$baseUrl'  type='button' class='btn btn-primary btn-outline btn-block button_index'>
-                                                        <i class = '$icon fa-lg'></i> 
+                                                        <i class = '$icon fa-xl'></i> 
                                                         <span>&nbsp $label</span>    
                                                     </button>";
                                         echo "</div>";
@@ -95,12 +95,8 @@
                             <div class='col-md-3 col-sm-6'>
                                 <button onclick="window.open('<?= $urlWebSite?>', '_blank');"   
                                         type='button' class='btn btn-primary btn-outline btn-block button_index'>
-                                        <!-- <i class="fas fa-external-link"></i> -->
-                                        <!-- <i class="fa-solid fa-up-right-from-square"></i> -->
-                                        <!-- <i class="fa fa-external-link"></i> -->
-                                        <!-- <i class="fa fa-external-link-square"></i> -->
                                         <i class="fa fa-location-arrow fa-lg" ></i>  
-                                        <span> &nbsp Ver Página Web</span>    
+                                        <span> &nbsp <b>Ver Página Web</b></span>    
                                 </button>
                             </div>
                         </div>

@@ -9,11 +9,13 @@
 	}
 	else {
 		?><script type="text/javascript">
-		  const list = document.querySelector(".li_despachos");
-		  list.className += " active ";
+		  	const list = document.querySelector(".li_despachos");
+		  	list.className += " active ";
+		  	const list2 = document.querySelector(".li_despacho_alimentos");
+		  	list2.className += " active ";
 		</script>
-	  <?php
-	  }
+	<?php
+}
 
   	include '../../db/conexion.php';
   	set_time_limit (0);
@@ -212,7 +214,7 @@
 							<div class="row">
               				<div class="col-sm-3 form-group">
                 				<button type="button" id="btnAgregar" class="botonParametro btn btn-primary">+</button>
-                				<button type="button" id="btnQuitar" class="botonParametro btn btn-primary">-</button>
+                				<button type="button" id="btnQuitar" class="botonParametro btn btn-danger">-</button>
               				</div><!-- /.col -->
             			</div><!-- -/.row -->
             			<hr>

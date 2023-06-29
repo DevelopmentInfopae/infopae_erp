@@ -16,17 +16,23 @@
     $institucion = $_POST['institucion'];
   }
 
+  if(isset($_POST['mes'])){
+    $mes = $_POST['mes'];
+  }
+
 
   $Link = new mysqli($Hostname, $Username, $Password, $Database);
   if ($Link->connect_errno) {
     echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
   }
   $Link->set_charset("utf8");
+  $entregas = " entregas_res_$mes$periodoActual ";
 
-  $consulta = " select distinct s.cod_sede, s.nom_sede
-  from sedes$periodoActual s
-  left join sedes_cobertura sc on s.cod_sede = sc.cod_sede
-  where 1=1 ";
+  $consulta = " SELECT DISTINCT s.cod_sede, s.nom_sede
+                    FROM sedes$periodoActual s
+                    LEFT JOIN sedes_cobertura sc on s.cod_sede = sc.cod_sede
+                    INNER JOIN $entregas enc ON s.cod_sede = enc.cod_sede
+                    where 1=1 ";
 
 
   if($municipio != ''){
@@ -38,7 +44,7 @@
     $consulta = $consulta."  and s.cod_inst = '$institucion' ";
   }
 
-
+// exit(var_dump($consulta));
   if ($_SESSION['perfil'] == "7" && $_SESSION['num_doc'] != '') {
     $codigoSedes = "";
     $documentoCoordinador = $_SESSION['num_doc'];

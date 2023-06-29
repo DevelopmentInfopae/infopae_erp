@@ -8,6 +8,16 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
     window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+	  else {
+      ?><script type="text/javascript">
+        const list = document.querySelector(".li_configuracion");
+        list.className += " active ";
+        const list2 = document.querySelector(".li_configuracionInsumos");
+        list2.className += " active ";
+      </script>
+      <?php
+      }
+
 
 $periodoActual = $_SESSION['periodoActual'];
 

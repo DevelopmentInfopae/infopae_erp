@@ -12,6 +12,8 @@ else {
 ?>  <script type="text/javascript">
 		const list = document.querySelector(".li_informes");
 		list.className += " active ";
+		const list2 = document.querySelector(".li_informeManipuladorasSede");
+		list2.className += " active ";
 	</script>
 <?php
 }

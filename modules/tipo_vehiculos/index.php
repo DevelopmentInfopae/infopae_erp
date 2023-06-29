@@ -11,6 +11,8 @@ else {
   ?><script type="text/javascript">
     const list = document.querySelector(".li_configuracion");
     list.className += " active ";
+    const list2 = document.querySelector(".li_tipoVehiculos");
+    list2.className += " active ";
   </script>
   <?php
   }

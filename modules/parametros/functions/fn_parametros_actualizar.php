@@ -47,6 +47,21 @@
 	$formatoPlanillas = (isset($_POST['formatoPlanillas']) && $_POST['formatoPlanillas'] != '') ? mysqli_real_escape_string($Link, $_POST['formatoPlanillas']) : "";
 	$formatos = (isset($_POST['formatos']) && $_POST['formatos'] != '') ? mysqli_real_escape_string($Link, $_POST['formatos']) : "";
 	$inventory = (isset($_POST['inventario']) && $_POST['inventario'] != '') ? mysqli_real_escape_string($Link, $_POST['inventario']) : "";
+	$redondeo_compra = (isset($_POST['redondeo_compra']) && $_POST['redondeo_compra'] != '') ? mysqli_real_escape_string($Link, $_POST['redondeo_compra']) : "";
+	$tipo_redondeo_compra = (isset($_POST['tipo_redondeo_compra']) && $_POST['tipo_redondeo_compra'] != '') ? mysqli_real_escape_string($Link, $_POST['tipo_redondeo_compra']) : "";
+	$rango_redondeo_compra = (isset($_POST['rango_redondeo_compra']) && $_POST['rango_redondeo_compra'] != '') ? mysqli_real_escape_string($Link, $_POST['rango_redondeo_compra']) : "";
+	$redondeo_remision = (isset($_POST['redondeo_remision']) && $_POST['redondeo_remision'] != '') ? mysqli_real_escape_string($Link, $_POST['redondeo_remision']) : "";
+	$remision_format = (isset($_POST['remision_format']) && $_POST['remision_format'] != '') ? mysqli_real_escape_string($Link, $_POST['remision_format']) : "";
+	$tipo_redondeo_remision = (isset($_POST['tipo_redondeo_remision']) && $_POST['tipo_redondeo_remision'] != '') ? mysqli_real_escape_string($Link, $_POST['tipo_redondeo_remision']) : "";
+	$rango_redondeo_remision = (isset($_POST['rango_redondeo_remision']) && $_POST['rango_redondeo_remision'] != '') ? mysqli_real_escape_string($Link, $_POST['rango_redondeo_remision']) : "";
+	
+	$mision = (isset($_POST['mision']) && $_POST['mision'] != '') ? mysqli_real_escape_string($Link, $_POST['mision']) : "";
+	$vision = (isset($_POST['vision']) && $_POST['vision'] != '') ? mysqli_real_escape_string($Link, $_POST['vision']) : "";
+	$objetivos = (isset($_POST['objetivos']) && $_POST['objetivos'] != '') ? mysqli_real_escape_string($Link, $_POST['objetivos']) : "";
+	$valores_corporativos = (isset($_POST['valores_corporativos']) && $_POST['valores_corporativos'] != '') ? mysqli_real_escape_string($Link, $_POST['valores_corporativos']) : "";
+	$experiencia = (isset($_POST['experiencia']) && $_POST['experiencia'] != '') ? mysqli_real_escape_string($Link, $_POST['experiencia']) : "";
+	$gruposCalculos = (isset($_POST['gruposCalculos']) && $_POST['gruposCalculos'] != '') ? mysqli_real_escape_string($Link, $_POST['gruposCalculos']) : "";
+
 
 	$consulta1 = "UPDATE parametros
 				SET
@@ -86,10 +101,31 @@
 					side_bar = '$sideBar',
 					formatoPlanillas = '$formatoPlanillas',
 					assistance_format = '$formatos',
-					inventory = '$inventory'
+					inventory = '$inventory',
+					redondeo_compra = '$redondeo_compra',
+					tipo_redondeo_compra = '$tipo_redondeo_compra',
+					rango_redondeo_compra = '$rango_redondeo_compra',
+					redondeo_remision = '$redondeo_remision',
+					tipo_redondeo_remision = '$tipo_redondeo_remision',
+					rango_redondeo_remision = '$rango_redondeo_remision',
+					mision = '$mision',
+					vision = '$vision',
+					objetivos = '$objetivos',
+					valores_corporativos = '$valores_corporativos',
+					experiencia = '$experiencia',
+					gruposCalculos = '$gruposCalculos'
 				WHERE id = '$id'";
 	$resultado1 = $Link->query($consulta1) or die ("Unable to execute query.". $Link->error);
 	if ($resultado1) {
+		if ($remision_format != '') {
+			$actualizacionFormatos = " UPDATE remission_format SET format_status = 0 ";
+			$resultadoFormatos = $Link->query($actualizacionFormatos) or die ('Error actualizando los formatos');
+			$actualizacionFormatos = " UPDATE remission_format SET format_status = 1 WHERE id  IN ($remision_format) ";
+			$resultadoFormatos = $Link->query($actualizacionFormatos) or die ('Error actualizando los formatos');
+		}if ($remision_format == '') {
+			$Link->query(" UPDATE remission_format SET format_status = 0");
+		}
+		
 		if (isset($_FILES["LogoETC"])) {
 			$logo_etc = subir_imagen($_FILES["LogoETC"], "logo_etc", $id, $Link);
 			if ($logo_etc->estado == 0) {
@@ -97,7 +133,7 @@
 				exit();
 			}
 		}
-
+	
 		if (isset($_FILES["LogoOperador"])) {
 			$logo_etc = subir_imagen($_FILES["LogoOperador"], "logo_operador", $id, $Link);
 			if ($logo_etc->estado == 0) {
@@ -105,7 +141,7 @@
 				exit();
 			}
 		}
-
+	
 		if (isset($_FILES["logo_header"])) {
 			$logo_etc = subir_imagen($_FILES["logo_header"], "logo_header", $id, $Link);
 			if ($logo_etc->estado == 0) {
@@ -113,7 +149,7 @@
 				exit();
 			}
 		}
-
+	
 		if (isset($_FILES["logo_footer"])) {
 			$logo_etc = subir_imagen($_FILES["logo_footer"], "logo_footer", $id, $Link);
 			if ($logo_etc->estado == 0) {
@@ -121,15 +157,24 @@
 				exit();
 			}
 		}
-
+	
+		/*//// reasignamos a la session  ////*/
+		$_SESSION["p_inventory"] = $inventory;
+		$_SESSION["p_redondeo_compra"] = $redondeo_compra;
+		$_SESSION["p_tipo_redondeo_compra"] = $tipo_redondeo_compra;
+		$_SESSION["p_rango_redondeo_compra"] = $rango_redondeo_compra;
+		$_SESSION["p_redondeo_remision"] = $redondeo_remision;
+		$_SESSION["p_tipo_redondeo_remision"] = $tipo_redondeo_remision;
+		$_SESSION["p_rango_redondeo_remision"] = $rango_redondeo_remision;
+		$_SESSION['p_gruposCalculos'] = $gruposCalculos;
+	
 		$consultaBitacora = "INSERT INTO bitacora (fecha, usuario, tipo_accion, observacion) VALUES ('". date("Y-m-d H-i-s") ."', '". $_SESSION['idUsuario'] ."', '24', 'Actualizó los parámetros iniciales del sistema')";
 		$Link->query($consultaBitacora) or die ('Unable to execute query. '. mysqli_error($Link));
-
+	
 		$respuesta = array(
 			"estado" => 1,
 			"mensaje" => "Parámetros actualizados correctamente."
 		);
-
 	} else {
 		$result = array(
 			"estado" => 0,

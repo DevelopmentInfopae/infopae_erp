@@ -2,16 +2,19 @@
 	include '../../header.php';
 	if ($permisos['novedades'] == "0") {
 ?>		<script type="text/javascript">
-      	window.open('<?= $baseUrl ?>', '_self');
+      		window.open('<?= $baseUrl ?>', '_self');
     	</script>
-<?php exit();}
+<?php exit();
+	}
 	else {
-			?><script type="text/javascript">
+?>		<script type="text/javascript">
 			  const list = document.querySelector(".li_novedades");
 			  list.className += " active ";
-			</script>
-		  <?php
-		  }
+			  const list2 = document.querySelector(".li_menu");
+			  list2.className += " active ";
+		</script>
+<?php
+	}
 
 	$titulo = 'Usuarios';
 	$periodoActual = $_SESSION['periodoActual'];
@@ -25,18 +28,18 @@
 	}
 
 	$nomMeses = [
-      "01" => "Enero",
-      "02" => "Febrero",
-      "03" => "Marzo",
-      "04" => "Abril",
-      "05" => "Mayo",
-      "06" => "Junio",
-      "07" => "Julio",
-      "08" => "Agosto",
-      "09" => "Septiembre",
-      "10" => "Octobre",
-      "11" => "Noviembre",
-      "12" => "Diciembre"
+      	"01" => "Enero",
+      	"02" => "Febrero",
+      	"03" => "Marzo",
+      	"04" => "Abril",
+      	"05" => "Mayo",
+      	"06" => "Junio",
+      	"07" => "Julio",
+      	"08" => "Agosto",
+      	"09" => "Septiembre",
+      	"10" => "Octobre",
+      	"11" => "Noviembre",
+      	"12" => "Diciembre"
 	];
 
 	$consultaComplementos = "SELECT CODIGO, ID FROM tipo_complemento ORDER BY CODIGO ";
@@ -104,7 +107,7 @@
 						<div class="col-sm-12">
 							<form action="#" id="formNovedadesMenu" name="formNovedadesMenu" method="post">
 								<div class="row">
-									<div class="col-sm-6 col-md-2 form-group">
+									<div class="col-sm-6 col-md-3 form-group">
 										<label for="mes">Mes</label>
 										<select class="form-control" id="mes" name="mes">
 											<option value="">Seleccione Uno</option>
@@ -116,14 +119,14 @@
 										</select>
 									</div>
 									
-									<div class="col-sm-6 col-md-2 form-group">
+									<div class="col-sm-6 col-md-3 form-group">
 										<label for="semana">Semana</label>
 										<select class="form-control" id="semana" name="semana">
 											<option value="">Seleccione Uno</option>
 										</select>
 									</div>
 
-									<div class="col-sm-6 col-md-2 form-group">
+									<div class="col-sm-6 col-md-3 form-group">
 										<label for="estado">Estado</label>
 										<select class="form-control" id="estado" name="estado">
 											<option value="1" selected >Activo</option>
@@ -264,6 +267,7 @@
 		<script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
 		<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
 		<script src="<?php echo $baseUrl; ?>/theme/js/plugins/toggle/toggle.min.js"></script>
+		<script src="<?= $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 		<script src="<?php echo $baseUrl; ?>/modules/intercambios/js/novedades_menu.js"></script>
 
 		<form action="novedades_menu_ver.php" method="post" name="formVerNovedad" id="formVerNovedad" target="_blank" >

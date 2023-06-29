@@ -38,6 +38,8 @@ function doLogin() {
                         window.location = "index.php";
                     }else if (dash == 2){
                         window.location = "index_funcional.php";
+                    }else if (dash == 3){
+                        window.location = "index_calendar.php";
                     }
                     
                 } else if (i==6){

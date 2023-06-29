@@ -1,6 +1,6 @@
 <?php
 
-$pdf->SetXY(3,192);
+$pdf->SetXY(3,191.5);
 $pdf->SetTextColor(0,0,0);
 
 if ($tipoPlanilla == 5 || $tipoPlanilla == 6 /*|| $tipoPlanilla == 7 || $tipoPlanilla == 8*/) {
@@ -9,7 +9,7 @@ if ($tipoPlanilla == 5 || $tipoPlanilla == 6 /*|| $tipoPlanilla == 7 || $tipoPla
 	// $pdf->SetXY($x, $y);
 }
 
-$pdf->Cell(0,5,'Observaciones:','TB',5,'L',False);
+$pdf->Cell(0,5,'Observaciones:','1',5,'L',False);
 $pdf->SetFont('Arial','B',6);
 
 /*********************************************************/

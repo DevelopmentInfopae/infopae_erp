@@ -11,6 +11,10 @@ else {
     ?><script type="text/javascript">
       const list = document.querySelector(".li_entrega_complementos");
       list.className += " active ";
+	  const list2 = document.querySelector(".li_controlAsistencia");
+      list2.className += " active ";
+	  const list3 = document.querySelector(".li_controlAsistencia_submenu");
+      list3.className += " active ";
     </script>
   <?php
   }
@@ -283,7 +287,7 @@ foreach ($arrayFormat as $keyF => $valueF) {
 
 							 <div class="col-md-2 col-sm-12 form-group"> 
                         		<label for="hoja novedades">Páginas de novedades</label>
-                        		<input class="form-control" type="number" name="hojaNovedades" id="hojaNovedades" value="1" step="1" min="0">
+                        		<input class="form-control" type="number" name="hojaNovedades" id="hojaNovedades" value="0" step="1" min="0">
                      		</div>
                   		</div> <!-- row -->
 

@@ -7,13 +7,15 @@
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   <?php exit(); }
-  else {
-    ?><script type="text/javascript">
-      const list = document.querySelector(".li_despachos");
-      list.className += " active ";
-    </script>
-  <?php
-  }
+else {
+  ?><script type="text/javascript">
+    const list = document.querySelector(".li_despachos");
+    list.className += " active ";
+    const list2 = document.querySelector(".li_editar");
+    list2.className += " active ";
+  </script>
+<?php
+}
 
   $titulo = "Editar despachos";
   $fecha_despacho = "";

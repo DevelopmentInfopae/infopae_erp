@@ -53,6 +53,13 @@ if (isset($_SESSION["token_seguridad"]) && $token_seguridad != $_SESSION["token_
         	$_SESSION["p_documento_representante_legal"] = $row["documento_representante_legal"];
         	$_SESSION["p_telefono"] = $row["telefono"];
         	$_SESSION["p_inventory"] = $row["inventory"];
+        	$_SESSION["p_redondeo_compra"] = $row["redondeo_compra"];
+        	$_SESSION["p_tipo_redondeo_compra"] = $row["tipo_redondeo_compra"];
+        	$_SESSION["p_rango_redondeo_compra"] = $row["rango_redondeo_compra"];
+        	$_SESSION["p_redondeo_remision"] = $row["redondeo_remision"];
+        	$_SESSION["p_tipo_redondeo_remision"] = $row["tipo_redondeo_remision"];
+        	$_SESSION["p_rango_redondeo_remision"] = $row["rango_redondeo_remision"];
+        	$_SESSION["p_gruposCalculos"] = $row["gruposCalculos"];
         	//Termina carga de parametros de la aplicación
 
         	$consultaGruposEtarios = " SELECT count(ID) as 'cantidad' FROM grupo_etario "; 

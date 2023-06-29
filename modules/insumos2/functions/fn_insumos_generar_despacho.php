@@ -84,7 +84,7 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 										FROM sedes_cobertura 
 										WHERE cod_sede = '".$sede."' GROUP BY mes ORDER BY SEMANA DESC";
 	}
-
+	// exit(var_dump($consultaCupos));
 	$resultadoCupos = $Link->query($consultaCupos); 
 	if ($resultadoCupos->num_rows > 0) {
 		while ($cps = $resultadoCupos->fetch_assoc()) {
@@ -99,21 +99,31 @@ function obtenerCoberturas ($sede, $Link, $mes, $complemento) {
 	}
 
 	if (isset($cupos[$mes])) {
-		if ($complemento == 'APS') {
-			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_APS'];
-		} else if ($complemento == 'CAJMRI') {
-			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJMRI'];
-		} else if ($complemento == 'CAJTRI') {
-			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJTRI'];
-		} else if ($complemento == 'CAJMPS') {
-			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJMPS'];
-		} else if ($complemento == 'CAJTPS') {
-			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJTPS'];
-		} else if ($complemento == 'RPC') {
-			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_RPC'];
-		} else if ($complemento == 'ALL') {
-			$coberturas['Cobertura'] = $cupos[$mes]['Cobertura'];
+		// if ($complemento == 'APS') {
+		// 	$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_APS'];
+		// } else if ($complemento == 'CAJMRI') {
+		// 	$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJMRI'];
+		// } else if ($complemento == 'CAJTRI') {
+		// 	$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJTRI'];
+		// } else if ($complemento == 'CAJMPS') {
+		// 	$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJMPS'];
+		// } else if ($complemento == 'CAJTPS') {
+		// 	$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_CAJTPS'];
+		// } else if ($complemento == 'RPC') {
+		// 	$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_RPC'];
+		// } else if ($complemento == 'ALL') {
+		// 	$coberturas['Cobertura'] = $cupos[$mes]['Cobertura'];
+		// }
+
+		foreach ($complementos as $key => $value) {
+			if ($complemento == $value) {
+				$coberturas['Cobertura'] = $cupos[$mes]['Cobertura_'.$value];
+			}
+			if ($complemento == 'ALL') {
+				$coberturas['Cobertura'] = $cupos[$mes]['Cobertura'];
+			}
 		}
+
 		for ($i=1; $i<=$cantGruposEtarios; $i++) { 
 			$coberturas['Cobertura_G'.$i] =  $cupos[$mes]['Cobertura_G'.$i];
 		}
@@ -298,21 +308,34 @@ function calcularCantidad ($cins, $sede, $Link, $mes, $complemento) {
 		$cantidad = ceil($coberturas['Cobertura'] / $cantCuposCalcular) * $cantxMes;
 		// exit(var_dump($cantidad));
 	} else if ($conteoIns == "02") {
-		if ($complemento == 'APS') {
-			$select = 'Manipuladora_APS';
-		} else if ($complemento == 'CAJMRI') {
-				$select = 'Manipuladora_CAJMRI';
-		} else if ($complemento == 'CAJTRI') {
-				$select = 'Manipuladora_CAJTRI';
-		} else if ($complemento == 'CAJMPS') {
-				$select = 'Manipuladora_CAJMPS';
-		}else if ($complemento == 'CAJTPS') {
-				$select = 'Manipuladora_CAJTPS';
-		}else if ($complemento == 'RPC') {
-				$select = 'Manipuladora_RPC';
-		}else if ($complemento == 'ALL') {
-				$select = 'cantidad_Manipuladora';
+
+		$sentComp = $Link->query(" SELECT CODIGO FROM tipo_complemento ORDER BY CODIGO ");
+		if ($sentComp->num_rows > 0) {
+			while ($dataComplementos2 = $sentComp->fetch_object()) {
+				if ($complemento == $dataComplementos2->CODIGO) {
+					$select = " Manipuladora_$dataComplementos2->CODIGO ";
+				}
+				if ($complemento == 'ALL') {
+					$select = 'cantidad_Manipuladora';
+				}
+			}
 		}
+
+		// if ($complemento == 'APS') {
+		// 	$select = 'Manipuladora_APS';
+		// } else if ($complemento == 'CAJMRI') {
+		// 		$select = 'Manipuladora_CAJMRI';
+		// } else if ($complemento == 'CAJTRI') {
+		// 		$select = 'Manipuladora_CAJTRI';
+		// } else if ($complemento == 'CAJMPS') {
+		// 		$select = 'Manipuladora_CAJMPS';
+		// }else if ($complemento == 'CAJTPS') {
+		// 		$select = 'Manipuladora_CAJTPS';
+		// }else if ($complemento == 'RPC') {
+		// 		$select = 'Manipuladora_RPC';
+		// }else if ($complemento == 'ALL') {
+		// 		$select = 'cantidad_Manipuladora';
+		// }
 		$consultaManipuladores = "SELECT ".$select." AS manipuladores FROM sedes".$_SESSION['periodoActual']." WHERE cod_sede = '".$sede."'";
 		$resultadoManipuladores = $Link->query($consultaManipuladores);
 		if ($resultadoManipuladores->num_rows > 0) {
@@ -582,7 +605,7 @@ $insertinsumosmov = "INSERT INTO $insumosmov (	Documento,
 $numDoc = obtenerNumDoc($insumosmov, $Link);
 foreach ($sedes as $key => $sede) {
 	$manipuladoras = obtenerManipuladoras($sede, $complemento, $Link);
-	$coberturas_sedes = obtenerCoberturas($sede, $Link, $mes, $complemento);
+	$coberturas_sedes = obtenerCoberturas($sede, $Link, $mes, $complemento); 
 	$nomTipoMov = obtenerNomTipoMov($tipo_despacho, $Link);
 	$nombre_proveedor = obterNomProveedor($tipo_despacho, $proveedor, $Link);
 	$sedesNumDoc[$sede] = $numDoc;

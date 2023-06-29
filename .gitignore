@@ -4,6 +4,7 @@ config.php
 functions/*.txt
 db/conexion.php
 
+
 .DS_Store
 
 upload/logotipos/logo_alianza.jpeg

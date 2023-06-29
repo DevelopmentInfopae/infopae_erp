@@ -3,43 +3,58 @@ $titulo = 'Ver';
 require_once '../../header.php';
 
 if ($permisos['menus'] == "0") {
-  ?><script type="text/javascript">
-      window.open('<?= $baseUrl ?>', '_self');
-  </script>
-<?php exit(); }
-else {
-  ?><script type="text/javascript">
-      const list = document.querySelector(".li_menus");
-      list.className += " active ";
-  </script>
-  <?php
-  }
+?>  <script type="text/javascript">
+        window.open('<?= $baseUrl ?>', '_self');
+    </script>
+<?php 
+    exit(); 
+}else {
+    ?><script type="text/javascript">
+        const list = document.querySelector(".li_menus");
+        list.className += " active ";
+    </script>
+    <?php
+}
 
 $periodoActual = $_SESSION['periodoActual'];
 
 $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Libra', 'g' => 'Gramos'), 'cc' => array('u' => 'Unidad', 'lt' => 'Litro', 'cc' => 'Centímetros cúbicos'), 'u' => array('u' => 'Unidad'));
 
 if (isset($_REQUEST['idProducto'])) {
-  $idProducto = $_REQUEST['idProducto'];
-  $consultaDatosProducto = "select * from productos".$_SESSION['periodoActual']." where Id = ".$idProducto." AND nivel = 3";
-  $resultadoDatosProducto = $Link->query($consultaDatosProducto) or die('Unable to execute query. '. mysqli_error($Link));
-  if ($resultadoDatosProducto->num_rows > 0) {
-    $Producto = $resultadoDatosProducto->fetch_assoc();
-
-    if (substr($Producto['Codigo'], 0, 2) == "01") {
-          $link = "index.php";
-          $title = "Menú";
-          $breadCumb = "menús";
-        } else if (substr($Producto['Codigo'], 0, 2) == "02") {
-          $link = "ver_preparaciones.php";
-          $title = "Preparación";
-          $breadCumb = "preparaciones";
-        } else if (substr($Producto['Codigo'], 0, 2) == "03" || substr($Producto['Codigo'], 0, 2) == "04") {
-          $link = "ver_alimentos.php";
-          $title = "Alimento";
-          $breadCumb = "alimentos";
+    $idProducto = $_REQUEST['idProducto'];
+    $consultaDatosProducto = "select * from productos".$_SESSION['periodoActual']." where Id = ".$idProducto." AND nivel = 3";
+    $resultadoDatosProducto = $Link->query($consultaDatosProducto) or die('Unable to execute query. '. mysqli_error($Link));
+    if ($resultadoDatosProducto->num_rows > 0) {
+        $Producto = $resultadoDatosProducto->fetch_assoc();
+        if (substr($Producto['Codigo'], 0, 2) == "01") {
+            $link = "index.php";
+            $title = "Menú";
+            $breadCumb = "menús";
+    ?>      <script type="text/javascript">
+                const list2 = document.querySelector(".li_menus");
+                list2.className += " active ";
+            </script> 
+    <?php
+        }else if (substr($Producto['Codigo'], 0, 2) == "02") {
+            $link = "ver_preparaciones.php";
+            $title = "Preparación";
+            $breadCumb = "preparaciones";
+    ?>      <script type="text/javascript">
+                const list2 = document.querySelector(".li_preparaciones");
+                list2.className += " active ";
+            </script> 
+    <?php
+        }else if (substr($Producto['Codigo'], 0, 2) == "03" || substr($Producto['Codigo'], 0, 2) == "04") {
+            $link = "ver_alimentos.php";
+            $title = "Alimento";
+            $breadCumb = "alimentos";
+    ?>      <script type="text/javascript">
+                const list2 = document.querySelector(".li_alimentos");
+                list2.className += " active ";
+            </script> 
+    <?php
         }
-  ?>
+    ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
     <h2><?php echo $Producto['Codigo']." ".$title." ".$Producto['Descripcion']; ?></h2>
@@ -129,13 +144,18 @@ if (isset($_REQUEST['idProducto'])) {
               <?php endif ?>
               <?php if ($Producto['Cod_Grupo_Etario'] != 0): ?>
               <div class="form-group col-sm-3" id="divGrupoEtario"  >
-                <label>Grupo Etario</label>
+                <label>Grupo</label>
                   <?php
                   $consultaGrupoEtario = "select * from grupo_etario where ID = ".$Producto['Cod_Grupo_Etario'];
                   $resultadoGrupoEtario = $Link->query($consultaGrupoEtario);
                   if ($resultadoGrupoEtario->num_rows > 0) {
                     if ($row = $resultadoGrupoEtario->fetch_assoc()) {
-                      $grupoEtario = $row['DESCRIPCION'];
+                      if ($_SESSION['p_gruposCalculos'] == 1) {
+                        $grupoEtario = $row['DESCRIPCION'];
+                      }if ($_SESSION['p_gruposCalculos'] == 2) {
+                        $grupoEtario = $row['equivalencia_grado'];
+
+                      }
                     }
                   }
                    ?>

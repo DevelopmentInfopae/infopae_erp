@@ -8,6 +8,15 @@ if ($permisos['menus'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+  ?><script type="text/javascript">
+      const list = document.querySelector(".li_menus");
+      list.className += " active ";
+    const list2 = document.querySelector(".li_aportesCaloricos");
+      list2.className += " active ";
+  </script>
+  <?php
+  }
 
 if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<script>location.href='$baseUrl';</script>"; } 
 
@@ -45,7 +54,7 @@ if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<sc
         <div class="ibox-content contentBackground">
           <form class="form row" id="formValRef">
             <div class="form-group col-sm-3">
-              <label>Tipo de complemento</label>
+              <label>Tipo de complemento*</label>
               <select class="form-control" name="complemento" id="complemento" required>
                 <option value="">Seleccione...</option>
                 <?php 
@@ -60,7 +69,7 @@ if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<sc
               </select>
             </div>
             <div class="form-group col-sm-3">
-              <label>Grupo etario</label>
+              <label>Grupo*</label>
               <select class="form-control" name="grupoEtario" id="grupoEtario" required>
                 <option value="">Seleccione...</option>
                 <?php 
@@ -68,7 +77,11 @@ if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<sc
                 $resGrupoEtario = $Link->query($consGrupoEtario);
                 if ($resGrupoEtario->num_rows > 0) {
                   while ($grupoEtario = $resGrupoEtario->fetch_assoc()) { ?>
-                    <option value="<?php echo $grupoEtario['ID'] ?>"><?php echo $grupoEtario['DESCRIPCION'] ?></option>
+                    <?php if($_SESSION['p_gruposCalculos'] == 1): ?>
+                      <option value="<?php echo $grupoEtario['ID'] ?>"><?php echo $grupoEtario['DESCRIPCION'] ?></option>
+                    <?php else: ?>
+                      <option value="<?php echo $grupoEtario['ID'] ?>"><?php echo $grupoEtario['equivalencia_grado'] ?></option>
+                    <?php endif; ?>
                   <?php }
                 }
                  ?>

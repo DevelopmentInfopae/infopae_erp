@@ -21,6 +21,7 @@ $(document).ready(function(){
 	   months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
 	   monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
 	};
+	$('#loaderAjax').fadeOut();
 
   	$('[data-toggle="tooltip"]').tooltip();
 
@@ -43,6 +44,7 @@ $(document).ready(function(){
 	$('.selectFechaDe').select2();
 	$('.selectMesInicio').select2();
 	$('.selectDiaInicio').select2();
+	$('.mesFin').select2();
 	$('.selectDiaFin').select2();
 	$('.selectMunicipio').select2();
 	$('.selectTipoDocumento').select2();
@@ -98,22 +100,23 @@ $(document).ready(function(){
 			type: "POST",
 			url: "functions/fn_trazabilidad_obtener_semanas.php",
 			data: { 'mes' : mesPost , 'semanaCache' : semanaCache },
-			beforeSend: function(){  },
+			beforeSend: function(){ $('#loaderAjax').fadeIn() },
 			success: function(data){
 		   	$('#semana_exportar').html(data);
 		   	$.ajax({
 		   		type : 'POST',
 		   		url: "functions/fn_trazabilidad_obtener_semanas_final.php",
 		   		data: { 'mes' : mesPost , 'semanaCache' : semanaCache, 'semanaCacheFinal' : semanaCacheFinal },
-		   		beforeSend: function(){ },
+		   		beforeSend: function(){ $('#loaderAjax').fadeIn() },
 					success: function(data){
 						$('#semana_exportar_final').html(data);
 						$('.selectSemanaExportarFinal').select2();
+						$('#loaderAjax').fadeOut();
 					}
 		   	})
 		   	$('.selectSemanaExportar').select2();
 			}
-		}).always();
+		}).always($('#loaderAjax').fadeOut());
 	}
 
 	$( "#mes_exportar" ).change(function() {
@@ -134,7 +137,7 @@ $(document).ready(function(){
 				type: "POST",
 				url: "functions/fn_trazabilidad_obtener_semanas.php",
 				data: { 'mes' : mesPost },
-				beforeSend: function(){ },
+				beforeSend: function(){ $('#loaderAjax').fadeIn() },
 				success: function(data){
 		   		$('#semana_exportar').html(data);
 		   		$.ajax({
@@ -147,7 +150,7 @@ $(document).ready(function(){
 						}
 		   		})
 				}
-			}).always();
+			}).always($('#loaderAjax').fadeOut());
 		}
 	});
 
@@ -164,7 +167,7 @@ $(document).ready(function(){
 			type: "POST",
 			url: "functions/fn_trazabilidad_obtener_semanas.php",
 			data: { 'mes' : mesPost , 'semanaCache' : semanaCache},
-			beforeSend: function(){  },
+			beforeSend: function(){ $('#loaderAjax').fadeIn() },
 			success: function(data){
 		   	$('#semana_exportar').html(data);
 		   	$.ajax({
@@ -177,7 +180,7 @@ $(document).ready(function(){
 					}
 		   	})
 			}
-		}).always();
+		}).always($('#loaderAjax').fadeOut());
 	});
 
 	if(sessionStorage.getItem("semana_exportar_final_trazabilidad") != null){
@@ -195,7 +198,7 @@ $(document).ready(function(){
 		$( "#fecha_de" ).select2('val', sessionStorage.getItem("fecha_de_trazabilidad"));
 		fechaDe(sessionStorage.getItem('fecha_de_trazabilidad'));
 	}
-	$( "#fecha_de" ).change(function() {
+	$( "#fecha_de" ).change(function() { 
 		sessionStorage.setItem("fecha_de_trazabilidad", $("#fecha_de").val());
 		fechaDe(sessionStorage.getItem('fecha_de_trazabilidad'));
 	});
@@ -203,14 +206,17 @@ $(document).ready(function(){
 
 	if(sessionStorage.getItem("mes_inicio_trazabilidad") != null){
 		$("#mes_inicio").select2('val', sessionStorage.getItem("mes_inicio_trazabilidad"));
-		$('#mes_fin').val($('#mes_inicio').val());
+		$('#mes_fin').select2('val', $('#mes_inicio').val());
+		$('#mes_fin').select2("enable", false);
 	}
 	$( "#mes_inicio" ).change(function() {
 		sessionStorage.setItem("mes_inicio_trazabilidad", $("#mes_inicio").val());
+		var mes = $('#mes_inicio').val(); 
+		$('#mes_fin').select2('val', mes); 
+		$('#mes_fin').select2("enable", false);
 		$('#mes_fin').val(sessionStorage.getItem("mes_inicio_trazabilidad"));
-		$('#nomMesFin').val($('#mes_inicio option:selected').text());
 	});
-	$('#nomMesFin').val($('#mes_inicio option:selected').text());
+
 
 	if(sessionStorage.getItem("dia_inicio_trazabilidad") != null){
 		$("#dia_inicio").select2('val', sessionStorage.getItem("dia_inicio_trazabilidad"));
@@ -285,12 +291,12 @@ $(document).ready(function(){
 	   	type: "POST",
 	   	url: "functions/fn_trazabilidad_obtener_responsables.php",
 	   	data: { "tipo_documento" : tdoc , "proveedorActual" : prov },
-	   	beforeSend: function(){  },
+	   	beforeSend: function(){ $('#loaderAjax').fadeIn() },
 	   	success: function(data){
 	     		$('#proveedor').html(data);
 	     		$('.selectProveedor').select2();
 	   	}
-	 	}).always();
+	 	}).always($('#loaderAjax').fadeOut());
 	}
 	$( "#tipo_documento" ).change(function() {
 		sessionStorage.setItem("tipo_documento_trazabilidad", $("#tipo_documento").val());
@@ -300,11 +306,11 @@ $(document).ready(function(){
 	   	type: "POST",
 	   	url: "functions/fn_trazabilidad_obtener_responsables.php",
 	   	data: { "tipo_documento" : tdoc },
-	   	beforeSend: function(){  },
+	   	beforeSend: function(){ $('#loaderAjax').fadeIn() },
 	   	success: function(data){
 	     		$('#proveedor').html(data);
 	   	}
-	 	}).always();
+	 	}).always($('#loaderAjax').fadeOut());
 	});
 
 
@@ -396,9 +402,15 @@ function fechaDe(num){
 		$('#fechaElaboracion').css('display', '');
 		$('#fechaDiasDespachos').css('display', 'none');
 		$('#tipo_filtro').select2('val', '');
+		$('#divsubFiltro').css('display', 'none');
 	} else if (num==2) {
 		$('#fechaElaboracion').css('display', 'none');
 		$('#fechaDiasDespachos').css('display', '');
+		$('#divsubFiltro').css('display', '');
+	} else if(num==3){
+		$('#fechaElaboracion').css('display', 'none');
+		$('#fechaDiasDespachos').css('display', '');
+		$('#divsubFiltro').css('display', '');
 	}
 }
 
@@ -430,76 +442,76 @@ function tipo_filtro() {
 	$('#divFechaVencimiento').css('display', 'none');
 		
 	if (filtro == "1") {
-		fechaDe(2);
-		$('#fecha_de').select2('val', '2');
+		fechaDe(sessionStorage.getItem('fecha_de_trazabilidad'));
+		$('#fecha_de').select2('val', sessionStorage.getItem('fecha_de_trazabilidad'));
 		var bodegaCache = sessionStorage.getItem('bodegas_trazabilidad');
 		$.ajax({
 		   type: "POST",
 		   url: "functions/fn_trazabilidad_obtener_bodegas.php",
 		   data: {"municipio" : $('#municipio').val(), 'bodegaCache' : bodegaCache},
-		   beforeSend: function(){  },
+		   beforeSend: function(){ $('#loaderAjax').fadeIn() },
 		   success: function(data){
 		   	$('#bodegas').select2('destroy');
 		     	$('#bodegas').html(data);
 		     	$('#bodegas').select2();
 		   }
-		}).always();
+		}).always($('#loaderAjax').fadeOut());
 		$('#divBodegas').css('display', '');
 	} 
 	else if (filtro == "2") {
-		fechaDe(2);
-		$('#fecha_de').select2('val', '2');
+		fechaDe(sessionStorage.getItem('fecha_de_trazabilidad'));
+		$('#fecha_de').select2('val', sessionStorage.getItem('fecha_de_trazabilidad'));
 		var coductorCache = sessionStorage.getItem('conductor_trazabilidad');
 		$.ajax({
 		   type: "POST",
 		   url: "functions/fn_trazabilidad_obtener_conductores.php",
 		   data : {"mestabla" : mesinicio, 'coductorCache' : coductorCache},
-		   beforeSend: function(){  },
+		   beforeSend: function(){ $('#loaderAjax').fadeIn() },
 		   success: function(data){
 		   	$('#conductor').select2('destroy');
 		      $('#conductor').html(data);
 		      $('#conductor').select2();
 		   }
-		}).always();
+		}).always( $('#loaderAjax').fadeOut());
 		$('#divConductores').css('display', '');
 	} 
 	else if (filtro == "3") {
-		fechaDe(2);
-		$('#fecha_de').select2('val', '2');
+		fechaDe(sessionStorage.getItem('fecha_de_trazabilidad'));
+		$('#fecha_de').select2('val', sessionStorage.getItem('fecha_de_trazabilidad'));
 		productoCache = sessionStorage.getItem('producto_trazabilidad');
 		$.ajax({
 		   type: "POST",
 		   url: "functions/fn_trazabilidad_obtener_productos.php",
 		   data : {"mestabla" : mesinicio, 'productoCache' : productoCache },
-		   beforeSend: function(){  },
+		   beforeSend: function(){ $('#loaderAjax').fadeIn() },
 		   success: function(data){
 		   	$('#producto').select2('destroy');
 		     	$('#producto').html(data);
 		     	$('#producto').select2();
 		   }
-		}).always();
+		}).always($('#loaderAjax').fadeOut());
 		$('#divProductos').css('display', '');
 	} 
 	else if (filtro == "4") {
-		fechaDe(2);
-		$('#fecha_de').select2('val', '2');
+		fechaDe(sessionStorage.getItem('fecha_de_trazabilidad'));
+		$('#fecha_de').select2('val', sessionStorage.getItem('fecha_de_trazabilidad'));
 		grupoEtarioCache = sessionStorage.getItem('grupoEtario_trazabilidad');
 		$.ajax({
 		   type: "POST",
 		   url: "functions/fn_trazabilidad_obtener_grupo_etarios.php",
 		   data : {"grupoEtarioCache" : grupoEtarioCache },
-		   beforeSend: function(){  },
+		   beforeSend: function(){ $('#loaderAjax').fadeIn() },
 		   success: function(data){
 		   	$('#grupo_etario').select2('destroy');
 		      $('#grupo_etario').html(data);
 		      $('#grupo_etario').select2();
 		   }
-		}).always();
+		}).always($('#loaderAjax').fadeOut());
 		$('#divGrupoEtario').css('display', '');
 	} 
 	else if (filtro == "5") {
-		fechaDe(2);
-		$('#fecha_de').select2('val', '2');
+		fechaDe(sessionStorage.getItem('fecha_de_trazabilidad'));
+		$('#fecha_de').select2('val', sessionStorage.getItem('fecha_de_trazabilidad'));
 		$('#divTipoComplemento').css('display', '');
 	} 
 	setTimeout(function() {			

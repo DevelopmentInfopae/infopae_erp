@@ -11,6 +11,8 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
 		?><script type="text/javascript">
 		  const list = document.querySelector(".li_configuracion");
 		  list.className += " active ";
+		  const list2 = document.querySelector(".li_parametros");
+		  list2.className += " active ";
 		</script>
 	  <?php
 	  }
@@ -30,6 +32,14 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
 	}
 	$nameLabel = get_titles('configuracion', 'parametros', $labels);
 	$titulo = $nameLabel;
+
+	$consultaFormatosRemisiones = " SELECT id, name, format_status FROM remission_format ";
+	$respuestaFormatosRemisiones = $Link->query($consultaFormatosRemisiones);
+	if ($respuestaFormatosRemisiones->num_rows > 0) {
+		while ($dataFormatosRemisiones = $respuestaFormatosRemisiones->fetch_assoc()) {
+			$remission_format[] = $dataFormatosRemisiones;
+		}
+	}
 ?>
 
 <style type="text/css">
@@ -65,12 +75,11 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
   	<div class="row">
     	<div class="col-lg-12">
       		<div class="ibox float-e-margins">
-        		<div class="ibox-title">
-          			<h3>Información Operador</h3>
-        		</div><!--  ibox-title -->
-        		<div class="ibox-content contentBackground">
-          			<form id="formParametros" action="" method="post">
-
+			  	<form id="formParametros" action="" method="post">
+					<div class="ibox-title">
+						<h3>Información Operador</h3>
+					</div><!--  ibox-title -->
+					<div class="ibox-content contentBackground">
             			<div class="row">
               				<div class="col-sm-4">
                 				<div class="form-group col-xs-12">
@@ -274,198 +283,306 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
                     					</div>
                   					</div>
                 				</div> <!-- row -->
-                
+							</div> 
+							<div class="col-sm-12">					
 								<div class="row">
-                  					<div class="col-sm-12">
+                  					<div class="col-sm-6">
                     					<div class="form-group">
                       						<label for="">Integrantes Unión Temporal</label>
-                      						<textarea class="form-control" name="integrantes_union_temporal" id="integrantes_union_temporal"><?php if (isset($datos['integrantes_union_temporal']) && $datos['integrantes_union_temporal'] != '') { echo $datos['integrantes_union_temporal']; } ?></textarea>
+                      						<textarea cols="40" rows="5" style="resize: both;" class="form-control" name="integrantes_union_temporal" id="integrantes_union_temporal"><?php if (isset($datos['integrantes_union_temporal']) && $datos['integrantes_union_temporal'] != '') { echo $datos['integrantes_union_temporal']; } ?></textarea>
+                    					</div>
+                  					</div>
+									<div class="col-sm-6">
+                    					<div class="form-group">
+                      						<label for="mision">Misión</label>
+                      						<textarea cols="40" rows="5" style="resize: both;" class="form-control" name="mision" id="mision"><?php if (isset($datos['mision']) && $datos['mision'] != '') { echo $datos['mision']; } ?></textarea>
+                    					</div>
+                  					</div>
+									<div class="col-sm-6">
+                    					<div class="form-group">
+                      						<label for="vision">Visión</label>
+                      						<textarea cols="40" rows="5" style="resize: both;" class="form-control" name="vision" id="vision"><?php if (isset($datos['vision']) && $datos['vision'] != '') { echo $datos['vision']; } ?></textarea>
+                    					</div>
+                  					</div>
+									<div class="col-sm-6">
+                    					<div class="form-group">
+                      						<label for="objetivos">Objetivos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique con un * cada objetivo "></i></label>
+                      						<textarea cols="40" rows="5" style="resize: both;" class="form-control" name="objetivos" id="objetivos"><?php if (isset($datos['objetivos']) && $datos['objetivos'] != '') { echo $datos['objetivos']; } ?></textarea>
+                    					</div>
+                  					</div>
+									<div class="col-sm-6">
+                    					<div class="form-group">
+                      						<label for="valores_corporativos">Valores Corporativos</label>
+                      						<textarea cols="40" rows="5" style="resize: both;" class="form-control" name="valores_corporativos" id="valores_corporativos"><?php if (isset($datos['valores_corporativos']) && $datos['valores_corporativos'] != '') { echo $datos['valores_corporativos']; } ?></textarea>
+                    					</div>
+                  					</div>
+									<div class="col-sm-6">
+                    					<div class="form-group">
+                      						<label for="experiencia">Experiencia en contratos anteriores</label>
+                      						<textarea cols="40" rows="5" style="resize: both;" class="form-control" name="experiencia" id="experiencia"><?php if (isset($datos['experiencia']) && $datos['experiencia'] != '') { echo $datos['experiencia']; } ?></textarea>
                     					</div>
                   					</div>
                 				</div> <!-- row -->
               				</div> <!-- col-sm-8 -->
-            			</div> <!-- row -->
-          			</form>
-        		</div> <!-- ibox-content -->
-      		</div> <!-- ibox float-e-margins -->
-    	</div> <!-- col-lg-12 -->
-  	</div> <!-- row -->
-</div> <!-- wrapper -->
+            			</div> <!-- row -->	
+        			</div> <!-- ibox-content -->
+					<br>							
 
-
-<div class="wrapper wrapper-content animated fadeInRight">
-  	<div class="row">
-    	<div class="col-lg-12">
-      		<div class="ibox float-e-margins">
-        		<div class="ibox-title">
-          			<h3>Configuración website</h3>
-        		</div>
-        		<div class="ibox-content">
-          			<div class="row">
-            			<div class="col-sm-3">
-              				<div class="form-group">
-              					<label for="color_primario">Color Primario</label>
-                				<input type="color" style="width: 100%" name="color_primario" id="color_primario" value="<?= $datos['color_primario']; ?>"/>
-              				</div>
-            			</div>
-            			<div class="col-sm-3">
-              				<div class="form-group">
-              					<label for="color_secundario">Color Secundario</label>
-                				<input type="color" style="width: 100%" name="color_secundario" id="color_secundario" value="<?= $datos['color_secundario']; ?>"/>
-              				</div>
-            			</div>
-            			<div class="col-sm-3">
-              				<div class="form-group">
-              					<label for="color_secundario">Color Texto</label>
-                				<input type="color" style="width: 100%" name="color_texto" id="color_texto" value="<?= $datos['color_texto']; ?>"/>
-              				</div>
-            			</div>
-            			<div class="col-sm-3">
-              				<div class="form-group">
-                				<label>Mostrar botón Enviar Archivos</label><br>
-                				<label>
-                  					<input type="radio" name="mostrar_boton_enviar_archivos" value="1" <?= $datos['mostrar_boton_enviar_archivos'] == 1 ? 'checked="checked"' : '' ?>> Si
-                				</label>
-                				&nbsp;&nbsp;&nbsp;&nbsp;
-                				<label>
-                  					<input type="radio" name="mostrar_boton_enviar_archivos" value="0" <?= $datos['mostrar_boton_enviar_archivos'] == 0 ? 'checked="checked"' : '' ?>> No
-                				</label>
-              				</div>
-            			</div>
-          			</div> <!-- row -->
-
-          			<div class="row">
-            			<div class="col-sm-12">
-              				<label for="">Configuración Menú</label>
-              				<div class="form-group">
-                				<div class="checkbox-inline">
-                    				<input type="checkbox" name="menu_ver_cronograma" id="menu_ver_cronograma" <?= $datos['menu_ver_cronograma'] == 1 ? 'checked="checked"' : '' ?>> Ver Cronograma
-                				</div>
-
-                				<div class="checkbox-inline">
-                    				<input type="checkbox" name="menu_menu_dia" id="menu_menu_dia" <?= $datos['menu_menu_dia'] == 1 ? 'checked="checked"' : '' ?>> Menú del día
-                				</div>
-
-								<div class="checkbox-inline">
-									<input type="checkbox" name="menu_ejecucion_semanal" id="menu_ejecucion_semanal" <?= $datos['menu_ejecucion_semanal'] == 1 ? 'checked="checked"' : '' ?>> Ejecución semanal
-								</div>
-
-								<div class="checkbox-inline">
-									<input type="checkbox" name="menu_operador" id="menu_operador" <?= $datos['menu_operador'] == 1 ? 'checked="checked"' : '' ?>> Operador
-								</div>
-
-								<div class="checkbox-inline">
-									<input type="checkbox" name="menu_noticias" id="menu_noticias" <?= $datos['menu_noticias'] == 1 ? 'checked="checked"' : '' ?>> Noticias
-								</div>
-
-								<div class="checkbox-inline">
-									<input type="checkbox" name="menu_encuesta" id="menu_encuesta" <?= $datos['menu_encuesta'] == 1 ? 'checked="checked"' : '' ?>> Encuesta
-								</div>
-
-								<div class="checkbox-inline">
-									<input type="checkbox" name="menu_fqrs" id="menu_fqrs" <?= $datos['menu_fqrs'] == 1 ? 'checked="checked"' : '' ?>> FQRS
-								</div>
-              				</div>
-            			</div>
-          			</div>
-          		</div>              
-        	</div>
-    	</div> <!-- col -->
-  	</div> <!-- row -->
-</div> <!-- wrapper -->
-
-
-<!-- Configuracion funcionalidad -->
-<div class="wrapper wrapper-content animated fadeInRight">
-  	<div class="row">
-    	<div class="col-lg-12">
-      		<div class="ibox float-e-margins">
-        		<div class="ibox-title">
-          			<h3>Configuración Funcionalidad</h3>
-        		</div><!--  ibox-title -->
-        		<div class="ibox-content">
-          			<div class="row">
-            			<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
-              				<label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumos."></i></label>
-              				<input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
-            			</div> <!-- col -->
-            			<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
-              				<label for="tipoBusqueda">Tipo de búsqueda <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique la forma en que se realizará las búsquedas"></i></label>
-              				<select id="tipoBusqueda" name="tipoBusqueda" class="form-control">
-                				<option value="1" <?= ($datos['tipo_busqueda'] == "1") ? 'selected' : '' ?> >Búsqueda por fecha</option>
-                				<option value="2" <?= ($datos['tipo_busqueda'] == "2") ? 'selected' : '' ?> >Búsqueda por entrega</option>
-              				</select>
-            			</div> <!-- col -->
-            			<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
-              				<label for="diasAtencion">Días Atención <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Días de atención durante la duración del contrato"></i></label>
-              				<input type="number" class="form-control" name="diasAtencion" id="diasAtencion" min="1" value="<?php if(isset($datos['diasAtencion']) && $datos['diasAtencion'] != '') { echo $datos['diasAtencion']; }?>" required>
-              				&nbsp;&nbsp;&nbsp;&nbsp;
-            			</div> <!-- col -->
-            			<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
-              				<label>Permitir repitentes</label><br>
-              				<label>
-                				<input type="radio" name="PermitirRepitentes" value="1" <?= $datos['PermitirRepitentes'] == 1 ? 'checked="checked"' : '' ?>> Si
-              				</label>
-              				&nbsp;&nbsp;&nbsp;&nbsp;
-              				<label>
-                				<input type="radio" name="PermitirRepitentes" value="0" <?= $datos['PermitirRepitentes'] == 0 ? 'checked="checked"' : '' ?>> No
-              				</label>
-            			</div> <!-- col -->  
-					</div><!-- 	row  -->
-					<div class="row">
-						<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
-              				<label for="sideBar"> Default Side Bar <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique la forma en que se visualizará la barra lateral"></i></label>
-              				<select id="sideBar" name="sideBar" class="form-control">
-                				<option value="0" <?= ($datos['side_bar'] == "0") ? 'selected' : '' ?> >Expandido</option>
-                				<option value="1" <?= ($datos['side_bar'] == "1") ? 'selected' : '' ?> >Comprimido</option>
-              				</select>
-            			</div> <!-- col -->	
-						<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
-              				<label for="formatoPlanillas"> Formato Planillas de asistencia <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el formato en que se visualizará las planillas de asistencia"></i></label>
-              				<select id="formatoPlanillas" name="formatoPlanillas" class="form-control">
-                				<option value="1" <?= ($datos['formatoPlanillas'] == "1") ? 'selected' : '' ?> >Formato 1 (Campo Edad)</option>
-                				<option value="2" <?= ($datos['formatoPlanillas'] == "2") ? 'selected' : '' ?> >Formato 2 (Campo Fecha Nacimiento)</option>
-                				<option value="3" <?= ($datos['formatoPlanillas'] == "3") ? 'selected' : '' ?> >Formato 3 (Campo Fecha Nacimiento)</option>
-              				</select>
-            			</div> <!-- col -->	
-						<div class="col-lg-6 col-sm-12 col-xs-12 form-group">
-							<label for="assistance_format"> Planillas de asistencia <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique las planillas que se visualizarán"></i></label>
-							<select class='col-sm-12' id='assistance_format' class="select" multiple data-mdb-filter="true">
-  								<option value="1" <?= isset($format['1']) ? 'selected' : '' ?> >Vacia</option>
-  								<option value="2" <?= isset($format['2']) ? 'selected' : '' ?> >Blanco</option>
-  								<option value="3" <?= isset($format['3']) ? 'selected' : '' ?> >Programada</option>
-  								<option value="4" <?= isset($format['4']) ? 'selected' : '' ?> >Diligenciada</option>
-  								<option value="5" <?= isset($format['5']) ? 'selected' : '' ?> >Novedades</option>
-  								<option value="6" <?= isset($format['6']) ? 'selected' : '' ?> >Suplentes</option>
-  								<option value="7" <?= isset($format['7']) ? 'selected' : '' ?> >Novedades diligenciada</option>
-  								<option value="8" <?= isset($format['8']) ? 'selected' : '' ?> >Novedades programadas</option>
-  								<option value="9" <?= isset($format['9']) ? 'selected' : '' ?> >Resumen Asistencia</option>
-							</select>
-						</div>
-          			</div><!-- row -->
-					<div class="row">
-						<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
-							<label for="inventario"> Inventario por bodega </label>
-							<select name="inventario" id="inventario" class="form-control">
-								<option value="0" <?= ($datos['inventory'] == "0") ? 'selected' : '' ?> > No llevar registro </option>
-								<option value="1" <?= ($datos['inventory'] == "1") ? 'selected' : '' ?>  > Llevar registro por bodega </option>
-								<option value="2" <?= ($datos['inventory'] == "2") ? 'selected' : '' ?>  > LLevar registro por bodega y complemento </option>
-							</select>
-						</div>
+					<div class="ibox-title">
+						<h3>Configuración website</h3>
 					</div>
-					<div class="row">
-						<div class="col-lg-8"> </div>
-  						<div class="col-lg-4">
-    						<?php if ($_SESSION['perfil'] == "0" || $permisos['configuracion'] == "2"): ?>
-								<div class="title-action">
-									<a href="#" class="btn btn-primary" id="boton_guardar">
-										<i class="fas fa-check"></i> Guardar
-									</a>
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label for="color_primario">Color Primario</label>
+									<input type="color" style="width: 100%" name="color_primario" id="color_primario" value="<?= $datos['color_primario']; ?>"/>
 								</div>
-    						<?php endif ?>
-  						</div>
-					</div>
-        		</div> <!-- ibox-content -->
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label for="color_secundario">Color Secundario</label>
+									<input type="color" style="width: 100%" name="color_secundario" id="color_secundario" value="<?= $datos['color_secundario']; ?>"/>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label for="color_secundario">Color Texto</label>
+									<input type="color" style="width: 100%" name="color_texto" id="color_texto" value="<?= $datos['color_texto']; ?>"/>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<label>Mostrar botón Enviar Archivos</label><br>
+									<label>
+										<input type="radio" name="mostrar_boton_enviar_archivos" value="1" <?= $datos['mostrar_boton_enviar_archivos'] == 1 ? 'checked="checked"' : '' ?>> Si
+									</label>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<label>
+										<input type="radio" name="mostrar_boton_enviar_archivos" value="0" <?= $datos['mostrar_boton_enviar_archivos'] == 0 ? 'checked="checked"' : '' ?>> No
+									</label>
+								</div>
+							</div>
+						</div> <!-- row -->
+						<div class="row">
+							<div class="col-sm-12">
+								<label for="">Configuración Menú</label>
+								<div class="form-group">
+									<div class="checkbox-inline">
+										<input type="checkbox" name="menu_ver_cronograma" id="menu_ver_cronograma" <?= $datos['menu_ver_cronograma'] == 1 ? 'checked="checked"' : '' ?>> Ver Cronograma
+									</div>
+
+									<div class="checkbox-inline">
+										<input type="checkbox" name="menu_menu_dia" id="menu_menu_dia" <?= $datos['menu_menu_dia'] == 1 ? 'checked="checked"' : '' ?>> Menú del día
+									</div>
+
+									<div class="checkbox-inline">
+										<input type="checkbox" name="menu_ejecucion_semanal" id="menu_ejecucion_semanal" <?= $datos['menu_ejecucion_semanal'] == 1 ? 'checked="checked"' : '' ?>> Ejecución semanal
+									</div>
+
+									<div class="checkbox-inline">
+										<input type="checkbox" name="menu_operador" id="menu_operador" <?= $datos['menu_operador'] == 1 ? 'checked="checked"' : '' ?>> Operador
+									</div>
+
+									<div class="checkbox-inline">
+										<input type="checkbox" name="menu_noticias" id="menu_noticias" <?= $datos['menu_noticias'] == 1 ? 'checked="checked"' : '' ?>> Noticias
+									</div>
+
+									<div class="checkbox-inline">
+										<input type="checkbox" name="menu_encuesta" id="menu_encuesta" <?= $datos['menu_encuesta'] == 1 ? 'checked="checked"' : '' ?>> Encuesta
+									</div>
+
+									<div class="checkbox-inline">
+										<input type="checkbox" name="menu_fqrs" id="menu_fqrs" <?= $datos['menu_fqrs'] == 1 ? 'checked="checked"' : '' ?>> FQRS
+									</div>
+								</div>
+							</div>
+						</div>
+					</div><!--ibox-content-->
+				    <br>								
+
+					<div class="ibox-title">
+						<h3>Configuración Funcionalidad</h3>
+					</div><!--  ibox-title -->
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label for="cantidadCupos">Cantidad por cupos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el número de cupos con el cuál se calculará los despachos de insumos."></i></label>
+								<input type="number" class="form-control" name="cantidadCupos" id="cantidadCupos" min="1" value="<?php if(isset($datos['CantidadCupos']) && $datos['CantidadCupos'] != '') { echo $datos['CantidadCupos']; }?>" required>
+							</div> <!-- col -->
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label for="tipoBusqueda">Tipo de búsqueda <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique la forma en que se realizará las búsquedas"></i></label>
+								<select id="tipoBusqueda" name="tipoBusqueda" class="form-control">
+									<option value="1" <?= ($datos['tipo_busqueda'] == "1") ? 'selected' : '' ?> >Búsqueda por fecha</option>
+									<option value="2" <?= ($datos['tipo_busqueda'] == "2") ? 'selected' : '' ?> >Búsqueda por entrega</option>
+								</select>
+							</div> <!-- col -->
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label for="diasAtencion">Días Atención <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Días de atención durante la duración del contrato"></i></label>
+								<input type="number" class="form-control" name="diasAtencion" id="diasAtencion" min="1" value="<?php if(isset($datos['diasAtencion']) && $datos['diasAtencion'] != '') { echo $datos['diasAtencion']; }?>" required>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+							</div> <!-- col -->
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label>Permitir repitentes</label><br>
+								<label>
+									<input type="radio" name="PermitirRepitentes" value="1" <?= $datos['PermitirRepitentes'] == 1 ? 'checked="checked"' : '' ?>> Si
+								</label>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<label>
+									<input type="radio" name="PermitirRepitentes" value="0" <?= $datos['PermitirRepitentes'] == 0 ? 'checked="checked"' : '' ?>> No
+								</label>
+							</div> <!-- col -->  
+						</div><!-- 	row  -->
+						<div class="row">
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label for="sideBar"> Default Side Bar <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique la forma en que se visualizará la barra lateral"></i></label>
+								<select id="sideBar" name="sideBar" class="form-control">
+									<option value="0" <?= ($datos['side_bar'] == "0") ? 'selected' : '' ?> >Expandido</option>
+									<option value="1" <?= ($datos['side_bar'] == "1") ? 'selected' : '' ?> >Comprimido</option>
+								</select>
+							</div> <!-- col -->	
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label for="formatoPlanillas"> Formato Planillas de asistencia <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el formato en que se visualizará las planillas de asistencia"></i></label>
+								<select id="formatoPlanillas" name="formatoPlanillas" class="form-control">
+									<option value="1" <?= ($datos['formatoPlanillas'] == "1") ? 'selected' : '' ?> >Formato 1 (Campo Edad)</option>
+									<option value="2" <?= ($datos['formatoPlanillas'] == "2") ? 'selected' : '' ?> >Formato 2 (Campo Fecha Nacimiento)</option>
+									<option value="3" <?= ($datos['formatoPlanillas'] == "3") ? 'selected' : '' ?> >Formato 3 (Campo Fecha Nacimiento)</option>
+								</select>
+							</div> <!-- col -->	
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label for="gruposCalculos"> Formato Grupos Calculos <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique el formato de grupos para hacer los calculos"></i></label>
+								<select id="gruposCalculos" name="gruposCalculos" class="form-control">
+									<option value="1" <?= ($datos['gruposCalculos'] == "1") ? 'selected' : '' ?> >Grupo Etario (Edades)</option>
+									<option value="2" <?= ($datos['gruposCalculos'] == "2") ? 'selected' : '' ?> >Niveles Academicos (Grados)</option>
+								</select>
+							</div> <!-- col -->	
+						</div><!-- row -->
+						<div class="row">
+							<div class="col-lg-6 col-sm-12 col-xs-12 form-group">
+								<label for="assistance_format"> Planillas de asistencia <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique las planillas que se visualizarán"></i></label>
+								<select class='col-sm-12' id='assistance_format' class="select" multiple data-mdb-filter="true">
+									<option value="1" <?= isset($format['1']) ? 'selected' : '' ?> >Vacia</option>
+									<option value="2" <?= isset($format['2']) ? 'selected' : '' ?> >Blanco</option>
+									<option value="3" <?= isset($format['3']) ? 'selected' : '' ?> >Programada</option>
+									<option value="4" <?= isset($format['4']) ? 'selected' : '' ?> >Diligenciada</option>
+									<option value="5" <?= isset($format['5']) ? 'selected' : '' ?> >Novedades</option>
+									<option value="6" <?= isset($format['6']) ? 'selected' : '' ?> >Suplentes</option>
+									<option value="7" <?= isset($format['7']) ? 'selected' : '' ?> >Novedades diligenciada</option>
+									<option value="8" <?= isset($format['8']) ? 'selected' : '' ?> >Novedades programadas</option>
+									<option value="9" <?= isset($format['9']) ? 'selected' : '' ?> >Resumen Asistencia</option>
+								</select>
+							</div>
+						</div>
+					</div> <!-- ibox-content -->
+					<br>								
+
+					<div class="ibox-title">
+						<h3>Configuración Ordenes de compra</h3>
+					</div><!--  ibox-title -->
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label for="redondeoCompra"> Redondeo de productos en Compra </label>
+								<select name="redondeoCompra" id="redondeoCompra" class="form-control">
+									<option value="0" <?= ($datos['redondeo_compra'] == "0") ? 'selected' : '' ?>  > No redondear </option>
+									<option value="1" <?= ($datos['redondeo_compra'] == "1") ? 'selected' : '' ?>  > Redondear hacia arriba </option>
+									<option value="2" <?= ($datos['redondeo_compra'] == "2") ? 'selected' : '' ?>  > Redondear hacia abajo </option>
+								</select>
+							</div>
+							<div class="col-lg-3 col-sm6 col-xs-12 form-group" id="tipoRedondeoCompradiv" style="display: none">
+								<label for="tipoRedondeoCompra"> Tipo de redondeo <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Define si se redondea cada día o solo el total"></i> </label>
+								<select name="tipoRedondeoCompra" id="tipoRedondeoCompra" class="form-control">
+									<option value="">Seleccione...</option>
+									<option value="1" <?= ($datos['tipo_redondeo_compra'] == "1") ? 'selected' : '' ?> >Redondear cada día</option>
+									<option value="2" <?= ($datos['tipo_redondeo_compra'] == "2") ? 'selected' : '' ?> >Redondear el total</option>
+								</select>
+							</div>
+							<div class="col-lg-3 col-sm6 col-xs-12 form-group" id="rangoRedondeoCompradiv" style="display: none">
+								<label for="rangoRedondeoCompra">Rango de redondeo <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Define si redondea a un entero o a una posición de decimal"></i>  </label>
+								<select name="rangoRedondeoCompra" id="rangoRedondeoCompra" class="form-control">
+									<option value="">Seleccione...</option>
+									<option value="1" <?= ($datos['rango_redondeo_compra'] == "1") ? 'selected' : '' ?> >Redondear al entero mas cercano</option>
+									<option value="2" <?= ($datos['rango_redondeo_compra'] == "2") ? 'selected' : '' ?> >Redondear al primer decimal mas cercano</option>
+									<option value="3" <?= ($datos['rango_redondeo_compra'] == "3") ? 'selected' : '' ?> >Redondear al segundo decimal mas cercano</option>
+								</select>
+							</div>
+						</div>
+					</div><!--  ibox-content -->
+					<br>								
+				
+					<div class="ibox-title">
+          				<h3>Configuración Remisiones de alimentos</h3>
+        			</div><!--  ibox-title -->
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label for="redondeoRemision"> Redondeo de productos en Remisiones </label>
+								<select name="redondeoRemision" id="redondeoRemision" class="form-control">
+									<option value="0" <?= ($datos['redondeo_remision'] == "0") ? 'selected' : '' ?>  > No redondear </option>
+									<option value="1" <?= ($datos['redondeo_remision'] == "1") ? 'selected' : '' ?>  > Redondear hacia arriba </option>
+									<option value="2" <?= ($datos['redondeo_remision'] == "2") ? 'selected' : '' ?>  > Redondear hacia abajo </option>
+								</select>
+							</div>
+
+							<div class="col-lg-3 col-sm6 col-xs-12 form-group" id="tipoRedondeoRemisiondiv" style="display: none">
+								<label for="tipoRedondeoRemision"> Tipo de redondeo <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Define si se redondea cada día o solo el total"></i> </label>
+								<select name="tipoRedondeoRemision" id="tipoRedondeoRemision" class="form-control">
+									<option value="">Seleccione...</option>
+									<option value="1" <?= ($datos['tipo_redondeo_remision'] == "1") ? 'selected' : '' ?> >Redondear cada día</option>
+									<option value="2" <?= ($datos['tipo_redondeo_remision'] == "2") ? 'selected' : '' ?> >Redondear el total</option>
+								</select>
+							</div>
+
+							<div class="col-lg-3 col-sm6 col-xs-12 form-group" id="rangoRedondeoRemisiondiv" style="display: none">
+								<label for="rangoRedondeoRemision">Rango de redondeo <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Define si redondea a un entero o una posición de decimal"></i>  </label>
+								<select name="rangoRedondeoRemision" id="rangoRedondeoRemision" class="form-control">
+									<option value="">Seleccione...</option>
+									<option value="1" <?= ($datos['rango_redondeo_remision'] == "1") ? 'selected' : '' ?> >Redondear al entero mas cercano</option>
+									<option value="2" <?= ($datos['rango_redondeo_remision'] == "2") ? 'selected' : '' ?> >Redondear al primer decimal mas cercano</option>
+									<option value="3" <?= ($datos['rango_redondeo_remision'] == "3") ? 'selected' : '' ?> >Redondear al segundo decimal mas cercano</option>
+								</select>
+							</div>
+
+							<div class="col-lg-6 col-sm-12 col-xs-12 form-group">
+								<label for="remision_format"> Formatos Remisiones <i class="fa fa-question-circle" style="cursor: pointer;" data-toggle="tooltip" data-placement="top" title="Indique los formatos que se visualizarán en las remisiones de alimentos"></i></label>
+								<select class='col-sm-12' id='remision_format' class="select" multiple data-mdb-filter="true">
+									<?php foreach ($remission_format as $keyF => $valueF) { ?>
+										<option value="<?= $valueF['id'] ?>" <?= ($valueF['format_status'] == 1) ? 'selected' : '' ?> ><?= $valueF['name'] ?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+					</div><!--  ibox-content -->
+
+					<br>								
+					<div class="ibox-title">
+						<h3>Configuración Inventarios</h3>
+					</div><!--  ibox-title -->
+					<div class="ibox-content">
+						<div class="row">
+							<div class="col-lg-3 col-sm-6 col-xs-12 form-group">
+								<label for="inventario"> Inventario por bodega </label>
+								<select name="inventario" id="inventario" class="form-control">
+									<option value="0" <?= ($datos['inventory'] == "0") ? 'selected' : '' ?> > No llevar registro </option>
+									<option value="1" <?= ($datos['inventory'] == "1") ? 'selected' : '' ?>  > Llevar registro por bodega </option>
+									<option value="2" <?= ($datos['inventory'] == "2") ? 'selected' : '' ?>  > LLevar registro por bodega y complemento </option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-8"> </div>
+							<div class="col-lg-4">
+								<?php if ($_SESSION['perfil'] == "0" || $permisos['configuracion'] == "2"): ?>
+									<div class="title-action">
+										<a href="#" class="btn btn-primary" id="boton_guardar">
+											<i class="fas fa-check"></i> Guardar
+										</a>
+									</div>
+								<?php endif ?>
+							</div>
+						</div>
+					</div><!--  ibox-content -->
+				</form>
       		</div> <!-- float-e-margins -->      
     	</div> <!-- col-lg-12 -->
   	</div> <!-- row -->
@@ -518,6 +635,8 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
         	checkboxClass: 'icheckbox_square-green'
       	});
 		$('#assistance_format').selectpicker();
+		$('#remision_format').selectpicker();
+
    	});
 </script>
 <?php mysqli_close($Link); ?>

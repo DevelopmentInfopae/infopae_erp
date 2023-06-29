@@ -135,11 +135,12 @@ if ($_SESSION['perfil'] == "0" || $permisos['diagnostico_infraestructura'] == "2
               <option value="1">Favorable</option>
               <option value="2">Favorable con requerimiento</option>
               <option value="0">Desfavorable</option>
+              <option value="3">No cuenta con inspección sanitaria</option>
             </select>
           </div>
           <div class="form-group col-sm-3">
             <label>Fecha de expedición</label>
-            <input type="date" class="form-control" name="fecha_expedicion" id="fecha_expedicion" required>
+            <input type="date" class="form-control" name="fecha_expedicion" id="fecha_expedicion">
           </div>
           <div class="form-group col-sm-3">
             <label>¿Atención mayoritariamente a indigenas?</label><br>

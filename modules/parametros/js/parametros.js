@@ -18,6 +18,49 @@ $(document).ready(function(){
 
   $(document).on('change', '#departamento', function () { cargar_municipios($(this).val()); });
   $(document).on('click', '#boton_guardar', function () { guardarParametros(); });
+
+  if ($('#redondeoCompra').val() != 0) {
+    $('#tipoRedondeoCompradiv').css('display', 'block');
+    $('#tipoRedondeoCompra').attr("required", "true");
+    $('#rangoRedondeoCompradiv').css('display', 'block');
+    $('#rangoRedondeoCompra').attr('required', 'true');
+  }
+  $(document).on('change', '#redondeoCompra', function(){
+    if ($(this).val() == 0) {
+      $('#tipoRedondeoCompradiv').css('display', 'none');
+      $('#tipoRedondeoCompra').attr("required", "false");
+      $('#rangoRedondeoCompradiv').css('display', 'none');
+      $('#rangoRedondeoCompra').attr('required', 'false');
+    }
+    if ($(this).val() != 0) {
+      $('#tipoRedondeoCompradiv').css('display', 'block');
+      $('#tipoRedondeoCompra').attr("required", "true");
+      $('#rangoRedondeoCompradiv').css('display', 'block');
+      $('#rangoRedondeoCompra').attr('required', 'true');
+    }
+  })
+
+  if ($('#redondeoRemision').val() != 0) {
+    $('#tipoRedondeoRemisiondiv').css('display', 'block');
+    $('#tipoRedondeoRemision').attr("required", "true");
+    $('#rangoRedondeoRemisiondiv').css('display', 'block');
+    $('#rangoRedondeoRemision').attr('required', 'true');
+  }
+  $(document).on('change', '#redondeoRemision', function(){
+    if ($(this).val() == 0) {
+      $('#tipoRedondeoRemisiondiv').css('display', 'none');
+      $('#tipoRedondeoRemision').attr("required", "false");
+      $('#rangoRedondeoRemisiondiv').css('display', 'none');
+      $('#rangoRedondeoRemision').attr('required', 'false');
+    }
+    if ($(this).val() != 0) {
+      $('#tipoRedondeoRemisiondiv').css('display', 'block');
+      $('#tipoRedondeoRemision').attr("required", "true");
+      $('#rangoRedondeoRemisiondiv').css('display', 'block');
+      $('#rangoRedondeoRemision').attr('required', 'true');
+    }
+  })
+
 });
 
 function guardarParametros(){
@@ -69,6 +112,19 @@ function guardarParametros(){
     formData.append('formatoPlanillas', $('#formatoPlanillas').val());
     formData.append('formatos', $('#assistance_format').val());
     formData.append('inventario', $('#inventario').val());
+    formData.append('redondeo_compra', $('#redondeoCompra').val());
+    formData.append('tipo_redondeo_compra', $('#tipoRedondeoCompra').val());
+    formData.append('rango_redondeo_compra', $('#rangoRedondeoCompra').val());
+    formData.append('redondeo_remision', $('#redondeoRemision').val());
+    formData.append('tipo_redondeo_remision', $('#tipoRedondeoRemision').val());
+    formData.append('rango_redondeo_remision', $('#rangoRedondeoRemision').val());
+    formData.append('remision_format', $('#remision_format').val());
+    formData.append('mision', $('#mision').val());
+    formData.append('vision', $('#vision').val());
+    formData.append('objetivos', $('#objetivos').val());
+    formData.append('valores_corporativos', $('#valores_corporativos').val());
+    formData.append('experiencia', $('#experiencia').val());
+    formData.append('gruposCalculos', $('#gruposCalculos').val());
 
     $.ajax({
       type: "POST",

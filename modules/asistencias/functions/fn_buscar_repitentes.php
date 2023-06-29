@@ -51,7 +51,7 @@ if($grupo != "" ){
 	$consulta .= " and f.nom_grupo = $grupo ";
 }
 $consulta .= " ORDER BY r.num_doc desc, f.cod_grado asc , f.nom_grupo asc , f.ape1 asc ";
-
+// exit(var_dump($consulta));
 $resultado = $Link->query($consulta);
 if($resultado){
 	if($resultado->num_rows > 0){

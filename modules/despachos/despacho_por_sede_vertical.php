@@ -11,8 +11,8 @@ date_default_timezone_set('America/Bogota');
 $mesAnno = '';
 $sangria = " * ";
 $largoNombre = 28;
-$tamannoFuente = 5;
-$altoFila = 2.5;
+$tamannoFuente = 5.5;
+$altoFila = 3;
 $paginasObservaciones = 1;
 
 if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_POST['despacho'])) {
@@ -39,7 +39,7 @@ if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
 	$anno = substr($anno, -2);
 	$anno = trim($anno);
 	$mesAnno = $mes.$anno;
-	$corteDeVariables = 16;
+	$corteDeVariables = 15;
 	if(isset($_POST['seleccionarVarios'])){
 		$corteDeVariables++;
 	}
@@ -338,7 +338,7 @@ if ($cantGruposEtarios == 3) {
 
 		$filas = 0;
 		$grupoAlimActual = '';
-		$tamannoFuente = 5.4;
+		// $tamannoFuente = 5.4;
 		for ($i=0; $i < count($alimentos ) ; $i++) {
 			$filas++;
 			$pdf->SetFont('Arial','',$tamannoFuente);
@@ -485,7 +485,7 @@ if ($cantGruposEtarios == 3) {
 					$presentacion = " ".$alimento['nombreunidad'.$unidad];	
 					$pdf->SetTextColor(0,0,0);
 					$aux = $sangria.$alimento['componente'].$presentacion;				
-					$largoNombre = 30;
+					$largoNombre = 28;
 					$long_nombre=strlen($aux);
 					if($long_nombre > $largoNombre){
 				  		$aux = substr($aux,0,$largoNombre);
@@ -531,7 +531,7 @@ if ($cantGruposEtarios == 3) {
 					$presentacion = " ".$alimento['nombreunidad'.$unidad];	
 					$pdf->SetTextColor(0,0,0);
 					$aux = $sangria.$alimento['componente'].$presentacion;				
-					$largoNombre = 30;
+					$largoNombre = 28;
 					$long_nombre=strlen($aux);
 					if($long_nombre > $largoNombre){
 				  		$aux = substr($aux,0,$largoNombre);
@@ -663,7 +663,7 @@ if ($cantGruposEtarios == 3) {
 		}//Termina el for de los alimentos
 	
 		// Ciclo para completar las filas en blanco
-		for($i = $filas ; $i <= 55 ; $i++){
+		for($i = $filas ; $i <= 1 ; $i++){
 			$current_y = $pdf->GetY();
 			$current_x = $pdf->GetX();
 			$pdf->Cell(0,$altoFila,'','LBR',0,'L',False);
@@ -719,6 +719,7 @@ if ($cantGruposEtarios == 5) {
 		unset($menus);
 		unset($sedesCobertura);
 		unset($complementosCantidades);
+		$ciclo = '';
 
 		$claves = array_keys($_POST);
 		$aux = $claves[$k];
@@ -764,44 +765,85 @@ if ($cantGruposEtarios == 5) {
 			$sedes[] = $codSede;
 		}
 
-		// Iniciando la busqueda de los días que corresponden a esta semana de contrato.
-		$arrayDiasDespacho = explode(',', $diasDespacho);
-		$dias = '';
-		$consulta = " SELECT * 
-							FROM planilla_semanas 
-							WHERE SEMANA_DESPACHO = '$semana' ";
-		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-		$cantDias = $resultado->num_rows;
-		if($resultado->num_rows >= 1){
-			$mesInicial = '';
-			$mesesIniciales = 0;
-			while($row = $resultado->fetch_assoc()){
-				$clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
-				if($clave !== false){
-					$ciclo = $row['CICLO'];
-					if($mesInicial != $row['MES']){
-						$mesesIniciales++;
-						if($mesesIniciales > 1){
-							$dias .= " de  $mes ";
-						}
-						$mesInicial = $row['MES'];
-						$mes = $row['MES'];
-						$mes = mesEnLetras($mes);
-					}else{
-						if($dias != ''){
-							$dias .= ', ';
-						}
-					}
-					$dias = $dias.intval($row['DIA']);
-				}// Termina el if de la Clave
-			}//Termina el while
-			$dias .= " de  $mes";
+		$semanasIn = explode(',',$semana);
+		$semanaIn = '';
+		foreach ($semanasIn as $key => $value) {
+			$semanaIn .= "'".trim($value)."',";
 		}
-		// Termina la busqueda de los días que corresponden a esta semana de contrato.
+		$semanaIn = trim($semanaIn,','); 
+
+	   // Iniciando la busqueda de los días que corresponden a esta semana de contrato.
+		$arrayDiasDespacho2 = explode(',', $diasDespacho);
+		$arraySemana = explode(',', $semana);
+
+		$concatConsecutivo = '';
+		$consecutivoActual = 0;
+		foreach ($arraySemana as $arraySemanaKey => $arraySemanaValue) {
+			foreach ($arrayDiasDespacho2 as $arrayDiasDespachoKey => $arrayDiasDespachoValue) {
+				$consultaConsecutivo = "SELECT CONSECUTIVO FROM planilla_semanas WHERE SEMANA_DESPACHO = '" .$arraySemanaValue. "' AND DIA = '" .$arrayDiasDespachoValue. "'";
+			   $respuestaConsecutivo = $Link->query($consultaConsecutivo) or die ('Error al consultar los consetivo LN 825' . mysqli_error());
+			   if ($respuestaConsecutivo->num_rows > 0 ) {
+				   $dataConsetivo = $respuestaConsecutivo->fetch_assoc();
+				   if ($dataConsetivo['CONSECUTIVO'] > $consecutivoActual) {
+					   unset($arrayDiasDespacho2[$arrayDiasDespachoKey]);
+					   $concatConsecutivo .= "'" .$dataConsetivo['CONSECUTIVO']. "',";
+					   $consecutivoActual = $dataConsetivo['CONSECUTIVO'];
+				   }
+			   }
+			}
+		}
+		$concatConsecutivo = trim($concatConsecutivo, ',');
+
+		$arrayDiasDespacho = explode(',', $diasDespacho);
+	   $dias = ''; 
+	   $consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($semanaIn) AND CONSECUTIVO IN ( $concatConsecutivo ) ";  
+	//   exit(var_dump($consulta));
+	   $resultado = $Link->query($consulta) or die ('Unable to execute query. Ln800'. mysqli_error($Link));
+	   $cantDias = $resultado->num_rows;
+	   if($resultado->num_rows >= 1){
+		 $mesInicial = '';
+		 $mesesIniciales = 0;
+		 $bandera = 0;
+		 while($row = $resultado->fetch_assoc()){
+		   $clave = array_search(intval($row['DIA']), $arrayDiasDespacho);
+		   if($clave !== false){
+			   $key = array_search($row['DIA'] , $arrayDiasDespacho); 
+			   unset($arrayDiasDespacho[$key]);
+			   if($bandera != $row['CICLO']){
+				   $ciclo .= $row['CICLO'] .', ';
+				   $bandera = $row['CICLO'];
+			   }
+				 if($mesInicial != $row['MES']){
+				   $mesesIniciales++;
+				   if($mesesIniciales > 1){
+						 $dias .= " de  $mes ";
+				   }
+				   $mesInicial = $row['MES'];
+				   $mes = $row['MES'];
+				   $mes = mesEnLetras($mes);
+				 }else{
+				   if($dias != ''){
+						 $dias .= ', ';
+				   }
+				 }
+				 $dias = $dias.intval($row['DIA']);
+			   }// Termina el if de la Clave
+			}//Termina el while
+			$ciclo = trim($ciclo, ', ');
+		 $dias .= " de  $mes";
+	   }else {
+		   $dias = $diasDespacho;
+		   $nombreTabla = 'despachos_enc'.$mesAnno;
+		   $mesTabla = substr($nombreTabla,13,-2); 
+		   $arrayMeseNombre = ["01" => "ENERO", "02" => "FEBRERO", "03" => "MARZO", "04" => "ABRIL", "05" => "MAYO", "06" => "JUNIO", "07" => "JULIO", "08" => "AGOSTO", "09" => "SEPTIEMBRE", "10" => "OCTUBRE", "11" => "NOVIEMBRE", "12" => "DICIEMBRE"];
+		   $dias .= " DE " . $arrayMeseNombre[$mesTabla];
+	   }
 
 		$cantSedeGrupo1 = 0;
 		$cantSedeGrupo2 = 0;
 		$cantSedeGrupo3 = 0;
+		$cantSedeGrupo4 = 0;
+		$cantSedeGrupo5 = 0;
 		$consulta = "SELECT 	Cobertura_G1, 
 									Cobertura_G2, 
 									Cobertura_G3, 
@@ -953,7 +995,7 @@ if ($cantGruposEtarios == 5) {
 
 		$filas = 0;
 		$grupoAlimActual = '';
-		$tamannoFuente = 5.4;
+		// $tamannoFuente = 5.4;
 		for ($i=0; $i < count($alimentos ) ; $i++) {
 			$filas++;
 			$pdf->SetFont('Arial','',$tamannoFuente);
@@ -990,6 +1032,14 @@ if ($cantGruposEtarios == 5) {
 					$alimento['cantotalpresentacion'] = 0;
 				}
 				$pdf->SetTextColor(0,0,0);
+
+				if(($current_y + (4*$filas)) > 420){
+					$pdf->AddPage();
+					include 'despacho_por_sede_footer_vertical.php';
+					include 'despacho_por_sede_header_vertical.php';
+					$pdf->SetFont('Arial', '', $tamannoFuente);
+					$filas = 0;
+			  	}
 			
 				// Se verifica que no haya cantidades en las direntes presentaciones, para no mostrar la primera fila.
 				if(1==1){
@@ -1036,7 +1086,7 @@ if ($cantGruposEtarios == 5) {
 
 					// impresion grupo4
 					if($alimento['presentacion'] == 'u'){
-						$aux = number_format($alimento['cant_grupo3'], 2, '.', '');
+						$aux = number_format($alimento['cant_grupo4'], 2, '.', '');
 					}else{
 						$aux = 0+$alimento['cant_grupo4'];
 						$aux = number_format($aux, 2, '.', '');
@@ -1046,7 +1096,7 @@ if ($cantGruposEtarios == 5) {
 
 					// impresion grupo5
 					if($alimento['presentacion'] == 'u'){
-						$aux = number_format($alimento['cant_grupo3'], 2, '.', '');
+						$aux = number_format($alimento['cant_grupo5'], 2, '.', '');
 					}else{
 						$aux = 0+$alimento['cant_grupo5'];
 						$aux = number_format($aux, 2, '.', '');
@@ -1301,7 +1351,7 @@ if ($cantGruposEtarios == 5) {
 		}//Termina el for de los alimentos
 	
 		// Ciclo para completar las filas en blanco
-		for($i = $filas ; $i <= 54 ; $i++){
+		for($i = $filas ; $i <= 45 ; $i++){
 			$current_y = $pdf->GetY();
 			$current_x = $pdf->GetX();
 			$pdf->Cell(0,$altoFila,'','LBR',0,'L',False);
@@ -1337,6 +1387,13 @@ if ($cantGruposEtarios == 5) {
 			$pdf->Cell(0,$altoFila,'',0,0,'C',False);
 			$pdf->Ln($altoFila);
 		}
+		$current_y = $pdf->GetY();
+		if($current_y > 420){
+			$filas = 0;
+			$pdf->AddPage();
+			include 'despacho_por_sede_footer_vertical.php';
+			include 'despacho_por_sede_header_vertical.php';
+  		}
 		include 'despacho_firma_planilla_vertical.php';
 	}
 } // if cant grupos

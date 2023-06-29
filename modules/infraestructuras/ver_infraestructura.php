@@ -16,7 +16,7 @@ else {
 <?php
 }
 
-$Infraestructura;
+$Infraestructura=[];
 
 if (isset($_POST['cod_sede']) && $_POST['cod_sede'] != "") {
   $sedever = $_POST['cod_sede'];
@@ -66,7 +66,7 @@ if ($resultadoModalidad->num_rows > 0) {
 }
 
 $sectores = array('1' => 'Rural', '2' => 'Urbano', '0' => 'No especificado.');
-$conceptos_sanitario = array('1' => 'Favorable', '2' => 'Favorable con requerimiento','0' => 'Desfavorable');
+$conceptos_sanitario = array('1' => 'Favorable', '2' => 'Favorable con requerimiento','0' => 'Desfavorable', '3' => 'No cuenta con inspección sanitaria');
 $estados = array('1' => 'Si', '0' => 'No', '2' => 'No aplica');
 
 $parametros = array();
@@ -204,9 +204,9 @@ $titulo = $nameLabel . ' - Ver';
               }
                ?>
 
-            <label><input type="radio" name="Atencion_MayoritariaI" id="Atencion_MayoritariaI" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-            <label><input type="radio" name="Atencion_MayoritariaI" id="Atencion_MayoritariaI" value="0" <?php echo $checked0; ?> disabled required> No </label>
-            <label><input type="radio" name="Atencion_MayoritariaI" id="Atencion_MayoritariaI" value="2" <?php echo $checked2; ?> disabled required> No aplica</label>
+            <label><input type="radio" name="Atencion_MayoritariaI" id="Atencion_MayoritariaI" value="1" <?php echo $checked1; ?> disabled > Si</label>
+            <label><input type="radio" name="Atencion_MayoritariaI" id="Atencion_MayoritariaI" value="0" <?php echo $checked0; ?> disabled > No </label>
+            <label><input type="radio" name="Atencion_MayoritariaI" id="Atencion_MayoritariaI" value="2" <?php echo $checked2; ?> disabled > No aplica</label>
             </div>
             <label for="Atencion_MayoritariaI" class="error"></label>
           </div>
@@ -231,15 +231,15 @@ $titulo = $nameLabel . ' - Ver';
                   break;
               }
                ?>
-            <label><input type="radio" name="Comedor_Escolar" id="Comedor_Escolar" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-            <label><input type="radio" name="Comedor_Escolar" id="Comedor_Escolar" value="0" <?php echo $checked0; ?> disabled required> No</label>
+            <label><input type="radio" name="Comedor_Escolar" id="Comedor_Escolar" value="1" <?php echo $checked1; ?> disabled > Si</label>
+            <label><input type="radio" name="Comedor_Escolar" id="Comedor_Escolar" value="0" <?php echo $checked0; ?> disabled > No</label>
             </div>
             <label for="Comedor_Escolar" class="error"></label>
           </div>
           <br>
           <div class="form-group col-sm-6">
             <label>Observaciones</label> <em id="maxLongObservaciones">(500)</em>
-            <textarea class="form-control" name="observaciones" id="observaciones" style="resize: none;" maxlength="500"  readonly required><?php echo $Infraestructura[0]['observaciones']; ?></textarea>
+            <textarea class="form-control" name="observaciones" id="observaciones" style="resize: none;" maxlength="500"  readonly ><?php echo $Infraestructura[0]['observaciones']; ?></textarea>
           </div>
         </form>
         <div class="col-sm-3">
@@ -287,20 +287,20 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
           <?php if ($parametro['id'] >= 1 && $parametro['id'] <= 3): //Sólo parámetros donde se preguntan material de infraestructura ?>
               <div class="col-sm-3">
                 <label>Material piso</label>
-                <input type="text" name="material_piso[<?php echo $parametro['id'] ?>]" id="material_piso" class="form-control" value="<?php echo $parametros[$parametro['id']]['piso'] ?>" readonly required>
+                <input type="text" name="material_piso[<?php echo $parametro['id'] ?>]" id="material_piso" class="form-control" value="<?php echo $parametros[$parametro['id']]['piso'] ?>" readonly >
               </div>
               <div class="col-sm-3">
                 <label>Material paredes</label>
-                <input type="text" name="material_paredes[<?php echo $parametro['id'] ?>]" id="material_paredes" class="form-control" value="<?php echo $parametros[$parametro['id']]['paredes'] ?>" readonly required>
+                <input type="text" name="material_paredes[<?php echo $parametro['id'] ?>]" id="material_paredes" class="form-control" value="<?php echo $parametros[$parametro['id']]['paredes'] ?>" readonly >
               </div>
               <div class="col-sm-3">
                 <label>Material techo</label>
-                <input type="text" name="material_techo[<?php echo $parametro['id'] ?>]" id="material_techo" class="form-control" value="<?php echo $parametros[$parametro['id']]['techo'] ?>" readonly required>
+                <input type="text" name="material_techo[<?php echo $parametro['id'] ?>]" id="material_techo" class="form-control" value="<?php echo $parametros[$parametro['id']]['techo'] ?>" readonly >
               </div>
               <?php if ($parametro['id'] != 3): ?>
                 <div class="col-sm-3">
                   <label>Material mesones</label>
-                  <input type="text" name="material_mesones[<?php echo $parametro['id'] ?>]" id="material_mesones" class="form-control" value="<?php echo $parametros[$parametro['id']]['mesones'] ?>" readonly required>
+                  <input type="text" name="material_mesones[<?php echo $parametro['id'] ?>]" id="material_mesones" class="form-control" value="<?php echo $parametros[$parametro['id']]['mesones'] ?>" readonly >
                 </div>
               <?php endif ?>
           <?php endif ?>
@@ -325,8 +325,8 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                         break;
                     }
                    ?>  
-                  <label><input type="radio" name="utensilios_suficientes[<?php echo $parametro['id'] ?>]" id="utensilios_suficientes" <?php echo $checked1; ?> disabled value="1" required> Si</label>
-                  <label><input type="radio" name="utensilios_suficientes[<?php echo $parametro['id'] ?>]" id="utensilios_suficientes" <?php echo $checked0; ?> disabled value="0" required> No</label>
+                  <label><input type="radio" name="utensilios_suficientes[<?php echo $parametro['id'] ?>]" id="utensilios_suficientes" <?php echo $checked1; ?> disabled value="1" > Si</label>
+                  <label><input type="radio" name="utensilios_suficientes[<?php echo $parametro['id'] ?>]" id="utensilios_suficientes" <?php echo $checked0; ?> disabled value="0" > No</label>
                   </div>
                   <label for="utensilios_suficientes[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
@@ -352,8 +352,8 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?> 
                   <div class="radio">
-                  <label><input type="radio" name="mesas_sillas_suficientes[<?php echo $parametro['id'] ?>]" id="mesas_sillas_suficientes" <?php echo $checked1; ?> disabled  value="1" required> Si</label>
-                  <label><input type="radio" name="mesas_sillas_suficientes[<?php echo $parametro['id'] ?>]" id="mesas_sillas_suficientes" <?php echo $checked0; ?> disabled  value="0" required> No</label>
+                  <label><input type="radio" name="mesas_sillas_suficientes[<?php echo $parametro['id'] ?>]" id="mesas_sillas_suficientes" <?php echo $checked1; ?> disabled  value="1" > Si</label>
+                  <label><input type="radio" name="mesas_sillas_suficientes[<?php echo $parametro['id'] ?>]" id="mesas_sillas_suficientes" <?php echo $checked0; ?> disabled  value="0" > No</label>
                   </div>
                   <label for="mesas_sillas_suficientes[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
@@ -377,8 +377,8 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?>
                   <div class="radio">
-                  <label><input type="radio" name="utensilios_suficientes[<?php echo $parametro['id'] ?>]" id="utensilios_suficientes" <?php echo $checked1; ?> disabled value="1" required> Si</label>
-                  <label><input type="radio" name="utensilios_suficientes[<?php echo $parametro['id'] ?>]" id="utensilios_suficientes" <?php echo $checked0; ?> disabled value="0" required> No</label>
+                  <label><input type="radio" name="utensilios_suficientes[<?php echo $parametro['id'] ?>]" id="utensilios_suficientes" <?php echo $checked1; ?> disabled value="1" > Si</label>
+                  <label><input type="radio" name="utensilios_suficientes[<?php echo $parametro['id'] ?>]" id="utensilios_suficientes" <?php echo $checked0; ?> disabled value="0" > No</label>
                   </div>
                   <label for="utensilios_suficientes[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
@@ -386,11 +386,11 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
               <?php if ($parametro['id'] == 4): ?>
                 <div class="col-sm-3">
                   <label>Energia</label>
-                  <input type="text" name="energia[<?php echo $parametro['id'] ?>]" id="energia" class="form-control" value="<?php echo $parametros[$parametro['id']]['energia'] ?>" readonly required>
+                  <input type="text" name="energia[<?php echo $parametro['id'] ?>]" id="energia" class="form-control" value="<?php echo $parametros[$parametro['id']]['energia'] ?>" readonly >
                 </div>
                 <div class="col-sm-3">
                   <label>Agua potable</label>
-                  <input type="text" name="agua[<?php echo $parametro['id'] ?>]" id="agua" class="form-control" value="<?php echo $parametros[$parametro['id']]['agua'] ?>" readonly required>
+                  <input type="text" name="agua[<?php echo $parametro['id'] ?>]" id="agua" class="form-control" value="<?php echo $parametros[$parametro['id']]['agua'] ?>" readonly >
                 </div>
                 <div class="col-sm-3">
                   <label>Acueducto</label>
@@ -412,9 +412,9 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?>
                   <div class="radio">
-                  <label><input type="radio" name="acueducto[<?php echo $parametro['id'] ?>]" id="acueducto" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                  <label><input type="radio" name="acueducto[<?php echo $parametro['id'] ?>]" id="acueducto" value="0" <?php echo $checked0; ?> disabled required> No</label>
-                  <label><input type="radio" name="acueducto[<?php echo $parametro['id'] ?>]" id="acueducto" value="2"  <?php echo $checked2; ?> disabledrequired> No aplica</label>
+                  <label><input type="radio" name="acueducto[<?php echo $parametro['id'] ?>]" id="acueducto" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                  <label><input type="radio" name="acueducto[<?php echo $parametro['id'] ?>]" id="acueducto" value="0" <?php echo $checked0; ?> disabled > No</label>
+                  <label><input type="radio" name="acueducto[<?php echo $parametro['id'] ?>]" id="acueducto" value="2"  <?php echo $checked2; ?> disabled> No aplica</label>
                   </div>
                   <label for="acueducto[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
@@ -438,9 +438,9 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?>
                   <div class="radio">
-                  <label><input type="radio" name="alcantarillado[<?php echo $parametro['id'] ?>]" id="alcantarillado" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                  <label><input type="radio" name="alcantarillado[<?php echo $parametro['id'] ?>]" id="alcantarillado" value="0" <?php echo $checked0; ?> disabled required> No</label>
-                  <label><input type="radio" name="alcantarillado[<?php echo $parametro['id'] ?>]" id="alcantarillado" value="2" <?php echo $checked2; ?> disabled required> No aplica</label>
+                  <label><input type="radio" name="alcantarillado[<?php echo $parametro['id'] ?>]" id="alcantarillado" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                  <label><input type="radio" name="alcantarillado[<?php echo $parametro['id'] ?>]" id="alcantarillado" value="0" <?php echo $checked0; ?> disabled > No</label>
+                  <label><input type="radio" name="alcantarillado[<?php echo $parametro['id'] ?>]" id="alcantarillado" value="2" <?php echo $checked2; ?> disabled > No aplica</label>
                   </div>
                   <label for="alcantarillado[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
@@ -464,15 +464,15 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?>
                   <div class="radio">
-                  <label><input type="radio" name="gas[<?php echo $parametro['id'] ?>]" id="gas" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                  <label><input type="radio" name="gas[<?php echo $parametro['id'] ?>]" id="gas" value="0" <?php echo $checked0; ?> disabled required> No</label>
-                  <label><input type="radio" name="gas[<?php echo $parametro['id'] ?>]" id="gas" value="2" <?php echo $checked2; ?> disabled required> No aplica</label>
+                  <label><input type="radio" name="gas[<?php echo $parametro['id'] ?>]" id="gas" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                  <label><input type="radio" name="gas[<?php echo $parametro['id'] ?>]" id="gas" value="0" <?php echo $checked0; ?> disabled > No</label>
+                  <label><input type="radio" name="gas[<?php echo $parametro['id'] ?>]" id="gas" value="2" <?php echo $checked2; ?> disabled > No aplica</label>
                   </div>
                   <label for="gas[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
                 <div class="col-sm-3">
                   <label>Almacenamiento de agua</label>
-                  <input type="text" name="almacenamiento_agua[<?php echo $parametro['id'] ?>]" id="almacenamiento_agua" class="form-control" value="<?php echo $parametros[$parametro['id']]['alm_agua'] ?>" readonly required>
+                  <input type="text" name="almacenamiento_agua[<?php echo $parametro['id'] ?>]" id="almacenamiento_agua" class="form-control" value="<?php echo $parametros[$parametro['id']]['alm_agua'] ?>" readonly >
                 </div>
               <?php endif ?>
               <?php if ($parametro['id'] == 5): ?>
@@ -496,15 +496,15 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?>
                   <div class="radio">
-                  <label><input type="radio" name="area_alm[<?php echo $parametro['id'] ?>]" id="area_alm" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                  <label><input type="radio" name="area_alm[<?php echo $parametro['id'] ?>]" id="area_alm" value="0" <?php echo $checked0; ?> disabled required> No</label>
-                  <label><input type="radio" name="area_alm[<?php echo $parametro['id'] ?>]" id="area_alm" value="2" <?php echo $checked2; ?> disabled required> No aplica</label>
+                  <label><input type="radio" name="area_alm[<?php echo $parametro['id'] ?>]" id="area_alm" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                  <label><input type="radio" name="area_alm[<?php echo $parametro['id'] ?>]" id="area_alm" value="0" <?php echo $checked0; ?> disabled > No</label>
+                  <label><input type="radio" name="area_alm[<?php echo $parametro['id'] ?>]" id="area_alm" value="2" <?php echo $checked2; ?> disabled > No aplica</label>
                   </div>
                   <label for="alcantarillado[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
                 <div class="col-sm-3">
                   <label>Disposición final de residuos</label>
-                  <input type="text" name="final_residuos[<?php echo $parametro['id'] ?>]" id="final_residuos" class="form-control" value="<?php echo $parametros[$parametro['id']]['final_residuos'] ?>" readonly required>
+                  <input type="text" name="final_residuos[<?php echo $parametro['id'] ?>]" id="final_residuos" class="form-control" value="<?php echo $parametros[$parametro['id']]['final_residuos'] ?>" readonly >
                 </div>
               <?php endif ?>
               <?php if ($parametro['id'] == 6): ?>
@@ -528,15 +528,15 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?>
                   <div class="radio">
-                  <label><input type="radio" name="lavado_manos[<?php echo $parametro['id'] ?>]" id="lavado_manos" value="1"  <?php echo $checked1; ?> disabled required> Si</label>
-                  <label><input type="radio" name="lavado_manos[<?php echo $parametro['id'] ?>]" id="lavado_manos" value="0" <?php echo $checked0; ?> disabled required> No</label>
-                  <label><input type="radio" name="lavado_manos[<?php echo $parametro['id'] ?>]" id="lavado_manos" value="2" <?php echo $checked2; ?> disabled required> No aplica</label>
+                  <label><input type="radio" name="lavado_manos[<?php echo $parametro['id'] ?>]" id="lavado_manos" value="1"  <?php echo $checked1; ?> disabled > Si</label>
+                  <label><input type="radio" name="lavado_manos[<?php echo $parametro['id'] ?>]" id="lavado_manos" value="0" <?php echo $checked0; ?> disabled > No</label>
+                  <label><input type="radio" name="lavado_manos[<?php echo $parametro['id'] ?>]" id="lavado_manos" value="2" <?php echo $checked2; ?> disabled > No aplica</label>
                   </div>
                   <label for="lavado_manos[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
                 <div class="col-sm-3">
                   <label>Estado</label>
-                  <input type="text" name="estado_lavadomanos[<?php echo $parametro['id'] ?>]" id="estado_lavadomanos" class="form-control" value="<?php echo $parametros[$parametro['id']]['estado_lavadomanos'] ?>" readonly required>
+                  <input type="text" name="estado_lavadomanos[<?php echo $parametro['id'] ?>]" id="estado_lavadomanos" class="form-control" value="<?php echo $parametros[$parametro['id']]['estado_lavadomanos'] ?>" readonly >
                 </div>
                 <div class="col-sm-3">
                   <label>¿Implementos de aseo necesarios?</label>
@@ -558,8 +558,8 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?>
                   <div class="radio">
-                  <label><input type="radio" name="manos_implemento_aseo[<?php echo $parametro['id'] ?>]" id="manos_implemento_aseo" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                  <label><input type="radio" name="manos_implemento_aseo[<?php echo $parametro['id'] ?>]" id="manos_implemento_aseo" value="0" <?php echo $checked0; ?> disabled required> No</label>
+                  <label><input type="radio" name="manos_implemento_aseo[<?php echo $parametro['id'] ?>]" id="manos_implemento_aseo" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                  <label><input type="radio" name="manos_implemento_aseo[<?php echo $parametro['id'] ?>]" id="manos_implemento_aseo" value="0" <?php echo $checked0; ?> disabled > No</label>
                   </div>
                   <label for="manos_implemento_aseo[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
@@ -583,14 +583,14 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?>
                   <div class="radio">
-                  <label><input type="radio" name="bano_manipuladoras[<?php echo $parametro['id'] ?>]" id="bano_manipuladoras" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                  <label><input type="radio" name="bano_manipuladoras[<?php echo $parametro['id'] ?>]" id="bano_manipuladoras" value="0" <?php echo $checked0; ?> disabled required> No</label>
+                  <label><input type="radio" name="bano_manipuladoras[<?php echo $parametro['id'] ?>]" id="bano_manipuladoras" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                  <label><input type="radio" name="bano_manipuladoras[<?php echo $parametro['id'] ?>]" id="bano_manipuladoras" value="0" <?php echo $checked0; ?> disabled > No</label>
                   </div>
                   <label for="bano_manipuladoras[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
                 <div class="col-sm-3">
                   <label>Estado</label>
-                  <input type="text" name="estado_bano[<?php echo $parametro['id'] ?>]" id="estado_bano" class="form-control" value="<?php echo $parametros[$parametro['id']]['estado_bano'] ?>" readonly required>
+                  <input type="text" name="estado_bano[<?php echo $parametro['id'] ?>]" id="estado_bano" class="form-control" value="<?php echo $parametros[$parametro['id']]['estado_bano'] ?>" readonly >
                 </div>
                 <div class="col-sm-3">
                   <label>¿Implementos de aseo necesarios?</label>
@@ -612,8 +612,8 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                     }
                    ?>
                   <div class="radio">
-                  <label><input type="radio" name="bano_implemento_aseo[<?php echo $parametro['id'] ?>]" id="bano_implemento_aseo" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                  <label><input type="radio" name="bano_implemento_aseo[<?php echo $parametro['id'] ?>]" id="bano_implemento_aseo" value="0" <?php echo $checked0; ?> disabled required> No</label>
+                  <label><input type="radio" name="bano_implemento_aseo[<?php echo $parametro['id'] ?>]" id="bano_implemento_aseo" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                  <label><input type="radio" name="bano_implemento_aseo[<?php echo $parametro['id'] ?>]" id="bano_implemento_aseo" value="0" <?php echo $checked0; ?> disabled > No</label>
                   </div>
                   <label for="bano_implemento_aseo[<?php echo $parametro['id'] ?>]" class="error"></label>
                 </div>
@@ -647,8 +647,8 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                           }
                          ?>
                         <div class="radio">
-                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="0" <?php echo $checked0; ?> disabled required> No</label>
+                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="0" <?php echo $checked0; ?> disabled > No</label>
                         </div>
                         <label for="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" class="error"></label>
                       </div>
@@ -672,8 +672,8 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                           }
                          ?>
                         <div class="radio">
-                        <label><input type="radio" name="en_uso[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="en_uso" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                        <label><input type="radio" name="en_uso[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="en_uso" value="0" <?php echo $checked0; ?> disabled required> No</label>
+                        <label><input type="radio" name="en_uso[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="en_uso" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                        <label><input type="radio" name="en_uso[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="en_uso" value="0" <?php echo $checked0; ?> disabled > No</label>
                         </div>
                         <label for="en_uso[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" class="error"></label>
                       </div>
@@ -697,20 +697,20 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                           }
                          ?>
                         <div class="radio">
-                        <label><input type="radio" name="funciona[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="funciona" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                        <label><input type="radio" name="funciona[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="funciona" value="0" <?php echo $checked0; ?> disabled required> No</label>
+                        <label><input type="radio" name="funciona[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="funciona" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                        <label><input type="radio" name="funciona[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="funciona" value="0" <?php echo $checked0; ?> disabled > No</label>
                         </div>
                         <label for="funciona[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" class="error"></label>
                       </div>
                       <?php if ($parametro['id'] == 2): ?>
                         <div class="col-sm-3">
                           <label>Tipo</label>
-                          <input type="text" name="tipo[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tipo" class="form-control" value="<?php echo $infoDotaciones[$parametro['id']][$dotacion]['tipo']; ?>" readonly required>
+                          <input type="text" name="tipo[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tipo" class="form-control" value="<?php echo $infoDotaciones[$parametro['id']][$dotacion]['tipo']; ?>" readonly >
                         </div>
                       <?php endif ?>
                       <div class="col-sm-3">
                         <label>Capacidad</label>
-                        <input type="text" name="capacidad[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="capacidad" class="form-control" value="<?php echo $infoDotaciones[$parametro['id']][$dotacion]['capacidad']; ?>" readonly required>
+                        <input type="text" name="capacidad[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="capacidad" class="form-control" value="<?php echo $infoDotaciones[$parametro['id']][$dotacion]['capacidad']; ?>" readonly >
                       </div>
                       <?php else: ?>
                       <div class="col-sm-3">
@@ -733,9 +733,9 @@ if ($resultadoParametrosInfraestructura->num_rows > 0) {
                           }
                          ?>
                         <div class="radio">
-                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="1" <?php echo $checked1; ?> disabled required> Si</label>
-                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="0" <?php echo $checked0; ?> disabled required> No</label>
-                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="2" <?php echo $checked2; ?> disabled required> No aplica</label>
+                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="1" <?php echo $checked1; ?> disabled > Si</label>
+                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="0" <?php echo $checked0; ?> disabled > No</label>
+                        <label><input type="radio" name="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" id="tiene" value="2" <?php echo $checked2; ?> disabled > No aplica</label>
                         </div>
                         <label for="tiene[<?php echo $parametro['id']; ?>][<?php echo $dotacion; ?>]" class="error"></label>
                       </div>

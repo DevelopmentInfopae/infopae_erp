@@ -8,13 +8,16 @@ if ($permisos['entrega_complementos'] == "0") {
 <?php 
 exit(); }
 else {
-?>	<script type="text/javascript">
-      	const list = document.querySelector(".li_entrega_complementos");
-      	list.className += " active ";
-    </script>
+  ?><script type="text/javascript">
+    const list = document.querySelector(".li_entrega_complementos");
+    list.className += " active ";
+    const list2 = document.querySelector(".li_controlAsistencia");
+    list2.className += " active ";
+    const list3 = document.querySelector(".li_certificadoInstitucion");
+    list3.className += " active ";
+  </script>
 <?php
 }
-
 require_once '../../db/conexion.php'; // establecemos la conexion
 set_time_limit (0); // seteamos el limite de tiempo de ejecucion en todo el recurso
 ini_set('memory_limit','6000M');

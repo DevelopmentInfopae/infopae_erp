@@ -663,7 +663,7 @@ if ($cantGruposEtarios == 5) {
 	$mesAnno = $mes.$anno;
 	$ruta = '';
 
-	$corteDeVariables = 16;
+	$corteDeVariables = 15;
 	if(isset($_POST['rutaNm']) && $_POST['rutaNm']!= ''){ $ruta = $_POST['rutaNm']; }
 	if(isset($_POST['seleccionarVarios'])){ $corteDeVariables++; }
 	if(isset($_POST['informeRuta'])){ $corteDeVariables++; }

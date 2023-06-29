@@ -27,7 +27,6 @@ else {
   ];
 
   $nameLabel = get_titles('ordenCompra', 'ordenCompra', $labels);
-
 ?>
 
 <style type="text/css">
@@ -41,7 +40,7 @@ else {
 		<h2><?= $nameLabel; ?></h2>
 		<ol class="breadcrumb">
 		  	<li>
-				<a href="<?php echo $baseUrl; ?>">Home</a>
+				<a href="<?php echo $baseUrl; ?>">Inicio</a>
 		  	</li>
 		  	<li class="active">
 				<strong><?= $nameLabel ?></strong>
@@ -142,8 +141,22 @@ else {
 											<option value="<?php echo $_SESSION['periodoActualCompleto']; ?>"><?php echo $_SESSION['periodoActualCompleto']; ?></option>
 									  </select>
 									</div>
-									<div class="col-sm-6 col-md-5 nopadding">
-										<input type="text" name="mesfText" id="mesfText" value="mm" readonly="readonly" class="form-control">
+									<div class="col-sm-5 nopadding">
+									<select name="mesfText" id="mesfText" class="form-control select2 mesfText">
+											<option value="1" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 1) {echo " selected "; } ?>>Enero</option>
+											<option value="2" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 2) {echo " selected "; } ?>>Febrero</option>
+											<option value="3" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 3) {echo " selected "; } ?>>Marzo</option>
+											<option value="4" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 4) {echo " selected "; } ?>>Abril</option>
+											<option value="5" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 5) {echo " selected "; } ?>>Mayo</option>
+											<option value="6" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 6) {echo " selected "; } ?>>Junio</option>
+											<option value="7" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 7) {echo " selected "; } ?>>Julio</option>
+											<option value="8" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 8) {echo " selected "; } ?>>Agosto</option>
+											<option value="9" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 9) {echo " selected "; } ?>>Septiembre</option>
+											<option value="10" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 10) {echo " selected "; } ?>>Octubre</option>
+											<option value="11" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 11) {echo " selected "; } ?>>Noviembre</option>
+											<option value="12" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 12) {echo " selected "; } ?>>Diciembre</option>
+										</select>
+										<!-- <input type="text" name="mesfText" id="mesfText" value="mm" readonly="readonly" class="form-control"> -->
 										<input type="hidden" name="mesf" id="mesf" value="">
 									</div>
 									<div class="col-sm-6 col-md-3 nopadding">
@@ -380,13 +393,15 @@ else {
 																de.rutaMunicipio,
 																de.Tipo_Complem, 
 																vm.descripcion AS descVariacion,
-																td.Descripcion AS tipodespacho_nm, 
+																(SELECT Descripcion FROM tipo_despacho WHERE id = de.tipodespacho) AS tipodespacho_nm, 
+																de.estado,
 																p.Nitcc AS Nitcc,
-																p.Nombrecomercial AS Nombrecomercial
+																p.Nombrecomercial AS Nombrecomercial,
+																de.bodega AS bodegaId,
+																(SELECT NOMBRE FROM bodegas WHERE ID = de.bodega LIMIT 1) AS bodega
 															FROM orden_compra_enc$tablaMes$tablaAnno de 
 															LEFT JOIN sedes$tablaAnno s ON s.cod_sede = de.cod_Sede 
 															LEFT JOIN ubicacion u ON u.codigoDANE = s.cod_mun_sede AND u.ETC = 0 
-															LEFT JOIN tipo_despacho td ON td.Id = de.tipodespacho 
 															LEFT JOIN variacion_menu vm on vm.id = de.cod_variacion_menu
 															LEFT JOIN proveedores p on p.Nitcc = de.proveedor ";
 
@@ -463,7 +478,7 @@ else {
 										$consulta = $consulta." and s.cod_sede = '".$sede."' ";
 				  					}
 
-				  					if(isset($_GET["pb_tipoDespacho"]) && $_GET["pb_tipoDespacho"] != "" ){
+				  					if(isset($_GET["pb_tipoDespacho"]) && $_GET["pb_tipoDespacho"] != "99" ){
 										$tipoDespacho = $_GET["pb_tipoDespacho"];
 										$consulta = $consulta." and TipoDespacho = ".$tipoDespacho." ";
 				  					}
@@ -509,6 +524,8 @@ else {
 										<th class="text-center">Tipo Ración</th>
 										<th class="text-center">Variación</th>
 										<th class="text-center">Tipo Alimento</th>
+										<th class="text-center">Bodega</th>
+										<th class="text-center">Estado</th>
 										<th class="text-center">Documento Proveedor</th>
 										<th class="text-center">Nombre Proveedor</th>
 									</tr>
@@ -529,6 +546,8 @@ else {
 										<th>Tipo Ración</th>
 										<th>Variación</th>
 										<th>Tipo Alimento</th>
+										<th>Bodega</th>
+										<th>Estado</th>
 										<th>Documento Proveedor</th>
 										<th>Nombre Proveedor</th>
 									</tr>
@@ -545,6 +564,32 @@ else {
 		</div><!-- /.col-lg-12 -->
   	</div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
+
+<div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+  	<div class="modal-dialog modal-sm">
+    	<div class="modal-content">
+      		<div class="modal-header text-info" style="padding: 15px;">
+        		<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        		<h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
+      		</div>
+      		<div class="modal-body">
+				<?php if($_SESSION['p_inventory'] != 0): ?>
+					<p class="text-center">¿Esta seguro de eliminar la orden?, si la orden esta recibida, <strong> afectara el inventario de la bodega </strong></p>
+				<?php else: ?>
+					<p class="text-center"><strong> ¿Esta seguro de eliminar la orden? </strong></p>
+				<?php endif; ?>		
+      		</div>
+      		<div class="modal-footer">
+        		<input type="hidden" id="anno_eliminar">
+        		<input type="hidden" id="mes_eliminar">
+        		<input type="hidden" id="num_oco_eliminar">
+        		<input type="hidden" id="estado_eliminar">
+        		<button type="button" class="btn btn-danger btn-outline btn-sm" data-dismiss="modal ">Cancelar</button>
+        		<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="deleteOrden();">Aceptar</button>
+      		</div>
+    	</div>
+  	</div>
+</div>
 
 <?php include '../../footer.php'; ?>
 
@@ -566,9 +611,16 @@ else {
 	$(document).ready(function(){
 		<?php if ($_SESSION['perfil'] == "0" || $permisos['orden_compra'] == "1" || $permisos['orden_compra'] == "2"): ?>
 			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';			
-			botonAcciones += '<li> <a href="#" onclick="ordenesConsolidado()"> <i class="fa fa-file-pdf-o"></i> Consolidado</a> </li>';
+			botonAcciones += '<li> <a href="#" onclick="despachoPorSede()"> <i class="fa fa-file-pdf-o fa-lg"></i> &nbsp Individual</a> </li>';
+			botonAcciones += '<li> <a href="#" onclick="ordenesConsolidado()"> <i class="fa fa-file-pdf-o fa-lg"></i> &nbsp Consolidado</a> </li>';
+			botonAcciones += '<li class="divider"></li>';
 			<?php if ($_SESSION['perfil'] == "0" || $permisos['orden_compra'] == "2"): ?>
-				botonAcciones += '<li> <a href="#" onclick="eliminar_orden()"> <i class="fa fa-trash"></i> Eliminar Orden</a> </li>';
+				botonAcciones += '<li> <a href="#" onclick="editar_orden()"> <i class="fas fa-pencil-alt fa-lg"></i> &nbsp Editar Orden</a> </li>';
+				botonAcciones += '<li> <a href="#" onclick="eliminar_orden()"> <i class="fa fa-trash fa-lg"></i>&nbsp Eliminar Orden</a> </li>';
+				<?php if ($_SESSION['p_inventory'] != "0" && $permisos['orden_compra'] == "2"): ?>
+				botonAcciones += '<li class="divider"></li>';
+				botonAcciones += '<li> <a href="#" onclick="recibir_orden()"> <i class="fa fa-download fa-lg"></i>&nbsp Recibir Orden</a> </li>';
+				<?php endif ?>
 			<?php endif ?>
 			botonAcciones += '</ul></div>';
 			$('.containerBtn').html(botonAcciones);
@@ -591,6 +643,11 @@ else {
   <input type="hidden" name="MesIC" id="MesIC" value="">
   <input type="hidden" name="imprimirMesIC" id="imprimirMesIC" value="">
   <input type="hidden" name="ordenesCompra" id="ordenesCompra" value="">
+</form>
+
+<form action="orden_de_compra_editar.php" method="post"  id="ordenCompraEditar" target="_self">
+  <input type="hidden" name="Num_oco" id="Num_oco" value="">
+  <input type="hidden" name="mesi" id="mesi" value="">
 </form>
 
 <form action="ordenes_de_compra.php" id="parametrosBusqueda" method="get">

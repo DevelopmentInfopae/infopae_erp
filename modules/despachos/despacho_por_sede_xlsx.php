@@ -155,7 +155,7 @@ if ($cantGruposEtarios == 5) {
    $anno = substr($anno, -2);
    $anno = trim($anno);
    $mesAnno = $mes.$anno;
-   $corteDeVariables = 16;
+   $corteDeVariables = 15;
    if(isset($_POST['seleccionarVarios'])){
       $corteDeVariables++;
    }

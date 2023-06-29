@@ -9,11 +9,16 @@ if(isset($_POST['institucion']) && $_POST['institucion'] != ''){
 	$institucion = mysqli_real_escape_string($Link, $_POST['institucion']);
 }
 
+$sede = '';
+if(isset($_POST['sede']) && $_POST['sede'] != ''){
+	$sede = mysqli_real_escape_string($Link, $_POST['sede']);
+}
+
 $validacion = '';
 if(isset($_POST['validacion']) && $_POST['validacion'] != ''){
 	$validacion = mysqli_real_escape_string($Link, $_POST['validacion']);
 }
-
+// exit(var_dump($_POST));
 $opciones = "<option value=\"\">Seleccione uno</option>";
 $sedesAuxiliar = "";
 if ($_SESSION['perfil'] == "8") {
@@ -30,7 +35,7 @@ if ($_SESSION['perfil'] == "8") {
 	}
 }
 
-$consulta = " select cod_sede, nom_sede from sedes$periodoActual where 1=1 ";
+$consulta = " SELECT cod_sede, nom_sede FROM sedes$periodoActual WHERE 1=1 ";
 
 if($validacion == 'Tablet'){
 	$consulta.= " and (tipo_validacion = \"$validacion\" or tipo_validacion = \"Lector de Huella\" ) ";
@@ -39,17 +44,16 @@ if($validacion == 'Tablet'){
 		$consulta.= " and tipo_validacion = \"$validacion\" ";
 	}
 }
-$consulta.= " and cod_inst = \"$institucion\" ";
+$consulta.= " AND cod_inst = \"$institucion\" ";
 
 if ($sedesAuxiliar != "") {
 	$consulta .= " AND cod_sede IN $sedesAuxiliar ";
 }
 
-$consulta = $consulta." order by nom_sede asc ";
-echo $consulta;
+$consulta = $consulta." ORDER BY nom_sede ASC ";
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){ ?>	
-		<option value="<?= $row['cod_sede'] ?>"> <?= $row['nom_sede'] ?> </option>
+		<option value="<?= $row['cod_sede'] ?>" <?= ($sede == $row['cod_sede']) ? ' selected ' : '' ?> > <?= $row['nom_sede'] ?> </option>
 	<?php }
 }

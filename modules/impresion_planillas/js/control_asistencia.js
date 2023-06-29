@@ -14,6 +14,10 @@ $( document ).ready(function() {
 
 	$(document).on('change','#mes', function(){
 		$('#semana_inicial').select2('val','');
+
+		var tipo = $('#tipoRacion').val();
+		var municipio = $("#municipio").val();
+		buscar_institucion(municipio,tipo,$(this).val());
 	})
 
     $(document).on('change', '#semana_inicial', function () { 
@@ -27,20 +31,22 @@ $( document ).ready(function() {
 	$('#municipio').change(function() {
 		var tipo = $('#tipoRacion').val();
 		var municipio = $(this).val();
+		var mes = $('#mes').val();
 		$('#municipioNm').val($("#municipio option:selected").text());
 		$('#institucion').select2('val','');
-		buscar_institucion(municipio,tipo);
+
+		buscar_institucion(municipio,tipo,mes);
 	});
 	
     $('#municipio').trigger('change');
 
 	$('#institucion').change(function(){
+		$('#sede').select2('val','');
 		var institucion = $(this).val();
 		var municipio = $('#municipio').val();
 		var sede = $('#sede').val();
 		var mes = $('#mes').val();
-		$('#sede').select2('val','');
-		buscar_sede(municipio, institucion);
+		buscar_sede(municipio, institucion, mes);
 		buscar_complemento(institucion, sede, mes);
 	});
 
@@ -148,8 +154,8 @@ function actualizarDiasCampo() {
 	$('#diaFinalSemanaFinal').val(diafinalSemanaFinal);
 }
 
-function buscar_institucion(municipio,tipo){
-  var datos = {"municipio":municipio,"tipo":tipo};
+function buscar_institucion(municipio,tipo,mes){
+  var datos = {"municipio":municipio,"tipo":tipo, "mes":mes};
     $.ajax({
       type: "POST",
       url: "functions/fn_buscar_institucion.php",
@@ -160,6 +166,7 @@ function buscar_institucion(municipio,tipo){
       success: function(data){
         //$('#debug').html(data);
         $('#institucion').html(data);
+		$('#loader').fadeOut();
       }
     })
     .done(function(){ })
@@ -169,8 +176,8 @@ function buscar_institucion(municipio,tipo){
     });
 }
 
-function buscar_sede(municipio, institucion){
-  var datos = {"municipio":municipio,"institucion":institucion};
+function buscar_sede(municipio, institucion, mes){
+  var datos = {"municipio":municipio,"institucion":institucion, "mes":mes};
     $.ajax({
       type: "POST",
       url: "functions/fn_buscar_sede.php",

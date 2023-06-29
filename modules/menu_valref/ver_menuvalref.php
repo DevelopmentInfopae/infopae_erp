@@ -8,6 +8,15 @@ if ($permisos['menus'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+  ?><script type="text/javascript">
+      const list = document.querySelector(".li_menus");
+      list.className += " active ";
+    const list2 = document.querySelector(".li_aportesCaloricos");
+      list2.className += " active ";
+  </script>
+  <?php
+  }
 
 if(isset($_POST['idvalref'])){$idvalref = $_POST['idvalref'];} else {echo "<script>alert('Error al obtener datos de aportes calóricos y nutricionales');location.href='index.php';</script>";}
 
@@ -87,7 +96,11 @@ $titulo = $nameLabel. ' - Ver';
                 if ($resGrupoEtario->num_rows > 0) {
                   if ($grupoEtario = $resGrupoEtario->fetch_assoc()) {
                     ?>
-                    <input type="text" name="" value="<?php echo $grupoEtario['DESCRIPCION']; ?>" class="form-control" readonly>
+                    <?php if($_SESSION['p_gruposCalculos'] == 1): ?>
+                      <input type="text" name="" value="<?php echo $grupoEtario['DESCRIPCION']; ?>" class="form-control" readonly>
+                    <?php else: ?>
+                      <input type="text" name="" value="<?php echo $grupoEtario['equivalencia_grado']; ?>" class="form-control" readonly>
+                    <?php endif; ?>
                     <?php }
                 }
                  ?>

@@ -42,7 +42,7 @@ for ($i=1; $i <= $cantGruposEtarios ; $i++) {
 	}
 }
 
-if ( $_FILES['foto']['size'][0] > 0 ) {
+if ( $_FILES['foto']['size'][0] > 0 ) { 
    $reporte = null;
    for($x=0; $x<count($_FILES["foto"]["name"]); $x++) {
 	   $file = $_FILES["foto"];
@@ -67,7 +67,7 @@ if ( $_FILES['foto']['size'][0] > 0 ) {
         	$reporte .= "<p style='color: red'>Error, el tamaño máximo permitido es 200 KB </p>";
 			$bandera++;
 	   }
-		if($bandera == 0) {
+		if($bandera == 0) { 
 			$consulta = "INSERT INTO novedades_priorizacion (
 									num_novedad,
 									id_usuario,
@@ -99,7 +99,7 @@ if ( $_FILES['foto']['size'][0] > 0 ) {
 			$aux = $_POST['observaciones'];
 			$consulta .= " '$aux', ";
 			$consulta .= " '$carpeta', ";
-			$consulta .= " 1 ) ";
+			$consulta .= " 1 ) "; 
 			$Link->query($consulta) or die ('Error insertando la novedad de priorización.'. mysqli_error($Link));
 			$nuevoId = $Link->insert_id;
 
@@ -126,7 +126,7 @@ if ( $_FILES['foto']['size'][0] > 0 ) {
 				}
 			}
 			$consulta = trim($consulta,', ');
-			$consulta .= " WHERE cod_sede = $sede AND mes = '$mes' AND semana = '$semanaSC' ";
+			$consulta .= " WHERE cod_sede = $sede AND mes = '$mes' AND semana = '$semanaSC' "; 
 			$Link->query($consulta) or die ('Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede '. mysqli_error($Link));
 
 			if($nuevoId > 0){
@@ -186,7 +186,7 @@ else {
 	$aux = $_POST['observaciones'];
 	$consulta .= " '$aux', ";
 	$consulta .= " '$carpeta', ";
-	$consulta .= " 1 ) "; 
+	$consulta .= " 1 ) ";  
 	$Link->query($consulta) or die ('Error insertando la novedad de priorización.'. mysqli_error($Link));
 	$nuevoId = $Link->insert_id;
 
@@ -216,5 +216,5 @@ else {
 	$consulta .= " WHERE cod_sede = $sede AND mes = '$mes' AND semana = '$semanaSC' "; 
 	$Link->query($consulta) or die ("Error al actualizar sedes cobertura para la semana $semanaSC, mes $mes, sede $sede ". mysqli_error($Link));
 }
-
+// exit(var_dump($consulta));
 echo json_encode(array("log"=>$log, "respuesta"=>$respuesta, "reporte"=>$reporte));

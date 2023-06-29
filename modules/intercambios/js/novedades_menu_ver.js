@@ -1,3 +1,13 @@
+
+toastr.options = { 
+	newestOnTop: true, 
+	closeButton: false, 
+	progressBar: true, 
+	preventDuplicates: false, 
+	showMethod: 'slideDown', 
+	timeOut: 2500, 
+};
+
 function crearNovedadPriorizacion(){
   window.open('novedades_priorizacion_crear.php', '_self');
 }

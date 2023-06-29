@@ -8,6 +8,15 @@ if ($permisos['menus'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+  ?><script type="text/javascript">
+      const list = document.querySelector(".li_menus");
+      list.className += " active ";
+    const list2 = document.querySelector(".li_aportesCaloricos");
+      list2.className += " active ";
+  </script>
+  <?php
+  }
 
 if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<script>location.href='$baseUrl';</script>"; } 
 
@@ -79,9 +88,16 @@ $titulo = $nameLabel.' - Editar';
                 if ($resGrupoEtario->num_rows > 0) {
                   if ($grupoEtario = $resGrupoEtario->fetch_assoc()) {
                     ?>
-                    <input type="text" name="" value="<?php echo $grupoEtario['DESCRIPCION']; ?>" class="form-control" readonly>
-                    <input type="hidden" name="grupoEtario" value="<?php echo $grupoEtario['ID']; ?>">
-                    <input type="hidden" name="nomGETA" value="<?php echo $grupoEtario['DESCRIPCION']; ?>">
+                    <?php if($_SESSION['p_gruposCalculos'] == 1): ?>
+                      <input type="text" name="" value="<?php echo $grupoEtario['DESCRIPCION']; ?>" class="form-control" readonly>
+                      <input type="hidden" name="grupoEtario" value="<?php echo $grupoEtario['ID']; ?>">
+                      <input type="hidden" name="nomGETA" value="<?php echo $grupoEtario['DESCRIPCION']; ?>">
+                    <?php else: ?>
+                      <input type="text" name="" value="<?php echo $grupoEtario['equivalencia_grado']; ?>" class="form-control" readonly>
+                      <input type="hidden" name="grupoEtario" value="<?php echo $grupoEtario['ID']; ?>">
+                      <input type="hidden" name="nomGETA" value="<?php echo $grupoEtario['equivalencia_grado']; ?>">
+                    <?php endif; ?>
+
                     <?php }
                 }
                  ?>

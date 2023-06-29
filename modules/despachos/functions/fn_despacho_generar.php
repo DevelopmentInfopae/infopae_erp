@@ -6,7 +6,7 @@ include 'fn_funciones.php';
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 // phpinfo();
-// exit(var_dump($_POST));
+// exit(var_dump($_SESSION));
 // Vamos a usar una veriable bandera para determinar si finalmente se pueden hacer las inserciónes.
 $tipo = '';
 $dias = '';
@@ -111,6 +111,7 @@ if($existe <= 0){
 									`FechaDoc` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
 									`BodegaOrigen` bigint(20) unsigned DEFAULT '0', 
 									`BodegaDestino` bigint(20) unsigned DEFAULT '0', 
+									`Complemento` varchar(25) DEFAULT '' COLLATE 'utf8_general_ci', 
 									`Nombre` varchar(200) DEFAULT '' COLLATE 'utf8_general_ci', 
 									`Nitcc` varchar(20) DEFAULT '' COLLATE 'utf8_general_ci', 
 									`Concepto` text DEFAULT'' COLLATE 'utf8_general_ci', 
@@ -130,6 +131,7 @@ if($existe <= 0){
 									`ResponsableRecibe` varchar(45) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci', 
 									`NumCompra` int(10) unsigned DEFAULT '0', 
 									`fecha_despacho` varchar(150), 
+									`fecha_envio` DATE, 
 								INDEX `Documento` (`Documento`, `Numero`),	
 								PRIMARY KEY (`Id`) 
 								)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci  ";
@@ -1076,12 +1078,18 @@ foreach ($variaciones as $id => $variacion) {
 		date_default_timezone_set('America/Bogota');
 		$fecha = date("Y-m-d H:i:s");
 
-// *************************** INSERCIONES TABLAS PRODUCTOS MOV ***********************************************************//
-		// exit(var_dump($consecutivos));
+		// *************************** INSERCIONES TABLAS PRODUCTOS MOV ***********************************************************//
 		for ($i=0; $i < count($sedes); $i++){
 			$bodegaDestino = $sedes[$i];
 			$consecutivo = $consecutivos[$i];
-			$consulta = " insert into productosmov$annoMes (Nombre, Nitcc, Tipo, Documento, Numero, BodegaOrigen, BodegaDestino, Aprobado, NombreResponsable, LoginResponsable, FechaMYSQL, TipoTransporte, Placa, ResponsableRecibe) values ('$nombre','$documento','$tipoDocumento',   'DES', $consecutivo, $bodegaOrigen, $bodegaDestino, 1, '$usuario', '$login', '$fecha', $tipoTransporte, '$placa', '$conductor') ";
+			$consulta = " INSERT INTO productosmov$annoMes (Nombre, Nitcc, Tipo, Documento, Numero, 
+															BodegaOrigen, BodegaDestino, Complemento, Aprobado, 
+															NombreResponsable, LoginResponsable, FechaMYSQL, 
+															TipoTransporte, Placa, ResponsableRecibe) 
+													VALUES ('$nombre', '$documento', '$tipoDocumento',  
+															'DES', $consecutivo, $bodegaOrigen, $bodegaDestino, '$tipo',
+															1, '$usuario', '$login', '$fecha', $tipoTransporte, 
+															'$placa', '$conductor') ";
 				$resultado = $Link->query($consulta) or die ('Unable to execute query. - Inserción productosmov '. mysqli_error($Link)." ".$consulta);
 		}
 
@@ -1092,6 +1100,7 @@ foreach ($variaciones as $id => $variacion) {
 		for ($i=0; $i < count($sedesCobertura) ; $i++) {
 			$auxItem = 1;
 			for ($j=0; $j < count($complementosCantidades) ; $j++){
+				$cantidadAuxiliar = 0;
 				$cantidad = 0;
 				$auxConsulta = '';
 				$auxConsulta = $auxConsulta." ( ";
@@ -1104,33 +1113,125 @@ foreach ($variaciones as $id => $variacion) {
 				$codigo = $auxAlimento['codigo'];
 				$bodegaDestino = $sede['cod_sede'];
 				$componente = $auxAlimento['Componente'];
-
 				for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
 					$grupoIndex = "grupo".$m;
-					if (isset($auxAlimento[$grupoIndex])) {
-						$t[$m] = $auxAlimento[$grupoIndex] * $sede[$grupoIndex];
+					$indexGrupo = "grupo".$m;
+					for ($n=1; $n <= 25 ; $n++) { 
+						$grupoDiaIndex = "grupo".$m."_d".$n;
+						$d[$n] = $auxAlimento[$grupoDiaIndex] * ($sede[$grupoIndex]);
+						/******* desde aca manejamos el redondeo *******/	
+						if ($_SESSION['p_redondeo_remision'] != '0') { // entramos cuando este parametrizado el redondeo
+							if ($_SESSION['p_tipo_redondeo_remision'] == '1') { // entramos cuando el tipo sea por dias
+								if ($auxAlimento['redondeo'] == '1') { // entramos cuando el alimento tenga el redondeo activo
+									$rango = 0;
+									switch ($_SESSION['p_rango_redondeo_remision']) {
+										case ('1'):
+											$rango = 1;
+										break;
+										case ('2'):
+											$rango = 10;
+										break;
+										case ('3'):
+											$rango = 100;
+										break;
+									}
+									if ($_SESSION['p_redondeo_remision'] == '1') { // entramos cuando el redondeo sea hacia arriba
+										if ($d[$n] > 0) {
+											$d[$n] = (ceil((string)($auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]))*$rango))/$rango;
+										}
+									}
+									if ($_SESSION['p_redondeo_remision'] == '2') { // entramos cuando el rango sea hacia abajo	
+										if ($d[$n] > 0) {
+											$d[$n] = (intval(strval(($auxAlimento[$grupoDiaIndex] * $sede[$indexGrupo]) * $rango )))/$rango;
+										}
+									}												
+								}
+							}
+						}
+					}
+					
+					$d1 = $d[1];
+					$d2 = $d[2];
+					$d3 = $d[3];
+					$d4 = $d[4];
+					$d5 = $d[5];
+					$d6 = $d[6];
+					$d7 = $d[7];
+					$d8 = $d[8];
+					$d9 = $d[9];
+					$d10 = $d[10];
+					$d11 = $d[11];
+					$d12 = $d[12];
+					$d13 = $d[13];
+					$d14 = $d[14];
+					$d15 = $d[15];
+					$d16 = $d[16];
+					$d17 = $d[17];
+					$d18 = $d[18];
+					$d19 = $d[19];
+					$d20 = $d[20];
+					$d21 = $d[21];
+					$d22 = $d[22];
+					$d23 = $d[23];
+					$d24 = $d[24];
+					$d25 = $d[25];
+					$cantidad = $d1  + $d2  + $d3  + $d4  + $d5  + 
+								$d6  + $d7  + $d8  + $d9  + $d10 + 
+								$d11 + $d12 + $d13 + $d14 + $d15 + 
+								$d16 + $d17 + $d18 + $d19 + $d20 + 
+								$d21 + $d22 + $d23 + $d24 + $d25;
+					/****** si el alimento no tiene redondeo no entra igual si no esta parametrizado el redondeo tampoco entrara y la cantidad no se modificara *****/									
+					
+					/******* desde aca manejamos el redondeo *******/	
+					if ($_SESSION['p_redondeo_remision'] != '0') { // entramos cuando este parametrizado el redondeo
+						if ($_SESSION['p_tipo_redondeo_remision'] == '2') { // entramos cuando el tipo sea por totales
+							if ($auxAlimento['redondeo'] == '1') { // entramos cuando el alimento tenga el redondeo activo
+								$rango = 0;
+								switch ($_SESSION['p_rango_redondeo_remision']) {
+									case (1):
+										$rango = 1;
+									break;
+									case (2):
+										$rango = 10;
+									break;
+									case (3):
+										$rango = 100;
+									break;
+								}	
+								if ($_SESSION['p_redondeo_remision'] == '1') { // entramos cuando el redondeo sea hacia arriba
+									if ($cantidad > 0) {
+										$cantidad = (ceil((string)(($cantidad)*$rango)))/$rango;
+									}
+	
+								}
+								if ($_SESSION['p_redondeo_remision'] == '2') { // entramos cuando el rango sea asi abajo
+									if ($cantidad > 0) {
+										$cantidad = (intval(strval(($cantidad)*$rango)))/$rango;
+									}
+								}
+							}
+						}
 					}
 					if (isset($sede['grupo'.$m]) && $sede['grupo'.$m] > 0) {
 						$cantidadGruposCobertura++;
 					}
-				}
+					$cantidadAuxiliar += $cantidad;
+				} // for grupos etarios
+				
+				/****** si el alimento no tiene redondeo no entra igual si no esta parametrizado el redondeo tampoco entrara y la cantidad no se modificara *****/
 
-				// Inicio ajuste contramuestra
-				if( stristr($auxAlimento['grupo_alim'], 'Contramuestra') !== FALSE ){
-					// vamos a validar cuantos grupos traen cobertura 
-					$auxContramuestra = 1 / $cantidadGruposCobertura;
-					for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
-						$grupoIndex = "grupo".$m;
-						if (isset($auxAlimento[$grupoIndex])) {
-							$t[$m] = $auxAlimento[$grupoIndex] * $auxContramuestra;
-						}
-					}
-				}
-					
-				// Termina ajuste contramuestra
-				for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
-					$cantidad = $cantidad + $t[$m];
-				}
+				/************************** Inicio ajuste contramuestra ***************************/
+				/**/if( stristr($auxAlimento['grupo_alim'], 'Contramuestra') !== FALSE ){     	/**/
+				/**/	// vamos a validar cuantos grupos traen cobertura 						/**/
+				/**/	$auxContramuestra = 1 / $cantidadGruposCobertura;						/**/
+				/**/	for ($m=1; $m <= $cantGruposEtarios ; $m++) { 							/**/
+				/**/		$grupoIndex = "grupo".$m;											/**/
+				/**/		if (isset($auxAlimento[$grupoIndex])) {								/**/
+				/**/			$t[$m] = $auxAlimento[$grupoIndex] * $auxContramuestra;			/**/
+				/**/		}																	/**/
+				/**/	}																		/**/
+				/**/}																			/**/
+				/***************************** Fin ajuste contramuestra ***************************/
 
 				$unidad = $auxAlimento['unidadMedida'];
 				$factor = $auxAlimento['factor'];
@@ -1140,12 +1241,16 @@ foreach ($variaciones as $id => $variacion) {
 				// se hacen movimientos tambien en este archivo para generar las remisiones con cualquier cantidad de grupos etarios
 				include 'fn_despacho_generar_presentaciones.php';
 
-				$cantidadAuxiliar = number_format($cantidad,8, '.' , '' );
-				$auxConsulta = $auxConsulta." 'DES', $consecutivo, $auxItem, '$codigo', '$componente', $cantidadAuxiliar, $bodegaOrigen, $bodegaDestino, '$presentacion', $cantidadAuxiliar, $factor, $necesario2, $necesario3, $necesario4, $necesario5, $tomadoTotal ";
+				// $cantidadAuxiliar = $cantidad;
+				$auxConsulta = $auxConsulta." 	'DES', $consecutivo, $auxItem, 
+												'$codigo', '$componente', $cantidadAuxiliar, 
+												$bodegaOrigen, $bodegaDestino, '$presentacion', 
+												$cantidadAuxiliar, $factor, $necesario2, 
+												$necesario3, $necesario4, $necesario5, $tomadoTotal ";
 				$auxItem++;
 				$auxConsulta = $auxConsulta." ) ";
-
-				if($cantidad > 0){
+				
+				if($cantidadAuxiliar > 0){
 					if($banderaPrimero == 0){
 						$banderaPrimero++;
 					}else{
@@ -1153,15 +1258,14 @@ foreach ($variaciones as $id => $variacion) {
 					}
 					$consulta = $consulta.$auxConsulta; 
 				} 
-			}
-		}
-		// echo $consulta;
+				// exit(var_dump($consulta));
+			} // iteracion de los alimentos
+		}  // iteracion de la cobertura
+		
 		$resultado = $Link->query($consulta) or die ('Unable to execute query - Inserción en productosmovdet '. mysqli_error($Link));
+		// ***************************************************** FIN INSERCIONES TABLAS PRODUCTOS *********************************************************//
 
-// ***************************************************** FIN INSERCIONES TABLAS PRODUCTOS *********************************************************//
-
-// ************************************************ INSERCIONES TABLAS DESPACHOS ******************************************************************//
-
+		// ***************************************************** INSERCIONES TABLAS DESPACHOS *************************************************************//
 		/************************* Modificación que agregar 3 campos mas para la tabla despachos_encMESAÑO *************************/
 		// Consulta que inserta los registros en la tabla despachos_encMESAÑO.
 		$concatCobertura_G = '';
@@ -1336,6 +1440,37 @@ foreach ($variaciones as $id => $variacion) {
 							for ($n=1; $n <= 25 ; $n++) { 
 								$grupoDiaIndex = "grupo".$m."_d".$n;
 								$d[$n] = $auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]);
+								
+								/******* desde aca manejamos el redondeo *******/	
+								if ($_SESSION['p_redondeo_remision'] != '0') { // entramos cuando este parametrizado el redondeo
+									if ($_SESSION['p_tipo_redondeo_remision'] == '1') { // entramos cuando el tipo sea por dias
+										if ($auxAlimento['redondeo'] == '1') { // entramos cuando el alimento tenga el redondeo activo
+											$rango = 0;
+											switch ($_SESSION['p_rango_redondeo_remision']) {
+												case ('1'):
+													$rango = 1;
+												break;
+												case ('2'):
+													$rango = 10;
+												break;
+												case ('3'):
+													$rango = 100;
+												break;
+											}
+											if ($_SESSION['p_redondeo_remision'] == '1') { // entramos cuando el redondeo sea hacia arriba
+												if ($d[$n] > 0) {
+													$d[$n] = (ceil((string)($auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]))*$rango))/$rango;
+												}
+											}
+											if ($_SESSION['p_redondeo_remision'] == '2') { // entramos cuando el rango sea hacia abajo	
+												if ($d[$n] > 0) {
+													$d[$n] = (intval(strval(($auxAlimento[$grupoDiaIndex] * $sede[$indexGrupo])*$rango)))/$rango;
+												}
+											}												
+										}
+									}
+								}
+								/****** si el alimento no tiene redondeo no entra igual si no esta parametrizado el redondeo tampoco entrara y la cantidad no se modificara *****/									
 							}
 							$d1 = $d[1];
 							$d2 = $d[2];
@@ -1363,6 +1498,38 @@ foreach ($variaciones as $id => $variacion) {
 							$d24 = $d[24];
 							$d25 = $d[25];
 							$cantidad = $d1 + $d2 + $d3 + $d4 + $d5 + $d6 + $d7 + $d8 + $d9 + $d10 + $d11 + $d12 + $d13 + $d14 + $d15 + $d16 + $d17 + $d18 + $d19 + $d20 + $d21 + $d22 + $d23 + $d24 +$d25;
+
+							/******* desde aca manejamos el redondeo *******/	
+							if ($_SESSION['p_redondeo_remision'] != '0') { // entramos cuando este parametrizado el redondeo
+								if ($_SESSION['p_tipo_redondeo_remision'] == 2) { // entramos cuando el tipo sea por totales
+									if ($auxAlimento['redondeo'] == '1') { // entramos cuando el alimento tenga el redondeo activo
+										$rango = 0;
+										switch ($_SESSION['p_rango_redondeo_remision']) {
+											case (1):
+												$rango = 1;
+											break;
+											case (2):
+												$rango = 10;
+											break;
+											case (3):
+												$rango = 100;
+											break;
+										}	
+										if ($_SESSION['p_redondeo_remision'] == '1') { // entramos cuando el redondeo sea hacia arriba
+											if ($cantidad > 0) {
+												$cantidad = (ceil((string)(($cantidad)*$rango)))/$rango;
+											}
+										}
+										if ($_SESSION['p_redondeo_remision'] == '2') { // entramos cuando el rango sea asi abajo
+											if ($cantidad > 0) {
+												$cantidad = (intval(strval(($cantidad)*$rango)))/$rango;
+											}
+										}
+									}
+								}
+							}
+							/****** si el alimento no tiene redondeo no entra igual si no esta parametrizado el redondeo tampoco entrara y la cantidad no se modificara *****/
+
 							$consulta = $consulta." 'DES',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5, $d6, $d7, $d8, $d9, $d10, $d11, $d12, $d13, $d14, $d15, $d16, $d17, $d18, $d19, $d20, $d21, $d22, $d23, $d24, $d25";
 							$consulta = $consulta." ) ";
 						}

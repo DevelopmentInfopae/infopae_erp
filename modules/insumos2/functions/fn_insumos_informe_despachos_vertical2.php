@@ -570,9 +570,9 @@ if ($cantGruposEtarios == '5') {
 				$anchoOperador = 65;
 			}else if($this->Rpc != 'RPC'){$anchoOperador = 84;}
 			$this->SetFont('Arial','B',8);
-			$this->Cell(25,4,utf8_decode('OPERADOR: '),'BL',0,'L');
+			$this->Cell(20,4,utf8_decode('OPERADOR: '),'BL',0,'L');
 			$this->SetFont('Arial','',8);
-			$this->Cell($anchoOperador,4,utf8_decode($_SESSION['p_Operador']),'BR',0,'L');
+			$this->Cell($anchoOperador,4,utf8_decode(substr($_SESSION['p_Operador'],0,48 )),'BR',0,'L');
 			$this->SetFont('Arial','B',8);
 			$this->Cell(19,4,utf8_decode('CONTRATO:'),'B',0,'L');
 			$this->SetFont('Arial','',8);

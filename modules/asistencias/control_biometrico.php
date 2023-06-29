@@ -1,10 +1,28 @@
 <?php
-$titulo = "Control dispositivos biométricos";
-include '../../header.php';
-include 'functions/fn_fecha_asistencia.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
+  	include '../../header.php';
+	require_once 'functions/fn_fecha_asistencia.php';
+  	set_time_limit (0);
+  	ini_set('memory_limit','6000M');
+  	$periodoActual = $_SESSION['periodoActual'];
 
+  	if ($permisos['asistencia'] == "0") {
+?>		<script type="text/javascript">
+  			window.open('<?= $baseUrl ?>', '_self');
+		</script>
+<?php 
+	exit(); 
+	}
+
+	else {
+?>		<script type="text/javascript">
+      		const list = document.querySelector(".li_asistencia");
+      		list.className += " active ";
+			const list2 = document.querySelector(".li_dispositivosBiometricosControl");
+      		list2.className += " active ";
+    	</script>
+<?php
+}
+$titulo = "Control dispositivos biométricos";
 $periodoActual = $_SESSION["periodoActual"];
 $institucionNombre = "";
 $dia = $diaAsistencia;
@@ -50,7 +68,7 @@ $mesTablaAsistencia = $mes;
 $annoTablaAsistencia = $anno2d;
 include 'functions/fn_validar_existencias_tablas.php';
 
-$nameLabel = get_titles('asistencia', 'dispositivosBiometricos', $labels);
+$nameLabel = get_titles('asistencia', 'dispositivosBiometricosControl', $labels);
 $titulo = $nameLabel;
 ?>
 <link rel="stylesheet" href="css/custom.css?v=<?= $cacheBusting; ?>">

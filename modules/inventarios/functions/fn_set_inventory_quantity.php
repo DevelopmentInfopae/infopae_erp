@@ -12,11 +12,16 @@ $bodega = (isset($_POST["bodega"]) && $_POST["bodega"] != "") ? $_POST["bodega"]
 $complemento = (isset($_POST["complemento"]) && $_POST["complemento"] != "") ? $_POST["complemento"] : "";
 
 // Validacion que no haya un inventario inicial
+$validacionComplementoI = '';
+if ($_SESSION['p_inventory'] == 2) { // en caso que el inventario sea por complemento 
+    $validacionComplementoI = " AND enc.complemento = '$complemento' ";
+}
+
 $consultaInventarioInicial = "SELECT id,  
                                      inventario_inicial,
                                      bodega  
                                 FROM inventarios_bodegas_enc enc 
-                                WHERE  enc.bodega = '$bodega' AND enc.municipio = '$municipio' AND enc.complemento = '$complemento'";
+                                WHERE  enc.bodega = '$bodega' AND enc.municipio = '$municipio' $validacionComplementoI ";
 
 $respuestaInventarioInicial = $Link->query($consultaInventarioInicial);
 if($respuestaInventarioInicial->num_rows > 0){
@@ -70,8 +75,10 @@ if($respuestaInventarioInicial->num_rows > 0){
                 $resultadoCrearSedeCobertura = $Link->query(trim($consultaCrearInventarioDet, ",")) or die("Error insertar el inventario: ". $consultaCrearInventarioDet);
                 if($resultadoCrearSedeCobertura) {
                     $updateInventario = " UPDATE inventarios_bodegas_enc SET inventario_inicial = 1 
-                                            WHERE bodega = '"  .$dataInventarioInicial['bodega']. "' 
-                                            AND complemento = '$complemento' ";
+                                            WHERE bodega = '"  .$dataInventarioInicial['bodega']. "'";
+                    if ($_SESSION['p_inventory'] == 2) {
+                        $updateInventario .= " AND complemento = '$complemento' ";
+                    }
                     $resultadoUpdate = $Link->query($updateInventario) or die ('Unable to execute query. '. mysqli_error($Link));
                     if($resultadoUpdate) {
                         $resultadoAJAX = [

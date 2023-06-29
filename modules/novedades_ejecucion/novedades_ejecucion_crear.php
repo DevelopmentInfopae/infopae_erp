@@ -8,12 +8,16 @@
 		exit();
 	}
 	else {
-?>		<script type="text/javascript">
-			const list = document.querySelector(".li_novedades");
-			list.className += " active ";
-		</script>
-<?php
-	}
+        ?><script type="text/javascript">
+          const list = document.querySelector(".li_novedades");
+          list.className += " active ";
+          const list2 = document.querySelector(".li_focalizacion");
+          list2.className += " active ";
+          const list3 = document.querySelector(".li_focalizacion_submenu");
+          list3.className += " active ";
+        </script>
+        <?php
+        }
 
 	require_once '../../db/conexion.php';
 	set_time_limit (0);

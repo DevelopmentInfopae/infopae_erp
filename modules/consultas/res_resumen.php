@@ -80,32 +80,32 @@
 ?>
 
 <div class="row">
-  <div class="col-sm-12 form-group">
-    <div class="table-responsive">
-    <?php $columnas = 3;  ?>
-      <table width="100%" id="box-table-dr" class="table table-striped table-bordered table-hover">
-        <thead>
-          <tr>
-            <th>Municipio</th>
-            <th>Institución</th>
-            <th>Sede</th>
-            <?php if ($mes == date("m")) {  ?>
-               <?php 
-                  for ($i=1; $i <=31 ; $i++) { 
-               ?>      
-                  <?php if ($rowDias['D'.$i] >= 1 && $rowDias['D'.$i]<= date("d")): ?>
-                     <th> <?= $rowDias['D'.$i]; ?> </th> <?= $columnas++; ?>       
-                  <?php endif ?>    
-               <?php          
-                  }
-               ?>
+   <div class="col-sm-12 form-group">
+      <div class="table-responsive">
+      <?php $columnas = 3;  ?>
+         <table width="100%" id="box-table-dr" class="table table-striped table-bordered table-hover">
+            <thead>
+               <tr>
+                  <th>Municipio</th>
+                  <th>Institución</th>
+                  <th>Sede</th>
+                  <?php if ($mes == date("m")) {   ?>
+                     <?php 
+                        for ($i=1; $i <=31 ; $i++) { 
+                     ?>      
+                     <?php if ($rowDias['D'.$i] >= 1 && $rowDias['D'.$i]<= date("d")): ?>
+                              <th> <?= $rowDias['D'.$i]; ?> </th> <?php $columnas++; ?>       
+                     <?php endif ?>    
+                  <?php          
+                     }
+                  ?>
 
             <?php } else {  ?>
                <?php 
                   for ($i=1; $i <=31 ; $i++) { 
                ?>      
                   <?php if ($rowDias['D'.$i] >= 1): ?>
-                     <th> <?= $rowDias['D'.$i]; ?> </th> <?= $columnas++; ?>       
+                     <th> <?= $rowDias['D'.$i]; ?> </th> <?php $columnas++; ?>       
                   <?php endif ?>    
                <?php          
                   }

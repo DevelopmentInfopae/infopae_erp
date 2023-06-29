@@ -13,8 +13,7 @@
 		</script>
 	  <?php
 	  }
-
-	include '../../db/conexion.php';
+	  
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
 	$periodoActual = $_SESSION['periodoActual'];
@@ -205,8 +204,8 @@
 
 						<div class="row">
 							<div class="col-sm-3 form-group">
-								<button type="button" id="btnAgregar" class="botonParametro btn btn-primary">+</button>
-								<button type="button" id="btnQuitar" class="botonParametro btn btn-primary">-</button>
+								<button type="button" id="btnAgregar" class="botonParametro btn btn-primary"> + </button>
+								<button type="button" id="btnQuitar" class="botonParametro btn btn-danger"> - </button>
 							</div><!-- /.col -->
 						</div><!-- -/.row -->
 						

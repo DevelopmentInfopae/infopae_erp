@@ -1,5 +1,14 @@
-$(document).ready(function(){
+toastr.options = { 
+	newestOnTop: true, 
+	closeButton: false, 
+	progressBar: true, 
+	preventDuplicates: false, 
+	showMethod: 'slideDown', 
+	timeOut: 2500, 
+};
 
+$(document).ready(function(){
+	$('select').select2();
 	datatables = $('.dataTablesNovedadesPriorizacion').DataTable({
 		buttons: [ {	
 					extend: 'excel', 
@@ -64,7 +73,7 @@ $(document).ready(function(){
 	}
 
 	if(sessionStorage.getItem("infopae_mes") != null){
-		$( "#mes" ).val(sessionStorage.getItem("infopae_mes"));
+		$( "#mes" ).select2('val', sessionStorage.getItem("infopae_mes"));
 		cargarSemanas();	
 	}
 
@@ -74,7 +83,7 @@ $(document).ready(function(){
 	});
 
 	if(sessionStorage.getItem("infopae_semana") != null){
-		$( "#semana" ).val(sessionStorage.getItem("infopae_semana"));
+		$( "#semana" ).select2('val', sessionStorage.getItem("infopae_semana"));
 	}
 
 	$( "#semana" ).change(function() {
@@ -82,7 +91,7 @@ $(document).ready(function(){
 	});
 
 	if(sessionStorage.getItem("infopae_estado") != null){
-		$( "#estado" ).val(sessionStorage.getItem("infopae_estado"));
+		$( "#estado" ).select2('val', sessionStorage.getItem("infopae_estado"));
 	}
 
 	$( "#estado" ).change(function() {
@@ -90,7 +99,7 @@ $(document).ready(function(){
 	});
 
 	if(sessionStorage.getItem("infopae_complemento") != null){
-		$( "#complemento" ).val(sessionStorage.getItem("infopae_complemento"));
+		$( "#complemento" ).select2('val', sessionStorage.getItem("infopae_complemento"));
 	}
 
 	$( "#complemento" ).change(function() {
@@ -98,7 +107,7 @@ $(document).ready(function(){
 	});
 
 	if(sessionStorage.getItem("infopae_tipoNovedad") != null){
-		$( "#tipoNovedad" ).val(sessionStorage.getItem("infopae_tipoNovedad"));
+		$( "#tipoNovedad" ).select2('val', sessionStorage.getItem("infopae_tipoNovedad"));
 	}
 
 	$( "#tipoNovedad" ).change(function() {
@@ -121,7 +130,7 @@ function cargarSemanas(){
 		success: function(data){
 			if(data.estado == 1){
 				$('#semana').html(data.opciones);
-				$('#semana').val(sessionStorage.getItem("infopae_semana"));
+				$('#semana').select2('val', sessionStorage.getItem("infopae_semana"));
 				sessionStorage.setItem("infopae_semana", $("#semana").val());
 				$('#loader').fadeOut();
 			}

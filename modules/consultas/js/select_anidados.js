@@ -449,6 +449,10 @@ function abrir_ventana_exportar_entregas(){
   $('#ventana_formulario_exportar_entregas').modal();
 }
 
+function abrir_ventana_exportar_x(){
+  $('#ventana_formulario_exportar_x').modal();
+}
+
 function buscarSemanasMesExportar(control){
   $.ajax({
     type: "post",
@@ -473,5 +477,14 @@ function exportar_entregas(){
 
     window.open('functions/fn_sedes_exportar_entregas.php?mes='+mes+'&semana='+semana+'&zona='+zona, '_blank');
 
+  }
+}
+
+
+function exportar_entregas_x(){
+  if ($('#formulario_exportar_x').valid()) {
+    var mes = $('#mes_exportar_x').val();
+    var zona = $('#zona_exportar_x').val();
+    window.open('functions/fn_sedes_exportar_x.php?mes='+mes+'&zona='+zona, '_blank');
   }
 }

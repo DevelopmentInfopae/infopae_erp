@@ -9,6 +9,7 @@ $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(40,$tamannoFuente,utf8_decode($_SESSION['p_CodDepartamento']),0,0,'L',False);
 if($codigoSede){ 	
 	if(isset($sedes[$codigoSede])){ 
+		$codigo_DANE = $sedes[$codigoSede]['codigo_DANE'];
 		$nombre_sede = $sedes[$codigoSede]['nom_sede'];
 		$codigo_sede = $codigoSede;
 		$nombre_institucion = $sedes[$codigoSede]['nom_inst'];
@@ -82,14 +83,20 @@ if ($tipoPlanilla != 6 && $tipoPlanilla != 1 && $tipoPlanilla != 9){
 }
 //Código para obtener el total programado en el mes seleccionado, búsqueda por Tipo de complemento, Sede y Mes.
 
+// $pdf->SetFont('Arial','B',$tamannoFuente);
+// $pdf->Cell(35,$tamannoFuente,utf8_decode('NOMBRE SEDE:'),0,0,'L',False);
+// $pdf->SetFont('Arial','',$tamannoFuente);
+// $pdf->Cell(90,$tamannoFuente,utf8_decode($nombre_sede),0,0,'L',False);
+// $pdf->SetFont('Arial','B',$tamannoFuente);
+// $pdf->Cell(20,$tamannoFuente,utf8_decode('CÓDIGO DANE:'),0,0,'L',False);
+// $pdf->SetFont('Arial','',$tamannoFuente);
+// $pdf->Cell(0,$tamannoFuente,utf8_decode($codigo_sede),0,0,'L',False);
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(35,$tamannoFuente,utf8_decode('NOMBRE SEDE:'),0,0,'L',False);
+$pdf->Cell(65,$tamannoFuente,utf8_decode('NOMBRE INSTITUCIÓN O CENTRO EDUCATIVO:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(90,$tamannoFuente,utf8_decode($nombre_sede),0,0,'L',False);
-$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(20,$tamannoFuente,utf8_decode('CÓDIGO DANE:'),0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(0,$tamannoFuente,utf8_decode($codigo_sede),0,0,'L',False);
+$pdf->Cell(0,$tamannoFuente,utf8_decode($nombre_institucion).' --  '.utf8_decode($nombre_sede) ,0,0,'L',False);
+
 $pdf->Ln(5);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(30,$tamannoFuente,utf8_decode('MUNICIPIO:'),0,0,'L',False);
@@ -99,15 +106,13 @@ $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(26,$tamannoFuente,utf8_decode('CÓDIGO DANE:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
 $pdf->Cell(40,$tamannoFuente,utf8_decode($_POST['municipio']),0,0,'L',False);
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(35,$tamannoFuente,utf8_decode('NOMBRE INSTITUCIÓN:'),0,0,'L',False);
+$pdf->Cell(65,$tamannoFuente,utf8_decode('CÓDIGO DANE:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(90,$tamannoFuente,utf8_decode($nombre_institucion),0,0,'L',False);
-$pdf->SetFont('Arial','B',$tamannoFuente);
-$pdf->Cell(20,$tamannoFuente,utf8_decode('CÓDIGO DANE:'),0,0,'L',False);
-$pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(0,$tamannoFuente,utf8_decode($codigo_institucion),0,0,'L',False);
+$pdf->Cell(0,$tamannoFuente,utf8_decode($codigo_DANE),0,0,'L',False);
 $pdf->Ln(5);
+
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(30,$tamannoFuente,utf8_decode('OPERADOR:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
@@ -139,95 +144,112 @@ $pdf->Ln(5);
 $pdf->SetFont('Arial','B',$tamannoFuente);
 $pdf->Cell(30,$tamannoFuente,utf8_decode('CONTRATO N°:'),0,0,'L',False);
 $pdf->SetFont('Arial','',$tamannoFuente);
-$pdf->Cell(40,$tamannoFuente,utf8_decode($_SESSION['p_Contrato']),0,0,'L',False);
+$pdf->Cell(80,$tamannoFuente,utf8_decode($_SESSION['p_Contrato']),0,0,'L',False);
 
 $x = 3;
 // Condición que oculta o muestra la sección de información de las raciones.
 if ($tipoPlanilla == 1 || $tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4 || $tipoPlanilla == 5 || $tipoPlanilla == 7 || $tipoPlanilla == 8) {
 	$y = 40;
 	$altura = 5;
-	$pdf->SetXY($x, $y);
-	$pdf->Ln(10);
+	// $pdf->SetXY($x, $y);
+	$pdf->Ln(5);
+
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(72,$altura,utf8_decode('RACIONES MENSUALES PROGRAMADAS ALMUERZOS:'),0,0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(20,$altura,(($tipoComplemento == "APS") && ($tipoPlanilla != 1) ? $totalProgramadoMes : "" ), "B", 0, 'C', False);
+
+	// $pdf->Cell(10);
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS ALMUERZOS:'),0,0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// if ($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
+	// $pdf->Cell(20,$altura,(($tipoComplemento == "APS" && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8)) ? $totales['entregas'] : "" ), "B", 0, 'C', False);
+	// $pdf->SetTextColor(0,0,0);
+
+	// $pdf->Cell(10);
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(30,$altura,utf8_decode("PREPARAR EN SITIO:"),0,0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(5,$altura,(($tipoComplemento == "APS") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
+
+	// $pdf->Cell(10);
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(30,$altura,utf8_decode("INDUSTRIALIZADA:"),0,0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(5,$altura,'',1,1,'C',False);
 
 	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(72,$altura,utf8_decode('RACIONES MENSUALES PROGRAMADAS ALMUERZOS:'),0,0,'L',False);
-	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(20,$altura,(($tipoComplemento == "APS") && ($tipoPlanilla != 1) ? $totalProgramadoMes : "" ), "B", 0, 'C', False);
-
-	$pdf->Cell(10);
-	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS ALMUERZOS:'),0,0,'L',False);
-	$pdf->SetFont('Arial','',$tamannoFuente);
-	if ($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
-	$pdf->Cell(20,$altura,(($tipoComplemento == "APS" && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8)) ? $totales['entregas'] : "" ), "B", 0, 'C', False);
-	$pdf->SetTextColor(0,0,0);
-
-	$pdf->Cell(10);
-	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(30,$altura,utf8_decode("PREPARAR EN SITIO:"),0,0,'L',False);
-	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(5,$altura,(($tipoComplemento == "APS") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
-
-	$pdf->Cell(10);
-	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(30,$altura,utf8_decode("INDUSTRIALIZADA:"),0,0,'L',False);
-	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(5,$altura,'',1,1,'C',False);
-
-    $pdf->Ln(1);
-    
-	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(72,$altura,utf8_decode('RACIONES MENSUALES PROGRAMADAS CAJM:'),0,0,'L',False);
+	$pdf->Cell(80,$altura,utf8_decode('RACIONES  PROGRAMADOS COMPLEMENTO ALIMENTARIO:'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
 	$pdf->Cell(20,$altura,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla != 1) ? $totalProgramadoMes : ""), "B", 0, 'C', False);
 
+    $pdf->Ln(5);
+    
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Cell(25,$altura,utf8_decode('RACIONES ATENDIDAS:'),0,0,'L',False);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(20,$altura,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla != 1) ? $totalProgramadoMes : ""), "B", 0, 'C', False);
+
 	$pdf->Cell(10);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJM:'),0,0,'L',False);
+	$pdf->Cell(8,$altura,utf8_decode('AM.'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
 	if ($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
 	$pdf->Cell(20,$altura,(($tipoComplemento == "CAJMPS" || $tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8) ? $totales['entregas'] : "" ),"B",0,'C',False);
 	$pdf->SetTextColor(0,0,0);
 
-	$pdf->Cell(10);
-	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(30,$altura,utf8_decode("PREPARAR EN SITIO:"),0,0,'L',False);
-	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(5,$altura,(($tipoComplemento == "CAJMPS") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
+	// $pdf->Cell(10);
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(30,$altura,utf8_decode("PREPARAR EN SITIO:"),0,0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(5,$altura,(($tipoComplemento == "CAJMPS") && ($tipoPlanilla == 4) ? "X" : ""),1,0,'C',False);
 
-	$pdf->Cell(10);
-	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(30,$altura,utf8_decode("INDUSTRIALIZADA:"),0,0,'L',False);
-	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(5,$altura,(($tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4) ? "X" : ""),1,1,'C',False);
+	// $pdf->Cell(10);
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(30,$altura,utf8_decode("INDUSTRIALIZADA:"),0,0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(5,$altura,(($tipoComplemento == "CAJMRI") && ($tipoPlanilla == 4) ? "X" : ""),1,1,'C',False);
 
-	$pdf->Ln(1);
+	$pdf->Ln(5);
 
-	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(72,$altura,utf8_decode('RACIONES MENSUALES PROGRAMADAS CAJT:'),0,0,'L',False);
-	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(20,$altura,(($tipoComplemento == "CAJTRI" || $tipoComplemento == "CAJTPS") && ($tipoPlanilla != 1) ? $totalProgramadoMes : ""), "B", 0, 'C', False);
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(72,$altura,utf8_decode('RACIONES MENSUALES PROGRAMADAS CAJT:'),0,0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(20,$altura,(($tipoComplemento == "CAJTRI" || $tipoComplemento == "CAJTPS") && ($tipoPlanilla != 1) ? $totalProgramadoMes : ""), "B", 0, 'C', False);
 
-	$pdf->Cell(10);
+	$pdf->Cell(35);
 	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(69,$altura,utf8_decode('RACIONES MENSUALES ENTREGADAS CAJT:'),0,0,'L',False);
+	$pdf->Cell(8,$altura,utf8_decode('PM.'),0,0,'L',False);
 	$pdf->SetFont('Arial','',$tamannoFuente);
 	if ($tipoPlanilla == 3) { $pdf->SetTextColor(190,190,190); }
 	$pdf->Cell(20,$altura,(($tipoComplemento == "CAJTRI" || $tipoComplemento == "CAJTPS") && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8) ? $totales['entregas'] : "" ),"B",0,'C',False);
 	$pdf->SetTextColor(0,0,0);
 
-	$pdf->Cell(10);
-	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(30,$altura,utf8_decode("PREPARAR EN SITIO:"),0,0,'L',False);
-	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(5,$altura,(($tipoComplemento == "CAJTPS") && ($tipoPlanilla != 1) ? "X" : ""),1,0,'C',False);
+	$pdf->Ln(5);
+	// $pdf->Cell(10);
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(30,$altura,utf8_decode("PREPARAR EN SITIO:"),0,0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(5,$altura,(($tipoComplemento == "CAJTPS") && ($tipoPlanilla != 1) ? "X" : ""),1,0,'C',False);
 
-	$pdf->Cell(10);
-	$pdf->SetFont('Arial','B',$tamannoFuente);
-	$pdf->Cell(30,$altura,utf8_decode("INDUSTRIALIZADA:"),0,0,'L',False);
-	$pdf->SetFont('Arial','',$tamannoFuente);
-	$pdf->Cell(5,$altura,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? "X" : ""),1,1,'C',False);
+	// $pdf->Cell(10);
+	// $pdf->SetFont('Arial','B',$tamannoFuente);
+	// $pdf->Cell(30,$altura,utf8_decode("INDUSTRIALIZADA:"),0,0,'L',False);
+	// $pdf->SetFont('Arial','',$tamannoFuente);
+	// $pdf->Cell(5,$altura,(($tipoComplemento == "CAJTRI") && ($tipoPlanilla != 1) ? "X" : ""),1,1,'C',False);
 
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Cell(80,$altura,utf8_decode('RACIONES PROGRAMADOS ALMUERZO:'),0,0,'L',False);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(20,$altura,(($tipoComplemento == "APS") && ($tipoPlanilla != 1) ? $totalProgramadoMes : "" ), "B", 0, 'C', False);
+	$pdf->Ln(5);
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Cell(80,$altura,utf8_decode('RACIONES ENTREGADAS ALMUERZO:'),0,0,'L',False);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(20,$altura,(($tipoComplemento == "APS" && ($tipoPlanilla == 4 || $tipoPlanilla == 7 || $tipoPlanilla == 8)) ? $totales['entregas'] : "" ), "B", 0, 'C', False);
+
+	$pdf->Ln(5);
 
 } else {
 	$y = 40;

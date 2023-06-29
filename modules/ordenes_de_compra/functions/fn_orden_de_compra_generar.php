@@ -44,7 +44,7 @@ if(isset($_POST['bodegaOrigen']) && $_POST['bodegaOrigen'] != '') { $bodegaOrige
 if(isset($_POST['tipoTransporte']) && $_POST['tipoTransporte'] != '') { $tipoTransporte = $_POST['tipoTransporte']; }
 if(isset($_POST['conductor']) && $_POST['conductor'] != '') { $conductor = $_POST['conductor']; }
 if(isset($_POST['placa']) && $_POST['placa'] != '') { $placa = $_POST['placa']; }
-if(isset($_POST['bodega']) && $_POST['bodega'] != '') { $bodega = $_POST['bodega']; }
+if(isset($_POST['bodega']) && $_POST['bodega'] != '') { $bodega = $_POST['bodega']; } 
 if(isset($_POST['itemsDespacho']) && $_POST['itemsDespacho'] != '') { $sedes = $_POST['itemsDespacho']; $_SESSION['sedes'] = $sedes; }
 if(isset($_POST['itemsDespachoVariaciones']) && $_POST['itemsDespachoVariaciones'] != '') {
 	$sv = $_POST['itemsDespachoVariaciones'];
@@ -119,6 +119,7 @@ if($existe == 0) {
 										`Tipo_Doc` varchar(10) NOT NULL DEFAULT '',
 										`Num_Doc` int(10) unsigned NOT NULL,
 										`Num_OCO` int(10) unsigned NOT NULL,
+										`bodega` int(10) unsigned NOT NULL,
 										`proveedor` varchar(100) NOT NULL DEFAULT '',
 										`rutaMunicipio` varchar(100) NOT NULL DEFAULT '',
 										`Tipo` varchar(100) NOT NULL DEFAULT '',
@@ -126,6 +127,7 @@ if($existe == 0) {
 										`Nit` varchar(20) NOT NULL DEFAULT '',
 										`Concepto` varchar(500) NOT NULL,
 										`FechaHora_Elab` datetime NOT NULL,
+										`fecha_recibo` date NOT NULL,
 										`Id_Usuario` int(10) unsigned NOT NULL,
 										`cod_Sede` bigint(20) unsigned NOT NULL,
 										`Tipo_Complem` varchar(10) NOT NULL,
@@ -134,11 +136,12 @@ if($existe == 0) {
 										`Dias` varchar(200) NOT NULL DEFAULT '',
 										`Menus` varchar(200) NOT NULL DEFAULT '',
 										`Cobertura` int(10) unsigned DEFAULT '0',
-										`Estado` smallint(1) unsigned zerofill NOT NULL DEFAULT '1' COMMENT '1= DESPACHADO  0=ELIMINADO   2=PENDIENTE',
+										`Estado` smallint(1) unsigned zerofill NOT NULL DEFAULT '1' COMMENT '1= RECIBIDO  0=ELIMINADO   2=PENDIENTE',
 										`TipoDespacho` smallint(1) unsigned NOT NULL DEFAULT '5',
 										$concatGruposEtarios
+										INDEX `Tipo_Doc` (`Tipo_Doc`, `Num_Doc`),
 										PRIMARY KEY (`ID`)
-									)";
+									) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ";
 	$result = $Link->query($consulta) or die ('Unable to execute query: Crear tabla orden_compra_enc '. mysqli_error($Link));
 }
 
@@ -179,7 +182,100 @@ if($existe <= 0){
 											`D23` decimal(28,8) DEFAULT '0.00000000',
 											`D24` decimal(28,8) DEFAULT '0.00000000',
 											`D25` decimal(28,8) DEFAULT '0.00000000',
-										PRIMARY KEY (`id`) ) ";
+										PRIMARY KEY (`id`),
+										CONSTRAINT FK_orden_compra_det".$annoMes."_orden_compra".$annoMes." FOREIGN KEY (`Tipo_Doc`, `Num_Doc`) REFERENCES `orden_compra_enc$annoMes` (`Tipo_Doc`, `Num_Doc`) ON UPDATE CASCADE ON DELETE CASCADE
+										) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ";
+	$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+}
+
+// Se va ha buscar que existan cada una de las tablas, de lo contrario se crearan. Productos Mov
+$consulta = " show tables like 'productosmov$annoMes' ";
+$result = $Link->query($consulta) or die ('Error al consultar existencia de tablas productosmov: '. mysqli_error($Link));
+$existe = $result->num_rows;
+if($existe <= 0){
+	$consulta = " CREATE TABLE `productosmov$annoMes` ( 
+									`Documento` varchar(10) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Numero` int(10) DEFAULT '0', 
+									`Tipo` varchar(100) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`FechaDoc` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`BodegaOrigen` bigint(20) unsigned DEFAULT '0', 
+									`BodegaDestino` bigint(20) unsigned DEFAULT '0', 
+									`Complemento` varchar(25) DEFAULT '' COLLATE 'utf8_general_ci, 
+									`Nombre` varchar(200) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Nitcc` varchar(20) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Concepto` text DEFAULT'' COLLATE 'utf8_general_ci', 
+									`ValorTotal` decimal(20,2) DEFAULT '0.00', 
+									`Aprobado` tinyint(1) DEFAULT '0', 
+									`NombreResponsable` varchar(60) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`LoginResponsable` varchar(30) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`GeneraCompra` tinyint(1) DEFAULT '0', 
+									`DocOrigen` varchar(10) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`NumDocOrigen` int(10) unsigned DEFAULT '0', 
+									`NombreRED` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+									`FechaMYSQL` datetime DEFAULT NULL, 
+									`Anulado` tinyint(1) DEFAULT '0', 
+									`TipoTransporte` varchar(50) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Placa` varchar(10) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci', 
+									`ResponsableRecibe` varchar(45) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci', 
+									`NumCompra` int(10) unsigned DEFAULT '0', 
+									`fecha_despacho` varchar(150), 
+									`fecha_envio` DATE, 
+								INDEX `Documento` (`Documento`, `Numero`),	
+								PRIMARY KEY (`Id`) 
+								)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci  ";
+	$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+}
+
+// Productos Mov Det
+$consulta = " show tables like 'productosmovdet$annoMes' ";
+$result = $Link->query($consulta) or die ('Error al consultar existencia de tablas productosmovdet: '. mysqli_error($Link));
+$existe = $result->num_rows;
+if($existe <= 0){
+	$consulta = " CREATE TABLE `productosmovdet$annoMes` ( 
+									`Documento` varchar(10) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Numero` int(10) DEFAULT '0', 
+									`Item` int(10) unsigned DEFAULT '0', 
+									`CodigoProducto` varchar(20) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Descripcion` text NOT NULL COLLATE 'utf8_general_ci', 
+									`Cantidad` decimal(28,8) DEFAULT '0.00000000', 
+									`CantFacturada` decimal(28,8) DEFAULT '0.00000000', 
+									`ValorUnitario` decimal(18,2) DEFAULT '0.00', 
+									`CuentaInventario` varchar(30) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`CuentaContraPartida` varchar(30) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Facturado` tinyint(1) DEFAULT '0', 
+									`CentroCosto` varchar(10) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`BodegaOrigen` bigint(20) unsigned DEFAULT '0', 
+									`BodegaDestino` bigint(20) unsigned DEFAULT '0', 
+									`CantBodOrg` decimal(28,8) DEFAULT '0.00000000', 
+									`CantBodDest` decimal(28,8) DEFAULT '0.00000000', 
+									`Id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+									`Talla` varchar(5) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Color` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`CostoUnitario` decimal(10,2) DEFAULT '0.00', 
+									`NombreRED` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`Umedida` varchar(45) DEFAULT '' COLLATE 'utf8_general_ci', 
+									`CantUmedida` decimal(28,8) DEFAULT '0.0000', 
+									`Factor` decimal(28,8) DEFAULT '0.00000000', 
+									`Id_Usuario` int(10) unsigned DEFAULT '0',
+									`CostoTotal` decimal(20,2) DEFAULT '0.00',
+									`Lote` varchar(300) NOT NULL DEFAULT '' COLLATE 'utf8_general_ci',
+									`FechaVencimiento` varchar(300) DEFAULT NULL,
+									`CantU1` decimal(28,8) DEFAULT '0.00000000',
+									`CantU2` decimal(28,8) DEFAULT '0.00000000',
+									`CantU3` decimal(28,8) DEFAULT '0.00000000',
+									`CantU4` decimal(28,8) DEFAULT '0.00000000',
+									`CantU5` decimal(28,8) DEFAULT '0.00000000',
+									`CanTotalPresentacion` decimal(28,8) DEFAULT '0.00000000',
+									`Marca` VARCHAR(150) DEFAULT NULL,
+									`fecha_sacrificio` VARCHAR(300) NOT NULL DEFAULT '',
+									`fecha_empaque` VARCHAR(300) NOT NULL DEFAULT '',
+									`codigo_interno` VARCHAR(300) NOT NULL DEFAULT '',
+									`observacion` VARCHAR(300) NOT NULL DEFAULT '',
+								INDEX `Documento` (`Documento`, `Numero`),
+								PRIMARY KEY (`Id`),
+								CONSTRAINT FK_productosmovdet".$annoMes."_productosmov".$annoMes." FOREIGN KEY (`Documento`, `Numero`) REFERENCES `productosmov$annoMes` (`Documento`, `Numero`) ON UPDATE CASCADE ON DELETE CASCADE
+								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci ";						
 	$result = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 }
 
@@ -209,6 +305,15 @@ if ($tipo == "APS") {
 	}
 }else {
 	$variaciones = array(3); 
+}
+
+// array proveedores
+$consultaProveedores = " SELECT Nitcc, Nombrecomercial FROM proveedores "; 
+$respuestaProveedores = $Link->query($consultaProveedores) or die ('Error consultado proveedores Ln 311');
+if ($respuestaProveedores->num_rows > 0) {
+	while ($dataProveedores = $respuestaProveedores->fetch_assoc()) {
+		$proveedores[$dataProveedores['Nitcc']] = $dataProveedores['Nombrecomercial'];
+	}
 }
 
 $sedes_POST = $sedes;
@@ -574,117 +679,119 @@ foreach ($variaciones as $id => $variacion) {
 		} 
 		for ($i=1; $i <= $cantGruposEtarios ; $i++) { 	 // en este ciclo entra solo el primer item 
 			if($item["Cod_Grupo_Etario"] == $i){ 
+				$cantidadAuxiliar = $item['cantidad'];
 				$cantidadGrupoIndex = "cantidadGrupo".$i;
 				$grupoIndex = "grupo".$i;
 				$complementoCantidades[$cantidadGrupoIndex]++;
-				$complementoCantidades[$grupoIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+				$complementoCantidades[$grupoIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 				$complementoCantidades["total"] = $complementoCantidades[$grupoIndex];
 				$auxDias = $item["NOMDIAS"]; 
+
 				switch ($auxDias) {
 					// primer ciclo
 					case ("lunes1"):
 						$grupoDiaIndex = "grupo".$i."_d".'1';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("martes1"):
 						$grupoDiaIndex = "grupo".$i."_d".'2';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("miércoles1"):
 						$grupoDiaIndex = "grupo".$i."_d".'3';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("jueves1"):
 						$grupoDiaIndex = "grupo".$i."_d".'4';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("viernes1"):
 						$grupoDiaIndex = "grupo".$i."_d".'5';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					// segundo ciclo
 					case ("lunes2"):
 						$grupoDiaIndex = "grupo".$i."_d".'6';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("martes2"):
 						$grupoDiaIndex = "grupo".$i."_d".'7';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("miércoles2"):
 						$grupoDiaIndex = "grupo".$i."_d".'8';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("jueves2"):
 						$grupoDiaIndex = "grupo".$i."_d".'9';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("viernes2"):
 						$grupoDiaIndex = "grupo".$i."_d".'10';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					// tercer ciclo
 					case ("lunes3"):
 						$grupoDiaIndex = "grupo".$i."_d".'11';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("martes3"):
 						$grupoDiaIndex = "grupo".$i."_d".'12';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("miércoles3"):
 						$grupoDiaIndex = "grupo".$i."_d".'13';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("jueves3"):
 						$grupoDiaIndex = "grupo".$i."_d".'14';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("viernes3"):
 						$grupoDiaIndex = "grupo".$i."_d".'15';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					// cuarto ciclo
 					case ("lunes4"):
 						$grupoDiaIndex = "grupo".$i."_d".'16';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("martes4"):
 						$grupoDiaIndex = "grupo".$i."_d".'17';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("miércoles4"):
 						$grupoDiaIndex = "grupo".$i."_d".'18';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("jueves4"):
 						$grupoDiaIndex = "grupo".$i."_d".'19';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("viernes4"):
 						$grupoDiaIndex = "grupo".$i."_d".'20';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					// quinto ciclo
 					case ("lunes5"):
 						$grupoDiaIndex = "grupo".$i."_d".'21';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("martes5"):
 						$grupoDiaIndex = "grupo".$i."_d".'22';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("miércoles5"):
 						$grupoDiaIndex = "grupo".$i."_d".'23';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("jueves5"):
 						$grupoDiaIndex = "grupo".$i."_d".'24';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 					case ("viernes5"):
 						$grupoDiaIndex = "grupo".$i."_d".'25';
-						$complementoCantidades[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+						$complementoCantidades[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 					break;
 				}
 			}
@@ -703,11 +810,12 @@ foreach ($variaciones as $id => $variacion) {
 					$encontrado++; 
 					for ($n=1; $n <= $cantGruposEtarios; $n++) { 	
 						if($item["Cod_Grupo_Etario"] == $n){
+							$cantidadAuxiliar = $item['cantidad'];
 							$cantidadGrupoIndex = "cantidadGrupo".$n;
 							$grupoIndex = "grupo".$n;
 							$complemento[$cantidadGrupoIndex]++;
 							if (isset($complemento[$grupoIndex])) {
-								$complemento[$grupoIndex] = $complemento[$grupoIndex] + ($item['cantidad'] * $item['cantidadPresentacion']);
+								$complemento[$grupoIndex] = $complemento[$grupoIndex] + ($cantidadAuxiliar * $item['cantidadPresentacion']);
 								$complemento["total"] = $complemento["total"] + $complemento[$grupoIndex];
 							}
 							$auxDias = $item["NOMDIAS"];
@@ -715,107 +823,107 @@ foreach ($variaciones as $id => $variacion) {
 								// primer ciclo
 								case ("lunes1"):
 									$grupoDiaIndex = "grupo".$n."_d".'1';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("martes1"):
 									$grupoDiaIndex = "grupo".$n."_d".'2';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("miércoles1"):
 									$grupoDiaIndex = "grupo".$n."_d".'3';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("jueves1"):
 									$grupoDiaIndex = "grupo".$n."_d".'4';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("viernes1"):
 									$grupoDiaIndex = "grupo".$n."_d".'5';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								// segundo ciclo
 								case ("lunes2"):
 									$grupoDiaIndex = "grupo".$n."_d".'6';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("martes2"):
 									$grupoDiaIndex = "grupo".$n."_d".'7';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("miércoles2"):
 									$grupoDiaIndex = "grupo".$n."_d".'8';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("jueves2"):
 									$grupoDiaIndex = "grupo".$n."_d".'9';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("viernes2"):
 									$grupoDiaIndex = "grupo".$n."_d".'10';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								// tercer ciclo
 								case ("lunes3"):
 									$grupoDiaIndex = "grupo".$n."_d".'11';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("martes3"):
 									$grupoDiaIndex = "grupo".$n."_d".'12';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("miércoles3"):
 									$grupoDiaIndex = "grupo".$n."_d".'13';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("jueves3"):
 									$grupoDiaIndex = "grupo".$n."_d".'14';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("viernes3"):
 									$grupoDiaIndex = "grupo".$n."_d".'15';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								// cuarto ciclo
 								case ("lunes4"):
 									$grupoDiaIndex = "grupo".$n."_d".'16';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("martes4"):
 									$grupoDiaIndex = "grupo".$n."_d".'17';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("miércoles4"):
 									$grupoDiaIndex = "grupo".$n."_d".'18';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("jueves4"):
 									$grupoDiaIndex = "grupo".$n."_d".'19';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("viernes4"):
 									$grupoDiaIndex = "grupo".$n."_d".'20';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								// quinto ciclo
 								case ("lunes5"):
 									$grupoDiaIndex = "grupo".$n."_d".'21';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("martes5"):
 									$grupoDiaIndex = "grupo".$n."_d".'22';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("miércoles5"):
 									$grupoDiaIndex = "grupo".$n."_d".'23';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("jueves5"):
 									$grupoDiaIndex = "grupo".$n."_d".'24';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 								case ("viernes5"):
 									$grupoDiaIndex = "grupo".$n."_d".'25';
-									$complemento[$grupoDiaIndex] += $item['cantidad'] * $item['cantidadPresentacion'];
+									$complemento[$grupoDiaIndex] += $cantidadAuxiliar * $item['cantidadPresentacion'];
 								break;
 							}
 						}
@@ -861,11 +969,12 @@ foreach ($variaciones as $id => $variacion) {
 
 				for ($m=1; $m <= $cantGruposEtarios; $m++) { 
 					if($item["Cod_Grupo_Etario"] == $m){
+						$cantidadAuxiliar = $item['cantidad'];
 						$cantidadGrupoIndex = "cantidadGrupo".$m;
 						$grupoIndex = "grupo".$m;
 						$complementoNuevo[$cantidadGrupoIndex]=1;
 						if (isset($complementoNuevo[$grupoIndex])) {
-							$complementoNuevo[$grupoIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+							$complementoNuevo[$grupoIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							$complementoNuevo["total"] = $complementoNuevo[$grupoIndex];
 						}
 						$auxDias = $item["NOMDIAS"];
@@ -873,107 +982,107 @@ foreach ($variaciones as $id => $variacion) {
 							// primer ciclo
 							case ("lunes1"):
 								$grupoDiaIndex = "grupo".$m."_d".'1';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("martes1"):
 								$grupoDiaIndex = "grupo".$m."_d".'2';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("miércoles1"):
 								$grupoDiaIndex = "grupo".$m."_d".'3';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("jueves1"):
 								$grupoDiaIndex = "grupo".$m."_d".'4';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("viernes1"):
 								$grupoDiaIndex = "grupo".$m."_d".'5';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							// segundo ciclo
 							case ("lunes2"):
 								$grupoDiaIndex = "grupo".$m."_d".'6';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("martes2"):
 								$grupoDiaIndex = "grupo".$m."_d".'7';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("miércoles2"):
 								$grupoDiaIndex = "grupo".$m."_d".'8';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("jueves2"):
 								$grupoDiaIndex = "grupo".$m."_d".'9';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("viernes2"):
 								$grupoDiaIndex = "grupo".$m."_d".'10';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							// tercer ciclo
 							case ("lunes3"):
 								$grupoDiaIndex = "grupo".$m."_d".'11';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("martes3"):
 								$grupoDiaIndex = "grupo".$m."_d".'12';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("miércoles3"):
 								$grupoDiaIndex = "grupo".$m."_d".'13';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("jueves3"):
 								$grupoDiaIndex = "grupo".$m."_d".'14';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("viernes3"):
 								$grupoDiaIndex = "grupo".$m."_d".'15';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							// cuarto ciclo
 							case ("lunes4"):
 								$grupoDiaIndex = "grupo".$m."_d".'16';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("martes4"):
 								$grupoDiaIndex = "grupo".$m."_d".'17';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("miércoles4"):
 								$grupoDiaIndex = "grupo".$m."_d".'18';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("jueves4"):
 								$grupoDiaIndex = "grupo".$m."_d".'19';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("viernes4"):
 								$grupoDiaIndex = "grupo".$m."_d".'20';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							// quinto ciclo
 							case ("lunes5"):
 								$grupoDiaIndex = "grupo".$m."_d".'21';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("martes5"):
 								$grupoDiaIndex = "grupo".$m."_d".'22';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("miércoles5"):
 								$grupoDiaIndex = "grupo".$m."_d".'23';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("jueves5"):
 								$grupoDiaIndex = "grupo".$m."_d".'24';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 							case ("viernes5"):
 								$grupoDiaIndex = "grupo".$m."_d".'25';
-								$complementoNuevo[$grupoDiaIndex] = $item['cantidad'] * $item['cantidadPresentacion'];
+								$complementoNuevo[$grupoDiaIndex] = $cantidadAuxiliar * $item['cantidadPresentacion'];
 							break;
 						}
 					}
@@ -1005,6 +1114,211 @@ foreach ($variaciones as $id => $variacion) {
 		/* Actualizando el valor del consecutivo en la base de datos para futuros documentos */
 		$consulta = " UPDATE documentos SET consecutivo = $aux WHERE Tipo = 'OCOS' ";
 		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+
+		/* Insertando en productosmov$tablaAnno */
+		$annoActual = $_SESSION['periodoActual'];
+		date_default_timezone_set('America/Bogota');
+		$fecha = date("Y-m-d H:i:s");
+	
+		// *************************** INSERCIONES TABLAS PRODUCTOS MOV ***********************************************************//
+		for ($i=0; $i < count($sedes); $i++){
+			$bodegaDestino = $sedes[$i];
+			$consecutivo = $consecutivos[$i];
+			$consulta = " INSERT INTO productosmov$annoMes (Nombre, Nitcc, 
+															Tipo, Documento, 
+															Numero, BodegaOrigen, 
+															BodegaDestino, Complemento, Aprobado, 
+															NombreResponsable, LoginResponsable, 
+															FechaMYSQL, TipoTransporte, 
+															Placa, ResponsableRecibe) 
+													VALUES ('$proveedores[$documento]', '$documento', 
+															'Orden de Compra',  'OCOS', 
+															$consecutivo, $bodega, 
+															$bodegaDestino, '$tipo', 1, 
+															'$usuario', '$login', 
+															'$fecha', '', 
+															'', '') ";
+			$resultado = $Link->query($consulta) or die ('Unable to execute query. - Inserción productosmov '. mysqli_error($Link)." ".$consulta);
+		}
+	
+		/* Insertando en productosmovdet$annoMes */
+		$consulta = " insert into productosmovdet$annoMes (	Documento, Numero, 
+															Item, CodigoProducto, 
+															Descripcion, Cantidad, 
+															BodegaOrigen, BodegaDestino, 
+															Umedida, CantUmedida, 
+															Factor, cantu2, 
+															cantu3, cantu4, 
+															cantu5, cantotalpresentacion ) values ";
+		$banderaPrimero = 0;
+		for ($i=0; $i < count($sedesCobertura) ; $i++) {
+			$auxItem = 1;
+			for ($j=0; $j < count($complementosCantidades) ; $j++){
+				$cantidadAuxiliar = 0;
+				$cantidad = 0;
+				$auxConsulta = '';
+				$auxConsulta = $auxConsulta." ( ";
+				$auxAlimento = $complementosCantidades[$j]; 
+				$cantidadGruposCobertura = 0;
+				$sede = $sedesCobertura[$i]; 
+				if ($auxAlimento['variacion_menu'] != $sedes_variaciones[$sede['cod_sede']]) {
+					continue;
+				}
+				$codigo = $auxAlimento['codigo'];
+				$bodegaDestino = $sede['cod_sede'];
+				$componente = $auxAlimento['Componente'];
+				for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
+					$grupoIndex = "grupo".$m;
+					$indexGrupo = "grupo".$m;
+					for ($n=1; $n <= 25 ; $n++) { 
+						$grupoDiaIndex = "grupo".$m."_d".$n;
+						$d[$n] = $auxAlimento[$grupoDiaIndex] * ($sede[$grupoIndex]);
+						/******* desde aca manejamos el redondeo *******/	
+						if ($_SESSION['p_redondeo_compra'] != '0') { // entramos cuando este parametrizado el redondeo
+							if ($_SESSION['p_tipo_redondeo_compra'] == '1') { // entramos cuando el tipo sea por dias
+								if ($auxAlimento['redondeo'] == '1') { // entramos cuando el alimento tenga el redondeo activo
+									$rango = 0;
+										switch ($_SESSION['p_rango_redondeo_compra']) {
+											case ('1'):
+												$rango = 1;
+											break;
+											case ('2'):
+												$rango = 10;
+											break;
+											case ('3'):
+												$rango = 100;
+											break;
+										}
+										if ($_SESSION['p_redondeo_compra'] == '1') { // entramos cuando el redondeo sea hacia arriba
+											if ($d[$n] > 0) {
+												$d[$n] = (ceil((string)($auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]))*$rango))/$rango;
+											}
+										}
+										if ($_SESSION['p_redondeo_compra'] == '2') { // entramos cuando el rango sea hacia abajo	
+											if ($d[$n] > 0) {
+												$d[$n] = (intval(strval(($auxAlimento[$grupoDiaIndex] * $sede[$indexGrupo]) * $rango )))/$rango;
+											}
+										}												
+									}
+								}
+							}
+						}
+						
+						$d1 = $d[1];
+						$d2 = $d[2];
+						$d3 = $d[3];
+						$d4 = $d[4];
+						$d5 = $d[5];
+						$d6 = $d[6];
+						$d7 = $d[7];
+						$d8 = $d[8];
+						$d9 = $d[9];
+						$d10 = $d[10];
+						$d11 = $d[11];
+						$d12 = $d[12];
+						$d13 = $d[13];
+						$d14 = $d[14];
+						$d15 = $d[15];
+						$d16 = $d[16];
+						$d17 = $d[17];
+						$d18 = $d[18];
+						$d19 = $d[19];
+						$d20 = $d[20];
+						$d21 = $d[21];
+						$d22 = $d[22];
+						$d23 = $d[23];
+						$d24 = $d[24];
+						$d25 = $d[25];
+						$cantidad = $d1  + $d2  + $d3  + $d4  + $d5  + 
+									$d6  + $d7  + $d8  + $d9  + $d10 + 
+									$d11 + $d12 + $d13 + $d14 + $d15 + 
+									$d16 + $d17 + $d18 + $d19 + $d20 + 
+									$d21 + $d22 + $d23 + $d24 + $d25;
+						/****** si el alimento no tiene redondeo no entra igual si no esta parametrizado el redondeo tampoco entrara y la cantidad no se modificara *****/									
+						
+						/******* desde aca manejamos el redondeo *******/	
+						if ($_SESSION['p_redondeo_compra'] != '0') { // entramos cuando este parametrizado el redondeo
+							if ($_SESSION['p_tipo_redondeo_compra'] == '2') { // entramos cuando el tipo sea por totales
+								if ($auxAlimento['redondeo'] == '1') { // entramos cuando el alimento tenga el redondeo activo
+									$rango = 0;
+									switch ($_SESSION['p_rango_redondeo_compra']) {
+										case (1):
+											$rango = 1;
+										break;
+										case (2):
+											$rango = 10;
+										break;
+										case (3):
+											$rango = 100;
+										break;
+									}	
+									if ($_SESSION['p_redondeo_compra'] == '1') { // entramos cuando el redondeo sea hacia arriba
+										if ($cantidad > 0) {
+											$cantidad = (ceil((string)(($cantidad)*$rango)))/$rango;
+										}
+		
+									}
+									if ($_SESSION['p_redondeo_compra'] == '2') { // entramos cuando el rango sea asi abajo
+										if ($cantidad > 0) {
+											$cantidad = (intval(strval(($cantidad)*$rango)))/$rango;
+										}
+									}
+								}
+							}
+						}
+						if (isset($sede['grupo'.$m]) && $sede['grupo'.$m] > 0) {
+							$cantidadGruposCobertura++;
+						}
+						$cantidadAuxiliar += $cantidad;
+					} // for grupos etarios
+					
+					/****** si el alimento no tiene redondeo no entra igual si no esta parametrizado el redondeo tampoco entrara y la cantidad no se modificara *****/
+	
+					// /************************** Inicio ajuste contramuestra ***************************/
+					// /**/if( stristr($auxAlimento['grupo_alim'], 'Contramuestra') !== FALSE ){     	/**/
+					// /**/	// vamos a validar cuantos grupos traen cobertura 						/**/
+					// /**/	$auxContramuestra = 1 / $cantidadGruposCobertura;						/**/
+					// /**/	for ($m=1; $m <= $cantGruposEtarios ; $m++) { 							/**/
+					// /**/		$grupoIndex = "grupo".$m;											/**/
+					// /**/		if (isset($auxAlimento[$grupoIndex])) {								/**/
+					// /**/			$t[$m] = $auxAlimento[$grupoIndex] * $auxContramuestra;			/**/
+					// /**/		}																	/**/
+					// /**/	}																		/**/
+					// /**/}																			/**/
+					// /***************************** Fin ajuste contramuestra ***************************/
+	
+					$unidad = $auxAlimento['unidadMedida'];
+					$factor = $auxAlimento['factor'];
+					$presentacion = $auxAlimento['presentacion'];
+					$consecutivo = $consecutivos[$i];
+	
+					// se hacen movimientos tambien en este archivo para generar las remisiones con cualquier cantidad de grupos etarios
+					include 'fn_generar_presentaciones.php';
+	
+					// $cantidadAuxiliar = $cantidad;
+					$auxConsulta = $auxConsulta." 	'OCOS', $consecutivo, $auxItem, 
+													'$codigo', '$componente', $cantidadAuxiliar, 
+													$bodega, $bodegaDestino, '$presentacion', 
+													$cantidadAuxiliar, $factor, $necesario2, 
+													$necesario3, $necesario4, $necesario5, $tomadoTotal ";
+					$auxItem++;
+					$auxConsulta = $auxConsulta." ) ";
+					
+					if($cantidadAuxiliar > 0){
+						if($banderaPrimero == 0){
+							$banderaPrimero++;
+						}else{
+							$consulta = $consulta." , ";
+						}
+						$consulta = $consulta.$auxConsulta; 
+					} 
+					// exit(var_dump($consulta));
+				} // iteracion de los alimentos
+			}  // iteracion de la cobertura
+			// exit(var_dump($consulta));
+			$resultado = $Link->query($consulta) or die ('Unable to execute query - Inserción en productosmovdet '. mysqli_error($Link));
+			// ***************************************************** FIN INSERCIONES TABLAS PRODUCTOS *********************************************************//
+
 
 		/*************************** INSERCIONES ENCABEZADO ***************************************/
 		$concatCobertura_G = '';
@@ -1039,6 +1353,7 @@ foreach ($variaciones as $id => $variacion) {
 											Num_Doc, 
 											Num_OCO, 
 											proveedor, 
+											bodega,
 											FechaHora_Elab, 
 											Id_usuario, 
 											cod_Sede, 
@@ -1089,7 +1404,25 @@ foreach ($variaciones as $id => $variacion) {
 			$cobertura = $sede['total'];
 			$sede = $sede['cod_sede'];
 
-			$consulta = $consulta." 'OCOS',$consecutivo, $consecutivoGeneral, $documento ,'$fecha',$idUsuario,$sede,'$tipo', $variacion_menu, '$semanaString',$cobertura,2,'', '$diasDespacho', '$menusReg', '$tipoDespacho', $valoresGrupos, '$rutaMunicipio'";
+			$consulta = $consulta." 	'OCOS',
+										$consecutivo, 
+										$consecutivoGeneral,  
+										$documento ,
+										$bodega,
+										'$fecha',
+										$idUsuario,
+										$sede,
+										'$tipo', 
+										$variacion_menu, 
+										'$semanaString',
+										$cobertura,
+										2,
+										'', 
+										'$diasDespacho', 
+										'$menusReg', 
+										'$tipoDespacho', 
+										$valoresGrupos, 
+										'$rutaMunicipio'";
 			$consulta = $consulta." ) ";
 		}
 
@@ -1099,9 +1432,9 @@ foreach ($variaciones as $id => $variacion) {
 		$consulta = " INSERT INTO orden_compra_det$annoMes (tipo_doc, num_doc, cod_alimento, id_grupoetario, cantidad, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22, d23, d24, d25) values ";
 		$banderaPrimero = 0;
 		for ($i=0; $i < count($sedesCobertura) ; $i++) {
-			$sede = $sedesCobertura[$i];
+			$sede = $sedesCobertura[$i]; 
 			for ($j=0; $j < count($complementosCantidades) ; $j++){
-
+				$cantidadGruposCobertura =0;
 				// Se toman los datos del alimento en una cadena auxiliar para despues
 				// validar si la cantidad es mayor a cero y agregar a la cadena que va
 				// a hacer la insersión
@@ -1110,65 +1443,187 @@ foreach ($variaciones as $id => $variacion) {
 					continue;
 				}
 				$gruposRegistrar = 0;
-				for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
-					$indexGrupo = "grupo".$m; 
-					$auxAlimentoCodicional = $auxAlimento[$indexGrupo];
-					$auxSedeCondicional = $sede[$indexGrupo];
-					if ( $auxAlimentoCodicional > 0   &&  $auxSedeCondicional > 0  ) {
-						if($banderaPrimero == 0){
-							$banderaPrimero++;
-						}else{
-							$consulta = $consulta." , ";
+				$gruposRegistrar = 0;
+				if(stristr($auxAlimento['grupo_alim'], 'Contramuestra') !== FALSE){
+					for ($k=1; $k <= $cantGruposEtarios ; $k++) { 
+						if (isset($sede['grupo'.$k]) && $sede['grupo'.$k] > 0) {
+							$cantidadGruposCobertura++;
 						}
-						$gruposRegistrar++;
-						$idGrupoEtario = $m; 
-						$consulta = $consulta." ( ";
-						$codigo = $auxAlimento['codigo'];
-						$componente = $auxAlimento['Componente'];							
-						$unidad = $auxAlimento['unidadMedida'];
-						$consecutivo = $consecutivos[$i];
-						for ($n=1; $n <= 25 ; $n++) { 
-							$grupoDiaIndex = "grupo".$m."_d".$n;
-							$d[$n] = $auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]);
-						}
-						$d1 = $d[1];
-						$d2 = $d[2];
-						$d3 = $d[3];
-						$d4 = $d[4];
-						$d5 = $d[5];
-						$d6 = $d[6];
-						$d7 = $d[7];
-						$d8 = $d[8];
-						$d9 = $d[9];
-						$d10 = $d[10];
-						$d11 = $d[11];
-						$d12 = $d[12];
-						$d13 = $d[13];
-						$d14 = $d[14];
-						$d15 = $d[15];
-						$d16 = $d[16];
-						$d17 = $d[17];
-						$d18 = $d[18];
-						$d19 = $d[19];
-						$d20 = $d[20];
-						$d21 = $d[21];
-						$d22 = $d[22];
-						$d23 = $d[23];
-						$d24 = $d[24];
-						$d25 = $d[25];
-						$cantidad = $d1 + $d2 + $d3 + $d4 + $d5 + $d6 + $d7 + $d8 + $d9 + $d10 + $d11 + $d12 + $d13 + $d14 + $d15 + $d16 + $d17 + $d18 + $d19 + $d20 + $d21 + $d22 + $d23 + $d24 +$d25;
-						$consulta = $consulta." 'OCOS',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5, $d6, $d7, $d8, $d9, $d10, $d11, $d12, $d13, $d14, $d15, $d16, $d17, $d18, $d19, $d20, $d21, $d22, $d23, $d24, $d25";
-						$consulta = $consulta." ) ";
 					}
-				}
+					$auxContramuestra = 1 / $cantidadGruposCobertura;
+					for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
+						$indexGrupo = "grupo".$m; 
+						$auxAlimentoCodicional = $auxAlimento[$indexGrupo];
+						$auxSedeCondicional = $sede[$indexGrupo];
+						if ( $auxAlimentoCodicional > 0   &&  $auxSedeCondicional > 0  ) {
+							if($banderaPrimero == 0){
+								$banderaPrimero++;
+							}else{
+								$consulta = $consulta." , ";
+							}
+							$gruposRegistrar++;
+							$idGrupoEtario = $m; 
+							$consulta = $consulta." ( ";
+							$codigo = $auxAlimento['codigo'];
+							$componente = $auxAlimento['Componente'];							
+							$unidad = $auxAlimento['unidadMedida'];
+							$consecutivo = $consecutivos[$i];
+							for ($n=1; $n <= 25 ; $n++) { 
+								$grupoDiaIndex = "grupo".$m."_d".$n;
+								$d[$n] = $auxAlimento[$grupoDiaIndex] * $auxContramuestra;
+							}
+							$d1 = $d[1];
+							$d2 = $d[2];
+							$d3 = $d[3];
+							$d4 = $d[4];
+							$d5 = $d[5];
+							$d6 = $d[6];
+							$d7 = $d[7];
+							$d8 = $d[8];
+							$d9 = $d[9];
+							$d10 = $d[10];
+							$d11 = $d[11];
+							$d12 = $d[12];
+							$d13 = $d[13];
+							$d14 = $d[14];
+							$d15 = $d[15];
+							$d16 = $d[16];
+							$d17 = $d[17];
+							$d18 = $d[18];
+							$d19 = $d[19];
+							$d20 = $d[20];
+							$d21 = $d[21];
+							$d22 = $d[22];
+							$d23 = $d[23];
+							$d24 = $d[24];
+							$d25 = $d[25];
+							$cantidad = $d1 + $d2 + $d3 + $d4 + $d5 + $d6 + $d7 + $d8 + $d9 + $d10 + $d11 + $d12 + $d13 + $d14 + $d15 + $d16 + $d17 + $d18 + $d19 + $d20 + $d21 + $d22 + $d23 + $d24 +$d25;
+							$consulta = $consulta." 'OCOS',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5, $d6, $d7, $d8, $d9, $d10, $d11, $d12, $d13, $d14, $d15, $d16, $d17, $d18, $d19, $d20, $d21, $d22, $d23, $d24, $d25";
+							$consulta = $consulta." ) ";
+						}
+					}
+				}else {
+					for ($m=1; $m <= $cantGruposEtarios ; $m++) { 
+						$indexGrupo = "grupo".$m; 
+						$auxAlimentoCodicional = $auxAlimento[$indexGrupo];
+						$auxSedeCondicional = $sede[$indexGrupo];
+						if ( $auxAlimentoCodicional > 0   &&  $auxSedeCondicional > 0  ) {
+							if($banderaPrimero == 0){
+								$banderaPrimero++;
+							}else{
+								$consulta = $consulta." , ";
+							}
+							$gruposRegistrar++;
+							$idGrupoEtario = $m; 
+							$consulta = $consulta." ( ";
+							$codigo = $auxAlimento['codigo'];
+							$componente = $auxAlimento['Componente'];							
+							$unidad = $auxAlimento['unidadMedida'];
+							$consecutivo = $consecutivos[$i];
+
+							for ($n=1; $n <= 25 ; $n++) { 
+								$grupoDiaIndex = "grupo".$m."_d".$n;
+								$d[$n] = $auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]);
+
+								/******* desde aca manejamos el redondeo *******/	
+								if ($_SESSION['p_redondeo_compra'] != '0') { // entramos cuando este parametrizado el redondeo
+									if ($_SESSION['p_tipo_redondeo_compra'] == '1') { // entramos cuando el tipo sea por dias
+										if ($auxAlimento['redondeo'] == '1') { // entramos cuando el alimento tenga el redondeo activo
+											$rango = 0;
+											switch ($_SESSION['p_rango_redondeo_compra']) {
+												case ('1'):
+													$rango = 1;
+												break;
+												case ('2'):
+													$rango = 10;
+												break;
+												case ('3'):
+													$rango = 100;
+												break;
+											}
+											if ($_SESSION['p_redondeo_compra'] == '1') { // entramos cuando el redondeo sea hacia arriba
+												if ($d[$n] > 0) {
+													$d[$n] = (ceil((string)($auxAlimento[$grupoDiaIndex] * ($sede[$indexGrupo]))*$rango))/$rango;
+												}
+											}
+											if ($_SESSION['p_redondeo_compra'] == '2') { // entramos cuando el rango sea hacia abajo	
+												if ($d[$n] > 0) {
+													$d[$n] = (intval((($auxAlimento[$grupoDiaIndex] * $sede[$indexGrupo])*$rango))/$rango);
+												}
+											}												
+										}
+									}
+								}
+							/****** si el alimento no tiene redondeo no entra igual si no esta parametrizado el redondeo tampoco entrara y la cantidad no se modificara *****/									
+							}
+
+							$d1 = $d[1];
+							$d2 = $d[2];
+							$d3 = $d[3];
+							$d4 = $d[4];
+							$d5 = $d[5];
+							$d6 = $d[6];
+							$d7 = $d[7];
+							$d8 = $d[8];
+							$d9 = $d[9];
+							$d10 = $d[10];
+							$d11 = $d[11];
+							$d12 = $d[12];
+							$d13 = $d[13];
+							$d14 = $d[14];
+							$d15 = $d[15];
+							$d16 = $d[16];
+							$d17 = $d[17];
+							$d18 = $d[18];
+							$d19 = $d[19];
+							$d20 = $d[20];
+							$d21 = $d[21];
+							$d22 = $d[22];
+							$d23 = $d[23];
+							$d24 = $d[24];
+							$d25 = $d[25];
+							$cantidad = $d1 + $d2 + $d3 + $d4 + $d5 + $d6 + $d7 + $d8 + $d9 + $d10 + $d11 + $d12 + $d13 + $d14 + $d15 + $d16 + $d17 + $d18 + $d19 + $d20 + $d21 + $d22 + $d23 + $d24 +$d25;
+
+							/******* desde aca manejamos el redondeo *******/	
+							if ($_SESSION['p_redondeo_compra'] != '0') { // entramos cuando este parametrizado el redondeo
+								if ($_SESSION['p_tipo_redondeo_compra'] == 2) { // entramos cuando el tipo sea por totales
+									if ($auxAlimento['redondeo'] == '1') { // entramos cuando el alimento tenga el redondeo activo
+										$rango = 0;
+										switch ($_SESSION['p_rango_redondeo_compra']) {
+											case (1):
+												$rango = 1;
+											break;
+											case (2):
+												$rango = 10;
+											break;
+											case (3):
+												$rango = 100;
+											break;
+										}	
+										if ($_SESSION['p_redondeo_compra'] == '1') { // entramos cuando el redondeo sea hacia arriba
+											if ($cantidad > 0) {
+												$cantidad = (ceil((string)(($cantidad)*$rango)))/$rango;
+											}
+										}
+										if ($_SESSION['p_redondeo_compra'] == '2') { // entramos cuando el rango sea asi abajo
+											if ($cantidad > 0) {
+												$cantidad = (intval(($cantidad)*$rango))/$rango;
+											}
+										}
+									}
+								}
+							}
+							/****** si el alimento no tiene redondeo no entra igual si no esta parametrizado el redondeo tampoco entrara y la cantidad no se modificara *****/
+
+							$consulta = $consulta." 'OCOS',$consecutivo, '$codigo', $idGrupoEtario, $cantidad, $d1, $d2, $d3, $d4, $d5, $d6, $d7, $d8, $d9, $d10, $d11, $d12, $d13, $d14, $d15, $d16, $d17, $d18, $d19, $d20, $d21, $d22, $d23, $d24, $d25";
+							$consulta = $consulta." ) ";
+						}
+					}
+				}	
 			}// Termina el for de los alimentos
 		} // Termina el for de las sedes
 		$resultado = $Link->query($consulta) or die ('Inserción orden_compra_det - Unable to execute query. '. mysqli_error($Link));
 		$despachado = true;
-
-		if ($_SESSION['p_inventory'] != 0) {
-			include 'fn_insert_inventory.php';
-		}
 	}//Termina el if de bandera igual a 0
 }
 

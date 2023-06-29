@@ -6,6 +6,16 @@
           window.open('<?= $baseUrl ?>', '_self');
       </script>
     <?php exit(); }
+	else {
+		?><script type="text/javascript">
+		  const list = document.querySelector(".li_configuracion");
+		  list.className += " active ";
+		  const list2 = document.querySelector(".li_perfilUsuarios");
+		  list2.className += " active ";
+		</script>
+	  <?php
+	  }
+	
 
     $titulo = 'Editar Permisos'; 
 
@@ -57,6 +67,11 @@
 		padding-left : 1px;
 		padding-right : 5px;
 	}
+
+	button{
+        /* height : 6.5em; */
+        white-space: normal;
+    }
 </style>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
@@ -86,7 +101,7 @@
 							<div class="col-lg-6"><h2>Tipo Perfil : <?= $informacion['nombre']; ?></h2></div>
 							<input type="hidden" id='id_perfil' value=<?= $idPerfil ?>>
 							<?php if ($idPerfil != "6" && $idPerfil != "7"): ?>
-								<div class="col-lg-3">
+								<div class="col-lg-6">
 									<label for='dashboard'>Dashboard:</label>
 									<div class="form-group">
 										<?php

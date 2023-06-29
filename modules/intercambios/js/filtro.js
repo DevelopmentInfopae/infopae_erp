@@ -17,15 +17,25 @@ jQuery.extend(jQuery.validator.messages, {
 	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."), 
 	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.") });
 
+	toastr.options = { 
+		newestOnTop: true, 
+		closeButton: false, 
+		progressBar: true, 
+		preventDuplicates: false, 
+		showMethod: 'slideDown', 
+		timeOut: 2500, 
+	};
+
 $(document).ready(function(){
+	$('select').select2();
 	cargarTiposComplementos();
 	cargarGruposEtarios();
 	if(localStorage.getItem("wappsi_mes") != null){
-		$( "#mes" ).val(localStorage.getItem("wappsi_mes"));
+		$( "#mes" ).select2('val', localStorage.getItem("wappsi_mes"));
 		cargarSemanas();	
 	}
 	if(localStorage.getItem("wappsi_dia") != null){
-		$( "#dia" ).val(localStorage.getItem("wappsi_dia"));
+		$( "#dia" ).select2('val', localStorage.getItem("wappsi_dia"));
 	}
 	$( "#mes" ).change(function() {
 		localStorage.setItem("wappsi_mes", $("#mes").val());
@@ -78,7 +88,7 @@ function cargarSemanas(){
 		success: function(data){
 			if(data.estado == 1){
 				$('#semana').html(data.opciones);
-				$('#semana').val(localStorage.getItem("wappsi_semana"));
+				$('#semana').select2('val', localStorage.getItem("wappsi_semana"));
 				localStorage.setItem("wappsi_semana", $("#semana").val());
 				if($('#semana').val() != ""){
 					cargarDias()
@@ -111,11 +121,8 @@ function cargarDias(){
 		success: function(data){
 			if(data.estado == 1){
 				$('#dia').html(data.opciones);
-				$('#dia').val(localStorage.getItem("wappsi_dia"));
+				$('#dia').select2('val',localStorage.getItem("wappsi_dia"));
 				localStorage.setItem("wappsi_dia", $("#dia").val());
-				// if($('#semana').val() != ""){
-				// 	cargarDias()
-				// }
 				$('#loader').fadeOut();
 			}
 			else{

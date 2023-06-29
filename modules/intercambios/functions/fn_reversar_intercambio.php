@@ -65,7 +65,7 @@ if($tipoIntercambio == 1){
 	$result = $Link->query($query) or die ('Delete error'. mysqli_error($Link));
 	
 	// Cambiando el estado de la novedad
-	$query = " update novedades_menu set estado = 0 where id = $idIntercambio ";
+	$query = " UPDATE novedades_menu set estado = 0, fecha_reversion = '" .date("Y-m-d H:i:s"). "'  where id = $idIntercambio ";
 	$result = $Link->query($query) or die ('Update error'. mysqli_error($Link)); 
 
 	if($result){
@@ -90,7 +90,7 @@ else if($tipoIntercambio == 2){
 	$result = $Link->query($query) or die ('Delete error'. mysqli_error($Link));
 	
 	// Cambiando el estado de la novedad
-	$query = " update novedades_menu set estado = 0 where id = $idIntercambio ";
+	$query = " UPDATE novedades_menu SET estado = 0, fecha_reversion = '" .date("Y-m-d H:i:s"). "' where id = $idIntercambio ";
 	$result = $Link->query($query) or die ('Update error'. mysqli_error($Link)); 
 
 	if($result){
@@ -115,7 +115,7 @@ else if($tipoIntercambio == 3){
 			$query .= " update productos$periodoActual set Orden_Ciclo = \"$ordenCiclo\" where Codigo = \"$codProducto\"; ";
 		}
 
-		$query .= " update novedades_menu set estado = 0 where id = $idIntercambio; ";
+		$query .= " UPDATE novedades_menu SET estado = 0, fecha_reversion = '" .date("Y-m-d H:i:s").  "' where id = $idIntercambio; ";
 		$result = $Link->multi_query($query) or die ('Update error'. mysqli_error($Link));  
 		
 		if($result){

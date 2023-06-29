@@ -29,10 +29,6 @@ use PhpOffice\PhpSpreadsheet\Chart\Layout;
 $excel = new Spreadsheet();
 $archivo = $excel->getActiveSheet();
 
-$municipio = (isset($_GET['municipioExport']) && $_GET['municipioExport'] != '') ? $_GET['municipioExport'] : '';
-$bodega = (isset($_GET['bodegaExport']) && $_GET['bodegaExport'] != '') ? $_GET['bodegaExport'] : '';
-$complemento = (isset($_GET['complementoExport']) && $_GET['complementoExport'] != '') ? $_GET['complementoExport'] : '';
-
 $estilo_titulo = [
 	'font'  => [
       	'bold'  => true,
@@ -45,51 +41,29 @@ $estilo_titulo = [
 $archivo->setCellValue("A1", "Codigo Producto")->getStyle('A1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("B1", "Nombre Producto")->getStyle('B1')->applyFromArray($estilo_titulo);
 $archivo->setCellValue("C1", "Cantidad Entrante")->getStyle('C1')->applyFromArray($estilo_titulo);
-if ($_SESSION['p_inventory'] == 2) {
-	$archivo->setCellValue("D1", "Complemento")->getStyle('D1')->applyFromArray($estilo_titulo);
-}
 
-$productos = consultar_productos($Link, $municipio, $bodega, $complemento);
+$productos = consultar_productos($Link);
 if ( !empty($productos) ) {
-	if ($_SESSION['p_inventory'] == 2) {
-		$fila = 2;
-		foreach ($productos as $producto) {
-			$productoNombre = '';
-			if (tieneAcentos($producto['descripcion'])) {
-				$productoNombre = eliminar_acentos($producto['descripcion']);
-			} else if (!tieneAcentos($producto['descripcion'])) {
-				$productoNombre = $producto['descripcion'];
-			}
-			// $archivo->setCellValue("A". $fila, $producto['codigo']);
-			$archivo->getCell('A'.$fila)->setValueExplicit($producto['codigo'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING );
-			$archivo->setCellValue("B". $fila, $productoNombre);
-			$archivo->setCellValue("C". $fila, $producto['cantidad']);
-			$archivo->setCellValue("D". $fila, $producto['complemento']);
-			$fila++;
+	$fila = 2;
+	foreach ($productos as $producto) {
+		$productoNombre = '';
+		if (tieneAcentos($producto['descripcion'])) {
+			$productoNombre = eliminar_acentos($producto['descripcion']);
+		} else if (!tieneAcentos($producto['descripcion'])) {
+			$productoNombre = $producto['descripcion'];
 		}
-	}
-	if ($_SESSION['p_inventory'] == 1) {
-		$fila = 2;
-		foreach ($productos as $producto) {
-			$productoNombre = '';
-			if (tieneAcentos($producto['descripcion'])) {
-				$productoNombre = eliminar_acentos($producto['descripcion']);
-			} else if (!tieneAcentos($producto['descripcion'])) {
-				$productoNombre = $producto['descripcion'];
-			}
-			// $archivo->setCellValue("A". $fila, $producto['codigo']);
-			$archivo->getCell('A'.$fila)->setValueExplicit($producto['codigo'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING );
-			$archivo->setCellValue("B". $fila, $productoNombre);
-			$archivo->setCellValue("C". $fila, $producto['cantidad']);
-			$fila++;
-		}
+		$archivo->getCell('A'.$fila)->setValueExplicit($producto['codigo'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING );
+		$archivo->setCellValue("B". $fila, $productoNombre);
+		$archivo->setCellValue("C". $fila, $producto['cantidad']);
+		$fila++;
+		
 	}
 }
 
 // exit(var_dump(tieneAcentos("Roberto Garcia Peña")));
 foreach(range("A","V") as $columna) { $archivo->getColumnDimension($columna)->setAutoSize(true); }
 
-$nombreArchivo = get_name_warehouse($Link, $bodega, $municipio);
+$nombreArchivo = "plantilla";
 // header("Content-Type: application/vnd.ms-excel charset=iso-8859-1");
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8');
 header("Content-Disposition: attachment;filename=$nombreArchivo.csv");
@@ -97,45 +71,18 @@ header("Content-Disposition: attachment;filename=$nombreArchivo.csv");
 $escritor = new Csv($excel);
 $escritor->save('php://output');
 
-function get_name_warehouse($Link, $bodega, $municipio){
+function consultar_productos($Link) {
 	$periodoActual = $_SESSION["periodoActual"];
-	$name = '';
-	$consulta = " SELECT 	u.Ciudad, 
-						 	s.nom_sede
-					FROM sedes$periodoActual s	
-					INNER JOIN ubicacion u ON s.cod_mun_sede = u.codigoDANE
-					WHERE s.cod_mun_sede = '$municipio' AND s.cod_sede = '$bodega' ";
-	$respuesta = $Link->query($consulta) or die ('Error al consultar el nombre de la bodega LN 107');
-	if ($respuesta->num_rows > 0) {
-		$dataName = $respuesta->fetch_assoc();
-		$name = $dataName['Ciudad'] ."_". $dataName['nom_sede'];
-	}	
-	return $name;			
-}
-
-function consultar_productos($Link, $municipio, $bodega, $complemento) {
-	$periodoActual = $_SESSION["periodoActual"];
-	$validacionComplemento = '';
-	if ($_SESSION['p_inventory'] == 2) {
-		$validacionComplemento = "e.complemento = '" .$complemento. "'";
-	}
-	if ($_SESSION['p_inventory'] == 1) {
-		$validacionComplemento = "e.complemento = '' ";
-	}
 	$productos = [];
 	$consulta = "SELECT
 					p.Codigo AS codigo,
 				    p.Descripcion AS descripcion,
-                    (SELECT cantidad FROM inventarios_bodegas_det WHERE id_bodega = e.id AND  codigo = p.codigo AND $validacionComplemento ) AS cantidad,
-					e.complemento
+                    '' AS cantidad
 				FROM
 				    productos$periodoActual AS p
-				    LEFT JOIN inventarios_bodegas_det i ON p.codigo = i.codigo
-					LEFT JOIN inventarios_bodegas_enc e ON e.id = i.id_bodega
                 WHERE 
                     p.TipodeProducto = 'Alimento' AND p.nivel = 3 
-					";
-				
+					";		
 	$respuesta = $Link->query($consulta);
 	if ($respuesta->num_rows > 0) {
 		$n = 0;
@@ -144,7 +91,6 @@ function consultar_productos($Link, $municipio, $bodega, $complemento) {
 			$productos[$n]['codigo'] = $codigo;
 			$productos[$n]['descripcion'] = $dataProductos['descripcion'];
 			$productos[$n]['cantidad'] = $dataProductos['cantidad'];
-			$productos[$n]['complemento'] = $complemento;
 			$n++;
 		}
 		return $productos;

@@ -28,24 +28,34 @@ function validarCambioTipoProducto($IdProducto, $codigoPrefijo){
 }
 
 function limpiarGrupoEtarioDeNombre($descripcion, $Cod_Grupo_Etario){
-  global $Link;
-  $consultaGrupoEtario = "select * from grupo_etario";
-  $resultadoGrupoEtario = $Link->query($consultaGrupoEtario) or die('Unable to execute query. '. mysqli_error($Link).$consultaGrupoEtario);
-  if ($resultadoGrupoEtario->num_rows > 0) {
-    while ($row = $resultadoGrupoEtario->fetch_assoc()) {
-    	$GrupoEtario[] = $row;
-    	$descGE = str_replace("Grupo ", "", $row['DESCRIPCION']);
-      if (strpos($descripcion, $descGE)) {
-        $descripcion = str_replace($descGE, "", $descripcion);
-      }
-    }
-    foreach ($GrupoEtario as $GE) {
-      if ($GE['ID'] == $Cod_Grupo_Etario) {
-        $descripcion = $descripcion." ".$GE['DESCRIPCION'];
-      }
-    }
-    return $descripcion;
-  }  
+  	global $Link; 
+  	$consultaGrupoEtario = "select * from grupo_etario";
+  	$resultadoGrupoEtario = $Link->query($consultaGrupoEtario) or die('Unable to execute query. '. mysqli_error($Link).$consultaGrupoEtario);
+  	if ($resultadoGrupoEtario->num_rows > 0) {
+    	while ($row = $resultadoGrupoEtario->fetch_assoc()) {
+    		$GrupoEtario[] = $row;
+			if ($_SESSION['p_gruposCalculos'] == 1) {
+				$descGE = str_replace("Grupo", "", $row['DESCRIPCION']);
+			}if ($_SESSION['p_gruposCalculos'] == 2) {
+    			$descGE = str_replace("GRUPO", "", $row['equivalencia_grado']);
+			}
+
+      		if (strpos($descripcion, $descGE)) {
+        		// $descripcion = str_replace($descGE, "", $descripcion);
+				$descripcion = substr($descripcion, 0, strpos($descripcion, $descGE));
+      		}
+    	}
+    	foreach ($GrupoEtario as $GE) {
+      		if ($GE['ID'] == $Cod_Grupo_Etario) {
+				if ($_SESSION['p_gruposCalculos'] == 1) {
+					$descripcion = $descripcion.$GE['DESCRIPCION'];
+				}if ($_SESSION['p_gruposCalculos'] == 2) {
+					$descripcion = $descripcion.$GE['equivalencia_grado'];
+				}
+      		}
+    	}
+    	return $descripcion;
+  	}  
 }
 
 if (isset($_POST['descripcion'])) {
@@ -89,13 +99,13 @@ if (isset($_POST['TipoDespacho'])) {
 } else {
   $TipoDespacho = "";
 }
-
+// exit(var_dump($_POST));
 if (isset($_POST['Cod_Grupo_Etario']) && $_POST['Cod_Grupo_Etario'] != "") {
   $Cod_Grupo_Etario = $_POST['Cod_Grupo_Etario'];
 } else {
   $Cod_Grupo_Etario = 0;
 }
-
+// exit(var_dump($Cod_Grupo_Etario));
 if (isset($_POST['ordenCiclo']) && $_POST['ordenCiclo'] != "") {
   $ordenCiclo = $_POST['ordenCiclo'];
 } else {
@@ -214,7 +224,11 @@ if ($unidadMedida == "g" || $unidadMedida == "cc") { //Si tipo de producto es 03
   $TipoDespacho = "99";
   $grupoEtario = consultarGrupoEtario($Cod_Grupo_Etario);
   $variacionMenuDesc = consultarVariacionMenu($variacionMenu);
-  $descripcion = "Menú No.".$ordenCiclo." Grupo Etario ".$grupoEtario." ".$variacionMenuDesc;
+  if ($_SESSION['p_gruposCalculos'] == 1) {
+	$descripcion = "Menú No.".$ordenCiclo." Grupo Etario ".$grupoEtario." ".$variacionMenuDesc;
+  }if ($_SESSION['p_gruposCalculos'] == 2) {
+	$descripcion = "Menú No.".$ordenCiclo." ".$grupoEtario." ".$variacionMenuDesc;
+  }
 
   } else if ($tipoProducto == "02") {
   $TipoDespacho = "0";

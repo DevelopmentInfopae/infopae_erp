@@ -14,6 +14,8 @@ else {
     ?><script type="text/javascript">
       const list = document.querySelector(".li_despachos");
       list.className += " active ";
+	  const list2 = document.querySelector(".li_despacho_alimentos");
+      list2.className += " active ";
     </script>
   <?php
   }
@@ -48,6 +50,14 @@ else {
       	}
     	}
   	}
+
+	$consultaFormatos = " SELECT name, route, icon FROM remission_format WHERE format_status = 1 ORDER BY starting_order "; 
+	$respuestaFormatos = $Link->query($consultaFormatos) or die ('Error al consultar los formatos');
+	if ($respuestaFormatos->num_rows > 0) {
+		while ($dataFormatos = $respuestaFormatos->fetch_assoc()) {
+			$formatos[] = $dataFormatos;
+		}
+	}
 
 	$arrayDetalle = [ 
 		'lunes_1' => 'D1',  'martes_1' => 'D2',  'miércoles_1' => 'D3',  'jueves_1' => 'D4',  'viernes_1' => 'D5',
@@ -92,11 +102,12 @@ else {
 						
 						<div class="row">							
 							<div class="col-sm-6 col-md-3 form-group">
-								<label for="fechaInicial">Fecha Inicial</label>
+								<label>Fecha Inicial</label>
 								<div class="row compositeDate">
 									<div class="col-sm-4 nopadding">
-										<select name="annoi" id="annoi" class="form-control">
-											<option value="<?php echo $_SESSION['periodoActualCompleto']; ?>"><?php echo $_SESSION['periodoActualCompleto']; ?></option>
+										<select name="annoi" id="annoi" class="form-control select2">
+											<option value="">Seleccione...</option>
+											<option value="<?php echo $_SESSION['periodoActualCompleto']; ?>" selected ><?php echo $_SESSION['periodoActualCompleto']; ?></option>
 										</select>
 									</div>
 
@@ -159,15 +170,29 @@ else {
 							</div>  <!-- form-group -->
 
 							<div class="col-sm-6 col-md-3 form-group">
-								<label for="fechaInicial">Fecha Final</label>
+								<label>Fecha Final</label>
 								<div class="row compositeDate">
 									<div class="col-sm-4 nopadding">
-										<select name="annof" id="annof" class="form-control">
+										<select name="annof" id="annof" class="form-control select2">
 											<option value="<?php echo $_SESSION['periodoActualCompleto']; ?>"><?php echo $_SESSION['periodoActualCompleto']; ?></option>
 									 	 </select>
 									</div>
 									<div class="col-sm-5 nopadding">
-										<input type="text" name="mesfText" id="mesfText" value="mm" readonly="readonly" class="form-control">
+									<select name="mesfText" id="mesfText" class="form-control select2">
+											<option value="1" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 1) {echo " selected "; } ?>>Enero</option>
+											<option value="2" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 2) {echo " selected "; } ?>>Febrero</option>
+											<option value="3" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 3) {echo " selected "; } ?>>Marzo</option>
+											<option value="4" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 4) {echo " selected "; } ?>>Abril</option>
+											<option value="5" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 5) {echo " selected "; } ?>>Mayo</option>
+											<option value="6" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 6) {echo " selected "; } ?>>Junio</option>
+											<option value="7" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 7) {echo " selected "; } ?>>Julio</option>
+											<option value="8" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 8) {echo " selected "; } ?>>Agosto</option>
+											<option value="9" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 9) {echo " selected "; } ?>>Septiembre</option>
+											<option value="10" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 10) {echo " selected "; } ?>>Octubre</option>
+											<option value="11" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 11) {echo " selected "; } ?>>Noviembre</option>
+											<option value="12" <?php if (isset($_GET['pb_mesi']) && $_GET['pb_mesi'] == 12) {echo " selected "; } ?>>Diciembre</option>
+										</select>
+										<!-- <input type="text" name="mesfText" id="mesfText" value="mm" readonly="readonly" class="form-control"> -->
 										<input type="hidden" name="mesf" id="mesf" value="">
 									</div>
 									<div class="col-sm-3 nopadding">
@@ -247,8 +272,8 @@ else {
 						</div> <!-- row -->
 
 						<div class="row">
-							<div class="col-sm-4 col-md-2 form-group">
-								<label for="fechaInicial">Municipio</label>
+							<div class="col-sm-6 col-md-3 form-group">
+								<label for="municipio">Municipio</label>
 								<select class="form-control select2" name="municipio" id="municipio">
 									<?php if ($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7"): ?>
 										<option value="">Seleccione uno</option>
@@ -298,7 +323,7 @@ else {
 								</select>
 							</div> <!-- form-group -->
 
-							<div class="col-sm-4 col-md-3 form-group">
+							<div class="col-sm-6 col-md-3 form-group">
 								<label for="institucion">Institución</label>
 								<select class="form-control select2" name="institucion" id="institucion">
 									<?php if ($_SESSION['perfil'] != "6" && $_SESSION['perfil'] != "7"): ?>
@@ -307,8 +332,8 @@ else {
 		  
 								  	<?php
 								  		$condicionRector = '';
-								  		$codigoInstitucion;
-										if ((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ) || $municipio_defecto["CodMunicipio"] != "") {
+								  		$codigoInstitucion; 
+										if ((isset($_GET["pb_municipio"]) && $_GET["pb_municipio"] != "" ) || $municipio_defecto["CodMunicipio"] != "0") {
 											// INICIO CODIGO VISTA RECTOR
 											if ($_SESSION['perfil'] == '6' && $_SESSION['num_doc'] != "" ) {
 												$consultaInstitucion = "SELECT codigo_inst FROM instituciones WHERE cc_rector = " .$_SESSION['num_doc']. " LIMIT 1;";
@@ -329,13 +354,14 @@ else {
 												}
 												$condicionRector = " AND s.cod_inst = $codigoInstitucion ";
 											}	
-									  		$municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"];
-									  		$consulta = "SELECT DISTINCT s.cod_inst, s.nom_inst FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE 1=1";
-											if ($municipio != 0 && $municpio != '') {
+									  		$municipio = (isset($_GET["pb_municipio"])) ? $_GET["pb_municipio"] : $municipio_defecto["CodMunicipio"]; 
+									  		$consulta = "SELECT DISTINCT s.cod_inst, s.nom_inst 
+															FROM sedes$periodoActual s LEFT JOIN sedes_cobertura sc ON s.cod_sede = sc.cod_sede WHERE 1=1";
+											if ($municipio != 0 && $municipio != '') {
 												$consulta = $consulta." AND s.cod_mun_sede = '$municipio' ";
 											}
 									  		$consulta = $consulta. "$condicionRector";
-									  		$consulta = $consulta." ORDER BY s.nom_inst ASC";
+									  		$consulta = $consulta." ORDER BY s.nom_inst ASC"; 
 									  		$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 									  		if($resultado->num_rows >= 1){
 												while($row = $resultado->fetch_assoc()) {
@@ -349,7 +375,7 @@ else {
 								</select>
 							</div>  <!-- form-group -->
 
-							<div class="col-sm-4 col-md-3 form-group">
+							<div class="col-sm-6 col-md-3 form-group">
 								<label for="sede">sede</label>
 								<select class="form-control select2" name="sede" id="sede">
 							  		<option value="">Todas</option>
@@ -397,7 +423,7 @@ else {
 								</select>
 							</div>  <!-- form-group -->
 
-							<div class="col-sm-4 col-md-2 form-group">
+							<div class="col-sm-6 col-md-3 form-group">
 								<label for="tipoDespacho">Tipo Alimento</label>
 								<select class="form-control select2" name="tipoDespacho" id="tipoDespacho">
 							  		<!-- <option value="">Todos</option> -->
@@ -415,7 +441,7 @@ else {
 								</select>
 							</div> <!-- form-group -->
 
-							<div class="col-sm-4 col-md-2 form-group">
+							<div class="col-sm-6 col-md-3 form-group">
 								<label for="ruta">Ruta</label>
 								<select class="form-control select2" name="ruta" id="ruta">
 							  		<option value="">Todos</option>
@@ -433,18 +459,16 @@ else {
 								</select>
 								<input type="hidden" name="rutaNm" id="rutaNm" value="">
 							</div>
-						</div> <!-- row -->
 
-						<div class="row">
-							<div class="col-sm-2 form-group">
+							<div class="col-sm-6 col-md-3 form-group">
 								<label for="paginasObservaciones">Páginas de observaciones</label>
-								<input type="number" name="paginasObservaciones" id="paginasObservaciones" value="1" class="form-control">
+								<input type="number" name="paginasObservaciones" id="paginasObservaciones" value="1" class="form-control text-center">
 							</div>
 
 							<div class="col-sm-4   form-group">
-								<label for="semana_final">Imprimir nombre del mes</label>
+								<label for="imprimirMes">Imprimir nombre del mes</label>
 								<div>
-									<input type="checkbox" name="imprimirMes" id="imprimirMes" checked>
+									<input class="i-checks" type="checkbox" name="imprimirMes" id="imprimirMes" checked>
 								</div>
 							</div>
 						</div> <!-- row -->
@@ -664,7 +688,7 @@ else {
 								</select>
 							</div> <!-- col -->
 
-							<div class="col-lg-3 col-md-6 col-sm-12 form-group">
+							<div class="col-md-6 col-sm-12 form-group">
 								<label for="ruta">Ruta</label>
 								<select class="form-control" name="ruta" id="ruta">
 							  		<option value="">Todos</option>
@@ -683,7 +707,7 @@ else {
 								<input type="hidden" name="rutaNm" id="rutaNm" value="">
 							</div> <!-- col -->
 
-							<div class="col-lg-3 col-md-6 col-sm-12 form-group">
+							<div class="col-md-3 col-sm-6 form-group">
 								<label for="paginasObservaciones">Páginas de observaciones</label>
 								<input type="number" name="paginasObservaciones" id="paginasObservaciones" value="1" class="form-control">
 							</div> <!-- col -->
@@ -693,7 +717,7 @@ else {
 							<div class="col-sm-12 form-group">
 								<label for="semana_final">Imprimir nombre del mes</label>
 								<div>
-									<input type="checkbox" name="imprimirMes" id="imprimirMes" checked>
+									<input class="i_checks" type="checkbox" name="imprimirMes" id="imprimirMes" checked>
 								</div>
 							</div> <!-- col -->
 						</div> <!-- row -->	
@@ -767,7 +791,7 @@ else {
 																de.Dias,
 																de.Tipo_Complem,
 																de.tipodespacho,
-																td.Descripcion as tipodespacho_nm,
+																(SELECT Descripcion FROM tipo_despacho WHERE id = de.tipodespacho) AS tipodespacho_nm, 
 																de.estado,
 																u.Ciudad,
 																b.NOMBRE AS bodegaOrigen,
@@ -779,7 +803,6 @@ else {
 		  													LEFT JOIN ubicacion u ON u.codigoDANE = s.cod_mun_sede and u.ETC = 0
 		  													LEFT JOIN productosmov$tablaMes$tablaAnno pm ON pm.Numero = de.Num_doc AND pm.Documento = 'DES'
 		  													LEFT JOIN bodegas b ON b.ID = pm.BodegaOrigen
-		  													LEFT JOIN tipo_despacho td ON td.Id = de.tipodespacho
 		  													LEFT JOIN variacion_menu vm on vm.id = de.cod_variacion_menu 
 															WHERE 1 = 1 ";
 												
@@ -869,7 +892,7 @@ else {
     									$consulta .= " AND s.cod_sede IN ($codigoSedes) ";
 		  							}
 		  						}
-		  						if(isset($_GET["pb_tipoDespacho"]) && $_GET["pb_tipoDespacho"] != "" ){
+		  						if(isset($_GET["pb_tipoDespacho"]) && $_GET["pb_tipoDespacho"] != "99" ){
 									$tipoDespacho = $_GET["pb_tipoDespacho"];
 									$consulta = $consulta." and TipoDespacho = ".$tipoDespacho." ";
 		  						}
@@ -889,18 +912,18 @@ else {
 										  <label for="seleccionarVarios">Todos</label>
 										<input type="checkbox" class="i-checks" name="seleccionarVarios" id="seleccionarVarios">
 									  </th>
-									  <th>Número</th>
-									  <th>Fecha</th>
-									  <th>Semana</th>
-									  <th>Dias</th>
-									  <th>Tipo Ración</th>
-									  <th>Variación</th>
-									  <th>Tipo Despacho</th>
-									  <th> Municipio </th>
-									  <th>Bodega Origen</th>
-									  <th type="hidden" >Institución</th>
-									  <th> Bodega Destino </th>
-									  <th>Estado</th>
+									  <th class="text-center">Número</th>
+									  <th class="text-center">Fecha</th>
+									  <th class="text-center">Semana</th>
+									  <th class="text-center">Dias</th>
+									  <th class="text-center">Tipo Ración</th>
+									  <th class="text-center">Variación</th>
+									  <th class="text-center">Tipo Despacho</th>
+									  <th class="text-center"> Municipio </th>
+									  <th class="text-center">Bodega Origen</th>
+									  <th class="text-center">Institución</th>
+									  <th class="text-center"> Bodega Destino </th>
+									  <th class="text-center">Estado</th>
 									</tr>
 			  					</thead>
 			  					<tbody>
@@ -918,29 +941,30 @@ else {
 																	complemento="<?php echo $row['Tipo_Complem'];?>" 
 																	tipo="<?php echo $row['tipodespacho'];?>" 
 																	sede="<?php echo $row['cod_sede'];?>" 
+																	nom_sede="<?php echo $row['bodegaDestino'];?>" 
 																	estado="<?php echo $row['estado'];?>"/>
 													</td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Num_doc']; ?></td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['FechaHora_Elab']; ?></td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Semana']; ?></td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Dias']; ?></td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Tipo_Complem']; ?></td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['descVariacion']; ?></td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['tipodespacho_nm']; ?></td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Ciudad']; ?></td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['bodegaOrigen']; ?></td>
-													<td type ="hidden" > <?php echo $row['nom_inst']; ?> </td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['bodegaDestino']; ?></td>
-													<td onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');">
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Num_doc']; ?></td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['FechaHora_Elab']; ?></td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Semana']; ?></td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Dias']; ?></td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Tipo_Complem']; ?></td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['descVariacion']; ?></td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['tipodespacho_nm']; ?></td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['Ciudad']; ?></td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['bodegaOrigen']; ?></td>
+													<td class="text-center" type ="hidden" > <?php echo $row['nom_inst']; ?> </td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');" ><?php echo $row['bodegaDestino']; ?></td>
+													<td class="text-center" onclick="despachoPorSede('<?php echo $row['Num_doc']; ?>');">
 							  							<?php
 							  								$estado = $row['estado'];
 							  								switch ($estado) {
 																case 0:
-																	echo "Eliminado"; break;
+																	echo "<span  class='label label-danger' > <i class='fas fa-times'></i> Eliminado</span>"; break;
 																case 1:
-																	echo "Despachado"; break;
+																	echo "<span  class='label label-primary' > <i class='fas fa-check'></i> Enviado</span>"; break;
 																case 2:
-																	echo "Pendiente"; break;
+																	echo "<span  class='label label-warning' > <i class='fas fa-circle'></i> Pendiente</span>"; break;
 																default:
 																	echo $estado; break;
 							  								}
@@ -954,19 +978,19 @@ else {
 								</tbody>
 								<tfoot>
 						  			<tr>
-				  						<th></th>
-				  						<th>Número</th>
-				  						<th>Fecha</th>
-				  						<th>Semana</th>
-				  						<th>Dias</th>
-				  						<th>Tipo Ración</th>
-				  						<th>Variación</th>
-				  						<th>Tipo Despacho</th>
-				  						<th> Municipio </th>
-				  						<th>Bodega Origen</th>
-				  						<th type="hidden" > Institución</th>
-				  						<th> Bodega Destino </th>
-				  						<th>Estado</th>
+				  						<th class="text-center"></th>
+				  						<th class="text-center">Número</th>
+				  						<th class="text-center">Fecha</th>
+				  						<th class="text-center">Semana</th>
+				  						<th class="text-center">Dias</th>
+				  						<th class="text-center">Tipo Ración</th>
+				  						<th class="text-center">Variación</th>
+				  						<th class="text-center">Tipo Despacho</th>
+				  						<th class="text-center">Municipio</th>
+				  						<th class="text-center">Bodega Origen</th>
+				  						<th class="text-center">Institución</th>
+				  						<th class="text-center">Bodega Destino</th>
+				  						<th class="text-center">Estado</th>
 									</tr>
 								</tfoot>
 							</table>
@@ -982,6 +1006,31 @@ else {
 		</div><!-- /.col-lg-12 -->
   	</div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
+
+<div class="modal inmodal fade" id="ventanaConfirmar" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+  	<div class="modal-dialog modal-sm">
+    	<div class="modal-content">
+      		<div class="modal-header text-info" style="padding: 15px;">
+        		<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        		<h3><i class="fa fa-question-circle fa-lg" aria-hidden="true"></i> Información InfoPAE </h3>
+      		</div>
+      		<div class="modal-body">
+				<?php if($_SESSION['p_inventory'] != 0): ?>
+					<p class="text-center">¿Esta seguro de eliminar?, si el estado es enviado, <strong> afectara el inventario de la bodega </strong></p>
+				<?php else: ?>
+					<p class="text-center"><strong> ¿Esta seguro de eliminar? </strong></p>
+				<?php endif; ?>   		
+      		</div>
+      		<div class="modal-footer">
+        		<input type="hidden" id="anno_eliminar">
+        		<input type="hidden" id="mes_eliminar">
+        		<input type="hidden" id="num_Doc_eliminar">
+        		<button type="button" class="btn btn-danger btn-outline btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+        		<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="deleteRemision();"><i class="fa fa-check"></i> Aceptar</button>
+      		</div>
+    	</div>
+  	</div>
+</div>
 
 <?php include '../../footer.php'; ?>
 
@@ -1002,32 +1051,22 @@ else {
 <script src="<?= $baseUrl; ?>/modules/despachos/js/despachos.js?v=20200423"></script>
 <script>
 	$(document).ready(function(){
+		var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
 		<?php if ($_SESSION['perfil'] == "0" || $permisos['despachos'] == "1" || $permisos['despachos'] == "2"): ?>
-			var botonAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">';
-			botonAcciones += '<li><a href="#" onclick="despachos_por_sede()"> <i class="fa fa-file-pdf-o"></i>  Individual.pdf </a></li>';
-			// botonAcciones += '<li><a href="#" onclick="despachos_por_sede_xlsx()"> <i class="fa fa-file-excel-o"></i> Individual.xlsx </a></li>';
-			<?php  if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?> 
-			// 	botonAcciones += '<li><a href="#" onclick="despachos_por_sede_vertical()"> <i class="fa fa-file-pdf-o"></i> Individual Vertical.pdf </a></li>';
-				// botonAcciones += '<li><a href="#" onclick="despachos_kardex()"> <i class="fa fa-file-pdf-o"></i> Kardex.pdf </a></li>';
-			// <?php endif ?>
-			<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-				// botonAcciones += '<li><a href="#" onclick="despachos_consolidado()"> <i class="fa fa-file-pdf-o"></i> Consolidado.pdf </a></li>';
-				botonAcciones += '<li><a href="#" onclick="despachos_kardex_multiple()"> <i class="fa fa-file-pdf-o"></i> Kardex Múltiple.pdf </a></li>';
-				botonAcciones += '<li><a href="#" onclick="despachos_consolidado()"> <i class="fa fa-file-pdf-o"></i> Consolidado.pdf </a></li>';
-
-			<?php endif ?>
-			// <?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-			// 	botonAcciones += '<li><a href="#" onclick="despachos_consolidado2()"> <i class="fa fa-file-pdf-o"></i> Consolidado 2.pdf </a></li>';
-			// <?php endif ?>
-			// botonAcciones += '<li><a href="#" onclick="despachos_consolidado_x_sede()"> <i class="fa fa-file-pdf-o"></i> Consolidado x Sedes.pdf </a></li>';
-			// <?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
-			// 	botonAcciones += '<li><a href="#" onclick="despachos_consolidado_vertical()"> <i class="fa fa-file-pdf-o"></i> Consolidado Vertical.pdf </a></li>';
-			// <?php endif ?>
+			<?php foreach ($formatos as $keyF => $valueF) { ?>
+				<?php if ($_SESSION['perfil'] != '6' && $_SESSION['perfil'] != '7'): ?>
+					botonAcciones += '<li><a href="#" onclick="<?= $valueF['route'] ?>"> <i class="<?= $valueF['icon'] ?>"></i> &nbsp <?= $valueF['name'] ?> </a></li>';
+			 	<?php endif ?>
+			<?php } ?> 
 		
 			<?php if($_SESSION['perfil'] == "0" || $permisos['despachos'] == "2"){ ?>
-				botonAcciones += '<li><a href="#" onclick="editar_despacho()"><i class="fas fa-pencil-alt"></i> Editar Despacho </a></li>';
-				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()"><i class="fas fa-pencil-alt"></i> Ingresar Lotes y Fechas de vencimiento </a></li>';
-				botonAcciones += '<li><a href="#" onclick="eliminar_despacho()"><i class="fa fa-trash"></i> Eliminar Despacho</a></li>';
+				botonAcciones += '<li class="divider"></li>';
+				<?php if($_SESSION['p_inventory'] != 0): ?> 
+					botonAcciones += '<li><a href="#" onclick="enviar_despacho()"><i class="fa fa-upload fa-lg"></i> &nbsp Enviar </a></li>';
+				<?php endif ?>
+				botonAcciones += '<li><a href="#" onclick="editar_despacho()"><i class="fas fa-pencil-alt fa-lg"></i> &nbsp Editar  </a></li>';
+				botonAcciones += '<li><a href="#" onclick="despachos_por_sede_fecha_lote()"><i class="fas fa-pencil-alt fa-lg"></i> &nbsp Lotes y Fechas </a></li>';
+				botonAcciones += '<li><a href="#" onclick="eliminar_despacho()"><i class="fa fa-trash fa-lg"></i> &nbsp Eliminar </a></li>';
 			<?php } ?>
 			botonAcciones += '</ul></div>';
 			$('.containerBtn').html(botonAcciones);

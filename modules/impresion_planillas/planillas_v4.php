@@ -105,7 +105,7 @@ if ($respuestaSemanas->num_rows > 0) {
 		$result = $Link->query($consulta) or die ('Error al consultar existencia de tablas de priorizacion: '. mysqli_error($Link));
 		$existe = $result->num_rows;
 		if ($existe == 1) {
-			$consultaPriorizacion .= " SELECT p.cod_sede, s.cod_inst, s.nom_inst, s.nom_sede, s.cod_mun_sede, p.num_est_focalizados
+			$consultaPriorizacion .= " SELECT s.codigo_DANE, p.cod_sede, s.cod_inst, s.nom_inst, s.nom_sede, s.cod_mun_sede, p.num_est_focalizados
 									FROM sedes$periodoActual s
 									INNER JOIN $tablaPriorizacion AS p ON s.cod_sede = p.cod_sede
 									INNER JOIN ubicacion AS u ON s.cod_mun_sede = u.codigoDANE
@@ -168,20 +168,37 @@ class PDF extends PDF_Rotate
 			{
 				$tituloPlanilla = "REGISTRO Y CONTROL DIARIO DE ASISTENCIA DE TITULAR DE DERECHO DEL PROGRAMA DE ALIMENTACIÓN ESCOLAR - PAE";
 			}
+			
+			// piedras
+			// $logooperador = "../../upload/logotipos/logo_operador_planilla.jpg";
+			// $this->Image($logooperador, 5 ,3, 48, 14,'jpg', '');
 	
-			$logooperador = "../../upload/logotipos/logo_operador_planilla.jpg";
-			$this->Image($logooperador, 5 ,3, 50, 18,'jpg', '');
+			// $logoMinEducacion = "../../upload/logotipos/logo_min_educacion.jpg";
+			// $this->Image($logoMinEducacion, 100 ,3, 73, 14,'jpg', '');
 	
+			// $logoEtcMunicipio = "../../upload/logotipos/logo_etc_municipio.jpg";
+			// $this->Image($logoEtcMunicipio, 210 ,3, 33, 14,'jpg', '');
+	
+			// $logoEtcMunicipio2 = "../../upload/logotipos/logo_etc_municipio2.jpg";
+			// $this->Image($logoEtcMunicipio2, 280 ,3, 33, 14,'jpg', '');
+
+			// ibague
 			$logoMinEducacion = "../../upload/logotipos/logo_min_educacion.jpg";
-			$this->Image($logoMinEducacion, 100 ,3, 75, 18,'jpg', '');
-	
+			$this->Image($logoMinEducacion, 5 ,3, 73, 14,'jpg', '');
+
+			$logooperador = "../../upload/logotipos/logo_etc_uapa.jpg";
+			$this->Image($logooperador, 100 ,3, 60, 14,'jpg', '');
+
+			$logooperador = "../../upload/logotipos/logo_operador_planilla.jpg";
+			$this->Image($logooperador, 180 ,3, 60, 14,'jpg', '');
+
 			$logoEtcMunicipio = "../../upload/logotipos/logo_etc_municipio.jpg";
-			$this->Image($logoEtcMunicipio, 210 ,3, 35, 18,'jpg', '');
+			$this->Image($logoEtcMunicipio, 270 ,3, 70, 14,'jpg', '');
 	
-			$logoEtcMunicipio2 = "../../upload/logotipos/logo_etc_municipio2.jpg";
-			$this->Image($logoEtcMunicipio2, 280 ,3, 35, 18,'jpg', '');
+			// $logoEtcMunicipio2 = "../../upload/logotipos/logo_etc_municipio2.jpg";
+			// $this->Image($logoEtcMunicipio2, 280 ,3, 33, 14,'jpg', '');
 	
-			$this->Ln(20);
+			$this->Ln(16);
 			$this->SetFont('Arial','B',$tamannoFuente);
 			$this->SetTextColor(250,250,250);
 			$this->SetFillColor(0,0,0);
@@ -311,7 +328,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 								focalizacion$semanaInicial.cod_estrato, 
 								focalizacion$semanaInicial.sisben, 
 								focalizacion$semanaInicial.cod_discap, 
-								CASE WHEN et.ID = 99 THEN 'SP' WHEN et.ID != 99 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia,  
+								UPPER(et.DESCRIPCION) AS etnia,  
 								focalizacion$semanaInicial.resguardo, 
 								focalizacion$semanaInicial.cod_pob_victima, 
 								focalizacion$semanaInicial.des_dept_nom, 
@@ -382,7 +399,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 											focalizacion$value.cod_estrato, 
 											focalizacion$value.sisben, 
 											focalizacion$value.cod_discap, 
-											CASE WHEN et.ID = 99 THEN 'SP' WHEN et.ID != 99 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia,  
+											UPPER(et.DESCRIPCION)  AS etnia,  
 											focalizacion$value.resguardo, 
 											focalizacion$value.cod_pob_victima, 
 											focalizacion$value.des_dept_nom, 
@@ -464,7 +481,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 							e.cod_estrato, 
 							e.sisben, 
 							e.cod_discap, 
-							CASE WHEN et.ID = 99 THEN 'SP' WHEN et.ID != 99 THEN UPPER(et.DESCRIPCION) ELSE et.ID END AS etnia, 
+							UPPER(et.DESCRIPCION)  AS etnia, 
 							e.resguardo, 
 							e.cod_pob_victima, 
 							e.des_dept_nom, 
@@ -490,7 +507,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 			if ($sedeParametro != ''){ $consulta .= " and cod_sede = '$sedeParametro'"; }
 			if ($condicionCoordinador != ''){ $consulta .= " $condicionCoordinador "; }
 			$consulta .= " ORDER BY e.nom_inst, e.nom_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 asc "; 
-			// exit(var_dump($consulta));
+			// var_dump($consulta);
 			$resultado = $Link->query($consulta) or die ('Unable to execute query. Tercera consulta: los niños<br>'.$consulta.'<br>'.mysqli_error($Link));
 			$codigo = '';
 			if($resultado->num_rows >= 1){
@@ -503,7 +520,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 			} 
   		}
   		/************************************************************************************************************************************************/
-
+		// exit(var_dump($estudiantes));
 		foreach ($estudiantes as $estudiantesSede) {
 			// Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
 			$codigoSede = $estudiantesSede[0]['cod_sede'];
@@ -566,11 +583,11 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 					if($linea > $lineas || $grupoEncurso != $estudiante['nom_grupo']) {
 
 						$Y = $pdf->GetY();
-						$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+						$pdf->Cell(60,8, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
 						$pdf->SetXY(63, $Y);
-						$pdf->Cell(108,10, '','BR',0,'L',False);
-						$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
-						$pdf->Cell(0,10, '','BR',0,'L',False);
+						$pdf->Cell(108,8, '','BR',0,'L',False);
+						$pdf->Cell(60,8,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+						$pdf->Cell(0,8, '','BR',0,'L',False);
 
 						$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 						$alturaCuadroFilas = $alturaLinea * ($linea-1);
@@ -658,11 +675,11 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 			}
             $pdf->SetFont('Arial','B',$tamannoFuente);
 			$Y = $pdf->GetY();
-			$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+			$pdf->Cell(60,8, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
 			$pdf->SetXY(63, $Y);
-			$pdf->Cell(108,10, '','BR',0,'L',False);
-			$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
-			$pdf->Cell(0,10, '','BR',0,'L',False);
+			$pdf->Cell(108,8, '','BR',0,'L',False);
+			$pdf->Cell(60,8,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+			$pdf->Cell(0,8, '','BR',0,'L',False);
 
 			//Termina impresión de estudiantes de la sede
 			$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
@@ -671,6 +688,7 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 			include 'planillas_footer_v4.php';
 
 			// manejo planilla novedades al final de cada sede 
+			// exit(var_dump($hojaNovedades));
 			for ($m=0; $m < (int)$hojaNovedades ; $m++) { 
 				$tipoPlanillaN = 5;
 				$pdf->set_data($tipoPlanillaN);
@@ -688,11 +706,11 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 				for($i = 0 ; $i < 25 ; $i++){
 					if($linea > $lineas){
 						$Y = $pdf->GetY();
-						$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+						$pdf->Cell(60,8, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
 						$pdf->SetXY(63, $Y);
-						$pdf->Cell(108,10, '','BR',0,'L',False);
-						$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
-						$pdf->Cell(0,10, '','BR',0,'L',False);
+						$pdf->Cell(108,8, '','BR',0,'L',False);
+						$pdf->Cell(60,8,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+						$pdf->Cell(0,8, '','BR',0,'L',False);
 
 						$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 						$alturaCuadroFilas = $alturaLinea * ($linea-1);
@@ -730,11 +748,11 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 				}
 
 				$Y = $pdf->GetY();
-				$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+				$pdf->Cell(60,8, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
 				$pdf->SetXY(63, $Y);
-				$pdf->Cell(108,10, '','BR',0,'L',False);
-				$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
-				$pdf->Cell(0,10, '','BR',0,'L',False);
+				$pdf->Cell(108,8, '','BR',0,'L',False);
+				$pdf->Cell(60,8,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+				$pdf->Cell(0,8, '','BR',0,'L',False);
 
 				$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 				$alturaCuadroFilas = $alturaLinea * ($linea-1);
@@ -799,11 +817,11 @@ else if ($tipoPlanilla == 5){
 				$linea++;
 			}
 			$Y = $pdf->GetY();
-			$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+			$pdf->Cell(60,8, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
 			$pdf->SetXY(63, $Y);
-			$pdf->Cell(108,10, '','BR',0,'L',False);
-			$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
-			$pdf->Cell(0,10, '','BR',0,'L',False);
+			$pdf->Cell(108,8, '','BR',0,'L',False);
+			$pdf->Cell(60,8,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+			$pdf->Cell(0,8, '','BR',0,'L',False);
 
 			$pdf->SetXY($xCuadroFilas, $yCuadroFilas);
 			$alturaCuadroFilas = $alturaLinea * ($linea-1);
@@ -937,7 +955,14 @@ else if ($tipoPlanilla == 7){
 				$totales = $row;
 			}
 		}
- 		$consulta_suplente_repitentes_sede = "SELECT * FROM entregas_res_$mes$anno2d WHERE cod_inst = '$codigoInstitucion' AND cod_sede = '$codigoSede' AND (tipo = 'S' OR tipo = 'R') AND tipo_complem='$tipoComplemento' ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
+ 		$consulta_suplente_repitentes_sede = "	SELECT 	ent.*, 
+														UPPER(e.DESCRIPCION)  AS etnia
+												FROM entregas_res_$mes$anno2d ent
+												INNER JOIN etnia e ON e.id = ent.etnia
+												WHERE cod_inst = '$codigoInstitucion' 
+												AND cod_sede = '$codigoSede' AND (tipo = 'S' OR tipo = 'R') 
+												AND tipo_complem='$tipoComplemento' 
+												ORDER BY cod_sede, cod_grado, nom_grupo, ape1,ape2,nom1,nom2 ASC";
 		// echo "<br><br>$consulta_suplente_repitentes_sede<br><br>";
 		// exit(var_dump($consulta_suplente_repitentes_sede));
 		$respuesta_suplente_repitentes_sede = $Link->query($consulta_suplente_repitentes_sede) or die("Error al consultar suplentes y repitentes en entregas_res_$mes$anno2d: ". $Link->error);
@@ -1366,8 +1391,9 @@ if ($tipoPlanilla == 9) {
 
 }
 
-else
+if($tipoPlanilla == 1)
 {
+	// exit(var_dump($tipoPlanilla));
 	foreach ($sedes as $sede){ 
 		// Consulta que retorna la cantidad de estudiantes de una sede seleccionada.
 		$codigoSede = $sede['cod_sede'];
@@ -1428,11 +1454,11 @@ else
 		}
 
 		$Y = $pdf->GetY();
-		$pdf->Cell(60,10, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
+		$pdf->Cell(60,8, utf8_decode(strtoupper('FIRMA RESPONSABLE DEL OPERADOR:')),'LB',0,'L', False);
 		$pdf->SetXY(63, $Y);
-		$pdf->Cell(108,10, '','BR',0,'L',False);
-		$pdf->Cell(60,10,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
-		$pdf->Cell(0,10, '','BR',0,'L',False);
+		$pdf->Cell(108,8, '','BR',0,'L',False);
+		$pdf->Cell(60,8,'FIRMA RECTOR ESTABLECIMIENTO EDUCATIVO: ','B',0,'L', False);
+		$pdf->Cell(0,8, '','BR',0,'L',False);
 
 		//Termina impresión de estudiantes de la sede
 		$pdf->SetXY($xCuadroFilas, $yCuadroFilas);

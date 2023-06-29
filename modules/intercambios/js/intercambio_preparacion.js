@@ -1,4 +1,12 @@
 var indiceProductosAjuste = 0;
+toastr.options = { 
+	newestOnTop: true, 
+	closeButton: false, 
+	progressBar: true, 
+	preventDuplicates: false, 
+	showMethod: 'slideDown', 
+	timeOut: 2500, 
+};
 
 $(document).ready(function(){
 	$('#btnBuscar').click(function(){

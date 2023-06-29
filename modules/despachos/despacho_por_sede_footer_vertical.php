@@ -1,6 +1,6 @@
 <?php
 //Footer
-$tamannoFuente = 5;
+// $tamannoFuente = 5;
 $pdf->SetFont('Arial','',$tamannoFuente);
 $current_y = $pdf->GetY();
 $current_x = $pdf->GetX();

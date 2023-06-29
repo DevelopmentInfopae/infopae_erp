@@ -12,6 +12,8 @@ else {
 	?><script type="text/javascript">
 		const list = document.querySelector(".li_menus");
 		list.className += " active ";
+		const list2 = document.querySelector(".li_preparaciones");
+		list2.className += " active ";
 	</script>
 	<?php
 	}

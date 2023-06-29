@@ -1,28 +1,20 @@
 <?php
-	/**
-	 * Index - Modulo de Entregas Biometricas.
-	 * Permite la selección del día, la institución, 
-	 * sede etc para el registro de las entregas.
-	 * @author Ricardo Farfán <ricardo@xlogam.com>
-	 */
-
-
 	$titulo = "Registro de entregas vía QR - BarCode";
 	include '../../header.php';
-
 	if ($permisos['entregas_biometricas'] == "0" || $permisos['entregas_biometricas'] == "1") {
 		?><script type="text/javascript">
 			window.open('<?= $baseUrl ?>', '_self');
 		</script>
 	<?php exit();}
-
 	else {
-    ?><script type="text/javascript">
-      const list = document.querySelector(".li_entregas_biometricas");
-      list.className += " active ";
-    </script>
-  <?php
-  }
+    ?>	<script type="text/javascript">
+      		const list = document.querySelector(".li_entregas_biometricas");
+      		list.className += " active ";
+			const list2 = document.querySelector(".li_registroBiometricoBarcode");
+			list2.className += " active ";
+    	</script>
+  	<?php
+  	}
 
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
@@ -33,8 +25,6 @@
 	date_default_timezone_set('America/Bogota');
 	$fecha = date("Y-m-d H:i:s");
 	$cacheBusting = date("YmdHis");
-
-
 	$dia = intval(date("d"));
 	$mes = date("m");
 	$anno = date("Y");

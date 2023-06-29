@@ -3,7 +3,7 @@ include '../../config.php';
 require_once '../../autentication.php';
 require('../../fpdf181/fpdf.php');
 require_once '../../db/conexion.php';
-// exit(var_dump($_POST));
+
 set_time_limit (0);
 ini_set('memory_limit','6000M');
 date_default_timezone_set('America/Bogota');
@@ -12,7 +12,7 @@ $ciclo = '';
 $mesAnno = '';
 $sangria = " * ";
 $largoNombre = 30;
-$tamannoFuente = 5;
+$tamannoFuente = 6;
 $totalBeneficiarios = 0;
 $paginasObservaciones = 1;
 
@@ -49,7 +49,7 @@ if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
 	$anno = substr($anno, -2);
 	$anno = trim($anno);
 	$mesAnno = $mes.$anno;
-	$corteDeVariables = 16;
+	$corteDeVariables = 15;
 	if(isset($_POST['seleccionarVarios'])){
 	  $corteDeVariables++;
 	}
@@ -81,9 +81,9 @@ if (isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
 		$corteDeVariables++;
 	}
 	$_POST = array_slice($_POST, $corteDeVariables);
-	$_POST = array_values($_POST);
+	$_POST = array_values($_POST); 
 }
-
+// exit(var_dump($_POST));
 class PDF extends FPDF{
 	function Header(){}
 	function Footer(){}
@@ -124,7 +124,7 @@ if ($cantGruposEtarios == 3) {
 	$pdf->SetAutoPageBreak(FALSE, 5); 
 	$pdf->AliasNbPages();
 	include '../../php/funciones.php';
-
+	
 	for ($k=0; $k < count($_POST) ; $k++){ 
   		// Borrando variables array para usarlas en cada uno de los despachos
   		unset($sedes);
@@ -772,7 +772,7 @@ if ($cantGruposEtarios == 5) {
   							LEFT JOIN tipo_despacho td on de.TipoDespacho = td.Id
   							WHERE de.Num_Doc = $despacho "; 
 
-	  	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	  	$resultado = $Link->query($consulta) or die ('Unable to execute query ln 775. '. mysqli_error($Link));
 	  	if($resultado->num_rows >= 1){
 			$row = $resultado->fetch_assoc();
 	  		$municipio = $row['Ciudad'];
@@ -830,7 +830,7 @@ if ($cantGruposEtarios == 5) {
 	 	$dias = ''; 
 	 	$consulta = " SELECT * FROM planilla_semanas WHERE SEMANA_DESPACHO IN ($semanaIn) AND CONSECUTIVO IN ( $concatConsecutivo ) ";  
 		// exit(var_dump($consulta));
-	 	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+	 	$resultado = $Link->query($consulta) or die ('Unable to execute query. Ln833 '. mysqli_error($Link));
 	 	$cantDias = $resultado->num_rows;
 	 	if($resultado->num_rows >= 1){
 	   	$mesInicial = '';
@@ -1103,7 +1103,7 @@ if ($cantGruposEtarios == 5) {
 					//Termina la busqueda de las filas adicionales debido a presetaciones,
 					// echo $current_y + (4*$filas) ."<BR>";	
 					// echo + (4*$filas). "<BR>";
-					if(($current_y + (4*$filas)) > 170){
+					if(($current_y + (4*$filas)) > 190){
 			  			$pdf->AddPage();
 			  			include 'despacho_por_sede_footer.php';
 			  			include 'despacho_por_sede_header.php';
@@ -1244,7 +1244,7 @@ if ($cantGruposEtarios == 5) {
 	  					if (strpos($alimento['componente'], "HUEVO") !== FALSE) {
 							$aux = ceil(0+$aux);
 	  					} else {
-							$aux = round(0+$aux);
+							$aux = ceil(0+$aux);
 	  					}
 					}
 					$aux = number_format($aux, 2, '.', '');
@@ -1450,7 +1450,7 @@ if ($cantGruposEtarios == 5) {
 			}	//Termina el for de los alimentos
 	  	}
 	  	$current_y = $pdf->GetY();
-  		if($current_y > 160){
+  		if($current_y > 165){
 			$filas = 0;
 			$pdf->AddPage();
 			include 'despacho_por_sede_footer.php';

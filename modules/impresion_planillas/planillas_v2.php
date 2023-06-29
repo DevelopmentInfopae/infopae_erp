@@ -401,14 +401,27 @@ if($tipoPlanilla == 2 || $tipoPlanilla == 3 || $tipoPlanilla == 4) {
 								$documentos .= "'" . $value . "',";
 							}
 							$documentos = trim($documentos, ",");
-
+							// exit(var_dump($estudiantes));
 							// se ordena el nuevo array con los niños que se agregaron en el cambio de la focalizacion y se ordena nuevamente por el grupo
 							foreach ($estudiantes as $estudianteCod_sede => $valorEstudiantes) {
 								$gruposI = [];
+								$ape1I = [];
+								$ape2I = [];
+								$nom1I = [];
+								$nom2I = [];
 								foreach ($valorEstudiantes as $keySedeCurso => $valorSedeCurso) {
 									$gruposI[$keySedeCurso] = $valorSedeCurso['nom_grupo'];	
+									$ape1I[$keySedeCurso] = $valorSedeCurso['ape1'];	
+									$ape2I[$keySedeCurso] = $valorSedeCurso['ape2'];	
+									$nom1I[$keySedeCurso] = $valorSedeCurso['nom1'];	
+									$nom2I[$keySedeCurso] = $valorSedeCurso['nom2'];	
 								}
-								array_multisort($gruposI, SORT_ASC, $estudiantes[$estudianteCod_sede]);
+								array_multisort($gruposI, SORT_ASC, 
+												$ape1I, SORT_STRING,
+												$ape2I, SORT_STRING,
+												$nom1I, SORT_STRING,
+												$nom2I, SORT_STRING,
+												$estudiantes[$estudianteCod_sede]);
 							}
 						}
 					}	

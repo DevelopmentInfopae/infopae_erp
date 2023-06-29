@@ -6,8 +6,12 @@ $(document).ready(function() {
 
 function ver_fqrs(id)
 {
-	$('#formulario_ver_fqrs #id_fqrs').val(id);
-	$('#formulario_ver_fqrs').submit();
+    // console.log(id)
+    if (id !== undefined) {
+        $('#formulario_ver_fqrs #id_fqrs').val(id);
+        $('#formulario_ver_fqrs').submit();
+    }
+
 }
 
 function editar_caso()

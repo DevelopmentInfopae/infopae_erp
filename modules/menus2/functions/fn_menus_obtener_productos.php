@@ -48,9 +48,9 @@ if ($respuesta == 1) { ?>
 	}
  
   	if ($tipoProducto == "01") {
-   		$consulta = "select * from productos".$_SESSION['periodoActual']." where ((".$tipoPreparacion." AND Cod_Grupo_Etario = ".$grupoEtario.") or (Codigo like '04%')) and Nivel = 3 ORDER BY Codigo ASC";
+   		$consulta = "select * from productos".$_SESSION['periodoActual']." where ((".$tipoPreparacion." AND Cod_Grupo_Etario = ".$grupoEtario.") or (Codigo like '04%') OR (descripcion LIKE '%contramuestra%' AND TipodeProducto = 'Preparación' ) ) and Nivel = 3 ORDER BY Codigo ASC";
   	} else if ($tipoProducto == "02") {
-    	$consulta = "select * from productos".$_SESSION['periodoActual']." where Codigo like '03%' and Nivel = 3 and Inactivo = 0 Order by Descripcion asc";
+    	$consulta = "select * from productos".$_SESSION['periodoActual']." where Codigo like '03%' and Nivel = 3 and Inactivo = 0 Order by Id asc";
   	}
   	// exit(var_dump($consulta));
   	$cod1 = "";

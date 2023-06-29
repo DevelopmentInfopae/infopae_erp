@@ -10,6 +10,8 @@ else {
 ?><script type="text/javascript">
     const list = document.querySelector(".li_menus");
     list.className += " active ";
+	const list2 = document.querySelector(".li_menus_sub");
+    list2.className += " active ";
 </script>
 <?php
 }
@@ -91,7 +93,7 @@ $titulo = $nameLabel;
             			</div>
 
             			<div class="form-group col-sm-3">
-              				<label for='etario_menus'>Grupo Etario</label>
+              				<label for='etario_menus'>Grupo</label>
               				<select class="form-control" name="etario_menus">
                 				<option value="">Seleccione...</option>
                 				<?php 
@@ -99,7 +101,11 @@ $titulo = $nameLabel;
                 					$resEtarios = $Link->query($consEtarios);
                 					if ($resEtarios->num_rows > 0) {
                   						while ($etarios = $resEtarios->fetch_assoc()) { ?>
+										<?php if($_SESSION['p_gruposCalculos'] == 1): ?>
                     						<option value="<?= $etarios['ID'] ?>"  <?= (isset($_POST['etario_menus']) && $_POST['etario_menus'] == $etarios['ID']) ? "selected='selected'" : ""; ?> ><?= $etarios['DESCRIPCION'] ?></option>
+										<?php else: ?>
+                    						<option value="<?= $etarios['ID'] ?>"  <?= (isset($_POST['etario_menus']) && $_POST['etario_menus'] == $etarios['ID']) ? "selected='selected'" : ""; ?> ><?= $etarios['equivalencia_grado'] ?></option>
+										<?php endif; ?>
                   				<?php
 									 	}
                 					}
@@ -110,7 +116,7 @@ $titulo = $nameLabel;
               				<input type="hidden" name="filtro_menus">
               				<button type="submit" class="btn btn-primary"><span class="fa fa-search"></span> Buscar</button>
               				<?php if (isset($_POST['filtro_menus'])): ?>
-                				<a href="index.php" class="btn btn-default"><span class="fa fa-times"></span> Limpiar búsqueda</a>
+                				<a href="index.php" class="btn btn-danger"><span class="fa fa-times"></span> Limpiar búsqueda</a>
               				<?php endif ?>
             			</div>
         			</form>
@@ -132,7 +138,7 @@ $titulo = $nameLabel;
         						<th>Descripción</th>
         						<th>Tipo Producto</th>
                 				<th>Tipo Complemento</th>
-        						<th>Grupo Etario</th>
+        						<th>Grupo/Nivel</th>
         						<th>Variación</th>
                 				<th>Estado</th>
                 				<th>Acciones</th>
@@ -145,7 +151,11 @@ $titulo = $nameLabel;
               				$resultadoGruposEtarios = $Link->query($consultaGruposEtarios);
               				if ($resultadoGruposEtarios->num_rows > 0) {
                 				while ($row = $resultadoGruposEtarios->fetch_assoc()) {
-                  					$gruposEtarios[$row['ID']] = $row['DESCRIPCION'];
+									if ($_SESSION['p_gruposCalculos'] == 1) {
+										$gruposEtarios[$row['ID']] = $row['DESCRIPCION'];
+									}if ($_SESSION['p_gruposCalculos'] == 2) {
+										$gruposEtarios[$row['ID']] = $row['equivalencia_grado'];
+									}
                 				}
               				}
               				$variacionesMenu = array();

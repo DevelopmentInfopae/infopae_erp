@@ -202,7 +202,7 @@
 		                				<select class="form-control" name="complemento" id="complemento">
 		                					<option value="">Seleccione uno</option>
 		                					<?php
-		                    					$consulta1= "SELECT CODIGO AS codigoTipoComplemento, ID AS idTipoComplemento, DESCRIPCION AS descripcionTipoComplemento FROM tipo_complemento WHERE jornada = '". $registrosSede["jornada"] ."'";
+		                    					$consulta1= "SELECT CODIGO AS codigoTipoComplemento, ID AS idTipoComplemento, DESCRIPCION AS descripcionTipoComplemento FROM tipo_complemento " ;
 		                    					$result1 = $Link->query($consulta1);
 		                    					if($result1){
 		                      						while($row1 = $result1->fetch_assoc()){
@@ -227,7 +227,7 @@
 		                    					if($result1){
 		                      						while($row1 = $result1->fetch_assoc()){
 		                  					?>
-		                        			<option value="<?php echo $row1['idVariacion']; ?>" <?php if(isset($registrosSede["cod_variacion_menu"]) && $registrosSede["cod_variacion_menu"] == $row1["idVariacion"]){ echo "selected"; } ?>>
+		                        			<option value="<?= $row1['idVariacion'] == 3 ? '0' : $row1['idVariacion'] ?>" <?php if(isset($registrosSede["cod_variacion_menu"]) && ( $registrosSede["cod_variacion_menu"] == 0 ? '3' : $registrosSede['cod_variacion_menu'] ) ==  $row1["idVariacion"]  ){ echo "selected"; } ?>>
 		                          			<?php echo $row1['descripcionVariacion']; ?>
 		                       	 			</option>
 		                  					<?php

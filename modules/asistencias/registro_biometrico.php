@@ -1,8 +1,28 @@
 <?php
-include '../../header.php';
-include 'functions/fn_fecha_asistencia.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
+  	include '../../header.php';
+	require_once 'functions/fn_fecha_asistencia.php';
+  	set_time_limit (0);
+  	ini_set('memory_limit','6000M');
+  	$periodoActual = $_SESSION['periodoActual'];
+
+  	if ($permisos['asistencia'] == "0") {
+?>		<script type="text/javascript">
+  			window.open('<?= $baseUrl ?>', '_self');
+		</script>
+<?php 
+	exit(); 
+	}
+
+	else {
+?>		<script type="text/javascript">
+      		const list = document.querySelector(".li_asistencia");
+      		list.className += " active ";
+			const list2 = document.querySelector(".li_registroBiometrico");
+      		list2.className += " active ";
+    	</script>
+<?php
+}
+
 
 $periodoActual = $_SESSION["periodoActual"];
 $titulo = "Registro Biometrico";

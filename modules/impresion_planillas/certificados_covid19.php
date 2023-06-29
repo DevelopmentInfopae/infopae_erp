@@ -6,11 +6,15 @@
       window.open('<?= $baseUrl ?>', '_self');
     </script>
   <?php exit(); }
-  else {
-    ?><script type="text/javascript">
-      const list = document.querySelector(".li_entrega_complementos");
-      list.className += " active ";
-    </script>
+else {
+	?><script type="text/javascript">
+	  const list = document.querySelector(".li_entrega_complementos");
+	  list.className += " active ";
+	  const list2 = document.querySelector(".li_controlAsistencia");
+	  list2.className += " active ";
+	  const list3 = document.querySelector(".li_certificadoInstitucionCovid");
+	  list3.className += " active ";
+	</script>
   <?php
   }
   

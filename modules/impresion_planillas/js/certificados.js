@@ -7,6 +7,10 @@ $( document ).ready(function() {
 			mesCompleto = mes;
 		}
 		cargarSemanas(mesCompleto);
+		var tipo = $('#tipoRacion').val();
+		var municipio = $('#municipio').val();
+		var mes = $(this).val();
+		buscar_institucion(municipio,tipo, mes);
 	});
   $(document).on('change', '#semana_inicial', function () {
   	var mes = $('#mes').val();
@@ -31,8 +35,9 @@ $( document ).ready(function() {
 		console.log('Cambio de municipio');
 		var tipo = $('#tipoRacion').val();
 		var municipio = $(this).val();
+		var mes = $('#mes').val()
 		$('#municipioNm').val($("#municipio option:selected").text());
-		buscar_institucion(municipio,tipo);
+		buscar_institucion(municipio,tipo, mes);
 	});
 
 	$('#municipio').trigger('change');
@@ -103,11 +108,11 @@ function actualizarDiasCampo() {
 }
 
 
-function buscar_institucion(municipio,tipo){
+function buscar_institucion(municipio,tipo,mes){
   console.log('Actualizando lista de instituciones.');
   console.log(municipio);
   console.log(tipo);
-  var datos = {"municipio":municipio,"tipo":tipo};
+  var datos = {"municipio":municipio,"tipo":tipo, "mes": mes};
     $.ajax({
       type: "POST",
       url: "functions/fn_buscar_institucion.php",

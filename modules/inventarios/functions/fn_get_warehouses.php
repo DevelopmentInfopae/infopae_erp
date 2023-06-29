@@ -4,13 +4,22 @@ include '../../../config.php';
 require_once '../../../db/conexion.php';
 $periodoActual = $_SESSION['periodoActual'];
 
-if(isset($_POST['municipio'])){ $municipio = $_POST['municipio']; }
+$auxMunicipio = '';
+$auxResponsable = '';
+if(isset($_POST['municipio'])){ 
+    $municipio = $_POST['municipio'];
+    $auxMunicipio .= " AND CIUDAD = '" .$municipio. "' " ; 
+}
 
-$consultaBodegas = " SELECT cod_sede, nom_sede FROM sedes$periodoActual WHERE cod_mun_sede = '" .$municipio. "'";
+if(isset($_POST['sinc'])){ 
+    $auxResponsable .= " AND RESPONSABLE = '' "; 
+}
+
+$consultaBodegas = " SELECT ID, NOMBRE FROM bodegas WHERE 1=1 $auxMunicipio $auxResponsable " ;
 $respuestaBodegas = $Link->query($consultaBodegas) or die ('Error al consultar las bodegas' );
 if ($respuestaBodegas->num_rows > 0) {
     while ($dataBodegas = $respuestaBodegas->fetch_assoc()) {
-?>      <option value="<?= $dataBodegas['cod_sede'] ?>"><?= $dataBodegas['nom_sede'] ?></option>     
+?>      <option value="<?= $dataBodegas['ID'] ?>"><?= $dataBodegas['NOMBRE'] ?></option>   
 <?php        
     }
 }

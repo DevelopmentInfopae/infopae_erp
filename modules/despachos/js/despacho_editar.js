@@ -19,6 +19,8 @@ $(document).ready(function(){
     }
 
 	$('.i-checks').iCheck({ checkboxClass: 'icheckbox_square-green' });
+	$('.i-checks').iCheck('check');
+	$('.i-checks').iCheck('disable');
 	$('.select2').select2();
 	var subtipo = $('#subtipo').val();
 	var subtipoNm = $("#subtipo option:selected").text();
@@ -30,6 +32,14 @@ $(document).ready(function(){
 	var semana = $('#semana').val();
 	var diasDespacho = $('#diasDespacho').val();
 	buscar_dias(semana,diasDespacho);
+
+	$('#proveedorEmpleado').change(function(){ // en cambio de un proveedor/empleado buscamos las bodegas asignadas a ese usuario
+    	var usuario = $(this).val();
+    	var usuarioNm = $("#proveedorEmpleado option:selected").text();
+    	$('#proveedorEmpleadoNm').val(usuarioNm);
+    	buscar_bodegas(usuario);
+  });
+
 });
 
 // Funcion para crear y guardar el despacho.
@@ -69,6 +79,7 @@ function actualizarDespacho(){
 		bandera++;
 	}  	else if(bodegaOrigen == ''){
 		Command: toastr.warning('El campo bodega origen es obligatorio.', 'Advertencia');
+		$('#bodegaOrigen').select2('open').select2('close');
 		bandera++;
 	}  else if(tipoTransporte == ''){
 		Command: toastr.warning('El campo tipo de transporte es obligatorio', 'Advertencia');

@@ -13,29 +13,31 @@ if (isset($_FILES["archivoManipuladoras"]["name"]) && $_FILES["archivoManipulado
 	if($tipoArchivo == "vnd.ms-excel" || $tipoArchivo == "text/csv") {
 		//Abrimos nuestro archivo
 		$archivo=fopen($rutaArchivo, "r");
-		$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
 
-		while(($datos = fgetcsv($archivo, null, $separador)) == TRUE) {
+		$resComp = $Link->query(" SELECT CODIGO FROM tipo_complemento ORDER BY CODIGO ");
+		if ($resComp->num_rows > 0) {
+			while ($dataComp = $resComp->fetch_object()) {
+				$complementos[] = $dataComp;
+			}
+		}
+
+		$separador = (count(fgetcsv($archivo, null, ",")) > 1) ? "," : ";";
+		while(($datos = fgetcsv($archivo, null, $separador)) == TRUE) { 
 			$codigoInstitucion = $datos[0];
 			$codigoSede = $datos[2];
 			$nombreSede = $datos[3];
-			$manipuladoraAPS = $datos[5];
-			$manipuladoraCAJMPS = $datos[6];
-			$manipuladoraCAJMRI = $datos[7];
-			$manipuladoraCAJTRI = $datos[8];
-			$manipuladoraCAJTPS = $datos[9];
-			$manipuladoraRPC = $datos[10];
-			$cantidadManipuladora = $manipuladoraAPS + $manipuladoraCAJMPS + $manipuladoraCAJMRI + $manipuladoraCAJTRI + $manipuladoraCAJTPS + $manipuladoraRPC;
-
+			$indice = 5;
+			$manipuladora['total'] = 0;
+			$set = '';
+			foreach ($complementos as $key => $value) {
+				$manipuladora[$value->CODIGO] = $datos[$indice];
+				$set .= " Manipuladora_".$value->CODIGO. " = " .$datos[$indice]. ", ";
+				$manipuladora['total'] += $datos[$indice];
+				$indice++;
+			}
+			$set .= " cantidad_Manipuladora = " .$manipuladora['total']. " ";
 			$consulta = "UPDATE sedes$periodoActual
-						SET
-							cantidad_Manipuladora = '$cantidadManipuladora',
-							Manipuladora_APS = '$manipuladoraAPS',
-							Manipuladora_CAJMPS = '$manipuladoraCAJMPS',
-							Manipuladora_CAJMRI = '$manipuladoraCAJMRI',
-							Manipuladora_CAJTRI = '$manipuladoraCAJTRI',
-							Manipuladora_CAJTPS = '$manipuladoraCAJTPS',
-							Manipuladora_RPC = '$manipuladoraRPC'
+							SET $set
 						WHERE cod_inst = '$codigoInstitucion' AND cod_sede = '$codigoSede'";
 			$manipuladoras_actualizadas = $Link->query($consulta);
 			if ($manipuladoras_actualizadas === FALSE) {

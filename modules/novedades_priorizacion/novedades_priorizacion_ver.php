@@ -5,14 +5,16 @@
     	?><script type="text/javascript">
       		window.open('<?= $baseUrl ?>', '_self');
     	</script>
-  	<?php exit();}
-	  else {
-		?><script type="text/javascript">
-		  const list = document.querySelector(".li_novedades");
-		  list.className += " active ";
-		</script>
-	  <?php
-	  }
+<?php exit();}
+  	else {
+?>	<script type="text/javascript">
+      	const list = document.querySelector(".li_novedades");
+      	list.className += " active ";
+      	const list2 = document.querySelector(".li_priorizacion");
+      	list2.className += " active ";
+    </script>
+<?php
+  	}
 
 	set_time_limit (0);
 	ini_set('memory_limit','6000M');
@@ -20,7 +22,17 @@
 	$idNovedad = (isset($_POST['idNovedad']) && $_POST['idNovedad'] != '') ? mysqli_real_escape_string($Link, $_POST["idNovedad"]) : "";
 	$periodoActual = mysqli_real_escape_string($Link, $_SESSION['periodoActual']);
 
-	$consulta = " SELECT DISTINCT dp.ID, u.Ciudad, s.nom_inst, s.nom_sede, ps.MES, dp.* FROM novedades_priorizacion dp LEFT JOIN sedes$periodoActual s ON dp.cod_sede = s.cod_sede LEFT JOIN  ubicacion u ON s.cod_mun_sede = u.CodigoDANE LEFT JOIN planilla_semanas ps ON dp.Semana = ps.SEMANA WHERE dp.id = $idNovedad ";
+	$consulta = " SELECT 	DISTINCT dp.ID, 
+							u.Ciudad, 
+							s.nom_inst, 
+							s.nom_sede, 
+							ps.MES, 
+							dp.* 
+						FROM novedades_priorizacion dp 
+						LEFT JOIN sedes$periodoActual s ON dp.cod_sede = s.cod_sede 
+						LEFT JOIN  ubicacion u ON s.cod_mun_sede = u.CodigoDANE 
+						LEFT JOIN planilla_semanas ps ON dp.Semana = ps.SEMANA 
+						WHERE dp.id = $idNovedad ";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query - Leyendo datos de la novedad '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
 		$row = $resultado->fetch_assoc();
@@ -30,7 +42,6 @@
 	$mesNm = mesEnLetras($datosNovedad['MES']);
 	$semana = $datosNovedad['Semana'];
 	$codSede = $datosNovedad['cod_sede'];
-
 	$consulta = " SELECT * FROM priorizacion$semana WHERE cod_sede = $codSede ";
 	$resultado = $Link->query($consulta) or die ('Unable to execute query - Leyendo priprización original '. mysqli_error($Link));
 	if($resultado->num_rows >= 1){
@@ -42,8 +53,8 @@
 	$consultaComplementos = "SELECT CODIGO, ID FROM tipo_complemento ORDER BY CODIGO ";
 	$respuestaComplementos = $Link->query($consultaComplementos) or die (mysqli_error($Link));
 	if ($respuestaComplementos->num_rows > 0) {
-		while ($dataComplementos = $respuestaComplementos->fetch_assoc()) {
-			$complementos[$dataComplementos['CODIGO']] = $dataComplementos['CODIGO'];
+		while ($dataComplementos = $respuestaComplementos->fetch_object()) {
+			$complementos[] = $dataComplementos;
 		}
 	}
 	$auxTotalComplemento = 0;
@@ -54,7 +65,6 @@
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
 	<div class="col-lg-8">
 		<h2><?= $titulo ?></h2>
-		<div class="debug"></div>
 		<ol class="breadcrumb">
 			<li>
 				<a href="<?php echo $baseUrl; ?>">Inicio</a>
@@ -77,203 +87,243 @@
 <div class="wrapper wrapper-content animated fadeInRight">
 	<div class="row">
     	<div class="col-lg-12">
-				<form class="col-lg-12" action="" method="post" name="formArchivos" id="formArchivos" enctype="multipart/form-data">
-					<div class="ibox float-e-margins">
+			<form class="col-lg-12" action="" method="post" name="formArchivos" id="formArchivos" enctype="multipart/form-data">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content contentBackground">
+						<div class="row">
+							<div class="col-sm-4 form-group">
+								<label for="municipio">Municipio</label>
+								<input type="text" name="municipio" id="municipio" value="<?php echo $datosNovedad['Ciudad']; ?>" class="form-control" readonly>
+							</div><!-- /.col -->
+							<div class="col-sm-8 form-group">
+								<label for="institucion">Institución</label>
+								<input type="text" name="institucion" id="institucion" value="<?php echo $datosNovedad['nom_inst']; ?>" class="form-control" readonly>
+							</div><!-- /.col -->
+							<div class="col-sm-6 form-group">
+								<label for="sede">Sede</label>
+								<input type="text" name="sede" id="sede" value="<?php echo $datosNovedad['nom_sede']; ?>" class="form-control" readonly>
+							</div><!-- /.col -->
+							<div class="col-sm-3 form-group">
+								<label for="mes">Mes</label>
+								<input type="text" name="mes" id="mes" value="<?php echo $mesNm; ?>" class="form-control" readonly>
+							</div><!-- /.col -->
+							<div class="col-sm-3 form-group">
+								<label for="semana">Semana</label>
+								<input type="text" name="semana" id="semana" value="<?php echo $datosNovedad['Semana']; ?>" class="form-control" readonly>
+							</div><!-- /.col -->
+						</div><!-- -/.row -->
+					</div><!-- /.ibox-content -->
+				</div><!-- /.ibox float-e-margins -->
+
+				<div class="ibox float-e-margins priorizacionAction">
+					<div class="ibox-content contentBackground">
+						<div class="table-responsive">
+							<table width="100%" class="table table-striped table-bordered table-hover selectableRows">
+								<thead>
+									<tr>
+										<th>Complemento Inicial</th>
+										<th>Cant Total Inicial</th>
+										<?php 
+											for ($i=1; $i <= $cantGruposEtarios; $i++) { 
+										?>
+												<th>Grupo Etario <?= $i ?></th>
+										<?php 
+											}
+										?>
+									</tr>
+								</thead>
+								<tbody>
+									<?php foreach ($complementos as $key => $value): ?>
+										<?php if ($datosPriorizacion[$value->CODIGO] > 0): ?>
+											<tr class="<?= $key ?>actual">
+												<td> 
+													<input 	type="text" 
+															class="form-control" 
+															name="<?= $value->CODIGO ?>nm" 
+															id="<?= $value->CODIGO ?>nm" 
+															value="<?= $value->CODIGO ?>" 
+															readonly> 
+												</td>
+												<td> 
+													<input 	type="text" 
+															class="form-control" 
+															name="<?= $value->CODIGO ?>actualTotal" 
+															id="<?= $value->CODIGO ?>actualTotal" 
+															value="<?= $datosPriorizacion[$value->CODIGO]?> " 
+															readonly 
+															style="text-align:center;"> 
+												</td>
+												<?php 
+													for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+												?>
+														<td> 
+															<input 	type="text" 
+																	class="form-control" 
+																	name="<?= $value->CODIGO ?>actual<?= $i ?>" 
+																	id="<?= $value->CODIGO ?>actual<?= $i ?>" 
+																	value="<?= $datosPriorizacion['Etario'.$i.'_'.$value->CODIGO]; ?>" 
+																	readonly 
+																	style="text-align:center;"> </td>
+												<?php 		
+													}
+												?>
+											</tr>
+										<?php endif ?>
+									<?php endforeach ?>
+								</tbody>
+							</table>
+						</div><!-- /.table-responsive -->
+					</div><!-- /.ibox-content -->
+				</div><!-- /.ibox float-e-margins -->
+
+				<div class="ibox float-e-margins priorizacionAction">
+					<div class="ibox-content contentBackground">
+						<div class="table-responsive">
+							<table width="100%" class="table table-striped table-bordered table-hover selectableRows tablaNuevasCantidades">
+								<thead>
+									<tr>
+										<th>Nuevo Complemento</th>
+										<th>Nueva Cant Total</th>
+										<?php 
+											for ($i=1; $i <= $cantGruposEtarios; $i++) { 
+										?>
+												<th>Grupo Etario <?= $i ?></th>
+										<?php 
+											}
+										?>
+									</tr>
+								</thead>
+								<tbody>
+									<?php foreach ($complementos as $key => $value): ?>
+										<tr class="<?= $value->CODIGO ?>">
+											<td> 
+												<input 	type="text" 
+														class="form-control" 
+														name="<?= $value->CODIGO ?>nm" 
+														id="<?= $value->CODIGO ?>nm" 
+														value="<?= $value->CODIGO ?>" 
+														readonly> 
+											</td>
+											<td> 
+												<input 	type="text" 
+														class="form-control" 
+														name="<?= $value->CODIGO ?>actualTotal" 
+														id="<?= $value->CODIGO ?>actualTotal" 
+														value="<?= $datosNovedad[$value->CODIGO]?> " 
+														readonly 
+														style="text-align:center;"> 
+											</td>
+											<?php 
+												for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
+											?>
+													<td> 
+														<input 	type="text" 
+																class="form-control" 
+																name="<?= $value->CODIGO ?>actual<?= $i ?>" 
+																id="<?= $value->CODIGO ?>actual<?= $i ?>" 
+																value="<?= $datosNovedad['Etario'.$i.'_'.$value->CODIGO]; ?>" 
+																readonly 
+																style="text-align:center;"> 
+													</td>
+											<?php 		
+													}
+											?> 
+										</tr>
+									<?php endforeach ?>
+									<tr class="total">
+										<td>
+											<input type="text" class="form-control" name="totalNm" id="totalNm" value="TOTAL" readonly>
+										</td>
+										<?php foreach ($complementos as $key => $value): ?>
+										<?php 
+											$auxTotalComplemento += $datosNovedad[$value->CODIGO]; 
+										?>
+										<?php endforeach ?>
+										<td>
+											<input 	type="text" 
+													class="form-control" 
+													name="totalTotal" 
+													id="totalTotal" 
+													value="<?= $auxTotalComplemento ?>" 
+													readonly 
+													style="text-align:center;"> 
+										</td>
+										<?php 
+											for ($i=1; $i <= $cantGruposEtarios; $i++) {
+												$aux = 0; 
+										?>
+												<?php foreach ($complementos as $key => $value): ?>
+													<?php $aux += $datosNovedad['Etario'.$i.'_'.$value->CODIGO] ?>
+												<?php endforeach ?>
+												<td> 
+													<input 	type="text" 
+															min="1" 
+															pattern="^[0-9]+" 
+															class="form-control" 
+															name="total<?= $i ?>" 
+															id="total<?= $i ?>" 
+															value="<?= $aux ?>" 
+															readonly  
+															style="text-align:center;"> </td>
+										<?php 
+											}
+										?>
+									</tr>
+								</tbody>
+							</table>
+						</div><!-- /.table-responsive -->
+					</div><!-- /.ibox-content -->
+				</div><!-- /.ibox float-e-margins -->
+
+				<!-- vamos a mostrar el archivo solo si existe una direccion si no el div ira completo con la observacion -->
+				<?php if ($datosNovedad['arch_adjunto'] !== ""): ?> 
+					<div class="ibox float-e-margins priorizacionAction">
 						<div class="ibox-content contentBackground">
 							<div class="row">
-								<div class="col-sm-4 form-group">
-									<label for="municipio">Municipio</label>
-									<input type="text" name="municipio" id="municipio" value="<?php echo $datosNovedad['Ciudad']; ?>" class="form-control" readonly>
-								</div><!-- /.col -->
-								<div class="col-sm-8 form-group">
-									<label for="institucion">Institución</label>
-									<input type="text" name="institucion" id="institucion" value="<?php echo $datosNovedad['nom_inst']; ?>" class="form-control" readonly>
+								<div class="col-sm-6 form-group">
+									<label for="observaciones">Observaciones</label>
+									<textarea name="observaciones" id="observaciones" class="form-control" rows="8" cols="80" readonly><?php echo $datosNovedad['observaciones']; ?></textarea>
 								</div><!-- /.col -->
 								<div class="col-sm-6 form-group">
-									<label for="sede">Sede</label>
-									<input type="text" name="sede" id="sede" value="<?php echo $datosNovedad['nom_sede']; ?>" class="form-control" readonly>
-								</div><!-- /.col -->
-								<div class="col-sm-3 form-group">
-									<label for="mes">Mes</label>
-									<input type="text" name="mes" id="mes" value="<?php echo $mesNm; ?>" class="form-control" readonly>
-								</div><!-- /.col -->
-								<div class="col-sm-3 form-group">
-									<label for="semana">Semana</label>
-									<input type="text" name="semana" id="semana" value="<?php echo $datosNovedad['Semana']; ?>" class="form-control" readonly>
+									<label for="departamento">Archivo</label>
+									<div style="text-align:center; box-sizing:border-box; padding:20px">
+										<?php
+											$url = $baseUrl."/".$datosNovedad['arch_adjunto'];
+											$ext = substr($url,-3);
+										?>
+										<a href="<?php echo $url; ?>" target="_blank" style="color:#1ab394;">
+										<?php
+											if($ext == 'pdf'){
+												echo "<i class=\"fa fa-file-pdf-o\" style=\"font-size:60px\"></i>";
+											}else{
+												echo "<i class=\"fa fa-file-image-o\" style=\"font-size:60px\"></i>";
+											}
+										?>
+										<h3>Ver Archivo</h3>
+									</a>
+								</div>
+							</div><!-- /.col -->
+						</div><!-- -/.row -->
+					</div><!-- /.ibox-content -->
+				</div><!-- /.ibox float-e-margins -->
+
+				<?php else: ?>
+					<div class="ibox float-e-margins priorizacionAction">
+						<div class="ibox-content contentBackground">
+							<div class="row">
+								<div class="col-sm-12 form-group">
+									<label for="observaciones">Observaciones</label>
+									<textarea name="observaciones" id="observaciones" class="form-control" rows="8" cols="80" readonly><?php echo $datosNovedad['observaciones']; ?></textarea>
 								</div><!-- /.col -->
 							</div><!-- -/.row -->
 						</div><!-- /.ibox-content -->
 					</div><!-- /.ibox float-e-margins -->
-
-					<div class="ibox float-e-margins priorizacionAction">
-						<div class="ibox-content contentBackground">
-							<div class="table-responsive">
-								<table width="100%" class="table table-striped table-bordered table-hover selectableRows">
-									<thead>
-										<tr>
-											<th>Complemento Inicial</th>
-											<th>Cant Total Inicial</th>
-											<?php 
-												for ($i=1; $i <= $cantGruposEtarios; $i++) { 
-											?>
-													<th>Grupo Etario <?= $i ?></th>
-											<?php 
-												}
-											?>
-										</tr>
-									</thead>
-									<tbody>
-										<?php foreach ($complementos as $key => $value): ?>
-											<?php if ($datosPriorizacion[$value] > 0): ?>
-												<tr class="<?= $key ?>actual">
-													<td> <input type="text" class="form-control" name="<?= $key ?>nm" id="<?= $key ?>nm" value="<?= $key ?>" readonly> </td>
-													<td> <input type="text" class="form-control" name="<?= $key ?>actualTotal" id="<?= $key ?>actualTotal" value="<?= $datosPriorizacion[$key]?> " readonly style="text-align:center;"> </td>
-													<?php 
-														for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
-													?>
-															<td> <input type="text" class="form-control" name="<?= $key ?>actual<?= $i ?>" id="<?= $key ?>actual<?= $i ?>" value="<?= $datosPriorizacion['Etario'.$i.'_'.$key]; ?>" readonly style="text-align:center;"> </td>
-													<?php 		
-														}
-													?>
-												</tr>
-											<?php endif ?>
-										<?php endforeach ?>
-									</tbody>
-								</table>
-							</div><!-- /.table-responsive -->
-						</div><!-- /.ibox-content -->
-					</div><!-- /.ibox float-e-margins -->
-
-					<div class="ibox float-e-margins priorizacionAction">
-						<div class="ibox-content contentBackground">
-							<div class="table-responsive">
-								<table width="100%" class="table table-striped table-bordered table-hover selectableRows tablaNuevasCantidades">
-									<thead>
-										<tr>
-											<th>Nuevo Complemento</th>
-											<th>Nueva Cant Total</th>
-											<?php 
-												for ($i=1; $i <= $cantGruposEtarios; $i++) { 
-											?>
-													<th>Grupo Etario <?= $i ?></th>
-											<?php 
-												}
-											?>
-										</tr>
-									</thead>
-									<tbody>
-										<?php foreach ($complementos as $key => $value): ?>
-											<?php if ($datosPriorizacion[$value]): ?>
-												<tr class="<?= $key ?>">
-													<td> <input type="text" class="form-control" name="<?= $key ?>nm" id="<?= $key ?>nm" value="<?= $key ?>" readonly> </td>
-													<td> <input type="text" class="form-control" name="<?= $key ?>actualTotal" id="<?= $key ?>actualTotal" value="<?= $datosNovedad[$key]?> " readonly style="text-align:center;"> </td>
-													<?php 
-														for ($i=1; $i <= $cantGruposEtarios ; $i++) { 
-													?>
-															<td> <input type="text" class="form-control" name="<?= $key ?>actual<?= $i ?>" id="<?= $key ?>actual<?= $i ?>" value="<?= $datosNovedad['Etario'.$i.'_'.$key]; ?>" readonly style="text-align:center;"> </td>
-													<?php 		
-														}
-													?> 
-												</tr>
-											<?php endif ?>
-										<?php endforeach ?>
-
-										<tr class="total">
-											<td>
-												<input type="text" class="form-control" name="totalNm" id="totalNm" value="TOTAL" readonly>
-											</td>
-											<?php foreach ($complementos as $key => $value): ?>
-												<?php 
-													$auxTotalComplemento += $datosNovedad[$value]; 
-												?>
-											<?php endforeach ?>
-											<td>
-												<input type="text" class="form-control" name="totalTotal" id="totalTotal" value="<?= $auxTotalComplemento ?>" readonly style="text-align:center;"> 
-											</td>
-											<?php 
-												for ($i=1; $i <= $cantGruposEtarios; $i++) {
-													$aux = 0; 
-											?>
-													<?php foreach ($complementos as $key => $value): ?>
-														<?php $aux += $datosNovedad['Etario'.$i.'_'.$value] ?>
-													<?php endforeach ?>
-													<td> <input type="text" min="1" pattern="^[0-9]+" class="form-control" name="total<?= $i ?>" id="total<?= $i ?>" value="<?= $aux ?>" readonly  style="text-align:center;"> </td>
-											<?php 
-												}
-											?>
-										</tr>
-									</tbody>
-								</table>
-							</div><!-- /.table-responsive -->
-						</div><!-- /.ibox-content -->
-					</div><!-- /.ibox float-e-margins -->
-
-					<!-- vamos a mostrar el archivo solo si existe una direccion si no el div ira completo con la observacion -->
-					<?php if ($datosNovedad['arch_adjunto'] !== ""): ?> 
-						<div class="ibox float-e-margins priorizacionAction">
-							<div class="ibox-content contentBackground">
-								<div class="row">
-									<div class="col-sm-6 form-group">
-										<label for="observaciones">Observaciones</label>
-										<textarea name="observaciones" id="observaciones" class="form-control" rows="8" cols="80" readonly><?php echo $datosNovedad['observaciones']; ?></textarea>
-									</div><!-- /.col -->
-									<div class="col-sm-6 form-group">
-										<label for="departamento">Archivo</label>
-										<div style="text-align:center; box-sizing:border-box; padding:20px">
-											<?php
-												$url = $baseUrl."/".$datosNovedad['arch_adjunto'];
-												$ext = substr($url,-3);
-											?>
-											<a href="<?php echo $url; ?>" target="_blank" style="color:#1ab394;">
-											<?php
-												if($ext == 'pdf'){
-													echo "<i class=\"fa fa-file-pdf-o\" style=\"font-size:60px\"></i>";
-												}else{
-													echo "<i class=\"fa fa-file-image-o\" style=\"font-size:60px\"></i>";
-												}
-											?>
-											<h3>Ver Archivo</h3>
-										</a>
-									</div>
-								</div><!-- /.col -->
-							</div><!-- -/.row -->
-						</div><!-- /.ibox-content -->
-					</div><!-- /.ibox float-e-margins -->
-
-					<?php else: ?>
-						<div class="ibox float-e-margins priorizacionAction">
-							<div class="ibox-content contentBackground">
-								<div class="row">
-									<div class="col-sm-12 form-group">
-										<label for="observaciones">Observaciones</label>
-										<textarea name="observaciones" id="observaciones" class="form-control" rows="8" cols="80" readonly><?php echo $datosNovedad['observaciones']; ?></textarea>
-									</div><!-- /.col -->
-								</div><!-- -/.row -->
-							</div><!-- /.ibox-content -->
-						</div><!-- /.ibox float-e-margins -->
-					<?php endif ?>
-
-				</form>
+				<?php endif ?>
+			</form>
     	</div><!-- /.col-lg-12 -->
   	</div><!-- /.row -->
 </div><!-- /.wrapper wrapper-content animated fadeInRight -->
 
-<div class="modal fade" id="myModal" role="dialog">
-	<div class="modal-dialog modal-sm">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Modal Header</h4>
-			</div>
-			<div class="modal-body">
-				<p>This is a small modal.</p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
 
 <?php include '../../footer.php'; ?>
 

@@ -9,7 +9,11 @@ function consultarGrupoEtario($Cod_Grupo_Etario){
   $resultadoGrupoEtario = $Link->query($consultaGrupoEtario) or die('Unable to execute query. '. mysqli_error($Link).$consultaGrupoEtario);
   if ($resultadoGrupoEtario->num_rows > 0) {
     while ($row = $resultadoGrupoEtario->fetch_assoc()) {
-      $grupoEtario = str_replace("Grupo", " ", $row['DESCRIPCION']);
+      if ($_SESSION['p_gruposCalculos'] == 1) {
+        $grupoEtario = str_replace("Grupo", " ", $row['DESCRIPCION']);
+      }if ($_SESSION['p_gruposCalculos'] == 2) {
+        $grupoEtario = str_replace("Grupo", " ", $row['equivalencia_grado']);
+      }
     }
     return $grupoEtario;
   }   

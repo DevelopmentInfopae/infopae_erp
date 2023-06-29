@@ -35,7 +35,9 @@ h3, h4, h5 {
   color: #999c9e; }
 
 .nav > li.active > a {
-  color: #ffffff; }
+  color: #ffffff; 
+  font-weight: bolder;
+}
 
 .navbar-default .nav > li > a:hover, .navbar-default .nav > li > a:focus {
   background-color: #293846;
@@ -164,7 +166,9 @@ h3, h4, h5 {
   background: #293846; }
 
 .nav.nav-second-level > li.active {
-  border: none; }
+  /* border-left: 2px solid #19aa8d; */
+  border: none;
+}
 
 .nav.nav-second-level.collapse[style] {
   height: auto !important; }
@@ -586,7 +590,10 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
     display: block !important; } }
 
 .btn {
-  border-radius: 3px; }
+  /* border-radius: 3px;  */
+  border-radius: 7px;
+    border-bottom-width: medium;
+}
 
 .float-e-margins .btn {
   margin-bottom: 5px; }
@@ -870,24 +877,36 @@ button.dim:active:before {
   text-shadow: none; }
 
 .label-primary, .badge-primary {
-  background-color: #1ab394;
-  color: #FFFFFF; }
+  background-color: #FFFFFF;
+  color: #1ab394; 
+  border-color: #1ab394 ;
+  display: inline-block;
+  border: double;
+}
 
 .label-success, .badge-success {
   background-color: #1c84c6;
   color: #FFFFFF; }
 
 .label-warning, .badge-warning {
-  background-color: #f8ac59;
-  color: #FFFFFF; }
+  background-color: #FFFFFF;
+  color: #f8ac59; 
+  border-color: #f8ac59 ;
+  display: inline-block;
+  border: double;
+}
 
 .label-warning-light, .badge-warning-light {
   background-color: #f8ac59;
   color: #ffffff; }
 
 .label-danger, .badge-danger {
-  background-color: #ED5565;
-  color: #FFFFFF; }
+  background-color: #FFFFFF;
+  color: #ED5565; 
+  border-color: #ED5565 ;
+  display: inline-block;
+  border: double;
+}
 
 .label-info, .badge-info {
   background-color: #23c6c8;
@@ -3565,7 +3584,7 @@ code {
   border-width: 2px 0 0;
   color: inherit;
   margin-bottom: 0;
-  padding: 15px 15px 7px;
+  padding: 20px 20px 15px;
   min-height: 48px; }
 
 .ibox-content {
@@ -3647,7 +3666,7 @@ table.table-mail tr td {
   color: #c4c4c4; }
 
 .ibox-tools a.btn-primary {
-  color: #fff; }
+  color: #1ab394; }
 
 .ibox-tools .dropdown-menu > li > a {
   padding: 4px 10px;
@@ -7844,6 +7863,8 @@ body.md-skin {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+    /* align-content: space-evenly; */
+    /* margin-top: 100px; */
     background-color: rgba(255, 255, 255, 0.7);
     display: -webkit-box;
     display: -ms-flexbox;
@@ -7997,3 +8018,158 @@ body.md-skin {
 .select2-container--default .select2-selection--single {
     height: 35px !important;
 }
+
+
+/* Modificaciones  jerson*/
+.select2-container--open {
+  z-index: 9999999
+}
+
+.iniciarSinc{
+    width : 100%;
+}
+
+.contentSinc{
+    padding-top : 30px;
+}
+
+.btn-primary {
+    color: #1ab394;
+    background-color: #FFFFFF;
+    border-color: #1ab394;
+}
+
+.btn-danger {
+  color: #ED5565;
+  background-color: #FFFFFF;
+  border-color: #ED5565;
+}
+
+.btn-warning {
+  color: #f8ac59;
+  background-color: #FFFFFF;
+  border-color: #f8ac59;
+}
+
+.navbar-minimalize{
+    background-color: #E7E7E7;
+    border-style: none;
+}
+
+.img-circle{
+    vertical-align: super;
+}
+
+.navbar-right {
+    float: right!important;
+    margin-right: -2px;
+    margin-top: 10px;
+}
+
+.navbar-left {
+  float: left!important;
+  margin-right: -2px;
+  margin-top: -15px;
+}
+
+.gray-bg, .bg-muted {
+  background-color: #E7E7E7;
+}
+
+.ibox-title {
+  border-color: #E7E7E7;
+}
+
+#btnLogin{
+  color: #FFFFFF;
+  background-color: #1ab394;
+  border-color: #1ab394;
+}
+
+.navbar-static-top {
+  background: #E7E7E7;
+}
+
+h2{
+  font-weight: normal;
+}
+
+.select2-container--default .select2-selection--single{
+  border-left-style: none;
+  border-right-style: none;
+  border-top-style: none;
+  border-radius: unset;
+  border-bottom: ridge;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: #8D8D8D;
+  line-height: 28px;
+  text-align: center;
+}
+
+.form-control, .single-line{
+  border-left-style: none;
+  border-right-style: none;
+  border-top-style: none;
+  border-bottom-style: outset;
+  border-radius: unset;
+  border-bottom: ridge;
+}
+
+.fa-spinner{
+  color: #16987e;
+  
+}
+
+#loaderAjax{
+  display: none;  
+}
+
+body::-webkit-scrollbar {
+  width: 8px;     /* Tamaño del scroll en vertical */
+  height: 8px;    /* Tamaño del scroll en horizontal */
+  display: inline-block;  /* Ocultar scroll */
+}
+
+/* Ponemos un color de fondo y redondeamos las esquinas del thumb */
+body::-webkit-scrollbar-thumb {
+  background: #676a6c;
+  border-radius: 4px;
+}
+
+/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
+body::-webkit-scrollbar-thumb:hover {
+  background: #676a6c;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Cambiamos el fondo cuando esté en active */
+body::-webkit-scrollbar-thumb:active {
+  background-color: #999999;
+}
+
+/* Ponemos un color de fondo y redondeamos las esquinas del track */
+body::-webkit-scrollbar-track {
+  background: #E7E7E7;
+  border-radius: none;
+}
+
+/* Cambiamos el fondo cuando esté en active o hover */
+body::-webkit-scrollbar-track:hover,
+body::-webkit-scrollbar-track:active {
+background: #d4d4d4;
+}
+
+
+/* #mySidenav{
+  min-height: 130vh;
+  max-height: 130vh;
+  width:150%;
+  overflow-y: visible;
+  overflow-x: hidden;
+}
+
+#mySidenav::-webkit-scrollbar {
+  width: 0 !important;
+} */

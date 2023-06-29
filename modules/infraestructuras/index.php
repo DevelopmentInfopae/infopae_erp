@@ -138,6 +138,7 @@ $titulo = 'Infraestructuras';
                                 <option value="1" <?= isset($_POST['Concepto_Sanitario']) && $_POST['Concepto_Sanitario'] == '1' ? 'selected="selected"' : '' ?>>Favorable</option>
                                 <option value="2" <?= isset($_POST['Concepto_Sanitario']) && $_POST['Concepto_Sanitario'] == '2' ? 'selected="selected"' : '' ?>>Favorable con requerimiento</option>
                                 <option value="0" <?= isset($_POST['Concepto_Sanitario']) && $_POST['Concepto_Sanitario'] == '0' ? 'selected="selected"' : '' ?>>Desfavorable</option>
+                                <option value="3" <?= isset($_POST['Concepto_Sanitario']) && $_POST['Concepto_Sanitario'] == '3' ? 'selected="selected"' : '' ?>>No cuenta con inspección sanitaria</option>
                               </select>
                             </div>
                             <!-- <div class="form-group col-sm-3">
@@ -226,7 +227,7 @@ $titulo = 'Infraestructuras';
               }
 
               $sectores = array('1' => 'Rural', '2' => 'Urbano', '0' => 'No especificado.');
-              $conceptos_sanitario = array('1' => 'Favorable', '2' => 'Favorable con requerimiento','0' => 'Desfavorable');
+              $conceptos_sanitario = array('1' => 'Favorable', '2' => 'Favorable con requerimiento','0' => 'Desfavorable' , '3' => 'No cuenta con inspección sanitaria');
               $estados = array('1' => 'Si', '0' => 'No', '2' => 'No aplica');
 
               $municipio = isset($_POST['municipio']) ? $_POST['municipio'] : NULL;
@@ -439,7 +440,7 @@ $titulo = 'Infraestructuras';
     pageLength: 25,
     responsive: true,
     dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-    buttons : [{extend:'excel', title:'Menus', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6]}}],
+    buttons : [{extend:'excel', title:'Infraestructura', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8]}}],
     oLanguage: {
       sLengthMenu: 'Mostrando _MENU_ registros por página',
       sZeroRecords: 'No se encontraron registros',
@@ -455,7 +456,7 @@ $titulo = 'Infraestructuras';
       }
     }
     });
-  var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="window.open(\'exportar_infraestructuras.php\', \'_blank\');"><span class="fa fa-file-excel-o"></span> Exportar </a></li></ul></div>';
+  var btnAcciones = '<div class="dropdown pull-right" id=""><button class="btn btn-primary btn-sm btn-outline" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true">Acciones<span class="caret"></span></button><ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla"><li><a onclick="$(\'.btnExportarExcel\').click();"><span class="fa fa-file-excel-o"></span> Exportar </a></li></ul></div>';
 
   $('.containerBtn').html(btnAcciones);
 </script>

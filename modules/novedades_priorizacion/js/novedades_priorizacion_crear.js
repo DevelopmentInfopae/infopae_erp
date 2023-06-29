@@ -1,50 +1,42 @@
 $(document).ready(function(){
 	// Configuración del plugin toastr
-	toastr.options = {
-	    "closeButton": true,
-	    "debug": false,
-	    "progressBar": true,
-	    "preventDuplicates": false,
-	    "positionClass": "toast-top-right",
-	    "onclick": null,
-	    "showDuration": "400",
-	    "hideDuration": "1000",
-	    "timeOut": "2000",
-	    "extendedTimeOut": "1000",
-	    "showEasing": "swing",
-	    "hideEasing": "linear",
-	    "showMethod": "fadeIn",
-	    "hideMethod": "fadeOut"
-	}
-
 	buscar_municipios();
+	$('select').select2();
+	toastr.options = { 
+		newestOnTop: true, 
+		closeButton: false, 
+		progressBar: true, 
+		preventDuplicates: false, 
+		showMethod: 'slideDown', 
+		timeOut: 2500, 
+	};
 
-  $('#municipio').change(function(){
-    var municipio = $(this).val();
+  	$('#municipio').change(function(){
+    	var municipio = $(this).val();
 		buscar_institucion(municipio);
 		$('#sede').html('<option value = "">Seleccione una</option>');
 	});
 
 	$('#institucion').change(function(){
-    var institucion = $(this).val();
-    buscar_sede(institucion);
+    	var institucion = $(this).val();
+    	buscar_sede(institucion);
 	});
 
 	$('#institucion').change(function(){
-    var institucion = $(this).val();
-    buscar_sede(institucion);
+    	var institucion = $(this).val();
+    	buscar_sede(institucion);
 	});
 
 	$('#sede').change(function(){
-    var sede = $(this).val();
-    buscar_meses(sede);
-  });
+    	var sede = $(this).val();
+    	buscar_meses(sede);
+  	});
 
 	$('#mes').change(function(){
-    var mes = $(this).val();
+    	var mes = $(this).val();
 		var sede = $('#sede').val();
-    buscar_semanas(mes,sede);
-  });
+    	buscar_semanas(mes,sede);
+	});
 
   	$('#btnBuscar').click(function(){ validar_semanas_cantidades(); });
 
@@ -78,15 +70,17 @@ function buscar_municipios(){
 			$('#loader').fadeIn();
 		},
     	success: function(data){
-				try {
+			try {
 		  		var obj = JSON.parse(data);
-					$('#municipio').html(obj.respuesta);
-				}
-				catch(err) {
-					$('.debug').html(err.message);
-					$('.debug').append('<br/><br/>');
-					$('.debug').append(data);
-				}
+				$('#municipio').select2('destroy');
+				$('#municipio').html(obj.respuesta);
+				$('#municipio').select2();
+			}
+			catch(err) {
+				$('.debug').html(err.message);
+				$('.debug').append('<br/><br/>');
+				$('.debug').append(data);
+			}
     	}
     })
     .done(function(){ })
@@ -98,23 +92,23 @@ function buscar_municipios(){
 
 function buscar_institucion(municipio){
     $.ajax({
-			type: "POST",
-			url: "functions/fn_buscar_institucion.php",
-			data: {"municipio":municipio},
-			dataType: "HTML",
-			beforeSend: function(){
-				$('#loader').fadeIn();
-			},
+		type: "POST",
+		url: "functions/fn_buscar_institucion.php",
+		data: {"municipio":municipio},
+		dataType: "HTML",
+		beforeSend: function(){
+			$('#loader').fadeIn();
+		},
     	success: function(data){
-				$('#institucion').html(data);
+			$('#institucion').html(data);
     	}
-	  })
-	  .fail(function(data){
+	})
+	.fail(function(data){
 	  	console.log(data);
-	  })
-	  .always(function(){
+	})
+	.always(function(){
 	  	$('#loader').fadeOut();
-	  });
+	});
 }
 
 function buscar_sede(institucion){
@@ -419,8 +413,10 @@ function guardar_priorizacion(){
 				try{
 					var obj = JSON.parse(datos);
 					if(obj.respuesta == 1){
-						alert('Se ha registrado con éxito la novedad de priorización');
+						Command : toastr.success( 'Se ha registrado con éxito la novedad de priorización', "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
+						// location.href="URL para redireccionar";
 						location.href="index.php";
+						}});
 					}else{
 						alert(obj.reporte);
 					}

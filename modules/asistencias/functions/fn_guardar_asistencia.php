@@ -30,7 +30,21 @@ $mesTablaAsistencia = $mes;
 $annoTablaAsistencia = $anno;
 include 'fn_validar_existencias_tablas.php';
 
-$consulta = " insert into asistencia_det$mes$anno ( tipo_doc, num_doc, fecha, mes, semana, dia, asistencia, id_usuario, repite, consumio, repitio, complemento ) values ";
+$consulta = " 	INSERT INTO asistencia_det$mes$anno ( 
+					tipo_doc, 
+					num_doc, 
+					fecha, 
+					mes, 
+					semana, 
+					dia, 
+					asistencia, 
+					id_usuario, 
+					repite, 
+					consumio, 
+					repitio, 
+					complemento 
+					) 
+				values ";
 $aux = 0;
 $valores = "";
 foreach ($asistencias as $asistencia){
@@ -59,13 +73,12 @@ foreach ($asistencias as $asistencia){
 
 $consulta .= $valores;
 $consulta .= " ON DUPLICATE KEY UPDATE 
-fecha = values(fecha),
-asistencia = values(asistencia), 
-id_usuario = values(id_usuario), 	
-repite = values(repite), 
-consumio = values(consumio), 
-repitio = values(repitio) ";
-// echo $consulta;
+				fecha = values(fecha),
+				asistencia = values(asistencia), 
+				id_usuario = values(id_usuario), 	
+				repite = values(repite), 
+				consumio = values(consumio), 
+				repitio = values(repitio) ";
 
 $result = $Link->query($consulta) or die ('Insert error'. mysqli_error($Link));
 if($result){

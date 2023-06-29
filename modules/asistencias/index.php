@@ -1,8 +1,27 @@
 <?php
-include '../../header.php';
-require_once 'functions/fn_fecha_asistencia.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
+  	include '../../header.php';
+	require_once 'functions/fn_fecha_asistencia.php';
+  	set_time_limit (0);
+  	ini_set('memory_limit','6000M');
+  	$periodoActual = $_SESSION['periodoActual'];
+
+  	if ($permisos['asistencia'] == "0") {
+?>		<script type="text/javascript">
+  			window.open('<?= $baseUrl ?>', '_self');
+		</script>
+<?php 
+	exit(); 
+	}
+
+	else {
+?>		<script type="text/javascript">
+      		const list = document.querySelector(".li_asistencia");
+      		list.className += " active ";
+			const list2 = document.querySelector(".li_asistencia_submenu");
+      		list2.className += " active ";
+    	</script>
+<?php
+  	}
 
 $periodoActual = $_SESSION["periodoActual"];
 $titulo = "Asistencias";
@@ -13,14 +32,13 @@ $anno = $annoasistencia;
 	
 //Busqueda de la semana actual
 $semanaActual = "";
-$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";
+$consulta = " SELECT semana FROM planilla_semanas WHERE ano = \"$anno\" AND mes = \"$mes\" AND dia = \"$dia\" "; 
 $resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$row = $resultado->fetch_assoc();
 	$semanaActual = $row["semana"];
 }
-// exit(var_dump($consulta));
-$consulta = " select distinct semana from planilla_semanas ";
+$consulta = " SELECT DISTINCT semana FROM planilla_semanas ";
 $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){
@@ -51,7 +69,7 @@ $nameLabel = get_titles('asistencia', 'asistencia', $labels);
 	</div>
 	<div class="col-xs-4">
 		<div class="title-action">
-			<button class="btn btn-primary btnGuardar" type="button"><span class="fa fa-check"></span> Guardar</button>
+			<button class="btn btn-primary btnGuardar" type="button"><strong><span class="fa fa-check"></span> Guardar </strong></button>
 		</div>
 	</div>
 </div>
@@ -60,7 +78,7 @@ $nameLabel = get_titles('asistencia', 'asistencia', $labels);
 
 <?php include "filtro.php"  ?>
 
-<div class="wrapper wrapper-content  animated fadeInRight">
+<div class="wrapper wrapper-content  animated fadeInRight containerStudents">
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="ibox">
@@ -127,7 +145,7 @@ $nameLabel = get_titles('asistencia', 'asistencia', $labels);
 	</div>
 </div>
 
-<?php include '../../footer.php'; ?>
+
 
 <!-- Mainly scripts -->
 <script src="<?= $baseUrl; ?>/theme/js/jquery-3.1.1.min.js"></script>
@@ -148,5 +166,4 @@ $nameLabel = get_titles('asistencia', 'asistencia', $labels);
 <script src="<?= $baseUrl; ?>/modules/asistencias/js/asistencias.js?v=<?= $cacheBusting; ?>"></script>
 <script src="<?= $baseUrl; ?>/modules/asistencias/js/filtro.js?v=<?= $cacheBusting; ?>"></script>
 
-</body>
-</html>
+<?php include '../../footer.php'; ?>

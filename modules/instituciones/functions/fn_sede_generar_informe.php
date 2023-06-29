@@ -4,16 +4,38 @@
 	require_once '../../../fpdf181/fpdf.php';
 
 	$semana = (isset($_REQUEST['semana']) && $_REQUEST['semana']) ? mysqli_real_escape_string($Link, $_REQUEST['semana']) : '';
-	$titulos = ['Codigo sede','Nombre sede','APS','CAJMRI','CAJTRI','CAJMPS', 'CAJTPS', 'RPC'];
-	$anc_col = [24,98,10,13,13,13,13,10];
+
+	$consultaComplementos = " SELECT CODIGO FROM tipo_complemento ORDER BY CODIGO ";
+	$respuestaComplementos = $Link->query($consultaComplementos) or die ('Error consultado complementos Ln 9');
+	if ($respuestaComplementos->num_rows > 0) {
+		while ($dataComplementos = $respuestaComplementos->fetch_object()) {
+			$complementos[] = $dataComplementos;
+		}
+	}
+	
+	$aux = 74/count($complementos);
+	$titulos = ['Codigo sede','Nombre sede'];
+	$anc_col = [24, 96];
+	$sum = '';
+	$sumFoc = '';
+	foreach ($complementos as $key => $value) {
+		$sum .= " SUM($value->CODIGO) AS $value->CODIGO, ";
+		$sumFoc .= " SUM(IF(Tipo_complemento = '$value->CODIGO', 1, 0)) AS '$value->CODIGO', ";
+		array_push($titulos, $value->CODIGO);
+		array_push($anc_col, $aux);
+	}
+	$sum = trim($sum, ', ');
+	$sumFoc = trim($sumFoc, ', ');
 
 	// Datos de Priorización.
 	$arrayDatPri = [];
-	$conPri = "SELECT sedc.cod_sede, sed.nom_sede, SUM(APS) AS APS, SUM(CAJMRI) AS CAJMRI, SUM(CAJTRI) AS CAJTRI, SUM(CAJMPS) AS CAJMPS, SUM(CAJTPS) AS CAJTPS, SUM(RPC) AS RPC
+	$conPri = "SELECT 	sedc.cod_sede, 
+						sed.nom_sede, 
+						$sum
 						FROM sedes_cobertura sedc
             	INNER JOIN sedes".$_SESSION['periodoActual']." sed ON sedc.cod_sede = sed.cod_sede
 						WHERE semana = '$semana'
-						GROUP BY cod_sede;";
+						GROUP BY cod_sede;"; 
 	$resPri = $Link->query($conPri);
 	if($resPri->num_rows > 0) {
 		while ($regPri = $resPri->fetch_assoc()) {
@@ -23,12 +45,12 @@
 
 	// Datos de focalización.
 	$arrayDatFoc = [];
-	$conFoc = "SELECT cod_sede, SUM(IF(Tipo_complemento = 'APS', 1, 0)) AS APS, SUM(IF(Tipo_complemento = 'CAJMRI', 1, 0)) AS CAJMRI, SUM(IF(Tipo_complemento = 'CAJTRI', 1, 0)) AS CAJTRI, SUM(IF(Tipo_complemento = 'CAJMPS', 1, 0)) AS CAJMPS, SUM(IF(Tipo_complemento = 'CAJTPS', 1, 0)) AS CAJTPS,  SUM(IF(Tipo_complemento = 'RPC', 1, 0)) AS RPC
-						FROM focalizacion$semana
-						GROUP BY cod_sede
-						ORDER BY cod_sede";
-
-	$resFoc = $Link->query($conFoc);
+	$conFoc = "SELECT 	cod_sede,  
+						$sumFoc
+					FROM focalizacion$semana
+					GROUP BY cod_sede
+					ORDER BY cod_sede";
+	$resFoc = $Link->query($conFoc); 
 	if($resFoc->num_rows > 0) {
 		while($regFoc = $resFoc->fetch_assoc()) {
 			$arrayDatFoc[] = $regFoc;
@@ -40,7 +62,6 @@
 	$pdf->AddPage();
 	$pdf->AliasNbPages();
 	$pdf->SetDrawColor(188,188,188);
-
 
 	$pdf->Image("../../../img/logo_simbolo_infopae2.png",15,8,18);
 	$pdf->SetFont('Arial','B',11);
@@ -74,21 +95,14 @@
 		foreach ($arrayDatFoc as $j => $datFoc) {
 			if($datPri['cod_sede'] == $datFoc['cod_sede']) {
 				$pdf->SetTextColor(0,0,0);
-
 				$pdf->Cell($anc_col[0],7,$datPri['cod_sede'],1,0,'C');
 				$pdf->Cell($anc_col[1],7,utf8_decode(strtoupper(substr($datPri['nom_sede'], 0, 57))),1,0);
-				if(($datPri['APS'] - $datFoc['APS']) != 0 ){ $pdf->SetTextColor(237,85,101); } else { $pdf->SetTextColor(0,0,0); }
-				$pdf->Cell($anc_col[2],7,($datPri['APS'] - $datFoc['APS']),1,0,'C');
-				if(($datPri['CAJMRI'] - $datFoc['CAJMRI']) != 0 ){ $pdf->SetTextColor(237,85,101); } else { $pdf->SetTextColor(0,0,0); }
-				$pdf->Cell($anc_col[3],7,($datPri['CAJMRI'] - $datFoc['CAJMRI']),1,0,'C');
-				if(($datPri['CAJTRI'] - $datFoc['CAJTRI']) != 0 ){ $pdf->SetTextColor(237,85,101); } else { $pdf->SetTextColor(0,0,0); }
-				$pdf->Cell($anc_col[4],7,($datPri['CAJTRI'] - $datFoc['CAJTRI']),1,0,'C');
-				if(($datPri['CAJMPS'] - $datFoc['CAJMPS']) != 0 ){ $pdf->SetTextColor(237,85,101); } else { $pdf->SetTextColor(0,0,0); }
-				$pdf->Cell($anc_col[5],7,($datPri['CAJMPS'] - $datFoc['CAJMPS']),1,0,'C');
-				if(($datPri['CAJTPS'] - $datFoc['CAJTPS']) != 0 ){ $pdf->SetTextColor(237,85,101); } else { $pdf->SetTextColor(0,0,0); }
-				$pdf->Cell($anc_col[6],7,($datPri['CAJTPS'] - $datFoc['CAJTPS']),1,0,'C');
-				if(($datPri['RPC'] - $datFoc['RPC']) != 0 ){ $pdf->SetTextColor(237,85,101); } else { $pdf->SetTextColor(0,0,0); }
-				$pdf->Cell($anc_col[7],7,($datPri['RPC'] - $datFoc['RPC']),1,1,'C');
+
+				foreach ($complementos as $key => $value) {
+					(($datPri[$value->CODIGO] - $datFoc[$value->CODIGO]) != 0 ) ? $pdf->SetTextColor(237,85,101) : $pdf->SetTextColor(0,0,0);
+					$pdf->Cell($anc_col[2],7,($datPri[$value->CODIGO] - $datFoc[$value->CODIGO]),1,0,'C');
+				}
+				$pdf->ln();
 				break;
 			}
 		}

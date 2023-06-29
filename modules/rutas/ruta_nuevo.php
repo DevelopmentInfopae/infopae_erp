@@ -6,13 +6,17 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
         window.open('<?= $baseUrl ?>', '_self');
     </script>
 <?php exit(); }
-	  else {
-		?><script type="text/javascript">
-		  const list = document.querySelector(".li_configuracion");
-		  list.className += " active ";
-		</script>
-	  <?php
-	  }
+    	  else {
+            ?><script type="text/javascript">
+              const list = document.querySelector(".li_configuracion");
+              list.className += " active ";
+              const list2 = document.querySelector(".li_rutas");
+              list2.className += " active ";
+              const list3 = document.querySelector(".li_nuevaRuta");
+              list3.className += " active ";
+            </script>
+          <?php
+          }
 
 $periodoActual = $_SESSION['periodoActual'];
 require_once '../../db/conexion.php';

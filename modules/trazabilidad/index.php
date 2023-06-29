@@ -9,6 +9,8 @@
 		?><script type="text/javascript">
 		  const list = document.querySelector(".li_informes");
 		  list.className += " active ";
+        const list2 = document.querySelector(".li_trazabilidad");
+		  list2.className += " active ";
 		</script>
 	  <?php
 	  }
@@ -56,6 +58,55 @@
       }
    }
    $bandera = 0;
+
+   // meses de despachos creados
+   $consultaTablas = "SELECT
+                       table_name AS tabla
+                      FROM
+                       information_schema.tables
+                      WHERE
+                       table_schema = DATABASE() AND table_name like 'despachos_enc%'";
+   $resultadoTablas = $Link->query($consultaTablas);
+   if ($resultadoTablas->num_rows > 0) {
+      while ($tabla = $resultadoTablas->fetch_assoc()) {
+         $mes = str_replace("despachos_enc", "", $tabla['tabla']);
+         $mes = str_replace($_SESSION['periodoActual'], "", $mes);
+         $mesesTablas[$mes] = $mes;
+      }
+   } 
+
+   // meses de ordenes creadas
+   $consultaTablas = "SELECT
+                        table_name AS tabla
+                     FROM
+                        information_schema.tables
+                     WHERE
+                        table_schema = DATABASE() AND table_name like 'orden_compra_enc%'";
+   $resultadoTablas = $Link->query($consultaTablas);
+   if ($resultadoTablas->num_rows > 0) {
+      while ($tabla = $resultadoTablas->fetch_assoc()) {
+         $mes = str_replace("orden_compra_enc", "", $tabla['tabla']);
+         $mes = str_replace($_SESSION['periodoActual'], "", $mes);
+         $mesesTablas[$mes] = $mes;
+      }
+   }    
+
+   $opciones ="";
+   $banderaPrimerMes = 0;
+   foreach ($mesesTablas as $key => $value) {
+      $nomMes = $meses[$value];
+      $opciones.= '<option value="'.$value.'">'.$value.'</option>';
+      $mesTablaInicio = $value;
+      if ($banderaPrimerMes == 0) {
+         $primerMes = $value;
+         $banderaPrimerMes = 1;
+      }
+   }
+
+   // echo $primerMes;
+   $month     = $_SESSION['periodoActualCompleto'].'-'.$mesTablaInicio ;
+   $aux         = date('Y-m-d', strtotime("{$month} + 1 month"));
+   $last_day = date('Y-m-d', strtotime("{$aux} - 1 day"));
    
    $nameLabel = get_titles('informes', 'trazabilidad', $labels);
    $titulo = $nameLabel;
@@ -148,30 +199,20 @@
    <div class="row">
       <div class="col-lg-12">
          <div class="ibox float-e-margins">
+            <div class="ibox-title">
+               <div class="row">
+                  <div class="col-sm-11">
+                     <h2 style="display:inline;">Parámetros de Consulta</h2>
+                  </div>
+                  <div class="col-sm-1" id="father">
+                     <div class="" id="loaderAjax">
+                        <i class="fas fa-spinner fa-pulse fa-3x fa-fw"></i>
+                        <span class="sr-only">Loading...</span>
+                     </div>
+                  </div>
+               </div>
+            </div>  
             <div class="ibox-content contentBackground">
-               <?php
-                  $opciones ="";
-                  $consultaTablas = "SELECT
-                                      table_name AS tabla
-                                     FROM
-                                      information_schema.tables
-                                     WHERE
-                                      table_schema = DATABASE() AND table_name like 'despachos_enc%'";
-                  $resultadoTablas = $Link->query($consultaTablas);
-                  if ($resultadoTablas->num_rows > 0) {
-                     while ($tabla = $resultadoTablas->fetch_assoc()) {
-                        $mes = str_replace("despachos_enc", "", $tabla['tabla']);
-                        $mes = str_replace($_SESSION['periodoActual'], "", $mes);
-                        $nomMes = $meses[$mes];
-                        $opciones.= '<option value="'.$mes.'">'.$nomMes.'</option>';
-                        $mesTablaInicio = $mes;
-                     }
-                  }
-                  // echo $mesTablaInicio;
-                  $month     = $_SESSION['periodoActualCompleto'].'-'.$mesTablaInicio ;
-                  $aux         = date('Y-m-d', strtotime("{$month} + 1 month"));
-                  $last_day = date('Y-m-d', strtotime("{$aux} - 1 day"));
-               ?>
                <form class="form row" id="formBuscar" method="POST">
                   <?php if ($tipoBusqueda == 1): ?>
                      <div class="form-group col-md-3 col-sm-6">
@@ -179,7 +220,8 @@
                         <div class="row compositeDate">
                            <select name="fecha_de" id="fecha_de" class="form-control selectFechaDe " style="width: 100%;">
                               <option value="1">Elaboración documento</option>
-                              <option value="2">Días despachados</option>
+                              <option value="2">Días Remisiones</option>
+                              <option value="3">Días Ordenes</option>
                            </select>
                         </div>
                      </div> 
@@ -211,7 +253,12 @@
                            <label>Hasta</label>
                            <div class="row compositeDate">
                               <div class="col-sm-8 nopadding">
-                                 <input type="text" id="nomMesFin" value="Espere..." class="form-control" readonly>
+                                 <select name="mes_fin" id="mes_fin" class="mesFin" style="width: 100%;" >
+                                    <?php foreach ($meses as $keyMeses => $valueMeses): ?>
+                                       <option value="<?= $keyMeses ?>" <?= ($keyMeses == $mes) ? 'selected' : ''?> > <?= $valueMeses ?> </option>
+                                    <?php endforeach ?>
+                                 </select>
+                                 <!-- <input type="text" id="nomMesFin" value="Espere..." class="form-control" readonly> -->
                                  <input type="hidden" name="mes_fin" id="mes_fin" value="01">
                               </div>
                               <div class="col-sm-4 nopadding">
@@ -229,12 +276,22 @@
                      <div id="fechaElaboracion">
                         <div class="form-group col-md-3 col-sm-6">
                            <label>Desde</label>
-                           <input type="text" name="fecha_inicio_elaboracion" id="fecha_inicio_elaboracion" value="<?php echo date('Y-m')."-01" ?>"data-date-format="yyyy-mm-dd"  class="form-control datepicker_inicio" max = "<?= $last_day ?>">
+                           <input   type="text" 
+                                    name="fecha_inicio_elaboracion" 
+                                    id="fecha_inicio_elaboracion" 
+                                    value="<?php echo date('Y')."-".$primerMes.""."-01" ?>"
+                                    data-date-format="yyyy-mm-dd"  
+                                    class="form-control datepicker_inicio text-center" max = "<?= $last_day ?>">
                         </div>
                         <div class="form-group col-md-3 col-sm-6">
                            <label>Hasta</label>
                            <?php $mesSiguiente = date('m')+1; ?>
-                           <input type="text" name="fecha_fin_elaboracion" id="fecha_fin_elaboracion" data-date-format="yyyy-mm-dd" value="" class="form-control datepicker_fin" >
+                           <input   type="text" 
+                                    name="fecha_fin_elaboracion" 
+                                    id="fecha_fin_elaboracion" 
+                                    data-date-format="yyyy-mm-dd" 
+                                    value="" 
+                                    class="form-control datepicker_fin text-center" >
                         </div>
                      </div>
                   <?php endif ?>
@@ -298,7 +355,7 @@
                      </select>
                   </div>
             
-                  <div class="form-group col-md-3 col-sm-6">
+                  <div class="form-group col-md-3 col-sm-6" id="divsubFiltro" style="display : none">
                      <label>Filtrar por  </label>
                      <select name="tipo_filtro" id="tipo_filtro" class="form-control selectTipoFiltro " style="width: 100%;">
                         <option value="" >Seleccione...</option>
@@ -382,7 +439,7 @@
                   <div class="col-sm-12">
                      <button class="btn btn-primary" onclick="$('#formBuscar').submit();" id="btnBuscar"> <span class="fa fa-search"></span>  Buscar</button>
                      <?php if (isset($_POST['buscar'])): ?>
-                        <button class="btn btn-primary" onclick="limpiarFormulario()" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
+                        <button class="btn btn-danger" onclick="limpiarFormulario()" id="btnBuscar"> <span class="fa fa-times"></span>  Limpiar búsqueda</button>
                      <?php endif ?>
                   </div>
                </div>
@@ -456,15 +513,13 @@
                      $consulta = "SELECT  pmov.Tipo, 
                                           pmov.Numero, 
                                           pmov.FechaMYSQL, 
-                                          denc.FechaHora_Elab, 
                                           pmov.fecha_despacho, 
                                           pmov.Nombre as Proveedor, 
                                           pmovdet.Descripcion, 
                                           pmovdet.Umedida, 
                                           FORMAT(pmovdet.Cantidad, 4) as Cantidad, 
                                           bodegas.NOMBRE as nomBodegaOrigen, 
-                                          b2.NOMBRE as nomBodegaDestino, 
-                                          tipovehiculo.Nombre as TipoTransporte, 
+                                          IF(pmov.TipoTransporte = '', '', (SELECT Nombre FROM tipovehiculo WHERE Id = pmov.TipoTransporte)) AS TipoTransporte,  
                                           pmov.Placa, 
                                           pmov.ResponsableRecibe, 
                                           pmovdet.Lote, 
@@ -473,30 +528,25 @@
                                           pmovdet.fecha_sacrificio, 
                                           pmovdet.fecha_empaque, 
                                           pmovdet.codigo_interno, 
-                                          pmovdet.observacion
+                                          pmovdet.observacion,
+                                          (SELECT NOMBRE FROM bodegas WHERE ID = pmovdet.BodegaDestino) AS  nomBodegaDestino
                                        FROM productosmov$numtabla AS pmov
                                        INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero
                                        INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
-                                       INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
-                                       INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
-                                       INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero
                                        LIMIT 2000;";
                   } else if (isset($_POST['buscar'])) { //Si hay filtrado
                      $condicionFvto = "";
-                     $inners="";
                      $condiciones = "";
                      $datos=" pmov.Tipo, 
                               pmov.Numero, 
                               pmov.FechaMYSQL, 
-                              denc.FechaHora_Elab,  
                               pmov.fecha_despacho, 
                               pmov.Nombre as Proveedor, 
                               pmovdet.Descripcion, 
                               pmovdet.Umedida, ";
-                              ($_POST['tipo_filtro'] == 4 ) ? $datos.= " FORMAT(dent.Cantidad, 4) as Cantidad, " : $datos.= " FORMAT(pmovdet.Cantidad, 4) as Cantidad, ";
+                              ($_POST['tipo_filtro'] == 4 ) ? $datos.= " FORMAT(pmovdet.Cantidad, 4) as Cantidad, " : $datos.= " FORMAT(pmovdet.Cantidad, 4) as Cantidad, ";
                      $datos.= "bodegas.NOMBRE as nomBodegaOrigen, 
-                              b2.NOMBRE as nomBodegaDestino, 
-                              tipovehiculo.Nombre as TipoTransporte, 
+                              IF(pmov.TipoTransporte = '', '', (SELECT Nombre FROM tipovehiculo WHERE Id = pmov.TipoTransporte)) AS TipoTransporte, 
                               pmov.Placa, 
                               pmov.ResponsableRecibe, 
                               pmovdet.Lote, 
@@ -505,17 +555,17 @@
                               pmovdet.fecha_sacrificio, 
                               pmovdet.fecha_empaque, 
                               pmovdet.codigo_interno, 
-                              pmovdet.observacion";
+                              pmovdet.observacion,
+                              (SELECT NOMBRE FROM bodegas WHERE ID = pmovdet.BodegaDestino) AS  nomBodegaDestino ";
 
                      if (isset($_POST['fecha_de']) && $_POST['fecha_de'] != "") {
                         $fecha_de = $_POST['fecha_de'];
                         if ($fecha_de == 1) {
                            $mes = date("m", strtotime($_POST['fecha_inicio_elaboracion']));
                            $numtabla = $mes.$_SESSION['periodoActual'];
-                           $condiciones.=" AND denc.FechaHora_Elab > '".$_POST['fecha_inicio_elaboracion']." 00:00:00' AND denc.FechaHora_Elab < '".$_POST['fecha_fin_elaboracion']." 00:00:00' ";
+                           $condiciones.=" AND pmov.FechaMYSQL > '".$_POST['fecha_inicio_elaboracion']." 00:00:00' AND pmov.FechaMYSQL < '".$_POST['fecha_fin_elaboracion']." 00:00:00' ";
                         } else if ($fecha_de == 2) { //Si el tipo de búsqueda es por días despachados
                            $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual'];
-                           $bnd_inner_denc = 1;
                            if ($_POST['dia_inicio'] != "" && $_POST['dia_fin'] != "" ) { //Si los días indicados son diferente a vacío, busca por los días despachados tomado del campo Dias en la tabla despachos_enc
                               $cnt2 = 0;
                               $condiciones.=" AND (";
@@ -523,7 +573,23 @@
                                  if ($cnt2 > 0) {
                                     $condiciones.=" OR ";
                                  }
-                                 $condiciones.="denc.Dias LIKE '".$i."' OR denc.Dias LIKE '".$i.",%' OR denc.Dias like '%,".$i.",%' OR denc.Dias like '%,".$i."'";
+                                 $auxi = ($i < 10) ? '0'.$i : $i;
+                                 $condiciones.= " pmov.Numero IN (SELECT Num_Doc FROM despachos_enc$numtabla denc WHERE denc.Dias LIKE '".$auxi."' OR denc.Dias LIKE '".$auxi.",%' OR denc.Dias like '%,".$auxi.",%' OR denc.Dias like '%,".$auxi."' )";
+                                 $cnt2++;
+                              }
+                              $condiciones.=") ";
+                           }
+                        } else if ($fecha_de == 3) {
+                           $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual'];
+                           if ($_POST['dia_inicio'] != "" && $_POST['dia_fin'] != "" ) { //Si los días indicados son diferente a vacío, busca por los días despachados tomado del campo Dias en la tabla despachos_enc
+                              $cnt2 = 0;
+                              $condiciones.=" AND (";
+                              for ($i=$_POST['dia_inicio']; $i <= $_POST['dia_fin'] ; $i++) {
+                                 if ($cnt2 > 0) {
+                                    $condiciones.=" OR ";
+                                 }
+                                 $auxi = ($i < 10) ? '0'.$i : $i;
+                                 $condiciones.= " pmov.Numero IN (SELECT Num_Doc FROM orden_compra_enc$numtabla denc WHERE denc.Dias LIKE '".$auxi."' OR denc.Dias LIKE '".$auxi.",%' OR denc.Dias like '%,".$auxi.",%' OR denc.Dias like '%,".$auxi."' )";
                                  $cnt2++;
                               }
                               $condiciones.=") ";
@@ -538,7 +604,7 @@
                         $mesEntregaSiguiente = $mesEntrega + 1;  
                         $mesEntregaAnterior = "0".$mesEntregaAnterior;
                         $mesEntregaSiguiente = "0".$mesEntregaSiguiente;
-                        $condiciones .= " AND ( MONTH(denc.FechaHora_Elab) = '" .$_POST['numeroEntrega']. "' OR MONTH(denc.FechaHora_Elab) = '" .$mesEntregaAnterior."' OR  MONTH(denc.FechaHora_Elab) = '".$mesEntregaSiguiente."' )";
+                        $condiciones .= " AND pmov.Numero IN (SELECT Num_Doc FROM despachos_enc$numtabla denc) AND ( MONTH(denc.FechaHora_Elab) = '" .$_POST['numeroEntrega']. "' OR MONTH(denc.FechaHora_Elab) = '" .$mesEntregaAnterior."' OR  MONTH(denc.FechaHora_Elab) = '".$mesEntregaSiguiente."' )";
                      }
 
                      if (isset($_POST['tipo_documento']) && $_POST['tipo_documento'] != "") { //Si el tipo de documento se especificó
@@ -550,11 +616,7 @@
                      }
 
                      if (isset($_POST['municipio']) && $_POST['municipio'] != "") {
-                        if (!isset($bnd_inner_denc) && $_POST['fecha_de'] != "2") {
-                           $bnd_inner_denc = 1;
-                        }
-                        $inners.=" INNER JOIN sedes".$_SESSION['periodoActual']." as sede ON sede.cod_sede = denc.cod_Sede ";
-                        $condiciones.=" AND sede.cod_mun_sede = '".$_POST['municipio']."' ";
+                        $condiciones.=" AND bodegas.ciudad = '".$_POST['municipio']."' ";
                      }
 
                      if (isset($_POST['tipo_filtro']) && $_POST['tipo_filtro'] != "") {
@@ -581,7 +643,6 @@
                                     $datos ="   '".$txtTotales."' AS Tipo, 
                                                 '".$txtTotales."' AS Numero, 
                                                 '".$txtTotales."' AS FechaMYSQL, 
-                                                '".$txtTotales."' AS FechaHora_Elab, 
                                                 '".$txtTotales."' AS fecha_despacho,
                                                 '".$txtTotales."' AS Proveedor, 
                                                 pmovdet.Descripcion, 
@@ -603,15 +664,14 @@
                                     $datos=" pmov.Tipo, 
                                              pmov.Numero, 
                                              pmov.FechaMYSQL, 
-                                             denc.FechaHora_Elab, 
                                              pmov.fecha_despacho, 
                                              pmov.Nombre as Proveedor, 
                                              pmovdet.Descripcion, 
                                              pmovdet.Umedida, 
                                              FORMAT(SUM(pmovdet.Cantidad), 4) as Cantidad, 
                                              bodegas.NOMBRE as nomBodegaOrigen, 
-                                             b2.NOMBRE as nomBodegaDestino, 
-                                             tipovehiculo.Nombre as TipoTransporte, 
+                                             (SELECT NOMBRE FROM bodegas WHERE ID = pmovdet.BodegaDestino) AS  nomBodegaDestino, 
+                                             IF(pmov.TipoTransporte = '', '', (SELECT Nombre FROM tipovehiculo WHERE Id = pmov.TipoTransporte)) AS TipoTransporte,  
                                              pmov.Placa, 
                                              pmov.ResponsableRecibe, 
                                              pmovdet.Lote, 
@@ -626,16 +686,25 @@
                               } else { // Si no se especificó ver por totales, muestra cada uno de los despachos del producto
                                  $condiciones.=" AND pmovdet.CodigoProducto = '".$_POST['producto']."' ";
                               }
-                              // exit(var_dump($condiciones));
                            } 
                         } else if ($filtro == 4) {
-                           if (isset($_POST['grupo_etario']) && $_POST['grupo_etario'] != "") {
-                              $inners.= " INNER JOIN despachos_det$numtabla as dent ON dent.Num_Doc = pmov.Numero AND dent.cod_Alimento = pmovdet.CodigoProducto";
-                              $condiciones.=" AND dent.Id_GrupoEtario = '".$_POST['grupo_etario']."' ";
+                           if (isset($_POST['fecha_de']) && $_POST['fecha_de'] != "") {
+                              $fecha_de = $_POST['fecha_de'];
+                              if ($fecha_de == 2) { //Si el tipo de búsqueda es por días despachados
+                                 $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual'];
+                                 $condiciones.=" AND (";
+                                 $condiciones.= " pmovdet.Numero IN (SELECT Num_Doc FROM despachos_det$numtabla denc WHERE denc.Id_GrupoEtario = '" .$_POST['grupo_etario']. "' )";
+                                 $condiciones.=") ";
+                              } else if ($fecha_de == 3) {
+                                 $numtabla = $_POST['mes_inicio'].$_SESSION['periodoActual'];
+                                 $condiciones.=" AND (";
+                                 $condiciones.= " pmovdet.Numero IN (SELECT Num_Doc FROM orden_compra_det$numtabla denc WHERE denc.Id_GrupoEtario = '" .$_POST['grupo_etario']. "' )";
+                                 $condiciones.=") ";
+                              }
                            }
                         } else if ($filtro == 5) {
                            if (isset($_POST['tipo_complemento']) && $_POST['tipo_complemento'] != "") {
-                              $condiciones.=" AND denc.Tipo_Complem = '".$_POST['tipo_complemento']."' ";
+                              $condiciones.=" AND pmov.Complemento = '".$_POST['tipo_complemento']."' ";
                            }
                         } else if ($filtro == 6) {
                            $condicionFvto = "";
@@ -655,14 +724,10 @@
                                     FROM productosmov$numtabla AS pmov
                                     INNER JOIN productosmovdet$numtabla AS pmovdet ON pmov.Numero = pmovdet.Numero $condicionFvto
                                     INNER JOIN bodegas ON bodegas.ID = pmovdet.BodegaOrigen
-                                    INNER JOIN bodegas as b2 ON b2.ID = pmovdet.BodegaDestino
-                                    INNER JOIN tipovehiculo ON tipovehiculo.Id = pmov.TipoTransporte
-                                    INNER JOIN despachos_enc$numtabla as denc ON denc.Num_Doc = pmov.Numero
-                                    $inners 
                                     WHERE 1 = 1 $condiciones
-                                    LIMIT 2000;";
-                     // echo "$consulta";       
+                                    LIMIT 2000; ";     
                   }
+                  // echo "$consulta";  
                ?>
                <input type="hidden" name="consulta" id="consulta" value="<?php echo $consulta; ?>">
             </div><!-- /.ibox-content -->
@@ -717,10 +782,11 @@
             consulta: $('#consulta').val()
          }
       },
+      // columnWidth:200,
       columns:[
-         { data: 'Tipo'},
+         { data: 'Tipo', resize:false },
          { data: 'Numero'},
-         { data: 'FechaHora_Elab'},
+         { data: 'FechaMYSQL'},
          { data: 'fecha_despacho'},
          { data: 'Proveedor'},
          { data: 'Descripcion'},
@@ -742,7 +808,6 @@
       pageLength: 25,
       responsive: true,
       dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
-      // buttons : [{extend:'excel', title:'Trazabilidad_alimentos', className:'btnExportarExcel', exportOptions: {columns : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]}}],
       buttons : [
          $.extend( true, {}, buttonCommon, {
             extend: 'excel',
@@ -783,7 +848,7 @@
                               '</ul>'+
                            '</div>';
          $('.containerBtn').html(btnAcciones);
-         // $('#loader').fadeOut();
+         $('#loader').fadeOut();
       },
       preDrawCallback: function( settings ) {
          $('#loader').fadeIn();

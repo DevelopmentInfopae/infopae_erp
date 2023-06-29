@@ -272,7 +272,13 @@ if ($cantGruposEtarios == '3') {
 
 // tratamiento de los cinco grupos etarios
 if ($cantGruposEtarios == '5') {
+	
+	$ordenCompraGeneral = $ordenesCompra; 
+	$auxOrdGeneral = explode(',',$ordenCompraGeneral);
+	
+
 	$logoInfopae = $_SESSION['p_Logo ETC'];
+	$periodoActual = $_SESSION['periodoActual'];
 	$pdf->SetFont('Arial');
 	$pdf->SetTextColor(0, 0, 0);
 	$pdf->SetLineWidth(.05);
@@ -283,32 +289,25 @@ if ($cantGruposEtarios == '5') {
 	$pdf->Cell(0, 10, utf8_decode(''), 'LRT', 0, 'C', False);
 	$pdf->SetXY($current_x, $current_y);
 	$pdf->SetFont('Arial', 'B', $tamannoFuente);
-	$pdf->Cell(0, 2.5, utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'), 0, 2.5, 'C', False);
+	$pdf->Cell(75, 3.33, utf8_decode('PROGRAMA DE ALIMENTACIÓN ESCOLAR'), 'R', 0, 'C', False);
+	$pdf->Cell(0, 3.33, utf8_decode(''),'TR',1,'C',False);
 
-	$ordenCompraGeneral = $despachosRecibidos[0];
-	if($ordenCompraGeneral < 10){
-		$ordenCompraGeneral = '0'.$ordenCompraGeneral;
-	}
-	if($ordenCompraGeneral < 100){
-		$ordenCompraGeneral = '0'.$ordenCompraGeneral;
-	}
-	if($ordenCompraGeneral < 1000){
-		$ordenCompraGeneral = '0'.$ordenCompraGeneral;
-	}
-	if($ordenCompraGeneral < 10000){
-		$ordenCompraGeneral = '0'.$ordenCompraGeneral;
-	}
 
-	$pdf->Cell(0, 2.5, utf8_decode('ORDEN DE COMPRA A PROVEEDORES Nº ').utf8_decode($ordenCompraGeneral), 0, 2.5, 'C', False);
+	$pdf->SetXY($current_x, $current_y+3.33);
+	$pdf->Cell(75, 3.33, utf8_decode('ORDEN DE COMPRA A PROVEEDORES '), 'R', 0, 'C', False);
+	$pdf->Cell(0, 6	, utf8_decode('CONSOLIDADO'), 'R', 1, 'C', False);
 
 	// modificacion para agregar varios complementos
+	$pdf->SetXY($current_x, $current_y+6.66);
 	$alturaComplentos  = 0; 
 	foreach ($descripcionTipo as $key => $value) {
-		$pdf->Cell(0, 2.5, utf8_decode($value), 0, 2.5, 'C', False);
+		$auxDescripcionTipo = substr($value, 0, 70);
+		$pdf->Cell(75, 2.5, utf8_decode($auxDescripcionTipo), 'R', 2.5, 'C', False);
 		$alturaComplentos += 2.5;
 	}
 
-	$pdf->Cell(0, 2.5, utf8_decode($tipoDespacho), 'RLB', 2.5, 'C', False);
+	
+	// $pdf->Cell(75, 2.5, utf8_decode('Tipo de despacho: '. $tipoDespacho), 'RLB', 2.5, 'C', False);
 	$alturaComplentos += 2.5;
 	$cordenadaY = $pdf->GetY();
 	$cordenadaX = $pdf->GetX();
@@ -366,7 +365,54 @@ if ($cantGruposEtarios == '5') {
 	$pdf->SetFont('Arial', 'B', $tamannoFuente);
 	$pdf->Cell(19, 4.76, utf8_decode('RUTA/MUNICIPIO:'), 0, 0, 'L', False);
 	$pdf->SetFont('Arial', '', $tamannoFuente);
-	$pdf->Cell(0, 4.76, utf8_decode(mb_strtoupper ($rutaMunicipio)), 0, 0, 'L', False);
+	$pdf->Cell(0, 4.76, utf8_decode(mb_strtoupper ($rutaMunicipio)), 0, 1, 'L', False);
+
+	$auxIntitucion = '';
+	$auxSede = '';
+	$banderaAux = 0;
+	foreach ($auxOrdGeneral as $keyOd => $valueOd) {
+		$consultaInstitucion = " SELECT nom_inst
+									FROM sedes$periodoActual s 
+									INNER JOIN orden_compra_enc$mesAnno o ON s.cod_sede = o.cod_sede
+									WHERE o.Num_OCO = '$valueOd' ";
+		$respuestaInstitucion = $Link->query($consultaInstitucion) or die ('Err ln 361');							
+		if ($respuestaInstitucion->num_rows == 1) {
+			$dataInstitucion = $respuestaInstitucion->fetch_assoc();
+			$auxIntitucion = $dataInstitucion['nom_inst'];
+			$consultaSedesAux = " SELECT DISTINCT(nom_sede)
+									FROM sedes$periodoActual s 
+									INNER JOIN orden_compra_enc$mesAnno o ON s.cod_sede = o.cod_sede
+									WHERE o.Num_OCO = '$ordenCompraGeneral' ";
+			$respuestaSedesAux = $Link->query($consultaSedesAux) or die ('Error ln 370');
+			if ($respuestaSedesAux->num_rows == 1) {
+				$dataSedesAux = $respuestaSedesAux->fetch_assoc();
+				$auxSede = $dataSedesAux['nom_sede'];
+			}else{
+				$auxSede = 'Múltiples';
+				$banderaAux = 1;
+			}						
+			}else{
+				$auxIntitucion = 'Múltiples';
+				$auxSede = 'Múltiples';	
+				$banderaAux = 1;
+		}
+	}
+
+	if ($banderaAux == 1) {
+		$auxSede = 'Múltiples';	
+		$auxIntitucion = 'Múltiples';
+	}
+
+
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Cell(19,4.76,utf8_decode('INSTITUCIÓN:'),'TBL',0,'L',False);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(84, 4.76, utf8_decode(mb_strtoupper ($auxIntitucion)),'RTB',0,'L',False);
+
+	$pdf->SetFont('Arial','B',$tamannoFuente);
+	$pdf->Cell(10, 4.76, utf8_decode('SEDE:'),'TBL',0,'L',False);
+	$pdf->SetFont('Arial','',$tamannoFuente);
+	$pdf->Cell(0, 4.76, utf8_decode(mb_strtoupper ($auxSede)),'RTB',0,'L',False);
 
 	$pdf->Ln(4.76);
 

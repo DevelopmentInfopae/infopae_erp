@@ -12,6 +12,8 @@ if ($permisos['dispositivos_biometricos'] == "0") {
     ?><script type="text/javascript">
       const list = document.querySelector(".li_dispositivos_biometricos");
       list.className += " active ";
+      const list2 = document.querySelector(".li_dispositivosBiometricos");
+      list2.className += " active ";
     </script>
   <?php
   }

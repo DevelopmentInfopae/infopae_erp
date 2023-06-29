@@ -6,13 +6,15 @@
       	window.open('<?= $baseUrl ?>', '_self');
     	</script>
   	<?php exit();}
-	  else {
-		?><script type="text/javascript">
-		  const list = document.querySelector(".li_novedades");
-		  list.className += " active ";
-		</script>
-	  <?php
-	  }
+  else {
+    ?><script type="text/javascript">
+      const list = document.querySelector(".li_novedades");
+      list.className += " active ";
+      const list2 = document.querySelector(".li_priorizacion");
+      list2.className += " active ";
+    </script>
+  <?php
+  }
 
 	require_once '../../db/conexion.php';
 	set_time_limit (0);
@@ -302,9 +304,11 @@
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/codemirror.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/codemirror/mode/xml/xml.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/iCheck/icheck.min.js"></script>
-<script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede_archivos.js"></script>
+<!-- <script src="<?php echo $baseUrl; ?>/modules/instituciones/js/sede_archivos.js"></script> -->
+<script src="<?= $baseUrl; ?>/theme/js/plugins/select2/select2.full.min.js"></script>
 <script src="<?php echo $baseUrl; ?>/modules/novedades_priorizacion/js/novedades_priorizacion_crear.js"></script>
 <script src="<?php echo $baseUrl; ?>/theme/js/plugins/toastr/toastr.min.js"></script>
+
 <!-- Page-Level Scripts -->
 
 <?php mysqli_close($Link); ?>

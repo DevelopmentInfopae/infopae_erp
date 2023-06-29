@@ -23,7 +23,7 @@ toastr.options = {
 	progressBar: true, 
 	preventDuplicates: false, 
 	showMethod: 'slideDown', 
-	timeOut: 3500, };
+	timeOut: 2500, };
 
 
 var total = 0;
@@ -44,12 +44,11 @@ $(document).ready(function(){
 	// console.log("Hoy es "+day+" de "+month);
 
 	if(day != localStorage.getItem("wappsi_dia_actual") || month != localStorage.getItem("wappsi_mes_actual")){
-		console.log("Se estaba trabajndo  "+localStorage.getItem("wappsi_dia_actual")+" de "+localStorage.getItem("wappsi_mes_actual"));
 		console.log("Borrar almacenamiento local");
 		localStorage.setItem("wappsi_dia_actual", day);
 		localStorage.setItem("wappsi_mes_actual", month);
-		localStorage.setItem("wappsi_institucion", "");
-		localStorage.setItem("wappsi_sede", "");
+		// localStorage.setItem("wappsi_institucion", "");
+		// localStorage.setItem("wappsi_sede", "");
 		localStorage.removeItem("wappsi_total");
 		localStorage.removeItem("wappsi_faltan");
 		localStorage.removeItem("wappsi_ausentes");
@@ -77,6 +76,7 @@ $(document).ready(function(){
 
 	$('#btnBuscar').click(function(){
 		if($('#form_asistencia').valid()){
+			$('.btnGuardar').show();
 			validarAsistenciaSellada();			
 		}
 	});
@@ -130,13 +130,7 @@ $(document).ready(function(){
 
 	});
 
-	$( "#grado" ).change(function() {
-		cargarGrupos();
-	});
-
 	$('.btnGuardar').click(function(){
-		// datatables.search('').draw();
-		// localStorage.setItem("wappsi_faltan", faltan);
 		guardarRepitentes();
 	});		
 
@@ -178,25 +172,21 @@ function validarAsistenciaSellada(){
 
 function cargarRepitentes(){
 	var dibujado = 0;
-
 	if($('#mes').val() != "" && $('#mes').val() != null ){
 		var mes = $('#mes').val();
 	}else{
 		var mes = "";
 	}
-
 	if($('#mes').val() != "" && $('#mes').val() != null ){
 		var dia = $('#dia').val();
 	}else{
 		var dia = "";
 	}
-
 	if($('#semana').val() != "" && $('#semana').val() != null ){
 		var semanaActual = $('#semana').val();
 	}else{
 		var semanaActual = $('#semanaActual').val();
 	}
-
 	var sede = $('#sede').val();
 	var complemento = $('#complemento').val();
 	var nivel = $('#nivel').val();
@@ -335,8 +325,6 @@ function restablecerContadores(){
 }
 
 function guardarRepitentes(){
-	// console.log(faltan);
-	// localStorage.setItem("wappsi_faltan", faltan);
 	var bandera = 0;	
 	var repitente = [];
 	var documento = "";
@@ -347,11 +335,9 @@ function guardarRepitentes(){
 	if($('#mes').val() != "" && $('#mes').val() != null){
 		var mes = $('#mes').val();	
 	}
-
 	if($('#dia').val() != "" && $('#dia').val() != null){
 		var dia = $('#dia').val();	
 	}	
-
 	if($('#semana').val() != "" && $('#semana').val() != null){
 		var semana = $('#semana').val();	
 	}else{
@@ -385,19 +371,16 @@ function guardarRepitentes(){
 
 	// Favoritos
 	// Nuevos favoritos
-	console.log("Los Favoritos:");
 	$(".checkbox-header-favorito[favorito='0']:checked").each(function(){
 		documento = $(this).val();
 		tipoDocumento = $( this ).attr('tipoDocumento');
 		formData.append('repitente['+documento+'][favorito]', 1);
-		//console.log(documento+" Favorito: "+1);
 	});
 	// Dejan de ser favoritos
 	$(".checkbox-header-favorito[favorito='1']:not(:checked)").each(function(){
 		documento = $(this).val();
 		tipoDocumento = $( this ).attr('tipoDocumento');
 		formData.append('repitente['+documento+'][favorito]', 0);
-		//console.log(documento+" Favorito: "+0);
 	});
 
 	if(cantidadRepitentes <= 0){
@@ -406,7 +389,6 @@ function guardarRepitentes(){
 	}
 
 	if(bandera == 0){
-		console.log("Guardar");
 		$.ajax({
 			type: "post",
 			url: "functions/fn_guardar_repitentes.php",
@@ -416,14 +398,14 @@ function guardarRepitentes(){
 			data: formData,
 			beforeSend: function(){ $("#loader").fadeIn(); },
 			success: function(data){ 
-				if(data.state == 1){ console.log(localStorage);
+				if(data.state == 1){
 					Command : toastr.success( data.message, "Registro Exitoso", { onHidden : function(){ $('#loader').fadeOut();
 					location.reload();			
 					}});
 				}else{
 					Command:toastr.error(data.message,"Error al hacer el registro.",{onHidden:function(){ $('#loader').fadeOut(); }});
 				}
-							},
+			},
 			error: function(data){
 				console.log(data);
 				Command:toastr.error("Al parecer existe un problema con el servidor.","Error en el Servidor",{onHidden:function(){ $('#loader').fadeOut(); }});

@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 require_once '../../../db/conexion.php';
 echo "<option value=''>Seleccione uno</option>";
 $usuario = '';
@@ -11,23 +7,21 @@ if(isset($_POST['usuario'])){
 }
 
 if($usuario != ''){
-	$consulta=" select ID, NOMBRE from bodegas where ID in (select ub.COD_BODEGA_SALIDA from usuarios_bodegas ub inner join usuarios u on u.id = ub.USUARIO where u.num_doc = '$usuario' ) order by NOMBRE asc ";
+	$consulta=" SELECT ID, NOMBRE 
+				FROM bodegas 
+				WHERE ID IN (
+							SELECT ub.COD_BODEGA_SALIDA 
+							FROM usuarios_bodegas ub 
+							INNER JOIN usuarios u ON u.id = ub.USUARIO 
+							WHERE u.num_doc = '$usuario' ) 
+				ORDER BY NOMBRE ASC ";
 
-
-
-
-  $Link = new mysqli($Hostname, $Username, $Password, $Database);
-  if ($Link->connect_errno) {
-    echo "Fallo al contenctar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-  }
-  $Link->set_charset("utf8");
-
-  $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
-  if($resultado->num_rows >= 1){
-  	while($row = $resultado->fetch_assoc()){
+  	$resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
+  	if($resultado->num_rows >= 1){
+  		while($row = $resultado->fetch_assoc()){
   			$id = $row['ID'];
   			$nombre = $row['NOMBRE'];
   			echo "<option value='$id'>$nombre</option>";
+  		}
   	}
-  }
 }

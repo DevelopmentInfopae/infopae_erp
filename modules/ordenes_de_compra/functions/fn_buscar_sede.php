@@ -65,7 +65,7 @@
 
    $consulta = $consulta." AND s.cod_mun_sede = '$municipio'"; 
    $consulta = $consulta."  AND s.cod_inst = '$institucion' "; 
-   $consulta .= " ORDER BY s.nom_sede ASC";
+   $consulta .= " ORDER BY s.nom_sede ASC"; 
    $resultado = $Link->query($consulta) or die ('Unable to execute query. '. mysqli_error($Link));
    if($resultado->num_rows >= 1){
       while($row = $resultado->fetch_assoc()) {

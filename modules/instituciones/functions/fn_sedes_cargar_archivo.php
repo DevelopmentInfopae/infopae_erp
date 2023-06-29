@@ -12,6 +12,7 @@ $resultadoIns = $Link->query($consultaIns) or die ("Unable to execute query.". m
 if($resultadoIns){
    	while($registrosIns = $resultadoIns->fetch_assoc()){
   		$arrayCodigosInstituciones[] = $registrosIns["codigo_inst"];
+  		$arrayCodigosInstitucionesIniciales[] = $registrosIns["codigo_inst"];
     }
 }
 
@@ -130,16 +131,16 @@ if (isset($_FILES["archivoSede"]["name"])){
 			}
 
 			// validacion nombre institucion 
-			$nombreInstitucion = '';
-			if (in_array($datos[0], $arrayCodigosInstituciones)) {
+			$nombreInstitucion = ''; 
+			if (in_array($datos[0], $arrayCodigosInstitucionesIniciales)) {
 				$consultaNombreInstitucion = "SELECT nom_inst FROM instituciones WHERE codigo_inst = '".$datos[0]."';";
 				$respuestaNombreInstitucion = $Link->query($consultaNombreInstitucion) or die ('Error al consultar el nombre de la institucion. ' . mysqli_error($Link));
 				if ($respuestaNombreInstitucion->num_rows > 0 ) {
 					$dataNombreInstitucion = $respuestaNombreInstitucion->fetch_assoc();
 					$nombreInstitucion = $dataNombreInstitucion['nom_inst'];
 				}
-				$nombreInstitucionBase = trim($nombreInstitucion);
-				$nombreInstitucionArchivo = trim($datos[4]);
+				$nombreInstitucionBase = trim($nombreInstitucion); 
+				$nombreInstitucionArchivo = trim(utf8_encode($datos[4]));
 				if ($nombreInstitucionBase != $nombreInstitucionArchivo) {
 					$result = array(
 						"estado" => 0,

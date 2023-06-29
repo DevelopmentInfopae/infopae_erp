@@ -10,6 +10,8 @@
    ?><script type="text/javascript">
      const list = document.querySelector(".li_entrega_complementos");
      list.className += " active ";
+     const list2 = document.querySelector(".li_consultaResumida");
+     list2.className += " active ";
    </script>
  <?php
  }
@@ -22,7 +24,7 @@
 ?>
 
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
-   <div class="col-lg-8">
+   <div class="col-lg-6">
       <h2><?= $nameLabel ?></h2>
       <ol class="breadcrumb">
          <li>
@@ -33,8 +35,9 @@
          </li>
       </ol>
    </div>
-   <div class="col-lg-4">
+   <div class="col-lg-6">
       <div class="title-action">
+         <a href="#" class="btn btn-primary" name="boton_abri_ventana_exportar_x" id="boton_abri_ventana_exportar_x"><i class="fa fa-file-excel-o"></i> Exportar Resumen de entregas</a>
          <a href="#" class="btn btn-primary" name="boton_abri_ventana_exportar_entregas" id="boton_abri_ventana_exportar_entregas"><i class="fa fa-file-excel-o"></i> Exportar</a>
       </div>
    </div>
@@ -300,7 +303,7 @@
                      $dias="SELECT * FROM planilla_dias WHERE ano = '$annoinicial' AND mes = '$mes'";
                      $result = $Link->query($dias) or die ('Unable to execute query. '. mysqli_error($Link));
                      $rowDias = $result->fetch_assoc();
-
+                     // var_dump($rowDias);
                      $annoinicial = substr($annoinicial, 2, 2);
                      include 'res_resumen.php';
                      if (isset($_POST['graficar'])) { include 'res_grafica.php'; }
@@ -383,6 +386,112 @@
    </div>
 </div>
 
+
+<!-- Ventana de formulario de exportación para la entregas resumidas -->
+<div class="modal inmodal fade" id="ventana_formulario_exportar_x" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+   <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+         <div class="modal-header text-info" style="padding: 15px;">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h3><i class="fa fa-upload fa-lg" aria-hidden="true"></i> Exportar entregas resumidas  </h3>
+         </div>
+         <div class="modal-body">
+            <form action="" name="formulario_exportar_x" id="formulario_exportar_x">
+               <div class="row">
+                  <div class="col-md-12">
+                     <div class="form-group">
+                        <label for="mes_exportar_x">Mes</label>
+                        <select class="form-control" name="mes_exportar_x" id="mes_exportar_x" required>
+                           <option value="">Selección</option>
+                           <?php
+                              $consultaMes = "SELECT distinct MES AS mes FROM planilla_semanas;";
+                              $resultadoMes = $Link->query($consultaMes);
+                              if($resultadoMes->num_rows > 0){
+                                 while($registros = $resultadoMes->fetch_assoc()) {
+                           ?>
+                           <option value="<?php echo $registros["mes"]; ?>">
+                            <?php
+                            switch ($registros['mes']) {
+                               case "01":
+                                 echo "Enero";
+                                 break;
+                               case "02":
+                                 echo "Febrero";
+                                 break;
+                               case "03":
+                                  echo "Marzo";
+                                  break;
+                               case "04":
+                                  echo "Abril";
+                                  break;
+                               case "05":
+                                  echo "Mayo";
+                                  break;
+                               case "06":
+                                  echo "Junio";
+                                  break;
+                               case "07":
+                                  echo "Julio";
+                                  break;
+                               case "08":
+                                  echo "Agosto";
+                                  break;
+                               case "09":
+                                  echo "Septiembre";
+                                  break;
+                               case "10":
+                                  echo "Octubre";
+                                  break;
+                               case "11":
+                                  echo "Noviembre";
+                                  break;
+                               case "12":
+                                  echo "Diciembre";
+                                  break;
+                            }
+                          
+                           ?></option>
+                           <?php
+                                 }
+                              }
+                           ?>
+                        </select>
+                     </div>
+                  </div>
+               
+                  <?php if ($_SESSION['p_Municipio'] == "0"): ?>
+                        <div class="col-md-12">
+                           <div class="form-group">
+                              <label for="zona_exportar">Zona</label>
+                              <select class="form-control" name="zona_exportar_x" id="zona_exportar_x" required>
+                                 <option value="">Selección</option>
+                                 <?php
+                                    $consultaZona = "SELECT distinct Zona_Pae AS zona FROM sedes$periodoActual;";
+                                    $resultadoZona = $Link->query($consultaZona);
+                                    if($resultadoZona->num_rows > 0){
+                                       while($registros = $resultadoZona->fetch_assoc()) {
+                                 ?>
+                                 <option value="<?= $registros["zona"]; ?>"><?= $registros["zona"]; ?></option>
+                                 <?php
+                                       }
+                                    }
+                                 ?>
+                              </select>
+                           </div>
+                        </div>
+                     <?php endif ?>
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-outline btn-sm" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary btn-sm" id="exportar_entregas_x">Aceptar</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
 <?php include '../../footer.php'; ?>
 
 <!-- Mainly scripts -->
@@ -403,6 +512,9 @@
 <script src="<?php echo $baseUrl; ?>/modules/consultas/js/select_anidados.js"></script>
 <script>
    $(document).ready(function () {
+      $(document).on('click', '#boton_abri_ventana_exportar_x', function(){ abrir_ventana_exportar_x(); });
+      $(document).on('click', '#exportar_entregas_x', function(){ exportar_entregas_x(); });
+
       $(document).on('click', '#boton_abri_ventana_exportar_entregas', function(){ abrir_ventana_exportar_entregas(); });
       $(document).on('change', '#mes_exportar', function(){ buscarSemanasMesExportar($(this)); });
       $(document).on('click', '#exportar_entregas', function(){ exportar_entregas(); });

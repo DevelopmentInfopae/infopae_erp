@@ -250,7 +250,7 @@ $sheet->getStyle("A5:BO9")->applyFromArray($color);
 $numfila = 10;
 
 $sectores = array('1' => 'Rural', '2' => 'Urbano', '0' => 'No especificado.');
-$conceptos_sanitario = array('1' => 'Favorable', '2' => 'Favorable con requerimiento','0' => 'Desfavorable');
+$conceptos_sanitario = array('1' => 'Favorable', '2' => 'Favorable con requerimiento','0' => 'Desfavorable', '3' => 'No cuenta con inspección sanitaria');
 $estados = array('1' => 'Si', '0' => 'No', '2' => 'No aplica');
 
 $consultarDptoParametro = "SELECT id, nombre FROM departamentos WHERE EXISTS (SELECT CodDepartamento FROM parametros WHERE CodDepartamento = departamentos.id)";

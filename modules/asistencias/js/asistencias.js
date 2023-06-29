@@ -6,17 +6,29 @@ var datatables = null;
 
 
 $(document).ready(function(){
+	toastr.options = { 
+		newestOnTop: true, 
+		closeButton: false, 
+		progressBar: true, 
+		preventDuplicates: false, 
+		showMethod: 'slideDown', 
+		timeOut: 2500, 
+	};
+
+	$('.i-checks').iCheck({
+		checkboxClass: 'icheckbox_square-green',
+		radioClass: 'iradio_square-green',
+	});
+
 	var d = new Date();
 	var month = d.getMonth()+1;
 	var day = d.getDate();
 
 	if(day != localStorage.getItem("wappsi_dia_actual") || month != localStorage.getItem("wappsi_mes_actual")){
-		console.log("Se estaba trabajando  "+localStorage.getItem("wappsi_dia_actual")+" de "+localStorage.getItem("wappsi_mes_actual"));
-		console.log("Borrar almacenamiento local");
 		localStorage.setItem("wappsi_dia_actual", day);
 		localStorage.setItem("wappsi_mes_actual", month);
-		localStorage.setItem("wappsi_institucion", "");
-		localStorage.setItem("wappsi_sede", "");
+		// localStorage.setItem("wappsi_institucion", "");
+		// localStorage.setItem("wappsi_sede", "");
 		localStorage.removeItem("wappsi_total");
 		localStorage.removeItem("wappsi_faltan");
 		localStorage.removeItem("wappsi_ausentes");
@@ -24,64 +36,38 @@ $(document).ready(function(){
 		localStorage.removeItem("wappsi_no_consumieron");
 		localStorage.removeItem("wappsi_no_repitieron");
 	}	
-
-	toastr.options = { 
-	newestOnTop: true, 
-	closeButton: false, 
-	progressBar: true, 
-	preventDuplicates: false, 
-	showMethod: 'slideDown', 
-	timeOut: 3500, };
-
-
-	// console.log("Total: "+total);
-	// console.log("Faltan: "+faltan);
-	// console.log(localStorage);
 	
 	if (localStorage.getItem("wappsi_ausentes") === null) {
 		localStorage.setItem("wappsi_ausentes", JSON.stringify(ausentes));
 	}
 
-	$('.i-checks').iCheck({
-		checkboxClass: 'icheckbox_square-green',
-		radioClass: 'iradio_square-green',
-	});
-
 	$(document).on('ifChecked', '.checkbox-header0', function (){ 
 		$('.checkbox-header').iCheck('check');
 		$('.checkbox-header0').iCheck('check');
-		// console.log("S");
 		faltantesEnStorage = localStorage.getItem("wappsi_faltan", faltan);
 		faltan =  faltantesEnStorage;
 		localStorage.setItem("wappsi_faltan", faltan);
 		$(".asistenciaFaltantes").html(faltan);
 	});
-
 	
 	$(document).on('ifUnchecked', '.checkbox-header0', function () {
 		faltantes = 0; 
 		$( ".checkbox-header" ).each(function( index ) {
 			faltantes++;
 		});
-
 		$('.checkbox-header').iCheck('uncheck');
 		$('.checkbox-header0').iCheck('uncheck');
-
 		faltantesEnStorage = localStorage.getItem("wappsi_faltan", faltan);
 		faltan =  faltantesEnStorage;
 		localStorage.setItem("wappsi_faltan", faltan);
 		$(".asistenciaFaltantes").html(faltan);
-
 	});	
 
 	$(document).on('ifChecked', '.checkbox-header', function () { 
 		$('.checkbox'+ $(this).data('columna')).iCheck('check');
-		// console.log("Check fataban: "+faltan);
-		// console.log("S");
 		faltan--;
 		localStorage.setItem("wappsi_faltan", faltan);
 		$(".asistenciaFaltantes").html(faltan);
-
 		var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
 		var index = aux.indexOf($(this).val());
 		if (index > -1) {
@@ -92,19 +78,18 @@ $(document).ready(function(){
 	
 	$(document).on('ifUnchecked', '.checkbox-header', function () { 
 		$('.checkbox'+ $(this).data('columna')).iCheck('uncheck'); 
-		// console.log("N");
 		faltan++;
 		localStorage.setItem("wappsi_faltan", faltan);
 		$(".asistenciaFaltantes").html(faltan);
-		// console.log(localStorage);
 		var aux = JSON.parse(localStorage.getItem("wappsi_ausentes"));
 		aux.push($(this).val());
 		localStorage.setItem("wappsi_ausentes", JSON.stringify(aux));
-
 	});
 	
 	$('#btnBuscar').click(function(){
 		if($('#form_asistencia').valid()){
+			$('.containerStudents').show();
+			$('.btnGuardar').show();
 			validarAsistenciaSellada();
 		}
 	});
@@ -123,8 +108,6 @@ function restablecerContadores(){
 	localStorage.removeItem("wappsi_total");
 	localStorage.removeItem("wappsi_faltan");
 	localStorage.removeItem("wappsi_ausentes");
-	// console.log("Borrar almacenamiento local");
-	// Command : toastr.success( "Exito!", "Se ha borrado con éxito el almacenamiento local.", { onHidden : function(){}});
 }
 
 function guardarAsistencia(){
@@ -179,7 +162,6 @@ function guardarAsistencia(){
 	});
 
 	if(bandera == 0){
-		// console.log("Guardar");
 		$.ajax({
 			type: "post",
 			url: "functions/fn_guardar_asistencia.php",

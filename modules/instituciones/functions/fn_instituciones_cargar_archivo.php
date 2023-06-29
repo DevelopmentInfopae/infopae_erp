@@ -92,13 +92,7 @@ if (isset($_FILES["archivo"]["name"])){
 				);
 				exit(json_encode($result));
 			}
-			if (in_array($datos[5], $arrayRectores) === false) {
-				$result = array(
-					"estado" => 0, 
-					"mensaje" => "La Cedula Rector no esta comprendida en los rectores ya existentes en la fila N° ".($fila+1)."."
-				);
-				exit(json_encode($result));
-			}
+
 			$fila++;
 		}
 		

@@ -10,6 +10,10 @@
             ?><script type="text/javascript">
               const list = document.querySelector(".li_configuracion");
               list.className += " active ";
+              const list2 = document.querySelector(".li_rutas");
+              list2.className += " active ";
+              const list3 = document.querySelector(".li_rutas_submenu");
+              list3.className += " active ";
             </script>
           <?php
           }

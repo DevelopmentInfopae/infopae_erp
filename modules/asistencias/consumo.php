@@ -1,8 +1,27 @@
 <?php
-include '../../header.php';
-include 'functions/fn_fecha_asistencia.php';
-set_time_limit (0);
-ini_set('memory_limit','6000M');
+  	include '../../header.php';
+	require_once 'functions/fn_fecha_asistencia.php';
+  	set_time_limit (0);
+  	ini_set('memory_limit','6000M');
+  	$periodoActual = $_SESSION['periodoActual'];
+
+  	if ($permisos['asistencia'] == "0") {
+?>		<script type="text/javascript">
+  			window.open('<?= $baseUrl ?>', '_self');
+		</script>
+<?php 
+	exit(); 
+	}
+
+	else {
+?>		<script type="text/javascript">
+      		const list = document.querySelector(".li_asistencia");
+      		list.className += " active ";
+			const list2 = document.querySelector(".li_consumos");
+      		list2.className += " active ";
+    	</script>
+<?php
+  	}
 
 $periodoActual = $_SESSION["periodoActual"];
 $titulo = "Asistencias";
@@ -13,7 +32,7 @@ $anno = $annoasistencia;
 	
 //Busqueda de la semana actual
 $semanaActual = "";
-$consulta = "select semana from planilla_semanas where ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";			
+$consulta = "SELECT semana FROM planilla_semanas WHERE  ano = \"$anno\" and mes = \"$mes\" and dia = \"$dia\" ";			
 $resultado = $Link->query($consulta) or die ('No se pudo cargar la semana actual. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	$row = $resultado->fetch_assoc();
@@ -53,8 +72,8 @@ $titulo = $nameLabel;
 	</div>
 	<div class="col-xs-4">
 		<div class="title-action registroConsumo" style="display: none">
-			<button class="btn btn-primary btnGuardar" type="button">Guardar</button>
-			<button class="btn btn-primary btnSellar" type="button">Sellar Asistencia</button>
+			<button class="btn btn-primary btnGuardar" type="button"><strong><i class="fa fa-check"></i> Guardar</strong></button>
+			<button class="btn btn-primary btnSellar" type="button"><strong><i class="fa fa-upload"></i> Sellar Asistencia</strong></button>
 		</div>
 	</div>
 </div>
@@ -155,8 +174,8 @@ $titulo = $nameLabel;
 			<div class="modal-footer">
 				<input type="hidden" id="codigoACambiar">
 				<input type="hidden" id="estadoACambiar">
-				<button type="button" class="btn btn-primary btn-outline btn-sm btnNoSellar" data-dismiss="modal">Cancelar</button>
-				<button type="button" class="btn btn-primary btn-sm btnSiSellar" data-dismiss="modal">Aceptar</button>
+				<button type="button" class="btn btn-danger btn-outline btn-sm btnNoSellar" data-dismiss="modal"><strong><i class="fas fa-times"></i> Cancelar</strong> </button>
+				<button type="button" class="btn btn-primary btn-sm btnSiSellar" data-dismiss="modal"> <strong><i class="fas fa-check"></i> Aceptar</strong> </button>
 			</div>
 		</div>
 	</div>

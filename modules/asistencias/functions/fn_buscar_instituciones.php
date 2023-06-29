@@ -2,21 +2,23 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
-
 $periodoActual = $_SESSION['periodoActual']; 
 
 $institucionRector = "";
 $municipio = '';
 if(isset($_POST['municipio']) && $_POST['municipio'] != ''){
-		$municipio = mysqli_real_escape_string($Link, $_POST['municipio']);
+	$municipio = mysqli_real_escape_string($Link, $_POST['municipio']);
 }
-
+$institucion = '';
+if(isset($_POST['institucion']) && $_POST['institucion'] != ''){
+	$institucion = mysqli_real_escape_string($Link, $_POST['institucion']);
+}
 $validacion = '';
 if(isset($_POST['validacion']) && $_POST['validacion'] != ''){
 	$validacion = mysqli_real_escape_string($Link, $_POST['validacion']);
 }
 $opciones = "<option value=\"\">Seleccione uno</option>";
-
+// exit(var_dump($_POST));
 $institucionesAuxiliar = "";
 if ($_SESSION['perfil'] == "8") {
 	$idAuxiliar = $_SESSION["idUsuario"];
@@ -56,10 +58,10 @@ else if($_SESSION['perfil'] == 7) {
 	}
 }
 else{
-	$consulta = " select codigo_inst, nom_inst from instituciones where 1=1 ";
+	$consulta = " SELECT codigo_inst, nom_inst FROM instituciones WHERE 1=1 ";
 }
 
-$consulta.= " and cod_mun = \"$municipio\" and codigo_inst in (select cod_inst from sedes$periodoActual where 1=1 ";
+$consulta.= " AND cod_mun = \"$municipio\" AND codigo_inst IN (SELECT cod_inst FROM sedes$periodoActual WHERE 1=1 ";
 if($validacion == 'Tablet'){
 	$consulta.= " and (tipo_validacion = \"$validacion\" or tipo_validacion = \"Lector de Huella\" ) ";
 }else{
@@ -67,21 +69,20 @@ if($validacion == 'Tablet'){
 		$consulta.= " and tipo_validacion = \"$validacion\" ";
 	}
 }
-$consulta.= " and cod_mun_sede = \"$municipio\") ";
+$consulta.= " AND cod_mun_sede = \"$municipio\") ";
 
 if($institucionRector != ""){
-	$consulta.= " and codigo_inst = \"$institucionRector\" ";
+	$consulta.= " AND codigo_inst = \"$institucionRector\" ";
 }
 
 if ($institucionesAuxiliar != "") {
 	$consulta .= "AND codigo_inst IN $institucionesAuxiliar ";
 }
 
-$consulta = $consulta." order by nom_inst asc ";
-echo $consulta;
+$consulta = $consulta." ORDER BY nom_inst ASC "; 
 $resultado = $Link->query($consulta) or die ('No se pudieron cargar los muunicipios. '. mysqli_error($Link));
 if($resultado->num_rows >= 1){
 	while($row = $resultado->fetch_assoc()){ ?>
-		<option value="<?= $row['codigo_inst'] ?>"><?= $row['nom_inst'] ?></option>			
+		<option value="<?= $row['codigo_inst'] ?>" <?= ($institucion == $row['codigo_inst']) ? 'selected' : '' ?> ><?= $row['nom_inst'] ?></option>			
 	<?php }
 }

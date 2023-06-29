@@ -12,6 +12,8 @@ if ($permisos['informes'] == "0") {
       ?><script type="text/javascript">
         const list = document.querySelector(".li_informes");
         list.className += " active ";
+        const list2 = document.querySelector(".li_informeInsumos");
+        list2.className += " active ";
       </script>
       <?php
       }

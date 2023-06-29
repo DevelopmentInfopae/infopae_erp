@@ -11,6 +11,8 @@ if ($permisos['configuracion'] == "0" || $permisos['configuracion'] == "1") {
       ?><script type="text/javascript">
         const list = document.querySelector(".li_configuracion");
         list.className += " active ";
+        const list2 = document.querySelector(".li_configuracionInsumos");
+        list2.className += " active ";
       </script>
       <?php
       }
@@ -27,7 +29,7 @@ if ($resultadoTipoInsumo->num_rows > 0) {
   }
 }
 
-$nameLabel = get_titles('configuracion', 'insumos', $labels);
+$nameLabel = get_titles('configuracion', 'configuracionInsumos', $labels);
 $titulo = $nameLabel;
 ?>
 

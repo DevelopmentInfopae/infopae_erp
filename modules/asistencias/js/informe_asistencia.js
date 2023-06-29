@@ -23,8 +23,9 @@ $(document).ready(function(){
 	var d = new Date();
 	var month = d.getMonth();
 	var day = d.getDate();
-	// console.log("Hoy es "+day+" de "+month);	
-
+	$('#nivel').parent().children('label').text('Nivel ');
+	$('#nivel').removeAttr('required');
+	$('#nivel').select2('val','');
 	$('#btnBuscar').click(function(){
 		if($('#form_asistencia').valid()){
 			validarAsistenciaSellada();			
@@ -141,7 +142,7 @@ function cargarEstudiantes(){
 		}
 	],
 	bSort: false,
-	bPaginate: false,
+	bPaginate: true,
 	buttons: [ {extend: 'excel', title: 'Asistencia', className: 'btnExportarExcel', exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] } } ],
 	dom: 'lr<"containerBtn"><"inputFiltro"f>tip<"html5buttons"B>',
 	oLanguage: {
@@ -158,7 +159,7 @@ function cargarEstudiantes(){
 		sPrevious: 'Anterior'
 	}
 	},
-	//pageLength: 10,
+	pageLength: 25,
 	responsive: true,
 	"preDrawCallback": function( settings ) {
 		if(dibujado == 0){

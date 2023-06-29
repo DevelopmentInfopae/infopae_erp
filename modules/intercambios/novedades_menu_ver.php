@@ -9,6 +9,8 @@ if ($permisos['novedades'] == "0") {
 		?><script type="text/javascript">
 		  const list = document.querySelector(".li_novedades");
 		  list.className += " active ";
+		  const list2 = document.querySelector(".li_menu");
+		  list2.className += " active ";
 		</script>
 	  <?php
 	  }

@@ -1,5 +1,23 @@
 $(document).ready(function(){
 
+	// Configuración del pligin toast
+	toastr.options = {
+		"closeButton": true,
+		"debug": false,
+		"progressBar": true,
+		"preventDuplicates": false,
+		"positionClass": "toast-top-right",
+		"onclick": null,
+		"showDuration": "400",
+		"hideDuration": "1000",
+		"timeOut": "2000",
+		"extendedTimeOut": "1000",
+		"showEasing": "swing",
+		"hideEasing": "linear",
+		"showMethod": "fadeIn",
+		"hideMethod": "fadeOut"
+	}
+
 	jQuery.extend(jQuery.validator.messages, {//Configuración jquery valid
 		step : "Por favor, escribe un número entero",
 		required: "Este campo es obligatorio.",
@@ -22,11 +40,14 @@ $(document).ready(function(){
 	});
 
 	$('select').select2();	
-    $(document).on('click', '#descargarPlantillaProductos', function(){ $('#ventanaFormularioDescargarCantidades').modal(); });
-	$(document).on('click', '#descargarArchivoInventario', function(){ descarga_plantilla_productos(); })
+    $(document).on('click', '#descargarPlantillaProductos', function(){ descarga_plantilla_productos(); });
 	$(document).on('click', '#importarCantidades', function(){ $('#ventanaFormularioCargarCantidades').modal(); });
 	$(document).on('click', '#subirArchivoInventario', function(){ subirArchivoInventarios();});
 	$(document).on('click', '#sincronizar_bodegas', function(){ sincronizarBodegas();});
+	$(document).on('click', '#cronjob', function(){ $('#ventanaFormularioSincronizarCantidades').modal(); });
+	$(document).on('click', '#sincronizarCantidades', function(){ sincronizarInventarios();});
+	// $(document).on('click', '#cronjob', function(){ executeCronJob();});
+	$(document).on('click', '.iniciarSinc', function(){ sincronizacionInicial();});
 
     $('#municipio').change(function(){
         get_warehouses($(this).val());
@@ -36,13 +57,17 @@ $(document).ready(function(){
 		get_warehouses_import($(this).val());
 	})
 
+	$('#municipioSincronizacion').change(function(){
+		get_warehouses_sincronizacion($(this).val());
+	})
+
 	$('#municipioExport').change(function(){
 		get_warehouses_export($(this).val());
 	})
 
     $('#bodega').change(function(){
-        if ($(this).val() == 0) {
-            $('#municipio').select2('val','0')
+        if ($(this).val() == '') {
+            $('#municipio').select2('val','')
         }
     })
 
@@ -52,23 +77,14 @@ $(document).ready(function(){
 		}
     })
 
-    // Configuración del pligin toast
-	toastr.options = {
-		"closeButton": true,
-		"debug": false,
-		"progressBar": true,
-		"preventDuplicates": false,
-		"positionClass": "toast-top-right",
-		"onclick": null,
-		"showDuration": "400",
-		"hideDuration": "1000",
-		"timeOut": "2000",
-		"extendedTimeOut": "1000",
-		"showEasing": "swing",
-		"hideEasing": "linear",
-		"showMethod": "fadeIn",
-		"hideMethod": "fadeOut"
-	}
+	$('#mesSincronizacion').change(function(){
+		get_semana_sincronizacion($(this).val());
+	})
+
+	$('#semanaSincronizacion').change(function(){
+		get_dia_sincronizacion($(this).val());
+	})
+
 });
 
 function get_warehouses(municipio){
@@ -77,15 +93,17 @@ function get_warehouses(municipio){
 		url: "functions/fn_get_warehouses.php",
 		data: { "municipio" : municipio },
 		beforeSend: function(){
-			$('#loader').fadeIn();
+			$('#loaderAjax').fadeIn();
 		},
 	})
 	.done(function(data){ 
+		$('#bodega').select2('destroy');
         $('#bodega').html(data);
+		$('#bodega').select2();
     })
 	.fail(function(){ })
 	.always(function(){
-		$('#loader').fadeOut();
+		$('#loaderAjax').fadeOut();
 	});
 }
 
@@ -95,7 +113,7 @@ function get_warehouses_import(municipio){
 		url: "functions/fn_get_warehouses.php",
 		data: { "municipio" : municipio },
 		beforeSend: function(){
-			$('#loader').fadeIn();
+			$('#loaderAjax').fadeIn();
 		},
 	})
 	.done(function(data){ 
@@ -103,7 +121,61 @@ function get_warehouses_import(municipio){
     })
 	.fail(function(){ })
 	.always(function(){
-		$('#loader').fadeOut();
+		$('#loaderAjax').fadeOut();
+	});
+}
+
+function get_warehouses_sincronizacion(municipio){
+    $.ajax({
+		type: "POST",
+		url: "functions/fn_get_warehouses.php",
+		data: { "municipio" : municipio, "sinc" : 1 },
+		beforeSend: function(){
+			$('#loaderAjax').fadeIn();
+		},
+	})
+	.done(function(data){ 
+        $('#bodegaSincronizacion').html(data);
+    })
+	.fail(function(){ })
+	.always(function(){
+		$('#loaderAjax').fadeOut();
+	});
+}
+
+function get_semana_sincronizacion(mes){
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_get_week.php",
+		data: { "mes" : mes },
+		beforeSend: function(){
+			$('#loaderAjax').fadeIn();
+		},
+	})
+	.done(function(data){ 
+        $('#semanaSincronizacion').html(data);
+    })
+	.fail(function(){ })
+	.always(function(){
+		$('#loaderAjax').fadeOut();
+	});
+}
+
+function get_dia_sincronizacion(semana){
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_get_day.php",
+		data: { "semana" : semana },
+		beforeSend: function(){
+			$('#loaderAjax').fadeIn();
+		},
+	})
+	.done(function(data){ 
+        $('#diaSincronizacion').html(data);
+    })
+	.fail(function(){ })
+	.always(function(){
+		$('#loaderAjax').fadeOut();
 	});
 }
 
@@ -113,7 +185,7 @@ function get_warehouses_export(municipio){
 		url: "functions/fn_get_warehouses.php",
 		data: { "municipio" : municipio },
 		beforeSend: function(){
-			$('#loader').fadeIn();
+			$('#loaderAjax').fadeIn();
 		},
 	})
 	.done(function(data){ 
@@ -121,7 +193,7 @@ function get_warehouses_export(municipio){
     })
 	.fail(function(){ })
 	.always(function(){
-		$('#loader').fadeOut();
+		$('#loaderAjax').fadeOut();
 	});
 }
 
@@ -131,7 +203,7 @@ function sincronizarBodegas(){
 		url: "functions/fn_sync_warehouses.php",
 		dataType : "JSON",
 		beforeSend: function(){
-			$('#loader').fadeIn();
+			$('#loaderAjax').fadeIn();
 		},
 	})
 	.done(function(data){ 
@@ -139,29 +211,58 @@ function sincronizarBodegas(){
         if (data.estado == 1) {
 			Command: toastr.success(
 				data.mensaje,
-				"Exito", { onHidden : function(){ $('#loader').fadeOut(); location.reload() } }
+				"Exito", { onHidden : function(){ $('#loaderAjax').fadeOut(); location.reload() } }
 			);
 		}else{
 			Command: toastr.error(
 				data.mensaje,
-				"Error", { onHidden : function(){ $('#loader').fadeOut(); } }
+				"Error", { onHidden : function(){ $('#loaderAjax').fadeOut(); } }
 			);
 		}
     })
 	.fail(function(){ })
 	.always(function(){
-		$('#loader').fadeOut();
+		$('#loaderAjax').fadeOut();
 	});
 }
 
+function sincronizacionInicial(){
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_sync_warehouses.php",
+		dataType : "JSON",
+		beforeSend: function(){},
+	})
+	.done(function(data){ 
+        if (data.estado == 1) {
+			var progreso = 0;
+			var idIterval = setInterval(function(){
+	  			// Aumento en 10 el progeso
+	  			progreso +=2;
+	  			$('#bar').css('width', progreso + '%');
+		 
+	  			//Si llegó a 100 elimino el interval
+	  			if(progreso == 100){
+					clearInterval(idIterval);
+					Command: toastr.success(
+						data.mensaje,
+						"Exito", { onHidden : function(){ $('#loaderAjax').fadeOut(); location.reload() } }
+					);
+	  			}
+			},100); 	
+		}else{
+			Command: toastr.error(
+				data.mensaje,
+				"Error", { onHidden : function(){ $('#loaderAjax').fadeOut(); } }
+			);
+		}
+    })
+	.fail(function(){ })
+	.always(function(){ });
+}
+
 function descarga_plantilla_productos() {
-	if ($('#formDescargarArchivoInventario').valid()) {
-		var municipio = $('#municipioExport').val();
-		var bodega = $('#bodegaExport').val();
-		var complemento = $('#complementoExport').val();
-		window.open('functions/fn_get_inventory_template.php?municipioExport='+municipio+'&bodegaExport='+bodega+'&complementoExport='+complemento, '_self');	
-		$('#ventanaFormularioDescargarCantidades').modal('hide');	
-	}
+	window.open('functions/fn_get_inventory_template.php', + '_self');		
 }
 
 function subirArchivoInventarios(){
@@ -178,28 +279,110 @@ function subirArchivoInventarios(){
 		  	processData: false,
 		  	data: formData,
 		  	dataType: 'json',
-		  	beforeSend: function(){ $('#loader').fadeIn(); },
+		  	beforeSend: function(){ $('#loaderAjax').fadeIn(); },
 		  	success: function(data){ 
 				if(data.estado == 1){
 					Command: toastr.success(
 						data.mensaje,
-						"Exito", { onHidden : function(){ $('#loader').fadeOut(); } }
+						"Exito", { onHidden : function(){ $('#loaderAjax').fadeOut(); } }
 					);
 				} else {
 					Command: toastr.error(
 						data.mensaje,
-						"Error al subir datos", { onHidden : function(){ $('#loader').fadeOut(); } }
+						"Error al subir datos", { onHidden : function(){ $('#loaderAjax').fadeOut(); } }
 					);
 				}
 				$('#ventanaFormularioCargarCantidades').modal('hide');
 		  	},
 		  	error: function(data){
-				$('#loader').fadeOut();
+				$('#loaderAjax').fadeOut();
 				Command: toastr.error(
 			  		"Al parecer existe un problema en el servidor. Por favor comuníquese con el administrador del sitio InfoPAE.",
-			  		"Error al subir datos", { onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText); } }
+			  		"Error al subir datos", { onHidden : function(){ $('#loaderAjax').fadeOut(); console.log(data.responseText); } }
 			  	);
 		  	}
 		});
 	}
+}
+
+function sincronizarInventarios(){
+	if($('#formSincronizarCantidades').valid()){
+		var datos = {
+				'municipio' : $('#municipioSincronizacion').val(),
+				'bodega'    : $('#bodegaSincronizacion').val(),
+				'complemento' : $('#complementoSincronizacion').val(),
+				'mes'       : $('#mesSincronizacion').val(),
+				'semana' : $('#semanaSincronizacion').val(),
+				'dia' : $('#diaSincronizacion').val()
+		}
+		$.ajax({
+			type: "POST",
+			url: "functions/fn_execute_cronjob.php",
+			data : datos,
+			dataType: 'json',
+			beforeSend: function(){ $('#loaderAjax').fadeIn(); },
+			success: function(data){ 
+			  if(data.estado == 1){
+				  Command: toastr.success(
+					  data.mensaje,
+					  "Sincronización exitosa", { onHidden : function(){ $('#loaderAjax').fadeOut(); location.reload() } }
+				  );
+			  } else {
+				  Command: toastr.error(
+					  data.mensaje,
+					  "Error al sincronizar", { onHidden : function(){ $('#loaderAjax').fadeOut(); } }
+				  );
+			  }
+			},
+			error: function(data){
+			  $('#loaderAjax').fadeOut();
+			  Command: toastr.error(
+					"Al parecer existe un problema en el servidor. Por favor comuníquese con el administrador del sitio InfoPAE.",
+					"Error al subir datos", { onHidden : function(){ $('#loaderAjax').fadeOut(); console.log(data.responseText); } }
+				);
+			}
+	  	});
+	}
+}
+
+function movimientos(codigo, bodega, sincronizacion){
+	$('#loader').fadeIn();
+    $('#contenedor_movimientos').load($('#inputBaseUrl').val() +'/modules/inventarios/movements.php?codigo='+codigo+'&bodega='+bodega+'&sinc='+sincronizacion, function() {
+		$('#loader').fadeOut()
+	  }); 
+}
+
+function sincProduct(codigo, bodega, sincronizacion){
+	datos = {
+		'codigo' : codigo,
+		'bodega' : bodega,
+		'fechaSic' : sincronizacion
+	}
+	$.ajax({
+		type: "POST",
+		url: "functions/fn_sync_products.php",
+		data : datos,
+		dataType: 'json',
+		beforeSend: function(){ $('#loader').fadeIn(); },
+		success: function(data){ 
+		  if(data.estado == 1){
+			  Command: toastr.success(
+				  data.mensaje,
+				  "Sincronización exitosa", { onHidden : function(){ $('#loader').fadeOut(); location.reload() } }
+			  );
+		  } else {
+			  Command: toastr.error(
+				  data.mensaje,
+				  "Error al sincronizar", { onHidden : function(){ $('#loader').fadeOut(); } }
+			  );
+		  }
+		},
+		error: function(data){
+		  $('#loader').fadeOut();
+		  Command: toastr.error(
+				"Al parecer existe un problema en el servidor. Por favor comuníquese con el administrador del sitio InfoPAE.",
+				"Error al subir datos", { onHidden : function(){ $('#loader').fadeOut(); console.log(data.responseText); } }
+			);
+		}
+	}); 
 }

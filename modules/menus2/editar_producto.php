@@ -1,53 +1,64 @@
 <?php 
-
-require_once '../../header.php'; 
-
-if ($permisos['menus'] == "0") {
-  ?><script type="text/javascript">
-      window.open('<?= $baseUrl ?>', '_self');
-  </script>
+    require_once '../../header.php'; 
+    if ($permisos['menus'] == "0") {
+?>      <script type="text/javascript">
+            window.open('<?= $baseUrl ?>', '_self');
+        </script>
 <?php exit(); }
-else {
-  ?><script type="text/javascript">
-      const list = document.querySelector(".li_menus");
-      list.className += " active ";
-  </script>
-  <?php
-  }
+    else {
+?>      <script type="text/javascript">
+            const list = document.querySelector(".li_menus");
+            list.className += " active ";
+        </script>
+<?php
+    }
 
-if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} else { echo "<script>location.href='$baseUrl';</script>"; } 
-$periodoActual = $_SESSION['periodoActual'];
+    if ($_SESSION['perfil'] == "0" || $permisos['menus'] == "2") {} 
+    else { echo "<script>location.href='$baseUrl';</script>"; } 
+    $periodoActual = $_SESSION['periodoActual'];
+    $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Libra', 'g' => 'Gramos'), 'cc' => array('u' => 'Unidad', 'lt' => 'Litro', 'cc' => 'Centímetros cúbicos'), 'u' => array('u' => 'Unidad'));
 
-$options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Libra', 'g' => 'Gramos'), 'cc' => array('u' => 'Unidad', 'lt' => 'Litro', 'cc' => 'Centímetros cúbicos'), 'u' => array('u' => 'Unidad'));
-
+    if (isset($_REQUEST['idProducto'])) { 
+        $idProducto = $_REQUEST['idProducto'];
+        $consultaDatosProducto = "select * from productos".date('y')." where Id = ".$idProducto." AND nivel = 3";
+        $resultadoDatosProducto = $Link->query($consultaDatosProducto) or die('Unable to execute query. '. mysqli_error($Link));
+        if ($resultadoDatosProducto->num_rows > 0) {
+            $Producto = $resultadoDatosProducto->fetch_assoc();
+            if (substr($Producto['Codigo'], 0, 2) == "01") {
+                $nameLabel = get_titles('menus', 'menus', $labels);
+                $titulo = $nameLabel. ' - Editar';
+                $link = "index.php";
+                $title = "Menú";
+                $breadCumb = "menús";
+?>              <script type="text/javascript">
+                    const list2 = document.querySelector(".li_menus_sub");
+                    list2.className += " active ";
+                </script> 
+<?php
+            } else if (substr($Producto['Codigo'], 0, 2) == "02") {
+                $nameLabel = get_titles('menus', 'preparaciones', $labels);
+                $titulo = $nameLabel. ' - Editar';
+                $link = "ver_preparaciones.php";
+                $title = "Preparación";
+                $breadCumb = "preparaciones";
+?>              <script type="text/javascript">
+                    const list2 = document.querySelector(".li_preparaciones");
+                    list2.className += " active ";
+                </script> 
+<?php
+            } else if (substr($Producto['Codigo'], 0, 2) == "03" || substr($Producto['Codigo'], 0, 2) == "04") {
+                $nameLabel = get_titles('menus', 'alimentos', $labels);
+                $titulo = $nameLabel. ' - Editar';
+                $link = "ver_alimentos.php";
+                $title = $titulo;
+                $breadCumb = "alimentos";
+?>              <script type="text/javascript">
+                    const list2 = document.querySelector(".li_alimentos");
+                    list2.className += " active ";
+                </script> 
+<?php
+            }
 ?>
-<?php if (isset($_REQUEST['idProducto'])) { 
-  $idProducto = $_REQUEST['idProducto'];
-  $consultaDatosProducto = "select * from productos".date('y')." where Id = ".$idProducto." AND nivel = 3";
-  $resultadoDatosProducto = $Link->query($consultaDatosProducto) or die('Unable to execute query. '. mysqli_error($Link));
-  if ($resultadoDatosProducto->num_rows > 0) {
-    $Producto = $resultadoDatosProducto->fetch_assoc();
-
-    if (substr($Producto['Codigo'], 0, 2) == "01") {
-          $nameLabel = get_titles('menus', 'menus', $labels);
-          $titulo = $nameLabel. ' - Editar';
-          $link = "index.php";
-          $title = "Menú";
-          $breadCumb = "menús";
-        } else if (substr($Producto['Codigo'], 0, 2) == "02") {
-          $nameLabel = get_titles('menus', 'preparaciones', $labels);
-          $titulo = $nameLabel. ' - Editar';
-          $link = "ver_preparaciones.php";
-          $title = "Preparación";
-          $breadCumb = "preparaciones";
-        } else if (substr($Producto['Codigo'], 0, 2) == "03" || substr($Producto['Codigo'], 0, 2) == "04") {
-          $nameLabel = get_titles('menus', 'alimentos', $labels);
-          $titulo = $nameLabel. ' - Editar';
-          $link = "ver_alimentos.php";
-          $title = $titulo;
-          $breadCumb = "alimentos";
-        }
-  ?>
 <div class="row wrapper wrapper-content border-bottom white-bg page-heading">
   <div class="col-lg-8">
     <h2> <?php echo $titulo; ?></h2>
@@ -149,7 +160,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
               <?php endif ?>
               <?php if (substr($Producto['Codigo'], 0, 2) == "01" || substr($Producto['Codigo'], 0, 2) == "02"): ?>
                 <div class="form-group col-sm-3" id="divGrupoEtario"  >
-                  <label>Grupo Etario</label>
+                  <label>Grupo</label>
                   <select class="form-control" name="Cod_Grupo_Etario" id="Cod_Grupo_Etario">
                     <?php if ($Producto['Cod_Grupo_Etario'] == 0): ?>
                       <option value="">Seleccione...</option>
@@ -165,7 +176,11 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
                             $selected = "";
                           } 
                         ?>
-                        <option value="<?php echo $row['ID'] ?>" <?php echo $selected; ?>><?php echo $row['DESCRIPCION'] ?></option>
+                        <?php if($_SESSION['p_gruposCalculos'] == 1): ?>
+                          <option value="<?php echo $row['ID'] ?>" <?php echo $selected; ?>><?php echo $row['DESCRIPCION'] ?></option>
+                        <?php else: ?>
+                          <option value="<?php echo $row['ID'] ?>" <?php echo $selected; ?>><?php echo $row['equivalencia_grado'] ?></option>
+                        <?php endif; ?>
                       <?php }
                     }
                      ?>

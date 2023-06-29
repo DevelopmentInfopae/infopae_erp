@@ -6,6 +6,15 @@
       		window.open('<?= $baseUrl ?>', '_self');
     	</script>
   	<?php exit(); }
+	  	  else {
+			?><script type="text/javascript">
+			  const list = document.querySelector(".li_configuracion");
+			  list.className += " active ";
+			  const list2 = document.querySelector(".li_usuarios");
+			  list2.className += " active ";
+			</script>
+			<?php
+			}
 
 	$titulo = 'Nuevo Usuario';
 ?>

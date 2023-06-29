@@ -10,6 +10,10 @@
         ?><script type="text/javascript">
           const list = document.querySelector(".li_novedades");
           list.className += " active ";
+          const list2 = document.querySelector(".li_focalizacion");
+          list2.className += " active ";
+          const list3 = document.querySelector(".li_suplentes_novedades");
+          list3.className += " active ";
         </script>
         <?php
         }

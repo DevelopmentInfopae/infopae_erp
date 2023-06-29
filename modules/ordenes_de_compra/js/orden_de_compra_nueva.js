@@ -289,8 +289,10 @@ function generarDespacho(){
 
 	var string_variaciones = '';
 	$( "#table tbody input[type=checkbox]" ).each(function() {
-		itemsDespacho.push($(this).val());
-		string_variaciones += $(this).val()+"-"+($(this).data('variacion') == 0 ? 3 : $(this).data('variacion'))+", ";
+		if ($(this).prop('checked') == true){
+			itemsDespacho.push($(this).val());
+			string_variaciones += $(this).val()+"-"+($(this).data('variacion') == 0 ? 3 : $(this).data('variacion'))+", ";
+		}
 	});
 
 	// Validaciones para generar el despacho
@@ -330,7 +332,7 @@ function generarDespacho(){
 	}else if($( "#ruta" ).val() != ''){
 		rutaMunicipio = $( "#ruta option:selected" ).text();
 	}
-
+	// bandera = 1;
 	if(bandera == 0) {
 		$.ajax({
 			type: "POST",

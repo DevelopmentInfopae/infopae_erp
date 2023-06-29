@@ -37,7 +37,7 @@ if( isset($_POST['despachoAnnoI']) && isset($_POST['despachoMesI']) && isset($_P
    $anno = trim($anno);
    $mesAnno = $mes.$anno;
 
-   $corteDeVariables = 16;
+   $corteDeVariables = 15;
    if(isset($_POST['seleccionarVarios'])){ $corteDeVariables++; }
    if(isset($_POST['informeRuta'])){ $corteDeVariables++; }
    if(isset($_POST['ruta'])){ $corteDeVariables++; }

@@ -8,6 +8,15 @@ if ($permisos['menus'] == "0") {
       window.open('<?= $baseUrl ?>', '_self');
   </script>
 <?php exit(); }
+else {
+  ?><script type="text/javascript">
+      const list = document.querySelector(".li_menus");
+      list.className += " active ";
+    const list2 = document.querySelector(".li_aportesCaloricos");
+      list2.className += " active ";
+  </script>
+  <?php
+  }
 	
 $nameLabel = get_titles('menus', 'aportesCaloricos', $labels);
 
@@ -56,21 +65,28 @@ $nameLabel = get_titles('menus', 'aportesCaloricos', $labels);
         	<table class="table table-striped table-hover selectableRows" id="tablaValRef">
         		<thead>
         			<tr>
-                <th>Grupo Etario</th>
-        				<th>Tipo Complemento</th>
+                <th>Tipo Complemento</th>
+                <th>Grupo/Nivel</th>
                 <th>Acciones</th>
         			</tr>
         		</thead>
         		<tbody>
         		<?php 
-            $consValRef = "SELECT G.DESCRIPCION as etaNombre, MV.* FROM menu_valref_nutrientes AS MV
-                            INNER JOIN grupo_etario AS G ON G.ID = MV.Cod_Grupo_Etario ORDER BY MV.Cod_tipo_complemento ASC ";
+            $consValRef = "SELECT G.DESCRIPCION as etaNombre, 
+                                  G.equivalencia_grado, 
+                                  MV.* FROM menu_valref_nutrientes AS MV
+                                INNER JOIN grupo_etario AS G ON G.ID = MV.Cod_Grupo_Etario 
+                                ORDER BY MV.Cod_tipo_complemento, MV.Cod_Grupo_Etario ";
             $resValRef = $Link->query($consValRef);
             if ($resValRef->num_rows > 0) {
               while ($valRef = $resValRef->fetch_assoc()) { ?>
                 <tr idvalref="<?php echo $valRef['id']; ?>">
                   <td><?php echo $valRef['Cod_tipo_complemento']; ?></td>
-                  <td><?php echo $valRef['etaNombre']; ?></td>
+                  <?php if($_SESSION['p_gruposCalculos'] == 1): ?>
+                    <td><?php echo $valRef['etaNombre']; ?></td>
+                  <?php else: ?>
+                    <td><?php echo $valRef['equivalencia_grado']; ?></td>
+                  <?php endif; ?>
                   <td>
                     <div class="btn-group">
                       <div class="dropdown">
