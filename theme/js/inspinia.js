@@ -94,6 +94,7 @@ $(document).ready(function () {
         // console.log('click en maximizar o minimizar');
         event.preventDefault();
         $("body").toggleClass("mini-navbar");
+
         SmoothlyMenu();
     });
 

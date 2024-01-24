@@ -55,7 +55,7 @@
         </head>
 
         <body <?php if($sideBar == 1){echo "class='mini-navbar'"; }?>>
-            <div id="wrapper" ">
+            <div id="wrapper">
                 <nav id="mySidenav" class="navbar-default navbar-static-side" role="navigation" > 
                     <div class="sidebar-collapse">
                         <ul class="nav metismenu" id="side-menu">

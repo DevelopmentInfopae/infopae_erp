@@ -8,7 +8,7 @@ $passencriptado = mysqli_real_escape_string($Link, $_POST['pass']);
 if (isset($_SESSION["token_seguridad"]) && $token_seguridad != $_SESSION["token_seguridad"]) {
     echo "-2";
 } else {
-    $vlsql ="SELECT * FROM usuarios WHERE email='$user' AND clave='$passencriptado' AND Estado = 1 ";
+    $vlsql ="SELECT * FROM usuarios WHERE email='$user' AND clave='$passencriptado' AND Estado = 1 "; 
     if ($resultado = $Link->query($vlsql)) {
       	if ($resultado->num_rows >= 1) {
         	$row1 = $resultado->fetch_assoc();
@@ -60,6 +60,7 @@ if (isset($_SESSION["token_seguridad"]) && $token_seguridad != $_SESSION["token_
         	$_SESSION["p_tipo_redondeo_remision"] = $row["tipo_redondeo_remision"];
         	$_SESSION["p_rango_redondeo_remision"] = $row["rango_redondeo_remision"];
         	$_SESSION["p_gruposCalculos"] = $row["gruposCalculos"];
+        	$_SESSION["p_complementoRemision"] = $row["complemento_remision"];
         	//Termina carga de parametros de la aplicación
 
         	$consultaGruposEtarios = " SELECT count(ID) as 'cantidad' FROM grupo_etario "; 
@@ -79,6 +80,7 @@ if (isset($_SESSION["token_seguridad"]) && $token_seguridad != $_SESSION["token_
 				if ($respuestaRutaDash->num_rows > 0 ) {
 					$rutaDash = $respuestaRutaDash->fetch_assoc();
 					$ruta = $rutaDash['ruta'];
+					$rutaWin = substr($ruta, 1);
 				}
 			}
 			$_SESSION['rutaDashboard'] = $ruta;
@@ -86,7 +88,7 @@ if (isset($_SESSION["token_seguridad"]) && $token_seguridad != $_SESSION["token_
 
         	if($row1["nueva_clave"] == '' || $row1["nueva_clave"] < 1 ){
 				$respuesta = [ 	'perfil' => 'nueva_clave',
-								'dashboard' => $dashboard
+								'dashboard' => $rutaWin
 							];
 			echo json_encode($respuesta);
           		// echo 'nueva_clave';
@@ -94,7 +96,7 @@ if (isset($_SESSION["token_seguridad"]) && $token_seguridad != $_SESSION["token_
         	}
         	else{
 				$respuesta = [  'perfil' => $row1["id_perfil"],
-								'dashboard' => $dashboard
+								'dashboard' => $rutaWin
 							];
 				echo json_encode($respuesta);
           		// echo $row1["id_perfil"];

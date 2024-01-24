@@ -33,37 +33,52 @@ function doLogin() {
         	success: function(data){
                 i = data.perfil;
                 dash = data.dashboard;
-                if (i==0 || i==1 || i==5 || i==9) {
-                    if (dash == 1) {
-                        window.location = "index.php";
-                    }else if (dash == 2){
-                        window.location = "index_funcional.php";
-                    }else if (dash == 3){
-                        window.location = "index_calendar.php";
-                    }
-                    
-                } else if (i==6){
-                    window.location = "index_rector.php";
-                } else if (i==4) {
-                    window.location = "carga_de_archivos.php";
-                } else if (i==8) {
-                    console.log("Auxiliar Asistencia"); 
-                    window.location = "modules/asistencias/index.php";
-                } else if (i==3) {
-                    console.log("Auxiliar"); 
-                    window.location = "modules/asistencias/control_tablets.php";
-                } else if (i=="-1") {
-                    alert('Usuario o contraseña incorrectos ');
-                } else if (i=='nueva_clave') {
+                console.log(i);
+                console.log(dash);
+                if (i =='nueva_clave') {
                     window.location = "cambiar_clave.php";
-                } else if (i == "-2"){
-                    $("#ventanaInformar").modal();
-                } else if (i==7) {
-                    // console.log("Coordinador");
-                    window.location = "index_coordinador.php";
-                }else {
+                }
+                if (i !='nueva_clave'){
+                    if (i=="-1") {
+                        alert('Usuario o contraseña incorrectos ');
+                    }else{
+                        window.location = dash;
+                    }
+                }
+                else {
                     $('#debug').html(i);
                 }
+                
+                // if (i==0 || i==1 || i==5 || i==9) {
+                //     if (dash == 1) {
+                //         window.location = "index.php";
+                //     }else if (dash == 2){
+                //         window.location = "index_funcional.php";
+                //     }else if (dash == 3){
+                //         window.location = "index_calendar.php";
+                //     }
+                    
+                // } else if (i==6){
+                //     window.location = "index_rector.php";
+                // } else if (i==4) {
+                //     window.location = "carga_de_archivos.php";
+                // } else if (i==8) {
+                //     console.log("Auxiliar Asistencia"); 
+                //     window.location = "modules/asistencias/index.php";
+                // } else if (i==3) {
+                //     console.log("Auxiliar"); 
+                //     window.location = "modules/asistencias/control_tablets.php";
+
+                // else if (i=='nueva_clave') {
+                //     window.location = "cambiar_clave.php";
+                // } else if (i == "-2"){
+                //     $("#ventanaInformar").modal();
+                // } else if (i==7) {
+                //     // console.log("Coordinador");
+                //     window.location = "index_coordinador.php";
+                // }else {
+                //     $('#debug').html(i);
+                // }
         	}
         });
     }

@@ -1,26 +1,7 @@
 <?php 
 $idPerfil = $_SESSION['perfil'];
 $permisos = [];
-$consultaPermisos = " SELECT id, 
-							entregas_biometricas, 
-							instituciones, 
-							archivos_globales, 
-							titulares_derecho, 
-							menus, 
-							diagnostico_infraestructura, 
-							dispositivos_biometricos, 
-							despachos, 
-							orden_compra, 
-							inventario,
-							entrega_complementos, 
-							novedades, 
-							nomina, 
-							fqrs, 
-							informes, 
-							asistencia, 
-							control_acceso, 
-							procesos, 
-							configuracion 
+$consultaPermisos = " SELECT *
 						FROM perfiles	
 						WHERE id = $idPerfil; ";
 
