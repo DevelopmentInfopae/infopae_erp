@@ -7,9 +7,9 @@ function get_products_day( $Link, $complemento, $tipoAlimento, $menuDia){
     $periodoActual = $_SESSION['periodoActual'];
     $minutaDia = [];
     // primero iteramos en los grupos etarios
-    for ($i=1; $i<=$gruposEtarios ; $i++) { 
+    for ($i=1; $i<=$gruposEtarios ; $i++) {
         $codigoPreparacion = '';
-        $consultaEncabezado = " SELECT det.codigo 
+        $consultaEncabezado = " SELECT det.codigo
                                     FROM fichatecnicadet det 
                                     INNER JOIN fichatecnica enc ON enc.id = det.idft
                                     INNER JOIN productos$periodoActual p ON p.codigo = enc.codigo
