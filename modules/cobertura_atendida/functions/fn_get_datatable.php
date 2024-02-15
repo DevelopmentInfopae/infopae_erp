@@ -12,20 +12,18 @@ $institucion = $_POST["data"]["institucion"];
 $sede = $_POST["data"]["sede"];
 $periodoaño = $_SESSION['periodoActual'];
 
-echo "El mes que elejiste es: $mes" . "\n";
-echo "La semana que elejiste es: $semana" . "\n";
-echo "Los complementos que elejiste son: " . "\n";
-print_r($complementos);
-echo "El municipio actual es: " . $municipio . "\n";
-echo "La ruta actual es: " . $ruta . "\n";
-echo "El sector actual es: " . $sector . "\n";
-echo "La institucion actual es: " . $institucion . "\n";
-echo "La sede actual es: " . $sede . "\n";
-echo "El año/periodo en el que estamos es: " . $periodoaño . "\n";
+// echo "El mes que elejiste es: $mes" . "\n";
+// echo "La semana que elejiste es: $semana" . "\n";
+// echo "Los complementos que elejiste son: " . "\n";
+// print_r($complementos);
+// echo "El municipio actual es: " . $municipio . "\n";
+// echo "La ruta actual es: " . $ruta . "\n";
+// echo "El sector actual es: " . $sector . "\n";
+// echo "La institucion actual es: " . $institucion . "\n";
+// echo "La sede actual es: " . $sede . "\n";
+// echo "El año/periodo en el que estamos es: " . $periodoaño . "\n";
 
-
-
-echo "---------------------apuntes arriba-----------------------" . "\n";
+// echo "---------------------apuntes arriba-----------------------" . "\n";
 
 
 // semanas
@@ -55,11 +53,43 @@ echo "---------------------apuntes arriba-----------------------" . "\n";
 //final
 
 
-$complementos = isset($_POST["data"]["complementos"]) ? $_POST["data"]["complementos"] : array();
+// $complementos = isset($_POST["data"]["complementos"]) ? $_POST["data"]["complementos"] : array();
 
+// if (empty($complementos)) {
+//     $consulta_complementos = "SELECT codigo FROM tipo_complemento";
+//     $respuestas_complemento = $Link->query($consulta_complementos);
+
+//     if ($respuestas_complemento->num_rows > 0) {
+//         while ($data_complemento = $respuestas_complemento->fetch_object()) {
+//             $complementos[] = $data_complemento->codigo;
+//         }
+//     }
+// }
+
+// $complementos_str = implode(', ', $complementos);
+
+// $consulta_oficial = "SELECT nom_sede, mes, semana, $complementos_str
+//                     FROM sedes$periodoaño
+//                     INNER JOIN sedes_cobertura
+//                     ON sedes24.cod_sede = sedes_cobertura.cod_sede
+//                     WHERE sedes24.cod_sede = $sede AND sedes_cobertura.mes = '$mes';";
+
+// $respuesta_oficial = $Link->query($consulta_oficial);
+
+// if ($respuesta_oficial->num_rows > 0) {
+//     while ($data_oficial = $respuesta_oficial->fetch_object()) {
+//         var_dump($data_oficial);
+//     }
+// }
+
+
+// si no hay complementos elejidos los trae todos
+$complementos = isset($_POST["data"]["complementos"]) ? $_POST["data"]["complementos"] : array();
 if (empty($complementos)) {
     $consulta_complementos = "SELECT codigo FROM tipo_complemento";
     $respuestas_complemento = $Link->query($consulta_complementos);
+
+    $complementos = array();
 
     if ($respuestas_complemento->num_rows > 0) {
         while ($data_complemento = $respuestas_complemento->fetch_object()) {
@@ -68,23 +98,20 @@ if (empty($complementos)) {
     }
 }
 
+// peticion final
 $complementos_str = implode(', ', $complementos);
-
-$consulta_oficial = "SELECT nom_sede, mes, semana, $complementos_str
+$consulta_oficial ="SELECT nom_sede, mes, semana, $complementos_str
                     FROM sedes$periodoaño
                     INNER JOIN sedes_cobertura
                     ON sedes24.cod_sede = sedes_cobertura.cod_sede
                     WHERE sedes24.cod_sede = $sede AND sedes_cobertura.mes = '$mes';";
 
 $respuesta_oficial = $Link->query($consulta_oficial);
-
 if ($respuesta_oficial->num_rows > 0) {
     while ($data_oficial = $respuesta_oficial->fetch_object()) {
         var_dump($data_oficial);
     }
 }
-
-
 
 
 // if (isset($_GET['mes']) && $_GET['mes'] != '') {
@@ -149,23 +176,6 @@ echo "---------------------arriba consulta oficial-----------------------" . "\n
 
 //  $sede = $guardo_datos[0]['data']['sede'];
 //  echo $sede;
-
-
-// $tem = [];
-// $consulta_complemento = "SELECT codigo FROM tipo_complemento;";
-// $respuestas_complemento = $Link->query($consulta_complemento);
-// if ($respuestas_complemento->num_rows > 0 ) {
-//     while ($data_complemento = $respuestas_complemento->fetch_object()) {
-//      $aux = $data_complemento->codigo;
-//      $consulta_s = "SELECT " . $aux . " FROM priorizacion22 WHERE cod_sede = $sede";
-//      $respuesta = $Link->query($consulta_s);
-//      if ($respuesta->num_rows > 0 ) {
-//         while ($data2_complemento = $respuesta->fetch_object()){
-//  $tem['16830700025101']['22'][$aux] = $data2_complemento->$aux;
-//         }
-//      }
-//     }
-// }
 
 // print_r($tem);
 

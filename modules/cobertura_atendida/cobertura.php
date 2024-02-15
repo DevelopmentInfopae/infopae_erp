@@ -47,13 +47,35 @@
     /****** buscamos las semanas si existe un GET de mes*****/
     $semanas = [];
     if (isset($_GET['mes']) && $_GET['mes'] != '') {
-        $respuestaSemanas = $Link->query(" SELECT DISTINCT SEMANA AS semana FROM planilla_semanas WHERE MES ='" .$_GET['mes']. "'");
+        $respuestaSemanas = $Link->query("SELECT DISTINCT SEMANA AS semana FROM planilla_semanas WHERE MES ='" .$_GET['mes']. "'");
         if ($respuestaSemanas->num_rows > 0) {
             while ($dataSemanas = $respuestaSemanas->fetch_object()) {
                 $semanas[] = $dataSemanas;
             }
         }
     }
+
+
+
+  //----------------------alerta para verificar que si hay informacion en la semana seleccionada--------------------------
+
+    $guardoCompleCober = [];
+    $respuestaComparacion = $Link->query("SELECT DISTINCT semana FROM sedes_cobertura");
+    if ($respuestaComparacion->num_rows > 0) {
+        while ($dataComparacion = $respuestaComparacion->fetch_object()) {
+            $guardoCompleCober[] = $dataComparacion->semana;
+        }
+    }
+
+    $activaralert = false;
+    if (in_array($_GET['semana'], $guardoCompleCober)) {
+        echo "La semana que consultas si tiene informacion.";
+    } else {
+       $activaralert = true;
+    }
+
+
+
 
     /****** buscamos los días del get***********/ 
     // $dias = [];
@@ -224,11 +246,9 @@
                                             <option value="<?= $value->semana ?>" <?= (isset($_GET['semana']) && $_GET['semana'] == $value->semana) ? 'selected' : '' ?> ><?= $value->semana ?></option>
                                     <?php
                                         }
-                                    ?> 
+                                    ?>
                                 </select>
                             </div>
-
-
 
                             <div class="col-md-4 col-sm-12 form-group form-complementos">
                                 <label for="complementos">Complementos*</label>
@@ -261,7 +281,7 @@
 
 
 
-                        <div class="col-md-3 col-sm-12 form-group form-municipio">
+                        <div class="col-md-4 col-sm-12 form-group form-municipio">
 								<label for="municipio">Municipio</label>
                                 <select name="municipio" id="municipio" class="form-control">
                                        
@@ -310,7 +330,7 @@
                         </div><!--  row -->
                         
                         <div class="row">
-                            <div class="col-md-3 col-sm-12 form-group">
+                            <div class="col-md-4 col-sm-12 form-group">
                                 <label for="institucion">Institución</label>
                                 <select name="institucion" id="institucion" class="form-control">
                                     <option value="">Seleccione...</option>    
@@ -327,7 +347,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-3 col-sm-12 form-group">
+                            <div class="col-md-4 col-sm-12 form-group">
                                 <label for="sede">Sede</label>
                                 <select name="sede" id="sede" class="form-control">
                                     <option value="">Seleccione...</option>    
@@ -345,7 +365,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3 col-sm-12 form-group">
+                            <div class="col-md-4 col-sm-12 form-group">
                                 <button class="btn_generates" type="button" id="btnBuscar" name="btnBuscar" value="1" ><strong><i class="fa fa-search"></i> Buscar</strong></button>
                             </div>
                         </div>
@@ -540,11 +560,23 @@
 
         // manejo de semana
         if (bandera == 0) {
-          
                 var semana = $('#semana').val();
                 $('#semana').parent('.form-semana').find('.select2-selection--single').css('border-color', '#e7eaec')
-            
         }
+ 
+
+//acá el alerta de si la semana seleccionada coincide con alguna de sedes_cobertura y por ende tiene informacion necesaria
+// arriba en la linea 70 esta la validacion 
+
+    // if () {
+    //         Command: toastr.warning("La semana a la que intentas acceder no tiene informacion actualmente.", "Intenta seleccionar una diferente.",
+    //          {onHidden : function(){}});
+    //     }
+        
+   
+        
+
+   
 
         // manejo de dias
         // if (bandera == 0) {
@@ -567,8 +599,9 @@
 			    var aux = $(this).val();
 			    complements.push(aux);
 		    });
-	
         }
+
+
 
         if (bandera == 0) {
             if($('#municipio').val() == '' && $('#ruta').val() == ''){
