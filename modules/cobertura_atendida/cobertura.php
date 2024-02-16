@@ -56,23 +56,33 @@
     }
 
 
-
-  //----------------------alerta para verificar que si hay informacion en la semana seleccionada--------------------------
+//codigo para que no me muestre error de variable indefinida, ya que si esta indefinida es porque no han elejido sede en el formulario.
+$sedeActual = isset($_GET['sede']) ? $_GET['sede'] : null;
 
     $guardoCompleCober = [];
-    $respuestaComparacion = $Link->query("SELECT DISTINCT semana FROM sedes_cobertura");
+    $respuestaComparacion = $Link->query("SELECT DISTINCT semana FROM sedes_cobertura WHERE cod_sede = '$sedeActual' ");
+
     if ($respuestaComparacion->num_rows > 0) {
         while ($dataComparacion = $respuestaComparacion->fetch_object()) {
             $guardoCompleCober[] = $dataComparacion->semana;
         }
     }
 
+
+    //el alerta esta en la linea 573
+  //----------------------alerta para verificar que si hay informacion en la semana seleccionada-------
     $activaralert = false;
-    if (in_array($_GET['semana'], $guardoCompleCober)) {
-        echo "La semana que consultas si tiene informacion.";
-    } else {
-       $activaralert = true;
+    if (isset($_GET['semana']) && in_array($_GET['semana'], $guardoCompleCober)) {
+        //si la semana que elijo esta en la cobertura, osea tiene informacion, me la trae
+        $activaralert = false;
+    } else if(isset($_GET['semana']) && $_GET['semana'] === '') {
+       //si no elije semana me trae todo
+        $activaralert = false;
+    }else{
+       //si la semana que elijo no esta en cobertura, no tiene info, entonces el alerta
+        $activaralert = true;
     }
+
 
 
 
@@ -567,16 +577,17 @@
 
 //acá el alerta de si la semana seleccionada coincide con alguna de sedes_cobertura y por ende tiene informacion necesaria
 // arriba en la linea 70 esta la validacion 
+// Verifica el valor de la variable en JavaScript
+let activarAlert = <?php echo json_encode($activaralert)?>;
 
-    // if () {
-    //         Command: toastr.warning("La semana a la que intentas acceder no tiene informacion actualmente.", "Intenta seleccionar una diferente.",
-    //          {onHidden : function(){}});
-    //     }
-        
-   
-        
+if (bandera == 0) {
+    if (activarAlert) {
+    Command: toastr.warning("La <strong>semana</strong> que elejiste no tiene informacion.", 
+    "Elije otro mes y/o otra semana.", {onHidden : function(){}});
+    return
+}
+}
 
-   
 
         // manejo de dias
         // if (bandera == 0) {
@@ -622,41 +633,9 @@
             }
         }
 
-        if (bandera == 0) {
-                  if($('#sector').val() == ''){
-			bandera++;
-			Command: toastr.warning("Debe seleccionar un <strong>sector</strong> para realizar el informe.", "No hay sector seleccionado.", {onHidden : function(){}});
-    		$('#sector').select2('open').select2('close');
-            $('#sector').parent('.form-sector').find('.select2-selection--single').css('border-color', '#FF5252')
-		}else{
-            var sector = $('#sector').val();
-            $('#sector').parent('.form-sector').find('.select2-selection--single').css('border-color', '#e7eaec')
-        }
-        }
+      
   
-        if (bandera == 0) {
-             if($('#institucion').val() == ''){
-			bandera++;
-			Command: toastr.warning("Debe seleccionar un <strong>institucion</strong> para realizar el informe.", "No hay institucion seleccionado.", {onHidden : function(){}});
-    		$('#institucion').select2('open').select2('close');
-            $('#institucion').parent('.form-institucion').find('.select2-selection--single').css('border-color', '#FF5252')
-		}else{
-            var institucion = $('#institucion').val();
-            $('#institucion').parent('.form-institucion').find('.select2-selection--single').css('border-color', '#e7eaec')
-        }  
-        }
-     
-        if (bandera == 0) {
-                 if($('#sede').val() == ''){
-			bandera++;
-			Command: toastr.warning("Debe seleccionar un <strong>sede</strong> para realizar el informe.", "No hay sede seleccionado.", {onHidden : function(){}});
-    		$('#sede').select2('open').select2('close');
-            $('#sede').parent('.form-sede').find('.select2-selection--single').css('border-color', '#FF5252')
-		}else{
-            var sede = $('#sede').val();
-            $('#sede').parent('.form-sede').find('.select2-selection--single').css('border-color', '#e7eaec')
-        }
-        }
+ 
    
 
 
