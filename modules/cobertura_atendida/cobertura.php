@@ -396,10 +396,12 @@ $sedeActual = isset($_GET['sede']) ? $_GET['sede'] : null;
                             <table class="table table-striped table-hover table-bordered  selectableRows" id="box-table-movimientos" >
                                 <thead>
                                     <tr>
-                                        <th rowspan='2' class="text-center">INSTITUCIÓN</th>
-                                        <th rowspan='2' class="text-center">SEDE</th>
-                                        <th rowspan='2' class="text-center">SECTOR</th>
-                                        <th rowspan='2' class="text-center">COMPLEMENTO</th>
+                                        <th class="text-center">INSTITUCIÓN</th>
+                                        <th class="text-center">SEDE</th>
+                                        <th class="text-center">SECTOR</th>
+                                        <th class="text-center">COMPLEMENTO</th>
+                                        
+        
                                     </tr>
                              
                                 </thead>
@@ -634,7 +636,7 @@ if (bandera == 0) {
  
    
 
-
+        // console.log(bandera);
         if (bandera == 0) {
             datosForm = {
                 "mes" : mes,
@@ -649,28 +651,84 @@ if (bandera == 0) {
                 console.log(datosForm);
 
             datos = { "data" : datosForm}
-        $.ajax({
-		    type: "POST",
-		    url: "functions/fn_get_datatable.php",
-		    data: datos,
-		    beforeSend: function(){
-			    $('#loaderAjax').fadeIn();
-		    },
-	    })
-	    .done(function(data){
-            console.log(data);
-		    $('#semana').select2('destroy');
-            $('#semana').html(data);
-		    $('#semana').select2();
-        })
-	    .fail(function(jqXHR, textStatus, errorThrown) {
-            console.log("Error:", textStatus, errorThrown);
-            console.log("Response:", jqXHR.responseText);
-        })
+            dataset1 = $('#box-table-movimientos').DataTable({    
+                ajax: {
+                    method: 'POST',
+                    url: 'functions/fn_get_datatable.php',
+                    data:{
+                        datos: datosForm
+                    }
+                },
+                columns:[
+                    { className: "text-left", data: 'nom_inst'},
+                    { className: "text-left", data: 'nom_sede'},
+                    { className: "text-left", data: 'sector'},
+                    { className: "text-center", data: 'APS'},
+                ],
+                pageLength: 25,
+                responsive: true,
+                dom : '<"html5buttons" B>lr<"containerBtn"><"inputFiltro"f>tip',
+                buttons : [
+                    $.extend( true, {}, buttonCommon, {
+                            extend: 'excel',
+                            title:'Proyección alimentos', 
+                            className:'btnExportarExcel'
+                        } ),
+                    ],
+                order: [ 1, 'asc'],
+                oLanguage: {
+                    sLengthMenu: 'Mostrando _MENU_ registros por página',
+                    sZeroRecords: 'No se encontraron registros',
+                    sInfo: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                    sInfoEmpty: 'Mostrando 0 a 0 de 0 registros',
+                    sInfoFiltered: '(Filtrado desde _MAX_ registros)',
+                    sSearch:         '_INPUT_',
+                    sSearchPlaceholder : 'Buscar: ',
+                    oPaginate:{
+                        sFirst:    'Primero',
+                        sLast:     'Último',
+                        sNext:     'Siguiente',
+                        sPrevious: 'Anterior'
+                    }
+                },
+                initComplete: function() {
+                    var btnAcciones = '<div class="dropdown pull-right" id=""> ' +
+                              '<button class="btn_options_table" type="button" id="accionesTabla" data-toggle="dropdown" aria-haspopup="true"><span class="fa fa-ellipsis-v"></span></button>'+
+                              '<ul class="dropdown-menu pull-right" aria-labelledby="accionesTabla">'+
+                                 '<li><a onclick="$(\'.btnExportarExcel\').click()"><span class="fa fa-file-excel-o"></span> Exportar Tabla </a></li>'+
+                              '</ul>'+
+                           '</div>';
+                    $('.containerBtn').html(btnAcciones);
+                    $('#loader').fadeOut();
+                }, 
+                preDrawCallback: function( settings ) {
+                    $('#loader').fadeIn();
+                }
+            }).on("draw", function(){ 
+                $('#loader').fadeOut();
+            })
+        // $.ajax({
+		//     type: "POST",
+		//     url: "functions/fn_get_datatable.php",
+		//     data: datos,
+		//     beforeSend: function(){
+		// 	    $('#loaderAjax').fadeIn();
+		//     },
+	    // })
+	    // .done(function(data){
+        //     console.log(data);
+		//     $('#semana').select2('destroy');
+        //     $('#semana').html(data);
+		//     $('#semana').select2();
+        // })
+	    // .fail(function(jqXHR, textStatus, errorThrown) {
+        //     console.log("Error:", textStatus, errorThrown);
+        //     console.log("Response:", jqXHR.responseText);
+        // })
 
-	    .always(function(){
-		    $('#loaderAjax').fadeOut();
-	    });
+	    // .always(function(){
+		//     $('#loaderAjax').fadeOut();
+	    // });
             // dataset1 = $('#box-table-movimientos').DataTable({
             //     ajax: {
             //         method: 'POST',
