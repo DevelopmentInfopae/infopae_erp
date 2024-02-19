@@ -77,5 +77,4 @@ if ($respuesta_oficial->num_rows > 0) {
     }
 }
 
-
 echo "---------------------arriba consulta oficial-----------------------" . "\n";

@@ -400,8 +400,6 @@ $sedeActual = isset($_GET['sede']) ? $_GET['sede'] : null;
                                         <th rowspan='2' class="text-center">SEDE</th>
                                         <th rowspan='2' class="text-center">SECTOR</th>
                                         <th rowspan='2' class="text-center">COMPLEMENTO</th>
-                                        
-        
                                     </tr>
                              
                                 </thead>
@@ -411,12 +409,10 @@ $sedeActual = isset($_GET['sede']) ? $_GET['sede'] : null;
                                 </tbody>
                                 <tfoot>
                                     <tr style="height: 4em;">
-                                        <th class="text-center">INSTITUCIÓN</th>
-                                        <th class="text-center">SEDE</th>
-                                        <th class="text-center">SECTOR</th>
-                                        <th class="text-center">COMPLEMENTO</th>
-                                        
-                                        
+                                        <th class="text-center">En espera de datos.</th>
+                                        <th class="text-center">En espera de datos.</th>
+                                        <th class="text-center">En espera de datos.</th>
+                                        <th class="text-center">En espera de datos.</th>
                                     </tr>
                                 </tfoot>
                             </table>
