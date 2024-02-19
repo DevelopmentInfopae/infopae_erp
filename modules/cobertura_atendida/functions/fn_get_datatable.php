@@ -1,29 +1,29 @@
 <?php
 require_once '../../../db/conexion.php';
 require_once '../../../config.php';
-
-$mes = $_POST["data"]["mes"];
-$semana = $_POST["data"]["semana"];
-$complementos = $_POST["data"]["complementos"];
-$municipio = $_POST["data"]["municipio"];
-$ruta = $_POST["data"]["ruta"];
-$sector = $_POST["data"]["sector"];
-$institucion = $_POST["data"]["institucion"];
-$sede = $_POST["data"]["sede"];
+// exit(var_dump($_POST));
+$mes = $_POST["datos"]["mes"];
+$semana = $_POST["datos"]["semana"];
+$complementos = isset($_POST["datos"]["complementos"]) ? $_POST["datos"]["complementos"] : [] ;
+$municipio = $_POST["datos"]["municipio"];
+$ruta = $_POST["datos"]["ruta"];
+$sector = $_POST["datos"]["sector"];
+$institucion = $_POST["datos"]["institucion"];
+$sede = $_POST["datos"]["sede"];
 $periodoaño = $_SESSION['periodoActual'];
 
-// echo "El mes que elejiste es: $mes" . "\n";
-echo "La semana que elejiste es: $semana" . "\n";
-// echo "Los complementos que elejiste son: " . "\n";
-// print_r($complementos);
-// echo "El municipio actual es: " . $municipio . "\n";
-// echo "La ruta actual es: " . $ruta . "\n";
-echo "El sector actual es: " . $sector . "\n";
-echo "La institucion actual es: " . $institucion . "\n";
-echo "La sede actual es: " . $sede . "\n";
-// echo "El año/periodo en el que estamos es: " . $periodoaño . "\n";
+// // echo "El mes que elejiste es: $mes" . "\n";
+// echo "La semana que elejiste es: $semana" . "\n";
+// // echo "Los complementos que elejiste son: " . "\n";
+// // print_r($complementos);
+// // echo "El municipio actual es: " . $municipio . "\n";
+// // echo "La ruta actual es: " . $ruta . "\n";
+// echo "El sector actual es: " . $sector . "\n";
+// echo "La institucion actual es: " . $institucion . "\n";
+// echo "La sede actual es: " . $sede . "\n";
+// // echo "El año/periodo en el que estamos es: " . $periodoaño . "\n";
 
-echo "---------------------apuntes arriba-----------------------" . "\n";
+// echo "---------------------apuntes arriba-----------------------" . "\n";
 
 
 $complementos = isset($_POST["data"]["complementos"]) ? $_POST["data"]["complementos"] : array();
@@ -72,10 +72,19 @@ if (!empty($sede)) {
 
 $respuesta_oficial = $Link->query($consulta_oficial);
 if ($respuesta_oficial->num_rows > 0) {
-    while ($data_oficial = $respuesta_oficial->fetch_object()) {
-        var_dump($data_oficial);
+    while ($data_oficial = $respuesta_oficial->fetch_object()) {       
+        /* integracion de la consulta oficial para generar los datos de la respuesta */   
+        $datosE[] = $data_oficial;  
     }
 }
 
+// echo "---------------------arriba consulta oficial-----------------------" . "\n";
+$output = [
+    'sEcho' => 1,
+    'iTotalRecords' => count($datosE),
+    'iTotalDisplayRecords' => count($datosE),
+    'aaData' => $datosE
+];
 
-echo "---------------------arriba consulta oficial-----------------------" . "\n";
+echo json_encode($output);
+
