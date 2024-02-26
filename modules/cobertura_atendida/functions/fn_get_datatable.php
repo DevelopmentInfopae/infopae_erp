@@ -11,7 +11,7 @@ $sector = $_POST["datos"]["sector"];
 $institucion = $_POST["datos"]["institucion"];
 $sede = $_POST["datos"]["sede"];
 $periodoaño = $_SESSION['periodoActual'];
-
+$datosE = [];
 // // echo "El mes que elejiste es: $mes" . "\n";
 // echo "La semana que elejiste es: $semana" . "\n";
 // // echo "Los complementos que elejiste son: " . "\n";
@@ -40,51 +40,65 @@ if (empty($complementos)) {
         }
     }
 }
-$complementos_str = implode(', ', $complementos);
 
+
+
+$consulta_semanas = "SELECT DISTINCT (semana) AS semana FROM planilla_semanas WHERE mes = '$mes'";
+if (isset($semana) && $semana != '') {
+    $consulta_semanas.= "AND semana = '$semana' ";
+}
+
+$guardofi = [];
+
+$respuesta_sem = $Link->query($consulta_semanas);
+if ($respuesta_sem->num_rows > 0) {
+    while ($data_semanas = $respuesta_sem->fetch_object()) {
+
+         foreach ($complementos as $keyc => $valuec) {
+
+            $consulta_oficial ="SELECT s.cod_sede,s.sector,s.nom_inst,s.nom_sede,$valuec
+            FROM sedes$periodoaño s
+            INNER JOIN sedes_cobertura sc
+            ON s.cod_sede = sc.cod_sede WHERE sc.mes = '$mes' AND sc.semana = '". $data_semanas->semana ."' ";
+
+            if (!empty($sector)) {
+                $consulta_oficial .= " AND sedes$periodoaño.sector = '$sector' ";
+            }
+
+            if (!empty($institucion)) {
+                $consulta_oficial .= " AND sedes$periodoaño.cod_inst = '$institucion' ";
+            }
+
+            if (!empty($sede)) {
+                $consulta_oficial .= " AND sedes$periodoaño.cod_sede = $sede";
+            }
+
+            $respuesta_total = $Link->query($consulta_oficial);
+            if ($respuesta_total->num_rows > 0) {
+                while ($data_total = $respuesta_total->fetch_object()) {      
+
+                    $guardofi[$data_total->cod_sede][$valuec][$data_semanas->semana] = $data_total;
+            
+               }
+            } 
+         }
+      }
+
+    //   foreach ($guardofi as $keyz => $valuez) {
+    //     exit(var_dump($valuez['APS']['21']));
+    //   }
+    
+
+
+}
 
 // ---------------------------Peticion oficial---------------------------
-    $consulta_oficial ="SELECT sector,nom_inst,nom_sede, mes, semana, $complementos_str
-                        FROM sedes$periodoaño
-                        INNER JOIN sedes_cobertura
-                        ON sedes$periodoaño.cod_sede = sedes_cobertura.cod_sede WHERE sedes_cobertura.mes = '$mes'";
 
-
-// si se proporciona la semana, solo me trae la que le indico
-if (!empty($semana)) {
-    $consulta_oficial .= " AND sedes_cobertura.semana = '$semana' ";
-}
-
-// traer sector
-if (!empty($sector)) {
-    $consulta_oficial .= " AND sedes$periodoaño.sector = '$sector' ";
-}
-
-//trae institucion
-if (!empty($institucion)) {
-    $consulta_oficial .= " AND sedes$periodoaño.cod_inst = '$institucion' ";
-}
-
-if (!empty($sede)) {
-    $consulta_oficial .= " AND sedes$periodoaño.cod_sede = $sede";
-}
-
-
-$respuesta_oficial = $Link->query($consulta_oficial);
-if ($respuesta_oficial->num_rows > 0) {
-    while ($data_oficial = $respuesta_oficial->fetch_object()) {       
-        /* integracion de la consulta oficial para generar los datos de la respuesta */   
-        $datosE[] = $data_oficial;  
-    }
-}
-
-// echo "---------------------arriba consulta oficial-----------------------" . "\n";
 $output = [
     'sEcho' => 1,
     'iTotalRecords' => count($datosE),
     'iTotalDisplayRecords' => count($datosE),
-    'aaData' => $datosE
+    'aaData' => $datosE,
 ];
 
 echo json_encode($output);
-

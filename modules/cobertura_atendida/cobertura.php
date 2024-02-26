@@ -47,39 +47,71 @@
     /****** buscamos las semanas si existe un GET de mes*****/
     $semanas = [];
     if (isset($_GET['mes']) && $_GET['mes'] != '') {
-        $respuestaSemanas = $Link->query("SELECT DISTINCT SEMANA AS semana FROM planilla_semanas WHERE MES ='" .$_GET['mes']. "'");
+        $consulta_sem = "SELECT DISTINCT SEMANA AS semana FROM planilla_semanas WHERE MES ='" .$_GET['mes']. "'";
+        if (isset($_GET['semana']) && $_GET['semana'] != '') {
+            $consulta_sem .= " AND semana = '" .$_GET['semana']. "' ";
+        }
+        $respuestaSemanas = $Link->query($consulta_sem);
+
         if ($respuestaSemanas->num_rows > 0) {
             while ($dataSemanas = $respuestaSemanas->fetch_object()) {
                 $semanas[] = $dataSemanas;
             }
         }
+
     }
 
+
+//buscamos las semanas cobertura
+
+$semanasoficiales = [];
+if (isset($_GET['mes']) && $_GET['mes'] != '') {
+    $consulta_semof = "SELECT DISTINCT SEMANA AS semana FROM sedes_cobertura WHERE MES ='" .$_GET['mes']. "'";
+
+    $respuestaSemanasof = $Link->query($consulta_semof);
+
+    if ($respuestaSemanasof->num_rows > 0) {
+        while ($dataSemanasoficiales = $respuestaSemanasof->fetch_object()) {
+            $semanasoficiales[] = $dataSemanasoficiales;
+        }
+    }
+
+}
+
+
+// var_dump($semanas);
 
 //codigo para que no me muestre error de variable indefinida, ya que si esta indefinida es porque no han elejido sede en el formulario.
 $sedeActual = isset($_GET['sede']) ? $_GET['sede'] : null;
 
-    $guardoCompleCober = [];
-    $respuestaComparacion = $Link->query("SELECT DISTINCT semana FROM sedes_cobertura WHERE cod_sede = '$sedeActual' ");
+$guardoCompleCober = [];
+$consultaComparacion = "SELECT DISTINCT semana FROM sedes_cobertura ";
 
-    if ($respuestaComparacion->num_rows > 0) {
-        while ($dataComparacion = $respuestaComparacion->fetch_object()) {
-            $guardoCompleCober[] = $dataComparacion->semana;
-        }
+if (!empty($sedeActual)) {
+    $consultaComparacion .= " WHERE cod_sede = '$sedeActual' ";
+}
+
+$respuestaComparacion = $Link->query($consultaComparacion);
+
+if ($respuestaComparacion->num_rows > 0) {
+    while ($dataComparacion = $respuestaComparacion->fetch_object()) {
+        $guardoCompleCober[] = $dataComparacion->semana;
     }
+}
+
 
 
     //el alerta esta en la linea 573
   //----------------------alerta para verificar que si hay informacion en la semana seleccionada-------
     $activaralert = false;
     if (isset($_GET['semana']) && in_array($_GET['semana'], $guardoCompleCober)) {
-        //si la semana que elijo esta en la cobertura, osea tiene informacion, me la trae
+      
         $activaralert = false;
     } else if(isset($_GET['semana']) && $_GET['semana'] === '') {
-       //si no elije semana me trae todo
+     
         $activaralert = false;
     }else{
-       //si la semana que elijo no esta en cobertura, no tiene info, entonces el alerta
+      
         $activaralert = true;
     }
 
@@ -124,6 +156,7 @@ $sedeActual = isset($_GET['sede']) ? $_GET['sede'] : null;
                 $complementos[] = $dataComplementos;
             }
         }
+        
     }
 
     /****** Manejo de rutas ********/
@@ -398,12 +431,18 @@ $sedeActual = isset($_GET['sede']) ? $_GET['sede'] : null;
                                     <tr>
                                         <th class="text-center">INSTITUCIÓN</th>
                                         <th class="text-center">SEDE</th>
-                                        <th class="text-center">SECTOR</th>
-                                        <th class="text-center">COMPLEMENTO</th>
-                                        
-        
+                                        <th class="text-center">TIPO DE RACION</th>
+                                      
+                                        <?php
+                                         foreach ($semanasoficiales as $keys => $values) {
+                                        ?>
+                                           <th class="text-center"> RACION SEMANA <?= $values->semana ?></th>
+                                       <?php 
+                                         }
+                                        ?>
+                                    <th>TOTAL RACIONES</th>
+                                       
                                     </tr>
-                             
                                 </thead>
                                 <br>
                                 <tbody id="tbodyInformeProyecciones">
@@ -411,10 +450,7 @@ $sedeActual = isset($_GET['sede']) ? $_GET['sede'] : null;
                                 </tbody>
                                 <tfoot>
                                     <tr style="height: 4em;">
-                                        <th class="text-center">En espera de datos.</th>
-                                        <th class="text-center">En espera de datos.</th>
-                                        <th class="text-center">En espera de datos.</th>
-                                        <th class="text-center">En espera de datos.</th>
+                           
                                     </tr>
                                 </tfoot>
                             </table>
@@ -631,9 +667,7 @@ if (bandera == 0) {
             }
         }
 
-      
-  
- 
+    
    
 
         // console.log(bandera);
@@ -662,8 +696,8 @@ if (bandera == 0) {
                 columns:[
                     { className: "text-left", data: 'nom_inst'},
                     { className: "text-left", data: 'nom_sede'},
-                    { className: "text-left", data: 'sector'},
-                    { className: "text-center", data: 'APS'},
+                   
+                   
                 ],
                 pageLength: 25,
                 responsive: true,
@@ -707,6 +741,8 @@ if (bandera == 0) {
             }).on("draw", function(){ 
                 $('#loader').fadeOut();
             })
+
+
         // $.ajax({
 		//     type: "POST",
 		//     url: "functions/fn_get_datatable.php",
@@ -765,7 +801,7 @@ if (bandera == 0) {
 	    .always(function(){
 		    $('#loaderAjax').fadeOut();
 	    });
-    } 
+    }
 
     function get_days(mes, semana){
         datos = { "mes" : mes, "semana" : semana}
