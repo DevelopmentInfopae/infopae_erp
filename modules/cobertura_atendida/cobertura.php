@@ -696,8 +696,15 @@ if (bandera == 0) {
                 columns:[
                     { className: "text-left", data: 'nom_inst'},
                     { className: "text-left", data: 'nom_sede'},
-                   
-                   
+                    { className: "text-left", data: 'complemento'},
+                    <?php
+                        foreach ($semanasoficiales as $keys => $values) {
+                    ?>
+                        { className: "text-left", data: <?= "'".$values->semana."'" ?>},
+                    <?php 
+                        }
+                    ?>
+                   { className: "text-left", data: 'total'},
                 ],
                 pageLength: 25,
                 responsive: true,
