@@ -22,6 +22,7 @@
         $arrayDiasContrato[] = $regDiasContrato;
     }
     // exit(var_dump($_SESSION));
+    // exit(var_dump(phpinfo()));
 ?>
 
 <div class="wrapper wrapper-content contenedor_results">

@@ -44,7 +44,7 @@ if(isset($_POST['nomInst'])){
         <h4><?php echo $codSede; ?></h4>
         <ol class="breadcrumb">
           <li>
-              <a href="<?php echo $baseUrl; ?>">Home</a>
+              <a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>">Home</a>
           </li>
           <li class="active">
               <strong>Institucion</strong>

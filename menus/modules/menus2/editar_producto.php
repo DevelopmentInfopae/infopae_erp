@@ -32,7 +32,7 @@ $options = array('g' => array('u' => 'Unidad', 'kg' => 'KiloGramo', 'lb' => 'Lib
     <h2>Editar <?php echo $title; ?></h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Inicio</a>
+        <a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>">Inicio</a>
       </li>
       <li>
         <a href="<?php echo $baseUrl.'/modules/menus/'.$link; ?>">Ver <?php echo $breadCumb; ?></a>

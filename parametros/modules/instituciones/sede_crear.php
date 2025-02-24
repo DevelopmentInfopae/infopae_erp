@@ -8,7 +8,7 @@
     <h2><?php echo $titulo; ?></h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
+        <a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>">Home</a>
       </li>
       <li class="active">
       	<a href="<?php echo $baseUrl . '/modules/instituciones/sedes.php'; ?>">Sedes</a>

@@ -19,6 +19,12 @@
 </head>
 
 <body class="gray-bg fnd-login">
+  <style>
+    #emContra{
+      color : white;
+      font-size : 10px;
+    }
+  </style>
 
     <div class="middle-box text-center loginscreen animated fadeInDown caja-login">
         <div>
@@ -36,7 +42,9 @@
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" placeholder="Contraseña" required="" name="password" id="password">
+                    <em id='emContra'>Su contraseña se encuentra encriptada de forma segura con el algoritmo de cifrado AES-256</em>
                 </div>
+                
                  <!-- <div class="form-group">
                     <select name="periodo" id="periodo" class="form-control">
                     <option value="2017" selected="selected">2017</option>
@@ -48,7 +56,7 @@
                 <a href="olvido_contrasena.php"><small>Olvidó su contraseña?</small></a>
               </form>
               <div id="debug"></div>
-            <p class="m-t"> <small>&copy; 2023</small> </p>
+            <p class="m-t"> <small>&copy; 2024</small> </p>
         </div>
     </div>
 

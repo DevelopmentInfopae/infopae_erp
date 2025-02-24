@@ -14,7 +14,7 @@
     <h2>Editar Institución</h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home <?php echo $codigoInstitucion; ?></a>
+        <a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>">Home <?php echo $codigoInstitucion; ?></a>
       </li>
       <li>
       	<a href="<?php echo $baseUrl . '/modules/instituciones/instituciones.php'; ?>">Instituciones</a>

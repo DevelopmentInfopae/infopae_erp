@@ -7,7 +7,7 @@
     <h2>Nueva Institución</h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Home</a>
+        <a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>">Home</a>
       </li>
       <li class="active">
       	<a href="<?php echo $baseUrl . '/modules/instituciones/instituciones.php'; ?>">Instituciones</a>

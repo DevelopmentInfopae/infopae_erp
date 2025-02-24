@@ -31,7 +31,7 @@
       <h2><?php echo $institucionNombre; ?></h2>
       <ol class="breadcrumb">
           <li>
-            <a href="<?php echo $baseUrl; ?>">Home</a>
+            <a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>">Home</a>
           </li>
           <li>
             <a href="<?php echo $baseUrl . '/modules/instituciones/instituciones.php'; ?>">Instituciones</a>

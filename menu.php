@@ -29,11 +29,10 @@
 			$MenuSide[$dataMenuSide['modulo']][] = $dataMenuSide;
 		}
 	}	
-	// exit(var_dump($MenuSide));
 ?>
 
 <li class='li_inicio' >
-	<a href="<?php echo $baseUrl; ?>"><i class="fa fa-home fa-lg"></i> <span class="nav-label">Inicio</span></a>
+	<a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>"><i class="fa fa-home fa-lg"></i> <span class="nav-label">Inicio</span></a>
 </li>
 <?php
 	$banderaUl2 = 0;
@@ -94,6 +93,11 @@
 								if ($nombreSubmodulos == 'alimentos') {
 									$nombreSubmodulos = 'despacho_alimentos';
 								}
+								if ($nombreSubmodulos == 'editar') {
+									if ($_SESSION['perfil'] == '6' || $_SESSION['perfil'] == '7') {
+										continue;
+									}
+								}
 							}
 							if ($nombreSubmodulos == 'asistencia') {
 								$nombreSubmodulos = 'asistencia_submenu';
@@ -105,12 +109,12 @@
 									</li>";		
 							$banderaUl = 1;	
 						}else if ($ruta == '#') {
-							$ul .= '<li>';
-							$ul .= " <a  href='$baseUrl$ruta' class = 'sinDesarrollar' >"; 
-							$ul .= "$label 
-										</a>
-									</li>";		
-							$banderaUl = 1;	
+							// $ul .= '<li>';
+							// $ul .= " <a  href='$baseUrl$ruta' class = 'sinDesarrollar' >"; 
+							// $ul .= "$label 
+							// 			</a>
+							// 		</li>";		
+							// $banderaUl = 1;	
 						}
 					
 					}
@@ -135,12 +139,12 @@
 									</a>
 								</li>";	
 					}else if ($ruta == '#') {
-						$banderaUl2 = 1;
-						$ul2 .= "<li>";
-						$ul2 .= " <a  href='$baseUrl$ruta' class = 'sinDesarrollar'> "; 
-						$ul2 .= "$label	
-									</a>
-								</li>";	
+						// $banderaUl2 = 1;
+						// $ul2 .= "<li>";
+						// $ul2 .= " <a  href='$baseUrl$ruta' class = 'sinDesarrollar'> "; 
+						// $ul2 .= "$label	
+						// 			</a>
+						// 		</li>";	
 					}					
 				}	
 			}	

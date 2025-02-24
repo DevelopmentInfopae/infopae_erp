@@ -29,19 +29,91 @@ function round_down($number, $precision)
     return (floor($number * $fig) / $fig);
 }
 
+function print_arrays($array) {
+  echo "<pre>";
+  var_dump($array);
+  echo "</pre>";
+  exit();
+}
+
+function rountTotalOrdenCompra(float $number) {
+  /* 0 => No redondear, 1 => Redondear arriba, 2 => Redondear abajo */
+  $redondeo = $_SESSION['p_redondeo_compra'];
+
+  /* 1 => Cada día, 2 => Total, 3 => Cada Sede */
+  $tipo = $_SESSION['p_tipo_redondeo_compra'];
+
+  /* 1 => Redondear al entero mas cercano, 2 => Redondear al primer decimal, 3 => Redondear al segundo decimal */
+  $rango = $_SESSION['p_rango_redondeo_compra'];
+
+  if ($redondeo === '0') return $number; # Si esta deshabilitado el redondeo retorna el numero sin modificar
+  if ($tipo !== '2') return $number; # Si el tipo es diferente de redondeo total retorna el numero sin modificar
+  $aux = redondearNumero($number, $redondeo, $rango);
+  return $aux;
+}
 
 
+function rountSedeOrdenCompra(float $number) {
+  /* 0 => No redondear, 1 => Redondear arriba,2 => Redondear abajo */
+  $redondeo = $_SESSION['p_redondeo_compra'];
 
+  /* 1 => Cada día, 2 => Total, 3 => Cada Sede */
+  $tipo = $_SESSION['p_tipo_redondeo_compra'];
 
+  /* 1 => Redondear al entero mas cercano, 2 => Redondear al primer decimal, 3 => Redondear al segundo decimal */
+  $rango = $_SESSION['p_rango_redondeo_compra'];
 
+  if ($redondeo === '0') return $number; # Si no tiene parametrizado el redondeo retorna el numero sin modificar
+  if ($tipo !== '3') return $number; # Si el tipo es diferente a cada Sede retorna el numero sin modificar
 
+  $aux = redondearNumero($number, $redondeo, $rango);
+  return $aux;
+}
 
+function rountRemision(float $number) {
+  /* 0 => No redondear, 1 => Redondear arriba, 2 => Redondear abajo */
+  $redondeo = $_SESSION['p_redondeo_remision'];
 
+  /* 1 => Cada día, 2 => Total, 3 => Cada Sede */
+  $tipo = $_SESSION['p_rango_redondeo_remision'];
 
+  /* 1 => Redondear al entero mas cercano, 2 => Redondear al primer decimal, 3 => Redondear al segundo decimal */
+  $rango = $_SESSION['p_rango_redondeo_remision'];
 
+  if ($redondeo === '0') return $number;
 
+  $aux = redondearNumero($number, $redondeo, $rango);
+  return $aux;
+}
 
+function redondearNumero(float $numero, string $tipo, string $rango): float {
+  switch ($rango) {
+      case '1': // Redondear al entero más cercano
+          return $tipo === '1' ? ceil($numero) 
+               : ($tipo === '2' ? floor($numero) 
+               : ($numero < 0.5 ? ceil($numero) : round($numero))); 
 
+      case '2': // Redondear al primer decimal
+          return $tipo === '1' ? ceil($numero * 10) / 10 
+               : ($tipo === '2' ? floor($numero * 10) / 10 
+               : ($numero * 10 - floor($numero * 10) < 0.5 ? ceil($numero * 10) / 10 : round($numero, 1)));
+
+      case '3': // Redondear al segundo decimal
+          return $tipo === '1' ? ceil($numero * 100) / 100 
+               : ($tipo === '2' ? floor($numero * 100) / 100 
+               : ($numero * 100 - floor($numero * 100) < 0.5 ? ceil($numero * 100) / 100 : round($numero, 2)));
+
+      default:
+          throw new InvalidArgumentException("Tipo de redondeo inválido");
+  }
+}
+
+function dd($data){
+  echo "<pre>";
+  var_dump($data);
+  echo "</pre>";
+  exit();
+}
 
 // Función que corta los numeros en el numero de decimales que se requiera sin redondear
 // Ej: $saldo = number_format_unlimited_precision($saldo,3,'.');
@@ -86,21 +158,7 @@ function menosDecimales($minuendo,$sustraendo,$decimal){
   }else{
     return 0;
   }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function mesEnLetras($mes){
   $mesLetras = '';

@@ -16,7 +16,7 @@
 	$titulos = ['Codigo sede','Nombre sede','APS','CAJMRI','CAJTRI','CAJMPS'];
 	$anc_col = [28,102,15,15,15,15];
 
-
+	// Datos de Priorización.
 	$arrayDatPri = [];
 	$conPri = "SELECT sedc.cod_sede, sed.nom_sede, SUM(APS) AS APS, SUM(CAJMRI) AS CAJMRI, SUM(CAJTRI) AS CAJTRI, SUM(CAJMPS) AS CAJMPS
 						FROM sedes_cobertura sedc

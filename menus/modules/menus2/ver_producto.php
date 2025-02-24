@@ -32,7 +32,7 @@ if (isset($_REQUEST['idProducto'])) {
     <h2><?php echo $Producto['Codigo']." ".$title." ".$Producto['Descripcion']; ?></h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Inicio</a>
+        <a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>">Inicio</a>
       </li>
       <li>
         <a href="<?php echo $baseUrl.'/modules/menus2/'.$link; ?>">Ver <?php echo $breadCumb; ?></a>

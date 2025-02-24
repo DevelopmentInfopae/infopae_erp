@@ -12,7 +12,7 @@ $periodoActual = $_SESSION['periodoActual'];
     <h2><?php echo $titulo; ?></h2>
     <ol class="breadcrumb">
       <li>
-        <a href="<?php echo $baseUrl; ?>">Inicio</a>
+        <a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>">Inicio</a>
       </li>
       <li class="active">
         <strong><?php echo $titulo; ?></strong>

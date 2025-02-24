@@ -61,6 +61,8 @@ if (isset($_SESSION["token_seguridad"]) && $token_seguridad != $_SESSION["token_
         	$_SESSION["p_rango_redondeo_remision"] = $row["rango_redondeo_remision"];
         	$_SESSION["p_gruposCalculos"] = $row["gruposCalculos"];
         	$_SESSION["p_complementoRemision"] = $row["complemento_remision"];
+        	$_SESSION["p_dias_contrato"] = $row["diasAtencion"];
+        	$_SESSION["p_valor_contrato"] = $row["ValorContrato"];
         	//Termina carga de parametros de la aplicación
 
         	$consultaGruposEtarios = " SELECT count(ID) as 'cantidad' FROM grupo_etario "; 

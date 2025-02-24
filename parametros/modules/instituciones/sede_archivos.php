@@ -38,7 +38,7 @@ if($resultado->num_rows >= 1){
         <!-- <h4><?php echo $codSede; ?></h4> -->
         <ol class="breadcrumb">
           <li>
-              <a href="<?php echo $baseUrl; ?>">Home</a>
+              <a href="<?php echo $baseUrl.$_SESSION['rutaDashboard']; ?>">Home</a>
           </li>
 		  <li><a href="institucion.php">Institución</a></li>
 		  <li><a href="sede.php?codSede=<?php echo $codSede; ?>&nomSede=<?php echo $nomSede; ?>&nomInst=<?php echo $nomInst; ?>">Sede</a></li>
